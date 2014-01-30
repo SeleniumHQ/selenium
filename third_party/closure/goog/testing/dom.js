@@ -280,7 +280,9 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
   //
   // The collapsible variable tracks whether we should collapse the whitespace
   // in the next Text node we encounter.
-  var IE_TEXT_COLLAPSE = goog.userAgent.IE && !goog.userAgent.isVersion('9');
+  var IE_TEXT_COLLAPSE =
+      goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9');
+
   var collapsible = true;
 
   var number = 0;

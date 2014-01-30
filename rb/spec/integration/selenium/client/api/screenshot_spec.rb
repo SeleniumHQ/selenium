@@ -1,3 +1,5 @@
+# encoding: binary
+
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Screenshot" do
@@ -13,7 +15,7 @@ describe "Screenshot" do
     page.capture_screenshot tempfile
 
     File.exists?(tempfile).should be_true
-    File.open(tempfile, "r") do |io|
+    File.open(tempfile, "rb") do |io|
       magic = io.read(4)
       magic.should == "\211PNG"
     end
@@ -24,6 +26,6 @@ describe "Screenshot" do
     encodedImage = page.capture_screenshot_to_string
     pngImage = Base64.decode64(encodedImage)
 
-    pngImage.should =~ /^\211PNG/
+    pngImage.should =~ /^\211PNG/n
   end
 end

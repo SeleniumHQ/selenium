@@ -32,7 +32,6 @@ goog.require('goog.functions');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.ServerChart');
-goog.require('goog.ui.ServerChart.ChartType');
 goog.require('goog.ui.TableSorter');
 
 
@@ -911,8 +910,8 @@ goog.testing.MultiTestRunner.prototype.drawRunTimePie_ = function() {
   pie.setMaxValue(totalTime);
   pie.addDataSet([runTime, loadTime], 'ff9900');
   pie.setXLabels([
-      'Test execution (' + runTime + 'ms)',
-      'Loading (' + loadTime + 'ms)']);
+    'Test execution (' + runTime + 'ms)',
+    'Loading (' + loadTime + 'ms)']);
   pie.render(this.statsEl_);
 };
 
@@ -997,7 +996,7 @@ goog.testing.MultiTestRunner.prototype.writeCurrentSummary_ = function() {
  * @private
  */
 goog.testing.MultiTestRunner.prototype.drawProgressSegment_ =
-      function(title, success) {
+    function(title, success) {
   var part = this.progressRow_.cells[this.resultCount_ - 1];
   part.title = title + ' : ' + (success ? 'SUCCESS' : 'FAILURE');
   part.style.backgroundColor = success ? '#090' : '#900';
@@ -1377,7 +1376,7 @@ goog.testing.MultiTestRunner.TestFrame.prototype.finish_ = function() {
  */
 goog.testing.MultiTestRunner.TestFrame.prototype.createIframe_ = function() {
   this.iframeEl_ =
-      (/** @type {HTMLIFrameElement} */ this.dom_.createDom('iframe'));
+      /** @type {HTMLIFrameElement} */ (this.dom_.createDom('iframe'));
   this.getElement().appendChild(this.iframeEl_);
   this.eh_.listen(this.iframeEl_, 'load', this.onIframeLoaded_);
 };

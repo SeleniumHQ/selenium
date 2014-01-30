@@ -101,7 +101,7 @@ public class Executable {
 
     // On Snow Leopard, beware of problems the sqlite library
     String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path",
-        binary.getParentFile().getAbsolutePath());
+        binary.getAbsoluteFile().getParentFile().getAbsolutePath());
     if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
       libraryPath.append(libraryPath).append(File.pathSeparator);
     } else {

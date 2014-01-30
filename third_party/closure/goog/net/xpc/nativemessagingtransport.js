@@ -640,7 +640,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.disposeInternal = function() {
  */
 goog.net.xpc.NativeMessagingTransport.parseTransportPayload_ =
     function(payload) {
-  var transportParts = (/** @type {!Array.<?string>} */ payload.split(
+  var transportParts = /** @type {!Array.<?string>} */ (payload.split(
       goog.net.xpc.NativeMessagingTransport.MESSAGE_DELIMITER_));
   transportParts[1] = transportParts[1] || null;
   return transportParts;

@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
@@ -32,11 +31,13 @@ public class SetSessionStorageItem extends WebDriverHandler implements JsonParam
     super(session);
   }
 
+  @Override
   public ResultType call() throws Exception {
-    ((WebStorage) getUnwrappedDriver()).getSessionStorage().setItem(key, value);
+    Utils.getWebStorage(getUnwrappedDriver()).getSessionStorage().setItem(key, value);
     return ResultType.SUCCESS;
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     key = (String) allParameters.get("key");
     value = (String) allParameters.get("value");

@@ -18,25 +18,25 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.testing.InProject.locate;
+
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
-import org.seleniumhq.jetty7.server.Connector;
-import org.seleniumhq.jetty7.server.Handler;
 import org.seleniumhq.jetty7.server.Server;
 import org.seleniumhq.jetty7.server.handler.ContextHandlerCollection;
 import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
 import org.seleniumhq.jetty7.server.ssl.SslSocketConnector;
+import org.seleniumhq.jetty7.servlet.DefaultServlet;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
 import org.seleniumhq.jetty7.servlet.ServletHolder;
 import org.seleniumhq.jetty7.servlets.MultiPartFilter;
-import org.seleniumhq.jetty7.webapp.WebAppContext;
+import org.seleniumhq.jetty7.util.ssl.SslContextFactory;
 
 import java.io.File;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-
-import static org.openqa.selenium.net.PortProber.findFreePort;
-import static org.openqa.selenium.testing.InProject.locate;
 
 public class Jetty7AppServer implements AppServer {
 
@@ -56,11 +56,7 @@ public class Jetty7AppServer implements AppServer {
 
   private int port;
   private int securePort;
-  private File path;
-  private File jsSrcRoot;
   private final Server server;
-  private WebAppContext defaultContext;
-  private WebAppContext jsContext;
 
   private ContextHandlerCollection handlers;
   private final String hostName;
@@ -83,34 +79,32 @@ public class Jetty7AppServer implements AppServer {
 
     server = new Server();
 
-    path = findRootOfWebApp();
-    jsSrcRoot = findJsSrcWebAppRoot();
-
     handlers = new ContextHandlerCollection();
 
-    defaultContext = addWebApplication(DEFAULT_CONTEXT_PATH, path);
-    jsContext = addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
-
-    addWebApplication(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
-    addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
+    ServletContextHandler defaultContext = addResourceHandler(
+        DEFAULT_CONTEXT_PATH, locate("common/src/web"));
+    ServletContextHandler jsContext = addResourceHandler(
+        JS_SRC_CONTEXT_PATH, locate("javascript"));
+    addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
+    addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
     server.setHandler(handlers);
 
-    addServlet("Redirecter", "/redirect", RedirectServlet.class);
-    addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
+    addServlet(defaultContext, "/redirect", RedirectServlet.class);
+    addServlet(defaultContext, "/page/*", PageServlet.class);
 
-    addServlet(defaultContext, "Manifest", "/manifest/*", ManifestServlet.class);
-    addServlet(defaultContext, "Manifest", "*.appcache", ManifestServlet.class);
-    addServlet(jsContext, "Manifest", "*.appcache", ManifestServlet.class);
+    addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
+    addServlet(defaultContext, "*.appcache", ManifestServlet.class);
+    addServlet(jsContext, "*.appcache", ManifestServlet.class);
     // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
-    addServlet(defaultContext, "UTF8", "/utf8/*", Utf8Servlet.class);
+    addServlet(defaultContext, "/utf8/*", Utf8Servlet.class);
 
-    addServlet("Uploader", "/upload", UploadServlet.class);
-    addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
-    addServlet("Sleeper", "/sleep", SleepingServlet.class);
-    addServlet("Kill switch", "/quitquitquit", KillSwitchServlet.class);
-    addServlet("Basic Authentication", "/basicAuth", BasicAuth.class);
-    addFilter(MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
+    addServlet(defaultContext, "/upload", UploadServlet.class);
+    addServlet(defaultContext, "/encoding", EncodingServlet.class);
+    addServlet(defaultContext, "/sleep", SleepingServlet.class);
+    addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
+    addServlet(defaultContext, "/basicAuth", BasicAuth.class);
+    addFilter(defaultContext, MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
 
     listenOn(getHttpPort());
     listenSecurelyOn(getHttpsPort());
@@ -126,39 +120,37 @@ public class Jetty7AppServer implements AppServer {
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
 
-  protected File findRootOfWebApp() {
-    return InProject.locate("common/src/web");
-  }
-
-  private static File findJsSrcWebAppRoot() {
-    return InProject.locate("javascript");
-  }
-
+  @Override
   public String getHostName() {
     return hostName;
   }
 
+  @Override
   public String getAlternateHostName() {
     String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
     return alternativeHostnameFromProperty == null ?
            networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
   }
 
+  @Override
   public String whereIs(String relativeUrl) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + getHostName() + ":" + port + relativeUrl;
   }
 
+  @Override
   public String whereElseIs(String relativeUrl) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + getAlternateHostName() + ":" + port + relativeUrl;
   }
 
+  @Override
   public String whereIsSecure(String relativeUrl) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "https://" + getHostName() + ":" + securePort + relativeUrl;
   }
 
+  @Override
   public String whereIsWithCredentials(String relativeUrl, String user, String pass) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + user + ":" + pass + "@" + getHostName() + ":" + port + relativeUrl;
@@ -171,6 +163,7 @@ public class Jetty7AppServer implements AppServer {
     return relativeUrl;
   }
 
+  @Override
   public void start() {
     SelectChannelConnector connector = new SelectChannelConnector();
     connector.setPort(port);
@@ -182,13 +175,15 @@ public class Jetty7AppServer implements AppServer {
           "Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
     }
 
-    SslSocketConnector secureSocket = new SslSocketConnector();
+    SslContextFactory sslContextFactory = new SslContextFactory();
+    sslContextFactory.setKeyStorePath(keyStore.getAbsolutePath());
+    sslContextFactory.setKeyStorePassword("password");
+    sslContextFactory.setKeyManagerPassword("password");
+    sslContextFactory.setTrustStore(keyStore.getAbsolutePath());
+    sslContextFactory.setTrustStorePassword("password");
+
+    SslSocketConnector secureSocket = new SslSocketConnector(sslContextFactory);
     secureSocket.setPort(securePort);
-    secureSocket.setKeystore(keyStore.getAbsolutePath());
-    secureSocket.setPassword("password");
-    secureSocket.setKeyPassword("password");
-    secureSocket.setTruststore(keyStore.getAbsolutePath());
-    secureSocket.setTrustPassword("password");
     server.addConnector(secureSocket);
 
     try {
@@ -199,21 +194,20 @@ public class Jetty7AppServer implements AppServer {
   }
 
   protected File getKeyStore() {
-    return InProject.locate("java/client/test/keystore");
+    return InProject.locate("java/client/test/org/openqa/selenium/environment/webserver/keystore");
   }
 
+  @Override
   public void listenOn(int port) {
     this.port = port;
   }
 
+  @Override
   public void listenSecurelyOn(int port) {
     this.securePort = port;
   }
 
-  protected void addListener(Connector listener) {
-    server.addConnector(listener);
-  }
-
+  @Override
   public void stop() {
     try {
       server.stop();
@@ -222,12 +216,8 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
-  public void addServlet(String name, String url, Class<? extends Servlet> servletClass) {
-    addServlet(defaultContext, name, url, servletClass);
-  }
-
-  public void addServlet(WebAppContext context, String name, String url,
-                         Class<? extends Servlet> servletClass) {
+  public void addServlet(
+      ServletContextHandler context, String url, Class<? extends Servlet> servletClass) {
     try {
       context.addServlet(new ServletHolder(servletClass), url);
     } catch (Exception e) {
@@ -235,41 +225,32 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
-  public void addServlet(String url, Servlet servlet) {
-    defaultContext.addServlet(new ServletHolder(servlet), url);
+  public void addFilter(
+      ServletContextHandler context, Class<? extends Filter> filter, String path, int dispatches) {
+    context.addFilter(filter, path, dispatches);
   }
 
-  public void addFilter(Class<? extends Filter> filter, String path,
-                        int dispatches) {
-    defaultContext.addFilter(filter, path, dispatches);
+  protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
+    ServletContextHandler context = new ServletContextHandler();
+    context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "true");
+    context.setInitParameter("org.eclipse.jetty.servlet.Default.aliases", "true");
+    context.setInitParameter("org.eclipse.jetty.servlet.Default.pathInfoOnly", "true");
+
+    context.setContextPath(contextPath);
+    context.setResourceBase(resourceBase.getAbsolutePath());
+    context.setAliases(true);
+    context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
+
+    handlers.addHandler(context);
+    return context;
   }
 
-  protected WebAppContext addWebApplication(String contextPath, File rootDir) {
-    return addWebApplication(contextPath, rootDir.getAbsolutePath());
-  }
-
-  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
-    WebAppContext app = new WebAppContext();
-    app.setContextPath(contextPath);
-    app.setWar(absolutePath);
-    handlers.addHandler(app);
-    return app;
-  }
-
-  public void addAdditionalWebApplication(String context, String absolutePath) {
-    addWebApplication(context, absolutePath);
-  }
-
-  public void addHandler(Handler handler) {
-    handlers.addHandler(handler);
-  }
-
-  private static int getHttpPortFromEnv() {
+  protected static int getHttpPortFromEnv() {
     String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
     return port == null ? DEFAULT_HTTP_PORT : Integer.parseInt(port);
   }
 
-  private static int getHttpsPortFromEnv() {
+  protected static int getHttpsPortFromEnv() {
     String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
     return port == null ? DEFAULT_HTTPS_PORT : Integer.parseInt(port);
   }

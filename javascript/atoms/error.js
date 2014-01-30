@@ -95,6 +95,7 @@ bot.Error = function(code, opt_message) {
     // explicitly include it.
     return str.toUpperCase().replace(/^[\s\xa0]+/g, '');
   });
+
   var l = name.length - 'Error'.length;
   if (l < 0 || name.indexOf('Error', l) != l) {
     name += 'Error';

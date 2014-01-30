@@ -87,11 +87,11 @@ bot.storage.database.executeSql = function(databaseName, query, args,
   var queryCallback = function(tx, result) {
     var wrappedResult = new bot.storage.database.ResultSet(result);
     queryResultCallback(tx, wrappedResult);
-  }
+  };
 
   var transactionCallback = function(tx) {
     tx.executeSql(query, args, queryCallback, opt_queryErrorCallback);
-  }
+  };
 
   db.transaction(transactionCallback, txErrorCallback,
       opt_txSuccessCallback);

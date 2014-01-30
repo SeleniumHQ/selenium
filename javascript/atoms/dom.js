@@ -23,12 +23,12 @@ goog.require('bot');
 goog.require('bot.color');
 goog.require('bot.locators.xpath');
 goog.require('bot.userAgent');
-goog.require('bot.window');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.math.Box');
+goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.string');
@@ -43,8 +43,16 @@ goog.require('goog.userAgent');
  * @return {Element} The active element, if any.
  */
 bot.dom.getActiveElement = function(nodeOrWindow) {
-  return goog.dom.getActiveElement(
+  var active = goog.dom.getActiveElement(
       goog.dom.getOwnerDocument(nodeOrWindow));
+  // IE has the habit of returning an empty object from
+  // goog.dom.getActiveElement instead of null.
+  if (goog.userAgent.IE &&
+      active &&
+      typeof active.nodeType === 'undefined') {
+    return null;
+  }
+  return active;
 };
 
 
@@ -140,8 +148,8 @@ bot.dom.isSelected = function(element) {
 /**
  * List of the focusable fields, according to
  * http://www.w3.org/TR/html401/interact/scripts.html#adef-onfocus
- * @const
  * @private {!Array.<!goog.dom.TagName>}
+ * @const
  */
 bot.dom.FOCUSABLE_FORM_FIELDS_ = [
   goog.dom.TagName.A,
@@ -194,8 +202,8 @@ bot.dom.getProperty = function(element, propertyName) {
  * Helper for {@link bot.dom.standardizeStyleAttribute_}.
  * If the style attribute ends with a semicolon this will include an empty
  * string at the end of the array
- * @const
  * @private {!RegExp}
+ * @const
  */
 bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
     new RegExp('[;]+' +
@@ -292,8 +300,8 @@ bot.dom.getAttribute = function(element, attributeName) {
 /**
  * List of elements that support the "disabled" attribute, as defined by the
  * HTML 4.01 specification.
- * @const
  * @private {!Array.<goog.dom.TagName>}
+ * @const
  * @see http://www.w3.org/TR/html401/interact/forms.html#h-17.12.1
  */
 bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = [
@@ -328,14 +336,14 @@ bot.dom.isEnabled = function(el) {
       el.parentNode.nodeType == goog.dom.NodeType.ELEMENT &&
       goog.dom.TagName.OPTGROUP == tagName ||
       goog.dom.TagName.OPTION == tagName) {
-    return bot.dom.isEnabled((/**@type{!Element}*/el.parentNode));
+    return bot.dom.isEnabled(/**@type{!Element}*/ (el.parentNode));
   }
 
   // Is there an ancestor of the current element that is a disabled fieldset
   // and whose child is also an ancestor-or-self of the current element but is
   // not the first legend child of the fieldset. If so then the element is
   // disabled.
-  if (goog.dom.getAncestor(el, function (e) {
+  return !goog.dom.getAncestor(el, function(e) {
     var parent = e.parentNode;
 
     if (parent &&
@@ -355,18 +363,14 @@ bot.dom.isEnabled = function(el) {
       }
     }
     return false;
-  }, true)) {
-    return false;
-  }
-
-  return true;
+  }, true);
 };
 
 
 /**
  * List of input types that create text fields.
+ * @private {!Array.<string>}
  * @const
- * @private {!Array.<String>}
  * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#attr-input-type
  */
 bot.dom.TEXTUAL_INPUT_TYPES_ = [
@@ -381,7 +385,7 @@ bot.dom.TEXTUAL_INPUT_TYPES_ = [
 
 
 /**
- * TODO(gdennis): Add support for designMode elements.
+ * TODO: Add support for designMode elements.
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
@@ -435,7 +439,7 @@ bot.dom.isContentEditable = function(element) {
 
 
 /**
- * TODO(gdennis): Merge isTextual into this function and move to bot.dom.
+ * TODO: Merge isTextual into this function and move to bot.dom.
  * For Puppet, requires adding support to getVisibleText for grabbing
  * text from all textual elements.
  *
@@ -466,7 +470,7 @@ bot.dom.getParentElement = function(node) {
          elem.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
     elem = elem.parentNode;
   }
-  return (/** @type {Element} */ bot.dom.isElement(elem) ? elem : null);
+  return /** @type {Element} */ (bot.dom.isElement(elem) ? elem : null);
 };
 
 
@@ -494,7 +498,7 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  * http://code.google.com/p/doctype/wiki/ArticleComputedStyleVsCascadedStyle
  *
  * @param {!Element} elem Element to get the style value from.
- * @param {string} propertyName Name of the CSS property in selector-case.
+ * @param {string} propertyName Name of the CSS property.
  * @return {?string} The value of the style property, or null.
  */
 bot.dom.getEffectiveStyle = function(elem, propertyName) {
@@ -509,7 +513,7 @@ bot.dom.getEffectiveStyle = function(elem, propertyName) {
   if (style === null) {
     return null;
   }
-  return bot.color.standardizeColor(propertyName, style);
+  return bot.color.standardizeColor(styleName, style);
 };
 
 
@@ -534,70 +538,6 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
   }
   var parent = bot.dom.getParentElement(elem);
   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;
-};
-
-
-/**
- * Would a user see scroll bars on the BODY element? In the case where the BODY
- * has "overflow: hidden", and HTML has "overflow: auto" or "overflow: scroll"
- * set, there's a scroll bar, so it's as if the BODY has "overflow: auto" set.
- * In all other cases where BODY has "overflow: hidden", there are no
- * scrollbars. http://www.w3.org/TR/CSS21/visufx.html#overflow
- *
- * @param {!Element} bodyElement The element, which must be a BODY element.
- * @return {boolean} Whether scrollbars would be visible to a user.
- * @private
- */
-bot.dom.isBodyScrollBarShown_ = function(bodyElement) {
-  if (!bot.dom.isElement(bodyElement, goog.dom.TagName.BODY)) {
-    // bail
-    }
-
-  var bodyOverflow = bot.dom.getEffectiveStyle(bodyElement, 'overflow');
-  if (bodyOverflow != 'hidden') {
-    return true;
-  }
-
-  var html = bot.dom.getParentElement(bodyElement);
-  if (!html || !bot.dom.isElement(html, goog.dom.TagName.HTML)) {
-    return true; // Seems like a reasonable default.
-  }
-
-  var viewportOverflow = bot.dom.getEffectiveStyle(html, 'overflow');
-  return viewportOverflow == 'auto' || viewportOverflow == 'scroll';
-};
-
-
-/**
- * @param {!Element} element The element to use.
- * @return {!goog.math.Size} The dimensions of the element.
- */
-bot.dom.getElementSize = function(element) {
-  if (goog.isFunction(element['getBBox']) && !bot.dom.isElement(element, goog.dom.TagName.SVG)) {
-    try {
-      var bb = element['getBBox']();
-      if (bb) {
-        // Opera will return an undefined bounding box for SVG elements.
-        // Which makes sense, but isn't useful.
-        return bb;
-      }
-    } catch (e) {
-      // Firefox will always throw for certain SVG elements,
-      // even if the function exists.
-    }
-  }
-
-  // If the element is the BODY, then get the visible size.
-  if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
-    var doc = goog.dom.getOwnerDocument(element);
-    var win = goog.dom.getWindow(doc) || undefined;
-    if (!bot.dom.isBodyScrollBarShown_(element)) {
-      return goog.dom.getViewportSize(win);
-    }
-    return bot.window.getInteractableSize(win);
-  }
-
-  return goog.style.getSize(element);
 };
 
 
@@ -629,42 +569,13 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return !!select && bot.dom.isShown(select, /*ignoreOpacity=*/true);
   }
 
-  // Map is shown iff image that uses it is shown.
-  if (bot.dom.isElement(elem, goog.dom.TagName.MAP)) {
-    if (!elem.name) {
-      return false;
-    }
-    var mapDoc = goog.dom.getOwnerDocument(elem);
-    var mapImage;
-    // TODO(gdennis): Avoid brute-force search once a cross-browser xpath
-    // locator is available.
-    if (mapDoc['evaluate']) {
-      // The "//*" XPath syntax can confuse the closure compiler, so we use
-      // the "/descendant::*" syntax instead.
-      // TODO(jleyba): Try to find a reproducible case for the compiler bug.
-      // TODO(jleyba): Restrict to applet, img, input:image, and object nodes.
-      var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
-
-      // TODO(gdennis): Break dependency of bot.locators on bot.dom,
-      // so bot.locators.findElement can be called here instead.
-      mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
-    } else {
-      mapImage = goog.dom.findNode(mapDoc, function(n) {
-        return bot.dom.isElement(n) &&
-               bot.dom.getAttribute(
-                   /** @type {!Element} */ (n), 'usemap') == '#' + elem.name;
-      });
-    }
-    return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage),
-        opt_ignoreOpacity);
-  }
-
-  // Area is shown iff enclosing map is shown.
-  if (bot.dom.isElement(elem, goog.dom.TagName.AREA)) {
-    var map = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
-      return bot.dom.isElement(e, goog.dom.TagName.MAP);
-    }));
-    return !!map && bot.dom.isShown(map, opt_ignoreOpacity);
+  // Image map elements are shown if image that uses it is shown, and
+  // the area of the element is positive.
+  var imageMap = bot.dom.maybeFindImageMap_(elem);
+  if (imageMap) {
+    return !!imageMap.image &&
+           imageMap.rect.width > 0 && imageMap.rect.height > 0 &&
+           bot.dom.isShown(imageMap.image, opt_ignoreOpacity);
   }
 
   // Any hidden input is not shown.
@@ -703,147 +614,443 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
 
   // Any element without positive size dimensions is not shown.
   function positiveSize(e) {
-    var size = bot.dom.getElementSize(e);
-    if (size.height > 0 && size.width > 0) {
+    var rect = bot.dom.getClientRect(e);
+    if (rect.height > 0 && rect.width > 0) {
       return true;
     }
     // A vertical or horizontal SVG Path element will report zero width or
     // height but is "shown" if it has a positive stroke-width.
-    if (bot.dom.isElement(e, 'PATH') && (size.height > 0 || size.width > 0)) {
+    if (bot.dom.isElement(e, 'PATH') && (rect.height > 0 || rect.width > 0)) {
       var strokeWidth = bot.dom.getEffectiveStyle(e, 'stroke-width');
       return !!strokeWidth && (parseInt(strokeWidth, 10) > 0);
     }
     // Zero-sized elements should still be considered to have positive size
-    // if they have a child element or text node with positive size.
-    return goog.array.some(e.childNodes, function(n) {
-      return (n.nodeType == goog.dom.NodeType.TEXT &&
-              bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden') ||
-              (bot.dom.isElement(n) && positiveSize(n));
-    });
+    // if they have a child element or text node with positive size, unless
+    // the element has an 'overflow' style of 'hidden'.
+    return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
+        goog.array.some(e.childNodes, function(n) {
+          return n.nodeType == goog.dom.NodeType.TEXT ||
+                 (bot.dom.isElement(n) && positiveSize(n));
+        });
   }
   if (!positiveSize(elem)) {
     return false;
   }
 
-  // Elements should be hidden if their parent has a fixed size AND has the
-  // style overflow:hidden AND the element's location is not within the fixed
-  // size of the parent
-  function isOverflowHiding(e, block) {
-    var parent;
-    if (block == null) {
-      parent = goog.dom.getParentElement(e);
-    } else {
-      parent = goog.dom.getParentElement(block);
-    }
-
-    if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden' ||
-        bot.dom.getEffectiveStyle(parent, 'overflow-y') == 'hidden')) {
-      var sizeOfParent = bot.dom.getElementSize(parent);
-      var locOfParent = goog.style.getClientPosition(parent);
-      var locOfElement = goog.style.getClientPosition(e);
-      if (locOfParent.x + sizeOfParent.width <= locOfElement.x &&
-          bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden') {
-        return false;
-      }
-      if (locOfParent.y + sizeOfParent.height <= locOfElement.y &&
-          bot.dom.getEffectiveStyle(parent, 'overflow-y') == 'hidden') {
-        return false;
-      }
-      return true;
-    }
-    return !parent || isOverflowHiding(e, parent);
+  // Elements that are hidden by overflow are not shown.
+  function hiddenByOverflow(e) {
+    return bot.dom.getOverflowState(e) == bot.dom.OverflowState.HIDDEN &&
+        goog.array.every(e.childNodes, function(n) {
+          return !bot.dom.isElement(n) || hiddenByOverflow(n);
+        });
   }
-
-  if (!isOverflowHiding(elem, null)) {
-    return false;
-  }
-
-  function isTransformHiding(e) {
-    var transform = bot.dom.getEffectiveStyle(e, '-o-transform') ||
-                    bot.dom.getEffectiveStyle(e, '-webkit-transform') ||
-                    bot.dom.getEffectiveStyle(e, '-ms-transform') ||
-                    bot.dom.getEffectiveStyle(e, '-moz-transform') ||
-                    bot.dom.getEffectiveStyle(e, 'transform');
-
-    // Not all browsers know what a transform is so if we have a returned value
-    // lets carry on checking up the tree just in case. If we ask for the 
-    // transform matrix and look at the details there it will return the centre
-    // of the element
-    if (transform && transform !== "none") {
-      var locOfElement = goog.style.getClientPosition(e);
-      var sizeOfElement = bot.dom.getElementSize(e);
-      if ((locOfElement.x + (sizeOfElement.width)) >= 0 && 
-          (locOfElement.y + (sizeOfElement.height)) >= 0){
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      var parent = bot.dom.getParentElement(e);
-      return !parent || isTransformHiding(parent);
-    }
-  }
-  return isTransformHiding(elem);
+  return !hiddenByOverflow(elem);
 };
+
 
 /**
-* Checks whether the element is currently scrolled into the parent's overflow
-* region, such that the offset given, relative to the top-left corner of the
-* element, is currently in the overflow region.
-*
-* @param {!Element} element The element to check.
-* @param {!goog.math.Coordinate=} opt_coords Coordinate in the element,
-*     relative to the top-left corner of the element, to check. If none are
-*     specified, checks that the center of the element is in in the overflow.
-* @return {boolean} Whether the coordinates specified, relative to the element,
-*     are scrolled in the parent overflow.
-*/
-bot.dom.isInParentOverflow = function (element, opt_coords) {
-  var parent = goog.style.getOffsetParent(element);
-  var parentNode = goog.userAgent.GECKO || goog.userAgent.IE ||
-      goog.userAgent.OPERA ? bot.dom.getParentElement(element) : parent;
-
-  // Gecko will skip the BODY tag when calling getOffsetParent. However, the
-  // combination of the overflow values on the BODY _and_ HTML tags determine
-  // whether scroll bars are shown, so we need to guarantee that both values
-  // are checked.
-  if ((goog.userAgent.GECKO || goog.userAgent.IE || goog.userAgent.OPERA) &&
-      bot.dom.isElement(parentNode, goog.dom.TagName.BODY)) {
-    parent = parentNode;
-  }
-
-  if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow') == 'scroll' ||
-                 bot.dom.getEffectiveStyle(parent, 'overflow') == 'auto')) {
-    var sizeOfParent = bot.dom.getElementSize(parent);
-    var locOfParent = goog.style.getClientPosition(parent);
-    var locOfElement = goog.style.getClientPosition(element);
-    var offsetX, offsetY;
-    if (opt_coords) {
-      offsetX = opt_coords.x;
-      offsetY = opt_coords.y;
-    } else {
-      var sizeOfElement = bot.dom.getElementSize(element);
-      offsetX = sizeOfElement.width / 2;
-      offsetY = sizeOfElement.height / 2;
-    }
-    var elementPointX = locOfElement.x + offsetX;
-    var elementPointY = locOfElement.y + offsetY;
-    if (elementPointX >= locOfParent.x + sizeOfParent.width) {
-      return true;
-    }
-    if (elementPointX <= locOfParent.x) {
-      return true;
-    }
-    if (elementPointY >= locOfParent.y + sizeOfParent.height) {
-      return true;
-    }
-    if (elementPointY <= locOfParent.y) {
-      return true;
-    }
-    return bot.dom.isInParentOverflow(parent);
-  }
-  return false;
+ * The kind of overflow area in which an element may be located. NONE if it does
+ * not overflow any ancestor element; HIDDEN if it overflows and cannot be
+ * scrolled into view; SCROLL if it overflows but can be scrolled into view.
+ *
+ * @enum {string}
+ */
+bot.dom.OverflowState = {
+  NONE: 'none',
+  HIDDEN: 'hidden',
+  SCROLL: 'scroll'
 };
+
+
+/**
+ * Returns the overflow state of the given element.
+ *
+ * If an optional coordinate or rectangle region is provided, returns the
+ * overflow state of that region relative to the element. A coordinate is
+ * treated as a 1x1 rectangle whose top-left corner is the coordinate.
+ *
+ * @param {!Element} elem Element.
+ * @param {!(goog.math.Coordinate|goog.math.Rect)=} opt_region
+ *     Coordinate or rectangle relative to the top-left corner of the element.
+ * @return {bot.dom.OverflowState} Overflow state of the element.
+ */
+bot.dom.getOverflowState = function(elem, opt_region) {
+  var region = bot.dom.getClientRegion(elem, opt_region);
+  var ownerDoc = goog.dom.getOwnerDocument(elem);
+  var htmlElem = ownerDoc.documentElement;
+  var bodyElem = ownerDoc.body;
+  var htmlOverflowStyle = bot.dom.getEffectiveStyle(htmlElem, 'overflow');
+  var treatAsFixedPosition;
+
+  // Return the closest ancestor that the given element may overflow.
+  function getOverflowParent(e) {
+    var position = bot.dom.getEffectiveStyle(e, 'position');
+    if (position == 'fixed') {
+      treatAsFixedPosition = true;
+      // Fixed-position element may only overflow the viewport.
+      return e == htmlElem ? null : htmlElem;
+    } else {
+      var parent = bot.dom.getParentElement(e);
+      while (parent && !canBeOverflowed(parent)) {
+        parent = bot.dom.getParentElement(parent);
+      }
+      return parent;
+    }
+
+    function canBeOverflowed(container) {
+      // The HTML element can always be overflowed.
+      if (container == htmlElem) {
+        return true;
+      }
+      // An element cannot overflow an element with an inline display style.
+      var containerDisplay = /** @type {string} */ (
+          bot.dom.getEffectiveStyle(container, 'display'));
+      if (goog.string.startsWith(containerDisplay, 'inline')) {
+        return false;
+      }
+      // An absolute-positioned element cannot overflow a static-positioned one.
+      if (position == 'absolute' &&
+          bot.dom.getEffectiveStyle(container, 'position') == 'static') {
+        return false;
+      }
+      return true;
+    }
+  }
+
+  // Return the x and y overflow styles for the given element.
+  function getOverflowStyles(e) {
+    // When the <html> element has an overflow style of 'visible', it assumes
+    // the overflow style of the body, and the body is really overflow:visible.
+    var overflowElem = e;
+    if (htmlOverflowStyle == 'visible') {
+      // Note: bodyElem will be null/undefined in SVG documents.
+      if (e == htmlElem && bodyElem) {
+        overflowElem = bodyElem;
+      } else if (e == bodyElem) {
+        return {x: 'visible', y: 'visible'};
+      }
+    }
+    var overflow = {
+      x: bot.dom.getEffectiveStyle(overflowElem, 'overflow-x'),
+      y: bot.dom.getEffectiveStyle(overflowElem, 'overflow-y')
+    };
+    // The <html> element cannot have a genuine 'visible' overflow style,
+    // because the viewport can't expand; 'visible' is really 'auto'.
+    if (e == htmlElem) {
+      overflow.x = overflow.x == 'visible' ? 'auto' : overflow.x;
+      overflow.y = overflow.y == 'visible' ? 'auto' : overflow.y;
+    }
+    return overflow;
+  }
+
+  // Returns the scroll offset of the given element.
+  function getScroll(e) {
+    if (e == htmlElem) {
+      return new goog.dom.DomHelper(ownerDoc).getDocumentScroll();
+    } else {
+      return new goog.math.Coordinate(e.scrollLeft, e.scrollTop);
+    }
+  }
+
+  // Check if the element overflows any ancestor element.
+  for (var container = getOverflowParent(elem);
+       !!container;
+       container = getOverflowParent(container)) {
+    var containerOverflow = getOverflowStyles(container);
+
+    // If the container has overflow:visible, the element cannot overflow it.
+    if (containerOverflow.x == 'visible' && containerOverflow.y == 'visible') {
+      continue;
+    }
+
+    var containerRect = bot.dom.getClientRect(container);
+
+    // Zero-sized containers without overflow:visible hide all descendants.
+    if (containerRect.width == 0 || containerRect.height == 0) {
+      return bot.dom.OverflowState.HIDDEN;
+    }
+
+    // Check "underflow": if an element is to the left or above the container
+    var underflowsX = region.right < containerRect.left;
+    var underflowsY = region.bottom < containerRect.top;
+    if ((underflowsX && containerOverflow.x == 'hidden') ||
+        (underflowsY && containerOverflow.y == 'hidden')) {
+      return bot.dom.OverflowState.HIDDEN;
+    } else if ((underflowsX && containerOverflow.x != 'visible') ||
+               (underflowsY && containerOverflow.y != 'visible')) {
+      // When the element is positioned to the left or above a container, we
+      // have to distinguish between the element being completely outside the
+      // container and merely scrolled out of view within the container.
+      var containerScroll = getScroll(container);
+      var unscrollableX = region.right < containerRect.left - containerScroll.x;
+      var unscrollableY = region.bottom < containerRect.top - containerScroll.y;
+      if ((unscrollableX && containerOverflow.x != 'visible') ||
+          (unscrollableY && containerOverflow.x != 'visible')) {
+        return bot.dom.OverflowState.HIDDEN;
+      }
+      var containerState = bot.dom.getOverflowState(container);
+      return containerState == bot.dom.OverflowState.HIDDEN ?
+          bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
+    }
+
+    // Check "overflow": if an element is to the right or below a container
+    var overflowsX = region.left >= containerRect.left + containerRect.width;
+    var overflowsY = region.top >= containerRect.top + containerRect.height;
+    if ((overflowsX && containerOverflow.x == 'hidden') ||
+        (overflowsY && containerOverflow.y == 'hidden')) {
+      return bot.dom.OverflowState.HIDDEN;
+    } else if ((overflowsX && containerOverflow.x != 'visible') ||
+               (overflowsY && containerOverflow.y != 'visible')) {
+      // If the element has fixed position and falls outside the scrollable area
+      // of the document, then it is hidden.
+      if (treatAsFixedPosition) {
+        var docScroll = getScroll(container);
+        if ((region.left >= htmlElem.scrollWidth - docScroll.x) ||
+            (region.right >= htmlElem.scrollHeight - docScroll.y)) {
+          return bot.dom.OverflowState.HIDDEN;
+        }
+      }
+      // If the element can be scrolled into view of the parent, it has a scroll
+      // state; unless the parent itself is entirely hidden by overflow, in
+      // which it is also hidden by overflow.
+      var containerState = bot.dom.getOverflowState(container);
+      return containerState == bot.dom.OverflowState.HIDDEN ?
+          bot.dom.OverflowState.HIDDEN : bot.dom.OverflowState.SCROLL;
+    }
+  }
+
+  // Does not overflow any ancestor.
+  return bot.dom.OverflowState.NONE;
+};
+
+
+/**
+ * A regular expression to match the CSS transform matrix syntax.
+ * @private {!RegExp}
+ * @const
+ */
+bot.dom.CSS_TRANSFORM_MATRIX_REGEX_ =
+    new RegExp('matrix\\(([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
+               '([\\d\\.\\-]+), ([\\d\\.\\-]+), ' +
+               '([\\d\\.\\-]+)(?:px)?, ([\\d\\.\\-]+)(?:px)?\\)');
+
+
+/**
+ * Gets the client rectangle of the DOM element. It often returns the same value
+ * as Element.getBoundingClientRect, but is "fixed" for various scenarios:
+ * 1. Like goog.style.getClientPosition, it adjusts for the inset border in IE.
+ * 2. Gets a rect for <map>'s and <area>'s relative to the image using them.
+ * 3. Gets a rect for SVG elements representing their true bounding box.
+ * 4. Defines the client rect of the <html> element to be the window viewport.
+ *
+ * @param {!Element} elem The element to use.
+ * @return {!goog.math.Rect} The interaction box of the element.
+ */
+bot.dom.getClientRect = function(elem) {
+  var imageMap = bot.dom.maybeFindImageMap_(elem);
+  if (imageMap) {
+    return imageMap.rect;
+  } else if (bot.dom.isElement(elem, goog.dom.TagName.HTML)) {
+    // Define the client rect of the <html> element to be the viewport.
+    var doc = goog.dom.getOwnerDocument(elem);
+    var viewportSize = goog.dom.getViewportSize(goog.dom.getWindow(doc));
+    return new goog.math.Rect(0, 0, viewportSize.width, viewportSize.height);
+  } else {
+    var nativeRect;
+    try {
+      // TODO: in IE and Firefox, getBoundingClientRect includes stroke width,
+      // but getBBox does not.
+      nativeRect = elem.getBoundingClientRect();
+    } catch (e) {
+      // On IE < 9, calling getBoundingClientRect on an orphan element raises
+      // an "Unspecified Error". All other browsers return zeros.
+      return new goog.math.Rect(0, 0, 0, 0);
+    }
+
+    var rect = new goog.math.Rect(nativeRect.left, nativeRect.top,
+        nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);
+
+    // In IE, the element can additionally be offset by a border around the
+    // documentElement or body element that we have to subtract.
+    if (goog.userAgent.IE && elem.ownerDocument.body) {
+      var doc = goog.dom.getOwnerDocument(elem);
+      rect.left -= doc.documentElement.clientLeft + doc.body.clientLeft;
+      rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
+    }
+
+    // Opera sometimes falsely report zero size bounding rects.
+    if (goog.userAgent.OPERA) {
+      if (rect.width == 0 && elem.offsetWidth > 0) {
+        rect.width = elem.offsetWidth;
+      }
+      if (rect.height == 0 && elem.offsetHeight > 0) {
+        rect.height = elem.offsetHeight;
+      }
+    }
+
+    // On Gecko < 12, getBoundingClientRect does not account for CSS transforms.
+    // TODO: Remove this when we drop support for FF3.6 and FF10.
+    if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(12)) {
+      transformLegacyFirefoxClientRect(elem);
+    }
+
+    return rect;
+  }
+
+  function transformLegacyFirefoxClientRect(container) {
+    var win = goog.dom.getWindow(goog.dom.getOwnerDocument(container));
+    var transform = win.getComputedStyle(container, null)['MozTransform'];
+    var matches = transform.match(bot.dom.CSS_TRANSFORM_MATRIX_REGEX_);
+
+    if (matches) {
+      var a = parseFloat(matches[1]), b = parseFloat(matches[2]),
+          c = parseFloat(matches[3]), d = parseFloat(matches[4]),
+          x = parseFloat(matches[5]), y = parseFloat(matches[6]);
+      var right = rect.left + rect.width, bottom = rect.top + rect.height;
+      var leftXa = rect.left * a, rightXa = right * a,
+          leftXb = rect.left * b, rightXb = right * b,
+          topXc = rect.top * c, bottomXc = bottom * c,
+          topXd = rect.top * d, bottomXd = bottom * d;
+      var topLeftX = leftXa + topXc + x,
+          topLeftY = leftXb + topXd + y,
+          topRightX = rightXa + topXc + x,
+          topRightY = rightXb + topXd + y,
+          bottomLeftX = leftXa + bottomXc + x,
+          bottomLeftY = leftXb + bottomXd + y,
+          bottomRightX = rightXa + bottomXc + x,
+          bottomRightY = rightXb + bottomXd + y;
+      rect.left = Math.min(topLeftX, topRightX, bottomLeftX, bottomRightX);
+      rect.top = Math.min(topLeftY, topRightY, bottomLeftY, bottomRightY);
+      var newRight = Math.max(topLeftX, topRightX, bottomLeftX, bottomRightX);
+      var newBottom = Math.max(topLeftY, topRightY, bottomLeftY, bottomRightY);
+      rect.width = newRight - rect.left;
+      rect.height = newBottom - rect.top;
+    }
+
+    // The computed transform style not not take into account parent transforms.
+    var parentContainer = bot.dom.getParentElement(container);
+    if (parentContainer) {
+      transformLegacyFirefoxClientRect(parentContainer);
+    }
+  }
+};
+
+
+/**
+ * If given a <map> or <area> element, finds the corresponding image and client
+ * rectangle of the element; otherwise returns null. The return value is an
+ * object with 'image' and 'rect' properties. When no image uses the given
+ * element, the returned rectangle is present but has zero size.
+ *
+ * @param {!Element} elem Element to test.
+ * @return {?{image: Element, rect: !goog.math.Rect}} Image and rectangle.
+ * @private
+ */
+bot.dom.maybeFindImageMap_ = function(elem) {
+  // If not a <map> or <area>, return null indicating so.
+  var isMap = bot.dom.isElement(elem, goog.dom.TagName.MAP);
+  if (!isMap && !bot.dom.isElement(elem, goog.dom.TagName.AREA)) {
+    return null;
+  }
+
+  // Get the <map> associated with this element, or null if none.
+  var map = isMap ? elem :
+      (bot.dom.isElement(elem.parentNode, goog.dom.TagName.MAP) ?
+          elem.parentNode : null);
+
+  var image = null, rect = null;
+  if (map && map.name) {
+    var mapDoc = goog.dom.getOwnerDocument(map);
+
+    // The "//*" XPath syntax can confuse the closure compiler, so we use
+    // the "/descendant::*" syntax instead.
+    // TODO: Try to find a reproducible case for the compiler bug.
+    // TODO: Restrict to applet, img, input:image, and object nodes.
+    var imageXpath = '/descendant::*[@usemap = "#' + map.name + '"]';
+
+    // TODO: Break dependency of bot.locators on bot.dom,
+    // so bot.locators.findElement can be called here instead.
+    image = bot.locators.xpath.single(imageXpath, mapDoc);
+
+    if (image) {
+      rect = bot.dom.getClientRect(image);
+      if (!isMap && elem.shape.toLowerCase() != 'default') {
+        // Shift and crop the relative area rectangle to the map.
+        var relRect = bot.dom.getAreaRelativeRect_(elem);
+        var relX = Math.min(Math.max(relRect.left, 0), rect.width);
+        var relY = Math.min(Math.max(relRect.top, 0), rect.height);
+        var w = Math.min(relRect.width, rect.width - relX);
+        var h = Math.min(relRect.height, rect.height - relY);
+        rect = new goog.math.Rect(relX + rect.left, relY + rect.top, w, h);
+      }
+    }
+  }
+
+  return {image: image, rect: rect || new goog.math.Rect(0, 0, 0, 0)};
+};
+
+
+/**
+ * Returns the bounding box around an <area> element relative to its enclosing
+ * <map>. Does not apply to <area> elements with shape=='default'.
+ *
+ * @param {!Element} area Area element.
+ * @return {!goog.math.Rect} Bounding box of the area element.
+ * @private
+ */
+bot.dom.getAreaRelativeRect_ = function(area) {
+  var shape = area.shape.toLowerCase();
+  var coords = area.coords.split(',');
+  if (shape == 'rect' && coords.length == 4) {
+    var x = coords[0], y = coords[1];
+    return new goog.math.Rect(x, y, coords[2] - x, coords[3] - y);
+  } else if (shape == 'circle' && coords.length == 3) {
+    var centerX = coords[0], centerY = coords[1], radius = coords[2];
+    return new goog.math.Rect(centerX - radius, centerY - radius,
+                              2 * radius, 2 * radius);
+  } else if (shape == 'poly' && coords.length > 2) {
+    var minX = coords[0], minY = coords[1], maxX = minX, maxY = minY;
+    for (var i = 2; i + 1 < coords.length; i += 2) {
+      minX = Math.min(minX, coords[i]);
+      maxX = Math.max(maxX, coords[i]);
+      minY = Math.min(minY, coords[i + 1]);
+      maxY = Math.max(maxY, coords[i + 1]);
+    }
+    return new goog.math.Rect(minX, minY, maxX - minX, maxY - minY);
+  }
+  return new goog.math.Rect(0, 0, 0, 0);
+};
+
+
+/**
+ * Gets the element's client rectangle as a box, optionally clipped to the
+ * given coordinate or rectangle relative to the client's position. A coordinate
+ * is treated as a 1x1 rectangle whose top-left corner is the coordinate.
+ *
+ * @param {!Element} elem The element.
+ * @param {!(goog.math.Coordinate|goog.math.Rect)=} opt_region
+ *     Coordinate or rectangle relative to the top-left corner of the element.
+ * @return {!goog.math.Box} The client region box.
+ */
+bot.dom.getClientRegion = function(elem, opt_region) {
+  var region = bot.dom.getClientRect(elem).toBox();
+
+  if (opt_region) {
+    var rect = opt_region instanceof goog.math.Rect ? opt_region :
+        new goog.math.Rect(opt_region.x, opt_region.y, 1, 1);
+    region.left = goog.math.clamp(
+        region.left + rect.left, region.left, region.right);
+    region.top = goog.math.clamp(
+        region.top + rect.top, region.top, region.bottom);
+    region.right = goog.math.clamp(
+        region.left + rect.width, region.left, region.right);
+    region.bottom = goog.math.clamp(
+        region.top + rect.height, region.top, region.bottom);
+  }
+
+  return region;
+};
+
 
 /**
  * Trims leading and trailing whitespace from strings, leaving non-breaking
@@ -884,10 +1091,10 @@ bot.dom.getVisibleText = function(elem) {
  */
 bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   function currLine() {
-    return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
+    return /** @type {string|undefined} */ (goog.array.peek(lines)) || '';
   }
 
-  // TODO(gdennis): Add case here for textual form elements.
+  // TODO: Add case here for textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
@@ -905,7 +1112,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     var previousElementSibling = goog.dom.getPreviousElementSibling(elem);
     var prevDisplay = (previousElementSibling) ?
         bot.dom.getEffectiveStyle(previousElementSibling, 'display') : '';
-    // TODO(dawagner): getEffectiveStyle should mask this for us
+    // TODO: getEffectiveStyle should mask this for us
     var thisFloat = bot.dom.getEffectiveStyle(elem, 'float') ||
         bot.dom.getEffectiveStyle(elem, 'cssFloat') ||
         bot.dom.getEffectiveStyle(elem, 'styleFloat');
@@ -931,11 +1138,11 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 
     goog.array.forEach(elem.childNodes, function(node) {
       if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
-        var textNode = (/** @type {!Text} */ node);
+        var textNode = /** @type {!Text} */ (node);
         bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
             whitespace, textTransform);
       } else if (bot.dom.isElement(node)) {
-        var castElem = (/** @type {!Element} */ node);
+        var castElem = /** @type {!Element} */ (node);
         bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
       }
     });
@@ -985,9 +1192,14 @@ bot.dom.INLINE_DISPLAY_BOXES_ = [
  */
 bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
     whitespace, textTransform) {
-  // First, replace all zero-width spaces. Do this before regularizing spaces
-  // as the zero-width space is, by definition, a space.
-  var text = textNode.nodeValue.replace(/\u200b/g, '');
+  // First, remove zero-width characters. Do this before regularizing spaces as
+  // the zero-width space is both zero-width and a space, but we do not want to
+  // make it visible by converting it to a regular space.
+  // The replaced characters are:
+  //   U+200B: Zero-width space
+  //   U+200E: Left-to-right mark
+  //   U+200F: Right-to-left mark
+  var text = textNode.nodeValue.replace(/[\u200b\u200e\u200f]/g, '');
 
   // Canonicalize the new lines, and then collapse new lines
   // for the whitespace styles that collapse. See:
@@ -1034,8 +1246,8 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  * @return {number} Opacity between 0 and 1.
  */
 bot.dom.getOpacity = function(elem) {
-  // TODO(bsilverberg): Does this need to deal with rgba colors?
-  if (!bot.userAgent.IE_DOC_PRE10) {
+  // TODO: Does this need to deal with rgba colors?
+  if (!bot.userAgent.IE_DOC_PRE9) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {
     if (bot.dom.getEffectiveStyle(elem, 'position') == 'relative') {
@@ -1080,284 +1292,4 @@ bot.dom.getOpacityNonIE_ = function(elem) {
     elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
   }
   return elemOpacity;
-};
-
-
-/**
- * This function calculates the amount of scrolling necessary to bring the
- * target location into view.
- *
- * @param {number} targetLocation The target location relative to the current
- *     viewport.
- * @param {number} viewportDimension The size of the current viewport.
- * @return {number} Returns the scroll offset necessary to bring the given
- *     target location into view.
- * @private
- */
-bot.dom.calculateViewportScrolling_ =
-    function(targetLocation, viewportDimension) {
-
-  if (targetLocation >= viewportDimension) {
-    // Scroll until the target location appears on the right/bottom side of
-    // the viewport.
-    return targetLocation - (viewportDimension - 1);
-  }
-
-  if (targetLocation < 0) {
-    // Scroll until the target location appears on the left/top side of the
-    // viewport.
-    return targetLocation;
-  }
-
-  // The location is already within the viewport. No scrolling necessary.
-  return 0;
-};
-
-
-/**
- * This function takes a relative location according to the current viewport. If
- * this location is not visible in the viewport, it scrolls the location into
- * view. The function returns the new relative location after scrolling.
- *
- * @param {!goog.math.Coordinate} targetLocation The target location relative
- *     to (0, 0) coordinate of the viewport.
- * @param {Window=} opt_currentWindow The current browser window.
- * @return {!goog.math.Coordinate} The target location within the viewport
- *     after scrolling.
- */
-bot.dom.getInViewLocation =
-    function(targetLocation, opt_currentWindow) {
-  var currentWindow = opt_currentWindow || bot.getWindow();
-  var viewportSize = goog.dom.getViewportSize(currentWindow);
-
-  var xScrolling = bot.dom.calculateViewportScrolling_(
-      targetLocation.x,
-      viewportSize.width);
-
-  var yScrolling = bot.dom.calculateViewportScrolling_(
-      targetLocation.y,
-      viewportSize.height);
-
-  var scrollOffset =
-      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
-
-  if (xScrolling != 0 || yScrolling != 0) {
-    currentWindow.scrollBy(xScrolling, yScrolling);
-  }
-
-  // It is difficult to determine the size of the web page in some browsers.
-  // We check if the scrolling we intended to do really happened. If not we
-  // assume that the target location is not on the web page.
-  var newScrollOffset =
-      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
-
-  if ((scrollOffset.x + xScrolling != newScrollOffset.x) ||
-      (scrollOffset.y + yScrolling != newScrollOffset.y)) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' + (targetLocation.x + scrollOffset.x) +
-        ', ' + (targetLocation.y + scrollOffset.y) + ') is not on the ' +
-        'webpage.');
-  }
-
-  var inViewLocation = new goog.math.Coordinate(
-      targetLocation.x - xScrolling,
-      targetLocation.y - yScrolling);
-
-  // The target location should be within the viewport after scrolling.
-  // This is assertion code. We do not expect them ever to become true.
-  if (0 > inViewLocation.x || inViewLocation.x >= viewportSize.width) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' +
-        inViewLocation.x + ', ' + inViewLocation.y +
-        ') should be within the viewport (' +
-        viewportSize.width + ':' + viewportSize.height +
-        ') after scrolling.');
-  }
-
-  if (0 > inViewLocation.y || inViewLocation.y >= viewportSize.height) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' +
-        inViewLocation.x + ', ' + inViewLocation.y +
-        ') should be within the viewport (' +
-        viewportSize.width + ':' + viewportSize.height +
-        ') after scrolling.');
-  }
-
-  return inViewLocation;
-};
-
-
-/**
- * Scrolls the scrollable element so that the region is fully visible.
- * If the region is too large, it will be aligned to the top-left of the
- * scrollable element. The region should be relative to the scrollable
- * element's current scroll position.
- *
- * @param {!goog.math.Rect} region The region to use.
- * @param {!Element} scrollable The scrollable element to scroll.
- * @private
- */
-bot.dom.scrollRegionIntoView_ = function(region, scrollable) {
-  scrollable.scrollLeft += Math.min(
-      region.left, Math.max(region.left - region.width, 0));
-  scrollable.scrollTop += Math.min(
-      region.top, Math.max(region.top - region.height, 0));
-};
-
-
-/**
- * Scrolls the region of an element into the container's view. If the
- * region is too large to fit in the view, it will be aligned to the
- * top-left of the container.
- *
- * The element and container should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect} elemRegion The region relative to the element to be
- *     scrolled into view.
- * @param {!Element} container A container of the given element.
- * @private
- */
-bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
-                                                         container) {
-  // Based largely from goog.style.scrollIntoContainerView.
-  var elemPos = goog.style.getPageOffset(elem);
-  var containerPos = goog.style.getPageOffset(container);
-  var containerBorder = goog.style.getBorderBox(container);
-
-  // Relative pos. of the element's border box to the container's content box.
-  var relX = elemPos.x + elemRegion.left - containerPos.x -
-             containerBorder.left;
-  var relY = elemPos.y + elemRegion.top - containerPos.y - containerBorder.top;
-
-  // How much the element can move in the container.
-  var spaceX = container.clientWidth - elemRegion.width;
-  var spaceY = container.clientHeight - elemRegion.height;
-
-  bot.dom.scrollRegionIntoView_(new goog.math.Rect(relX, relY, spaceX, spaceY),
-                                container);
-};
-
-
-/**
- * Scrolls the element into the client's view. If the element or region is
- * too large to fit in the view, it will be aligned to the top-left of the
- * container.
- *
- * The element should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect} elemRegion The region relative to the element to be
- *     scrolled into view.
- */
-bot.dom.scrollElementRegionIntoClientView = function(elem, elemRegion) {
-  var doc = goog.dom.getOwnerDocument(elem);
-
-  // Scroll the containers.
-  for (var container = bot.dom.getParentElement(elem);
-       container && container != doc.body && container != doc.documentElement;
-       container = bot.dom.getParentElement(container)) {
-    bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
-  }
-
-  // Scroll the actual window.
-  var elemPageOffset = goog.style.getPageOffset(elem);
-
-  var viewportSize = goog.dom.getDomHelper(doc).getViewportSize();
-
-  var region = new goog.math.Rect(
-      elemPageOffset.x + elemRegion.left - (doc.body ? doc.body.scrollLeft : 0),
-      elemPageOffset.y + elemRegion.top - (doc.body ? doc.body.scrollTop : 0),
-      viewportSize.width - elemRegion.width,
-      viewportSize.height - elemRegion.height);
-
-  bot.dom.scrollRegionIntoView_(region, doc.body || doc.documentElement);
-};
-
-
-/**
- * Scrolls the element into the client's view and returns its position
- * relative to the client viewport. If the element or region is too
- * large to fit in the view, it will be aligned to the top-left of the
- * container.
- *
- * The element should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect=} opt_elemRegion The region relative to the element
- *     to be scrolled into view.
- * @return {!goog.math.Coordinate} The coordinate of the element in client
- *     space.
- */
-bot.dom.getLocationInView = function(elem, opt_elemRegion) {
-  var elemRegion;
-  if (opt_elemRegion) {
-    elemRegion = new goog.math.Rect(
-        opt_elemRegion.left, opt_elemRegion.top,
-        opt_elemRegion.width, opt_elemRegion.height);
-  } else {
-    elemRegion = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
-  }
-  bot.dom.scrollElementRegionIntoClientView(elem, elemRegion);
-
-  // This is needed for elements that are split across multiple lines.
-  var rect = elem.getClientRects ? elem.getClientRects()[0] : null;
-  var elemClientPos = rect ?
-      new goog.math.Coordinate(rect.left, rect.top) :
-      goog.style.getClientPosition(elem);
-  return new goog.math.Coordinate(elemClientPos.x + elemRegion.left,
-                                  elemClientPos.y + elemRegion.top);
-};
-
-
-/**
- * Checks whether the element is currently scrolled in to view, such that the
- * offset given, relative to the top-left corner of the element, is currently
- * displayed in the viewport.
- *
- * @param {!Element} element The element to check.
- * @param {!goog.math.Coordinate=} opt_coords Coordinate in the element,
- *     relative to the top-left corner of the element, to check. If none are
- *     specified, checks that any part of the element is in view.
- * @return {boolean} Whether the coordinates specified, relative to the element,
- *     are scrolled in to view.
- */
-bot.dom.isScrolledIntoView = function(element, opt_coords) {
-  var ownerWindow = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
-  var topWindow = ownerWindow.top;
-  var elSize = goog.style.getSize(element);
-
-  for (var win = ownerWindow;; win = win.parent) {
-    var scroll = goog.dom.getDomHelper(win.document).getDocumentScroll();
-    var size = goog.dom.getViewportSize(win);
-    var viewportRect = new goog.math.Rect(scroll.x,
-                                          scroll.y,
-                                          size.width,
-                                          size.height);
-
-    var elCoords = goog.style.getFramedPageOffset(element, win);
-    var elementRect = new goog.math.Rect(elCoords.x,
-                                         elCoords.y,
-                                         elSize.width,
-                                         elSize.height);
-    if (!goog.math.Rect.intersects(viewportRect, elementRect)) {
-      return false;
-    }
-    if (win == topWindow) {
-      break;
-    }
-  }
-
-  var visibleBox = goog.style.getVisibleRectForElement(element);
-  if (!visibleBox) {
-    return false;
-  }
-  if (opt_coords) {
-    var elementOffset = goog.style.getPageOffset(element);
-    var desiredPoint = goog.math.Coordinate.sum(elementOffset, opt_coords);
-    return visibleBox.contains(desiredPoint);
-  } else {
-    var elementBox = goog.style.getBounds(element).toBox();
-    return goog.math.Box.intersects(visibleBox, elementBox);
-  }
 };

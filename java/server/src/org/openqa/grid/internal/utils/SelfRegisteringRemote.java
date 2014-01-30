@@ -14,6 +14,8 @@
 
 package org.openqa.grid.internal.utils;
 
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,7 +28,6 @@ import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.HttpContext;
@@ -34,9 +35,10 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,8 +52,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
-
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 public class SelfRegisteringRemote {
 
@@ -111,26 +111,25 @@ public class SelfRegisteringRemote {
     String servletsStr = (String) nodeConfig.getConfiguration().get(GridNodeConfiguration.SERVLETS);
     if (servletsStr != null) {
       List<String> servlets = Arrays.asList(servletsStr.split(","));
-      if (servlets != null) {
-        HttpContext extra = new HttpContext();
 
-        extra.setContextPath("/extra");
-        ServletHandler handler = new ServletHandler();
-        handler.addServlet("/resources/*", ResourceServlet.class.getName());
+      HttpContext extra = new HttpContext();
 
-        for (String s : servlets) {
-          Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-          if (servletClass != null) {
-            String path = "/" + servletClass.getSimpleName() + "/*";
-            String clazz = servletClass.getCanonicalName();
-            handler.addServlet(path, clazz);
-            log.info("started extra node servlet visible at : http://xxx:"
-                + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
-          }
+      extra.setContextPath("/extra");
+      ServletHandler handler = new ServletHandler();
+      handler.addServlet("/resources/*", ResourceServlet.class.getName());
+
+      for (String s : servlets) {
+        Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+        if (servletClass != null) {
+          String path = "/" + servletClass.getSimpleName() + "/*";
+          String clazz = servletClass.getCanonicalName();
+          handler.addServlet(path, clazz);
+          log.info("started extra node servlet visible at : http://xxx:"
+              + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
         }
-        extra.addHandler(handler);
-        jetty.addContext(extra);
       }
+      extra.addHandler(handler);
+      jetty.addContext(extra);
     }
 
     server.boot();
@@ -188,14 +187,13 @@ public class SelfRegisteringRemote {
     if (!register) {
       log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
     } else {
-      final Integer o =
-          (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
-      if (o != null && o.intValue() > 0) {
+      final int registerCycleInterval = nodeConfig.getConfigAsInt(RegistrationRequest.REGISTER_CYCLE, 0);
+      if (registerCycleInterval > 0) {
         new Thread(new Runnable() { // Thread safety reviewed
 
               public void run() {
                 boolean first = true;
-                log.info("starting auto register thread. Will try to register every " + o + " ms.");
+                log.info("Starting auto register thread. Will try to register every " + registerCycleInterval + " ms.");
                 while (true) {
                   try {
                     boolean checkForPresence = true;
@@ -208,7 +206,7 @@ public class SelfRegisteringRemote {
                     log.info("couldn't register this node : " + e.getMessage());
                   }
                   try {
-                    Thread.sleep(o.intValue());
+                    Thread.sleep(registerCycleInterval);
                   } catch (InterruptedException e) {
                     e.printStackTrace();
                   }
@@ -238,10 +236,7 @@ public class SelfRegisteringRemote {
   }
 
   private void registerToHub(boolean checkPresenceFirst) {
-    // check for presence :
-    boolean ok = checkPresenceFirst == true ? !isAlreadyRegistered(nodeConfig) : true;
-
-    if (ok) {
+    if (!checkPresenceFirst || !isAlreadyRegistered(nodeConfig)) {
       String tmp =
           "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
               + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
@@ -265,7 +260,7 @@ public class SelfRegisteringRemote {
         throw new GridException("Error sending the registration request.", e);
       }
     } else {
-      log.fine("hub is already present on the hub. Skipping registration.");
+      log.fine("The node is already present on the hub. Skipping registration.");
     }
 
   }
@@ -295,8 +290,7 @@ public class SelfRegisteringRemote {
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
-    JSONObject o = extractObject(response);
-    return o;
+    return extractObject(response);
   }
   
   private boolean isAlreadyRegistered(RegistrationRequest node) {
@@ -317,12 +311,12 @@ public class SelfRegisteringRemote {
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {
-        throw new GridException("hub down or not responding.");
+        throw new GridException("Hub is down or not responding.");
       }
       JSONObject o = extractObject(response);
       return (Boolean) o.get("success");
     } catch (Exception e) {
-      throw new GridException("hub down or not responding.");
+      throw new GridException("Hub is down or not responding: " + e.getMessage());
     }
   }
 

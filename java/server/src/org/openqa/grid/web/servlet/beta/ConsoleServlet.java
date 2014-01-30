@@ -18,6 +18,16 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
+import com.google.common.io.ByteStreams;
+
+import org.openqa.grid.common.GridDocHelper;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.web.servlet.RegistryBasedServlet;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,16 +40,6 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.common.GridDocHelper;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.web.servlet.RegistryBasedServlet;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.google.common.io.ByteStreams;
 
 public class ConsoleServlet extends RegistryBasedServlet {
 
@@ -98,12 +98,14 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder
         .append("<link href='/grid/resources/org/openqa/grid/images/console-beta.css' rel='stylesheet' type='text/css' />");
+    builder
+        .append("<link href='/grid/resources/org/openqa/grid/images/favicon.ico' rel='icon' type='image/x-icon' />");
 
 
     if (refresh != -1) {
       builder.append(String.format("<meta http-equiv='refresh' content='%d' />", refresh));
     }
-    builder.append("<title>Grid overview</title>");
+    builder.append("<title>Grid Console</title>");
 
     builder.append("<style>");
     builder.append(".busy {");
@@ -185,7 +187,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append("<ul>");
     for (DesiredCapabilities req : getRegistry().getDesiredCapabilities()) {
-      builder.append("<li>").append(req.asMap()).append("</li>");
+      builder.append("<li>").append(req).append("</li>");
     }
     builder.append("</ul>");
     builder.append("</div>");
@@ -195,11 +197,11 @@ public class ConsoleServlet extends RegistryBasedServlet {
   private Object getHeader() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div id='header'>");
-    builder.append("<h1><a href='http://code.google.com/p/selenium/wiki/Grid2' >Selenium</a></h1>");
-    builder.append("<h2>Hub console - (beta) ");
+    builder.append("<h1><a href='/grid/console'>Selenium</a></h1>");
+    builder.append("<h2>Grid Console v.");
     builder.append(coreVersion).append(coreRevision);
     builder.append("</h2>");
-    builder.append("<div>.</div>");
+    builder.append("<div><a id='helplink' target='_blank' href='http://code.google.com/p/selenium/wiki/Grid2'>Help</a></div>");
     builder.append("</div>");
     builder.append("");
     return builder.toString();

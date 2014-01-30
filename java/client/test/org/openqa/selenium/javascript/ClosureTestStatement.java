@@ -2,6 +2,7 @@ package org.openqa.selenium.javascript;
 
 import static org.junit.Assert.fail;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -41,6 +42,15 @@ public class ClosureTestStatement extends Statement {
     stopwatch.start();
     
     WebDriver driver = driverSupplier.get();
+
+    // Attempt to make the window as big as possible.
+    try {
+      driver.manage().window().maximize();
+    } catch (RuntimeException ignored) {
+      // We tried.
+    }
+
+
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     // Avoid Safari JS leak between tests.
     executor.executeScript("if (window && window.top) window.top.G_testRunner = null");

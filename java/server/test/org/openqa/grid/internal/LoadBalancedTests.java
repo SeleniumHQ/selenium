@@ -15,23 +15,24 @@
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * for N nodes against a hub, the tests are spread as much as possible on the nodes.
@@ -59,7 +60,7 @@ public class LoadBalancedTests {
   private static void register5ProxiesOf5Slots() {
     // add 5 proxies. Total = 5 proxies * 5 slots each = 25 firefox.
     for (int i = 0; i < 5; i++) {
-      registry.add(new BaseRemoteProxy(getRequestOfNSlots(5, "name" + i), registry));
+      registry.add(new DetachedRemoteProxy(getRequestOfNSlots(5, "name" + i), registry));
     }
   }
 
@@ -68,9 +69,9 @@ public class LoadBalancedTests {
   // proxy 2 -> 4 slots
   // proxy 3 -> 6 slots
   private static void register3ProxiesVariableSlotSize() {
-    proxy1 = new BaseRemoteProxy(getRequestOfNSlots(2, "proxy1"), registry2);
-    proxy2 = new BaseRemoteProxy(getRequestOfNSlots(4, "proxy2"), registry2);
-    proxy3 = new BaseRemoteProxy(getRequestOfNSlots(6, "proxy3"), registry2);
+    proxy1 = new DetachedRemoteProxy(getRequestOfNSlots(2, "proxy1"), registry2);
+    proxy2 = new DetachedRemoteProxy(getRequestOfNSlots(4, "proxy2"), registry2);
+    proxy3 = new DetachedRemoteProxy(getRequestOfNSlots(6, "proxy3"), registry2);
 
     registry2.add(proxy1);
     registry2.add(proxy2);
@@ -89,8 +90,8 @@ public class LoadBalancedTests {
       req.process();
       TestSession session = req.getSession();
 
-      Assert.assertNotNull(session);
-      Assert.assertEquals(session.getSlot().getProxy().getTotalUsed(), 1);
+      assertNotNull(session);
+      assertEquals(session.getSlot().getProxy().getTotalUsed(), 1);
     }
 
     // 2 ff per proxy.
@@ -98,8 +99,8 @@ public class LoadBalancedTests {
       MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, firefox());
       req.process();
       TestSession session = req.getSession();
-      Assert.assertNotNull(session);
-      Assert.assertEquals(2, session.getSlot().getProxy().getTotalUsed());
+      assertNotNull(session);
+      assertEquals(2, session.getSlot().getProxy().getTotalUsed());
       // and release
       registry.terminateSynchronousFOR_TEST_ONLY(session);
     }
@@ -109,8 +110,8 @@ public class LoadBalancedTests {
       MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, firefox());
       req.process();
       TestSession session = req.getSession();
-      Assert.assertNotNull(session);
-      Assert.assertEquals(session.getSlot().getProxy().getTotalUsed(), 2);
+      assertNotNull(session);
+      assertEquals(session.getSlot().getProxy().getTotalUsed(), 2);
 
     }
   }
@@ -125,12 +126,12 @@ public class LoadBalancedTests {
       req.process();
       TestSession session = req.getSession();
 
-      Assert.assertNotNull(session);
+      assertNotNull(session);
     }
     
-    Assert.assertEquals(50,proxy1.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(25,proxy2.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(16.66,proxy3.getResourceUsageInPercent(),0.1f);
+    assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
+    assertEquals(25, proxy2.getResourceUsageInPercent(), 0f);
+    assertEquals(16.66, proxy3.getResourceUsageInPercent(), 0.1f);
 
     
     List<TestSession> sessions = new ArrayList<TestSession>();
@@ -140,21 +141,21 @@ public class LoadBalancedTests {
       req.process();
       TestSession session = req.getSession();
 
-      Assert.assertNotNull(session);
+      assertNotNull(session);
       sessions.add(session);
     }
-    Assert.assertEquals(50,proxy1.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(50,proxy2.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(49.98,proxy3.getResourceUsageInPercent(),0.1f);
+    assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
+    assertEquals(50, proxy2.getResourceUsageInPercent(), 0f);
+    assertEquals(49.98, proxy3.getResourceUsageInPercent(), 0.1f);
     
     
     //release and check the resource are freed.
     for (TestSession session : sessions){
       registry.terminateSynchronousFOR_TEST_ONLY(session);
     }
-    Assert.assertEquals(50,proxy1.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(25,proxy2.getResourceUsageInPercent(),0f);
-    Assert.assertEquals(16.66,proxy3.getResourceUsageInPercent(),0.1f);
+    assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
+    assertEquals(25, proxy2.getResourceUsageInPercent(), 0f);
+    assertEquals(16.66, proxy3.getResourceUsageInPercent(), 0.1f);
     
   }
 

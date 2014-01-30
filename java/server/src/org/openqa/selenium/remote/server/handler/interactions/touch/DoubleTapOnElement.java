@@ -16,9 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;

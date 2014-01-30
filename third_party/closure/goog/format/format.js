@@ -460,7 +460,7 @@ goog.format.insertWordBreaksBasic = function(str, opt_maxlen) {
  * @private
  */
 goog.format.IS_IE8_OR_ABOVE_ = goog.userAgent.IE &&
-    goog.userAgent.isVersion(8);
+    goog.userAgent.isVersionOrHigher(8);
 
 
 /**

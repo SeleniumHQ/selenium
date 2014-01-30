@@ -17,15 +17,16 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>find_element_test.html</title>
+  <title>dom_test.html</title>
   <script src="../../test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot.dom');
     goog.require('goog.array');
     goog.require('goog.dom');
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
+    goog.require('webdriver.atoms.element');
     goog.require('webdriver.atoms.inject.dom');
+    goog.require('webdriver.atoms.inject.frame');
     goog.require('webdriver.atoms.inject.locators');
   </script>
 
@@ -49,7 +50,7 @@ limitations under the License.
 
     function testGetTopLeftCoordinates() {
       var elementX = goog.dom.$('x');
-      var expectedX = bot.dom.getLocationInView(elementX).x;
+      var expectedX = webdriver.atoms.element.getLocationInView(elementX).x;
 
       var e = webdriver.atoms.inject.locators.findElement("id", "x");
       var coords = webdriver.atoms.inject.dom.getTopLeftCoordinates(
@@ -111,6 +112,58 @@ limitations under the License.
               getValueFromJSONObject(working), "tagName")))
     }
 
+    function testGetAttributeInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertEquals('Submit', 
+          getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
+              getValueFromJSONObject(element), "value", frameWindow)));
+    }
+
+    function testIsEnabledInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+          getValueFromJSONObject(element), frameWindow)));
+    }
+
+    function testIsDisplayedInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+          getValueFromJSONObject(element), frameWindow)));
+    }
+
+    function testGetTextInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'iframeClickTarget', null, frameWindow);
+      var actual = getValueFromJSONObject(webdriver.atoms.inject.dom.getText(
+          getValueFromJSONObject(element), frameWindow));
+      assertEquals("An anchor in an iframe", actual);
+    }
+
+    function testGetSizeInFrame() {
+      var elementRef = window.frames[0].document.getElementById("submitForm");
+      var expectedHeight = goog.style.getSize(elementRef).height;
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      var size = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getSize(
+                  getValueFromJSONObject(element), frameWindow));
+
+      assertEquals(expectedHeight, size.height);
+    }
+
     function getValueFromJSONObject(arg) {
       return goog.json.parse(arg)["value"];
     }
@@ -133,5 +186,6 @@ limitations under the License.
     <input type="text" id="working" >
     <input type="text" id="notWorking" disabled=true >
     <input type="hidden" id="hidden"></input>
+    <iframe id="frame" src="click_iframe.html"></iframe>
   </body>
 </html>

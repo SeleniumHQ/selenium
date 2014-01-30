@@ -24,6 +24,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
+goog.require('goog.net.xpc.CfgFields');
 goog.require('goog.net.xpc.CrossPageChannel');
 
 
@@ -194,6 +195,7 @@ xpcdemo.ping = function() {
   xpcdemo.channel.send('ping', goog.now() + '');
 };
 
+
 /**
  * The handler function for incoming pings (messages sent to the service
  * called 'ping');
@@ -258,7 +260,7 @@ xpcdemo.stopMousemoveForwarding = function() {
  */
 xpcdemo.mouseEventHandler_ = function(e) {
   xpcdemo.channel.send('events',
-                   [e.type, e.clientX, e.clientY, goog.now()].join(','));
+      [e.type, e.clientX, e.clientY, goog.now()].join(','));
 };
 
 

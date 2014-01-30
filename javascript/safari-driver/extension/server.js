@@ -24,7 +24,6 @@ goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.commands');
-goog.require('safaridriver.extension.bar');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
@@ -83,9 +82,7 @@ var CommandName = webdriver.CommandName;
 var commands = safaridriver.extension.commands;
 var map = safaridriver.extension.Server.COMMAND_MAP_;
 
-// By the time a server is accepting commands, it has already allocated a
-// session, so we can treat NEW_SESSION the same as we do DESCRIBE_SESSION.
-map[CommandName.NEW_SESSION] = commands.describeSession;
+map[CommandName.NEW_SESSION] = commands.newSession;
 map[CommandName.DESCRIBE_SESSION] = commands.describeSession;
 
 // We can't shutdown Safari from an extension, but we can quietly handle the
@@ -157,7 +154,10 @@ map[CommandName.SCREENSHOT] = commands.takeScreenshot;
 map[CommandName.ACCEPT_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.DISMISS_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.GET_ALERT_TEXT] = commands.handleNoAlertsPresent;
-map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
+map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent
+
+map[CommandName.GET_AVAILABLE_LOG_TYPES] = commands.getAvailableLogTypes;
+map[CommandName.GET_LOG] = commands.getLogs;
 });  // goog.scope
 
 
@@ -270,7 +270,6 @@ safaridriver.extension.Server.prototype.attemptConnect_ = function(url) {
   safaridriver.extension.Server.connectedUrls_[url] = true;
 
   this.logMessage_('Attempting to connect to ' + url);
-  safaridriver.extension.bar.setUserMessage('Connecting to ' + url);
 
   // Register the event handlers.  Note that it is not possible for these
   // callbacks to be missed because it is registered after the web socket is
@@ -310,18 +309,15 @@ safaridriver.extension.Server.prototype.execute = function(
         Error('Unknown command: ' + command.getName())));
   }
 
-  this.logMessage_('Scheduling command: ' + command.getName(),
-      goog.debug.Logger.Level.FINER);
   var description = this.session_.getId() + '::' + command.getName();
   var fn = goog.bind(this.executeCommand_, this, command, handler);
   var flow = webdriver.promise.controlFlow();
   var result = flow.execute(fn, description).
       then(bot.response.createResponse, bot.response.createErrorResponse).
-      addBoth(function(response) {
-        safaridriver.extension.bar.setUserMessage('<idle>');
+      thenFinally(goog.bind(function(response) {
         this.session_.setCurrentCommand(null);
         return response;
-      }, this);
+      }, this));
 
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.
@@ -344,8 +340,6 @@ safaridriver.extension.Server.prototype.execute = function(
 safaridriver.extension.Server.prototype.executeCommand_ = function(
     command, handler) {
   this.logMessage_('Executing command: ' + command.getName());
-  safaridriver.extension.bar.setUserMessage(
-      command.getName() + ' ' + JSON.stringify(command.getParameters()));
 
   var alertText = this.session_.getUnhandledAlertText();
   if (!goog.isNull(alertText)) {
@@ -398,7 +392,6 @@ safaridriver.extension.Server.prototype.onClose_ = function(url) {
     if (this.ready_.isPending()) {
       var message = 'Failed to connect to ' + url;
       this.logMessage_(message);
-      safaridriver.extension.bar.setUserMessage(message, 'red');
       this.disposeWebSocket_();
       setTimeout(goog.bind(this.attemptConnect_, this, url), 500);
     } else {
@@ -425,7 +418,8 @@ safaridriver.extension.Server.prototype.onError_ = function(event) {
  * @private
  */
 safaridriver.extension.Server.prototype.onMessage_ = function(event) {
-  this.logMessage_('Received a message: ' + event.data);
+  this.logMessage_('Received a message: ' + event.data,
+      goog.debug.Logger.Level.FINER);
 
   try {
     var message = safaridriver.message.fromEvent(event);
@@ -440,10 +434,10 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   var command = message.getCommand();
 
   this.execute(command).
-      addErrback(bot.response.createErrorResponse).
-      addCallback(function(response) {
+      thenCatch(bot.response.createErrorResponse).
+      then(goog.bind(function(response) {
         this.send_(command, response);
-      }, this);
+      }, this));
 };
 
 

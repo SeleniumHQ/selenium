@@ -16,15 +16,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.LogRecord;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.SessionLogs;
 import org.openqa.selenium.remote.SessionId;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.LogRecord;
 
 /**
  * @author Kristian Rosenvold

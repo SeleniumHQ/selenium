@@ -206,6 +206,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testShouldNotGetCookieOnDifferentDomain() {
+    assumeTrue(domainHelper.checkHasValidAlternateHostname());
+
     String cookieName = "fish";
     driver.manage().addCookie(new Cookie.Builder(cookieName, "cod").build());
     assertCookieIsPresentWithName(cookieName);

@@ -37,15 +37,15 @@ var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     throwStubError = webdriver.test.testutil.throwStubError,
     STUB_ERROR = webdriver.test.testutil.STUB_ERROR;
 
-var app, clock, uncaughtException;
+var app, clock, uncaughtExceptions;
 
 function setUp() {
   clock = webdriver.test.testutil.createMockClock();
-  uncaughtException = callbackHelper();
+  uncaughtExceptions = [];
 
   app = webdriver.promise.controlFlow();
   app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
-         uncaughtException);
+         goog.bind(uncaughtExceptions.push, uncaughtExceptions));
 
   // The application timer defaults to a protected copies of the native
   // timing functions. Reset it to use |window|, which has been modified
@@ -58,7 +58,8 @@ function tearDown() {
   webdriver.test.testutil.consumeTimeouts();
   clock.dispose();
   app.reset();
-  uncaughtException.assertNotCalled();
+  assertArrayEquals(
+      'Did not expect any uncaught exceptions', [], uncaughtExceptions);
 }
 
 
@@ -179,7 +180,7 @@ function testOnlyGoesDownListenerPath_resolved() {
   var callback = callbackHelper();
   var errback = callbackHelper();
 
-  webdriver.promise.resolved().then(callback, errback);
+  webdriver.promise.fulfilled().then(callback, errback);
   callback.assertCalled();
   errback.assertNotCalled();
 }
@@ -202,8 +203,8 @@ function testCatchingAndSuppressingRejectionErrors() {
   });
 
   webdriver.promise.rejected(STUB_ERROR).
-      addErrback(errback).
-      addCallback(callback);
+      thenCatch(errback).
+      then(callback);
   errback.assertCalled();
   callback.assertCalled();
 }
@@ -217,11 +218,11 @@ function testThrowingNewRejectionErrors() {
   });
 
   webdriver.promise.rejected(STUB_ERROR).
-      addErrback(function(error) {
+      thenCatch(function(error) {
         errback1(error);
         throw error2;
       }).
-      addErrback(errback2);
+      thenCatch(errback2);
   errback1.assertCalled();
   errback2.assertCalled();
 }
@@ -331,7 +332,7 @@ function testWaitsIfCallbackReturnsAPromiseObject() {
   var callback1, callback2;
   var callback1Return = new webdriver.promise.Deferred();
 
-  webdriver.promise.resolved('hi').
+  webdriver.promise.fulfilled('hi').
       then(callback1 = callbackHelper(function(value) {
         assertEquals('hi', value);
         return callback1Return;
@@ -358,7 +359,7 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
     }
   };
 
-  webdriver.promise.resolved('hi').
+  webdriver.promise.fulfilled('hi').
       then(callback1 = callbackHelper(function(value) {
         assertEquals('hi', value);
         return callback1Return;
@@ -376,7 +377,7 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
 
 function testInvokesCallbacksInRegisteredScope() {
   var callback1, callback2;
-  webdriver.promise.resolved('abc').
+  webdriver.promise.fulfilled('abc').
       addCallback(callback1 = callbackHelper(function(value) {
         return value + this.count;
       }), {count:123}).
@@ -552,10 +553,10 @@ function testResolvingADeferredWithAnotherThatResolvedUponItself() {
 
 function testSkipsNullPointsInPromiseChain_callbacks() {
   var errback1, errback2, callback;
-  webdriver.promise.resolved('hi').
-      addErrback(errback1 = callbackHelper()).
-      addErrback(errback2 = callbackHelper()).
-      addCallback(callback = callbackHelper(function(value) {
+  webdriver.promise.fulfilled('hi').
+      thenCatch(errback1 = callbackHelper()).
+      thenCatch(errback2 = callbackHelper()).
+      then(callback = callbackHelper(function(value) {
         assertEquals('hi', value);
       }));
 
@@ -567,10 +568,10 @@ function testSkipsNullPointsInPromiseChain_callbacks() {
 
 function testSkipsNullPointsInPromiseChain_errbacks() {
   var errback1, errback2, callback;
-  webdriver.promise.resolved('hi').
-      addErrback(errback1 = callbackHelper()).
-      addErrback(errback2 = callbackHelper()).
-      addCallback(callback = callbackHelper(function(value) {
+  webdriver.promise.fulfilled('hi').
+      thenCatch(errback1 = callbackHelper()).
+      thenCatch(errback2 = callbackHelper()).
+      then(callback = callbackHelper(function(value) {
         assertEquals('hi', value);
       }));
 
@@ -636,7 +637,7 @@ function testFullyResolved_nestedArrayOfPrimitives() {
 
 function testFullyResolved_arrayWithPromisedPrimitive() {
   var callback, errback;
-  webdriver.promise.fullyResolved([webdriver.promise.resolved(123)]).then(
+  webdriver.promise.fullyResolved([webdriver.promise.fulfilled(123)]).then(
       callback = callbackHelper(function(resolved) {
         assertArrayEquals([123], resolved);
       }),
@@ -647,7 +648,7 @@ function testFullyResolved_arrayWithPromisedPrimitive() {
 
 
 function testFullyResolved_promiseResolvesToPrimitive() {
-  var promise = webdriver.promise.resolved(123);
+  var promise = webdriver.promise.fulfilled(123);
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
       callback = callbackHelper(function(resolved) {
@@ -662,7 +663,7 @@ function testFullyResolved_promiseResolvesToPrimitive() {
 
 function testFullyResolved_promiseResolvesToArray() {
   var array = [true, [goog.nullFunction, null, 123], '', undefined];
-  var promise = webdriver.promise.resolved(array);
+  var promise = webdriver.promise.fulfilled(array);
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
       callback = callbackHelper(function(resolved) {
@@ -679,8 +680,8 @@ function testFullyResolved_promiseResolvesToArray() {
 
 
 function testFullyResolved_promiseResolvesToArrayWithPromises() {
-  var nestedPromise = webdriver.promise.resolved(123);
-  var promise = webdriver.promise.resolved([true, nestedPromise]);
+  var nestedPromise = webdriver.promise.fulfilled(123);
+  var promise = webdriver.promise.fulfilled([true, nestedPromise]);
 
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
@@ -697,7 +698,7 @@ function testFullyResolved_promiseResolvesToArrayWithPromises() {
 function testFullyResolved_rejectsIfArrayPromiseRejects() {
   var e = new Error('foo');
   var nestedPromise = webdriver.promise.rejected(e);
-  var promise = webdriver.promise.resolved([true, nestedPromise]);
+  var promise = webdriver.promise.fulfilled([true, nestedPromise]);
 
   var pair = callbackPair(null, function(error) {
     assertEquals(e, error);
@@ -712,7 +713,7 @@ function testFullyResolved_rejectsIfArrayPromiseRejects() {
 function testFullyResolved_rejectsOnFirstArrayRejection() {
   var e1 = new Error('foo');
   var e2 = new Error('bar');
-  var promise = webdriver.promise.resolved([
+  var promise = webdriver.promise.fulfilled([
     webdriver.promise.rejected(e1),
     webdriver.promise.rejected(e2)
   ]);
@@ -729,8 +730,8 @@ function testFullyResolved_rejectsOnFirstArrayRejection() {
 
 function testFullyResolved_rejectsIfNestedArrayPromiseRejects() {
   var e = new Error('foo');
-  var promise = webdriver.promise.resolved([
-    webdriver.promise.resolved([
+  var promise = webdriver.promise.fulfilled([
+    webdriver.promise.fulfilled([
       webdriver.promise.rejected(e)
     ])
   ]);
@@ -784,7 +785,7 @@ function testFullyResolved_nestedHash() {
 
 function testFullyResolved_promiseResolvesToSimpleHash() {
   var hash = {'a': 123};
-  var promise = webdriver.promise.resolved(hash);
+  var promise = webdriver.promise.fulfilled(hash);
 
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
@@ -801,7 +802,7 @@ function testFullyResolved_promiseResolvesToSimpleHash() {
 function testFullyResolved_promiseResolvesToNestedHash() {
   var nestedHash = {'foo':'bar'};
   var hash = {'a': 123, 'b': nestedHash};
-  var promise = webdriver.promise.resolved(hash);
+  var promise = webdriver.promise.fulfilled(hash);
 
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
@@ -817,8 +818,8 @@ function testFullyResolved_promiseResolvesToNestedHash() {
 
 
 function testFullyResolved_promiseResolvesToHashWithPromises() {
-  var promise = webdriver.promise.resolved({
-      'a': webdriver.promise.resolved(123)
+  var promise = webdriver.promise.fulfilled({
+      'a': webdriver.promise.fulfilled(123)
   });
 
   var callback, errback;
@@ -835,7 +836,7 @@ function testFullyResolved_promiseResolvesToHashWithPromises() {
 
 function testFullyResolved_rejectsIfHashPromiseRejects() {
   var e = new Error('foo');
-  var promise = webdriver.promise.resolved({
+  var promise = webdriver.promise.fulfilled({
       'a': webdriver.promise.rejected(e)
   });
 
@@ -850,7 +851,7 @@ function testFullyResolved_rejectsIfHashPromiseRejects() {
 
 function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
   var e = new Error('foo');
-  var promise = webdriver.promise.resolved({
+  var promise = webdriver.promise.fulfilled({
       'a': {'b': webdriver.promise.rejected(e)}
   });
 
@@ -909,7 +910,7 @@ function testFullyResolved_withEmptyHash() {
 
 function testFullyResolved_arrayWithPromisedHash() {
   var obj = {'foo': 'bar'};
-  var promise = webdriver.promise.resolved(obj);
+  var promise = webdriver.promise.fulfilled(obj);
   var array = [promise];
 
   var callback, errback;
@@ -972,11 +973,11 @@ function testCallbackChain_split() {
       stage3 = callbackPair();
 
   webdriver.promise.rejected('foo').
-      addCallback(stage1.callback).
-      addErrback(stage1.errback).
-      addCallback(stage2.callback).
-      addErrback(stage2.errback).
-      addCallbacks(stage3.callback, stage3.errback);
+      then(stage1.callback).
+      thenCatch(stage1.errback).
+      then(stage2.callback).
+      thenCatch(stage2.errback).
+      then(stage3.callback, stage3.errback);
 
   stage1.assertErrback('Wrong function for stage 1');
   stage2.assertCallback('Wrong function for stage 2');
@@ -1132,9 +1133,32 @@ function testCancel_cancellerFunctionExplicityResolvesPromise() {
 }
 
 
-function testCancel_cannotCancelADeferredThatHasBeenResolved() {
-  var d = webdriver.promise.resolved(123);
-  assertThrows(d.cancel);
+function testCancel_cancelIsANoopOnceAPromiseHasBeenFulfilled() {
+  var p = webdriver.promise.fulfilled(123);
+  p.cancel();
+
+  var pair = callbackPair(goog.partial(assertEquals, 123));
+  p.then(pair.callback, pair.errback);
+  pair.assertCallback();
+}
+
+
+function testCancel_cancelIsANoopOnceAPromiseHasBeenRejected() {
+  var p = webdriver.promise.rejected(STUB_ERROR);
+  p.cancel();
+
+  var pair = callbackPair(null, assertIsStubError);
+  p.then(pair.callback, pair.errback);
+  pair.assertErrback();
+}
+
+
+function testCancel_noopCancelTriggeredOnCallbackOfResolvedPromise() {
+  var d = webdriver.promise.defer();
+  var p = d.then();
+
+  d.fulfill();
+  p.cancel();  // This should not throw.
 }
 
 
@@ -1163,7 +1187,7 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPreResolve() {
 
 function testCallbackRegistersAnotherListener_callbacksConfiguredPostResolve() {
   var messages = [];
-  var d = webdriver.promise.resolved();
+  var d = webdriver.promise.fulfilled();
   d.then(function() {
     messages.push('a');
     d.then(function() {
@@ -1181,7 +1205,7 @@ function testCallbackRegistersAnotherListener_recursiveCallbacks() {
   var messages = [];
   var start = 97;  // 'a'
 
-  var p = webdriver.promise.resolved();
+  var p = webdriver.promise.fulfilled();
   p.then(push).then(function() {
     messages.push('done');
   });
@@ -1218,8 +1242,8 @@ function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
 }
 
 function testResolvedReturnsInputValueIfItIsAPromise() {
-  var input = webdriver.promise.resolved('a');
-  var output = webdriver.promise.resolved(input);
+  var input = webdriver.promise.fulfilled('a');
+  var output = webdriver.promise.fulfilled(input);
   assertEquals(input, output);
 }
 

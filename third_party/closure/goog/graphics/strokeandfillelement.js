@@ -41,6 +41,9 @@ goog.require('goog.graphics.Element');
  * @param {goog.graphics.Fill?} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.Element}
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.StrokeAndFillElement = function(element, graphics, stroke, fill) {
   goog.graphics.Element.call(this, element, graphics);

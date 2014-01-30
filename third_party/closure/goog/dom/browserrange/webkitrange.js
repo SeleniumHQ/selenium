@@ -77,7 +77,7 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
   // way it is supposed to, but if we reverse the sense of two comparisons,
   // it works fine.
   // https://bugs.webkit.org/show_bug.cgi?id=20738
-  if (goog.userAgent.isVersion('528')) {
+  if (goog.userAgent.isVersionOrHigher('528')) {
     return (goog.dom.browserrange.WebKitRange.superClass_.
                 compareBrowserRangeEndpoints.call(
                     this, range, thisEndpoint, otherEndpoint));

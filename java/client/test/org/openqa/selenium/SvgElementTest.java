@@ -17,9 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -28,11 +26,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
@@ -46,15 +41,11 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
+                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
-
-    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
-      System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
-                         " this functionality is not working.");
-      return;
-    }
 
     List<WebElement> groupElements = svg.findElements(By.cssSelector("g"));
     assertEquals(5, groupElements.size());
@@ -62,13 +53,13 @@ public class SvgElementTest extends JUnit4TestBase {
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
-    waitFor(elementTextToEqual(resultElement, "slice_red"));
+    wait.until(elementTextToEqual(resultElement, "slice_red"));
     assertEquals("slice_red", resultElement.getText());
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
-    waitFor(elementTextToEqual(resultElement, "slice_green"));
+    wait.until(elementTextToEqual(resultElement, "slice_green"));
     assertEquals("slice_green", resultElement.getText());
   }
 
@@ -85,23 +76,19 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
+                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));
-
-    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
-      System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
-                         " this functionality is not working.");
-      return;
-    }
 
     WebElement appleElement = findAppleElement(textElements);
     assertNotNull(appleElement);
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(resultElement, "text_apple"));
+    wait.until(elementTextToEqual(resultElement, "text_apple"));
     assertEquals("text_apple", resultElement.getText());
   }
 

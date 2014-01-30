@@ -297,11 +297,6 @@ wgxpath.NodeSet.Iterator.prototype.next = function() {
  * Deletes the last node that was returned from this iterator.
  */
 wgxpath.NodeSet.Iterator.prototype.remove = function() {
-  /* TODO: to implement delDescendent(node) we shouldn't have to iterate over
-   * the entire array, only the things whose index comes after node.
-   * If the nodeset is already sorted we know all the descendents lie in a
-   * continguous block starting at nodecould start the iterator at node.
-   */
   var nodeset = this.nodeset_;
   var entry = this.lastReturned_;
   if (!entry) {

@@ -82,10 +82,10 @@ public interface WebElement extends SearchContext {
    * Get the value of a the given attribute of the element. Will return the current value, even if
    * this has been modified after the page has been loaded. More exactly, this method will return
    * the value of the given attribute, unless that attribute is not present, in which case the value
-   * of the property with the same name is returned. If neither value is set, null is returned. The
-   * "style" attribute is converted as best can be to a text representation with a trailing
-   * semi-colon. The following are deemed to be "boolean" attributes, and will return either "true"
-   * or null:
+   * of the property with the same name is returned (for example for the "value" property of a
+   * textarea element). If neither value is set, null is returned. The "style" attribute is
+   * converted as best can be to a text representation with a trailing semi-colon. The following are
+   * deemed to be "boolean" attributes, and will return either "true" or null:
    * 
    * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
    * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
@@ -102,7 +102,7 @@ public interface WebElement extends SearchContext {
    * </ul>
    * 
    * @param name The name of the attribute.
-   * @return The attribute's current value or null if the value is not set.
+   * @return The attribute/property's current value or null if the value is not set.
    */
   String getAttribute(String name);
 

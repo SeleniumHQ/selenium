@@ -26,7 +26,6 @@ goog.require('bot.inject');
 goog.require('bot.json');
 goog.require('bot.response');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.object');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.Tab');
@@ -45,6 +44,7 @@ goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.LoadModule');
+goog.require('safaridriver.message.Log');
 goog.require('safaridriver.message.Message');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.PendingFrame');
@@ -171,13 +171,14 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 
 /** Initializes this tab. */
 safaridriver.inject.Tab.prototype.init = function() {
-  this.log('Loaded injected script for: ' + window.location);
+  this.logConfig('Loaded injected script for: ' + window.location);
 
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).
       on(safaridriver.message.Alert.TYPE, tab.onAlert_, tab).
       on(safaridriver.message.Load.TYPE, tab.onLoad_, tab).
       on(safaridriver.message.LoadModule.TYPE, tab.onLoadModule_, tab).
+      on(safaridriver.message.Log.TYPE, tab.onLogMessage_, tab).
       on(safaridriver.message.Response.TYPE, tab.onPageResponse_, tab).
       on(safaridriver.inject.message.ReactivateFrame.TYPE,
           tab.onReactivateFrame_, tab);
@@ -234,6 +235,18 @@ safaridriver.inject.Tab.prototype.init = function() {
 
 
 /**
+ * @param {!safaridriver.message.Log} message The log message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
+  if (!message.isSameOrigin() && safaridriver.inject.message.isFromSelf(e)) {
+    message.sendSync(safari.self.tab);
+  }
+};
+
+
+/**
  * @param {!safaridriver.message.Alert} message The alert message.
  * @param {!MessageEvent} e The original message event.
  * @private
@@ -256,7 +269,7 @@ safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
     // alert handling.
     var alertText = message.getMessage();
     goog.object.forEach(this.pendingCommands_, function(cmd) {
-      this.log('Aborting ' + cmd);
+      this.logConfig('Aborting ' + cmd);
       var response = safaridriver.alert.createResponse(alertText);
       this.sendResponse_(cmd, response);
     }, this);
@@ -291,7 +304,7 @@ safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
     return;
   }
 
-  this.log('Activating frame for future command handling.');
+  this.logConfig('Activating frame for future command handling.');
   this.isActive_ = true;
 
   if (safaridriver.inject.Tab.IS_TOP) {
@@ -317,7 +330,7 @@ safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
 safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
   goog.asserts.assert(safaridriver.inject.Tab.IS_TOP);
   if (safaridriver.inject.message.isFromFrame(e)) {
-    this.log('Sub-frame has been activated');
+    this.logConfig('Sub-frame has been activated');
     this.activeFrame_ = e.source;
     var response = bot.response.createResponse(null);
     var forceSend = true;
@@ -339,7 +352,7 @@ safaridriver.inject.Tab.prototype.onReactivateFrame_ = function(message, e) {
       this.notifyReady();
     }
   } else if (safaridriver.inject.message.isFromTop(e)) {
-    this.log('Sub-frame has been re-activated');
+    this.logConfig('Sub-frame has been re-activated');
     this.isActive_ = true;
 
     // Acknowledge that we have been re-activated by echoing this message back
@@ -540,7 +553,7 @@ safaridriver.inject.Tab.prototype.sendResponse_ = function(
   }
 
   if (shouldSend || !!opt_force) {
-    this.log('Sending response' +
+    this.logConfig('Sending response' +
         '\ncommand:  ' + command +
         '\nresponse: ' + bot.json.stringify(response));
 
@@ -559,11 +572,11 @@ safaridriver.inject.Tab.prototype.sendResponse_ = function(
  */
 safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
   if (!this.installedPageScript_) {
-    this.log('Installing page script');
+    this.logConfig('Installing page script');
     this.installedPageScript_ = new webdriver.promise.Deferred();
 
     safaridriver.inject.util.loadModule('page_base', safari.self.tab).
-        addCallback(function(src) {
+        then(goog.bind(function(src) {
           var dom = opt_dom || goog.dom.getDomHelper();
           var script = dom.createElement('script');
           script.type = 'application/javascript';
@@ -572,10 +585,10 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
           var docEl = dom.getDocument().documentElement;
           goog.dom.appendChild(docEl, script);
 
-          this.installedPageScript_.addBoth(function() {
+          this.installedPageScript_.thenFinally(function() {
             goog.dom.removeNode(script);
           });
-        }, this);
+        }, this));
   }
   return this.installedPageScript_.promise;
 };
@@ -595,13 +608,13 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
   bot.response.checkResponse(
       /** @type {!bot.response.ResponseObject} */ (decodeResult));
 
-  return this.installPageScript_().addCallback(function() {
+  return this.installPageScript_().then(goog.bind(function() {
     var parameters = command.getParameters();
     parameters = /** @type {!Object.<*>} */ (this.encoder_.encode(parameters));
     command.setParameters(parameters);
 
     var message = new safaridriver.message.Command(command);
-    this.log('Sending message: ' + message);
+    this.logConfig('Sending message: ' + message);
 
     var commandResponse = new webdriver.promise.Deferred();
     this.pendingPageResponses_[command.getId()] = commandResponse;
@@ -611,7 +624,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
     return commandResponse.then(function(result) {
       return bot.inject.wrapValue(result);
     });
-  }, this);
+  }, this));
 };
 
 
@@ -627,8 +640,7 @@ safaridriver.inject.Tab.prototype.onPageResponse_ = function(message, e) {
 
   var promise = this.pendingPageResponses_[message.getId()];
   if (!promise) {
-    this.log('Received response to an unknown command: ' + message,
-        goog.debug.Logger.Level.WARNING);
+    this.logWarn('Received response to an unknown command: ' + message);
     return;
   }
   delete this.pendingPageResponses_[message.getId()];

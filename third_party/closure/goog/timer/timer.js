@@ -62,14 +62,14 @@ goog.Timer = function(opt_interval, opt_timerObject) {
    */
   this.boundTick_ = goog.bind(this.tick_, this);
 
- /**
-  * Firefox browser often fires the timer event sooner
-  * (sometimes MUCH sooner) than the requested timeout. So we
-  * compare the time to when the event was last fired, and
-  * reschedule if appropriate. See also goog.Timer.intervalScale
-  * @type {number}
-  * @private
-  */
+  /**
+   * Firefox browser often fires the timer event sooner
+   * (sometimes MUCH sooner) than the requested timeout. So we
+   * compare the time to when the event was last fired, and
+   * reschedule if appropriate. See also goog.Timer.intervalScale
+   * @type {number}
+   * @private
+   */
   this.last_ = goog.now();
 };
 goog.inherits(goog.Timer, goog.events.EventTarget);
@@ -99,13 +99,13 @@ goog.Timer.prototype.enabled = false;
 
 /**
  * An object that implements setTimout, setInterval, clearTimeout and
- * clearInterval. We default to the window object. Changing this on
- * goog.Timer.prototype changes the object for all timer instances which can be
- * useful if your environment has some other implementation of timers than the
- * window object.
+ * clearInterval. We default to the global object. Changing
+ * goog.Timer.defaultTimerObject changes the object for all timer instances
+ * which can be useful if your environment has some other implementation of
+ * timers you'd like to use.
  * @type {Object}
  */
-goog.Timer.defaultTimerObject = goog.global['window'];
+goog.Timer.defaultTimerObject = goog.global;
 
 
 /**
@@ -163,6 +163,13 @@ goog.Timer.prototype.tick_ = function() {
       this.timer_ = this.timerObject_.setTimeout(this.boundTick_,
           this.interval_ - elapsed);
       return;
+    }
+
+    // Prevents setInterval from registering a duplicate timeout when called
+    // in the timer event handler.
+    if (this.timer_) {
+      this.timerObject_.clearTimeout(this.timer_);
+      this.timer_ = null;
     }
 
     this.dispatchTick();
@@ -245,7 +252,8 @@ goog.Timer.TICK = 'tick';
  * is a common trick to schedule a function to run after a batch of browser
  * event processing.
  *
- * @param {Function} listener Function or object that has a handleEvent method.
+ * @param {Function|{handleEvent:Function}} listener Function or object that
+ *     has a handleEvent method.
  * @param {number=} opt_delay Milliseconds to wait; default is 0.
  * @param {Object=} opt_handler Object in whose scope to call the listener.
  * @return {number} A handle to the timer ID.
@@ -259,7 +267,7 @@ goog.Timer.callOnce = function(listener, opt_delay, opt_handler) {
     // using typeof to prevent strict js warning
     listener = goog.bind(listener.handleEvent, listener);
   } else {
-   throw Error('Invalid listener argument');
+    throw Error('Invalid listener argument');
   }
 
   if (opt_delay > goog.Timer.MAX_TIMEOUT_) {

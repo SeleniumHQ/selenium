@@ -27,7 +27,6 @@
 
 goog.provide('goog.structs.PriorityQueue');
 
-goog.require('goog.structs');
 goog.require('goog.structs.Heap');
 
 

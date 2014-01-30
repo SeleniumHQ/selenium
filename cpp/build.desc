@@ -1,38 +1,3 @@
-visualc_library(name = "firefox_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox.vcxproj",
-  file_deps = "third_party/gecko-2/win32",
-  out = "Win32/Release/webdriver-firefox.dll"
-)
-
-visualc_library(name = "firefoxprevious_esr_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-esr-previous.vcxproj",
-  file_deps = "third_party/gecko-10/win32",
-  out = "Win32/Release/webdriver-firefox-esr-previous.dll"
-)
-
-visualc_library(name = "firefoxlatest_esr_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-esr-latest.vcxproj",
-  file_deps = "third_party/gecko-17/win32",
-  out = "Win32/Release/webdriver-firefox-esr-latest.dll"
-)
-
-visualc_library(name = "firefoxprevious_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-19/win32",
-  out = "Win32/Release/webdriver-firefox-previous.dll"
-)
-
-visualc_library(name = "firefoxlatest_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-20/win32",
-  out = "Win32/Release/webdriver-firefox-latest.dll"
-)
-
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 
@@ -45,24 +10,13 @@ mozilla_xpt(name = "native_keyboard_xpt",
 mozilla_xpt(name = "native_ime_xpt",
   srcs = [ "webdriver-firefox/nsINativeIME.idl" ])
 
-mozilla_lib(name = "webdriver_firefox_ff3",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  args = "-DGECKO_19_COMPATIBILITY",
-  xpcom_lib = "xpcomglue_s",
-  geckoversion="1.9.2")
-
-# Firefox 10 is an ESR release. We probably want to allow an overlap when the
-# next ESR release is made.
 mozilla_lib(name = "webdriver_firefox_esr_previous",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="10")
+  geckoversion="17")
 
 mozilla_lib(name = "webdriver_firefox_esr_previous_64",
   srcs = [ 
@@ -70,7 +24,7 @@ mozilla_lib(name = "webdriver_firefox_esr_previous_64",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="10")
+  geckoversion="17")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest",
   srcs = [ 
@@ -78,7 +32,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="17")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest_64",
   srcs = [ 
@@ -86,7 +40,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest_64",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="17")
+  geckoversion="24")
 
 
 mozilla_lib(name = "webdriver_firefox_previous",
@@ -94,28 +48,28 @@ mozilla_lib(name = "webdriver_firefox_previous",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="19")
+  geckoversion="25")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="19")
+  geckoversion="25")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="20")
+  geckoversion="26")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="20")
+  geckoversion="26")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
@@ -144,56 +98,3 @@ visualc_library(name = "imehandler_dll",
   project = "imehandler/imehandler.vcxproj",
   out = "Win32/Release/imehandler.dll"
 )
-
-visualc_release(name = "ie_win32_exe",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  project = "IEDriverServer/IEDriverServer.vcxproj",
-  desc = "InternetExplorerDriver standalone server for 32-bit IE",
-  out = "Win32/Release/IEDriverServer.exe"
-)
-
-visualc_release(name = "ie_x64_exe",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  project = "IEDriverServer/IEDriverServer.vcxproj",
-  desc = "InternetExplorerDriver standalone server for 64-bit IE",
-  out = "x64/Release/IEDriverServer.exe"
-)
-
-js_fragment_header(name = "atoms",
-  deps = [
-    "//javascript/webdriver/atoms:click:ie",
-    "//javascript/webdriver/atoms:clear:ie",
-    "//javascript/webdriver/atoms:find_element:ie",
-    "//javascript/webdriver/atoms:find_elements:ie",
-    "//javascript/webdriver/atoms:get_attribute:ie",
-    "//javascript/webdriver/atoms:get_effective_style:ie",
-    "//javascript/webdriver/atoms:get_location:ie",
-    "//javascript/webdriver/atoms:get_size:ie",
-    "//javascript/webdriver/atoms:get_text:ie",
-    "//javascript/webdriver/atoms:is_displayed:ie",
-    "//javascript/webdriver/atoms:is_enabled:ie",
-    "//javascript/webdriver/atoms:is_selected:ie",
-    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
-    "//javascript/webdriver/atoms:submit:ie",
-    "//javascript/webdriver/atoms:inputs"
-  ],
-  out = "cpp/IEDriver/Generated/atoms.h"
-)
-
-rake_task(name = "sizzle",
-  task_name = "sizzle_header",
-  out = "cpp/IEDriver/Generated/sizzle.h")
-
-rake_task(name = "ie_result_type_cpp",
-  task_name = "ie_result_type_cpp",
-  out = "cpp/IEDriver/Generated/IEReturnTypes.h")

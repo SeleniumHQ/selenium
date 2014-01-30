@@ -149,7 +149,7 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
     } else {
       if (isNumeric) {
         // We have an unknown field.
-        message.setUnknown(/** @type {number} */ (key), value);
+        message.setUnknown(Number(key), value);
       } else {
         // Named fields must be present.
         goog.proto2.Util.assert(field);

@@ -48,10 +48,12 @@
 
 goog.provide('webdriver.promise');
 goog.provide('webdriver.promise.ControlFlow');
+goog.provide('webdriver.promise.ControlFlow.Timer');
 goog.provide('webdriver.promise.Deferred');
 goog.provide('webdriver.promise.Promise');
 
 goog.require('goog.array');
+goog.require('goog.debug.Error');
 goog.require('goog.object');
 goog.require('webdriver.EventEmitter');
 goog.require('webdriver.stacktrace.Snapshot');
@@ -112,6 +114,75 @@ webdriver.promise.Promise.prototype.then = function(
 
 
 /**
+ * Registers a listener for when this promise is rejected. This is synonymous
+ * with the {@code catch} clause in a synchronous API:
+ * <pre><code>
+ *   // Synchronous API:
+ *   try {
+ *     doSynchronousWork();
+ *   } catch (ex) {
+ *     console.error(ex);
+ *   }
+ *
+ *   // Asynchronous promise API:
+ *   doAsynchronousWork().thenCatch(function(ex) {
+ *     console.error(ex);
+ *   });
+ * </code></pre>
+ *
+ * @param {!Function} errback The function to call if this promise is
+ *     rejected. The function should expect a single argument: the rejection
+ *     reason.
+ * @return {!webdriver.promise.Promise} A new promise which will be resolved
+ *     with the result of the invoked callback.
+ */
+webdriver.promise.Promise.prototype.thenCatch = function(errback) {
+  return this.then(null, errback);
+};
+
+
+/**
+ * Registers a listener to invoke when this promise is resolved, regardless
+ * of whether the promise's value was successfully computed. This function
+ * is synonymous with the {@code finally} clause in a synchronous API:
+ * <pre><code>
+ *   // Synchronous API:
+ *   try {
+ *     doSynchronousWork();
+ *   } finally {
+ *     cleanUp();
+ *   }
+ *
+ *   // Asynchronous promise API:
+ *   doAsynchronousWork().thenFinally(cleanUp);
+ * </code></pre>
+ *
+ * <b>Note:</b> similar to the {@code finally} clause, if the registered
+ * callback returns a rejected promise or throws an error, it will silently
+ * replace the rejection error (if any) from this promise:
+ * <pre><code>
+ *   try {
+ *     throw Error('one');
+ *   } finally {
+ *     throw Error('two');  // Hides Error: one
+ *   }
+ *
+ *   webdriver.promise.rejected(Error('one'))
+ *       .thenFinally(function() {
+ *         throw Error('two');  // Hides Error: one
+ *       });
+ * </code></pre>
+ *
+ *
+ * @param callback
+ * @returns {!webdriver.promise.Promise}
+ */
+webdriver.promise.Promise.prototype.thenFinally = function(callback) {
+  return this.then(callback, callback);
+};
+
+
+/**
  * Registers a function to be invoked when this promise is successfully
  * resolved. This function is provided for backwards compatibility with the
  * Dojo Deferred API.
@@ -123,6 +194,7 @@ webdriver.promise.Promise.prototype.then = function(
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #then()} instead.
  */
 webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
   return this.then(goog.bind(callback, opt_self));
@@ -141,9 +213,10 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #thenCatch()} instead.
  */
 webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
-  return this.then(null, goog.bind(errback, opt_self));
+  return this.thenCatch(goog.bind(errback, opt_self));
 };
 
 
@@ -159,10 +232,10 @@ webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #thenFinally()} instead.
  */
 webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
-  callback = goog.bind(callback, opt_self);
-  return this.then(callback, callback);
+  return this.thenFinally(goog.bind(callback, opt_self));
 };
 
 
@@ -181,6 +254,7 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #then()} instead.
  */
 webdriver.promise.Promise.prototype.addCallbacks = function(
     callback, errback, opt_self) {
@@ -266,6 +340,17 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   }
 
   /**
+   * Removes all of the listeners previously registered on this deferred.
+   * @throws {Error} If this deferred has already been resolved.
+   */
+  function removeAll() {
+    if (!isPending()) {
+      throw new Error('This Deferred has already been resolved. (1)');
+    }
+    listeners = [];
+  }
+
+  /**
    * Notifies all of the listeners registered with this Deferred that its state
    * has changed. Will throw an error if this Deferred has already been
    * resolved.
@@ -275,7 +360,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    */
   function notifyAll(newState, newValue) {
     if (!isPending()) {
-      throw new Error('This Deferred has already been resolved.');
+      throw new Error('This Deferred has already been resolved. (2)');
     }
 
     state = newState;
@@ -397,28 +482,34 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    *     {@code Error} or a {@code string}.
    */
   function reject(opt_error) {
+    var handleRejection = function(error) {
+      // We cannot check instanceof Error since the object may have been
+      // created in a different JS context.
+      if (goog.isObject(error) && goog.isString(error.message)) {
+        error = flow.annotateError(/** @type {!Error} */(error));
+      }
+      notifyAll(webdriver.promise.Deferred.State_.REJECTED, error);
+    };
+
     if (webdriver.promise.isPromise(opt_error) && opt_error !== self) {
       if (opt_error instanceof webdriver.promise.Deferred) {
-        opt_error.then(
-            goog.partial(notifyAll, webdriver.promise.Deferred.State_.REJECTED),
-            goog.partial(notifyAll,
-                webdriver.promise.Deferred.State_.REJECTED));
+        opt_error.then(handleRejection, handleRejection);
         return;
       }
-      webdriver.promise.asap(opt_error, reject, reject);
+      webdriver.promise.asap(opt_error, handleRejection, handleRejection);
     } else {
-      notifyAll(webdriver.promise.Deferred.State_.REJECTED, opt_error);
+      handleRejection(opt_error);
     }
   }
 
   /**
-   * Cancels the computation of this promise's value and flags the promise as a
-   * rejected value.
+   * Attempts to cancel the computation of this instance's value. This attempt
+   * will silently fail if this instance has already resolved.
    * @param {*=} opt_reason The reason for cancelling this promise.
    */
   function cancel(opt_reason) {
     if (!isPending()) {
-      throw Error('This Deferred has already been resolved.');
+      return;
     }
 
     if (opt_canceller) {
@@ -441,9 +532,13 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
   this.fulfill = fulfill;
-  /** @deprecated Use fulfill instead. This will be removed in 2.34.0 */
-  this.resolve = this.callback = fulfill;
   this.reject = this.errback = reject;
+
+  // Only expose this function to our internal classes.
+  // TODO: find a cleaner way of handling this.
+  if (this instanceof webdriver.promise.Task_) {
+    this.removeAll = removeAll;
+  }
 
   // Export symbols necessary for the contract on this object to work in
   // compiled mode.
@@ -558,19 +653,9 @@ webdriver.promise.fulfilled = function(opt_value) {
 
 
 /**
- * Creates a promise that has been resolved with the given value.
- * @param {*=} opt_value The fulfilled promises's value.
- * @return {!webdriver.promise.Promise} A fulfilled promise.
- * @deprecated Use webdriver.promise.fulfilled(). This will be removed in
- *     Selenium 2.34.0.
- */
-webdriver.promise.resolved = webdriver.promise.fulfilled;
-
-
-/**
  * Creates a promise that has been rejected with the given reason.
- * @param {*=} opt_reason The rejection reason; may be any value, but is usually an
- *     Error or a string.
+ * @param {*=} opt_reason The rejection reason; may be any value, but is
+ *     usually an Error or a string.
  * @return {!webdriver.promise.Promise} The rejected promise.
  */
 webdriver.promise.rejected = function(opt_reason) {
@@ -644,7 +729,7 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
 /**
  * Invokes the appropriate callback function as soon as a promised
  * {@code value} is resolved. This function is similar to
- * {@code webdriver.promise.when}, except it does not return a new promise.
+ * {@link webdriver.promise.when}, except it does not return a new promise.
  * @param {*} value The value to observe.
  * @param {Function} callback The function to call when the value is
  *     resolved successfully.
@@ -677,10 +762,11 @@ webdriver.promise.asap = function(value, callback, opt_errback) {
  *
  * Warning: This function makes no checks against objects that contain
  * cyclical references:
- *
+ * <pre><code>
  *   var value = {};
  *   value['self'] = value;
  *   webdriver.promise.fullyResolved(value);  // Stack overflow.
+ * </code></pre>
  *
  * @param {*} value The value to fully resolve.
  * @return {!webdriver.promise.Promise} A promise for a fully resolved version
@@ -829,11 +915,8 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
  * there are no listeners registered with the flow, the error will be
  * rethrown to the global error handler.
  *
- * @param {{clearInterval: function(number),
- *          clearTimeout: function(number),
- *          setInterval: function(!Function, number): number,
- *          setTimeout: function(!Function, number): number}=} opt_timer
- *     The timer object to use. Should only be set for testing.
+ * @param {webdriver.promise.ControlFlow.Timer=} opt_timer The timer object
+ *     to use. Should only be set for testing.
  * @constructor
  * @extends {webdriver.EventEmitter}
  */
@@ -842,10 +925,7 @@ webdriver.promise.ControlFlow = function(opt_timer) {
 
   /**
    * The timer used by this instance.
-   * @type {{clearInterval: function(number),
-   *         clearTimeout: function(number),
-   *         setInterval: function(!Function, number): number,
-   *         setTimeout: function(!Function, number): number}}
+   * @type {webdriver.promise.ControlFlow.Timer}
    */
   this.timer = opt_timer || webdriver.promise.ControlFlow.defaultTimer;
 
@@ -862,11 +942,17 @@ goog.inherits(webdriver.promise.ControlFlow, webdriver.EventEmitter);
 
 
 /**
+ * @typedef {{clearInterval: function(number),
+ *            clearTimeout: function(number),
+ *            setInterval: function(!Function, number): number,
+ *            setTimeout: function(!Function, number): number}}
+ */
+webdriver.promise.ControlFlow.Timer;
+
+
+/**
  * The default timer object, which uses the global timer functions.
- * @type {{clearInterval: function(number),
- *         clearTimeout: function(number),
- *         setInterval: function(!Function, number): number,
- *         setTimeout: function(!Function, number): number}}
+ * @type {webdriver.promise.ControlFlow.Timer}
  */
 webdriver.promise.ControlFlow.defaultTimer = (function() {
   // The default timer functions may be defined as free variables for the
@@ -1085,7 +1171,7 @@ webdriver.promise.ControlFlow.prototype.annotateError = function(e) {
   if (history.length) {
     e = webdriver.stacktrace.format(e);
 
-    /** @type {!Error} */(e).stack = (e.stack || e.stackTrace || '') + [
+    /** @type {!Error} */(e).stack += [
       '\n==== async task ====\n',
       history.join('\n==== async task ====\n')
     ].join('');
@@ -1287,7 +1373,7 @@ webdriver.promise.ControlFlow.prototype.runEventLoop_ = function() {
   var activeFrame = this.activeFrame_;
   activeFrame.setPendingTask(task);
   var markTaskComplete = goog.bind(function() {
-    this.history_.push(task);
+    this.history_.push(/** @type {!webdriver.promise.Task_} */ (task));
     activeFrame.setPendingTask(null);
   }, this);
 
@@ -1342,7 +1428,7 @@ webdriver.promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
     // Frame parent is always another frame, but the compiler is not smart
     // enough to recognize this.
     this.activeFrame_ =
-        (/** @type {webdriver.promise.Frame_} */frame.getParent());
+        /** @type {webdriver.promise.Frame_} */ (frame.getParent());
   }
 
   if (frame.getParent()) {
@@ -1379,7 +1465,7 @@ webdriver.promise.ControlFlow.prototype.abortFrame_ = function(error) {
 
   // Frame parent is always another frame, but the compiler is not smart
   // enough to recognize this.
-  var parent = (/** @type {webdriver.promise.Frame_} */
+  var parent = /** @type {webdriver.promise.Frame_} */ (
       this.activeFrame_.getParent());
   if (parent) {
     parent.removeChild(this.activeFrame_);
@@ -1453,14 +1539,22 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       errback(e);
     });
   } catch (ex) {
-    removeNewFrame();
+    removeNewFrame(new webdriver.promise.CanceledTaskError_(ex));
     errback(ex);
   }
 
-  function removeNewFrame() {
+  /**
+   * @param {webdriver.promise.CanceledTaskError_=} opt_err If provided, the
+   *     error that triggered the removal of this frame.
+   */
+  function removeNewFrame(opt_err) {
     var parent = newFrame.getParent();
     if (parent) {
       parent.removeChild(newFrame);
+    }
+
+    if (opt_err) {
+      newFrame.cancelRemainingTasks(opt_err);
     }
     self.activeFrame_ = oldFrame;
   }
@@ -1600,6 +1694,15 @@ webdriver.promise.Node_.prototype.getRoot = function() {
 webdriver.promise.Frame_ = function(flow) {
   webdriver.promise.Node_.call(this, flow);
 
+  var reject = goog.bind(this.reject, this);
+  var cancelRemainingTasks = goog.bind(this.cancelRemainingTasks, this);
+
+  /** @override */
+  this.reject = function(e) {
+    cancelRemainingTasks(new webdriver.promise.CanceledTaskError_(e));
+    reject(e);
+  };
+
   /**
    * @private {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
    */
@@ -1654,6 +1757,46 @@ webdriver.promise.Frame_.prototype.isLocked_ = false;
  * @private {webdriver.promise.Node_}
  */
 webdriver.promise.Frame_.prototype.lastInsertedChild_ = null;
+
+
+/**
+ * Marks all of the tasks that are descendants of this frame in the execution
+ * tree as cancelled. This is necessary for callbacks scheduled asynchronous.
+ * For example:
+ *
+ *     var someResult;
+ *     webdriver.promise.createFlow(function(flow) {
+ *       someResult = flow.execute(function() {});
+ *       throw Error();
+ *     }).addErrback(function(err) {
+ *       console.log('flow failed: ' + err);
+ *       someResult.then(function() {
+ *         console.log('task succeeded!');
+ *       }, function(err) {
+ *         console.log('task failed! ' + err);
+ *       });
+ *     });
+ *     // flow failed: Error: boom
+ *     // task failed! CanceledTaskError: Task discarded due to a previous
+ *     // task failure: Error: boom
+ *
+ * @param {!webdriver.promise.CanceledTaskError_} error The cancellation
+ *     error.
+ */
+webdriver.promise.Frame_.prototype.cancelRemainingTasks = function(error) {
+  goog.array.forEach(this.children_, function(child) {
+    if (child instanceof webdriver.promise.Frame_) {
+      child.cancelRemainingTasks(error);
+    } else {
+      // None of the previously registered listeners should be notified that
+      // the task is being canceled, however, we need at least one errback
+      // to prevent the cancellation from bubbling up.
+      child.removeAll();
+      child.thenCatch(goog.nullFunction);
+      child.cancel(error);
+    }
+  });
+};
 
 
 /**
@@ -1789,14 +1932,34 @@ webdriver.promise.Task_.prototype.getDescription = function() {
 webdriver.promise.Task_.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
   var ret = this.description_;
-  if (stack) {
+  if (stack.length) {
     if (this.description_) {
       ret += '\n';
     }
-    ret += stack;
+    ret += stack.join('\n');
   }
   return ret;
 };
+
+
+
+/**
+ * Special error used to signal when a task is canceled because a previous
+ * task in the same frame failed.
+ * @param {*} err The error that caused the task cancellation.
+ * @constructor
+ * @extends {goog.debug.Error}
+ * @private
+ */
+webdriver.promise.CanceledTaskError_ = function(err) {
+  goog.base(this, 'Task discarded due to a previous task failure: ' + err);
+};
+goog.inherits(webdriver.promise.CanceledTaskError_, goog.debug.Error);
+
+
+/** @override */
+webdriver.promise.CanceledTaskError_.prototype.name = 'CanceledTaskError';
+
 
 
 /**

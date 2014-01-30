@@ -41,7 +41,7 @@ safaridriver.inject.page.script.executeScript_ = function(command) {
   // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
   // extra dependencies.
   var fn = new Function(command.getParameter('script'));
-  var args = (/** @type {!Array.<*>} */command.getParameter('args'));
+  var args = /** @type {!Array.<*>} */ (command.getParameter('args'));
   args = /** @type {!Array} */ (safaridriver.inject.Encoder.decode(args));
   return fn.apply(window, args);
 };

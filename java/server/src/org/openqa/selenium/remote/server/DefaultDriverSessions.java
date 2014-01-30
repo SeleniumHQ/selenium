@@ -28,8 +28,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DefaultDriverSessions implements DriverSessions {
+
+  private static final Logger log = Logger.getLogger(DefaultDriverSessions.class.getName());
+
   private final DriverFactory factory;
 
   private final Map<SessionId, Session> sessionIdToDriver =
@@ -42,13 +47,19 @@ public class DefaultDriverSessions implements DriverSessions {
     put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
     put(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver");
     put(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver");
-    put(DesiredCapabilities.iphone(), "org.openqa.selenium.iphone.IPhoneDriver");
-    put(DesiredCapabilities.ipad(), "org.openqa.selenium.iphone.IPhoneDriver");
     put(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver");
   }};
 
   public DefaultDriverSessions() {
     this(Platform.getCurrent(), new DefaultDriverFactory());
+  }
+
+  public DefaultDriverSessions(
+      DriverFactory factory, Map<Capabilities, Class<? extends WebDriver>> drivers) {
+    this.factory = factory;
+    for (Map.Entry<Capabilities, Class<? extends WebDriver>> entry : drivers.entrySet()) {
+      registerDriver(entry.getKey(), entry.getValue());
+    }
   }
 
   protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
@@ -57,18 +68,15 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   private void registerDefaults(Platform current) {
-    if (current.equals(Platform.ANDROID)) {
-      // AndroidDriver is here for backward-compatibility reasons, it should be removed at some point
-      registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidDriver");
-      registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidApkDriver");
-      return;
-    }
     for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
       Capabilities caps = entry.getKey();
       if (caps.getPlatform() != null && caps.getPlatform().is(current)) {
         registerDriver(caps, entry.getValue());
       } else if (caps.getPlatform() == null) {
         registerDriver(caps, entry.getValue());
+      } else {
+        log.info("Default driver " + entry.getValue() + " registration is skipped: registration capabilities "
+                 + caps.toString() + " does not match with current platform: " + current.toString());
       }
     }
   }
@@ -77,10 +85,9 @@ public class DefaultDriverSessions implements DriverSessions {
     try {
       registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
     } catch (ClassNotFoundException e) {
-      // OK. Fall through. We just won't be able to create these
+      log.log(Level.INFO, "Unable to register driver with className " + className + " - not be able to create due " + e.getMessage(), e);
     } catch (NoClassDefFoundError e) {
-      // OK. Missing a dependency, which is obviously a Bad Thing
-      // TODO(simon): Log this!
+      log.log(Level.WARNING, "Unable to register driver with className " + className + " - dependency missing due " + e.getMessage(), e);
     }
   }
 

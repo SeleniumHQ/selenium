@@ -17,9 +17,10 @@
 
 
 import pytest
-import time
+# import time
 import unittest
 from selenium.common.exceptions import NoSuchFrameException
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def not_available_on_remote(func):
@@ -184,9 +185,10 @@ class FrameSwitchingTest(unittest.TestCase):
     #    self.driver.find_element_by_xpath("/html/head/title").text)
 
     def testThatWeShouldNotAutoSwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded(self):
+        iframe_timeout = 3
+        wait = WebDriverWait(self.driver, iframe_timeout)
         self._loadPage("iframes")
-        time.sleep(0.5)
-        self.driver.find_element_by_id("iframe_page_heading")
+        wait.until(lambda dr: dr.find_element_by_id("iframe_page_heading"))
 
     def testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage(self):
         self._loadPage("iframes")

@@ -203,6 +203,13 @@ goog.dom.AbstractRange.prototype.getStartOffset = goog.abstractMethod;
 
 
 /**
+ * @return {goog.math.Coordinate} The coordinate of the selection start node
+ *     and offset.
+ */
+goog.dom.AbstractRange.prototype.getStartPosition = goog.abstractMethod;
+
+
+/**
  * @return {Node} The element or text node the range ends in.
  */
 goog.dom.AbstractRange.prototype.getEndNode = goog.abstractMethod;
@@ -214,6 +221,13 @@ goog.dom.AbstractRange.prototype.getEndNode = goog.abstractMethod;
  *     an offset into the childNodes array.
  */
 goog.dom.AbstractRange.prototype.getEndOffset = goog.abstractMethod;
+
+
+/**
+ * @return {goog.math.Coordinate} The coordinate of the selection end
+ *     node and offset.
+ */
+goog.dom.AbstractRange.prototype.getEndPosition = goog.abstractMethod;
 
 
 /**

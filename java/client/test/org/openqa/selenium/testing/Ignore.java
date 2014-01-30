@@ -36,6 +36,7 @@ public @interface Ignore {
     FIREFOX,
     IE,
     IPHONE,
+    MARIONETTE,
     OPERA,
     OPERA_MOBILE,
     PHANTOMJS,

@@ -60,10 +60,10 @@ public class ProxyServer {
   public String getBaseUrl() {
     return baseUrl;
   }
-  
+
   /**
    * Checks if a resource has been requested using the short name of the resource.
-   * 
+   *
    * @param resourceName The short name of the resource to check.
    * @return true if the resource has been called.
    */

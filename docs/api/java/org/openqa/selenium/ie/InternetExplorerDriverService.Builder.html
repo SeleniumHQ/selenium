@@ -167,6 +167,18 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withExtractPath(java.io.File)">withExtractPath</a></strong>(java.io.File&nbsp;extractPath)</code>
+<div class="block">Configures path to which the driver server library will be extracted.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withHost(java.lang.String)">withHost</a></strong>(java.lang.String&nbsp;host)</code>
+<div class="block">Configures the host to which the driver server bound.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withLogFile(java.io.File)">withLogFile</a></strong>(java.io.File&nbsp;logFile)</code>
 <div class="block">Configures the driver server to write log to the given file.</div>
 </td>
@@ -175,6 +187,12 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withLogLevel(org.openqa.selenium.ie.InternetExplorerDriverLogLevel)">withLogLevel</a></strong>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverLogLevel</a>&nbsp;logLevel)</code>
 <div class="block">Configures the logging level for the driver server.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withSilent(java.lang.Boolean)">withSilent</a></strong>(java.lang.Boolean&nbsp;silent)</code>
+<div class="block">Configures silence in stdout of the driver server by unlogged messages.</div>
 </td>
 </tr>
 </table>
@@ -289,6 +307,42 @@ public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverSe
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withLogLevel(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverLogLevel</a>&nbsp;logLevel)</pre>
 <div class="block">Configures the logging level for the driver server.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>logLevel</code> - A level of the log verbosity.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
+</li>
+</ul>
+<a name="withHost(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withHost</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withHost(java.lang.String&nbsp;host)</pre>
+<div class="block">Configures the host to which the driver server bound.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - A host name.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
+</li>
+</ul>
+<a name="withExtractPath(java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withExtractPath</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withExtractPath(java.io.File&nbsp;extractPath)</pre>
+<div class="block">Configures path to which the driver server library will be extracted.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>extractPath</code> - A path.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
+</li>
+</ul>
+<a name="withSilent(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withSilent</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withSilent(java.lang.Boolean&nbsp;silent)</pre>
+<div class="block">Configures silence in stdout of the driver server by unlogged messages.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>silent</code> - To be silent in stdout ir not.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
 </li>
 </ul>

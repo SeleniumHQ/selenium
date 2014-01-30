@@ -18,12 +18,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridException;
@@ -31,6 +25,12 @@ import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class WebDriverRequest extends SeleniumBasedRequest {
 
@@ -84,10 +84,9 @@ public class WebDriverRequest extends SeleniumBasedRequest {
   @Override
   public String getNewSessionRequestedCapability(TestSession session) {
     try {
-    JSONObject c = new JSONObject();
-    c.put("desiredCapabilities", session.getRequestedCapabilities());
-    String content = c.toString();
-    return content;
+      JSONObject c = new JSONObject();
+      c.put("desiredCapabilities", session.getRequestedCapabilities());
+      return c.toString();
     } catch (JSONException  e) {
       throw new NewSessionException("Error with the request " + e.getMessage(),e);
     }

@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
@@ -49,13 +51,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResultConfig {
 
@@ -187,20 +184,28 @@ public class ResultConfig {
     throwUpIfSessionTerminated(sessId);
     final RestishHandler handler = getHandler(pathInfo, sessId);
 
-    if (handler instanceof JsonParametersAware) {
-      setJsonParameters(request, handler);
-    }
-
-    request.setAttribute("handler", handler);
-
-
-    throwUpIfSessionTerminated(sessId);
-
     try {
-      log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+
+      if (handler instanceof JsonParametersAware) {
+        setJsonParameters(request, handler);
+      }
+
+      request.setAttribute("handler", handler);
+
+      throwUpIfSessionTerminated(sessId);
+
+      if ("/status".equals(pathInfo)) {
+        log.fine(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      } else {
+        log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      }
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
-      log.info("Done: " + pathInfo);
+      if ("/status".equals(pathInfo)) {
+        log.fine("Done: " + pathInfo);
+      } else {
+        log.info("Done: " + pathInfo);
+      }
     } catch (UnreachableBrowserException e){
       throwUpIfSessionTerminated(sessId);
       replyError(request, response, e);
@@ -208,7 +213,7 @@ public class ResultConfig {
     } catch (SessionNotFoundException e){
       throw e;
     } catch (Exception e) {
-      result = ResultType.EXCEPTION;
+      result = ResultType.ERROR;
       log.log(Level.WARNING, "Exception thrown", e);
 
       Throwable toUse = getRootExceptionCause(e);
@@ -220,46 +225,27 @@ public class ResultConfig {
       }
     } catch (Error e) {
       log.info("Error: " + e.getMessage());
-      result = ResultType.EXCEPTION;
+      result = ResultType.ERROR;
       request.setAttribute("exception", e);
     }
 
     final Renderer renderer = getRenderer(result, request);
 
-    if (handler instanceof WebDriverHandler) {
-      FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
-        public ResultType call() throws Exception {
-          renderer.render(request, response, handler);
-          response.end();
-          return null;
-        }
-      });
+    renderer.render(request, response, handler);
+    response.end();
 
-      try {
-      ((WebDriverHandler) handler).execute(task);
-      task.get();
-      } catch (RejectedExecutionException e){
-        throw new SessionNotFoundException();
-      }
-
-      if (handler instanceof DeleteSession) {
-        // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
-        final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-        logHandler.transferThreadTempLogsToSessionLogs(sessId);
-        logHandler.removeSessionLogs(sessId);
-        sessions.deleteSession(sessId);
-      }
-
-
-    } else {
-      renderer.render(request, response, handler);
-      response.end();
+    if (handler instanceof DeleteSession) {
+      // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
+      final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+      logHandler.transferThreadTempLogsToSessionLogs(sessId);
+      logHandler.removeSessionLogs(sessId);
+      sessions.deleteSession(sessId);
     }
   }
 
   private void replyError(HttpRequest request, final HttpResponse response, Exception e)
       throws Exception {
-    Renderer renderer2 = getRenderer(ResultType.EXCEPTION, request);
+    Renderer renderer2 = getRenderer(ResultType.ERROR, request);
     request.setAttribute("exception",  e);
     renderer2.render(request, response, null);
   }

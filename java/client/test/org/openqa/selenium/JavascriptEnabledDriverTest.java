@@ -17,31 +17,29 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.either;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 /**
  * Test case for browsers that support using Javascript
@@ -62,6 +60,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDocumentShouldReflectLatestDom() throws Exception {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -72,12 +71,12 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     WebElement dynamo = driver.findElement(By.xpath("//div[@id='dynamo']"));
 
-    waitFor(elementTextToEqual(dynamo, "Fish and chips!"));
+    wait.until(elementTextToEqual(dynamo, "Fish and chips!"));
     assertThat(dynamo.getText(), equalTo("Fish and chips!"));
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -90,7 +89,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
@@ -140,7 +139,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   private void waitForTitleChange(String newTitle) {
-    waitFor(WaitingConditions.pageTitleToBe(driver, newTitle));
+    wait.until(titleIs(newTitle));
   }
 
   @JavascriptEnabled
@@ -166,7 +165,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     element.click();
 
-    String elementValue = waitFor(elementValueToEqual(element, "Clicked"));
+    String elementValue = wait.until(elementValueToEqual(element, "Clicked"));
 
     assertEquals("Clicked", elementValue);
   }
@@ -195,10 +194,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, REMOTE, SAFARI},
-          reason = "Firefox: Window demands focus to work." +
-              " Safari: issue 4061." +
-              " Other platforms: not properly tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
@@ -207,19 +203,19 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     input.sendKeys("test");
     moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur")).or(is("focus blur change")));
+               Matchers.<String>either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur focus blur"))
+               Matchers.<String>either(is("focus change blur focus blur"))
                    .or(is("focus blur change focus blur"))
                    .or(is("focus blur change focus blur change"))
                    .or(is("focus change blur focus change blur"))); // What Chrome does
   }
-  
+
   /**
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
@@ -237,21 +233,17 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE})
+  @Ignore({IPHONE, MARIONETTE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
-    driver.get(pages.javascriptPage);
+    assumeTrue(driver instanceof JavascriptExecutor);
 
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
+    driver.get(pages.javascriptPage);
 
     ((JavascriptExecutor) driver).executeScript("window.focus();");
     WebElement element = driver.findElement(By.id("keyUp"));
 
-    if (!(element instanceof Locatable)) {
-      return;
-    }
+    assumeTrue(element instanceof Locatable);
 
     Point point = ((Locatable) element).getCoordinates().inViewPort();
 
@@ -269,7 +261,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
+  @Ignore(value = {IPHONE, OPERA, SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test
@@ -280,7 +272,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("new_window")).click();
 
     // Depending on the Android emulator platform this can take a while.
-    waitFor(windowToBeSwitchedToWithName(driver, "close_me"), 30, TimeUnit.SECONDS);
+    wait.until(windowToBeSwitchedToWithName("close_me"));
 
     driver.findElement(By.id("close")).click();
 

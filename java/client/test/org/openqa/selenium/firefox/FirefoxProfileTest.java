@@ -40,8 +40,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class FirefoxProfileTest {
-
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
+  private static final String FIREBUG_RESOURCE_PATH =
+      "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
 
   private FirefoxProfile profile;
 
@@ -151,7 +152,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(FirefoxProfileTest.class, "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi");
+    profile.addExtension(FirefoxProfileTest.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
@@ -220,7 +221,7 @@ public class FirefoxProfileTest {
 
     assertEquals(dir, parsedPrefs.getPreference("browser.download.dir"));
   }
-  
+
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
     List<String> props = readGeneratedProperties(profile);
     boolean seenKey = false;

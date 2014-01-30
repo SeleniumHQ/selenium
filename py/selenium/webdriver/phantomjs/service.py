@@ -15,6 +15,7 @@
 # limitations under the License.
 import subprocess
 import time
+import signal
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -57,8 +58,10 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen(self.service_args,
-                                            stdout=self._log, stderr=self._log)
+            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
+                                            close_fds=True, stdout=self._log,
+                                            stderr=self._log)
+
         except Exception as e:
             raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
         count = 0
@@ -89,7 +92,7 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
-                self.process.kill()
+                self.process.send_signal(signal.SIGTERM)
                 self.process.wait()
         except OSError:
             # kill may not be available under windows environment

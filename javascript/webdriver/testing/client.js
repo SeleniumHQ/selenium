@@ -65,6 +65,20 @@ webdriver.testing.Client.EventType_ = {
   INIT: 'INIT',
 
   /**
+   * Sent when starting a new test.  The data object will have the following
+   * fields:
+   *  - name: The name of the test.
+   */
+  START_TEST: 'START_TEST',
+
+  /**
+   * Sent when an error has occurred. The data object will have the following
+   * fields:
+   *  - message: The error message.
+   */
+  ERROR: 'ERROR',
+
+  /**
    * Sent when all tests have completed. The data object will have the following
    * fields:
    *  - isSuccess: Whether the tests succeeded.
@@ -88,6 +102,28 @@ webdriver.testing.Client.EventType_ = {
  */
 webdriver.testing.Client.prototype.sendInitEvent = function() {
   this.sendEvent_(webdriver.testing.Client.EventType_.INIT);
+};
+
+
+/**
+ * Sends an error event.
+ * @param {string} message The error message.
+ */
+webdriver.testing.Client.prototype.sendErrorEvent = function(message) {
+  this.sendEvent_(webdriver.testing.Client.EventType_.ERROR, {
+    'message': message
+  });
+};
+
+
+/**
+ * Sends an event indicating that a new test has started.
+ * @param {string} name The name of the test.
+ */
+webdriver.testing.Client.prototype.sendTestStartedEvent = function(name) {
+  this.sendEvent_(webdriver.testing.Client.EventType_.START_TEST, {
+    'name': name
+  });
 };
 
 
@@ -136,5 +172,5 @@ webdriver.testing.Client.prototype.sendEvent_ = function(type, opt_data) {
   var xhr = new goog.net.XmlHttp;
   xhr.open('POST', this.url_, true);
   xhr.send(payload);
-  // TODO(jleyba): Log if the event was not sent properly.
+  // TODO: Log if the event was not sent properly.
 };

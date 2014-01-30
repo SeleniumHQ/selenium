@@ -27,17 +27,13 @@ goog.provide('goog.ui.Control');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.events.BrowserEvent.MouseButton');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Component.Error');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ControlRenderer');
 goog.require('goog.ui.decorate');
@@ -240,7 +236,7 @@ goog.ui.Control.prototype.allowTextSelection_ = false;
 
 /**
  * The control's preferred ARIA role.
- * @type {?goog.dom.a11y.Role}
+ * @type {?goog.a11y.aria.Role}
  * @private
  */
 goog.ui.Control.prototype.preferredAriaRole_ = null;
@@ -377,8 +373,8 @@ goog.ui.Control.prototype.addClassName = function(className) {
  *     element.
  */
 goog.ui.Control.prototype.removeClassName = function(className) {
-  if (className && this.extraClassNames_) {
-    goog.array.remove(this.extraClassNames_, className);
+  if (className && this.extraClassNames_ &&
+      goog.array.remove(this.extraClassNames_, className)) {
     if (this.extraClassNames_.length == 0) {
       this.extraClassNames_ = null;
     }
@@ -439,7 +435,7 @@ goog.ui.Control.prototype.createDom = function() {
  * cases where a different ARIA role is appropriate for a control because of the
  * context in which it's used.  E.g., a {@link goog.ui.MenuButton} added to a
  * {@link goog.ui.Select} should have an ARIA role of LISTBOX and not MENUITEM.
- * @return {?goog.dom.a11y.Role} This control's preferred ARIA role or null if
+ * @return {?goog.a11y.aria.Role} This control's preferred ARIA role or null if
  *     no preferred ARIA role is set.
  */
 goog.ui.Control.prototype.getPreferredAriaRole = function() {
@@ -453,7 +449,7 @@ goog.ui.Control.prototype.getPreferredAriaRole = function() {
  * different ARIA role is appropriate for a control because of the
  * context in which it's used.  E.g., a {@link goog.ui.MenuButton} added to a
  * {@link goog.ui.Select} should have an ARIA role of LISTBOX and not MENUITEM.
- * @param {goog.dom.a11y.Role} role This control's preferred ARIA role.
+ * @param {goog.a11y.aria.Role} role This control's preferred ARIA role.
  */
 goog.ui.Control.prototype.setPreferredAriaRole = function(role) {
   this.preferredAriaRole_ = role;
@@ -662,11 +658,12 @@ goog.ui.Control.prototype.setContent = function(content) {
 /**
  * Sets the component's content to the given text caption, element, or array
  * of nodes.  Unlike {@link #setContent}, doesn't modify the component's DOM.
- * Called by renderers during element decoration.  Considered protected; should
- * only be used within this package and by subclasses.
+ * Called by renderers during element decoration.
+ *
+ * This should only be used by subclasses and its associated renderers.
+ *
  * @param {goog.ui.ControlContent} content Text caption or DOM structure
  *     to set as the component's contents.
- * @protected
  */
 goog.ui.Control.prototype.setContentInternal = function(content) {
   this.content_ = content;
@@ -1014,8 +1011,10 @@ goog.ui.Control.prototype.setState = function(state, enable) {
  * update the component's styling, and doesn't reject unsupported states.
  * Called by renderers during element decoration.  Considered protected;
  * should only be used within this package and by subclasses.
+ *
+ * This should only be used by subclasses and its associated renderers.
+ *
  * @param {number} state Bit mask representing component state.
- * @protected
  */
 goog.ui.Control.prototype.setStateInternal = function(state) {
   this.state_ = state;

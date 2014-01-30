@@ -21,7 +21,6 @@
 goog.provide('goog.net.BulkLoader');
 
 goog.require('goog.debug.Logger');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.net.BulkLoaderHelper');

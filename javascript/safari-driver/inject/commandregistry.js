@@ -105,7 +105,7 @@ safaridriver.inject.CommandRegistry.prototype.declareModule = function(
     moduleId, commands) {
   goog.asserts.assert(!this.modules_[moduleId],
       'The module ID %s has already been registered', moduleId);
-  this.log_.info('Declaring module: ' + moduleId);
+  this.log_.config('Declaring module: ' + moduleId);
 
   goog.array.forEach(commands, function(command) {
     var otherModule = this.commandNameToModuleId_[command];
@@ -149,7 +149,7 @@ safaridriver.inject.CommandRegistry.prototype.defineModule = function(
       'For module %s, not all declared commands were defined.' +
           '\nDeclared: %s\nDefined: %s', moduleId, module, defined);
 
-  this.log_.info('Defined module: ' + moduleId);
+  this.log_.config('Defined module: ' + moduleId);
   this.loadedModules_[moduleId] = true;
   return this;
 };
@@ -196,7 +196,11 @@ safaridriver.inject.CommandRegistry.prototype.execute = function(
   if (moduleId) {
     return this.loadModule_(moduleId).then(executeCommand);
   } else {
-    return executeCommand();
+    try {
+      return executeCommand();
+    } catch (ex) {
+      return webdriver.promise.rejected(ex);
+    }
   }
 };
 
@@ -213,8 +217,8 @@ safaridriver.inject.CommandRegistry.prototype.loadModule_ = function(moduleId) {
   }
 
   return safaridriver.inject.util.loadModule(moduleId, this.messageTarget_).
-      addCallback(function(src) {
+      then(goog.bind(function(src) {
         this.evalModuleFn_(src);
         this.loadedModules_[moduleId] = true;
-      }, this);
+      }, this));
 };

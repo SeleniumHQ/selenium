@@ -103,6 +103,7 @@ fxdriver.proxy.manualProxyConfig_ = function(prefs, proxy_config) {
   fxdriver.proxy.setProxyPreference_(prefs, 'ftp', proxy_config['ftpProxy']);
   fxdriver.proxy.setProxyPreference_(prefs, 'http', proxy_config['httpProxy']);
   fxdriver.proxy.setProxyPreference_(prefs, 'ssl', proxy_config['sslProxy']);
+  fxdriver.proxy.setProxyPreference_(prefs, 'socks', proxy_config['socksProxy']);
 
   if (proxy_config['noProxy']) {
     prefs.setCharPref('network.proxy.no_proxies_on', proxy_config['noProxy']);
@@ -187,6 +188,6 @@ fxdriver.proxy.configure = function(proxy_config) {
   try {
     fxdriver.proxy.configure_(proxy_config);
   } catch (e) {
-    fxdriver.logging.info('Unable to configure logging. ' + e);
+    fxdriver.logging.info('Unable to configure proxy ' + e);
   }
 };

@@ -17,87 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
-
 /**
- * A class that collects together a group of other mutators and applies them in the order they've
- * been added to any script that needs modification. Any JS to be executed will be wrapped in an
- * "eval" block so that a meaningful return value can be created.
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.CompoundMutator} instead.
  */
-public class CompoundMutator implements ScriptMutator {
-  // The ordering of mutators matters
-  private final List<ScriptMutator> mutators = Lists.newArrayList();
+@Deprecated
+public class CompoundMutator extends com.thoughtworks.selenium.webdriven.CompoundMutator {
 
   public CompoundMutator(String baseUrl) {
-    addMutator(new VariableDeclaration("selenium", "var selenium = {};"));
-    addMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
-    addMutator(new VariableDeclaration(
-        "selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
-    addMutator(new VariableDeclaration(
-        "browserVersion", "var browserVersion = {};"));
-    addMutator(new VariableDeclaration(
-        "browserVersion.isFirefox",
-        "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
-    addMutator(new VariableDeclaration(
-        "browserVersion.isGecko",
-        "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
-    addMutator(new VariableDeclaration(
-        "browserVersion.firefoxVersion",
-        "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
-            "browserVersion.firefoxVersion = r ? r[1] : '';"));
-    addMutator(new VariableDeclaration(
-        "browserVersion.isIE",
-        "browserVersion.isIE = navigator.appName == 'Microsoft Internet Explorer';"));
-
-    addMutator(new FunctionDeclaration("selenium.page",
-        "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
-    addMutator(new FunctionDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
-    addMutator(new FunctionDeclaration("selenium.browserbot.getUserWindow", "return window;"));
-    addMutator(new FunctionDeclaration("selenium.page().getCurrentWindow", "return window;"));
-    addMutator(new FunctionDeclaration("selenium.browserbot.getDocument", "return document;"));
-    addMutator(new FunctionDeclaration("selenium.page().getDocument", "return document;"));
-
-    JavascriptLibrary library = new JavascriptLibrary();
-
-    addMutator(new SeleniumMutator("selenium.getText",
-        library.getSeleniumScript("getText.js")));
-    addMutator(new SeleniumMutator("selenium.isElementPresent",
-        library.getSeleniumScript("isElementPresent.js")));
-    addMutator(new SeleniumMutator("selenium.isTextPresent",
-        library.getSeleniumScript("isTextPresent.js")));
-    addMutator(new SeleniumMutator("selenium.isVisible",
-        library.getSeleniumScript("isVisible.js")));
-    addMutator(new SeleniumMutator("selenium.browserbot.findElement",
-        library.getSeleniumScript("findElement.js")));
-  }
-
-  public void addMutator(ScriptMutator mutator) {
-    mutators.add(mutator);
-  }
-
-  public void mutate(String script, StringBuilder outputTo) {
-    StringBuilder nested = new StringBuilder();
-
-    for (ScriptMutator mutator : mutators) {
-      mutator.mutate(script, nested);
-    }
-    nested.append("").append(script);
-
-    outputTo.append("return eval('");
-    outputTo.append(escape(nested.toString()));
-    outputTo.append("');");
-  }
-
-  private String escape(String escapee) {
-    return escapee
-        .replace("\\", "\\\\")
-        .replace("\n", "\\n")
-        .replace("'", "\\'");
+    super(baseUrl);
   }
 }

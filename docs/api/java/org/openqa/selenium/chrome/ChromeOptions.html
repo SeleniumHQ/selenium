@@ -188,6 +188,16 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.util.List)">addEncodedExtensions</a></strong>(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</code>
+<div class="block">Adds a new Chrome extension to install on browser startup.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.lang.String...)">addEncodedExtensions</a></strong>(java.lang.String...&nbsp;encoded)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addExtensions(java.io.File...)">addExtensions</a></strong>(java.io.File...&nbsp;paths)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -212,12 +222,18 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary(java.lang.String)">setBinary</a></strong>(java.lang.String&nbsp;path)</code>
+<div class="block">Sets the path to the Chrome executable.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOptions(java.lang.String, java.lang.Object)">setExperimentalOptions</a></strong>(java.lang.String&nbsp;name,
                       java.lang.Object&nbsp;value)</code>
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>org.json.JSONObject</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#toJson()">toJson</a></strong>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
@@ -295,6 +311,19 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>path</code> - Path to Chrome executable.</dd></dl>
 </li>
 </ul>
+<a name="setBinary(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBinary</h4>
+<pre>public&nbsp;void&nbsp;setBinary(java.lang.String&nbsp;path)</pre>
+<div class="block">Sets the path to the Chrome executable. This path should exist on the
+ machine which will launch Chrome. The path should either be absolute or
+ relative to the location of running ChromeDriver server.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>path</code> - Path to Chrome executable.</dd></dl>
+</li>
+</ul>
 <a name="addArguments(java.lang.String...)">
 <!--   -->
 </a>
@@ -346,6 +375,28 @@ extends java.lang.Object</pre>
 <div class="block">Adds a new Chrome extension to install on browser startup. Each path should
  specify a packed Chrome extension (CRX file).</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>paths</code> - Paths to the extensions to install.</dd></dl>
+</li>
+</ul>
+<a name="addEncodedExtensions(java.lang.String...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addEncodedExtensions</h4>
+<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.lang.String...&nbsp;encoded)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.util.List)"><code>addEncodedExtensions(java.util.List)</code></a></dd></dl>
+</li>
+</ul>
+<a name="addEncodedExtensions(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addEncodedExtensions</h4>
+<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</pre>
+<div class="block">Adds a new Chrome extension to install on browser startup. Each string data should
+ specify a Base64 encoded string of packed Chrome extension (CRX file).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd></dl>
 </li>
 </ul>
 <a name="setExperimentalOptions(java.lang.String, java.lang.Object)">

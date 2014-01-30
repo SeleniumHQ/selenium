@@ -70,9 +70,10 @@ public class ChromeOptions {
    */
   public static final String CAPABILITY = "chromeOptions";
 
-  private File binary;
+  private String binary;
   private List<String> args = Lists.newArrayList();
   private List<File> extensionFiles = Lists.newArrayList();
+  private List<String> extensions = Lists.newArrayList();
   private Map<String, Object> experimentalOptions = Maps.newHashMap();
 
   /**
@@ -83,6 +84,17 @@ public class ChromeOptions {
    * @param path Path to Chrome executable.
    */
   public void setBinary(File path) {
+    binary = checkNotNull(path).getPath();
+  }
+
+  /**
+   * Sets the path to the Chrome executable. This path should exist on the
+   * machine which will launch Chrome. The path should either be absolute or
+   * relative to the location of running ChromeDriver server.
+   *
+   * @param path Path to Chrome executable.
+   */
+  public void setBinary(String path) {
     binary = checkNotNull(path);
   }
 
@@ -138,6 +150,27 @@ public class ChromeOptions {
   }
 
   /**
+   * @param encoded Base64 encoded data of the extensions to install.
+   * @see #addEncodedExtensions(java.util.List)
+   */
+  public void addEncodedExtensions(String... encoded) {
+    addEncodedExtensions(ImmutableList.copyOf(encoded));
+  }
+
+  /**
+   * Adds a new Chrome extension to install on browser startup. Each string data should
+   * specify a Base64 encoded string of packed Chrome extension (CRX file).
+   *
+   * @param encoded Base64 encoded data of the extensions to install.
+   */
+  public void addEncodedExtensions(List<String> encoded) {
+    for (String extension : encoded) {
+      checkNotNull(extension);
+    }
+    extensions.addAll(encoded);
+  }
+
+  /**
    * Sets an experimental option.  Useful for new ChromeDriver options not yet
    * exposed through the {@link ChromeOptions} API.
    *
@@ -162,18 +195,19 @@ public class ChromeOptions {
     JSONObject options = new JSONObject(experimentalOptions);
 
     if (binary != null) {
-      options.put("binary", binary.getPath());
+      options.put("binary", binary);
     }
 
     options.put("args", ImmutableList.copyOf(args));
 
-    List<String> extensions = Lists.newArrayListWithExpectedSize(
-        extensionFiles.size());
+    List<String> encoded_extensions = Lists.newArrayListWithExpectedSize(
+        extensionFiles.size() + extensions.size());
     for (File path : extensionFiles) {
       String encoded = new Base64Encoder().encode(Files.toByteArray(path));
-      extensions.add(encoded);
+      encoded_extensions.add(encoded);
     }
-    options.put("extensions", extensions);
+    encoded_extensions.addAll(extensions);
+    options.put("extensions", encoded_extensions);
 
     return options;
   }
@@ -196,7 +230,7 @@ public class ChromeOptions {
     // TODO: remove this once the deprecated capabilities are no longer supported.
     capabilities.setCapability("chrome.switches", args);
     if (binary != null) {
-      capabilities.setCapability("chrome.binary", binary.getPath());
+      capabilities.setCapability("chrome.binary", binary);
     }
 
     return capabilities;
@@ -211,11 +245,12 @@ public class ChromeOptions {
     return Objects.equal(this.binary, that.binary)
         && Objects.equal(this.args, that.args)
         && Objects.equal(this.extensionFiles, that.extensionFiles)
-        && Objects.equal(this.experimentalOptions, that.experimentalOptions);
+        && Objects.equal(this.experimentalOptions, that.experimentalOptions)
+        && Objects.equal(this.extensions, that.extensions);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions);
+    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions, this.extensions);
   }
 }

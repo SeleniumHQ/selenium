@@ -22,8 +22,6 @@ import java.util.logging.Logger;
 
 public enum Browser {
 
-  android,
-  android_real_phone,
   chrome,
   ff,
   htmlunit {
@@ -34,8 +32,6 @@ public enum Browser {
   },
   htmlunit_js,
   ie,
-  ipad,
-  iphone,
   none, // For those cases where you don't actually want a browser
   opera,
   opera_mobile,

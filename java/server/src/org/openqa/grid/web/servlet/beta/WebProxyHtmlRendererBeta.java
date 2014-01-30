@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
-import java.util.Map;
-
 import org.json.JSONObject;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -29,6 +27,8 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.Map;
 
 public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
@@ -154,7 +154,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
     TestSession session = s.getSession();
     if (icon != null) {
       builder.append("<img ");
-      builder.append("src='").append(icon).append("' ");
+      builder.append("src='").append(icon).append("' width='16' height='16'");
     } else {
       builder.append("<a href='#' ");
     }
@@ -193,7 +193,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
   /**
    * return the platform for the proxy. It should be the same for all slots of the proxy, so checking that.
-   * @return
+   * @return Either the platform name, "Unknown", "mixed OS", or "not specified".
    */
   public static String getPlatform(RemoteProxy proxy) {
     Platform res = null;

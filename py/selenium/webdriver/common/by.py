@@ -13,8 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+The By implementation.
+"""
 
 class By(object):
+    """
+    Set of supported locator strategies.
+    """
+
     ID = "id"
     XPATH = "xpath"
     LINK_TEXT = "link text"
@@ -23,3 +30,10 @@ class By(object):
     TAG_NAME = "tag name"
     CLASS_NAME = "class name"
     CSS_SELECTOR = "css selector"
+
+    @classmethod
+    def is_valid(cls, by):
+        for attr in dir(cls):
+            if by == getattr(cls, attr):
+                return True
+        return False

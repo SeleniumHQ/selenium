@@ -90,61 +90,6 @@ def msbuild_installed?
   windows? && present?("msbuild.exe")
 end
 
-def xcode?
-  return mac? && present?('xcodebuild')
-end
-
-def iPhoneSDKPresent?
-  return false unless xcode?
-  sdks = `xcodebuild -showsdks 2>&1`
-  return false unless $?.success?
-  !!(sdks =~ /iphonesimulator/)
-end
-
-def iPhoneSDK?
-  return nil unless iPhoneSDKPresent?
-  if $iPhoneSDK == nil then
-    cmd = open("|xcodebuild -showsdks | grep iphonesimulator | awk '{print $NF}'")
-    sdks = cmd.readlines.map {|x| x.gsub(/\b(.*)\b.*/m, '\1').chomp}
-    cmd.close
-
-    if ENV['IPHONE_SDK_VERSION'] != nil then
-      $iPhoneSDK = "iphonesimulator#{ENV['IPHONE_SDK_VERSION']}"
-      puts "Testing for SDK #{$iPhoneSDK}"
-      unless sdks.include?($iPhoneSDK) then
-        puts "...#{$iPhoneSDK} not found."
-        $iPhoneSDK = nil
-      end
-    end
-
-    if $iPhoneSDK == nil then
-      $iPhoneSDK = sdks.last
-    end
-
-    puts "Using iPhoneSDK: '#{$iPhoneSDK}'"
-  end
-  $iPhoneSDK
-end
-
-def iPhoneSDKVersion?
-  sdk = iPhoneSDK?
-  if sdk != nil then
-    sdk.gsub(/iphonesimulator(.*)/, '\1')
-  end
-end
-
-def AndroidSDK?
-  if $androidSDK.nil?
-    prop = YAML.load_file( './properties.yml' )
-    properties=prop["default"]["android"]
-    if (prop[ENV["USER"]])
-      properties=prop[ENV["USER"]]["android"];
-    end
-    $androidSDK = File.exists?(properties["androidsdkpath"])
-  end
-  $androidSDK
-end
-
 def vcs_revision
   @vcs_revision ||= `git rev-parse --short HEAD`
 end

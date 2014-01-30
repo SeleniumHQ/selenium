@@ -5,6 +5,7 @@ js_library(
         "command.js",
         "console.js",
         "dom.js",
+        "logging.js",
         "tab.js",
     ],
     deps = [
@@ -63,6 +64,54 @@ js_binary(
         "--create_name_map_files=true"
     ])
 
+# Binary for the debug/logging window.
+js_binary(
+    name = "debug",
+    srcs = [
+        "deps.js",
+        "debug/debug.js",
+    ],
+    defines = [
+        "goog.userAgent.ASSUME_WEBKIT=true",
+        "goog.userAgent.product.ASSUME_SAFARI=true",
+        "safaridriver.message.ORIGIN=1",
+        "safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND=true",
+    ],
+    externs = [
+        "externs/common.js",
+        "externs/webcontent.js",
+    ],
+    flags = [
+        "--jscomp_error=accessControls",
+        "--jscomp_error=ambiguousFunctionDecl",
+        "--jscomp_error=checkRegExp",
+        "--jscomp_error=checkTypes",
+        "--jscomp_error=checkVars",
+        "--jscomp_error=constantProperty",
+        "--jscomp_error=deprecated",
+        "--jscomp_error=duplicateMessage",
+        "--jscomp_error=es5Strict",
+        "--jscomp_error=externsValidation",
+        "--jscomp_error=fileoverviewTags",
+        "--jscomp_error=globalThis",
+        "--jscomp_error=invalidCasts",
+        "--jscomp_error=missingProperties",
+        "--jscomp_error=nonStandardJsDocs",
+        "--jscomp_error=strictModuleDepCheck",
+        "--jscomp_error=typeInvalidation",
+        "--jscomp_error=undefinedVars",
+        "--jscomp_error=unknownDefines",
+        "--jscomp_error=uselessCode",
+        "--jscomp_error=visibility",
+
+        "--output_wrapper='%output%;safaridriver.debug.init();'",
+        "--third_party=false",
+    ],
+    deps = [
+        ":common_lib",
+        "//javascript/webdriver:webdriver_lib",
+    ])
+
 # The global extension script.
 js_binary(
     name = "extension",
@@ -70,7 +119,7 @@ js_binary(
         "deps.js",
         "extension/commands.js",
         "extension/extension.js",
-        "extension/extensionbar.js",
+        "extension/logdb.js",
         "extension/server.js",
         "extension/session.js",
         "extension/tab.js",
@@ -192,6 +241,7 @@ js_module_binary(
     ],
     flags = [
         "--define=bot.json.NATIVE_JSON=false",
+        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
         "--define=goog.userAgent.ASSUME_WEBKIT=true",
         "--define=goog.userAgent.product.ASSUME_SAFARI=true",
         "--define=safaridriver.message.ASSUME_DOM_WINDOW=true",
@@ -236,12 +286,27 @@ folder(
     name = "SafariDriver",
     srcs = [
       "Info.plist",
+      "icon.png",
+      "toolbar.png",
+      "debug/log.html",
       "extension/extension.html",
-      "extension/extension_bar.html",
     ],
     deps = [
+      ":debug",
       ":extension",
       ":injected",
       ":page",
     ],
     out = "SafariDriver.safariextension")
+
+js_test(
+    name = "test",
+    srcs = [
+        "test/**/*.js",
+        "test/**/*_test.html",
+    ],
+    browsers = ["safari"],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript",
+        "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ])

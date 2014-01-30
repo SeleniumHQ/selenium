@@ -39,8 +39,6 @@ goog.require('goog.array');
 goog.require('wdSessionStoreService');
 
 
-var loadStrategy_ = 'conservative';
-
 /**
  * When this component is loaded, load the necessary subscripts.
  */
@@ -64,7 +62,8 @@ var Response = function(command, responseHandler) {
     status: bot.ErrorCode.SUCCESS,
     value: ''
   };
-  if (this.json_['sessionId'] && this.json_['sessionId']['value']) {
+
+  if (goog.isObject(this.json_['sessionId'])) {
     this.json_['sessionId'] = this.json_['sessionId']['value'];
   }
   this.session = null;
@@ -119,6 +118,8 @@ Response.prototype = {
 
   set name(name) { this.json_.name = name; },
   get name() { return this.json_.name; },
+  get sessionId() { return this.json_.sessionId; },
+  set sessionId(sessionId) { this.json_.sessionId = sessionId; },
   set status(newStatus) { this.json_.status = newStatus; },
   get status() { return this.json_.status; },
   set value(val) { this.json_.value = val; },
@@ -183,7 +184,7 @@ DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
  * @param {Number} ms The delay in milliseconds.
  */
 DelayedCommand.prototype.execute = function(ms) {
-  if ('unstable' != loadStrategy_ && !this.yieldedForBackgroundExecution_) {
+  if (this.response_.session.getWaitForPageLoad() && !this.yieldedForBackgroundExecution_) {
     this.yieldedForBackgroundExecution_ = true;
     fxdriver.profiler.log(
       {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'});
@@ -200,7 +201,7 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-  if ('unstable' == loadStrategy_) {
+  if (!this.response_.session.getWaitForPageLoad()) {
     return false;
   }
 
@@ -355,12 +356,6 @@ var nsCommandProcessor = function() {
     eval(Utils.loadUrl('resource://fxdriver/json2.js'));
   }
 
-  var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces['nsIPrefBranch']);
-
-  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
-    loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
-  }
-
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
@@ -442,8 +437,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
   fxdriver.logging.info('Received command: ' + command.name);
 
-  if (command.name == 'deleteSession' ||
-      command.name == 'getSessionCapabilities' ||
+  if (command.name == 'getSessionCapabilities' ||
       command.name == 'switchToWindow' ||
       command.name == 'getLog' ||
       command.name == 'getAvailableLogTypes') {
@@ -503,6 +497,19 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     fxdriver.logging.error('Unknown command: ' + command.name);
     return;
   }
+
+  if(command.name == 'get') {
+    response.session.setWaitForPageLoad(false);
+  }
+
+  // TODO: should we delay commands if the page is reloaded on itself?
+//  var pageLoadingTimeout = response.session.getPageLoadTimeout();
+//  var shouldWaitForPageLoad = response.session.getWaitForPageLoad();
+//  if (pageLoadingTimeout != 0 && shouldWaitForPageLoad) {
+//    driver.window.setTimeout(function () {
+//      response.session.setWaitForPageLoad(false);
+//    }, pageLoadingTimeout);
+//  }
 
   response.startCommand(sessionWindow);
   new DelayedCommand(driver, command, response).execute(0);
@@ -699,11 +706,15 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
+    if ('elementScrollBehavior' in desiredCapabilities) {
+      session.elementScrollBehavior = desiredCapabilities['elementScrollBehavior'];
+    }
 
     response.session = session;
-    response.value = session.getId();
+    response.sessionId = session.getId();
 
     fxdriver.logging.info('Created a new session with id: ' + session.getId());
+    this.getSessionCapabilities(response);
   }
 
   response.send();
@@ -735,6 +746,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
       'nsIPrefService');
   for (var cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
+    if (cap == 'nativeEvents') continue;
     var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[cap];
     try {
       response.value[cap] = prefStore.getBoolPref(pref);
@@ -745,19 +757,6 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     }
   }
 
-  response.send();
-};
-
-
-/**
- * Deletes the session associated with the current request.
- * @param {Response} response The object to send the command response in.
- */
-nsCommandProcessor.prototype.deleteSession = function(response) {
-  var sessionStore = Components.
-      classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].
-      getService(Components.interfaces.nsISupports);
-  sessionStore.wrappedJSObject.deleteSession(response.session.getId());
   response.send();
 };
 

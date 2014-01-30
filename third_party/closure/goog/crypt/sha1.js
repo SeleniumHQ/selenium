@@ -22,6 +22,10 @@
  *   sha1.update(bytes);
  *   var hash = sha1.digest();
  *
+ * Performance:
+ *   Chrome 23:   ~400 Mbit/s
+ *   Firefox 16:  ~250 Mbit/s
+ *
  */
 
 goog.provide('goog.crypt.Sha1');
@@ -95,7 +99,7 @@ goog.crypt.Sha1.prototype.reset = function() {
 
 /**
  * Internal compress helper function.
- * @param {Array.<number>} buf Buffer with the block to compress.
+ * @param {Array.<number>|Uint8Array|string} buf Block to compress.
  * @param {number=} opt_offset Offset of the block in the buffer.
  * @private
  */
@@ -107,12 +111,30 @@ goog.crypt.Sha1.prototype.compress_ = function(buf, opt_offset) {
   var W = this.W_;
 
   // get 16 big endian words
-  for (var i = opt_offset; i < opt_offset + 64; i += 4) {
-    var w = (buf[i] << 24) |
-            (buf[i + 1] << 16) |
-            (buf[i + 2] << 8) |
-            (buf[i + 3]);
-    W[i / 4] = w;
+  if (goog.isString(buf)) {
+    for (var i = 0; i < 16; i++) {
+      // TODO(user): [bug 8140122] Recent versions of Safari for Mac OS and iOS
+      // have a bug that turns the post-increment ++ operator into pre-increment
+      // during JIT compilation.  We have code that depends heavily on SHA-1 for
+      // correctness and which is affected by this bug, so I've removed all uses
+      // of post-increment ++ in which the result value is used.  We can revert
+      // this change once the Safari bug
+      // (https://bugs.webkit.org/show_bug.cgi?id=109036) has been fixed and
+      // most clients have been updated.
+      W[i] = (buf.charCodeAt(opt_offset) << 24) |
+             (buf.charCodeAt(opt_offset + 1) << 16) |
+             (buf.charCodeAt(opt_offset + 2) << 8) |
+             (buf.charCodeAt(opt_offset + 3));
+      opt_offset += 4;
+    }
+  } else {
+    for (var i = 0; i < 16; i++) {
+      W[i] = (buf[opt_offset] << 24) |
+             (buf[opt_offset + 1] << 16) |
+             (buf[opt_offset + 2] << 8) |
+             (buf[opt_offset + 3]);
+      opt_offset += 4;
+    }
   }
 
   // expand to 80 words
@@ -170,28 +192,48 @@ goog.crypt.Sha1.prototype.update = function(bytes, opt_length) {
     opt_length = bytes.length;
   }
 
+  var lengthMinusBlock = opt_length - 64;
+  var n = 0;
+  // Using local instead of member variables gives ~5% speedup on Firefox 16.
   var buf = this.buf_;
   var inbuf = this.inbuf_;
-  var n = 0;
 
-  // Strangely enough, it is faster to copy the data than to pass over the
-  // buffer and an offset. Copying in a loop is also as fast as array slicing.
-  // This was tested on Chrome 11 and Firefox 3.6. Please do not optimize
-  // the following without careful profiling.
-  if (goog.isString(bytes)) {
-    while (n < opt_length) {
-      buf[inbuf++] = bytes.charCodeAt(n++);
-      if (inbuf == 64) {
-        this.compress_(buf);
-        inbuf = 0;
+  // The outer while loop should execute at most twice.
+  while (n < opt_length) {
+    // When we have no data in the block to top up, we can directly process the
+    // input buffer (assuming it contains sufficient data). This gives ~25%
+    // speedup on Chrome 23 and ~15% speedup on Firefox 16, but requires that
+    // the data is provided in large chunks (or in multiples of 64 bytes).
+    if (inbuf == 0) {
+      while (n <= lengthMinusBlock) {
+        this.compress_(bytes, n);
+        n += 64;
       }
     }
-  } else {
-    while (n < opt_length) {
-      buf[inbuf++] = bytes[n++];
-      if (inbuf == 64) {
-        this.compress_(buf);
-        inbuf = 0;
+
+    if (goog.isString(bytes)) {
+      while (n < opt_length) {
+        buf[inbuf] = bytes.charCodeAt(n);
+        ++inbuf;
+        ++n;
+        if (inbuf == 64) {
+          this.compress_(buf);
+          inbuf = 0;
+          // Jump to the outer loop so we use the full-block optimization.
+          break;
+        }
+      }
+    } else {
+      while (n < opt_length) {
+        buf[inbuf] = bytes[n];
+        ++inbuf;
+        ++n;
+        if (inbuf == 64) {
+          this.compress_(buf);
+          inbuf = 0;
+          // Jump to the outer loop so we use the full-block optimization.
+          break;
+        }
       }
     }
   }
@@ -224,7 +266,8 @@ goog.crypt.Sha1.prototype.digest = function() {
   var n = 0;
   for (var i = 0; i < 5; i++) {
     for (var j = 24; j >= 0; j -= 8) {
-      digest[n++] = (this.chain_[i] >> j) & 255;
+      digest[n] = (this.chain_[i] >> j) & 255;
+      ++n;
     }
   }
 

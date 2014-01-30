@@ -36,31 +36,38 @@ public class RemoteSessionStorage implements SessionStorage {
     this.executeMethod = executeMethod;
   }
 
+  @Override
   public String getItem(String key) {
     Map<String, String> args = ImmutableMap.of("key", key);
     return (String) executeMethod.execute(DriverCommand.GET_SESSION_STORAGE_ITEM, args);
   }
 
+  @Override
   public Set<String> keySet() {
+    @SuppressWarnings("unchecked")
     Collection<String> result = (Collection<String>)
         executeMethod.execute(DriverCommand.GET_SESSION_STORAGE_KEYS, null);
     return new HashSet<String>(result);
   }
 
+  @Override
   public void setItem(String key, String value) {
     Map<String, String> args = ImmutableMap.of("key", key, "value", value);
     executeMethod.execute(DriverCommand.SET_SESSION_STORAGE_ITEM, args);
   }
 
+  @Override
   public String removeItem(String key) {
     Map<String, String> args = ImmutableMap.of("key", key);
     return (String) executeMethod.execute(DriverCommand.REMOVE_SESSION_STORAGE_ITEM, args);
   }
 
+  @Override
   public void clear() {
     executeMethod.execute(DriverCommand.CLEAR_SESSION_STORAGE, null);
   }
 
+  @Override
   public int size() {
     Object response = executeMethod.execute(DriverCommand.GET_SESSION_STORAGE_SIZE, null);
     return Integer.parseInt(response.toString());

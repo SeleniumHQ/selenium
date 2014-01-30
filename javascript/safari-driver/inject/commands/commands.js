@@ -106,7 +106,7 @@ safaridriver.inject.commands.getPageSource = function() {
 /**
  * Defines an element locating command.
  * @param {function(!Object, (Document|Element)=):
-    *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
+ *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
  *     that should be used.
  * @return {function(!safaridriver.Command): !bot.response.ResponseObject} The
  *     locator command function.
@@ -274,10 +274,11 @@ safaridriver.inject.commands.getElementLocation =
 
 /**
  * @param {!safaridriver.Command} command The command to execute.
- * @see bot.dom.getLocationInView
+ * @see webdriver.atoms.element.getLocationInView
  */
 safaridriver.inject.commands.getLocationInView =
-    safaridriver.inject.commands.elementCommand_(bot.dom.getLocationInView);
+    safaridriver.inject.commands.elementCommand_(
+        webdriver.atoms.element.getLocationInView);
 
 
 /**
@@ -302,7 +303,7 @@ safaridriver.inject.commands.getElementText =
  */
 safaridriver.inject.commands.getElementTagName =
     safaridriver.inject.commands.elementCommand_(function(el) {
-      return el.tagName;
+      return el.tagName.toLowerCase();
     });
 
 

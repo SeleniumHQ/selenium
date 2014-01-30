@@ -33,9 +33,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.firefox.internal.MarionetteConnection;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Killable;
@@ -71,12 +71,16 @@ import java.util.concurrent.TimeUnit;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that
  * profile directly. This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, Killable {
+public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
+
+  // For now, only enable native events on Windows
+  public static final boolean USE_MARIONETTE = Boolean.parseBoolean(
+      System.getProperty("webdriver.firefox.marionette"));
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -186,8 +190,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, 
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     super(new LazyCommandExecutor(binary, profile),
-      dropCapabilities(desiredCapabilities, BINARY, PROFILE), 
-      dropCapabilities(requiredCapabilities, BINARY, PROFILE));
+          dropCapabilities(desiredCapabilities, BINARY, PROFILE),
+          dropCapabilities(requiredCapabilities, BINARY, PROFILE));
     this.binary = binary;
   }
 
@@ -234,7 +238,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   protected void startClient() {
     LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
     FirefoxProfile profileToUse = getProfile(exe.profile);
-    profileToUse.addWebDriverExtensionIfNeeded();
 
     // TODO(simon): Make this not sinfully ugly
     ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
@@ -268,7 +271,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
 
-      return new NewProfileExtensionConnection(lock, bin, profile, host);
+      if (USE_MARIONETTE) {
+//        System.out.println("************************** Using marionette");
+        return new MarionetteConnection(lock, bin, profile, host);
+      } else {
+        return new NewProfileExtensionConnection(lock, bin, profile, host);
+      }
     } catch (Exception e) {
       throw new WebDriverException(e);
     } finally {

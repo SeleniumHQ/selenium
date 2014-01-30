@@ -39,8 +39,10 @@ public class CleanSessionTest extends SafariTestBase {
   private void createCleanSession() {
     quitDriver();
 
+    SafariOptions safariOptions = new SafariOptions();
+    safariOptions.setUseCleanSession(true);
     DesiredCapabilities capabilities = DesiredCapabilities.safari();
-    capabilities.setCapability(SafariDriver.CLEAN_SESSION_CAPABILITY, true);
+    capabilities.setCapability(SafariOptions.CAPABILITY, safariOptions);
     driver = actuallyCreateDriver(capabilities);
     driver.get(pages.alertsPage);
   }

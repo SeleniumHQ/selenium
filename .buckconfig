@@ -1,0 +1,20 @@
+[java]
+  src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
+
+[project]
+  ignore = \
+      .git, \
+      .buckd, \
+      build
+
+[test]
+  # Maximum timeout of 1 minute per test.
+  timeout = 60000
+
+[alias]
+  chrome   = //java/client/src/org/openqa/selenium/chrome:chrome
+  firefox  = //java/client/src/org/openqa/selenium/firefox:firefox
+  htmlunit = //java/client/src/org/openqa/selenium/htmlunit:htmlunit
+  remote   = //java/client/src/org/openqa/selenium/remote:remote
+
+  leg-rc   = //java/client/src/com/thoughtworks/selenium:legacy-selenium-client

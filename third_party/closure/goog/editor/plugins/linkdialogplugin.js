@@ -150,7 +150,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.setBlockOpeningUnsafeSchemes =
  * Schemes should all be in lowercase. If the plugin is set to block opening
  * unsafe schemes, user-entered URLs will be converted to lowercase and checked
  * against this list. The whitelist has no effect if blocking is not enabled.
- * @param {Array.<String>} schemes String array of URL schemes to allow (http,
+ * @param {Array.<string>} schemes String array of URL schemes to allow (http,
  *     https, etc.).
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.setSafeToOpenSchemes =
@@ -331,10 +331,10 @@ goog.editor.plugins.LinkDialogPlugin.prototype.handleOk = function(e) {
     this.touchUpAnchorOnOk_(extraAnchors[i], e);
   }
 
-  this.getFieldObject().focus();
-
   // Place cursor to the right of the modified link.
   this.currentLink_.placeCursorRightOf();
+
+  this.getFieldObject().focus();
 
   this.getFieldObject().dispatchSelectionChangeEvent();
   this.getFieldObject().dispatchChange();

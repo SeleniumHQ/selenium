@@ -27,7 +27,7 @@ goog.require('goog.userAgent');
 
 /**
  * @define {boolean} NATIVE_JSON indicates whether the code should rely on the
- * native {@ocde JSON} functions, if available.
+ * native {@code JSON} functions, if available.
  *
  * <p>The JSON functions can be defined by external libraries like Prototype
  * and setting this flag to false forces the use of Closure's goog.json

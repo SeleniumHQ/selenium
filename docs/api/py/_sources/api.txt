@@ -34,6 +34,9 @@ Webdriver.common
    selenium.webdriver.common.keys
    selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
+   selenium.webdriver.common.proxy
+   selenium.webdriver.common.html5.application_cache
+
 
 Webdriver.support
 -----------------
@@ -79,6 +82,16 @@ Webdriver.ie
    :toctree: webdriver_ie
 
    selenium.webdriver.ie.webdriver
+
+Webdriver.opera
+---------------
+
+.. currentmodule:: selenium.webdriver.opera
+.. autosummary::
+   :toctree: webdriver_opera
+
+   selenium.webdriver.opera.service
+   selenium.webdriver.opera.webdriver
 
 Webdriver.phantomjs
 -------------------

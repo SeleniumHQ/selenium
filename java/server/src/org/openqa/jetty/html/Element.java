@@ -172,6 +172,7 @@ public abstract class Element
      * @param attributes String of HTML attributes to add to the element.
      * @return This Element so calls can be chained.
      */
+    @Deprecated
     public Element attributes(String attributes)
     {
         if (log.isDebugEnabled() && attributes!=null && attributes.indexOf('=')>=0)

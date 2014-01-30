@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static org.junit.Assert.assertEquals;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -27,31 +36,23 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Test(groups = {"slow", "firefox"})
 public class SmokeTest {
 
-  private Hub hub;
+  private static Hub hub;
 
-  @BeforeClass(alwaysRun = false)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
 
     hub = GridTestHelper.getHub();
 
 
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     
     DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
     firefoxOnSeleniumCapability.setBrowserName("*firefox");
@@ -70,10 +71,10 @@ public class SmokeTest {
   public void firefoxOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      DesiredCapabilities ff = DesiredCapabilities.firefox();
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
-      driver.get(hub.getUrl() + "/grid/console");
-      Assert.assertEquals(driver.getTitle(), "Grid overview");
+      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
+      driver.get(hub.getUrl() + "/grid/old/console");
+      assertEquals(driver.getTitle(), "Grid overview");
     } finally {
       if (driver != null) {
         driver.quit();
@@ -81,17 +82,18 @@ public class SmokeTest {
     }
   }
   
-  
+
+  @Ignore
   @Test
   public void firefoxOnSelenium() throws MalformedURLException {
     Selenium selenium = null;
     try {
       selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
-      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+      assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
       selenium.start();
-      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
+      assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
       selenium.open(hub.getUrl() + "/grid/console");
-      Assert.assertTrue(selenium.getTitle().contains("Grid overview"));
+      assertEquals(selenium.getTitle(), "Grid Console");
       
     } finally {
       if (selenium != null) {
@@ -100,8 +102,8 @@ public class SmokeTest {
     }
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
   }
 }

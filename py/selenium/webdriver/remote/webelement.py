@@ -29,6 +29,11 @@ from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+try:
+    str = basestring
+except NameError:
+    pass
+
 
 class WebElement(object):
     """Represents an HTML element.
@@ -62,20 +67,33 @@ class WebElement(object):
         self._execute(Command.CLEAR_ELEMENT)
 
     def get_attribute(self, name):
-        """Gets the attribute value."""
+        """Gets the attribute value.
+        
+        :Args:
+            - name - name of the attribute property to retieve.
+
+        Example::
+
+            # Check if the 'active' css class is applied to an element.
+            is_active = "active" in target_element.get_attribute("class")
+
+        """
         resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
         attributeValue = ''
         if resp['value'] is None:
             attributeValue = None
         else:
             attributeValue = resp['value']
-            if type(resp['value']) is bool:
+            if name != 'value' and attributeValue.lower() in ('true', 'false'):
                 attributeValue = attributeValue.lower()
 
         return attributeValue
 
     def is_selected(self):
-        """Whether the element is selected."""
+        """Whether the element is selected.
+
+        Can be used to check if a checkbox or radio button is selected.
+        """
         return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
     def is_enabled(self):
@@ -83,64 +101,176 @@ class WebElement(object):
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
     def find_element_by_id(self, id_):
-        """Finds element by id."""
+        """Finds element within the child elements of this element.
+        
+        :Args:
+            - id_ - ID of child element to locate.
+        """
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
+        """Finds a list of elements within the children of this element 
+        with the matching ID.
+        
+        :Args:
+            - id_ - Id of child element to find.
+        """
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_name(self, name):
-        """Find element by name."""
+        """Find element with in this element's children by name.
+        :Args:
+            - name - name property of the element to find.
+        """
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
+        """Finds a list of elements with in this element's children by name.
+        
+        :Args:
+            - name - name property to search for.
+        """
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_link_text(self, link_text):
-        """Finds element by link text."""
+        """Finds element with in this element's children by visible link text.
+        
+        :Args:
+            - link_text - Link text string to search for.
+        """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, link_text):
+        """Finds a list of elements with in this element's children by visible link text.
+        
+        :Args:
+            - link_text - Link text string to search for.
+        """
         return self.find_elements(by=By.LINK_TEXT, value=link_text)
 
     def find_element_by_partial_link_text(self, link_text):
+        """Finds element with in this element's children by parial visible link text.
+        
+        :Args:
+            - link_text - Link text string to search for.
+        """
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
+        """Finds a list of elements with in this element's children by link text.
+        
+        :Args:
+            - link_text - Link text string to search for.
+        """
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_tag_name(self, name):
+        """Finds element with in this element's children by tag name.
+        
+        :Args:
+            - name - name of html tag (eg: h1, a, span)
+        """
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
+        """Finds a list of elements with in this element's children by tag name.
+        
+        :Args:
+            - name - name of html tag (eg: h1, a, span)
+        """
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_xpath(self, xpath):
-        """Finds element by xpath."""
+        """Finds element by xpath.
+        
+        :Args:
+            xpath - xpath of element to locate.  "//input[@class='myelement']"
+
+        Note: The base path will be relative to this element's location.
+
+        This will select the first link under this element.::
+
+            myelement.find_elements_by_xpath(".//a")
+
+        However, this will select the first link on the page.
+
+            myelement.find_elements_by_xpath("//a")
+
+        """
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
-        """Finds elements within the elements by xpath."""
+        """Finds elements within the elements by xpath.
+        
+        :Args:
+            - xpath - xpath locator string.
+
+        Note: The base path will be relative to this element's location.
+
+        This will select all links under this element.::
+
+            myelement.find_elements_by_xpath(".//a")
+
+        However, this will select all links in the page itself.
+
+            myelement.find_elements_by_xpath("//a")
+        """
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_class_name(self, name):
-        """Finds an element by their class name."""
+        """Finds an element within this element's children by their class name.
+        
+        :Args:
+            - name - class name to search on.
+        """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
-        """Finds elements by their class name."""
+        """Finds a list of elements within children of this element by their class name.
+        
+        :Args:
+            - name - class name to search on.
+        """
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
-        """Find and return an element by CSS selector."""
+        """Find and return an element that's a child of this element by CSS selector.
+        
+        :Args:
+            - css_selector - CSS selctor string, ex: 'a.nav#home'
+        """
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
-        """Find and return list of multiple elements by CSS selector."""
+        """Find and return list of multiple elements within the children of this 
+        element by CSS selector.
+        
+        :Args:
+            - css_selector - CSS selctor string, ex: 'a.nav#home'
+        """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def send_keys(self, *value):
-        """Simulates typing into the element."""
+        """Simulates typing into the element.
+
+        :Args:
+            - value - A string for typing, or setting form fields.  For setting 
+            file inputs, this could be a local file path.
+
+        Use this to send simple key events or to fill out form fields::
+
+            form_textfield = driver.find_element_by_name('username')
+            form_textfield.send_keys("admin")
+        
+        This can also be used to set file inputs.::
+
+            file_input = driver.find_element_by_name('profilePic')
+            file_input.send_keys("path/to/profilepic.gif")
+            # Generally it's better to wrap the file path in one of the methods 
+            # in os.path to return the actual path to support cross OS testing.
+            # file_input.send_keys(os.path.abspath("path/to/profilepic.gif"))
+
+        """
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
@@ -153,7 +283,7 @@ class WebElement(object):
             if isinstance(val, Keys):
                 typing.append(val)
             elif isinstance(val, int):
-                val = str(val)
+                val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
             else:
@@ -163,7 +293,8 @@ class WebElement(object):
 
     # RenderedWebElement Items
     def is_displayed(self):
-        """Whether the element would be visible to a user"""
+        """Whether the element would be visible to a user
+        """
         return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
@@ -199,10 +330,20 @@ class WebElement(object):
 
     @property
     def parent(self):
+        """ Returns parent element is available. """
         return self._parent
 
     @property
     def id(self):
+        """ Returns internal id used by selenium. 
+        
+        This is mainly for internal use.  Simple use cases such as checking if 2 webelements 
+        refer to the same element, can be done using '=='::
+        
+            if element1 == element2:
+                print("These 2 are equal")
+
+        """
         return self._id
 
     def __eq__(self, element):
@@ -228,16 +369,16 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        
+
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        
+
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
 
@@ -269,7 +410,7 @@ class LocalFileDetector(object):
             if isinstance(val, Keys):
                 typing.append(val)
             elif isinstance(val, int):
-                val = str(val)
+                val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
             else:
@@ -281,9 +422,9 @@ class LocalFileDetector(object):
             return None
 
         try:
-          if os.path.isfile(file_path):
-              return file_path
+            if os.path.isfile(file_path):
+                return file_path
         except:
-          pass
+            pass
         return None
 

@@ -16,6 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.io.ByteStreams;
 
 import org.json.JSONException;
@@ -31,9 +34,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RemoteWebDriverTest extends JUnit4TestBase {
 

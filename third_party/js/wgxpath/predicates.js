@@ -123,16 +123,20 @@ wgxpath.Predicates.prototype.getLength = function() {
 
 
 /**
- * Returns a string represendation of this set of predicates for debugging.
+ * Returns the set of predicates.
  *
- * @param {string=} opt_indent An optional indentation.
- * @return {string} The string representation.
+ * @return {!Array.<!wgxpath.Expr>} The predicates.
  */
-wgxpath.Predicates.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var header = indent + 'Predicates:';
-  indent += wgxpath.Expr.INDENT;
+wgxpath.Predicates.prototype.getPredicates = function() {
+  return this.predicates_;
+};
+
+
+/**
+ * @override
+ */
+wgxpath.Predicates.prototype.toString = function() {
   return goog.array.reduce(this.predicates_, function(prev, curr) {
-    return prev + '\n' + indent + curr.toString(indent);
-  }, header);
+    return prev + wgxpath.Expr.indent(curr);
+  }, 'Predicates:');
 };

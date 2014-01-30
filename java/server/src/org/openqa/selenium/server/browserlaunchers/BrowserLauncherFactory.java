@@ -61,8 +61,6 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put(BrowserType.OPERA, OperaCustomProfileLauncher.class);
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
-    // DGF pisafari isn't working yet
-    // supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);
     supportedBrowsers.put(BrowserType.MOCK, MockBrowserLauncher.class);
     supportedBrowsers.put(BrowserType.GOOGLECHROME, GoogleChromeLauncher.class);
@@ -127,13 +125,36 @@ public class BrowserLauncherFactory {
     throw browserNotSupported(browser);
   }
 
-
   public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
     return supportedBrowsers;
   }
 
   public static void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
     supportedBrowsers.put(browser, clazz);
+  }
+
+  public static boolean isBrowserSupported(String browser) {
+    for (String key : supportedBrowsers.keySet()) {
+      final BrowserStringParser.Result result;
+      result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
+      if (result.match()) {
+        return true;
+      }
+    }
+    Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
+    if (CustomMatcher.find()) {
+      return true;
+    }
+    return false;
+  }
+
+  public static String getSupportedBrowsersAsString() {
+    StringBuffer str = new StringBuffer("");
+    for (String name : supportedBrowsers.keySet()) {
+      str.append("  *").append(name).append('\n');
+    }
+    str.append("  *custom\n");
+    return str.toString();
   }
 
   private RuntimeException browserNotSupported(String browser) {
@@ -144,10 +165,7 @@ public class BrowserLauncherFactory {
     }
     errorMessage.append('\n');
     errorMessage.append("Supported browsers include:\n");
-    for (String name : supportedBrowsers.keySet()) {
-      errorMessage.append("  *").append(name).append('\n');
-    }
-    errorMessage.append("  *custom\n");
+    errorMessage.append(getSupportedBrowsersAsString());
     return new RuntimeException(errorMessage.toString());
   }
 

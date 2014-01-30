@@ -20,14 +20,18 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -35,19 +39,17 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
-
-import org.jmock.Expectations;
-import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 /**
  */
-public class DefaultFieldDecoratorTest extends MockTestBase {
+public class DefaultFieldDecoratorTest {
 
   // Unusued fields are used by tests. Do not remove!
   @SuppressWarnings("unused") private WebElement element1;
@@ -65,8 +67,20 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   private List<WebElement> list4;
 
   @SuppressWarnings("unused")
+  @FindAll({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<WebElement> list5;
+
+  @SuppressWarnings("unused")
   @FindBy(tagName = "div")
-  private List<Object> list5;
+  private List<Object> list6;
+
+  @SuppressWarnings("unused")
+  @FindBys({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<Object> list7;
+
+  @SuppressWarnings("unused")
+  @FindAll({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<Object> list8;
 
   private FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
@@ -78,7 +92,7 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
 
   private FieldDecorator createDecoratorWithDefaultLocator() {
     return new DefaultFieldDecorator(
-        new DefaultElementLocatorFactory((WebDriver) null));
+        new DefaultElementLocatorFactory(null));
   }
 
   @Test
@@ -100,6 +114,9 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
         is(notNullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list4")),
+        is(notNullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list5")),
         is(notNullValue()));
   }
 
@@ -126,7 +143,13 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   public void doesNotDecorateListOfSomethingElse() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
-        getClass().getDeclaredField("list5")),
+        getClass().getDeclaredField("list6")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list7")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list8")),
         is(nullValue()));
   }
 
@@ -155,18 +178,18 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     final AllDriver driver = mock(AllDriver.class);
     final AllElement element = mock(AllElement.class);
     final Mouse mouse = mock(Mouse.class);
-    checking(new Expectations() {{
-      exactly(1).of(driver).getKeyboard();
-      exactly(1).of(driver).getMouse();
-      will(returnValue(mouse));
-      exactly(1).of(driver).findElement(By.id("foo"));
-      will(returnValue(element));
-      exactly(1).of(element).getCoordinates();
-      exactly(1).of(mouse).mouseMove(with(any(Coordinates.class)));
-    }});
+
+    when(driver.getMouse()).thenReturn(mouse);
+    when(driver.findElement(By.id("foo"))).thenReturn(element);
+
     Page page = new Page();
     PageFactory.initElements(driver, page);
     new Actions(driver).moveToElement(page.foo).build().perform();
+
+    verify(driver).getKeyboard();
+    verify(driver).getMouse();
+    verify(element).getCoordinates();
+    verify(mouse).mouseMove(any(Coordinates.class));
   }
 
   private static class Page {

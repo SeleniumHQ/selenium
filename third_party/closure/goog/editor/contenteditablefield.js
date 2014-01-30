@@ -46,7 +46,7 @@ goog.require('goog.editor.Field');
  * @param {string} id An identifer for the field. This is used to find the
  *     field and the element associated with this field.
  * @param {Document=} opt_doc The document that the element with the given
- *     id can be found it.
+ *     id can be found in.
  * @constructor
  * @extends {goog.editor.Field}
  */

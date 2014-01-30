@@ -44,7 +44,7 @@ goog.editor.plugins.LinkShortcutPlugin.prototype.getTrogClassId = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.LinkShortcutPlugin.prototype.handleKeyboardShortcut =
     function(e, key, isModifierPressed) {

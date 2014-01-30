@@ -17,22 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import static org.openqa.selenium.net.PortProber.pollPort;
-
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.net.PortProber.pollPort;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
-
-import org.openqa.selenium.Build;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.testing.InProject;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.Build;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.IOException;

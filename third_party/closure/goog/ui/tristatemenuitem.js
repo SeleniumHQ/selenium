@@ -22,9 +22,7 @@ goog.provide('goog.ui.TriStateMenuItem');
 goog.provide('goog.ui.TriStateMenuItem.State');
 
 goog.require('goog.dom.classes');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.TriStateMenuItemRenderer');
 goog.require('goog.ui.registry');
@@ -124,8 +122,8 @@ goog.ui.TriStateMenuItem.prototype.setCheckedState = function(state) {
  */
 goog.ui.TriStateMenuItem.prototype.setCheckedState_ = function(state) {
   if (this.dispatchEvent(state != goog.ui.TriStateMenuItem.State.NOT_CHECKED ?
-        goog.ui.Component.EventType.CHECK :
-        goog.ui.Component.EventType.UNCHECK)) {
+                             goog.ui.Component.EventType.CHECK :
+                             goog.ui.Component.EventType.UNCHECK)) {
     this.setState(goog.ui.Component.State.CHECKED,
         state != goog.ui.TriStateMenuItem.State.NOT_CHECKED);
     this.checkState_ = state;

@@ -17,14 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
@@ -33,34 +35,32 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
-public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
+public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
-   * Capability that defines to ignore or not browser zoom level.
+   * Capability that defines whether to ignore the browser zoom level or not.
    */
   public final static String IGNORE_ZOOM_SETTING = "ignoreZoomSetting";
 
   /**
-   * Capability that defines to use native or javascript events during operations..
+   * Capability that defines to use whether to use native or javascript events during operations.
    */
-  public final static String NATIVE_EVENTS = "nativeEvents";
+  public final static String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
 
   /**
-   * Capability that defines to ignore or not browser zoom level.
+   * Capability that defines the initial URL to be used when IE is launched.
    */
   public final static String INITIAL_BROWSER_URL = "initialBrowserUrl";
 
   /**
-   * Capability that defines initial browser URL.
+   * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
-  public final static String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
+  public final static String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
 
   /**
-   * Capability that defines which behaviour will be used if unexpected Alert is found.
+   * Capability that defines which behaviour will be used if an unexpected Alert is found.
    */
-  public final static String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
+  public final static String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
   /**
    * Capability that defines to use or not cleanup of element cache on document loading.
@@ -122,12 +122,23 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines launch API of IE used by IEDriverServer.
    */
-  public final static String FORCE_CREATE_PROCESS = "forceCreateProcess";
+  public final static String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
 
   /**
-   * Capability that defines used IE CLI switches.
+   * Capability that defines to clean or not browser cache before launching IE by IEDriverServer.
    */
-  public final static String IE_SWITCHES = "internetExplorerSwitches";
+  public final static String IE_ENSURE_CLEAN_SESSION = "ie.ensureCleanSession";
+
+  /**
+   * Capability that defines setting the proxy information for a single IE process
+   * without affecting the proxy settings of other instances of IE.
+   */
+  public final static String IE_USE_PRE_PROCESS_PROXY = "ie.usePerProcessProxy";
+
+  /**
+   * Capability that defines used IE CLI switches when {@link #FORCE_CREATE_PROCESS} is enabled.
+   */
+  public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   /**
    * Port which is used by default.
@@ -163,18 +174,16 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }
-    if (proxy == null) {
-      proxyManager = setupProxy(capabilities);
-    } else {
-      proxyManager = proxy;
-    }
+
+    proxyManager = proxy;
+
     if (service == null) {
       service = setupService(capabilities, port);
     }
-    run(service, capabilities, port);
+    run(service, capabilities);
   }
 
-  private void run(InternetExplorerDriverService service, Capabilities capabilities, int port) {
+  private void run(InternetExplorerDriverService service, Capabilities capabilities) {
     assertOnWindows();
 
     prepareProxy(capabilities);
@@ -248,46 +257,18 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
             builder.withSilent(value);
           }
         }
-
-        if (caps.getCapability(FORCE_CREATE_PROCESS) != null) {
-          Boolean value = (Boolean) caps.getCapability(FORCE_CREATE_PROCESS);
-          if (value != null) {
-            builder.withLaunchApi(value);
-          }
-        }
-
-        if (caps.getCapability(IE_SWITCHES) != null) {
-          String value = (String) caps.getCapability(IE_SWITCHES);
-          if (value != null) {
-            builder.withIeSwitches(value);
-          }
-        }
       }
 
-      InternetExplorerDriverService service = builder.build();
-
-      return service;
+      return builder.build();
 
     } catch (IllegalStateException ex) {
       throw Throwables.propagate(ex);
     }
   }
 
-  private WindowsProxyManager setupProxy(Capabilities caps) {
-    // do not create proxy manager if it's not requested. see issue 4135
-    if (caps == null || caps.getCapability(PROXY) == null) {
-      return null;
-    }
-
-    return new WindowsProxyManager(
-      /* boolean customPACappropriate */ true,
-      /* String sessionId */ "webdriver-ie",
-      /* int port */ 0,
-      /* int portDriversShouldContact */ 0);
-  }
-
   private void prepareProxy(Capabilities caps) {
-    if (caps == null || caps.getCapability(PROXY) == null) {
+    // do not prepare proxy manager if it will be managed by server.
+    if (caps == null || caps.getCapability(PROXY) == null || proxyManager == null) {
       return;
     }
 
@@ -304,4 +285,5 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     };
     Runtime.getRuntime().addShutdownHook(cleanupThread);
   }
+
 }

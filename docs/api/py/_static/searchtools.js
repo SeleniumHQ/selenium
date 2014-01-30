@@ -4,37 +4,10 @@
  *
  * Sphinx JavaScript utilties for the full-text search.
  *
- * :copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2013 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
-
-/**
- * helper function to return a node containing the
- * search summary for a given text. keywords is a list
- * of stemmed words, hlwords is the list of normal, unstemmed
- * words. the first one is used to find the occurance, the
- * latter for highlighting it.
- */
-
-jQuery.makeSearchSummary = function(text, keywords, hlwords) {
-  var textLower = text.toLowerCase();
-  var start = 0;
-  $.each(keywords, function() {
-    var i = textLower.indexOf(this.toLowerCase());
-    if (i > -1)
-      start = i;
-  });
-  start = Math.max(start - 120, 0);
-  var excerpt = ((start > 0) ? '...' : '') +
-  $.trim(text.substr(start, 240)) +
-  ((start + 240 - text.length) ? '...' : '');
-  var rv = $('<div class="context"></div>').text(excerpt);
-  $.each(hlwords, function() {
-    rv = rv.highlightText(this, 'highlighted');
-  });
-  return rv;
-}
 
 
 /**
@@ -220,6 +193,38 @@ var Stemmer = function() {
 }
 
 
+
+/**
+ * Simple result scoring code.
+ */
+var Scorer = {
+  // Implement the following function to further tweak the score for each result
+  // The function takes a result array [filename, title, anchor, descr, score]
+  // and returns the new score.
+  /*
+  score: function(result) {
+    return result[4];
+  },
+  */
+
+  // query matches the full name of an object
+  objNameMatch: 11,
+  // or matches in the last dotted part of the object name
+  objPartialMatch: 6,
+  // Additive scores depending on the priority of the object
+  objPrio: {0:  15,   // used to be importantResults
+            1:  5,   // used to be objectResults
+            2: -5},  // used to be unimportantResults
+  //  Used when the priority is not in the mapping.
+  objPrioDefault: 0,
+
+  // query found in title
+  title: 15,
+  // query found in terms
+  term: 5
+};
+
+
 /**
  * Search Module
  */
@@ -239,8 +244,13 @@ var Search = {
   },
 
   loadIndex : function(url) {
-    $.ajax({type: "GET", url: url, data: null, success: null,
-            dataType: "script", cache: true});
+    $.ajax({type: "GET", url: url, data: null,
+            dataType: "script", cache: true,
+            complete: function(jqxhr, textstatus) {
+              if (textstatus != "success") {
+                document.getElementById("searchindexloader").src = url;
+              }
+            }});
   },
 
   setIndex : function(index) {
@@ -268,19 +278,20 @@ var Search = {
     if (this._pulse_status >= 0)
         return;
     function pulse() {
+      var i;
       Search._pulse_status = (Search._pulse_status + 1) % 4;
       var dotString = '';
-      for (var i = 0; i < Search._pulse_status; i++)
+      for (i = 0; i < Search._pulse_status; i++)
         dotString += '.';
       Search.dots.text(dotString);
       if (Search._pulse_status > -1)
         window.setTimeout(pulse, 500);
-    };
+    }
     pulse();
   },
 
   /**
-   * perform a search for something
+   * perform a search for something (or wait until index is loaded)
    */
   performSearch : function(query) {
     // create the required interface elements
@@ -300,41 +311,46 @@ var Search = {
       this.deferQuery(query);
   },
 
+  /**
+   * execute search (requires search index to be loaded)
+   */
   query : function(query) {
-    var stopwords = ["and","then","into","it","as","are","in","if","for","no","there","their","was","is","be","to","that","but","they","not","such","with","by","a","on","these","of","will","this","near","the","or","at"];
+    var i;
+    var stopwords = ["a","and","are","as","at","be","but","by","for","if","in","into","is","it","near","no","not","of","on","or","such","that","the","their","then","there","these","they","this","to","was","will","with"];
 
-    // Stem the searchterms and add them to the correct list
+    // stem the searchterms and add them to the correct list
     var stemmer = new Stemmer();
     var searchterms = [];
     var excluded = [];
     var hlterms = [];
     var tmp = query.split(/\s+/);
     var objectterms = [];
-    for (var i = 0; i < tmp.length; i++) {
-      if (tmp[i] != "") {
+    for (i = 0; i < tmp.length; i++) {
+      if (tmp[i] !== "") {
           objectterms.push(tmp[i].toLowerCase());
       }
 
       if ($u.indexOf(stopwords, tmp[i]) != -1 || tmp[i].match(/^\d+$/) ||
-          tmp[i] == "") {
+          tmp[i] === "") {
         // skip this "word"
         continue;
       }
       // stem the word
       var word = stemmer.stemWord(tmp[i]).toLowerCase();
+      var toAppend;
       // select the correct list
       if (word[0] == '-') {
-        var toAppend = excluded;
+        toAppend = excluded;
         word = word.substr(1);
       }
       else {
-        var toAppend = searchterms;
+        toAppend = searchterms;
         hlterms.push(tmp[i].toLowerCase());
       }
       // only add if not already in the list
-      if (!$.contains(toAppend, word))
+      if (!$u.contains(toAppend, word))
         toAppend.push(word);
-    };
+    }
     var highlightstring = '?highlight=' + $.urlencode(hlterms.join(" "));
 
     // console.debug('SEARCH: searching for:');
@@ -342,89 +358,51 @@ var Search = {
     // console.info('excluded: ', excluded);
 
     // prepare search
-    var filenames = this._index.filenames;
-    var titles = this._index.titles;
     var terms = this._index.terms;
-    var fileMap = {};
-    var files = null;
-    // different result priorities
-    var importantResults = [];
-    var objectResults = [];
-    var regularResults = [];
-    var unimportantResults = [];
+    var titleterms = this._index.titleterms;
+
+    // array of [filename, title, anchor, descr, score]
+    var results = [];
     $('#search-progress').empty();
 
     // lookup as object
-    for (var i = 0; i < objectterms.length; i++) {
-      var others = [].concat(objectterms.slice(0,i),
-                             objectterms.slice(i+1, objectterms.length))
-      var results = this.performObjectSearch(objectterms[i], others);
-      // Assume first word is most likely to be the object,
-      // other words more likely to be in description.
-      // Therefore put matches for earlier words first.
-      // (Results are eventually used in reverse order).
-      objectResults = results[0].concat(objectResults);
-      importantResults = results[1].concat(importantResults);
-      unimportantResults = results[2].concat(unimportantResults);
+    for (i = 0; i < objectterms.length; i++) {
+      var others = [].concat(objectterms.slice(0, i),
+                             objectterms.slice(i+1, objectterms.length));
+      results = results.concat(this.performObjectSearch(objectterms[i], others));
     }
 
-    // perform the search on the required terms
-    for (var i = 0; i < searchterms.length; i++) {
-      var word = searchterms[i];
-      // no match but word was a required one
-      if ((files = terms[word]) == null)
-        break;
-      if (files.length == undefined) {
-        files = [files];
-      }
-      // create the mapping
-      for (var j = 0; j < files.length; j++) {
-        var file = files[j];
-        if (file in fileMap)
-          fileMap[file].push(word);
-        else
-          fileMap[file] = [word];
-      }
+    // lookup as search terms in fulltext
+    results = results.concat(this.performTermsSearch(searchterms, excluded, terms, Scorer.term))
+                     .concat(this.performTermsSearch(searchterms, excluded, titleterms, Scorer.title));
+
+    // let the scorer override scores with a custom scoring function
+    if (Scorer.score) {
+      for (i = 0; i < results.length; i++)
+        results[i][4] = Scorer.score(results[i]);
     }
 
-    // now check if the files don't contain excluded terms
-    for (var file in fileMap) {
-      var valid = true;
-
-      // check if all requirements are matched
-      if (fileMap[file].length != searchterms.length)
-        continue;
-
-      // ensure that none of the excluded terms is in the
-      // search result.
-      for (var i = 0; i < excluded.length; i++) {
-        if (terms[excluded[i]] == file ||
-            $.contains(terms[excluded[i]] || [], file)) {
-          valid = false;
-          break;
-        }
+    // now sort the results by score (in opposite order of appearance, since the
+    // display function below uses pop() to retrieve items) and then
+    // alphabetically
+    results.sort(function(a, b) {
+      var left = a[4];
+      var right = b[4];
+      if (left > right) {
+        return 1;
+      } else if (left < right) {
+        return -1;
+      } else {
+        // same score: sort alphabetically
+        left = a[1].toLowerCase();
+        right = b[1].toLowerCase();
+        return (left > right) ? -1 : ((left < right) ? 1 : 0);
       }
-
-      // if we have still a valid result we can add it
-      // to the result list
-      if (valid)
-        regularResults.push([filenames[file], titles[file], '', null]);
-    }
-
-    // delete unused variables in order to not waste
-    // memory until list is retrieved completely
-    delete filenames, titles, terms;
-
-    // now sort the regular results descending by title
-    regularResults.sort(function(a, b) {
-      var left = a[1].toLowerCase();
-      var right = b[1].toLowerCase();
-      return (left > right) ? -1 : ((left < right) ? 1 : 0);
     });
 
-    // combine all results
-    var results = unimportantResults.concat(regularResults)
-      .concat(objectResults).concat(importantResults);
+    // for debugging
+    //Search.lastresults = results.slice();  // a copy
+    //console.info('search results:', Search.lastresults);
 
     // print the results
     var resultCount = results.length;
@@ -433,7 +411,7 @@ var Search = {
       if (results.length) {
         var item = results.pop();
         var listItem = $('<li style="display:none"></li>');
-        if (DOCUMENTATION_OPTIONS.FILE_SUFFIX == '') {
+        if (DOCUMENTATION_OPTIONS.FILE_SUFFIX === '') {
           // dirhtml builder
           var dirname = item[0] + '/';
           if (dirname.match(/\/index\/$/)) {
@@ -457,16 +435,18 @@ var Search = {
             displayNextItem();
           });
         } else if (DOCUMENTATION_OPTIONS.HAS_SOURCE) {
-          $.get(DOCUMENTATION_OPTIONS.URL_ROOT + '_sources/' +
-                item[0] + '.txt', function(data) {
-            if (data != '') {
-              listItem.append($.makeSearchSummary(data, searchterms, hlterms));
-              Search.output.append(listItem);
-            }
-            listItem.slideDown(5, function() {
-              displayNextItem();
-            });
-          }, "text");
+          $.ajax({url: DOCUMENTATION_OPTIONS.URL_ROOT + '_sources/' + item[0] + '.txt',
+                  dataType: "text",
+                  complete: function(jqxhr, textstatus) {
+                    var data = jqxhr.responseText;
+                    if (data !== '') {
+                      listItem.append(Search.makeSearchSummary(data, searchterms, hlterms));
+                    }
+                    Search.output.append(listItem);
+                    listItem.slideDown(5, function() {
+                      displayNextItem();
+                    });
+                  }});
         } else {
           // no source available, just display title
           Search.output.append(listItem);
@@ -489,20 +469,32 @@ var Search = {
     displayNextItem();
   },
 
+  /**
+   * search for object names
+   */
   performObjectSearch : function(object, otherterms) {
     var filenames = this._index.filenames;
     var objects = this._index.objects;
     var objnames = this._index.objnames;
     var titles = this._index.titles;
 
-    var importantResults = [];
-    var objectResults = [];
-    var unimportantResults = [];
+    var i;
+    var results = [];
 
     for (var prefix in objects) {
       for (var name in objects[prefix]) {
         var fullname = (prefix ? prefix + '.' : '') + name;
         if (fullname.toLowerCase().indexOf(object) > -1) {
+          var score = 0;
+          var parts = fullname.split('.');
+          // check for different match types: exact matches of full name or
+          // "last name" (i.e. last dotted part)
+          if (fullname == object || parts[parts.length - 1] == object) {
+            score += Scorer.objNameMatch;
+          // matches in last name
+          } else if (parts[parts.length - 1].indexOf(object) > -1) {
+            score += Scorer.objPartialMatch;
+          }
           var match = objects[prefix][name];
           var objname = objnames[match[1]][2];
           var title = titles[match[0]];
@@ -512,7 +504,7 @@ var Search = {
             var haystack = (prefix + ' ' + name + ' ' +
                             objname + ' ' + title).toLowerCase();
             var allfound = true;
-            for (var i = 0; i < otherterms.length; i++) {
+            for (i = 0; i < otherterms.length; i++) {
               if (haystack.indexOf(otherterms[i]) == -1) {
                 allfound = false;
                 break;
@@ -523,37 +515,107 @@ var Search = {
             }
           }
           var descr = objname + _(', in ') + title;
-          anchor = match[3];
-          if (anchor == '')
+
+          var anchor = match[3];
+          if (anchor === '')
             anchor = fullname;
           else if (anchor == '-')
             anchor = objnames[match[1]][1] + '-' + fullname;
-          result = [filenames[match[0]], fullname, '#'+anchor, descr];
-          switch (match[2]) {
-          case 1: objectResults.push(result); break;
-          case 0: importantResults.push(result); break;
-          case 2: unimportantResults.push(result); break;
+          // add custom score for some objects according to scorer
+          if (Scorer.objPrio.hasOwnProperty(match[2])) {
+            score += Scorer.objPrio[match[2]];
+          } else {
+            score += Scorer.objPrioDefault;
           }
+          results.push([filenames[match[0]], fullname, '#'+anchor, descr, score]);
         }
       }
     }
 
-    // sort results descending
-    objectResults.sort(function(a, b) {
-      return (a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0);
-    });
+    return results;
+  },
 
-    importantResults.sort(function(a, b) {
-      return (a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0);
-    });
+  /**
+   * search for full-text terms in the index
+   */
+  performTermsSearch : function(searchterms, excluded, terms, score) {
+    var filenames = this._index.filenames;
+    var titles = this._index.titles;
 
-    unimportantResults.sort(function(a, b) {
-      return (a[1] > b[1]) ? -1 : ((a[1] < b[1]) ? 1 : 0);
-    });
+    var i, j, file, files;
+    var fileMap = {};
+    var results = [];
 
-    return [importantResults, objectResults, unimportantResults]
+    // perform the search on the required terms
+    for (i = 0; i < searchterms.length; i++) {
+      var word = searchterms[i];
+      // no match but word was a required one
+      if (!(files = terms[word]))
+        break;
+      if (files.length === undefined) {
+        files = [files];
+      }
+      // create the mapping
+      for (j = 0; j < files.length; j++) {
+        file = files[j];
+        if (file in fileMap)
+          fileMap[file].push(word);
+        else
+          fileMap[file] = [word];
+      }
+    }
+
+    // now check if the files don't contain excluded terms
+    for (file in fileMap) {
+      var valid = true;
+
+      // check if all requirements are matched
+      if (fileMap[file].length != searchterms.length)
+          continue;
+
+      // ensure that none of the excluded terms is in the search result
+      for (i = 0; i < excluded.length; i++) {
+        if (terms[excluded[i]] == file ||
+          $u.contains(terms[excluded[i]] || [], file)) {
+          valid = false;
+          break;
+        }
+      }
+
+      // if we have still a valid result we can add it to the result list
+      if (valid) {
+        results.push([filenames[file], titles[file], '', null, score]);
+      }
+    }
+    return results;
+  },
+
+  /**
+   * helper function to return a node containing the
+   * search summary for a given text. keywords is a list
+   * of stemmed words, hlwords is the list of normal, unstemmed
+   * words. the first one is used to find the occurance, the
+   * latter for highlighting it.
+   */
+  makeSearchSummary : function(text, keywords, hlwords) {
+    var textLower = text.toLowerCase();
+    var start = 0;
+    $.each(keywords, function() {
+      var i = textLower.indexOf(this.toLowerCase());
+      if (i > -1)
+        start = i;
+    });
+    start = Math.max(start - 120, 0);
+    var excerpt = ((start > 0) ? '...' : '') +
+      $.trim(text.substr(start, 240)) +
+      ((start + 240 - text.length) ? '...' : '');
+    var rv = $('<div class="context"></div>').text(excerpt);
+    $.each(hlwords, function() {
+      rv = rv.highlightText(this, 'highlighted');
+    });
+    return rv;
   }
-}
+};
 
 $(document).ready(function() {
   Search.init();

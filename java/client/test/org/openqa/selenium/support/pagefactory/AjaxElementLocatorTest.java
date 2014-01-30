@@ -18,9 +18,14 @@ package org.openqa.selenium.support.pagefactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,14 +33,12 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.FakeClock;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AjaxElementLocatorTest extends MockTestBase {
+public class AjaxElementLocatorTest {
+
   private FakeClock clock = new FakeClock();
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
@@ -49,12 +52,9 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by);
-      will(throwException(new NoSuchElementException("bar")));
-      exactly(1).of(driver).findElement(by);
-      will(returnValue(element));
-    }});
+    when(driver.findElement(by))
+        .thenThrow(new NoSuchElementException("bar"))
+        .thenReturn(element);
 
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
@@ -71,12 +71,9 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final List<WebElement> elementList = new ArrayList<WebElement>();
     elementList.add(element);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(by);
-      will(throwException(new NoSuchElementException("bar")));
-      exactly(1).of(driver).findElements(by);
-      will(returnValue(elementList));
-    }});
+    when(driver.findElements(by))
+        .thenThrow(new NoSuchElementException("bar"))
+        .thenReturn(elementList);
 
     ElementLocator locator = newLocator(driver, f);
     List<WebElement> returnedList = locator.findElements();
@@ -90,10 +87,7 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
 
-    checking(new Expectations() {{
-      exactly(3).of(driver).findElement(by);
-      will(throwException(new NoSuchElementException("bar")));
-    }});
+    when(driver.findElement(by)).thenThrow(new NoSuchElementException("bar"));
 
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 2);
 
@@ -103,6 +97,14 @@ public class AjaxElementLocatorTest extends MockTestBase {
     } catch (NoSuchElementException e) {
       // This is expected
     }
+
+    // Look ups:
+    // 1. In "isLoaded"
+    // 2. Immediately after call of load. (clock is 0)
+    // 3. First sleep, then third call.   (clock is 1)
+    // 4. Main loop is now over. Final call as we exit to see if we've loaded.
+    // The last call guarantees we've called "isLoaded" at least once after a load.
+    verify(driver, times(4)).findElement(by);
   }
 
   @Test
@@ -111,10 +113,7 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
 
-    checking(new Expectations() {{
-      exactly(2).of(driver).findElement(by);
-      will(throwException(new NoSuchElementException("bar")));
-    }});
+    when(driver.findElement(by)).thenThrow(new NoSuchElementException("bar"));
 
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);
 
@@ -124,6 +123,8 @@ public class AjaxElementLocatorTest extends MockTestBase {
     } catch (NoSuchElementException e) {
       // This is expected
     }
+
+    verify(driver, atLeast(2)).findElement(by);
   }
 
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {

@@ -295,7 +295,7 @@ See the COPYING file for details.
         (goog.now() - timer) + 'ms');
 
     goog.events.listen(window, 'unload', function() {
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
     });
   </script>
 </body>

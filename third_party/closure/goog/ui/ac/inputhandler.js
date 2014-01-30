@@ -93,14 +93,13 @@ goog.provide('goog.ui.ac.InputHandler');
 
 goog.require('goog.Disposable');
 goog.require('goog.Timer');
+goog.require('goog.a11y.aria');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
 goog.require('goog.dom.selection');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
@@ -112,6 +111,7 @@ goog.require('goog.userAgent.product');
  * text-input or textarea.
  *
  * @param {?string=} opt_separators Separators to split multiple entries.
+ *     If none passed, uses ',' and ';'.
  * @param {?string=} opt_literals Characters used to delimit text literals.
  * @param {?boolean=} opt_multi Whether to allow multiple entries
  *     (Default: true).
@@ -134,7 +134,7 @@ goog.ui.ac.InputHandler = function(opt_separators, opt_literals,
   this.multi_ = opt_multi != null ? opt_multi : true;
 
   // Set separators depends on this.multi_ being set correctly
-  this.setSeparators(goog.isDefAndNotNull(opt_separators) ? opt_separators :
+  this.setSeparators(opt_separators ||
       goog.ui.ac.InputHandler.STANDARD_LIST_SEPARATORS);
 
   /**
@@ -209,7 +209,7 @@ goog.inherits(goog.ui.ac.InputHandler, goog.Disposable);
 goog.ui.ac.InputHandler.REQUIRES_ASYNC_BLUR_ =
     (goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) &&
         // Check the webkit version against the version for iOS 4.2.1.
-        !goog.userAgent.isVersion('533.17.9');
+        !goog.userAgent.isVersionOrHigher('533.17.9');
 
 
 /**
@@ -441,7 +441,8 @@ goog.ui.ac.InputHandler.prototype.setCursorPosition = function(pos) {
  */
 goog.ui.ac.InputHandler.prototype.attachInput = function(target) {
   if (goog.dom.isElement(target)) {
-    goog.dom.a11y.setState(/** @type {Element} */ (target), 'haspopup', true);
+    var el = /** @type {!Element} */ (target);
+    goog.a11y.aria.setState(el, 'haspopup', true);
   }
 
   this.eh_.listen(target, goog.events.EventType.FOCUS, this.handleFocus);
@@ -574,7 +575,7 @@ goog.ui.ac.InputHandler.prototype.setTokenText =
       // to detect. Since text editing is finicky we restrict this
       // workaround to Firefox and IE 9 where it's necessary.
       if (goog.userAgent.GECKO ||
-          (goog.userAgent.IE && goog.userAgent.isVersion('9'))) {
+          (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9'))) {
         el.blur();
       }
       // Join the array and replace the contents of the input.
@@ -610,6 +611,7 @@ goog.ui.ac.InputHandler.prototype.disposeInternal = function() {
   delete this.eh_;
   this.activateHandler_.dispose();
   this.keyHandler_.dispose();
+  goog.dispose(this.timer_);
 };
 
 
@@ -617,10 +619,14 @@ goog.ui.ac.InputHandler.prototype.disposeInternal = function() {
  * Sets the entry separator characters.
  *
  * @param {string} separators The separator characters to set.
+ * @param {string=} opt_defaultSeparators The defaultSeparator character to set.
  */
-goog.ui.ac.InputHandler.prototype.setSeparators = function(separators) {
+goog.ui.ac.InputHandler.prototype.setSeparators =
+    function(separators, opt_defaultSeparators) {
   this.separators_ = separators;
-  this.defaultSeparator_ = this.separators_.substring(0, 1);
+  this.defaultSeparator_ =
+      goog.isDefAndNotNull(opt_defaultSeparators) ?
+      opt_defaultSeparators : this.separators_.substring(0, 1);
 
   var wspaceExp = this.multi_ ? '[\\s' + this.separators_ + ']+' : '[\\s]+';
 

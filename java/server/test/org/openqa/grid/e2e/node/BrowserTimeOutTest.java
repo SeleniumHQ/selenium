@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -28,9 +31,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,11 +41,11 @@ import java.util.Arrays;
  */
 public class BrowserTimeOutTest {
 
-  private Hub hub;
-  private SelfRegisteringRemote node;
+  private static Hub hub;
+  private static SelfRegisteringRemote node;
 
-  @BeforeClass(alwaysRun = true)
-  public void setup() throws Exception {
+  @BeforeClass
+  public static void setup() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
     gridHubConfiguration.setPort(PortProber.findFreePort());
     gridHubConfiguration.setHost("localhost");
@@ -57,7 +57,7 @@ public class BrowserTimeOutTest {
     // register a selenium 1
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
-    node.addBrowser(DesiredCapabilities.firefox(), 1);
+    node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.startRemoteServer();
     node.sendRegistrationRequest();
 
@@ -68,8 +68,8 @@ public class BrowserTimeOutTest {
   @Test
   public void testWebDriverTimesOut() throws InterruptedException, MalformedURLException {
     String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/admin/SlowServlet";
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
-    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
+    DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
 
     try {
       driver.get(url);
@@ -80,7 +80,7 @@ public class BrowserTimeOutTest {
   }
 
   @AfterClass
-  public void teardown() throws Exception {
+  public static void teardown() throws Exception {
     node.stopRemoteServer();
     hub.stop();
   }

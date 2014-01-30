@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -26,20 +28,15 @@ public class GridDocHelper {
   private static Properties gridProperties = load("org/openqa/grid/common/defaults/GridParameters.properties");
 
   public static void printHelp(String msg) {
-    printHelpInConsole(gridProperties, msg, true);
+    printHelpInConsole(msg, true);
   }
 
   public static void printHelp(String msg, boolean error) {
-    printHelpInConsole(gridProperties, msg, error);
+    printHelpInConsole(msg, error);
   }
 
 
   public static String getGridParam(String param) {
-    return getParam(gridProperties, param);
-  }
-
-
-  private static String getParam(Properties p, String param) {
     if (param == null) {
       return "";
     }
@@ -51,7 +48,8 @@ public class GridDocHelper {
     }
   }
 
-  private static void printHelpInConsole(Properties p, String msg, boolean error) {
+
+  private static void printHelpInConsole(String msg, boolean error) {
     String indent = "  ";
     String indent2x = indent + indent;
     if (msg != null) {
@@ -63,33 +61,11 @@ public class GridDocHelper {
     }
 
     System.out.println("Usage :");
-    for (Object key : p.keySet()) {
+    for (Object key : gridProperties.keySet()) {
       System.out.println(indent + "-" + key + ":\t");
-      printWrappedErrorLine(indent2x, getParam(p, key.toString()), true);
+      RemoteControlLauncher.printWrappedLine(System.out, indent2x, getGridParam(key.toString()), true);
       System.out.println("");
     }
-  }
-
-
-  public static void printWrappedErrorLine(String prefix, String msg, boolean first) {
-    System.err.print(prefix);
-    if (!first) {
-      System.err.print("  ");
-    }
-    int defaultWrap = 70;
-    int wrap = defaultWrap - prefix.length();
-    if (wrap > msg.length()) {
-      System.err.println(msg);
-      return;
-    }
-    String lineRaw = msg.substring(0, wrap);
-    int spaceIndex = lineRaw.lastIndexOf(' ');
-    if (spaceIndex == -1) {
-      spaceIndex = lineRaw.length();
-    }
-    String line = lineRaw.substring(0, spaceIndex);
-    System.err.println(line);
-    printWrappedErrorLine(prefix, msg.substring(spaceIndex + 1), false);
   }
 
   private static Properties load(String resource) {

@@ -624,7 +624,7 @@ goog.ui.Tooltip.prototype.maybeHide = function(el) {
   this.hideTimer = undefined;
   if (el == this.anchor) {
     if ((this.activeEl_ == null || (this.activeEl_ != this.getElement() &&
-                                   !this.elements_.contains(this.activeEl_))) &&
+        !this.elements_.contains(this.activeEl_))) &&
         !this.hasActiveChild()) {
       this.setVisible(false);
     }
@@ -941,8 +941,8 @@ goog.ui.Tooltip.CursorTooltipPosition.prototype.reposition = function(
       new goog.math.Box(10, 0, 0, 10);
 
   if (goog.positioning.positionAtCoordinate(this.coordinate, element,
-          goog.positioning.Corner.TOP_START, margin, viewport,
-          goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y
+      goog.positioning.Corner.TOP_START, margin, viewport,
+      goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y
       ) & goog.positioning.OverflowStatus.FAILED) {
     goog.positioning.positionAtCoordinate(this.coordinate, element,
         goog.positioning.Corner.TOP_START, margin, viewport,
@@ -987,8 +987,8 @@ goog.ui.Tooltip.ElementTooltipPosition.prototype.reposition = function(
   var offset = new goog.math.Coordinate(10, 0);
 
   if (goog.positioning.positionAtAnchor(this.element, this.corner, element,
-          popupCorner, offset, opt_margin,
-          goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y
+      popupCorner, offset, opt_margin,
+      goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y
       ) & goog.positioning.OverflowStatus.FAILED) {
     goog.positioning.positionAtAnchor(this.element,
         goog.positioning.Corner.TOP_RIGHT, element,

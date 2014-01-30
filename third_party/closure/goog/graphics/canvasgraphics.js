@@ -23,7 +23,6 @@
 goog.provide('goog.graphics.CanvasGraphics');
 
 
-goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
 goog.require('goog.graphics.CanvasEllipseElement');
@@ -32,11 +31,9 @@ goog.require('goog.graphics.CanvasImageElement');
 goog.require('goog.graphics.CanvasPathElement');
 goog.require('goog.graphics.CanvasRectElement');
 goog.require('goog.graphics.CanvasTextElement');
-goog.require('goog.graphics.Font');
-goog.require('goog.graphics.LinearGradient');
 goog.require('goog.graphics.SolidFill');
-goog.require('goog.graphics.Stroke');
 goog.require('goog.math.Size');
+goog.require('goog.style');
 
 
 
@@ -54,6 +51,9 @@ goog.require('goog.math.Size');
  *     document we want to render in.
  * @constructor
  * @extends {goog.graphics.AbstractGraphics}
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.CanvasGraphics = function(width, height,
                                         opt_coordWidth, opt_coordHeight,

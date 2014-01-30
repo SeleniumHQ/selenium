@@ -17,52 +17,52 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
-import org.openqa.selenium.Keyboard;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * Tests the builder for advanced user interaction, the Actions class.
  */
-public class ActionsTest extends MockTestBase {
+public class ActionsTest {
 
+  @Mock private Mouse mockMouse;
+  @Mock private Keyboard mockKeyboard;
+  @Mock private Coordinates mockCoordinates;
   private WebElement dummyLocatableElement;
-  private Mouse dummyMouse;
-  private Keyboard dummyKeyboard;
   private WebDriver driver;
-  private Coordinates dummyCoordinates;
 
   @Before
   public void setUp() {
-    dummyMouse = mock(Mouse.class);
-    dummyKeyboard = mock(Keyboard.class);
-    dummyCoordinates = mock(Coordinates.class);
+    MockitoAnnotations.initMocks(this);
+
     dummyLocatableElement = new StubRenderedWebElement() {
       @Override
       public Coordinates getCoordinates() {
-        return dummyCoordinates;
+        return mockCoordinates;
       }
     };
 
     driver = new StubInputDeviceDriver() {
       @Override
       public Keyboard getKeyboard() {
-        return dummyKeyboard;
+        return mockKeyboard;
       }
 
       @Override
       public Mouse getMouse() {
-        return dummyMouse;
+        return mockMouse;
       }
 
     };
@@ -70,12 +70,6 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void creatingAllKeyboardActions() {
-    checking(new Expectations() {{
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
-      one(dummyKeyboard).sendKeys("abc");
-      one(dummyKeyboard).releaseKey(Keys.CONTROL);
-    }});
-
     Actions builder = new Actions(driver);
 
     builder.keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL);
@@ -84,15 +78,16 @@ public class ActionsTest extends MockTestBase {
     returnedAction.perform();
 
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
+
+    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
+    order.verify(mockKeyboard).pressKey(Keys.SHIFT);
+    order.verify(mockKeyboard).sendKeys("abc");
+    order.verify(mockKeyboard).releaseKey(Keys.CONTROL);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void providingAnElementToKeyboardActions() {
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
-    }});
-
     Actions builder = new Actions(driver);
 
     builder.keyDown(dummyLocatableElement, Keys.SHIFT);
@@ -101,6 +96,11 @@ public class ActionsTest extends MockTestBase {
     returnedAction.perform();
 
     assertEquals("Expected 1 keyboard action", 1, returnedAction.getNumberOfActions());
+
+    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockKeyboard).pressKey(Keys.SHIFT);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
@@ -122,15 +122,6 @@ public class ActionsTest extends MockTestBase {
       }
     };
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
-      one(dummyMouse).click(dummyCoordinates2);
-      one(dummyKeyboard).sendKeys("abc");
-      one(dummyMouse).click(dummyCoordinates3);
-      one(dummyKeyboard).releaseKey(Keys.CONTROL);
-    }});
-
     Actions builder = new Actions(driver);
 
     builder.keyDown(dummyLocatableElement, Keys.SHIFT)
@@ -141,37 +132,45 @@ public class ActionsTest extends MockTestBase {
     returnedAction.perform();
 
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
+
+    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates, dummyCoordinates2,
+        dummyCoordinates3);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockKeyboard).pressKey(Keys.SHIFT);
+    order.verify(mockMouse).click(dummyCoordinates2);
+    order.verify(mockKeyboard).sendKeys("abc");
+    order.verify(mockMouse).click(dummyCoordinates3);
+    order.verify(mockKeyboard).releaseKey(Keys.CONTROL);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void creatingAllMouseActions() {
-    checking(new Expectations() {{
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseDown(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseUp(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).doubleClick(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).contextClick(dummyCoordinates);
-    }});
-
-    Actions builder = new Actions(driver);
-
-    builder.clickAndHold(dummyLocatableElement)
+    CompositeAction returnedAction = (CompositeAction) new Actions(driver)
+        .clickAndHold(dummyLocatableElement)
         .release(dummyLocatableElement)
         .click(dummyLocatableElement)
         .doubleClick(dummyLocatableElement)
         .moveToElement(dummyLocatableElement)
-        .contextClick(dummyLocatableElement);
+        .contextClick(dummyLocatableElement)
+        .build();
 
-    CompositeAction returnedAction = (CompositeAction) builder.build();
     returnedAction.perform();
-
     assertEquals("Expected 6 mouse actions", 6, returnedAction.getNumberOfActions());
+
+    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).mouseDown(mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).mouseUp(mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).doubleClick(mockCoordinates);
+    // Move twice; oce for moveToElement, once for contextClick.
+    order.verify(mockMouse, times(2)).mouseMove(mockCoordinates);
+    order.verify(mockMouse).contextClick(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
 }

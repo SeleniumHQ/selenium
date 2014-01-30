@@ -18,10 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.events.internal;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
@@ -43,11 +42,11 @@ public class EventFiringKeyboard implements Keyboard {
     keyboard.sendKeys(keysToSend);
   }
 
-  public void pressKey(Keys keyToPress) {
+  public void pressKey(CharSequence keyToPress) {
     keyboard.pressKey(keyToPress);
   }
 
-  public void releaseKey(Keys keyToRelease) {
+  public void releaseKey(CharSequence keyToRelease) {
     keyboard.releaseKey(keyToRelease);
   }
 }

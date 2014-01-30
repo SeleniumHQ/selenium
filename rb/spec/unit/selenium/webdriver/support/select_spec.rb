@@ -6,18 +6,18 @@ module Selenium
 
       describe Select do
         let(:select) {
-          mock(Element, :tag_name => 'select')
+          double(Element, :tag_name => 'select')
         }
 
         let(:multi_select) {
-          s = mock(Element, :tag_name => 'select')
+          s = double(Element, :tag_name => 'select')
           s.stub(:attribute).with(:multiple).and_return "multiple"
 
           s
         }
 
         it 'raises ArgumentError if passed a non-select Element' do
-          link = mock(Element, :tag_name => "a")
+          link = double(Element, :tag_name => "a")
 
           lambda {
             Select.new link
@@ -26,10 +26,10 @@ module Selenium
 
         it 'indicates whether a select is multiple correctly' do
           selects = [
-            mock(Element, :tag_name => "select"),
-            mock(Element, :tag_name => "select"),
-            mock(Element, :tag_name => "select"),
-            mock(Element, :tag_name => "select")
+            double(Element, :tag_name => "select"),
+            double(Element, :tag_name => "select"),
+            double(Element, :tag_name => "select"),
+            double(Element, :tag_name => "select")
           ]
 
           selects[0].stub(:attribute).with(:multiple).and_return("false")
@@ -55,8 +55,8 @@ module Selenium
         end
 
         it 'returns all selected options' do
-          bad_option  = mock(Element, :selected? => false)
-          good_option = mock(Element, :selected? => true)
+          bad_option  = double(Element, :selected? => false)
+          good_option = double(Element, :selected? => true)
 
           multi_select.should_receive(:find_elements).
                          with(:tag_name, 'option').
@@ -70,8 +70,8 @@ module Selenium
         end
 
         it 'returns the first selected option' do
-          first_option  = mock(Element, :selected? => true)
-          second_option = mock(Element, :selected? => true)
+          first_option  = double(Element, :selected? => true)
+          second_option = double(Element, :selected? => true)
 
           multi_select.should_receive(:find_elements).
                          with(:tag_name, 'option').
@@ -83,7 +83,7 @@ module Selenium
         end
 
         it 'raises a NoSuchElementError if nothing is selected' do
-          option = mock(Element, :selected? => false)
+          option = double(Element, :selected? => false)
 
           multi_select.should_receive(:find_elements).
                          with(:tag_name, 'option').
@@ -96,7 +96,7 @@ module Selenium
         end
 
         it 'allows options to be selected by visible text' do
-          option = mock(Element, :selected? => false)
+          option = double(Element, :selected? => false)
 
           multi_select.should_receive(:find_elements).
                          with(:xpath, './/option[normalize-space(.) = "fish"]').
@@ -109,8 +109,8 @@ module Selenium
         end
 
         it 'allows options to be selected by index' do
-          first_option = mock(Element, :selected? => true)
-          second_option = mock(Element, :selected? => false)
+          first_option = double(Element, :selected? => true)
+          second_option = double(Element, :selected? => false)
 
           first_option.should_receive(:attribute).with(:index).and_return "0"
           first_option.should_receive(:click).never
@@ -126,7 +126,7 @@ module Selenium
         end
 
         it 'allows options to be selected by returned value' do
-          first_option = mock(Element, :selected? => false)
+          first_option = double(Element, :selected? => false)
           multi_select.should_receive(:find_elements).
                          with(:xpath, './/option[@value = "b"]').
                          and_return([first_option])
@@ -137,8 +137,8 @@ module Selenium
         end
 
         it 'can deselect all when select supports multiple selections' do
-          first_option = mock(Element, :selected? => true)
-          second_option = mock(Element, :selected? => false)
+          first_option = double(Element, :selected? => true)
+          second_option = double(Element, :selected? => false)
 
           multi_select.should_receive(:find_elements).
                          with(:tag_name, 'option').
@@ -160,8 +160,8 @@ module Selenium
         end
 
         it 'can deselect options by visible text' do
-          first_option  = mock(Element, :selected? => true)
-          second_option = mock(Element, :selected? => false)
+          first_option  = double(Element, :selected? => true)
+          second_option = double(Element, :selected? => false)
 
           multi_select.should_receive(:find_elements).
                          with(:xpath, './/option[normalize-space(.) = "b"]').
@@ -174,8 +174,8 @@ module Selenium
         end
 
         it 'can deselect options by index' do
-          first_option  = mock(Element, :selected? => true)
-          second_option = mock(Element)
+          first_option  = double(Element, :selected? => true)
+          second_option = double(Element)
 
           multi_select.should_receive(:find_elements).
                          with(:tag_name, 'option').
@@ -191,8 +191,8 @@ module Selenium
         end
 
         it 'can deselect options by returned value' do
-          first_option = mock(Element, :selected? => true)
-          second_option = mock(Element, :selected? => false)
+          first_option = double(Element, :selected? => true)
+          second_option = double(Element, :selected? => false)
 
           multi_select.should_receive(:find_elements).
                          with(:xpath, './/option[@value = "b"]').
@@ -205,7 +205,7 @@ module Selenium
         end
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
-          first_option = mock(Element, :selected? => false, :text => 'foo bar')
+          first_option = double(Element, :selected? => false, :text => 'foo bar')
           first_option.stub(:to_a => [first_option])
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'

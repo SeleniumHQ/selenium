@@ -179,7 +179,12 @@ WdCertOverrideService.prototype.hasMatchingOverride = function(
     retval = true;
     aIsTemporary.value = false;
 
-    aOverrideBits.value = this.fillNeededBits(aCert, aHostName);
+    if (bot.userAgent.isProductVersion(19)) {
+      fxdriver.logging.info('Setting all Override Bits');
+      aOverrideBits.value = this.ERROR_UNTRUSTED | this.ERROR_MISMATCH | this.ERROR_TIME;
+    } else {
+      aOverrideBits.value = this.fillNeededBits(aCert, aHostName);
+    }
     fxdriver.logging.info('Override Bits: ' + aOverrideBits.value);
   } else {
     retval = this.origListener_.hasMatchingOverride(aHostName, aPort,

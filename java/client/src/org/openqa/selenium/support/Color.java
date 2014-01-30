@@ -25,7 +25,7 @@ public class Color {
   private final int red;
   private final int green;
   private final int blue;
-  private final double alpha;
+  private double alpha;
 
   private static final Converter[] CONVERTERS = {
       new RgbConverter(),
@@ -61,6 +61,10 @@ public class Color {
     this.alpha = alpha;
   }
 
+  public void setOpacity(double alpha) {
+    this.alpha = alpha;
+  }
+
   public String asRgb() {
     return String.format("rgb(%d, %d, %d)", red, green, blue);
   }
@@ -79,6 +83,11 @@ public class Color {
 
   public String asHex() {
     return String.format("#%02x%02x%02x", red, green, blue);
+  }
+
+  @Override
+  public String toString() {
+    return "Color: " + asRgba();
   }
 
   @Override

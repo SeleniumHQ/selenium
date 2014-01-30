@@ -17,19 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementSelectionToBe;
 
-import static org.hamcrest.Matchers.is;
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class ElementSelectingTest extends JUnit4TestBase {
   private static final boolean UNSELECTED = false;
@@ -48,25 +47,28 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldNotBeAbleToSelectADisabledCheckbox() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedCheckbox());
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
-  @Ignore(OPERA_MOBILE)
+  @Ignore({OPERA_MOBILE, MARIONETTE})
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledUnselectedRadioButton());
@@ -111,7 +113,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(value = {ANDROID}, reason = "Android: opens a dialog.")
+  @Ignore(value = {ANDROID, MARIONETTE}, reason = "Android: opens a dialog.")
   @Test
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
@@ -147,60 +149,64 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingDisabledSelectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedCheckbox());
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledSelectedRadioButton());
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingDisabledUnselectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
   }
 
 
-  private static void assertNotSelected(WebElement element) {
+  private void assertNotSelected(WebElement element) {
     assertSelected(element, UNSELECTED);
   }
 
-  private static void assertSelected(WebElement element) {
+  private void assertSelected(WebElement element) {
     assertSelected(element, SELECTED);
   }
 
-  private static void assertSelected(WebElement element, boolean isSelected) {
-    waitFor(elementSelectionToBe(element, isSelected));
+  private void assertSelected(WebElement element, boolean isSelected) {
+    wait.until(ExpectedConditions.elementSelectionStateToBe(element, isSelected));
     assertThat(
         String.format("Expected element %s to be %s but was %s",
             describe(element), selectedToString(isSelected), selectedToString(!isSelected)),
         element.isSelected(), is(isSelected));
   }
 
-  private static void assertCannotSelect(WebElement element) {
+  private void assertCannotSelect(WebElement element) {
     boolean previous = element.isSelected();
     element.click();
     assertEquals(previous, element.isSelected());
   }
 
-  private static void assertCanSelect(WebElement element) {
+  private void assertCanSelect(WebElement element) {
     assertNotSelected(element);
 
     element.click();
     assertSelected(element);
   }
 
-  private static void assertClickingPreservesCurrentlySelectedStatus(WebElement element) {
+  private void assertClickingPreservesCurrentlySelectedStatus(WebElement element) {
     boolean currentSelectedStatus = element.isSelected();
     element.click();
     assertSelected(element, currentSelectedStatus);
@@ -214,7 +220,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
     return element.getAttribute("id");
   }
 
-  private static void assertCanToggle(WebElement element) {
+  private void assertCanToggle(WebElement element) {
     final boolean originalState = element.isSelected();
 
     assertSelected(element, originalState);
@@ -223,7 +229,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTogglingSwapsSelectedStateFrom(element, !originalState);
   }
 
-  private static void assertTogglingSwapsSelectedStateFrom(WebElement element, boolean originalState) {
+  private void assertTogglingSwapsSelectedStateFrom(WebElement element, boolean originalState) {
     element.click();
     boolean isNowSelected = element.isSelected();
     assertThat(

@@ -30,6 +30,8 @@ import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
@@ -45,9 +47,10 @@ import java.util.Map;
 
 /**
  * Unit tests for {@link ErrorHandler}.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
+@RunWith(JUnit4.class)
 public class ErrorHandlerTest {
   private ErrorHandler handler;
 

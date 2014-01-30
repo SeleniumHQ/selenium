@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverCommandProcessor;
+import com.thoughtworks.selenium.webdriven.WebDriverCommandProcessor;
 
 import static org.junit.Assert.fail;
 

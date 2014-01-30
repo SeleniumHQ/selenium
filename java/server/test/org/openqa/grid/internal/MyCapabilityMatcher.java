@@ -18,9 +18,9 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import java.util.Map;
-
 import org.openqa.grid.internal.utils.CapabilityMatcher;
+
+import java.util.Map;
 
 public class MyCapabilityMatcher implements CapabilityMatcher{
 

@@ -24,6 +24,7 @@ package org.openqa.jetty.util;
  * @author Greg Wilkins (gregw)
  * @deprecated Use TypeUtil
  */
+@Deprecated
 public class Primitive extends TypeUtil
 {
 }

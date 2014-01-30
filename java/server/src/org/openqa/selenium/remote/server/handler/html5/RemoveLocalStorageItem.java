@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -32,8 +31,10 @@ public class RemoveLocalStorageItem extends ResponseAwareWebDriverHandler {
     this.key = key;
   }
 
+  @Override
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) getUnwrappedDriver()).getLocalStorage().removeItem(key);
+    Object value = Utils.getWebStorage(getUnwrappedDriver())
+        .getLocalStorage().removeItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
   }

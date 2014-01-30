@@ -18,17 +18,18 @@ limitations under the License.
 
 package org.openqa.grid.internal.mock;
 
-import java.util.Map;
+import static org.mockito.Mockito.mock;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.jmock.Mockery;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * create mocked object for testing grid internal.
@@ -57,8 +58,7 @@ public class GridHelper {
 
   public static SeleniumBasedRequest createMockedRequest(Registry registry,
       SeleniumProtocol protocol, RequestType type, Map<String, Object> desiredCapability) {
-    Mockery context = new Mockery();
-    HttpServletRequest request = context.mock(HttpServletRequest.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
 
       @Override

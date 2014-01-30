@@ -81,7 +81,9 @@ module Selenium
             DriverExtensions::UploadsFiles,
             DriverExtensions::TakesScreenshot,
             DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable
+            DriverExtensions::Rotatable,
+            DriverExtensions::HasTouchScreen,
+            DriverExtensions::HasRemoteStatus
           ]
         end
 
@@ -98,6 +100,10 @@ module Selenium
           @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
           Capabilities.json_create resp['value']
+        end
+
+        def status
+          execute :status
         end
 
         def get(url)
@@ -407,7 +413,7 @@ module Selenium
 
         def upload(local_file)
           unless File.file?(local_file)
-            raise WebDriverError::Error, "you may only upload files: #{local_file.inspect}"
+            raise Error::WebDriverError, "you may only upload files: #{local_file.inspect}"
           end
 
           execute :uploadFile, {}, :file => Zipper.zip_file(local_file)
@@ -452,11 +458,11 @@ module Selenium
 
         def touchScroll(element, x, y)
           if element
-            execute :touchScroll, {}, :xoffset => x, :yoffset => y
-          else
             execute :touchScroll, {}, :element => element,
                                       :xoffset => x,
                                       :yoffset => y
+          else
+            execute :touchScroll, {}, :xoffset => x, :yoffset => y
           end
         end
 

@@ -1,4 +1,8 @@
 <html>
+<!-- Padding to account for small screens of mobile devices -->
+<style>
+    p {margin-top:48px;}
+</style>
 <head>
     <title>Testing Alerts</title>
 
@@ -14,7 +18,7 @@
         function displayPromptWithDefault() {
           setInnerText('text', prompt('Enter something', 'This is a default value'));
         }
-        
+
         function displayTwoPrompts() {
           setInnerText('text1', prompt('First'));
           setInnerText('text2', prompt('Second'));
@@ -76,5 +80,6 @@
   <option id="value2" value="2">Two</option>
   <option id="value3" value="3">Three</option>
 </select></p>
+<p><input id="input" onchange="alert('change fired');" value="onchange"/></p>
 </body>
 </html>

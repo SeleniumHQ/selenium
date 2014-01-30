@@ -34,7 +34,9 @@ namespace :ci do
     request.basic_auth(username, apikey)
     request["Content-Type"] = "application/octet-stream"
     request.body = body
-    response = net_http.new(uri.host, uri.port).request(request)
+    http = net_http.new(uri.host, uri.port)
+    http.read_timeout = 60 * 5 # 5 min
+    response = http.request(request)
     metadata = JSON.parse(response.body)
     local_digest = Digest::MD5.hexdigest(body)
     if metadata['md5'] == local_digest

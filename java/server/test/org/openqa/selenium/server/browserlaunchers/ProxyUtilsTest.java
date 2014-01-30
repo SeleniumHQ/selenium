@@ -16,7 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
@@ -48,7 +49,7 @@ public class ProxyUtilsTest {
       options = Proxies.setAvoidProxy(options, row[1]);
       options = Proxies.setProxyEverything(options, row[2]);
 
-      Assert.assertEquals("Failure on row: " + i, row[3], Proxies.isProxyingAllTraffic(options));
+      assertEquals("Failure on row: " + i, row[3], Proxies.isProxyingAllTraffic(options));
     }
 
   }

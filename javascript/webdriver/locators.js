@@ -110,7 +110,7 @@ webdriver.Locator.checkLocator = function(locator) {
   if (!locator.using || !locator.value) {
     locator = webdriver.Locator.createFromObj(locator);
   }
-  return (/**@type {!webdriver.Locator} */locator);
+  return /**@type {!webdriver.Locator} */ (locator);
 };
 
 

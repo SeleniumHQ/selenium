@@ -17,34 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Pattern;
-
 /**
- * Models a function declaration. That is, it provides an implementation of a particular Javascript
- * function.
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.FunctionDeclaration} instead.
  */
-public class FunctionDeclaration implements ScriptMutator {
-  private final Pattern pattern;
-  private final String function;
+@Deprecated
+public class FunctionDeclaration extends com.thoughtworks.selenium.webdriven.FunctionDeclaration {
 
   /**
-   * @param raw The original function (eg: "selenium.isElementPresent")
+   * @param raw    The original function (eg: "selenium.isElementPresent")
    * @param result The body of the function implementation.
    */
   public FunctionDeclaration(String raw, String result) {
-    String base = raw.replace(".", "\\s*\\.\\s*");
-
-    pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
-
-    function = raw + " = function() { " + result + " }; ";
+    super(raw, result);
   }
-
-  public void mutate(String script, StringBuilder outputTo) {
-    if (!pattern.matcher(script).matches()) {
-      return;
-    }
-
-    outputTo.append(function);
-  }
-
 }

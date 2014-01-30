@@ -18,7 +18,8 @@ module Selenium
         end
 
         def tmp_files
-          @tmp_files ||= []
+          @tmp_files ||= Hash.new { |hash, pid| hash[pid] = [] }
+          @tmp_files[Process.pid]
         end
 
         def <<(file)
@@ -36,11 +37,17 @@ module Selenium
         end
 
         def reap!
-          tmp_files.each { |file| FileUtils.rm_rf(file) } if reap?
+          if reap?
+            tmp_files.each { |file| FileUtils.rm_rf(file) }
+            true
+          else
+            false
+          end
         end
       end
 
-      Platform.exit_hook { reap! }
+      # we *do* want child process reaping, so not using Platform.exit_hook here.
+      at_exit { reap! }
 
     end # FileReaper
   end # WebDriver

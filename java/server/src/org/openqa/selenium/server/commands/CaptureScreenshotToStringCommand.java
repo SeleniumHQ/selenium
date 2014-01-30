@@ -21,9 +21,7 @@ package org.openqa.selenium.server.commands;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.server.RobotRetriever;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

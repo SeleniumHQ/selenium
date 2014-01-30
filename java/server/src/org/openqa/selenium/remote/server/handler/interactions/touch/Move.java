@@ -16,8 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.TouchScreen;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
@@ -50,8 +51,16 @@ public class Move extends WebElementHandler implements JsonParametersAware {
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    x = ((Long) allParameters.get(X)).intValue();
-    y = ((Long) allParameters.get(Y)).intValue();
+    try {
+      x = ((Number) allParameters.get(X)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) x touch move position value passed: " + allParameters.get(X), ex);
+    }
+    try {
+      y = ((Number) allParameters.get(Y)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) y touch move position value passed: " + allParameters.get(Y), ex);
+    }
   }
 
 }

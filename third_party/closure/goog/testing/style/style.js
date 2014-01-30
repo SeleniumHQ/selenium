@@ -69,6 +69,7 @@ goog.testing.style.isVisible = function(element) {
   return (visibilityStyle != 'hidden' && displayStyle != 'none');
 };
 
+
 /**
  * Test whether the given element is on screen.
  * @param {!Element} el The element to test.

@@ -17,8 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
-import java.util.concurrent.Callable;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Function;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -28,34 +33,36 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
-import static org.openqa.selenium.TestWaiter.waitFor;
-
-@Test(groups = {"slow", "firefox"})
 public class NodeGoingDownAndUpTest {
 
-  private Hub hub;
-  private Registry registry;
-  private SelfRegisteringRemote remote;
-  
+  private static Hub hub;
+  private static Registry registry;
+  private static SelfRegisteringRemote remote;
+  private static Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
-  @BeforeClass(alwaysRun = false)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
-
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    
-    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
+
+    // check if the node is up every 900 ms
+    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 900);
+    // unregister the proxy is it's down for more than 10 sec in a row.
+    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 10000);
+    // mark as down after 3 tries
+    remote.getConfiguration().put(RegistrationRequest.DOWN_POLLING_LIMIT, 3);
+    // limit connection and socket timeout for node alive check up to
+    remote.getConfiguration().put(RegistrationRequest.STATUS_CHECK_TIMEOUT, 100);
+    // add browser
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
   
     remote.startRemoteServer();
-  
     remote.sendRegistrationRequest();
-  
     RegistryTestHelper.waitForNode(registry, 1);
   }
 
@@ -63,40 +70,46 @@ public class NodeGoingDownAndUpTest {
   public void markdown() throws Exception {
     // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isUp((DefaultRemoteProxy) proxy));
+      wait.until(isUp((DefaultRemoteProxy) proxy));
     }
+
     // killing the nodes
     remote.stopRemoteServer();
+
     // should be down
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isDown((DefaultRemoteProxy) proxy));
+      wait.until(isDown((DefaultRemoteProxy) proxy));
     }
+
     // and back up
     remote.startRemoteServer();
-    // should be down
+
+    // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isUp((DefaultRemoteProxy) proxy));
+      wait.until(isUp((DefaultRemoteProxy) proxy));
     }
   }
 
-  private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return ! proxy.isDown();
+  private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
+    return new Function<Object, Boolean>() {
+      @Override
+      public Boolean apply(Object input) {
+        return !proxy.isDown();
       }
     };
   }
 
-  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private Function<Object, Boolean> isDown(final DefaultRemoteProxy proxy) {
+    return new Function<Object, Boolean>() {
+      @Override
+      public Boolean apply(Object input) {
         return proxy.isDown();
       }
     };
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
   }

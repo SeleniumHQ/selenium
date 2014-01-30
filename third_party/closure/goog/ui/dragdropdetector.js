@@ -217,7 +217,7 @@ goog.ui.DragDropDetector.prototype.window_ = null;
 
 /**
  * The iframe's document, null if the iframe hasn't loaded yet.
- * @type {HTMLDocument}
+ * @type {Document}
  * @private
  */
 goog.ui.DragDropDetector.prototype.document_ = null;
@@ -401,7 +401,7 @@ goog.ui.DragDropDetector.prototype.uncoverScreen_ = function() {
 goog.ui.DragDropDetector.prototype.switchToInput_ = function(e) {
   // This is only called on IE.
   if (this.isCoveringScreen_) {
-    goog.style.showElement(this.textInput_, true);
+    goog.style.setElementShown(this.textInput_, true);
   }
 };
 
@@ -415,7 +415,7 @@ goog.ui.DragDropDetector.prototype.switchToInput_ = function(e) {
 goog.ui.DragDropDetector.prototype.switchToIframe_ = function(e) {
   // This is only called on IE.
   if (this.isCoveringScreen_) {
-    goog.style.showElement(this.textInput_, false);
+    goog.style.setElementShown(this.textInput_, false);
     this.isShowingInput_ = false;
   }
 };

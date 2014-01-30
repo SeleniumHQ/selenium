@@ -16,9 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.After;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.SessionId;
@@ -30,26 +34,14 @@ import org.openqa.selenium.remote.server.StubHandler;
 
 import java.util.logging.Logger;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 public class UrlMapperTest {
   private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());
 
-  private JUnit4Mockery context;
   private UrlMapper mapper;
 
   @Before
   public void setUp() {
-    context = new JUnit4Mockery();
     mapper = new UrlMapper(new DefaultDriverSessions(), log);
-  }
-
-  @After
-  public void tearDown() {
-    context.assertIsSatisfied();
   }
 
   @Test
@@ -75,7 +67,7 @@ public class UrlMapperTest {
   public void testAppliesGlobalHandlersToNewConfigs() {
     Renderer renderer = new StubRenderer();
     Result result = new Result("", renderer);
-    HttpRequest mockRequest = context.mock(HttpRequest.class);
+    HttpRequest mockRequest = mock(HttpRequest.class);
 
     mapper.addGlobalHandler(ResultType.SUCCESS, result);
     mapper.bind("/example", SessionHandler.class);
@@ -88,7 +80,7 @@ public class UrlMapperTest {
   public void testAppliesNewGlobalHandlersToExistingConfigs() {
     Renderer renderer = new StubRenderer();
     Result result = new Result("", renderer);
-    HttpRequest mockRequest = context.mock(HttpRequest.class);
+    HttpRequest mockRequest = mock(HttpRequest.class);
 
     mapper.bind("/example", SessionHandler.class);
     mapper.addGlobalHandler(ResultType.SUCCESS, result);
@@ -101,12 +93,9 @@ public class UrlMapperTest {
   public void testPermitsMultipleGlobalHandlersWithDifferentMimeTypes() {
     Renderer renderer = new StubRenderer();
 
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
-    context.checking(new Expectations() {{
-      allowing(mockRequest).getHeader("Accept");
-      will(returnValue("application/json"));
-    }});
+    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
 
     mapper.addGlobalHandler(ResultType.SUCCESS, new Result("", new StubRenderer()));
     mapper.addGlobalHandler(ResultType.SUCCESS, new Result("application/json", renderer ));

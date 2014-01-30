@@ -93,7 +93,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 sel.select_by_visible_text(select['values'][x])
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 
-    def testSelectByVisibleTextSholdNormalizeSpaces(self):
+    def testSelectByVisibleTextShouldNormalizeSpaces(self):
         self._loadPage("formPage")
 
         for select in [singleSelectValuesWithSpaces]:
@@ -114,13 +114,6 @@ class WebDriverSelectSupportTests(unittest.TestCase):
             raise Exception("Didn't get an expected ElementNotSelectableException exception.")
         except ElementNotSelectableException:
             pass
-
-    def testSelectByVisibleTextSinglePartialText(self):
-        self._loadPage("formPage")
-
-        sel = Select(self.driver.find_element(By.NAME, singleSelectValues1['name']))
-        sel.select_by_visible_text("learning how to count")
-        self.assertEqual(sel.first_selected_option.text, singleSelectValues1['values'][3])
 
     def testSelectByIndexMultiple(self):
         if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
@@ -166,22 +159,6 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 self.assertEqual(len(selected), x+1)
                 for j in range(len(selected)):
                     self.assertEqual(selected[j].text, select['values'][j])
-
-    def testSelectByVisibleTextMultiplePartialText(self):
-        if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
-        self._loadPage("formPage")
-        
-        sel = Select(self.driver.find_element(By.NAME, multiSelectValues1['name']))
-        sel.deselect_all()
-        sel.select_by_visible_text("Onion gr")
-        self.assertEqual(sel.first_selected_option.text, multiSelectValues1['values'][3])
-
-        sel = Select(self.driver.find_element(By.NAME, multiSelectValues2['name']))
-        sel.deselect_all()
-        sel.select_by_visible_text(" ")
-        self.assertEqual(len(sel.all_selected_options), 4)
-
 
     def testDeselectAllSingle(self):
         self._loadPage("formPage")

@@ -16,7 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import org.junit.Assert;
+import static org.junit.Assert.fail;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
@@ -62,7 +63,7 @@ public class SocketLockTest {
     lock.unlock();
     try {
       lock.lock(TimeUnit.SECONDS.toMillis(1));
-      Assert.fail("Expected a SocketException to be thrown when reused");
+      fail("Expected a SocketException to be thrown when reused");
     } catch (WebDriverException e) {
 
       // Lock reuse not permitted; expected.

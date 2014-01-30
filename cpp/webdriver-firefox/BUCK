@@ -1,0 +1,29 @@
+
+export_file(name = 'previous-esr',
+  src = 'prebuilt/Win32/Release/webdriver-firefox-esr-previous.dll',
+  visibility = [
+    '//javascript/firefox-driver:platform-resources',
+  ],
+)
+
+export_file(name = 'latest-esr',
+  src = 'prebuilt/Win32/Release/webdriver-firefox-esr-latest.dll',
+  visibility = [
+    '//javascript/firefox-driver:platform-resources',
+  ],
+)
+
+export_file(name = 'previous',
+  src = 'prebuilt/Win32/Release/webdriver-firefox-previous.dll',
+  visibility = [
+    '//javascript/firefox-driver:platform-resources',
+  ],
+)
+
+export_file(name = 'latest',
+  src = 'prebuilt/Win32/Release/webdriver-firefox-latest.dll',
+  visibility = [
+    '//javascript/firefox-driver:platform-resources',
+  ],
+)
+

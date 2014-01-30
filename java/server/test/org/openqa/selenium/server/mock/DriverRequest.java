@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.server.mock;
 
-import org.openqa.selenium.server.RemoteCommand;
-
 import static org.junit.Assert.assertEquals;
+
+import org.openqa.selenium.server.RemoteCommand;
 
 
 public class DriverRequest extends AsyncHttpRequest {

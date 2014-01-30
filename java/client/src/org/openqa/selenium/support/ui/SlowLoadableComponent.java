@@ -16,9 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.junit.Assert;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -91,7 +90,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {
-      Assert.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 

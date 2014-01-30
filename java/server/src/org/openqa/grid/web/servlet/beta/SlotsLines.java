@@ -18,13 +18,13 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
+import org.openqa.grid.internal.TestSlot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.openqa.grid.internal.TestSlot;
 
 public class SlotsLines {
   Map<MiniCapability, List<TestSlot>> slots = new HashMap<MiniCapability, List<TestSlot>>();

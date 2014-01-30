@@ -147,7 +147,7 @@ goog.ui.InputDatePicker.prototype.setDate = function(date) {
 goog.ui.InputDatePicker.prototype.setInputValue = function(value) {
   var el = this.getElement();
   if (el.labelInput_) {
-    var labelInput = /** @type {goog.ui.LabelInput} */ el.labelInput_;
+    var labelInput = /** @type {goog.ui.LabelInput} */ (el.labelInput_);
     labelInput.setValue(value);
   } else {
     el.value = value;
@@ -164,7 +164,7 @@ goog.ui.InputDatePicker.prototype.setInputValue = function(value) {
 goog.ui.InputDatePicker.prototype.getInputValue = function() {
   var el = this.getElement();
   if (el.labelInput_) {
-    var labelInput = /** @type {goog.ui.LabelInput} */ el.labelInput_;
+    var labelInput = /** @type {goog.ui.LabelInput} */ (el.labelInput_);
     return labelInput.getValue();
   } else {
     return el.value;

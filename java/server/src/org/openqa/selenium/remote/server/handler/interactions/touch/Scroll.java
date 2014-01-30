@@ -16,9 +16,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.TouchScreen;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -63,8 +64,16 @@ public class Scroll extends WebElementHandler implements JsonParametersAware {
     if (allParameters.containsKey(ELEMENT)) {
       elementId = (String) allParameters.get(ELEMENT);
     }
-    xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
-    yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
+    try {
+      xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) x offset value for touch scroll passed: " + allParameters.get(XOFFSET), ex);
+    }
+    try {
+      yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) y offset value for touch scroll passed: " + allParameters.get(YOFFSET), ex);
+    }
   }
 
 }

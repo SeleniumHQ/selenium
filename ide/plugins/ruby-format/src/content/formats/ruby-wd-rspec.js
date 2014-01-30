@@ -2,8 +2,13 @@
  * Formatter for Selenium 2 / WebDriver RSpec client.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+}
 
 function testClassName(testName) {
   return testName.split(/[^0-9A-Za-z]+/).map(
@@ -184,6 +189,90 @@ function formatComment(comment) {
   });
 }
 
+function keyVariable(key) {
+  return ":" + key;
+}
+
+this.sendKeysMaping = {
+  BKSP: "backspace",
+  BACKSPACE: "backspace",
+  TAB: "tab",
+  ENTER: "enter",
+  SHIFT: "shift",
+  CONTROL: "control",
+  CTRL: "control",
+  ALT: "alt",
+  PAUSE: "pause",
+  ESCAPE: "escape",
+  ESC: "escape",
+  SPACE: "space",
+  PAGE_UP: "page_up",
+  PGUP: "page_up",
+  PAGE_DOWN: "page_down",
+  PGDN: "page_down",
+  END: "end",
+  HOME: "home",
+  LEFT: "left",
+  UP: "up",
+  RIGHT: "right",
+  DOWN: "down",
+  INSERT: "insert",
+  INS: "insert",
+  DELETE: "delete",
+  DEL: "delete",
+  SEMICOLON: "semicolon",
+  EQUALS: "equals",
+
+  NUMPAD0: "numpad0",
+  N0: "numpad0",
+  NUMPAD1: "numpad1",
+  N1: "numpad1",
+  NUMPAD2: "numpad2",
+  N2: "numpad2",
+  NUMPAD3: "numpad3",
+  N3: "numpad3",
+  NUMPAD4: "numpad4",
+  N4: "numpad4",
+  NUMPAD5: "numpad5",
+  N5: "numpad5",
+  NUMPAD6: "numpad6",
+  N6: "numpad6",
+  NUMPAD7: "numpad7",
+  N7: "numpad7",
+  NUMPAD8: "numpad8",
+  N8: "numpad8",
+  NUMPAD9: "numpad9",
+  N9: "numpad9",
+  MULTIPLY: "multiply",
+  MUL: "multiply",
+  ADD: "add",
+  PLUS: "add",
+  SEPARATOR: "separator",
+  SEP: "separator",
+  SUBTRACT: "subtract",
+  MINUS: "subtract",
+  DECIMAL: "decimal",
+  PERIOD: "decimal",
+  DIVIDE: "divide",
+  DIV: "divide",
+
+  F1: "f1",
+  F2: "f2",
+  F3: "f3",
+  F4: "f4",
+  F5: "f5",
+  F6: "f6",
+  F7: "f7",
+  F8: "f8",
+  F9: "f9",
+  F10: "f10",
+  F11: "f11",
+  F12: "f12",
+
+  META: "meta",
+  COMMAND: "command"
+};
+
 /**
  * Returns a string representing the suite for this formatter language.
  *
@@ -218,8 +307,8 @@ function defaultExtension() {
 this.options = {
   receiver: "@driver",
   showSelenese: 'false',
-  header:
-      'require "selenium-webdriver"\n' +
+  header: 'require "json"\n' +
+          'require "selenium-webdriver"\n' +
           'require "rspec"\n' +
           'include RSpec::Expectations\n' +
           '\n' +
@@ -239,18 +328,17 @@ this.options = {
           '  end\n' +
           '  \n' +
           '  it "${methodName}" do\n',
-  footer:
-      "  end\n" +
+  footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
-          "    @driver.find_element(how, what)\n" +
+          "    ${receiver}.find_element(how, what)\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoSuchElementError\n" +
           "    false\n" +
           "  end\n" +
           "  \n" +
           "  def alert_present?()\n" +
-          "    @driver.switch_to.alert\n" +
+          "    ${receiver}.switch_to.alert\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoAlertPresentError\n" +
           "    false\n" +
@@ -263,7 +351,7 @@ this.options = {
           "  end\n" +
           "  \n" +
           "  def close_alert_and_get_its_text(how, what)\n" +
-          "    alert = @driver.switch_to().alert()\n" +
+          "    alert = ${receiver}.switch_to().alert()\n" +
           "    alert_text = alert.text\n" +
           "    if (@accept_next_alert) then\n" +
           "      alert.accept()\n" +
@@ -406,14 +494,14 @@ WDAPI.Element.prototype.isSelected = function() {
 };
 
 WDAPI.Element.prototype.sendKeys = function(text) {
-  return this.ref + ".send_keys " + xlateArgument(text) + "";
+  return this.ref + ".send_keys " + xlateArgument(text, 'args') + "";
 };
 
 WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit";
 };
 
-WDAPI.Element.prototype.select = function(label) {
+WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'index') {
     return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:index, " + selectLocator.string + ")";
   }

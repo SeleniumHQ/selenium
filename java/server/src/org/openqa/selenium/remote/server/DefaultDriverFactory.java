@@ -26,8 +26,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class DefaultDriverFactory implements DriverFactory {
+
+  private static final Logger log = Logger.getLogger(DefaultDriverFactory.class.getName());
+
   private Map<Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
       new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
 
@@ -45,6 +49,7 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   public WebDriver newInstance(Capabilities capabilities) {
+    log.info("Creating a new session for " + capabilities);
     Class<? extends WebDriver> clazz = getBestMatchFor(capabilities);
 
     // Try and call the single arg constructor that takes a capabilities first

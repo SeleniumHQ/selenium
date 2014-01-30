@@ -23,6 +23,7 @@
 goog.provide('goog.i18n.currencyCodeMap');
 goog.provide('goog.i18n.currencyCodeMapTier2');
 
+
 /**
  * The mapping of currency symbol through intl currency code.
  * The source of information is mostly from wikipedia and CLDR. Since there is

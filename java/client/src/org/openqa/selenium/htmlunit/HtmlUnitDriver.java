@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
+
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -29,7 +31,9 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
+import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.TopLevelWindow;
+import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
@@ -66,12 +70,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -86,6 +87,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -95,9 +100,9 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
+import org.w3c.css.sac.CSSException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -115,11 +120,9 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
-
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
-    FindsByTagName, HasCapabilities, HasInputDevices {
+    FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
 
   private WebClient webClient;
   private WebWindow currentWindow;
@@ -202,23 +205,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
-    if (capabilities.getCapability(CapabilityType.PROXY) != null) {
-      Proxy proxy = Proxies.extractProxy(capabilities);
-      String fullProxy = proxy.getHttpProxy();
-      String pacfile = proxy.getProxyAutoconfigUrl();
-      if (fullProxy != null) {
-        int index = fullProxy.indexOf(":");
-        if (index != -1) {
-          String host = fullProxy.substring(0, index);
-          int port = Integer.parseInt(fullProxy.substring(index + 1));
-          setProxy(host, port);
-        } else {
-          setProxy(fullProxy, 0);
-        }
-      } else if(pacfile != null && !pacfile.equals("")) {
-        setAutoProxy(pacfile);
-      } 
-    }
+    setProxySettings(Proxies.extractProxy(capabilities));
   }
 
   // Package visibility for testing
@@ -317,11 +304,135 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return client;
   }
 
+  /**
+   * Set proxy for WebClient using Proxy.
+   *
+   * @param proxy The proxy preferences.
+   */
+  public void setProxySettings(Proxy proxy) {
+    if (proxy == null || proxy.getProxyType() == Proxy.ProxyType.UNSPECIFIED) {
+      return;
+    }
+
+    switch (proxy.getProxyType()) {
+      case MANUAL:
+
+        ArrayList<String> noProxyHosts = new ArrayList<String>();
+        String noProxy = proxy.getNoProxy();
+        if (noProxy != null && !noProxy.equals("")) {
+          String[] hosts = noProxy.split(",");
+          for (int i = 0; i < hosts.length; i++) {
+            if (hosts[i].trim().length() > 0) {
+              noProxyHosts.add(hosts[i].trim());
+            }
+          }
+        }
+
+        String httpProxy = proxy.getHttpProxy();
+        if (httpProxy != null && !httpProxy.equals("")) {
+          String host = httpProxy;
+          int port = 0;
+
+          int index = httpProxy.indexOf(":");
+          if (index != -1) {
+            host = httpProxy.substring(0, index);
+            port = Integer.parseInt(httpProxy.substring(index + 1));
+          }
+
+          setHTTPProxy(host, port, noProxyHosts);
+        }
+
+        String socksProxy = proxy.getSocksProxy();
+        if (socksProxy != null && !socksProxy.equals("")) {
+          String host = socksProxy;
+          int port = 0;
+
+          int index = socksProxy.indexOf(":");
+          if (index != -1) {
+            host = socksProxy.substring(0, index);
+            port = Integer.parseInt(socksProxy.substring(index + 1));
+          }
+
+          setSocksProxy(host, port, noProxyHosts);
+        }
+
+        // sslProxy is not supported/implemented
+        // ftpProxy is not supported/implemented
+
+        break;
+      case PAC:
+        String pac = proxy.getProxyAutoconfigUrl();
+        if (pac != null && !pac.equals("")) {
+          setAutoProxy(pac);
+        }
+        break;
+    }
+  }
+
+  /**
+   * Sets HTTP proxy for WebClient
+   *
+   * @param host The hostname of HTTP proxy
+   * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
+   */
   public void setProxy(String host, int port) {
-    proxyConfig = new ProxyConfig(host, port);
+    setHTTPProxy(host, port, null);
+  }
+
+  /**
+   * Sets HTTP proxy for WebClient with bypass proxy hosts
+   *
+   * @param host The hostname of HTTP proxy
+   * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
+   * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
+   */
+  public void setHTTPProxy(String host, int port, ArrayList<String> noProxyHosts) {
+    proxyConfig = new ProxyConfig();
+    proxyConfig.setProxyHost(host);
+    proxyConfig.setProxyPort(port);
+    if (noProxyHosts != null && noProxyHosts.size() > 0) {
+      for (String noProxyHost : noProxyHosts) {
+        proxyConfig.addHostsToProxyBypass(noProxyHost);
+      }
+    }
     getWebClient().getOptions().setProxyConfig(proxyConfig);
   }
 
+  /**
+   * Sets SOCKS proxy for WebClient
+   *
+   * @param host The hostname of SOCKS proxy
+   * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
+   */
+  public void setSocksProxy(String host, int port) {
+    setSocksProxy(host, port, null);
+  }
+
+  /**
+   * Sets SOCKS proxy for WebClient with bypass proxy hosts
+   *
+   * @param host The hostname of SOCKS proxy
+   * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
+   * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
+   */
+  public void setSocksProxy(String host, int port, ArrayList<String> noProxyHosts) {
+    proxyConfig = new ProxyConfig();
+    proxyConfig.setProxyHost(host);
+    proxyConfig.setProxyPort(port);
+    proxyConfig.setSocksProxy(true);
+    if (noProxyHosts != null && noProxyHosts.size() > 0) {
+      for (String noProxyHost : noProxyHosts) {
+        proxyConfig.addHostsToProxyBypass(noProxyHost);
+      }
+    }
+    getWebClient().getOptions().setProxyConfig(proxyConfig);
+  }
+
+  /**
+   * Sets Proxy Autoconfiguration URL for WebClient
+   *
+   * @param autoProxyUrl The Proxy Autoconfiguration URL
+   */
   public void setAutoProxy(String autoProxyUrl) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
@@ -367,7 +478,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       // A "get" works over the entire page
       currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
-      // This should be fine
+      getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
+          new StringWebResponse("Unknown host", fullUrl),
+          getCurrentWindow().getTopWindow()
+      ));
     } catch (ConnectException e) {
       // This might be expected
     } catch (SocketTimeoutException e) {
@@ -487,11 +601,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     Object[] parameters = convertScriptArgs(page, args);
 
-    result = page.executeJavaScriptFunctionIfPossible(
-        func,
-        (ScriptableObject) getCurrentWindow().getScriptObject(),
-        parameters,
-        page.getDocumentElement());
+    try {
+      result = page.executeJavaScriptFunctionIfPossible(
+          func,
+          (ScriptableObject) getCurrentWindow().getScriptObject(),
+          parameters,
+          page.getDocumentElement());
+    } catch (Throwable ex) {
+      throw new WebDriverException(ex);
+    }
 
     return parseNativeJavascriptResult(result);
   }
@@ -613,7 +731,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       parentElement = parentElement.getParentNode();
     }
 
-    System.err.println("" + element + " -> " + parentElement);
     if (parentElement == null) {
       throw new StaleElementReferenceException(
           "The element seems to be disconnected from the DOM. "
@@ -803,12 +920,33 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return findElementsByXPath("//*[@id='" + id + "']");
   }
 
+  @Override
+  public WebElement findElementByClassName(String className) {
+    if (className.indexOf(' ') != -1) {
+      throw new NoSuchElementException("Compound class names not permitted");
+    }
+    return findElementByCssSelector("." + className);
+  }
+
+  @Override
+  public List<WebElement> findElementsByClassName(String className) {
+    if (className.indexOf(' ') != -1) {
+      throw new NoSuchElementException("Compound class names not permitted");
+    }
+    return findElementsByCssSelector("." + className);
+  }
+
   public WebElement findElementByCssSelector(String using) {
     if (!(lastPage() instanceof HtmlPage)) {
       throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
     }
 
-    DomNode node = ((HtmlPage) lastPage()).querySelector(using);
+    DomNode node;
+    try {
+      node = ((HtmlPage) lastPage()).querySelector(using);
+    } catch (CSSException ex) {
+      throw new NoSuchElementException("Unable to locate element using css", ex);
+    }
 
     if (node instanceof HtmlElement) {
       return newHtmlUnitWebElement((HtmlElement) node);
@@ -822,7 +960,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
     }
 
-    DomNodeList<DomNode> allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+    DomNodeList<DomNode> allNodes;
+
+    try {
+      allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+    } catch (CSSException ex) {
+      throw new NoSuchElementException("Unable to locate element using css", ex);
+    }
 
     List<WebElement> toReturn = new ArrayList<WebElement>();
 
@@ -1169,6 +1313,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       if (lastPage() instanceof HtmlPage) {
         try {
           ((HtmlPage) lastPage()).refresh();
+        } catch (SocketTimeoutException e) {
+          throw new TimeoutException(e);
         } catch (IOException e) {
           throw new WebDriverException(e);
         }

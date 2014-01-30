@@ -193,8 +193,7 @@ class selenium(object):
         if browserConfigurationOptions:
           start_args.append(browserConfigurationOptions)
         if driver:
-          id = driver.desired_capabilities['webdriver.remote.sessionid']
-          start_args.append('webdriver.remote.sessionid=%s' % id)
+          start_args.append('webdriver.remote.sessionid=%s' % driver.session_id)
         result = self.get_string("getNewBrowserSession", start_args)
         try:
             self.sessionId = result
@@ -206,7 +205,7 @@ class selenium(object):
         self.sessionId = None
 
     def do_command(self, verb, args):
-        conn = http_client.HTTPConnection(self.host, self.port)
+        conn = http_client.HTTPConnection(self.host, self.port, timeout=30)
         try:
             body = 'cmd=' + urllib_parse.quote_plus(unicode(verb).encode('utf-8'))
             for i in range(len(args)):

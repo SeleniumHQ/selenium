@@ -25,6 +25,7 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
@@ -36,22 +37,15 @@ import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 import org.jboss.netty.handler.codec.http.QueryStringEncoder;
-import org.jboss.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import org.jboss.netty.handler.codec.http.websocketx.PingWebSocketFrame;
-import org.jboss.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import org.jboss.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Simple handler for the SafariDriver. Will initiate WebSocket connections,
@@ -66,17 +60,11 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
       "/%s/client.js",
       SafariDriverChannelHandler.class.getPackage().getName().replace('.', '/'));
 
-  private final BlockingQueue<SafariDriverConnection> connectionQueue;
-  private final UUID id;
+  private final BlockingQueue<WebSocketConnection> connectionQueue;
   private final int port;
 
-  private volatile SafariDriverConnection connection;
-  private WebSocketServerHandshaker handshaker;
-
-  public SafariDriverChannelHandler(int port,
-      BlockingQueue<SafariDriverConnection> connectionQueue) {
+  public SafariDriverChannelHandler(int port, BlockingQueue<WebSocketConnection> connectionQueue) {
     this.port = port;
-    this.id = UUID.randomUUID();
     this.connectionQueue = connectionQueue;
   }
 
@@ -105,13 +93,17 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
         handleMainPageRequest(ctx, request);
       }
 
-    } else if (e.getMessage() instanceof WebSocketFrame) {
-      handleWebSocketFrame(ctx, (WebSocketFrame) e.getMessage());
     } else {
-      super.messageReceived(ctx, e);
+      ctx.sendUpstream(e);
     }
   }
-  
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+    log.log(Level.WARNING, e.getCause().getMessage(), e.getCause());
+    e.getChannel().close();
+  }
+
   private void handleFaviconRequest(ChannelHandlerContext ctx, HttpRequest request) {
     HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
         HttpResponseStatus.NO_CONTENT);
@@ -168,7 +160,7 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
 
     WebSocketServerHandshakerFactory handshakerFactory = new WebSocketServerHandshakerFactory(
         websocketUrl, noSubProtocols, noExtensions);
-    handshaker = handshakerFactory.newHandshaker(request);
+    WebSocketServerHandshaker handshaker = handshakerFactory.newHandshaker(request);
 
     if (handshaker == null) {
       handshakerFactory.sendUnsupportedWebSocketVersionResponse(ctx.getChannel());
@@ -184,13 +176,8 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
           log.info("Connection opened");
 
           WebSocketConnection webSocketConnection = new WebSocketConnection(ctx.getChannel());
-          connection = new SafariDriverConnection(webSocketConnection);
-
-          try {
-            connectionQueue.put(connection);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+          if (!connectionQueue.offer(webSocketConnection)) {
+            log.warning("Failed to register new WebSocket connection");
           }
         }
       });
@@ -210,22 +197,6 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
     ChannelFuture future = ctx.getChannel().write(response);
     if (!HttpHeaders.isKeepAlive(request) || response.getStatus().getCode() != 200) {
       future.addListener(ChannelFutureListener.CLOSE);
-    }
-  }
-  
-  private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-    if (frame instanceof CloseWebSocketFrame) {
-      log.fine("Socket closed by client");
-      handshaker.close(ctx.getChannel(), (CloseWebSocketFrame) frame);
-    } else if (frame instanceof PingWebSocketFrame) {
-      ctx.getChannel().write(new PongWebSocketFrame(frame.getBinaryData()));
-    } else {
-      checkState(frame instanceof TextWebSocketFrame);
-      checkState(connection != null);
-
-      TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
-      log.fine("Received message: " + textFrame.getText());
-      connection.onMessage(textFrame.getText());
     }
   }
 }

@@ -17,31 +17,27 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
-import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -62,33 +58,23 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
 
   private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
+  public static final int DEFAULT_POLLING_INTERVAL = 10000;
+  public static final int DEFAULT_UNREGISTER_DELAY = 60000;
+  public static final int DEFAULT_DOWN_POLLING_LIMIT = 2;
 
-  private volatile long pollingInterval = 10000;
-  private volatile long unregisterDelay = 60000;
+  private volatile int pollingInterval = DEFAULT_POLLING_INTERVAL;
+  private volatile int unregisterDelay = DEFAULT_UNREGISTER_DELAY;
+  private volatile int downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
 
   public DefaultRemoteProxy(RegistrationRequest request, Registry registry) {
     super(request, registry);
 
-    try {
-      Integer p = (Integer) request.getConfiguration().get(RegistrationRequest.NODE_POLLING);
-
-      if (p != null) {
-        pollingInterval = p.intValue();
-      }
-    } catch (ClassCastException e) {
-      throw new IllegalArgumentException(String.format("The '%s' argument must be a positive integer.",
-          RegistrationRequest.NODE_POLLING));
-    }
-
-    try {
-      Integer unregister = (Integer) request.getConfiguration().get(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER);
-      if (unregister != null) {
-        unregisterDelay = unregister.intValue();
-      }
-    } catch (ClassCastException e) {
-      throw new IllegalArgumentException(String.format("The '%s' argument must be a positive integer.",
-          RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER));
-    }
+    pollingInterval = request.getConfigAsInt(RegistrationRequest.NODE_POLLING,
+                                             DEFAULT_POLLING_INTERVAL);
+    unregisterDelay = request.getConfigAsInt(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER,
+                                             DEFAULT_UNREGISTER_DELAY);
+    downPollingLimit = request.getConfigAsInt(RegistrationRequest.DOWN_POLLING_LIMIT,
+                                                DEFAULT_DOWN_POLLING_LIMIT);
   }
 
   public void beforeRelease(TestSession session) {
@@ -121,7 +107,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   /*
-   * Self Healing part.Polls the remote, and marks it down if it cannot be reached twice in a row.
+   * Self Healing part. Polls the remote, and marks it down if it cannot be reached twice in a row.
    */
   private volatile boolean down = false;
   private volatile boolean poll = true;
@@ -130,30 +116,19 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
   private Thread pollingThread = null;
 
-
-  // TODO freynaud replace with getstatus.
   public boolean isAlive() {
-    String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
-    BasicHttpRequest r = new BasicHttpRequest("GET", url);
-    HttpClient client = getHttpClientFactory().getHttpClient();
-    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
-    HttpResponse response;
     try {
-      response = client.execute(host, r);
-      EntityUtils.consume(response.getEntity());
-    } catch (ClientProtocolException e) {
-      return false;
-    } catch (IOException e) {
+      getStatus();
+      return true;
+    } catch (Exception e) {
+      log.warning("Failed to check status of node: " + e.getMessage());
       return false;
     }
-    int code = response.getStatusLine().getStatusCode();
-    // webdriver returns a 200 on /status. selenium RC returns a 404
-    return code == 200 || code == 404;
   }
 
   public void startPolling() {
     pollingThread = new Thread(new Runnable() { // Thread safety reviewed
-          int nbFailedPoll = 0;
+          int failedPollingTries = 0;
           long downSince = 0;
 
           public void run() {
@@ -162,21 +137,22 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
                 Thread.sleep(pollingInterval);
                 if (!isAlive()) {
                   if (!down) {
-                    nbFailedPoll++;
-                    if (nbFailedPoll >= 2) {
+                    failedPollingTries++;
+                    if (failedPollingTries >= downPollingLimit) {
                       downSince = System.currentTimeMillis();
-                      addNewEvent(new RemoteNotReachableException("Cannot reach the remote."));
+                      addNewEvent(new RemoteNotReachableException("Marking the node as down. " +
+                                                                  "Cannot reach the node for " + failedPollingTries + " tries."));
                     }
                   } else {
                     long downFor = System.currentTimeMillis() - downSince;
                     if (downFor > unregisterDelay) {
                       addNewEvent(new RemoteUnregisterException(
-                          "Unregistering the node.It's been down for " + downFor));
+                          "Unregistering the node. It's been down for " + downFor + " milliseconds."));
                     }
                   }
                 } else {
                   down = false;
-                  nbFailedPoll = 0;
+                  failedPollingTries = 0;
                   downSince = 0;
                 }
               } catch (InterruptedException e) {
@@ -184,7 +160,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
               }
             }
           }
-        }, "RemoteProxy failure poller thread");
+        }, "RemoteProxy failure poller thread for " + getId());
     pollingThread.start();
   }
 
@@ -202,10 +178,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
     for (RemoteException e : events) {
       if (e instanceof RemoteNotReachableException) {
+        log.warning(e.getMessage());
         down = true;
         this.errors.clear();
       }
       if (e instanceof RemoteUnregisterException) {
+        log.warning(e.getMessage());
         Registry registry = this.getRegistry();
         registry.removeIfPresent(this);
       }
@@ -247,6 +225,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void beforeSession(TestSession session) {
     if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
       Map<String, Object> cap = session.getRequestedCapabilities();
+
       if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null
             && cap.get(FirefoxDriver.BINARY) == null) {
@@ -254,6 +233,30 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
               session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
         }
       }
+
+      if (BrowserType.CHROME.equals(cap.get(CapabilityType.BROWSER_NAME))) {
+        if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
+          JSONObject options = (JSONObject) cap.get(ChromeOptions.CAPABILITY);
+          if (options == null) {
+            options = new JSONObject();
+          }
+          try {
+            options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+          cap.put(ChromeOptions.CAPABILITY, options);
+        }
+      }
+
+      if (BrowserType.OPERA.equals(cap.get(CapabilityType.BROWSER_NAME))) {
+        if (session.getSlot().getCapabilities().get("opera_binary") != null
+            && cap.get("opera.binary") == null) {
+          session.getRequestedCapabilities().put("opera.binary",
+                                                 session.getSlot().getCapabilities().get("opera_binary"));
+        }
+      }
+
     }
   }
 

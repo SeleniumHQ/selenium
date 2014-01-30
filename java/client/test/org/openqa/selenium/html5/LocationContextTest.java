@@ -16,13 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
 
 public class LocationContextTest  extends JUnit4TestBase {
 
@@ -37,12 +37,10 @@ public class LocationContextTest  extends JUnit4TestBase {
 
     ((LocationContext) driver).setLocation(
         new Location(40.714353, -74.005973, 0.056747));
-
-    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
-
     Location location = ((LocationContext) driver).location();
-    assertEquals(40.714353, location.getLatitude(), 4);
-    assertEquals(-74.005973, location.getLongitude(), 4);
-    assertEquals(1.056747, location.getAltitude(), 4);
+    assertNotNull(location);
+    assertEquals(40.714353, location.getLatitude(), 0.000001);
+    assertEquals(-74.005973, location.getLongitude(), 0.000001);
+    assertEquals(0.056747, location.getAltitude(), 0.000001);
   }
 }

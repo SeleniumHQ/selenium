@@ -97,6 +97,39 @@ safaridriver.message.MessageTarget.prototype.log = function(msg, opt_level,
 
 
 /**
+ * Logs a configuration message.
+ * @param {string} msg The message to log.
+ * @param {Error=} opt_error An error to log with the message.
+ */
+safaridriver.message.MessageTarget.prototype.logConfig = function(
+    msg, opt_error) {
+  this.log(msg, goog.debug.Logger.Level.CONFIG, opt_error);
+};
+
+
+/**
+ * Logs a warning message.
+ * @param {string} msg The message to log.
+ * @param {Error=} opt_error An error to log with the message.
+ */
+safaridriver.message.MessageTarget.prototype.logWarn = function(
+    msg, opt_error) {
+  this.log(msg, goog.debug.Logger.Level.WARNING, opt_error);
+};
+
+
+/**
+ * Logs a severe message.
+ * @param {string} msg The message to log.
+ * @param {Error=} opt_error An error to log with the message.
+ */
+safaridriver.message.MessageTarget.prototype.logSevere = function(
+    msg, opt_error) {
+  this.log(msg, goog.debug.Logger.Level.SEVERE, opt_error);
+};
+
+
+/**
  * @param {!(SafariExtensionMessageEvent|MessageEvent)} e The message event.
  * @private
  */

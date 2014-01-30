@@ -19,16 +19,15 @@ package org.openqa.grid.web.servlet;
 
 import com.google.common.io.ByteStreams;
 
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.selenium.remote.ErrorCodes;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
+import org.openqa.selenium.remote.ErrorCodes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

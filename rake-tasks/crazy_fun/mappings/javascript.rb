@@ -173,6 +173,21 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
 
+    # Compiles a list of |js_fragments| into a static C# class with each fragment
+    # defined as a static readonly string.
+    #
+    # Arguments:
+    #   name: The name of target. Will be used as the generated class name.
+    #   deps: A list of |js_fragment| files the target depends on.
+    #   utf: Whether to output using UTF8.
+    #   package: The package the generated class should belong to.
+    # Outputs:
+    #   The generated java file.
+    fun.add_mapping("js_fragment_csharp", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::ConcatenateCSharp.new)
+
     # Executes JavaScript tests in the browser.
     #
     # Arguments:
@@ -196,7 +211,7 @@ end
 module Javascript
   # CrazyFunJava.ant.taskdef :name      => "jscomp",
   #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
-  #                          :classpath => "third_party/closure/bin/compiler-20130227.jar"
+  #                          :classpath => "third_party/closure/bin/compiler-20130603.jar"
 
   class BaseJs < Tasks
     attr_reader :calcdeps
@@ -207,7 +222,7 @@ module Javascript
         py = "python"
       end
       @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
-                  "-c third_party/closure/bin/compiler-20130227.jar "
+                  "-c third_party/closure/bin/compiler-20130603.jar "
     end
 
     def js_name(dir, name)
@@ -500,7 +515,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => cmd
         end
@@ -669,7 +684,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => flags.join(" ")
         end
@@ -729,7 +744,13 @@ module Javascript
         puts "Compiling #{name} as #{output}"
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
-        all_deps = calc_deps(exports, js_files)
+
+        # Always load closure's deps.js first to "forward declare" all of the
+        # Closure types. This prevents type errors when a symbol is referenced
+        # in a file's type annotation, but not actually needed in the compiled
+        # output.
+        all_deps = [File.expand_path('third_party/closure/goog/deps.js')]
+        all_deps += calc_deps(exports, js_files)
 
         # Wrap the output in two functions. The outer function ensures the
         # compiled fragment never pollutes the global scope by using its
@@ -747,14 +768,38 @@ module Javascript
 
         cmd = "" <<
             "--create_name_map_files=true " <<
-            "--third_party=true " <<
+            "--third_party=false " <<
             "--js_output_file=#{output} " <<
             "--output_wrapper='#{wrapper}' " <<
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
-            "--jscomp_off=unknownDefines " <<
             "#{defines} " <<
+            "--jscomp_off=unknownDefines " <<
+            "--jscomp_off=deprecated " <<
+            "--jscomp_error=accessControls " <<
+            "--jscomp_error=ambiguousFunctionDecl " <<
+            "--jscomp_error=checkDebuggerStatement " <<
+            "--jscomp_error=checkRegExp " <<
+            "--jscomp_error=checkTypes " <<
+            "--jscomp_error=checkVars " <<
+            "--jscomp_error=const " <<
+            "--jscomp_error=constantProperty " <<
+            "--jscomp_error=duplicate " <<
+            "--jscomp_error=duplicateMessage " <<
+            "--jscomp_error=externsValidation " <<
+            "--jscomp_error=fileoverviewTags " <<
+            "--jscomp_error=globalThis " <<
+            "--jscomp_error=internetExplorerChecks " <<
+            "--jscomp_error=invalidCasts " <<
+            "--jscomp_error=missingProperties " <<
+            "--jscomp_error=nonStandardJsDocs " <<
+            "--jscomp_error=strictModuleDepCheck " <<
+            "--jscomp_error=typeInvalidation " <<
+            "--jscomp_error=undefinedNames " <<
+            "--jscomp_error=undefinedVars " <<
+            "--jscomp_error=uselessCode " <<
+            "--jscomp_error=visibility " <<
             "--js='" <<
             all_deps.join("' --js='") << "'"
 
@@ -762,7 +807,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => cmd
         end
@@ -792,7 +837,7 @@ module Javascript
     MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH_JAVA - "       .append\(\"\"\)\n".length
     COPYRIGHT =
           "/*\n" +
-          " * Copyright 2011-2012 WebDriver committers\n" +
+          " * Copyright 2011-2014 Software Freedom Conservancy\n" +
           " *\n" +
           " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
           " * you may not use this file except in compliance with the License.\n" +
@@ -834,6 +879,10 @@ module Javascript
       puts "Generating header for #{atom_file}"
       atom_name = get_atom_name_from_file(dir, atom_file)
 
+      if language == :csharp
+        atom_name = atom_name.split('_').each{|part| part.capitalize!}.join('')
+      end
+
       # Each fragment file should be small (<= 20KB), so just read it all in.
       contents = IO.read(atom_file).strip
 
@@ -859,6 +908,8 @@ module Javascript
         line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
       elsif language == :java
         line_format = "      .append\(\"%s\"\)"
+      elsif language == :csharp
+        line_format = "                    atom.Append\(\"%s\"\);"
       end
 
       to_file << "\n"
@@ -867,6 +918,15 @@ module Javascript
         to_file << "const #{atom_type}* const #{atom_name}[] = {\n"
       elsif language == :java
         to_file << "  #{atom_name}(new StringBuilder()\n"
+      elsif language == :csharp
+        to_file << "        public static string #{atom_name}\n"
+        to_file << "        {\n"
+        to_file << "            get\n"
+        to_file << "            {\n"
+        to_file << "                const string atomName = \"#{atom_name}\";\n"
+        to_file << "                if (!atomsRepository.ContainsKey(atomName))\n"
+        to_file << "                {\n"
+        to_file << "                    StringBuilder atom = new StringBuilder();\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -885,6 +945,9 @@ module Javascript
         elsif (language == :cpp)
           to_file << line_format % line
           to_file << ",\n"
+        elsif (language == :csharp)
+          to_file << line_format % line
+          to_file << "\n"
         end
       end
 
@@ -894,6 +957,13 @@ module Javascript
         to_file << "\n    .toString()),\n"
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
+      elsif language == :csharp
+        to_file << "\n                    atomsRepository[atomName] = atom.ToString();\n"
+        to_file << "                }\n"
+        to_file << "\n"
+        to_file << "                return atomsRepository[atomName];\n"
+        to_file << "            }\n"
+        to_file << "        }\n"
       end
     end
 
@@ -980,7 +1050,7 @@ module Javascript
 
     def generate_java(dir, name, task_name, output, js_files, package)
       file output => js_files do
-        task_name =~ /([a-z]+)-driver/
+        task_name =~ /([a-z]+)-(driver|atoms)/
         implementation = $1.capitalize
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
@@ -1026,6 +1096,46 @@ module Javascript
       end
     end
 
+    def generate_csharp(dir, name, task_name, output, js_files, package)
+      file output => js_files do
+        task_name =~ /([a-z]+)-driver/
+        implementation = $1.capitalize
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+        class_name = "WebDriverAtoms"
+        output = output_dir + "/" + class_name + ".cs"
+
+        puts "Preparing #{task_name} as #{output}"
+
+        File.open(output, "w") do |out|
+          out << COPYRIGHT
+          out << "\n"
+          out << "using System.CodeDom.Compiler;\n"
+          out << "using System.Collections.Generic;\n"
+          out << "using System.Text;\n"
+          out << "\n"
+          out << "namespace #{package}\n"
+          out << "{\n"
+          out << "    /**\n"
+          out << "     * The WebDriver atoms are used to ensure consistent behaviour cross-browser.\n"
+          out << "     * \n"
+          out << "     * AUTO GENERATED - DO NOT EDIT BY HAND\n"
+          out << "     */\n"
+          out << "    [GeneratedCode(\"WebDriver\", \"#{version}\")]\n"
+          out << "    public static class #{class_name}\n"
+          out << "    {\n"
+          out << "        private static Dictionary<string, string> atomsRepository = new Dictionary<string, string>();\n"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file, :csharp)
+          end
+
+          out << "    }\n"
+          out << "}"
+        end
+      end
+    end
+
   end
 
   class ConcatenateHeaders < GenerateAtoms
@@ -1057,6 +1167,16 @@ module Javascript
       output = js.sub(/\.js$/, '.java')
       task_name = task_name(dir, args[:name])
       generate_java(dir, args[:name], task_name, output, args[:deps], args[:package])
+      task task_name => [output]
+    end
+  end
+
+  class ConcatenateCSharp < GenerateAtoms
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.cs')
+      task_name = task_name(dir, args[:name])
+      generate_csharp(dir, args[:name], task_name, output, args[:deps], args[:package])
       task task_name => [output]
     end
   end
@@ -1207,10 +1327,14 @@ module Javascript
           roots = args[:content_roots].collect {|root| File.join(Dir.pwd, root)}
 
           resources = []
+          exclude_resources = []
           (args[:resources] || []).each do |resource|
             resource.each do |from, to|
               resources.push(" --resource=#{from}:#{to}")
             end
+          end
+          (args[:exclude_resources] || []).each do |pattern|
+            exclude_resources.push(" --exclude_resource=#{pattern}")
           end
 
           mkdir_p "#{folder_name}"
@@ -1221,7 +1345,8 @@ module Javascript
               " --lib=third_party/closure/goog" <<
               " --root=" << roots.join(" --root=") <<
               " --src=" << srcdir <<
-              resources.join("")
+              resources.join("") <<
+              exclude_resources.join("")
 
           sh cmd
         end

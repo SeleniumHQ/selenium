@@ -31,7 +31,7 @@ limitations under the License.
   }
 
   function checkRecord(record, level, msg, time) {
-    assertEquals('wrong level', level.name, record.level);
+    assertEquals('wrong level', level.value, record.level.value);
     assertEquals('wrong message', msg, record.message);
     assertEquals('wrong time', time, record.timestamp);
   }
@@ -51,7 +51,7 @@ limitations under the License.
         webdriver.logging.Level.INFO, '[the.name] foo bar', 1234);
     checkRecord(
         convert(goog.debug.Logger.Level.CONFIG, 'foo bar', 'the.name', 1234),
-        webdriver.logging.Level.INFO, '[the.name] foo bar', 1234);
+        webdriver.logging.Level.DEBUG, '[the.name] foo bar', 1234);
     checkRecord(
         convert(goog.debug.Logger.Level.FINE, 'foo bar', 'the.name', 1234),
         webdriver.logging.Level.DEBUG, '[the.name] foo bar', 1234);

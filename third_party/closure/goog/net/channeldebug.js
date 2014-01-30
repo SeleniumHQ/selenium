@@ -16,7 +16,6 @@
  * @fileoverview Definition of the ChannelDebug class. ChannelDebug provides
  * a utility for tracing and debugging the BrowserChannel requests.
  *
- * TODO(user) - allow client to specify a custom redaction policy
  */
 
 
@@ -24,8 +23,9 @@
  * Namespace for BrowserChannel
  */
 goog.provide('goog.net.ChannelDebug');
-goog.require('goog.debug.Logger');
+
 goog.require('goog.json');
+goog.require('goog.log');
 
 
 
@@ -37,10 +37,10 @@ goog.require('goog.json');
 goog.net.ChannelDebug = function() {
   /**
    * The logger instance.
-   * @type {goog.debug.Logger}
+   * @const
    * @private
    */
-  this.logger_ = goog.debug.Logger.getLogger('goog.net.BrowserChannel');
+  this.logger_ = goog.log.getLogger('goog.net.BrowserChannel');
 };
 
 
@@ -184,7 +184,7 @@ goog.net.ChannelDebug.prototype.dumpException = function(e, opt_msg) {
  * @param {string} text The message.
  */
 goog.net.ChannelDebug.prototype.info = function(text) {
-  this.logger_.info(text);
+  goog.log.info(this.logger_, text);
 };
 
 
@@ -193,7 +193,7 @@ goog.net.ChannelDebug.prototype.info = function(text) {
  * @param {string} text The message.
  */
 goog.net.ChannelDebug.prototype.warning = function(text) {
-  this.logger_.warning(text);
+  goog.log.warning(this.logger_, text);
 };
 
 
@@ -202,7 +202,7 @@ goog.net.ChannelDebug.prototype.warning = function(text) {
  * @param {string} text The message.
  */
 goog.net.ChannelDebug.prototype.severe = function(text) {
-  this.logger_.severe(text);
+  goog.log.error(this.logger_, text);
 };
 
 
@@ -216,16 +216,20 @@ goog.net.ChannelDebug.prototype.severe = function(text) {
 goog.net.ChannelDebug.prototype.redactResponse_ = function(responseText) {
   // first check if it's not JS - the only non-JS should be the magic cookie
   if (!responseText ||
+      /** @suppress {missingRequire}.  The require creates a circular
+       *  dependency.
+       */
       responseText == goog.net.BrowserChannel.MAGIC_RESPONSE_COOKIE) {
     return responseText;
   }
   /** @preserveTry */
   try {
     var responseArray = goog.json.unsafeParse(responseText);
-
-    for (var i = 0; i < responseArray.length; i++) {
-      if (goog.isArray(responseArray[i])) {
-        this.maybeRedactArray_(responseArray[i]);
+    if (responseArray) {
+      for (var i = 0; i < responseArray.length; i++) {
+        if (goog.isArray(responseArray[i])) {
+          this.maybeRedactArray_(responseArray[i]);
+        }
       }
     }
 

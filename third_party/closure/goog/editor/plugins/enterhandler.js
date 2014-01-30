@@ -20,9 +20,9 @@
 goog.provide('goog.editor.plugins.EnterHandler');
 
 goog.require('goog.dom');
-goog.require('goog.dom.AbstractRange');
 goog.require('goog.dom.NodeOffset');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Plugin');
@@ -31,6 +31,8 @@ goog.require('goog.editor.plugins.Blockquote');
 goog.require('goog.editor.range');
 goog.require('goog.editor.style');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.functions');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
@@ -477,7 +479,7 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
   }
 
 
-  if (goog.userAgent.IE && !goog.userAgent.isVersion(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(9)) {
     // IE (before IE9) has a bug where if the cursor is directly before a block
     // node (e.g., the content is "foo[cursor]<blockquote>bar</blockquote>"),
     // the FormatBlock command actually formats the "bar" instead of the "foo".
@@ -660,7 +662,7 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
           // Don't break Opera's native break-out-of-lists behavior.
           html = '<br>';
         }
-        container.innerHTML = html;
+        goog.editor.node.replaceInnerHtml(container, html);
         goog.editor.range.selectNodeStart(container.firstChild);
         reselect = false;
       }

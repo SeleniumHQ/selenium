@@ -18,6 +18,11 @@
 import unittest
 from selenium.webdriver.remote.webelement import WebElement
 
+try:
+    str = unicode
+except NameError:
+    pass
+
 
 class ExecutingJavaScriptTests(unittest.TestCase):
 
@@ -26,7 +31,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
 
         result = self.driver.execute_script("return document.title")
 
-        self.assertTrue(type(result) == unicode,
+        self.assertTrue(type(result) == str,
             "The type of the result is %s" % type(result))
         self.assertEqual("XHTML Test Page", result)
   

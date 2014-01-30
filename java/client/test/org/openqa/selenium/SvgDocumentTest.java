@@ -17,28 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE},
-        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
+@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SAFARI},
+        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers;"
+                 + "Safari: SafariDriver cannot manipulate SVG documents")
 public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
+  @Ignore(value = CHROME, reason = "chromedriver needs to update atoms for latest SVG support")
   public void testClickOnSvgElement() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+    assumeFalse("Firefox < 21 fails this test", isFirefox(driver) && (getFirefoxVersion(driver) < 21));
 
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));

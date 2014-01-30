@@ -18,17 +18,15 @@ try:
 except ImportError:
     import httplib as http_client
 
-import base64
 import shutil
+import socket
 import sys
 from .firefox_binary import FirefoxBinary
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.remote.webelement import WebElement
+
 
 class WebDriver(RemoteWebDriver):
 
@@ -43,8 +41,9 @@ class WebDriver(RemoteWebDriver):
 
         if self.profile is None:
             self.profile = FirefoxProfile()
-       
-        self.profile.native_events_enabled = self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled
+
+        self.profile.native_events_enabled = (
+            self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
 
         if self.binary is None:
             self.binary = FirefoxBinary()
@@ -55,22 +54,18 @@ class WebDriver(RemoteWebDriver):
         if proxy is not None:
             proxy.add_to_capabilities(capabilities)
 
-
         RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection("127.0.0.1", self.profile,
             self.binary, timeout),
-            desired_capabilities=capabilities)
+            desired_capabilities=capabilities,
+            keep_alive=True)
         self._is_remote = False
-
-    def create_web_element(self, element_id):
-        """Override from RemoteWebDriver to use firefox.WebElement."""
-        return WebElement(self, element_id)
 
     def quit(self):
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
-        except http_client.BadStatusLine:
+        except (http_client.BadStatusLine, socket.error):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass

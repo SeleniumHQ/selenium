@@ -117,6 +117,7 @@ public class OutputStreamLogSink
     /** 
      * @deprecated Use getLogTimeZone() 
      */
+    @Deprecated
     public String getLogTimezone()
     {
         return _logTimezone;
@@ -126,6 +127,7 @@ public class OutputStreamLogSink
     /** 
      * @deprecated Use setLogTimeZone(String) 
      */
+    @Deprecated
     public void setLogTimezone(String logTimezone)
     {
         _logTimezone=logTimezone;
@@ -235,7 +237,7 @@ public class OutputStreamLogSink
     /* ------------------------------------------------------------ */
     public synchronized void setOutputStream(OutputStream out)
     {
-        _reopen=isStarted() && out!=out;
+        _reopen=isStarted() && _out!=out;
         _filename=null;
         if (_buffer!=null)
             _buffer.resetWriter();

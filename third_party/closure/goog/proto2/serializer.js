@@ -36,6 +36,13 @@ goog.proto2.Serializer = function() {};
 
 
 /**
+ * @define {boolean} Whether to decode and convert symbolic enum values to
+ * actual enum values or leave them as strings.
+ */
+goog.define('goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS', false);
+
+
+/**
  * Serializes a message to the expected format.
  *
  * @param {goog.proto2.Message} message The message to be serialized.
@@ -118,6 +125,22 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
     return this.deserialize(field.getFieldMessageType(), value);
   }
 
+  // Decode enum values.
+  if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.ENUM) {
+    // If it's a string, get enum value by name.
+    // NB: In order this feature to work, property renaming should be turned off
+    // for the respective enums.
+    if (goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS && goog.isString(value)) {
+      // enumType is a regular Javascript enum as defined in field's metadata.
+      var enumType = field.getNativeType();
+      if (enumType.hasOwnProperty(value)) {
+        return enumType[value];
+      }
+    }
+    // Return unknown values as is for backward compatibility.
+    return value;
+  }
+
   // Return the raw value if the field does not allow the JSON input to be
   // converted.
   if (!field.deserializationConversionPermitted()) {
@@ -132,12 +155,12 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
   var nativeType = field.getNativeType();
   if (nativeType === String) {
     // JSON numbers can be converted to strings.
-    if (typeof value === 'number') {
+    if (goog.isNumber(value)) {
       return String(value);
     }
   } else if (nativeType === Number) {
     // JSON strings are sometimes used for large integer numeric values.
-    if (typeof value === 'string') {
+    if (goog.isString(value)) {
       // Validate the string.  If the string is not an integral number, we would
       // rather have an assertion or error in the caller than a mysterious NaN
       // value.

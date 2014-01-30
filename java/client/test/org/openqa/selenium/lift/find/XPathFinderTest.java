@@ -17,16 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 
-import org.jmock.Expectations;
-import org.junit.Test;
+public class XPathFinderTest {
 
-import java.util.Collections;
-
-public class XPathFinderTest extends MockTestBase {
   @Test
   public void shouldReturnManyElements() {
     final String xpath = "//body";
@@ -34,14 +33,9 @@ public class XPathFinderTest extends MockTestBase {
     XPathFinder finder = new XPathFinder(xpath);
 
     final WebDriver driver = mock(WebDriver.class);
-    checking(new Expectations() {
-      {
-        one(driver).findElements(By.xpath(xpath));
-        will(returnValue(Collections.EMPTY_LIST));
-      }
-    });
-
 
     finder.extractFrom(driver);
+
+    verify(driver).findElements(By.xpath(xpath));
   }
 }

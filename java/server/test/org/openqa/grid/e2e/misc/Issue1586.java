@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -25,11 +28,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,16 +36,16 @@ import java.net.URL;
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
-  private Hub hub;
+  private static Hub hub;
 
-  @BeforeClass(alwaysRun = true)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     hub = GridTestHelper.getHub();
 
     // register a webdriver
     SelfRegisteringRemote webdriver =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
+    webdriver.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     webdriver.startRemoteServer();
     webdriver.sendRegistrationRequest();
 
@@ -54,12 +53,11 @@ public class Issue1586 {
   }
 
   // extremely slow test, for issue1586. Excluding from regression.
-  @Test(enabled=false)
+  @Test
   public void test() throws MalformedURLException {
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
     try {
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), ff);
+      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
         driver.get("http://code.google.com/p/selenium/");
         WebElement keywordInput = driver.findElement(By.name("q"));
@@ -76,8 +74,8 @@ public class Issue1586 {
     }
   }
 
-  @AfterClass(alwaysRun = true)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
   }
 }

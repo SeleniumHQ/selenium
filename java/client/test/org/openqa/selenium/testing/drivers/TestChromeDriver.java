@@ -20,9 +20,11 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
@@ -83,4 +85,12 @@ public class TestChromeDriver extends RemoteWebDriver {
     
     return capabilities;
   }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
+  }
+
 }

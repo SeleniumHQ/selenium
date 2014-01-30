@@ -18,7 +18,6 @@ package org.openqa.selenium.htmlunit;
 
 import com.google.common.base.Preconditions;
 
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.internal.Coordinates;
@@ -34,7 +33,7 @@ import java.io.IOException;
  * Implements mouse operations using the HtmlUnit WebDriver.
  * 
  */
-public class HtmlUnitMouse implements Mouse {
+public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
   private final HtmlUnitDriver parent;
   private final HtmlUnitKeyboard keyboard;
   private HtmlElement currentActiveElement = null;

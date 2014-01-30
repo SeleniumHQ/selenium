@@ -18,15 +18,16 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.jmock.Expectations;
 import org.junit.Test;
-import org.openqa.selenium.testing.MockTestBase;
 
-public class ProcessorCommandsTest extends MockTestBase {
+public class ProcessorCommandsTest {
 
   @Test(expected = SeleniumException.class)
   public void shouldThrowASeleniumExceptionIfTheMethodDoesNotExistOnSelenium() {
@@ -42,11 +43,8 @@ public class ProcessorCommandsTest extends MockTestBase {
     final CommandProcessor processor = mock(CommandProcessor.class);
     final String[] args = new String[] { "foo", "bar" };
 
-    checking(new Expectations() {{
-      one(processor).doCommand("showContextualBanner", args);
-    }});
-
     commands.execute(processor, "showContextualBanner", args);
+    verify(processor).doCommand("showContextualBanner", args);
   }
   
   @Test
@@ -55,10 +53,7 @@ public class ProcessorCommandsTest extends MockTestBase {
 
     final CommandProcessor processor = mock(CommandProcessor.class);
 
-    checking(new Expectations() {{
-      one(processor).getString("getBodyText", new String[0]);
-      will(returnValue("cheese"));
-    }});
+    when(processor.getString("getBodyText", new String[0])).thenReturn("cheese");
 
     String result = commands.execute(processor, "getBodyText", new String[0]);
 
@@ -72,10 +67,8 @@ public class ProcessorCommandsTest extends MockTestBase {
     final CommandProcessor processor = mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getStringArray("getSelectedLabels", args);
-      will(returnValue(new String[] {"cheddar", "brie", "gouda"}));
-    }});
+    when(processor.getStringArray("getSelectedLabels", args))
+        .thenReturn(new String[]{"cheddar", "brie", "gouda"});
 
     String result = commands.execute(processor, "getSelectedLabels", args);
 
@@ -89,10 +82,7 @@ public class ProcessorCommandsTest extends MockTestBase {
     final CommandProcessor processor = mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getBoolean("isTextPresent", args);
-      will(returnValue(true));
-    }});
+    when(processor.getBoolean("isTextPresent", args)).thenReturn(true);
 
     String result = commands.execute(processor, "isTextPresent", args);
 
@@ -106,10 +96,7 @@ public class ProcessorCommandsTest extends MockTestBase {
     final CommandProcessor processor = mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getNumber("getCssCount", args);
-      will(returnValue(42));
-    }});
+    when(processor.getNumber("getCssCount", args)).thenReturn(42);
 
     String result = commands.execute(processor, "getCssCount", args);
 

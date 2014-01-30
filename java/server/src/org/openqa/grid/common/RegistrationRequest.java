@@ -29,6 +29,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import java.io.UnsupportedEncodingException;
@@ -83,8 +84,12 @@ public class RegistrationRequest {
 
   public static final String MAX_SESSION = "maxSession";
   public static final String AUTO_REGISTER = "register";
+
+  // polling nodes params
   public static final String NODE_POLLING = "nodePolling";
   public static final String UNREGISTER_IF_STILL_DOWN_AFTER = "unregisterIfStillDownAfter";
+  public static final String DOWN_POLLING_LIMIT = "downPollingLimit";
+  public static final String STATUS_CHECK_TIMEOUT = "nodeStatusCheckTimeout";
 
   public static final String MAX_TESTS_BEFORE_CLEAN = "maxTestBeforeClean";
   public static final String CLEAN_SNAPSHOT = "cleanSnapshot";
@@ -193,7 +198,7 @@ public class RegistrationRequest {
     try {
       return Integer.parseInt(o.toString());
     } catch (Throwable t) {
-      log.warning("Error." + name + " is supposed to be an int. Keeping default of " + defaultValue);
+      log.warning("Error. " + param + " is supposed to be an int. Keeping default of " + defaultValue);
       return defaultValue;
     }
 
@@ -386,6 +391,21 @@ public class RegistrationRequest {
     // from command line
     res.loadFromCommandLine(args);
 
+    for (DesiredCapabilities cap : res.capabilities) {
+      if (SeleniumProtocol.Selenium.toString().equals(cap.getCapability(SELENIUM_PROTOCOL))) {
+        if (!BrowserLauncherFactory.isBrowserSupported(cap.getBrowserName())) {
+          throw new GridConfigurationException("browser " + cap.getBrowserName()
+                                               + " is not supported, supported browsers are:\n"
+                                               + BrowserLauncherFactory.getSupportedBrowsersAsString());
+        }
+      }
+      if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
+        cap.setCapability(SELENIUM_PROTOCOL,
+          GridRole.RCAliases().contains(nodeType)
+            ? SeleniumProtocol.Selenium.toString() : SeleniumProtocol.WebDriver.toString());
+      }
+    }
+
     res.configuration.put(HOST, guessHost((String) res.configuration.get(HOST)));
     res.configuration.put(HUB_HOST, guessHost((String) res.configuration.get(HUB_HOST)));
 
@@ -491,13 +511,14 @@ public class RegistrationRequest {
   }
 
   private DesiredCapabilities addCapabilityFromString(String capability) {
-    System.out.println("adding " + capability);
+    log.info("Adding " + capability);
     String[] s = capability.split(",");
     if (s.length == 0) {
       throw new GridConfigurationException("-browser must be followed by a browser description");
     }
     DesiredCapabilities res = new DesiredCapabilities();
     for (String capabilityPair : s) {
+      capabilityPair = capabilityPair.trim();
       if (capabilityPair.split("=").length != 2) {
         throw new GridConfigurationException("-browser format is key1=value1,key2=value2 "
             + capabilityPair + " doesn't follow that format.");
@@ -512,7 +533,6 @@ public class RegistrationRequest {
           "You need to specify a browserName using browserName=XXX");
     }
     return res;
-
   }
 
   private void addPlatformInfoToCapabilities() {

@@ -24,6 +24,8 @@ import org.openqa.selenium.net.PortProber;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import java.net.InetSocketAddress;
@@ -44,11 +46,12 @@ class SafariDriverServer {
 
   private final int port;
 
-  private final BlockingQueue<SafariDriverConnection> connections =
-      new SynchronousQueue<SafariDriverConnection>();
+  private final BlockingQueue<WebSocketConnection> connections =
+      new SynchronousQueue<WebSocketConnection>();
 
   private ServerBootstrap bootstrap;
   private Channel serverChannel;
+  private ChannelGroup channelGroup;
   private int serverPort;
 
   /**
@@ -79,7 +82,9 @@ class SafariDriverServer {
             Executors.newCachedThreadPool(),
             Executors.newCachedThreadPool()));
 
-    bootstrap.setPipelineFactory(new SafariDriverPipelineFactory(serverPort, connections));
+    channelGroup = new DefaultChannelGroup();
+    bootstrap.setPipelineFactory(new SafariDriverPipelineFactory(
+        serverPort, connections, channelGroup));
     serverChannel = bootstrap.bind(new InetSocketAddress(serverPort));
 
     LOG.info("Server started on port " + serverPort);
@@ -91,6 +96,8 @@ class SafariDriverServer {
   public void stop() {
     if (bootstrap != null) {
       LOG.info("Stopping server");
+
+      channelGroup.close().awaitUninterruptibly();
 
       serverChannel.close();
       bootstrap.releaseExternalResources();
@@ -120,7 +127,7 @@ class SafariDriverServer {
    * @return The new connection.
    * @throws InterruptedException If the timeout expires.
    */
-  public SafariDriverConnection getConnection(long timeout, TimeUnit unit)
+  public WebSocketConnection getConnection(long timeout, TimeUnit unit)
       throws InterruptedException {
     return connections.poll(timeout, unit);
   }

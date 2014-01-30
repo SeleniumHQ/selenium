@@ -19,11 +19,11 @@ package org.openqa.grid.web.servlet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.common.exception.GridException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
       }
       rd.close();
       String json = s.toString();
-      if (json != null && !"".equals(json)) {
+      if (!"".equals(json)) {
         requestJSON = new JSONObject(json);
       }
 

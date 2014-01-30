@@ -18,10 +18,17 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
+import static com.thoughtworks.selenium.BrowserConfigurationOptions.MULTI_WINDOW;
+import static com.thoughtworks.selenium.BrowserConfigurationOptions.SINGLE_WINDOW;
+import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.After;
 import org.junit.Assume;
@@ -36,7 +43,6 @@ import org.junit.runners.model.Statement;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -53,11 +59,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
-
-import static com.thoughtworks.selenium.BrowserConfigurationOptions.MULTI_WINDOW;
-import static com.thoughtworks.selenium.BrowserConfigurationOptions.SINGLE_WINDOW;
-import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());

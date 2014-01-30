@@ -20,7 +20,6 @@
 
 /** @type {!Object} */
 var console = {};
-
 /**
  * @param {string} msg
  * @param {...} var_args
@@ -28,25 +27,21 @@ var console = {};
 console.group = function(msg, var_args) {};
 
 console.groupEnd = function() {};
-
 /**
  * @param {string} msg
  * @param {...} var_args
  */
 console.error = function(msg, var_args) {};
-
 /**
  * @param {string} msg
  * @param {...} var_args
  */
 console.warn = function(msg, var_args) {};
-
 /**
  * @param {string} msg
  * @param {...} var_args
  */
 console.info = function(msg, var_args) {};
-
 /**
  * @param {string} msg
  * @param {...} var_args
@@ -149,10 +144,10 @@ SafariBrowserWindow.prototype.close = function() {};
 SafariBrowserWindow.prototype.insertTab = function(tab, index) {};
 
 /**
- * @param {string} visibility
- * @param {number} index
+ * @param {string=} opt_visibility
+ * @param {number=} opt_index
  */
-SafariBrowserWindow.prototype.openTab = function(visibility, index) {};
+SafariBrowserWindow.prototype.openTab = function(opt_visibility, opt_index) {};
 
 
 /**
@@ -163,6 +158,19 @@ function SafariCloseEvent() {}
 
 /** @override */
 SafariCloseEvent.prototype.type = 'close';
+
+
+/**
+ * @constructor
+ * @extends {SafariEvent}
+ */
+function SafariCommandEvent() {}
+
+/** @override */
+SafariCommandEvent.prototype.type = 'command';
+
+/** @type {string} */
+SafariCommandEvent.prototype.command = '';
 
 
 /** @constructor */
@@ -272,6 +280,9 @@ function SafariExtension() {}
 
 /** @type {!Array.<!SafariExtensionBar>} */
 SafariExtension.prototype.bars;
+
+/** @type {string} */
+SafariExtension.prototype.baseURI;
 
 
 /**

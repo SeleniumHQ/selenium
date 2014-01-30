@@ -17,8 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -28,9 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 public class BaseRemoteProxyTest {
 
@@ -60,8 +62,8 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void testEqual() {
-    Assert.assertTrue(p1.equals(p1));
-    Assert.assertFalse(p1.equals(p2));
+    assertTrue(p1.equals(p1));
+    assertFalse(p1.equals(p2));
   }
 
   @Test(expected = GridException.class)
@@ -91,10 +93,10 @@ public class BaseRemoteProxyTest {
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals("my string", p.getConfig().get("String"));
-    Assert.assertEquals(true, p.getConfig().get("Boolean"));
-    Assert.assertEquals(42, p.getConfig().get("Integer"));
-    Assert.assertEquals("valueA", p.getConfig().get("A"));
+    assertEquals("my string", p.getConfig().get("String"));
+    assertEquals(true, p.getConfig().get("Boolean"));
+    assertEquals(42, p.getConfig().get("Integer"));
+    assertEquals("valueA", p.getConfig().get("A"));
 
   }
 
@@ -109,7 +111,7 @@ public class BaseRemoteProxyTest {
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals("A2", p.getConfig().get("A"));
+    assertEquals("A2", p.getConfig().get("A"));
 
   }
   
@@ -122,7 +124,7 @@ public class BaseRemoteProxyTest {
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals(remoteHost, p.getId());
+    assertEquals(remoteHost, p.getId());
 
   }
   
@@ -134,7 +136,7 @@ public class BaseRemoteProxyTest {
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals("abc", p.getId());
+    assertEquals("abc", p.getId());
 
   }
 
@@ -145,7 +147,7 @@ public class BaseRemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
-    Assert.assertEquals( 23, p.getTimeOut());
+    assertEquals(23, p.getTimeOut());
   }
 
 

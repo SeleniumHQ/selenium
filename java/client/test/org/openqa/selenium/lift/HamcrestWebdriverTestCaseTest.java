@@ -18,17 +18,16 @@ package org.openqa.selenium.lift;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.hamcrest.Matcher;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-
-import org.hamcrest.Matcher;
-import org.jmock.Expectations;
-import org.jmock.Sequence;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Unit test for {@link HamcrestWebDriverTestCase}.
@@ -37,7 +36,7 @@ import org.junit.Test;
  * 
  */
 @SuppressWarnings("unchecked")
-public class HamcrestWebdriverTestCaseTest extends MockTestBase {
+public class HamcrestWebdriverTestCaseTest {
 
   final String text = "abcde";
   final String url = "http://www.example.com";
@@ -60,26 +59,19 @@ public class HamcrestWebdriverTestCaseTest extends MockTestBase {
     final TestContext testContext = mock(TestContext.class);
     testcase.setContext(testContext);
 
-    final Sequence given = sequence("given here");
-
-    checking(new Expectations() {{
-      one(testContext).goTo(url);
-      inSequence(given);
-      one(testContext).clickOn(something);
-      inSequence(given);
-      one(testContext).type(text, something);
-      inSequence(given);
-      one(testContext).assertPresenceOf(something);
-      inSequence(given);
-      one(testContext).assertPresenceOf(someNumberOf, something);
-      inSequence(given);
-    }});
-
     testcase.goTo(url);
     testcase.clickOn(something);
     testcase.type(text, something);
     testcase.assertPresenceOf(something);
     testcase.assertPresenceOf(someNumberOf, something);
+
+    InOrder order = Mockito.inOrder(testContext);
+    order.verify(testContext).goTo(url);
+    order.verify(testContext).clickOn(something);
+    order.verify(testContext).type(text, something);
+    order.verify(testContext).assertPresenceOf(something);
+    order.verify(testContext).assertPresenceOf(someNumberOf, something);
+    order.verifyNoMoreInteractions();
   }
 
   @Test

@@ -16,10 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
@@ -337,7 +334,21 @@ public class Actions {
   }
 
   /**
-   * Generates a composite action containinig all actions so far, ready to be performed (and
+   * Performs a pause.
+   *
+   * @param pause pause duration, in milliseconds.
+   * @return A self reference.
+   * 
+   * @deprecated 'Pause' is considered to be a bad design practice.
+   */
+  @Deprecated
+  public Actions pause(long pause) {
+    action.addAction(new PauseAction(pause));
+    return this;
+  }
+
+  /**
+   * Generates a composite action containing all actions so far, ready to be performed (and
    * resets the internal builder state, so subsequent calls to build() will contain fresh
    * sequences).
    *

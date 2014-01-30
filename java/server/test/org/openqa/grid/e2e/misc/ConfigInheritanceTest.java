@@ -17,6 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -25,18 +30,13 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 
 public class ConfigInheritanceTest {
-  private Hub hub;
+  private static Hub hub;
 
-  @BeforeClass(alwaysRun = false)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
     config.setPort(PortProber.findFreePort());
     config.getAllParams().put("A", "valueA");
@@ -48,7 +48,7 @@ public class ConfigInheritanceTest {
 
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     remote.getConfiguration().put("A2", "proxyA2");
     remote.getConfiguration().put("B2", 50);
 
@@ -60,20 +60,20 @@ public class ConfigInheritanceTest {
   @Test
   public void test() {
 
-    Assert.assertEquals(1, hub.getRegistry().getAllProxies().size());
+    assertEquals(1, hub.getRegistry().getAllProxies().size());
     RemoteProxy p = hub.getRegistry().getAllProxies().iterator().next();
 
-    Assert.assertEquals(p.getConfig().get("A"), "valueA");
-    Assert.assertEquals(p.getConfig().get("A2"), "proxyA2");
+    assertEquals(p.getConfig().get("A"), "valueA");
+    assertEquals(p.getConfig().get("A2"), "proxyA2");
 
-    Assert.assertEquals(p.getConfig().get("B"), 5);
-    Assert.assertEquals(p.getConfig().get("B2"), 50);
+    assertEquals(p.getConfig().get("B"), 5);
+    assertEquals(p.getConfig().get("B2"), 50);
 
 
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
   }
 }

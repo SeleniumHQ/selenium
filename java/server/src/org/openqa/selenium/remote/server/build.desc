@@ -22,6 +22,7 @@ java_library(name = "restish",
     ":http-api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/io",
+    "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/remote:http-session-id",
     "//java/server/src/org/openqa/selenium/remote/server/log",
@@ -56,17 +57,6 @@ java_library(name = "jee-http-api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//third_party/java/guava-libraries",
     "//third_party/java/servlet-api",
-  ])
-
-java_library(name = "webbit-http-api",
-  srcs = [
-    "WebbitHttpRequest.java",
-    "WebbitHttpResponse.java",
-  ],
-  deps = [
-    ":http-api",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/webbit",
   ])
 
 java_library(name = "server_very_core",

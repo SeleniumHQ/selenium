@@ -16,23 +16,23 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
-import org.openqa.selenium.testing.MockTestBase;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class PageFactoryTest extends MockTestBase {
+public class PageFactoryTest {
 
   private WebDriver driver = null;
 

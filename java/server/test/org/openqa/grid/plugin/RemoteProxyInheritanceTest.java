@@ -17,8 +17,12 @@ limitations under the License.
 
 package org.openqa.grid.plugin;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.ID;
+import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
@@ -28,10 +32,6 @@ import org.openqa.grid.internal.RemoteProxy;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
 
 
 public class RemoteProxyInheritanceTest {
@@ -55,13 +55,12 @@ public class RemoteProxyInheritanceTest {
 
     // requires Custom1 & Custom1 set in config to work.
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
-    Assert.assertEquals(BaseRemoteProxy.class, p.getClass());
+    assertEquals(BaseRemoteProxy.class, p.getClass());
   }
 
 
   @Test
   public void existing() {
-    RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
@@ -70,31 +69,30 @@ public class RemoteProxyInheritanceTest {
     config.put("Custom1", "A");
     config.put("Custom2", "B");
     config.put(ID, "abc");
-   
-    req = new RegistrationRequest();
+
+    RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals(p.getClass(), MyRemoteProxy.class);
+    assertEquals(p.getClass(), MyRemoteProxy.class);
     MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
-    Assert.assertEquals("A", myRemoteProxy.getCustom1());
-    Assert.assertEquals("B", myRemoteProxy.getCustom2());
-    Assert.assertEquals("A", myRemoteProxy.getConfig().get("Custom1"));
-    Assert.assertEquals("B", myRemoteProxy.getConfig().get("Custom2"));
+    assertEquals("A", myRemoteProxy.getCustom1());
+    assertEquals("B", myRemoteProxy.getCustom2());
+    assertEquals("A", myRemoteProxy.getConfig().get("Custom1"));
+    assertEquals("B", myRemoteProxy.getConfig().get("Custom2"));
 
   }
 
   @Test(expected = InvalidParameterException.class)
   public void notExisting() {
-    RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "I Don't exist");
 
-    req = new RegistrationRequest();
+    RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
@@ -103,14 +101,13 @@ public class RemoteProxyInheritanceTest {
 
   @Test(expected = InvalidParameterException.class)
   public void notExtendingProxyExisting() {
-    RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "java.lang.String");
 
 
-    req = new RegistrationRequest();
+    RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
@@ -120,13 +117,12 @@ public class RemoteProxyInheritanceTest {
   // when some mandatory param are missing -> InvalidParameterException
   @Test(expected = InvalidParameterException.class)
   public void badConfig() {
-    RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "I Don't exist");
 
-    req = new RegistrationRequest();
+    RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 

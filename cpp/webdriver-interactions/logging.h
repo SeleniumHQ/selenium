@@ -32,12 +32,12 @@ limitations under the License.
 #ifdef unix
  #include <sys/types.h>
  #include <unistd.h>
- #include <stdlib.h>
 #else
  #include <io.h>
  #include <comdef.h>
 #endif
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/timeb.h>
 #include <time.h>
 #include <sstream>
@@ -59,23 +59,11 @@ template <class _LOGGER> class Logger {
   }
 
   static void Level(const std::string& level) {
-    if (level == "ERROR") {
-      Level() = logERROR;
-    } else if (level == "WARN" ) {
-      Level() = logWARN;
-    } else if (level == "INFO" ) {
-      Level() = logINFO;
-    } else if (level == "DEBUG") {
-      Level() = logDEBUG;
-    } else if (level == "TRACE") {
-      Level() = logTRACE;
-    } else {
-      Level() = logFATAL;
-    }
+    Level() = ToLogLevel(level);
   }
 
   static LogLevel& Level() {
-    static LogLevel level = logFATAL;  // off by default
+    static LogLevel level = GetLogLevelEnv();
     return level;
   }
 
@@ -99,6 +87,28 @@ template <class _LOGGER> class Logger {
   }
 
  private:
+
+  static LogLevel ToLogLevel(const std::string& level) {
+    if (level == "ERROR") {
+      return logERROR;
+    } else if (level == "WARN" ) {
+      return logWARN;
+    } else if (level == "INFO" ) {
+      return logINFO;
+    } else if (level == "DEBUG") {
+      return logDEBUG;
+    } else if (level == "TRACE") {
+      return logTRACE;
+    } else {
+      return logFATAL;
+    }
+  }
+
+  static LogLevel GetLogLevelEnv() {
+    char* tmp = getenv("SELENIUM_LOG_LEVEL");
+    return tmp ? ToLogLevel(std::string(tmp)) : logFATAL;
+  }
+
   std::ostringstream os_;
   bool fatal_;
 };

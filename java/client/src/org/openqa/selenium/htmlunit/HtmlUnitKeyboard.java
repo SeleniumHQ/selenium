@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -34,7 +33,7 @@ import java.io.IOException;
  * Implements keyboard operations using the HtmlUnit WebDriver.
  * 
  */
-public class HtmlUnitKeyboard implements Keyboard {
+public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
 
@@ -85,7 +84,7 @@ public class HtmlUnitKeyboard implements Keyboard {
     }
   }
 
-  public void pressKey(Keys keyToPress) {
+  public void pressKey(CharSequence keyToPress) {
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
@@ -93,7 +92,7 @@ public class HtmlUnitKeyboard implements Keyboard {
     htmlElement.sendKeyDownEvent(keyToPress);
   }
 
-  public void releaseKey(Keys keyToRelease) {
+  public void releaseKey(CharSequence keyToRelease) {
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
@@ -101,7 +100,10 @@ public class HtmlUnitKeyboard implements Keyboard {
     htmlElement.sendKeyUpEvent(keyToRelease);
   }
 
-  public void performSingleKeyAction(HtmlElement element, Keys modifierKey, String eventDescription) {
+  /**
+   * @deprecated Visibility will soon be reduced.
+   */
+  public void performSingleKeyAction(HtmlElement element, CharSequence modifierKey, String eventDescription) {
     boolean shiftKey = modifierKey.equals(Keys.SHIFT);
     boolean ctrlKey = modifierKey.equals(Keys.CONTROL);
     boolean altKey = modifierKey.equals(Keys.ALT);

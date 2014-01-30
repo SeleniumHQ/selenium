@@ -83,8 +83,9 @@ WebElement.clickElement = function(respond, parameters) {
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.logging.info('Using native events for click');
 
-    var inViewAfterScroll = bot.action.scrollIntoView(
+    var inViewAfterScroll = Utils.scrollIntoView(
         unwrapped,
+        (respond.session.elementScrollBehavior == 0),
         new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
 
     var isSVG = Utils.isSVG(element.ownerDocument);
@@ -224,10 +225,14 @@ WebElement.sendKeysToElement = function(respond, parameters) {
         goog.dom.selection.setCursorPosition(element, length);
     }
 
-    Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
-        originalDriver.enableNativeEvents, originalDriver.jsTimer, true /*release modifiers*/);
-
-    respond.send();
+    try {
+      Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
+          originalDriver.enableNativeEvents, originalDriver.jsTimer,
+          true /*release modifiers*/);
+      respond.send();
+    } catch (ex) {
+      respond.sendError(ex);
+    }
   }, 0);
 };
 WebElement.sendKeysToElement.preconditions =
@@ -255,8 +260,8 @@ WebElement.getElementTagName = function(respond, parameters) {
 
 
 WebElement.getElementAttribute = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                  respond.session.getDocument());
+  var element = fxdriver.moz.unwrap(
+      Utils.getElementAt(parameters.id, respond.session.getDocument()));
   var attributeName = parameters.name;
 
   respond.value = webdriver.atoms.element.getAttribute(element, attributeName);
@@ -345,12 +350,13 @@ WebElement.isElementDisplayed = function(respond, parameters) {
 WebElement.getElementLocation = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
+  var win = respond.session.getWindow();
 
-  var location = Utils.getElementLocation(element);
+  var location = Utils.getLocation(element);
 
   respond.value = {
-    x: Math.round(location.x),
-    y: Math.round(location.y)
+    x: Math.round(location.x + win.pageXOffset),
+    y: Math.round(location.y + win.pageYOffset)
   };
 
   respond.send();
@@ -387,7 +393,8 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
 
   var theDoc = element.ownerDocument;
   Utils.getMainDocumentElement(theDoc).focus();
-  var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
+  var elementLocation = Utils.getLocationOnceScrolledIntoView(
+      element, (respond.session.elementScrollBehavior == 0));
 
   respond.value = {
     x: Math.round(elementLocation.x),

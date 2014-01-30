@@ -12,6 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Runtime development CSS Compiler emulation, via javascript.
+ * This class provides an approximation to CSSCompiler's functionality by
+ * hacking the live CSSOM.
+ * This code is designed  to be inserted in the DOM immediately after the last
+ * style block in HEAD when in development mode, i.e. you are not using a
+ * running instance of a CSS Compiler to pass your CSS through.
+ */
+
 
 goog.provide('goog.debug.DevCss');
 goog.provide('goog.debug.DevCss.UserAgent');
@@ -433,4 +442,3 @@ goog.debug.DevCss.prototype.addIe6CombinedClassNames_ = function() {
     }
   }
 };
-

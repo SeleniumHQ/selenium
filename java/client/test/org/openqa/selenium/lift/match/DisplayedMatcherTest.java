@@ -19,13 +19,14 @@ package org.openqa.selenium.lift.match;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import org.jmock.Expectations;
-import org.junit.Test;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.MockTestBase;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.match.DisplayedMatcher.displayed;
 
-public class DisplayedMatcherTest extends MockTestBase {
+import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
+public class DisplayedMatcherTest {
 
   @Test
   public void testShouldNotFailForDisplayedWebElement() {
@@ -41,12 +42,7 @@ public class DisplayedMatcherTest extends MockTestBase {
 
   private WebElement createWebElementWithDisplayed(final boolean displayed) {
     final WebElement element = mock(WebElement.class);
-    checking(new Expectations() {
-      {
-        one(element).isDisplayed();
-        will(returnValue(displayed));
-      }
-    });
+    when(element.isDisplayed()).thenReturn(displayed);
     return element;
   }
 }

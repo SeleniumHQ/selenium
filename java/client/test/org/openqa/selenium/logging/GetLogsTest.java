@@ -19,16 +19,16 @@ package org.openqa.selenium.logging;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.assumeFalse;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 import org.junit.After;
 import org.junit.Test;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
 public class GetLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -74,7 +74,7 @@ public class GetLogsTest extends JUnit4TestBase {
           LogEntriesChecks.hasOverlappingLogEntries(firstEntries, secondEntries));
     }
   }
-  
+
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
     assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
@@ -105,7 +105,7 @@ public class GetLogsTest extends JUnit4TestBase {
       createWebDriverWithLogging(logType, Level.OFF);
       LogEntries entries = localDriver.manage().logs().get(logType);
       assertEquals(String.format("There should be no log entries for " +
-          "log type %s when logging is turned off.", logType), 
+          "log type %s when logging is turned off.", logType),
           0, entries.getAll().size());
       quitDriver();
     }

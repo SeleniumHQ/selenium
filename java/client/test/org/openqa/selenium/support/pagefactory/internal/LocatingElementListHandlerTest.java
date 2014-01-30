@@ -18,9 +18,15 @@ package org.openqa.selenium.support.pagefactory.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -29,14 +35,11 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
-public class LocatingElementListHandlerTest extends MockTestBase {
+public class LocatingElementListHandlerTest {
 
   @SuppressWarnings("unchecked")
   @Test
@@ -44,13 +47,9 @@ public class LocatingElementListHandlerTest extends MockTestBase {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(2).of(locator).findElements();
-      will(returnValue(list));
-      exactly(1).of(element2).sendKeys("Fishy");
-    }});
+    when(locator.findElements()).thenReturn(list);
 
     LocatingElementListHandler handler = new LocatingElementListHandler(locator);
     List<WebElement> proxy =
@@ -59,6 +58,11 @@ public class LocatingElementListHandlerTest extends MockTestBase {
 
     proxy.get(1).sendKeys("Fishy");
     assertThat(proxy.size(), equalTo(2));
+
+    verify(locator, times(2)).findElements();
+    verify(element2, times(1)).sendKeys("Fishy");
+    verifyNoMoreInteractions(locator, element2);
+    verifyZeroInteractions(element1);
   }
 
   @Test
@@ -66,19 +70,16 @@ public class LocatingElementListHandlerTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(By.tagName("a"));
-      will(returnValue(list));
-      exactly(1).of(element1).getAttribute("href");
-      will(returnValue(""));
-      exactly(1).of(element2).getAttribute("href");
-      will(returnValue(""));
-    }});
+    when(driver.findElements(By.tagName("a"))).thenReturn(list);
 
     Page page = PageFactory.initElements(driver, Page.class);
     page.getLinks();
+
+    verify(element1).getAttribute("href");
+    verify(element2).getAttribute("href");
+    verifyNoMoreInteractions(element1, element2);
   }
 
   @Test
@@ -86,21 +87,18 @@ public class LocatingElementListHandlerTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(By.tagName("a"));
-      will(returnValue(list));
-      exactly(1).of(element1).getText();
-      will(returnValue(""));
-      exactly(1).of(element2).getText();
-      will(returnValue(""));
-    }});
+    when(driver.findElements(By.tagName("a"))).thenReturn(list);
 
     ChildPage page = new ChildPage();
 
     PageFactory.initElements(driver, page);
     page.getTextOfLinks();
+
+    verify(element1).getText();
+    verify(element2).getText();
+    verifyNoMoreInteractions(element1, element2);
   }
 
   public static class Page {

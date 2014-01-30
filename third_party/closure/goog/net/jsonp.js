@@ -34,7 +34,6 @@
 goog.provide('goog.net.Jsonp');
 
 goog.require('goog.Uri');
-goog.require('goog.dom');
 goog.require('goog.net.jsloader');
 
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING

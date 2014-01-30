@@ -101,7 +101,7 @@ webdriver.http.CorsClient.prototype.send = function(request, callback) {
 
     xhr.onload = function() {
       callback(null, webdriver.http.Response.fromXmlHttpRequest(
-          (/** @type {!XMLHttpRequest} */xhr)));
+          /** @type {!XMLHttpRequest} */ (xhr)));
     };
 
     var url = this.url_;

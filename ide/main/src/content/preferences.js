@@ -51,6 +51,18 @@ SeleniumIDE.Preferences = {
     this.branch.setBoolPref(name, value);
   },
 
+  getInt: function(name, defaultValue) {
+    if (this.branch && this.branch.prefHasUserValue(name)) {
+      return this.branch.getIntPref(name);
+    } else {
+      return defaultValue;
+    }
+  },
+
+  setInt: function(name, value) {
+    this.branch.setIntPref(name, value);
+  },
+
   getArray: function(name) {
     var length = this.getString(name + ".length");
     if (length == null) return [];
@@ -72,6 +84,10 @@ SeleniumIDE.Preferences = {
     return this.branch.getPrefType(name);
   },
 
+  clear: function(name) {
+    this.branch.clearUserPref(name);
+  },
+
   load: function() {
     var options = {};
     var name;
@@ -83,6 +99,8 @@ SeleniumIDE.Preferences = {
       name = names[i];
       if (this.getType(name) == this.branch.PREF_BOOL) {
         options[name] = this.getBool(name);
+      } else if (this.getType(name) == this.branch.PREF_INT) {
+        options[name] = this.getInt(name, this.DEFAULT_OPTIONS[name] || 0);
       } else {
         options[name] = this.getString(name, this.DEFAULT_OPTIONS[name] || '');
       }
@@ -90,10 +108,17 @@ SeleniumIDE.Preferences = {
     return options;
   },
 
+  setAndSave: function(options, prop_name, prop_value) {
+    options[prop_name] = prop_value;
+    this.save(options, prop_name);
+  },
+
   save: function(options, prop_name) {
     if (prop_name) {
       if (this.getType(prop_name) == this.branch.PREF_BOOL) {
         this.setBool(prop_name, options[prop_name]);
+      } else if (this.getType(prop_name) == this.branch.PREF_INT) {
+        this.setInt(prop_name, options[prop_name]);
       } else {
         this.setString(prop_name, options[prop_name]);
       }
@@ -103,6 +128,8 @@ SeleniumIDE.Preferences = {
       for (name in options) {
         if (this.getType(name) == this.branch.PREF_BOOL) {
           this.setBool(name, options[name]);
+        } else if (this.getType(name) == this.branch.PREF_INT) {
+          this.setInt(name, options[name]);
         } else {
           this.setString(name, options[name]);
         }
@@ -114,45 +141,34 @@ SeleniumIDE.Preferences = {
 SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   encoding: "UTF-8",
 
-  // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
-  userExtensionsURL: "",
-
-  ideExtensionsPaths: "",
-
-  rememberBaseURL: "true",
-
-  baseURL: "",
-
+  //Recording related options
+  recordOnOpen: "true",
   recordAssertTitle: "false",
-
-  timeout: "30000",
-
   recordAbsoluteURL: "false",
-
-  pluginProvidedIDEExtensions: "",
-
-  pluginProvidedUserExtensions: "",
-
-  pluginProvidedFormatters: "",
-
-  plugins: "",
-
-  showDeveloperTools: "false",
-
+  locatorBuildersOrder: "ui,id,link,name,css,dom:name,xpath:link,xpath:img,xpath:attributes,xpath:idRelative,xpath:href,dom:index,xpath:position",
+  rememberBaseURL: "true",
+  baseURL: "",
   selectedFormat: "default",
-
-  enableExperimentalFeatures: "false",
-
   disableFormatChangeMsg: "false",
 
-  currentVersion: "",
-
-  locatorBuildersOrder: "ui,id,link,name,css,dom:name,xpath:link,xpath:img,xpath:attributes,xpath:idRelative,xpath:href,dom:index,xpath:position",
-
+  //Playback related options
+  timeout: "30000",
   executeUsingWebDriver: "false",
-
   webDriverBrowserString: "firefox",
 
-  recordOnOpen: "true"
+  //Other options
+  // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
+  userExtensionsURL: "",
+  ideExtensionsPaths: "",
+  disableBadPluginCode: "true",
+  disableBadPluginAddon: "true",
+  enableExperimentalFeatures: "false",
+  showDeveloperTools: "false",
+
+  //Internal data
+  pluginsData: "[]",
+  currentVersion: "",
+  lastSavedTestCase: "",
+  lastSavedTestSuite: ""
 };
 

@@ -16,8 +16,14 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -26,23 +32,16 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 import java.lang.reflect.Proxy;
 
-public class LocatingElementHandlerTest extends MockTestBase {
+public class LocatingElementHandlerTest {
+
   @Test
   public void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(2).of(locator).findElement();
-      will(returnValue(element));
-      one(element).sendKeys("Fishy");
-      one(element).submit();
-    }});
+    when(locator.findElement()).thenReturn(element);
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
@@ -51,6 +50,11 @@ public class LocatingElementHandlerTest extends MockTestBase {
 
     proxy.sendKeys("Fishy");
     proxy.submit();
+
+    verify(locator, times(2)).findElement();
+    verify(element).sendKeys("Fishy");
+    verify(element).submit();
+    verifyNoMoreInteractions(locator, element);
   }
 
   @Test
@@ -60,15 +64,14 @@ public class LocatingElementHandlerTest extends MockTestBase {
 
     final By by = By.xpath("//input[@name='q']");
 
-    checking(new Expectations() {{
-      allowing(driver).findElement(by);
-      will(returnValue(element));
-      one(element).clear();
-      one(element).sendKeys("cheese");
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     Page page = PageFactory.initElements(driver, Page.class);
     page.doQuery("cheese");
+
+    verify(element).clear();
+    verify(element).sendKeys("cheese");
+    verifyNoMoreInteractions(element);
   }
 
   @Test
@@ -76,12 +79,7 @@ public class LocatingElementHandlerTest extends MockTestBase {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      allowing(locator).findElement();
-      will(returnValue(element));
-      one(element).isEnabled();
-      one(element).sendKeys("Cheese");
-    }});
+    when(locator.findElement()).thenReturn(element);
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
@@ -90,6 +88,9 @@ public class LocatingElementHandlerTest extends MockTestBase {
 
     proxy.isEnabled();
     proxy.sendKeys("Cheese");
+
+    verify(element).isEnabled();
+    verify(element).sendKeys("Cheese");
   }
 
   @Test
@@ -99,15 +100,12 @@ public class LocatingElementHandlerTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      allowing(driver).findElement(By.xpath("//input[@name='q']"));
-      will(returnValue(element));
-      one(element).getAttribute("value");
-      will(returnValue(""));
-    }});
+    when(driver.findElement(By.xpath("//input[@name='q']"))).thenReturn(element);
 
     PageFactory.initElements(driver, page);
     page.doChildQuery();
+
+    verify(element).getAttribute("value");
   }
 
   public static class Page {

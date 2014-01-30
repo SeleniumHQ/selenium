@@ -88,7 +88,7 @@ goog.ui.ImagelessButtonRenderer.prototype.createDom;
 /** @override */
 goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
     element) {
-  return (/** @type {Element} */ element && element.firstChild &&
+  return /** @type {Element} */ (element && element.firstChild &&
       element.firstChild.firstChild &&
       element.firstChild.firstChild.firstChild.lastChild);
 };

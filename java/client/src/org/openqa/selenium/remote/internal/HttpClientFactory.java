@@ -68,10 +68,10 @@ public class HttpClientFactory {
     return httpClient;
   }
 
-  public HttpClient getGridHttpClient(int timeout) {
+  public HttpClient getGridHttpClient(int connection_timeout, int socket_timeout) {
     DefaultHttpClient gridClient = new DefaultHttpClient(gridClientConnectionManager);
     gridClient.setRedirectStrategy(new MyRedirectHandler());
-    gridClient.setParams(getGridHttpParams(timeout));
+    gridClient.setParams(getGridHttpParams(connection_timeout, socket_timeout));
     gridClient.setRoutePlanner(
         getRoutePlanner(gridClient.getConnectionManager().getSchemeRegistry()));
     gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
@@ -93,10 +93,10 @@ public class HttpClientFactory {
     return new ProxySelectorRoutePlanner(registry, ProxySelector.getDefault());
   }
 
-  public HttpParams getGridHttpParams(int timeout){
+  public HttpParams getGridHttpParams(int connection_timeout, int socket_timeout){
     final HttpParams params = getHttpParams();
-    HttpConnectionParams.setSoTimeout(params, timeout > 0 ? timeout : TIMEOUT_THREE_HOURS);
-    HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+    HttpConnectionParams.setSoTimeout(params, socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS);
+    HttpConnectionParams.setConnectionTimeout(params, connection_timeout > 0 ? connection_timeout : 120 * 1000);
     return params;
   }
 

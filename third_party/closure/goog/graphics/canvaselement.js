@@ -37,6 +37,9 @@ goog.require('goog.graphics.Path');
 goog.require('goog.graphics.PathElement');
 goog.require('goog.graphics.RectElement');
 goog.require('goog.graphics.TextElement');
+goog.require('goog.math');
+goog.require('goog.string');
+
 
 
 /**
@@ -48,6 +51,9 @@ goog.require('goog.graphics.TextElement');
  *     this element.
  * @constructor
  * @extends {goog.graphics.GroupElement}
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.CanvasGroupElement = function(graphics) {
   goog.graphics.GroupElement.call(this, null, graphics);
@@ -395,6 +401,7 @@ goog.graphics.CanvasPathElement.prototype.setPath = function(path) {
 /**
  * Draw the path.  Should be treated as package scope.
  * @param {CanvasRenderingContext2D} ctx The context to draw the element in.
+ * @suppress {deprecated} goog.graphics is deprecated.
  */
 goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
   this.drawn_ = true;

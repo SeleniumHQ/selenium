@@ -16,119 +16,112 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.openqa.selenium.Keyboard;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
-import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit test for all simple keyboard actions.
  * 
  */
-public class IndividualKeyboardActionsTest extends MockTestBase {
-  private Keyboard dummyKeyboard;
-  private Mouse dummyMouse;
-  private Coordinates dummyCoordinates;
-  private Locatable locatableElement;
+public class IndividualKeyboardActionsTest {
+
+  @Mock private Keyboard mockKeyboard;
+  @Mock private Mouse mockMouse;
+  @Mock private Coordinates mockCoordinates;
+  @Mock private Locatable stubLocatable;
   final String keysToSend = "hello";
 
   @Before
   public void setUp() {
-    dummyKeyboard = mock(Keyboard.class);
-    dummyMouse = mock(Mouse.class);
-    dummyCoordinates = mock(Coordinates.class);
+    MockitoAnnotations.initMocks(this);
 
-    locatableElement = new StubRenderedWebElement() {
-      @Override
-      public Coordinates getCoordinates() {
-        return dummyCoordinates;
-      }
-    };
+    when(stubLocatable.getCoordinates()).thenReturn(mockCoordinates);
   }
 
   @Test
   public void keyDownActionWithoutProvidedElement() {
     final Keys keyToPress = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyKeyboard).pressKey(keyToPress);
-    }});
-
-    KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse, keyToPress);
+    KeyDownAction keyDown = new KeyDownAction(mockKeyboard, mockMouse, keyToPress);
     keyDown.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockKeyboard).pressKey(keyToPress);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void keyDownActionOnAnElement() {
     final Keys keyToPress = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(keyToPress);
-    }});
-
-    KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
-        locatableElement, keyToPress);
+    KeyDownAction keyDown = new KeyDownAction(
+        mockKeyboard, mockMouse, stubLocatable, keyToPress);
 
     keyDown.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockKeyboard).pressKey(keyToPress);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void keyUpActionWithoutProvidedElement() {
     final Keys keyToRelease = Keys.CONTROL;
 
-    checking(new Expectations() {{
-      one(dummyKeyboard).releaseKey(keyToRelease);
-    }});
-
-    KeyUpAction keyUp = new KeyUpAction(dummyKeyboard, dummyMouse, keyToRelease);
+    KeyUpAction keyUp = new KeyUpAction(mockKeyboard, mockMouse, keyToRelease);
     keyUp.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockKeyboard).releaseKey(keyToRelease);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void keyUpOnAnAnElement() {
     final Keys keyToRelease = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).releaseKey(keyToRelease);
-    }});
-
-    KeyUpAction upAction = new KeyUpAction(dummyKeyboard, dummyMouse,
-        locatableElement, keyToRelease);
+    KeyUpAction upAction = new KeyUpAction(
+        mockKeyboard, mockMouse, stubLocatable, keyToRelease);
     upAction.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockKeyboard).releaseKey(keyToRelease);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void sendKeysActionWithoutProvidedElement() {
-    checking(new Expectations() {{
-      one(dummyKeyboard).sendKeys(keysToSend);
-    }});
-
-    SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse, keysToSend);
+    SendKeysAction sendKeys = new SendKeysAction(mockKeyboard, mockMouse, keysToSend);
     sendKeys.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockKeyboard).sendKeys(keysToSend);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void sendKeysActionOnAnElement() {
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).sendKeys(keysToSend);
-    }});
-
-    SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse,
-        locatableElement, keysToSend);
+    SendKeysAction sendKeys = new SendKeysAction(
+        mockKeyboard, mockMouse, stubLocatable, keysToSend);
     sendKeys.perform();
+
+    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verify(mockKeyboard).sendKeys(keysToSend);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
@@ -136,8 +129,7 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
     final Keys keyToPress = Keys.BACK_SPACE;
 
     try {
-      KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
-          locatableElement, keyToPress);
+      new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, keyToPress);
       fail();
     } catch (IllegalArgumentException e) {
       assertTrue(e.getMessage().contains("modifier keys"));

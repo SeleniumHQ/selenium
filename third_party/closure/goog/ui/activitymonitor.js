@@ -26,8 +26,8 @@
 goog.provide('goog.ui.ActivityMonitor');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
@@ -74,11 +74,19 @@ goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
+  /**
+   * Whether the current window is an iframe.
+   * TODO(user): Move to goog.dom.
+   * @type {boolean}
+   * @private
+   */
+  this.isIframe_ = window.parent != window;
+
   if (!opt_domHelper) {
     this.addDocument(goog.dom.getDomHelper().getDocument());
   } else if (goog.isArray(opt_domHelper)) {
     for (var i = 0; i < opt_domHelper.length; i++) {
-       this.addDocument(opt_domHelper[i].getDocument());
+      this.addDocument(opt_domHelper[i].getDocument());
     }
   } else {
     this.addDocument(opt_domHelper.getDocument());
@@ -139,11 +147,26 @@ goog.ui.ActivityMonitor.MIN_EVENT_SPACING = 3 * 1000;
  * @type {Array.<goog.events.EventType>}
  * @private
  */
-goog.ui.ActivityMonitor.userEventTypesBody_ =
-  [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK,
-   goog.events.EventType.MOUSEDOWN, goog.events.EventType.MOUSEUP,
-   goog.events.EventType.MOUSEMOVE, goog.events.EventType.TOUCHSTART,
-   goog.events.EventType.TOUCHMOVE, goog.events.EventType.TOUCHEND];
+goog.ui.ActivityMonitor.userEventTypesBody_ = [
+  goog.events.EventType.CLICK,
+  goog.events.EventType.DBLCLICK,
+  goog.events.EventType.MOUSEDOWN,
+  goog.events.EventType.MOUSEMOVE,
+  goog.events.EventType.MOUSEUP
+];
+
+
+/**
+ * If a user executes one of these events, s/he is considered not idle.
+ * Note: monitoring touch events within iframe cause problems in iOS.
+ * @type {Array.<goog.events.EventType>}
+ * @private
+ */
+goog.ui.ActivityMonitor.userTouchEventTypesBody_ = [
+  goog.events.EventType.TOUCHEND,
+  goog.events.EventType.TOUCHMOVE,
+  goog.events.EventType.TOUCHSTART
+];
 
 
 /**
@@ -152,7 +175,7 @@ goog.ui.ActivityMonitor.userEventTypesBody_ =
  * @private
  */
 goog.ui.ActivityMonitor.userEventTypesDocuments_ =
-  [goog.events.EventType.KEYDOWN, goog.events.EventType.KEYUP];
+    [goog.events.EventType.KEYDOWN, goog.events.EventType.KEYUP];
 
 
 /**
@@ -180,14 +203,28 @@ goog.ui.ActivityMonitor.prototype.disposeInternal = function() {
  * @param {Document} doc Document to monitor.
  */
 goog.ui.ActivityMonitor.prototype.addDocument = function(doc) {
+  if (goog.array.contains(this.documents_, doc)) {
+    return;
+  }
   this.documents_.push(doc);
   var useCapture = !this.useBubble_;
-  this.eventHandler_.listen(
-      doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
-      this.handleEvent_, useCapture);
-  this.eventHandler_.listen(
-      doc, goog.ui.ActivityMonitor.userEventTypesBody_,
-      this.handleEvent_, useCapture);
+
+  var eventsToListenTo = goog.array.concat(
+      goog.ui.ActivityMonitor.userEventTypesDocuments_,
+      goog.ui.ActivityMonitor.userEventTypesBody_);
+
+  if (!this.isIframe_) {
+    // Monitoring touch events in iframe causes problems interacting with text
+    // fields in iOS (input text, textarea, contenteditable, select/copy/paste),
+    // so just ignore these events. This shouldn't matter much given that a
+    // touchstart event followed by touchend event produces a click event,
+    // which is being monitored correctly.
+    goog.array.extend(eventsToListenTo,
+        goog.ui.ActivityMonitor.userTouchEventTypesBody_);
+  }
+
+  this.eventHandler_.listen(doc, eventsToListenTo, this.handleEvent_,
+      useCapture);
 };
 
 
@@ -202,12 +239,19 @@ goog.ui.ActivityMonitor.prototype.removeDocument = function(doc) {
   }
   goog.array.remove(this.documents_, doc);
   var useCapture = !this.useBubble_;
-  this.eventHandler_.unlisten(
-      doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
-      this.handleEvent_, useCapture);
-  this.eventHandler_.unlisten(
-      doc, goog.ui.ActivityMonitor.userEventTypesBody_,
-      this.handleEvent_, useCapture);
+
+  var eventsToUnlistenTo = goog.array.concat(
+      goog.ui.ActivityMonitor.userEventTypesDocuments_,
+      goog.ui.ActivityMonitor.userEventTypesBody_);
+
+  if (!this.isIframe_) {
+    // See note above about monitoring touch events in iframe.
+    goog.array.extend(eventsToUnlistenTo,
+        goog.ui.ActivityMonitor.userTouchEventTypesBody_);
+  }
+
+  this.eventHandler_.unlisten(doc, eventsToUnlistenTo, this.handleEvent_,
+      useCapture);
 };
 
 
@@ -236,7 +280,8 @@ goog.ui.ActivityMonitor.prototype.handleEvent_ = function(e) {
   }
 
   if (update) {
-    this.updateIdleTime_(goog.now(), /** @type {string} */ (e.type));
+    var type = goog.asserts.assertString(e.type);
+    this.updateIdleTime(goog.now(), type);
   }
 };
 
@@ -246,19 +291,20 @@ goog.ui.ActivityMonitor.prototype.handleEvent_ = function(e) {
  * events that should update idle time.
  */
 goog.ui.ActivityMonitor.prototype.resetTimer = function() {
-  this.updateIdleTime_(goog.now(), 'manual');
+  this.updateIdleTime(goog.now(), 'manual');
 };
 
 
 /**
- * Does the work of updating the idle time and firing an event
+ * Updates the idle time and fires an event if time has elapsed since
+ * the last update.
  * @param {number} eventTime Time (in MS) of the event that cleared the idle
- * timer.
+ *     timer.
  * @param {string} eventType Type of the event, used only for debugging.
- * @private
+ * @protected
  */
-goog.ui.ActivityMonitor.prototype.updateIdleTime_ = function(eventTime,
-      eventType) {
+goog.ui.ActivityMonitor.prototype.updateIdleTime = function(
+    eventTime, eventType) {
   // update internal state noting whether the user was idle
   this.lastEventTime_ = eventTime;
   this.lastEventType_ = eventType;

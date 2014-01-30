@@ -16,22 +16,24 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
-
-import org.openqa.selenium.testing.MockTestBase;
+import org.hamcrest.Description;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import org.openqa.selenium.support.ui.TickingClock;
-
-import org.hamcrest.Description;
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,11 +45,12 @@ import java.util.Collections;
  * @author rchatley (Robert Chatley)
  * 
  */
-public class WebDriverTestContextTest extends MockTestBase {
+public class WebDriverTestContextTest {
 
   WebDriver webdriver;
   TestContext context;
   WebElement element;
+  WebElement element2;
   Finder<WebElement, WebDriver> finder;
   TickingClock clock;
   private static final int CLOCK_INCREMENT = 300;
@@ -58,6 +61,7 @@ public class WebDriverTestContextTest extends MockTestBase {
     webdriver = mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
     element = mock(WebElement.class);
+    element2 = mock(WebElement.class);
     finder = mockFinder();
     clock = new TickingClock(CLOCK_INCREMENT);
   }
@@ -71,31 +75,21 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void canNavigateToAGivenUrl() throws Exception {
     final String url = "http://www.example.com";
 
-    checking(new Expectations() {{
-      one(webdriver).get(url);
-    }});
-
     context.goTo(url);
+
+    verify(webdriver).get(url);
   }
 
   @Test
   public void canAssertPresenceOfWebElements() throws Exception {
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     context.assertPresenceOf(finder);
   }
 
   @Test
   public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
-    checking(new Expectations() {{
-      allowing(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      exactly(2).of(finder).describeTo(with(any(Description.class))); // in producing the error
-                                                                      // msg
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     try {
       context.assertPresenceOf(atLeast(2), finder);
@@ -104,39 +98,30 @@ public class WebDriverTestContextTest extends MockTestBase {
       // expected
       assertThat(error.getMessage(), containsString("a value greater than <1>"));
     }
+
+    // In producing the error message.
+    verify(finder, times(2)).describeTo(any(Description.class));
   }
 
   @Test
   public void canDirectTextInputToSpecificElements() throws Exception {
     final String inputText = "test";
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      one(element).sendKeys(inputText);
-    }});
-
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
     context.type(inputText, finder);
+    verify(element).sendKeys(inputText);
   }
 
   @Test
   public void canTriggerClicksOnSpecificElements() throws Exception {
-
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      one(element).click();
-    }});
-
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
     context.clickOn(finder);
+    verify(element).click();
   }
 
   @Test
   public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
-      will(returnValue(twoElements()));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(twoElements());
 
     try {
       context.clickOn(finder);
@@ -151,12 +136,8 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void supportsWaitingForElementToAppear() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      one(element).isDisplayed();
-      will(returnValue(true));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
+    when(element.isDisplayed()).thenReturn(true);
 
     context.waitFor(finder, TIMEOUT);
   }
@@ -165,26 +146,19 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void supportsWaitingForElementToAppearWithTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
-      exactly(2).of(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      exactly(2).of(element).isDisplayed();
-      will(onConsecutiveCalls(returnValue(false), returnValue(true)));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
+    when(element.isDisplayed()).thenReturn(false, true);
 
     context.waitFor(finder, TIMEOUT);
+    verify(finder, times(2)).findFrom(webdriver);
+    verify(element, times(2)).isDisplayed();
   }
 
   @Test
   public void failsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
-      atLeast(1).of(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      atLeast(1).of(element).isDisplayed();
-      will(returnValue(false));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     try {
       context.waitFor(finder, TIMEOUT);
@@ -194,6 +168,9 @@ public class WebDriverTestContextTest extends MockTestBase {
       assertThat(error.getMessage(),
           containsString(String.format("Element was not rendered within %dms", TIMEOUT)));
     }
+
+    verify(finder, atLeastOnce()).findFrom(webdriver);
+    verify(element, atLeastOnce()).isDisplayed();
   }
 
   @SuppressWarnings("unchecked")
@@ -201,11 +178,11 @@ public class WebDriverTestContextTest extends MockTestBase {
     return mock(Finder.class);
   }
 
-  private Collection<? extends WebElement> oneElement() {
+  private Collection<WebElement> oneElement() {
     return Collections.singleton(element);
   }
 
   private Collection<WebElement> twoElements() {
-    return Arrays.asList(element, element);
+    return Arrays.asList(element, element2);
   }
 }

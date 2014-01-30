@@ -84,16 +84,13 @@ wgxpath.FunctionCall.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.FunctionCall.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'Function: ' + this.func_ + '\n';
-  indent += wgxpath.Expr.INDENT;
+wgxpath.FunctionCall.prototype.toString = function() {
+  var text = 'Function: ' + this.func_;
   if (this.args_.length) {
-    text += indent + 'Arguments:';
-    indent += wgxpath.Expr.INDENT;
-    text = goog.array.reduce(this.args_, function(prev, curr) {
-      return prev + '\n' + curr.toString(indent);
-    }, text);
+    var args = goog.array.reduce(this.args_, function(prev, curr) {
+      return prev + wgxpath.Expr.indent(curr);
+    }, 'Arguments:');
+    text += wgxpath.Expr.indent(args);
   }
   return text;
 };
@@ -222,13 +219,13 @@ wgxpath.FunctionCall.nameToFuncMap_ = {};
 wgxpath.FunctionCall.createFunc_ = function(name, dataType,
     needContextPosition, needContextNodeWithoutArgs, needContextNodeWithArgs,
     evaluate, minArgs, opt_maxArgs, opt_nodesetsRequired) {
-  if (name in wgxpath.FunctionCall.nameToFuncMap_) {
+  if (wgxpath.FunctionCall.nameToFuncMap_.hasOwnProperty(name)) {
     throw new Error('Function already created: ' + name + '.');
   }
   var func = new wgxpath.FunctionCall.Func_(name, dataType,
       needContextPosition, needContextNodeWithoutArgs, needContextNodeWithArgs,
       evaluate, minArgs, opt_maxArgs, opt_nodesetsRequired);
-  func = (/** @type {!wgxpath.FunctionCall.Func} */ func);
+  func = /** @type {!wgxpath.FunctionCall.Func} */ (func);
   wgxpath.FunctionCall.nameToFuncMap_[name] = func;
   return func;
 };
@@ -334,7 +331,7 @@ wgxpath.FunctionCall.Func = {
   LANG: wgxpath.FunctionCall.createFunc_('lang',
       wgxpath.DataType.BOOLEAN, false, false, false,
       function(ctx, expr) {
-        // TODO(user): Fully implement this.
+        // TODO: Fully implement this.
         return false;
       }, 1),
   LAST: wgxpath.FunctionCall.createFunc_('last',
@@ -354,14 +351,14 @@ wgxpath.FunctionCall.Func = {
   NAME: wgxpath.FunctionCall.createFunc_('name',
       wgxpath.DataType.STRING, false, true, false,
       function(ctx, opt_expr) {
-        // TODO(user): Fully implement this.
+        // TODO: Fully implement this.
         var node = opt_expr ? opt_expr.evaluate(ctx).getFirst() : ctx.getNode();
         return node ? node.nodeName.toLowerCase() : '';
       }, 0, 1, true),
   NAMESPACE_URI: wgxpath.FunctionCall.createFunc_('namespace-uri',
       wgxpath.DataType.STRING, true, false, false,
       function(ctx, opt_expr) {
-        // TODO(user): Fully implement this.
+        // TODO: Fully implement this.
         return '';
       }, 0, 1, true),
   NORMALIZE_SPACE: wgxpath.FunctionCall.createFunc_('normalize-space',

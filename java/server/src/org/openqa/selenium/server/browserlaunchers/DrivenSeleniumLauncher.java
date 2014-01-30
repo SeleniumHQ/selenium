@@ -22,10 +22,10 @@ import com.google.common.base.Throwables;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.WebDriverCommandProcessor;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverCommandProcessor;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
@@ -112,11 +112,13 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
 
     session.close();
     sessions.deleteSession(webdriverSessionId);
-    channel.kill();
-    try {
-      serverThread.join();
-    } catch (InterruptedException e) {
-      Throwables.propagate(e);
+    if (channel != null) {
+      channel.kill();
+      try {
+        serverThread.join();
+      } catch (InterruptedException e) {
+        Throwables.propagate(e);
+      }
     }
   }
 

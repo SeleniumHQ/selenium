@@ -18,10 +18,13 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
@@ -32,11 +35,10 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.UUID;
 
-public class DrivenSeleniumLauncherTest extends MockTestBase {
+public class DrivenSeleniumLauncherTest {
 
   private RemoteControlConfiguration rcConfig;
   private DesiredCapabilities caps;
@@ -78,7 +80,7 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test(expected = SeleniumException.class)
   public void shouldRequireSessionExistsInKnownSessionsWhenLaunching() {
-    TestSessions sessions = new TestSessions(context);
+    TestSessions sessions = new TestSessions();
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, seleniumSessionId, "1234");
@@ -95,19 +97,16 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id);
-      will(returnValue(session));
-      one(session).getDriver();
-      will(returnValue(driver));
-      one(driver).quit();
-      one(session).close();
-    }});
+    when(sessions.get(id)).thenReturn(session);
+    when(session.getDriver()).thenReturn(driver);
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, id.toString(), null);
     launcher.setDriverSessions(sessions);
     launcher.close();
+
+    verify(driver).quit();
+    verify(session).close();
   }
 
   @Test
@@ -116,9 +115,7 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
     final SessionId id = new SessionId("1234");
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(null));
-    }});
+    when(sessions.get(id)).thenReturn(null);
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, id.toString(), null);
@@ -133,16 +130,15 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
     final Session session = mock(Session.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(session));
-      one(session).getDriver(); will(returnValue(null));
-      one(session).close();
-    }});
+    when(sessions.get(id)).thenReturn(session);
+    when(session.getDriver()).thenReturn(null);
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, id.toString(), null);
     launcher.setDriverSessions(sessions);
     launcher.close();
+
+    verify(session).close();
   }
 
   @Test
@@ -153,16 +149,15 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(session));
-      one(session).getDriver(); will(returnValue(driver));
-      one(driver).quit(); will(throwException(new WebDriverException("boom")));
-      one(session).close();
-    }});
+    when(sessions.get(id)).thenReturn(session);
+    when(session.getDriver()).thenReturn(driver);
+    doThrow(new WebDriverException("boom")).when(driver).quit();
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, id.toString(), null);
     launcher.setDriverSessions(sessions);
     launcher.close();
+
+    verify(session).close();
   }
 }

@@ -18,23 +18,47 @@ var dobj;
 
 function movemouse(e)
 {
-
   if (isdrag)
   {
-    dobj.style.left = nn6 ? tx + e.clientX - x : tx + event.clientX - x;
-    dobj.style.top  = nn6 ? ty + e.clientY - y : ty + event.clientY - y;
+    if (e && e.clientX)
+    {
+      dobj.style.left = tx + e.clientX - x;
+      dobj.style.top = ty + e.clientY - y
+    }
+    else
+    {
+      dobj.style.left = tx + event.clientX - x;
+      dobj.style.top = ty + event.clientY - y;
+    }
     return false;
   }
 }
 
 function selectmouse(e)
 {
-  var fobj       = nn6 ? e.target : event.srcElement;
-  var topelement = nn6 ? "HTML" : "BODY";
+  var fobj;
+  var topelement;
+  if (e && e.target)
+  {
+    fobj = e.target;
+    topelement = "HTML";
+  }
+  else
+  {
+    fobj = event.srcElement;
+    topelement = "BODY";
+  }
 
   while (fobj.tagName != topelement && fobj.className != "dragme")
   {
-    fobj = nn6 ? fobj.parentNode : fobj.parentElement;
+    if (fobj.parentNode)
+    {
+      fobj = fobj.parentNode;
+    }
+    else
+    {
+      fobj = fobj.parentElement;
+    }
   }
 
   if (fobj.className=="dragme")
@@ -43,8 +67,17 @@ function selectmouse(e)
     dobj = fobj;
     tx = parseInt(dobj.style.left+0);
     ty = parseInt(dobj.style.top+0);
-    x = nn6 ? e.clientX : event.clientX;
-    y = nn6 ? e.clientY : event.clientY;
+    if (e && e.clientX)
+    {
+      x = e.clientX;
+      y = e.clientY;
+    }
+    else
+    {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
     document.onmousemove=movemouse;
     return false;
   }

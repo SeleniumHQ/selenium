@@ -1,4 +1,94 @@
-## v2.33.0-dev
+## v2.40.0-dev
+
+* Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
+* Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
+    `Promise#addErrback()`, and `Promise#addBoth()`.
+
+## v2.39.0
+
+* Version bump to stay in sync with the Selenium project.
+
+## v2.38.1
+
+* FIXED: 6686: Changed `webdriver.promise.Deferred#cancel()` to silently no-op
+    if the deferred has already been resolved.
+
+## v2.38.0
+
+* When a promise is rejected, always annotate the stacktrace with the parent
+    flow state so users can identify the source of an error.
+* Updated tests to reflect features not working correctly in the SafariDriver
+    (cookie management and proxy support; see issues 5051, 5212, and 5503)
+* FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
+    specified as a function argument (instead of passing (0,0)).
+* FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
+* FIXED: 6612: On Unix, use the default IANA ephemeral port range if unable to
+    retrieve the current system's port range.
+* FIXED: 6617: Avoid triggering the node debugger when initializing the
+    stacktrace module.
+* FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
+
+## v2.37.0
+
+* FIXED: 6346: The remote.SeleniumServer class now accepts JVM arguments using
+    the `jvmArgs` option.
+
+## v2.36.0
+
+* _Release skipped to stay in sync with main Selenium project._
+
+## v2.35.2
+
+* FIXED: 6200: Pass arguments to the Selenium server instead of to the JVM.
+
+## v2.35.1
+
+* FIXED: 6090: Changed example scripts to use chromedriver.
+
+## v2.35.0
+
+* Version bump to stay in sync with the Selenium project.
+
+## v2.34.1
+
+* FIXED: 6079: The parent process should not wait for spawn driver service
+    processes (chromedriver, phantomjs, etc.)
+
+## v2.34.0
+
+* Added the `selenium-webdriver/testing/assert` module. This module
+    simplifies writing assertions against promised values (see
+    example in module documentation).
+* Added the `webdriver.Capabilities` class.
+* Added native support for the ChromeDriver. When using the `Builder`,
+    requesting chrome without specifying a remote server URL will default to
+    the native ChromeDriver implementation.  The
+    [ChromeDriver server](https://code.google.com/p/chromedriver/downloads/list)
+    must be downloaded separately.
+
+        // Will start ChromeDriver locally.
+        var driver = new webdriver.Builder().
+            withCapabilities(webdriver.Capabilities.chrome()).
+            build();
+
+        // Will start ChromeDriver using the remote server.
+        var driver = new webdriver.Builder().
+            withCapabilities(webdriver.Capabilities.chrome()).
+            usingServer('http://server:1234/wd/hub').
+            build();
+
+* Added support for configuring proxies through the builder. For examples, see
+    `selenium-webdriver/test/proxy_test`.
+* Added native support for PhantomJS.
+* Changed signature of `SeleniumServer` to `SeleniumServer(jar, options)`.
+* Tests are now included in the npm published package. See `README.md` for
+    execution instructions
+* Removed the deprecated `webdriver.Deferred#resolve` and
+    `webdriver.promise.resolved` functions.
+* Removed the ability to connect to an existing session from the Builder. This
+    feature is intended for use with the browser-based client.
+
+## v2.33.0
 
 * Added support for WebDriver's logging API
 * FIXED: 5511: Added webdriver.manage().timeouts().pageLoadTimeout(ms)

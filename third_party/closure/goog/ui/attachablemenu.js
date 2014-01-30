@@ -19,11 +19,20 @@
 
 goog.provide('goog.ui.AttachableMenu');
 
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.State');
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.classes');
+goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.string');
+goog.require('goog.style');
 goog.require('goog.ui.ItemEvent');
 goog.require('goog.ui.MenuBase');
+goog.require('goog.ui.PopupBase');
+goog.require('goog.userAgent');
 
 
 
@@ -152,6 +161,7 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
   this.selectedElement_ = elt;
 
   var el = this.getElement();
+  goog.asserts.assert(el, 'The attachable menu DOM element cannot be null.');
   if (this.selectedElement_) {
     goog.dom.classes.add(this.selectedElement_, this.selectedItemClassName_);
 
@@ -159,8 +169,7 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
       // Update activedescendant to reflect the new selection. ARIA roles for
       // menu and menuitem can be set statically (thru Soy templates, for
       // example) whereas this needs to be updated as the selection changes.
-      goog.dom.a11y.setState(el,
-          goog.dom.a11y.State.ACTIVEDESCENDANT,
+      goog.a11y.aria.setState(el, goog.a11y.aria.State.ACTIVEDESCENDANT,
           elt.id);
     }
 
@@ -178,9 +187,7 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
     }
   } else {
     // Clear off activedescendant to reflect no selection.
-    goog.dom.a11y.setState(el,
-        goog.dom.a11y.State.ACTIVEDESCENDANT,
-        '');
+    goog.a11y.aria.setState(el, goog.a11y.aria.State.ACTIVEDESCENDANT, '');
   }
 };
 
@@ -190,7 +197,7 @@ goog.ui.AttachableMenu.prototype.showPopupElement = function() {
   // The scroll position cannot be set for hidden (display: none) elements in
   // gecko browsers.
   var el = /** @type {Element} */ (this.getElement());
-  goog.style.showElement(el, true);
+  goog.style.setElementShown(el, true);
   el.scrollTop = 0;
   el.style.visibility = 'visible';
 };

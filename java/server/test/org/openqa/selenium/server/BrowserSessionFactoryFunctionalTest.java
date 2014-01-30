@@ -19,12 +19,12 @@ limitations under the License.
 package org.openqa.selenium.server;
 
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-
-import static org.junit.Assert.fail;
 
 public class BrowserSessionFactoryFunctionalTest {
 

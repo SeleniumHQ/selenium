@@ -1,0 +1,15 @@
+java_library(
+  name = 'os',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//third_party/java/commons-exec:commons-exec',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/jna:jna',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/firefox:firefox',
+    '//java/client/src/org/openqa/selenium/remote/service:service',
+  ],
+)
+

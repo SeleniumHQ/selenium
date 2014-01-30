@@ -5,8 +5,8 @@ module Selenium
     module Support
 
       describe EventFiringBridge do
-        let(:bridge) { mock(Remote::Bridge, :driver_extensions => []) }
-        let(:listener) { mock("EventListener") }
+        let(:bridge) { double(Remote::Bridge, :driver_extensions => []) }
+        let(:listener) { double("EventListener") }
         let(:event_firing_bridge) { EventFiringBridge.new(bridge, listener) }
         let(:driver) { Driver.new(event_firing_bridge) }
         let(:element) { Element.new(event_firing_bridge, "ref") }

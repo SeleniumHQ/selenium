@@ -17,21 +17,23 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegistryStateTest {
@@ -69,7 +71,7 @@ public class RegistryStateTest {
   public void sessionIsRemoved() {
     Registry registry = Registry.newInstance();
 
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
 
     try {
@@ -80,7 +82,7 @@ public class RegistryStateTest {
       TestSession session = newSessionRequest.getSession();
 
       registry.terminateSynchronousFOR_TEST_ONLY(session);
-      Assert.assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(0, registry.getActiveSessions().size());
     } finally {
       registry.stop();
     }
@@ -89,27 +91,27 @@ public class RegistryStateTest {
   @Test(timeout = 5000)
   public void basichecks() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
 
-      Assert.assertEquals(0, registry.getActiveSessions().size());
-      Assert.assertEquals(1, registry.getAllProxies().size());
-      Assert.assertEquals(0, registry.getUsedProxies().size());
+      assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(1, registry.getAllProxies().size());
+      assertEquals(0, registry.getUsedProxies().size());
 
       MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
 
-      Assert.assertEquals(1, registry.getActiveSessions().size());
-      Assert.assertEquals(1, registry.getAllProxies().size());
-      Assert.assertEquals(1, registry.getUsedProxies().size());
+      assertEquals(1, registry.getActiveSessions().size());
+      assertEquals(1, registry.getAllProxies().size());
+      assertEquals(1, registry.getUsedProxies().size());
 
       registry.terminateSynchronousFOR_TEST_ONLY(session);
-      Assert.assertEquals(0, registry.getActiveSessions().size());
-      Assert.assertEquals(1, registry.getAllProxies().size());
-      Assert.assertEquals(0, registry.getUsedProxies().size());
+      assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(1, registry.getAllProxies().size());
+      assertEquals(0, registry.getUsedProxies().size());
     } finally {
       registry.stop();
     }
@@ -118,7 +120,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -127,7 +129,7 @@ public class RegistryStateTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
       registry.terminateSynchronousFOR_TEST_ONLY(session);
-      Assert.assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(0, registry.getActiveSessions().size());
 
     } finally {
       registry.stop();
@@ -137,7 +139,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionByExtKey() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -149,15 +151,15 @@ public class RegistryStateTest {
       session.setExternalKey(externalKey);
 
       TestSession s = registry.getSession(externalKey);
-      Assert.assertNotNull(s);
-      Assert.assertEquals(s, session);
+      assertNotNull(s);
+      assertEquals(s, session);
       registry.terminateSynchronousFOR_TEST_ONLY(session);
-      Assert.assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(0, registry.getActiveSessions().size());
 
       TestSession s2 = registry.getSession(externalKey);
-      Assert.assertNull(s2);
+      assertNull(s2);
 
-      Assert.assertEquals(0, registry.getActiveSessions().size());
+      assertEquals(0, registry.getActiveSessions().size());
     } finally {
       registry.stop();
     }
@@ -166,22 +168,21 @@ public class RegistryStateTest {
   @Test
   public void sessionByExtKeyNull() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
 
       TestSession s = registry.getSession(ExternalSessionKey.fromString("1234"));
-      Assert.assertNull(s);
+      assertNull(s);
 
       s = registry.getSession(ExternalSessionKey.fromString(""));
-      Assert.assertNull(s);
+      assertNull(s);
 
       s = registry.getSession(null);
-      Assert.assertNull(s);
+      assertNull(s);
     } finally {
       registry.stop();
     }
   }
-
 }

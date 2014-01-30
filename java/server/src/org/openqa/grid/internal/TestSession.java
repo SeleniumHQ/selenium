@@ -17,21 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.base.Charsets;
+import com.google.common.io.ByteStreams;
+import com.google.common.net.MediaType;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -55,7 +43,26 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.io.IOUtils;
 
-import com.google.common.io.ByteStreams;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -193,7 +200,7 @@ public class TestSession {
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
       browserTimeout *=2; // Lets not let this happen too often
     }
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout);
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
   }
 
   /**
@@ -224,9 +231,10 @@ public class TestSession {
       response.setStatus(statusCode);
       processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
+      byte[] consumedNewWebDriverSessionBody = null;
       if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
           statusCode != HttpServletResponse.SC_NOT_FOUND) {
-        updateHubIfNewWebDriverSession(request, proxyResponse);
+        consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
       }
       if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
         removeIncompleteNewSessionRequest();
@@ -239,15 +247,19 @@ public class TestSession {
       byte[] contentBeingForwarded = null;
       if (responseBody != null) {
         try {
-          InputStream in = responseBody.getContent();
+          InputStream in;
+          if (consumedNewWebDriverSessionBody == null) {
+            in = responseBody.getContent();
+            if (request.getRequestType() == RequestType.START_SESSION
+                && request instanceof LegacySeleniumRequest) {
+              res = getResponseUtf8Content(in);
 
-          if (request.getRequestType() == RequestType.START_SESSION
-              && request instanceof LegacySeleniumRequest) {
-            res = getResponseUtf8Content(in);
+              updateHubNewSeleniumSession(res);
 
-            updateHubNewSeleniumSession(res);
-
-            in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+              in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+            }
+          } else {
+            in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
           }
 
           final byte[] bytes = drainInputStream(in);
@@ -294,18 +306,54 @@ public class TestSession {
     setExternalKey(key);
   }
 
-  private void updateHubIfNewWebDriverSession(SeleniumBasedRequest request,
-                                              HttpResponse proxyResponse) {
+  private byte[] updateHubIfNewWebDriverSession(
+      SeleniumBasedRequest request, HttpResponse proxyResponse) throws IOException {
+    byte[] consumedData = null;
     if (request.getRequestType() == RequestType.START_SESSION
         && request instanceof WebDriverRequest) {
       Header h = proxyResponse.getFirstHeader("Location");
       if (h == null) {
-        throw new GridException(
-            "new session request for webdriver should contain a location header with the session.");
+        if (isSuccessJsonResponse(proxyResponse) && proxyResponse.getEntity() != null) {
+          InputStream stream = proxyResponse.getEntity().getContent();
+          consumedData = ByteStreams.toByteArray(stream);
+          stream.close();
+
+          String contentString = new String(consumedData, Charsets.UTF_8);
+          ExternalSessionKey key = ExternalSessionKey.fromJsonResponseBody(contentString);
+          if (key == null) {
+            throw new GridException(
+                "webdriver new session JSON response body did not contain a session ID");
+          }
+          setExternalKey(key);
+          return consumedData;
+        } else {
+          throw new GridException(
+              "new session request for webdriver should contain a location header "
+              + "or an 'application/json;charset=UTF-8' response body with the session ID.");
+        }
       }
       ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
       setExternalKey(key);
     }
+    return consumedData;
+  }
+
+  private static boolean isSuccessJsonResponse(HttpResponse response) {
+    if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+      for (Header header : response.getHeaders("Content-Type")) {
+        MediaType type;
+        try {
+          type = MediaType.parse(header.getValue());
+        } catch (IllegalArgumentException ignored) {
+          continue;
+        }
+
+        if (MediaType.JSON_UTF_8.is(type)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws ClientProtocolException,

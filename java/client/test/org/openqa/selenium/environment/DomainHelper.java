@@ -42,7 +42,7 @@ public class DomainHelper {
     Preconditions.checkArgument(
       isValidHostname(appServer.getAlternateHostName()),
       "Expected valid hostname but was %s",
-      appServer.getHostName());
+      appServer.getAlternateHostName());
     return appServer.whereElseIs(path);
   }
 
@@ -59,6 +59,16 @@ public class DomainHelper {
 
     if (!correct) {
       System.out.println("Skipping test: unable to find sub domain name to use, hostname: " + getHostName());
+    }
+    return correct;
+  }
+
+  public boolean checkHasValidAlternateHostname() {
+    String hostname = appServer.getAlternateHostName();
+    boolean correct = getHostName() != null && isValidHostname(hostname);
+    if (!correct) {
+      System.out.println(
+          "Skipping test: unable to find alternate domain name to use, hostname: " + hostname);
     }
     return correct;
   }

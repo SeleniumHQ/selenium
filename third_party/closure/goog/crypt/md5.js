@@ -23,7 +23,7 @@
  *   var hash = md5.digest();
  *
  * Performance:
- *   Chrome 14              ~450 Mbit/s
+ *   Chrome 23              ~680 Mbit/s
  *   Chrome 13 (in a VM)    ~250 Mbit/s
  *   Firefox 6.0 (in a VM)  ~100 Mbit/s
  *   IE9 (in a VM)           ~27 Mbit/s
@@ -370,6 +370,7 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
         i += 64;
       }
     }
+
     if (goog.isString(bytes)) {
       while (i < opt_length) {
         block[blockLength++] = bytes.charCodeAt(i++);

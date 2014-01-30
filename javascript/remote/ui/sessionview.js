@@ -25,7 +25,6 @@ goog.require('goog.ui.Dialog');
 goog.require('remote.ui.ControlBlock');
 goog.require('remote.ui.Event');
 goog.require('remote.ui.JsonTooltip');
-goog.require('remote.ui.OpenScriptDialog');
 
 
 
@@ -113,7 +112,7 @@ remote.ui.SessionView.prototype.sessionIdSpan_;
 
 /**
  * Place holder for the bulk of the view content.
- * TODO(jleyba): Figure out what we want this to be. A REPL for interacting
+ * TODO: Figure out what we want this to be. A REPL for interacting
  * with the session? A view of recent session commands?
  * @private {Element}
  */
@@ -152,7 +151,7 @@ remote.ui.SessionView.prototype.createDom = function() {
 
   this.sessionIdSpan_ = dom.createElement(goog.dom.TagName.SPAN);
 
-  // TODO(jleyba): What more to add?
+  // TODO: What more to add?
   this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo', '\xa0');
   this.todoBlock_.disabled = true;
 
@@ -163,9 +162,9 @@ remote.ui.SessionView.prototype.createDom = function() {
       capabilities = dom.createDom(goog.dom.TagName.SPAN,
       'session-capabilities', 'Capabilities'));
   this.controlBlock_.addElement(
-      (/** @type {!Element} */this.screenshotButton_.getElement()));
+      /** @type {!Element} */ (this.screenshotButton_.getElement()));
   this.controlBlock_.addElement(
-      (/** @type {!Element} */this.deleteSessionButton_.getElement()));
+      /** @type {!Element} */ (this.deleteSessionButton_.getElement()));
 
   this.viewElement_ = dom.createDom(goog.dom.TagName.DIV, 'goog-tab-content',
       this.controlBlock_.getElement(), this.todoBlock_);
@@ -204,8 +203,8 @@ remote.ui.SessionView.prototype.addControlElement = function(element) {
  */
 remote.ui.SessionView.prototype.update = function(session) {
   var hasSession = !!session;
-  goog.style.showElement(this.emptyViewElement_, !hasSession);
-  goog.style.showElement(this.viewElement_, hasSession);
+  goog.style.setElementShown(this.emptyViewElement_, !hasSession);
+  goog.style.setElementShown(this.viewElement_, hasSession);
 
   if (session) {
     goog.dom.setTextContent(this.sessionIdSpan_, session.getId());

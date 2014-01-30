@@ -10,6 +10,8 @@ class PythonMappings
     fun.add_mapping("py_test", Python::RunTests.new)
 
     fun.add_mapping("py_env", Python::VirtualEnv.new)
+
+    fun.add_mapping("py_docs", Python::GenerateDocs.new)
   end
 end
 
@@ -147,8 +149,9 @@ module Python
         task task_name => deps do
           copy_source_to_env
 
-          tests = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/*_tests.py"]
-          pytest_args = [pytest_path] + tests
+          # Test file pattern has been specified in the pytest.ini file at project root dir
+          test_dir = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/"]
+          pytest_args = [pytest_path] + test_dir
           pytest_args += ["-k", "-ignore_#{browser_data[:ignore]}"] if browser_data[:ignore]
           pytest_args += ["-k" , ENV['method']] if ENV['method']
           pytest_args += ["--junitxml=build/test_logs/python-#{browser}-#{Time.now.to_i}.xml"]
@@ -159,7 +162,6 @@ module Python
 
       #Also generate test with exactly this name, if only one browser specified
       task "#{base_task_name}:run" => [ :"#{base_task_name}_#{browsers.first}:run" ] if browsers.length == 1
-
     end
   end
 
@@ -188,5 +190,27 @@ module Python
       end
     end
   end
+
+  class GenerateDocs < Tasks
+
+    def python_path
+      #This path should be passed through the py_env dep, rather than hard-coded
+      windows? ? "build\\python\\Scripts\\" : "build/python/bin/"
+    end
+
+    def handle(fun, dir, args)
+      task Tasks.new.task_name(dir, args[:name]) => args[:deps] do
+
+        source_folder = Platform.path_for args[:source_folder]
+        target_folder = Platform.path_for args[:target_folder]
+
+        sphinx_build = "#{python_path}sphinx-build"
+        sphinx_build =  sphinx_build + ".exe" if windows?
+
+        sh "#{sphinx_build} -b html -d build/doctrees #{source_folder} #{target_folder}", :verbose => true
+      end
+    end
+  end
+
 end
 

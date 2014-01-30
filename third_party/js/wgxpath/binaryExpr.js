@@ -155,12 +155,10 @@ wgxpath.BinaryExpr.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.BinaryExpr.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'binary expression: ' + this.op_ + '\n';
-  indent += wgxpath.Expr.INDENT;
-  text += this.left_.toString(indent) + '\n';
-  text += this.right_.toString(indent);
+wgxpath.BinaryExpr.prototype.toString = function() {
+  var text = 'Binary Expression: ' + this.op_;
+  text += wgxpath.Expr.indent(this.left_);
+  text += wgxpath.Expr.indent(this.right_);
   return text;
 };
 
@@ -245,13 +243,13 @@ wgxpath.BinaryExpr.stringToOpMap_ = {};
  */
 wgxpath.BinaryExpr.createOp_ = function(opString, precedence, dataType,
     evaluate) {
-  if (opString in wgxpath.BinaryExpr.stringToOpMap_) {
+  if (wgxpath.BinaryExpr.stringToOpMap_.hasOwnProperty(opString)) {
     throw new Error('Binary operator already created: ' + opString);
   }
   // The upcast and then downcast for the JSCompiler.
-  var op = (/** @type {!Object} */ new wgxpath.BinaryExpr.Op_(
+  var op = /** @type {!Object} */ (new wgxpath.BinaryExpr.Op_(
       opString, precedence, dataType, evaluate));
-  op = (/** @type {!wgxpath.BinaryExpr.Op} */ op);
+  op = /** @type {!wgxpath.BinaryExpr.Op} */ (op);
   wgxpath.BinaryExpr.stringToOpMap_[op.toString()] = op;
   return op;
 };

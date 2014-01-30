@@ -17,20 +17,21 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -114,9 +115,10 @@ public class PriorityTestLoad {
     while (!reqDone) {
       Thread.sleep(20);
     }
-    Assert.assertNotNull(requests.get(requests.size() - 1).getSession());
-    Assert.assertEquals(
-        requests.get(requests.size() - 1).getRequest().getDesiredCapabilities().get("_priority"), MAX);
+    assertNotNull(requests.get(requests.size() - 1).getSession());
+    assertEquals(
+        requests.get(requests.size() - 1).getRequest().getDesiredCapabilities().get("_priority"),
+        MAX);
   }
 
   @AfterClass

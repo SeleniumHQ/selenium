@@ -30,17 +30,19 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -72,7 +74,7 @@ import java.util.logging.Logger;
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
-    HasInputDevices, HasCapabilities {
+    HasInputDevices, HasCapabilities, TakesScreenshot {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -97,8 +99,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected RemoteWebDriver() {
     init(new DesiredCapabilities(), null);
   }
-  
-  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities, 
+
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this.executor = executor;
 
@@ -119,12 +121,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this((URL) null, desiredCapabilities);
   }
 
-  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities, 
+  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, 
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities,
         requiredCapabilities);
   }
-  
+
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
   }
@@ -136,9 +138,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     executeMethod = new RemoteExecuteMethod(this);
     keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
-    
+
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
-    
+
     boolean isProfilingEnabled = desiredCapabilities != null &&
         desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
     if (requiredCapabilities != null && requiredCapabilities.getCapability(
@@ -149,10 +151,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       builder.add(LogType.PROFILER);
     }
 
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();    
+    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
     if (desiredCapabilities != null) {
       mergedLoggingPrefs.addPreferences((LoggingPreferences)desiredCapabilities.getCapability(
-          CapabilityType.LOGGING_PREFS));  
+          CapabilityType.LOGGING_PREFS));
     }
     if (requiredCapabilities != null) {
       mergedLoggingPrefs.addPreferences((LoggingPreferences)requiredCapabilities.getCapability(
@@ -165,7 +167,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     Set<String> logTypesToInclude = builder.build();
-        
+
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
     LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(),
         logTypesToInclude);
@@ -202,17 +204,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   @SuppressWarnings({"unchecked"})
-  protected void startSession(Capabilities desiredCapabilities, 
+  protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    
-    ImmutableMap.Builder<String, Capabilities> paramBuilder = 
+
+    ImmutableMap.Builder<String, Capabilities> paramBuilder =
         new ImmutableMap.Builder<String, Capabilities>();
-    paramBuilder.put("desiredCapabilities", desiredCapabilities);    
-    if (requiredCapabilities != null) { 
+    paramBuilder.put("desiredCapabilities", desiredCapabilities);
+    if (requiredCapabilities != null) {
       paramBuilder.put("requiredCapabilities", requiredCapabilities);
     }
     Map<String, ?> parameters = paramBuilder.build();
-    
+
     Response response = execute(DriverCommand.NEW_SESSION, parameters);
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
@@ -289,6 +291,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public String getCurrentUrl() {
     return execute(DriverCommand.GET_CURRENT_URL).getValue().toString();
+  }
+
+  @Override
+  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Response response = execute(DriverCommand.SCREENSHOT);
+    Object result = response.getValue();
+    if (result instanceof String) {
+      String base64EncodedPng = (String) result;
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else if (result instanceof byte[]) {
+      String base64EncodedPng = new String((byte[]) result);
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else {
+      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
+          DriverCommand.SCREENSHOT,
+          result == null ? "null" : result.getClass().getName() + " instance"));
+    }
   }
 
   public List<WebElement> findElements(By by) {
@@ -624,6 +643,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void addCookie(Cookie cookie) {
+      cookie.validate();
       execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));
     }
 

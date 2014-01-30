@@ -10,6 +10,11 @@ js_library(name = "base_lib",
     "//third_party/closure",
   ])
 
+js_library(
+  name = "logging_lib",
+  srcs = ["logging.js"],
+  deps = ["//third_party/closure"])
+
 js_library(name = "key_lib",
   srcs = [ "key.js" ])
 
@@ -22,6 +27,10 @@ js_library(name = "webdriver_lib",
     "//javascript/atoms:error_lib",
     "//javascript/atoms:json",
   ])
+
+js_library(name = "asserts_lib",
+  srcs = ["testing/asserts.js"],
+  deps = [":webdriver_lib"])
 
 js_library(name = "test_lib",
   srcs = [
@@ -48,6 +57,7 @@ js_binary(name = "webdriver",
     "externs/deps.js",
   ],
   deps = [
+    ":asserts_lib",
     "//javascript/atoms:error_lib",
     "//javascript/atoms:json",
   ],

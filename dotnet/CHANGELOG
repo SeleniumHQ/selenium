@@ -1,3 +1,107 @@
+v2.39.0
+=======
+ * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
+   is to use a third-party implementation for Android, such as Selendroid
+   (http://selendroid.io/) or Appium (http://appium.io/).
+ * Added experimental IWebDriver extension methods to .NET support classes.
+   This commit adds extension methods to IWebDriver, which can be used to
+   reduce the amount of type casting that must be done to access
+   functionality not provided by the base IWebDriver interface. The following
+   methods were added:
+    
+    * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
+      support for working directly with instances of RemoteWebDriver.
+    * ExecuteJavaScript<T>() - does not require a cast to
+      IJavaScriptExecutor, and will automatically cast the result to the type
+      specified by the generic type parameter (T).
+    
+   These extension methods should be considered experimental. To use them
+   requires a reference to WebDriver.Support.dll, and adding a using clause
+   for OpenQA.Selenium.Support.Extensions.
+
+v2.38.0
+=======
+ * Issue #6383: Adding method GetCSSCount to ISelenium.
+ * Issue #6418: Updated .NET path manipulation when launching Firefox process.
+ * Issue #6453: Adding type-safe properties for new command-line arguments of
+   chromedriver.exe
+ * Issue #6457: Disabled keep-alive header on .NET driver service startup/
+   shutdown requests.
+
+v2.37.0
+=======
+ * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved
+   waiting for the driver service process to end to immediately after sending
+   the shutdown HTTP request. Waiting to catch the exception for a failed HTTP
+   request due to a closed socket is very expensive. This cuts shutdown time
+   for a driver service executable to about 33% of what it used to be for the
+   IE driver, with larger savings for Chrome and PhantomJS.
+
+v2.36.0
+=======
+ * Added ability to set additional ChromeOptions in the .NET bindings. This
+   allows the ability to set user profile preferences and local state
+   preferences using the ChromeOptions class. The new AddUserProfilePreference
+   and AddLocalStatePreference methods correspond to the "prefs" and
+   "localState" capabilities documented in the chromedriver documentation. Note
+   that the values passed in to these methods must be JSON-serializable, and no
+   validation is done on these values at present. We now also allow setting the
+   "detach" capability, which allows the user to specify that Chrome remain
+   running after chromedriver.exe has quit.
+ * Removed support for the obsolete chrome.binary and chrome.switches
+   capabilities.
+ * Changed the command line arguments to chromedriver.exe to include two
+   hyphens, instead of one (e.g., "--silent" instead of "-silent").
+ * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
+ * Added ability to set Chrome extensions by using base64 encoded strings. 
+   Previously, you could only install extensions by using a path to a .crx
+   file. Now you can embed the extension as a base64-encoded string, without
+   having it persisted to the disk at all.
+
+v2.35.0
+=======
+ * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
+   in .NET to prevent double slashes in URL. This change is in the .NET
+   WebDriverBackedSelenium API.
+ * Removed unnecessary ProxyJsonConverter class.
+ * Updating InternetExplorerOptions documentation for UsePerProcessProxy
+   property.
+
+v2.34.0
+=======
+ * Added support for ie.ensureCleanSession capability to .NET bindings. The
+   .NET bindings do this by means of the EnsureCleanSession property on the
+   InternetExplorerOptions object. When set to true, this property instructs
+   the IE driver to clear the system cache for all instances of Internet
+   Explorer, even those already running when the driven instance is launched,
+   so care should be used when setting this property. The property defaults to
+   false.
+ * Added type-safe Proxy property to .NET InternetExplorerOptions class. Also
+   added support for the ie.usePerProcessProxy capability via the
+   UsePerProcessProxy propery.
+ * Issue #5999: Rearranged command line generated for PhantomJS. This
+   rearranges the order of arguments so that PhantomJS command line arguments
+   appear before the GhostScript main.js file (if any).
+ * Added JSON serialization info for .NET Proxy class. Also added Proxy
+   property to ChromeOptions class for type-safe adding of proxy to Chrome
+   capabilities.
+ * Added ability to set external GhostDriver implementation in .NET bindings.
+   Previously, it was not possible to set the path to the GhostDriver
+   JavaScript implementation in the .NET bindings; the user was forced to use
+   the implementation embedded in the PhantomJS executable. This change now
+   mimics the Java language bindings in functionality.
+ * Moved .NET IE driver command-line args into capabilities. This is to sync up
+   the .NET bindings with 2.33.0.7 of IEDriverServer.exe.
+ * Allow using global capability types for .NET InternetExplorerOptions.
+
+v2.33.0
+=======
+ * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
+   Profile preferences Dictionary. Was previously using the .Add() method of
+   the Dictionary, which would throw an exception if the key already existed.
+ * Updated InternetExplorerDriverService to allow using new command line
+   options for IEDriverServer.exe
+
 v2.32.1
 =======
  * Removed strong-naming from released assemblies. No functional changes.

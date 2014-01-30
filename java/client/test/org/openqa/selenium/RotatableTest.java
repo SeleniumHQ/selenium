@@ -17,44 +17,39 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
 
 public class RotatableTest extends JUnit4TestBase {
 
-  private boolean isRotatable() {
-    return driver instanceof Rotatable;
+  private Rotatable rotatable;
+
+  @Before
+  public void setUp() throws Exception {
+    assumeTrue(driver instanceof Rotatable);
+    rotatable = (Rotatable) driver;
   }
 
   @Test
   public void testRotateToLandscapeMode() {
-    if (!isRotatable()) {
-      return;
-    }
-    Rotatable rotatable = (Rotatable) driver;
     rotatable.rotate(ScreenOrientation.LANDSCAPE);
     assertEquals(ScreenOrientation.LANDSCAPE, rotatable.getOrientation());
   }
 
   @Test
   public void testRotateToPortrait() {
-    if (!isRotatable()) {
-      return;
-    }
-    Rotatable rotatable = (Rotatable) driver;
     rotatable.rotate(ScreenOrientation.PORTRAIT);
     assertEquals(ScreenOrientation.PORTRAIT, rotatable.getOrientation());
   }
 
   @Test
   public void testGetOrientationReturnsInitialValue() {
-    if (!isRotatable()) {
-      return;
-    }
-    assertNotNull(((Rotatable) driver).getOrientation());
+    assertNotNull(rotatable.getOrientation());
   }
 
 }

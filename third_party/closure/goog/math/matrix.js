@@ -21,6 +21,7 @@ goog.provide('goog.math.Matrix');
 goog.require('goog.array');
 goog.require('goog.math');
 goog.require('goog.math.Size');
+goog.require('goog.string');
 
 
 
@@ -300,6 +301,10 @@ goog.math.Matrix.prototype.getDeterminant = function() {
 goog.math.Matrix.prototype.getInverse = function() {
   if (!this.isSquare()) {
     throw Error('An inverse can only be taken on a square matrix.');
+  }
+  if (this.getSize().width == 1) {
+    var a = this.getValueAt(0, 0);
+    return a == 0 ? null : new goog.math.Matrix([[1 / a]]);
   }
   var identity = goog.math.Matrix.createIdentityMatrix(this.size_.height);
   var mi = this.appendColumns(identity).getReducedRowEchelonForm();

@@ -17,15 +17,20 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 
 public class ChildrenFindingTest extends JUnit4TestBase {
@@ -69,7 +74,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByXPath() {
+  public void testFindElementsByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.xpath("select/option"));
@@ -79,7 +84,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByXPathWhenNoMatch() {
+  public void testFindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.xpath(".//select/x"));
@@ -87,7 +92,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByName() {
+  public void testFindElementByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.name("selectomatic"));
@@ -95,7 +100,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByName() {
+  public void testFindElementsByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.name("selectomatic"));
@@ -103,7 +108,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementById() {
+  public void testFindElementById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.id("2"));
@@ -111,7 +116,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByIdWhenMultipleMatchesExist() {
+  public void testFindElementByIdWhenMultipleMatchesExist() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
     WebElement child = element.findElement(By.id("test_id"));
@@ -119,7 +124,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByIdWhenNoMatchInContext() {
+  public void testFindElementByIdWhenNoMatchInContext() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
     try {
@@ -131,7 +136,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsById() {
+  public void testFindElementsById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.id("2"));
@@ -147,6 +152,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testFindElementsByLinkTest() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -155,15 +161,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(2, elements.size());
     assertThat(elements.get(0).getAttribute("name"), is("link1"));
     assertThat(elements.get(1).getAttribute("name"), is("link2"));
-  }
-
-  @Test
-  public void testfindElementsByLinkText() {
-    driver.get(pages.nestedPage);
-    WebElement element = driver.findElement(By.name("div1"));
-    List<WebElement> children = element.findElements(
-        By.linkText("hello world"));
-    assertThat(children.size(), is(2));
   }
 
   @Test
@@ -238,4 +235,106 @@ public class ChildrenFindingTest extends JUnit4TestBase {
 
     assertEquals(2, elements.size());
   }
+
+  @Test
+  public void testShouldBeAbleToFindChildrenOfANode() {
+    driver.get(pages.selectableItemsPage);
+    List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
+    WebElement head = elements.get(0);
+    List<WebElement> importedScripts = head.findElements(By.tagName("script"));
+    assertThat(importedScripts.size(), equalTo(3));
+  }
+
+  @Test
+  public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement table = driver.findElement(By.id("table"));
+    List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+    assertThat(rows.size(), equalTo(0));
+  }
+
+  @Test
+  public void testShouldFindGrandChildren() {
+    driver.get(pages.formPage);
+    WebElement form = driver.findElement(By.id("nested_form"));
+    form.findElement(By.name("x"));
+  }
+
+  @Test
+  public void testShouldNotFindElementOutSideTree() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.name("login"));
+    try {
+      element.findElement(By.name("x"));
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
+
+  @Test
+  public void testFindingByTagNameShouldNotIncludeParentElementIfSameTagType() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement parent = driver.findElement(By.id("my_span"));
+
+    assertEquals(2, parent.findElements(By.tagName("div")).size());
+    assertEquals(2, parent.findElements(By.tagName("span")).size());
+  }
+
+  @Test
+  public void testFindingByCssShouldNotIncludeParentElementIfSameTagType() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement parent = driver.findElement(By.cssSelector("div#parent"));
+    WebElement child = parent.findElement(By.cssSelector("div"));
+
+    assertEquals("child", child.getAttribute("id"));
+  }
+
+  @Ignore({REMOTE, MARIONETTE})
+  @Test
+  public void testFindMultipleElements() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    List<WebElement> elements =
+        elem.findElements(By.partialLinkText("link"));
+    assertNotNull(elements);
+    assertEquals(6, elements.size());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithLeadingSpaces() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with leading space"));
+    assertEquals("link with leading space", res.getText());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithTrailingSpace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with trailing space"));
+    assertEquals("link with trailing space", res.getText());
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement link = null;
+    try {
+      link = elem.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
+
 }

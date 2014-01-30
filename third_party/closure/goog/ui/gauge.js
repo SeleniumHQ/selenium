@@ -23,8 +23,9 @@ goog.provide('goog.ui.Gauge');
 goog.provide('goog.ui.GaugeColoredRange');
 
 
+goog.require('goog.a11y.aria');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
 goog.require('goog.fx.Animation');
 goog.require('goog.fx.Animation.EventType');
 goog.require('goog.fx.Transition.EventType');
@@ -450,9 +451,9 @@ goog.ui.Gauge.prototype.getMinimum = function() {
  */
 goog.ui.Gauge.prototype.setMinimum = function(min) {
   this.minValue_ = min;
-
-  if (this.getElement()) {
-    goog.dom.a11y.setState(this.getElement(), 'valuemin', min);
+  var element = this.getElement();
+  if (element) {
+    goog.a11y.aria.setState(element, 'valuemin', min);
   }
 };
 
@@ -472,8 +473,9 @@ goog.ui.Gauge.prototype.getMaximum = function() {
 goog.ui.Gauge.prototype.setMaximum = function(max) {
   this.maxValue_ = max;
 
-  if (this.getElement()) {
-    goog.dom.a11y.setState(this.getElement(), 'valuemax', max);
+  var element = this.getElement();
+  if (element) {
+    goog.a11y.aria.setState(element, 'valuemax', max);
   }
 };
 
@@ -515,8 +517,9 @@ goog.ui.Gauge.prototype.setValue = function(value, opt_formattedValue) {
     this.animation_.play(false);
   }
 
-  if (this.getElement()) {
-    goog.dom.a11y.setState(this.getElement(), 'valuenow', this.value_);
+  var element = this.getElement();
+  if (element) {
+    goog.a11y.aria.setState(element, 'valuenow', this.value_);
   }
 };
 
@@ -979,11 +982,12 @@ goog.ui.Gauge.prototype.enterDocument = function() {
 
   // set roles and states
   var el = this.getElement();
-  goog.dom.a11y.setRole(el, 'progressbar');
-  goog.dom.a11y.setState(el, 'live', 'polite');
-  goog.dom.a11y.setState(el, 'valuemin', this.minValue_);
-  goog.dom.a11y.setState(el, 'valuemax', this.maxValue_);
-  goog.dom.a11y.setState(el, 'valuenow', this.value_);
+  goog.asserts.assert(el, 'The DOM element for the gauge cannot be null.');
+  goog.a11y.aria.setRole(el, 'progressbar');
+  goog.a11y.aria.setState(el, 'live', 'polite');
+  goog.a11y.aria.setState(el, 'valuemin', this.minValue_);
+  goog.a11y.aria.setState(el, 'valuemax', this.maxValue_);
+  goog.a11y.aria.setState(el, 'valuenow', this.value_);
   this.draw_();
 };
 

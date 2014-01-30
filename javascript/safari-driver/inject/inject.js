@@ -20,12 +20,13 @@
 goog.provide('safaridriver.inject');
 
 goog.require('bot.inject');
+goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Tab');
 goog.require('safaridriver.inject.commands.module');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.message.Encode');
+goog.require('safaridriver.logging.ForwardingHandler');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Connect');
 goog.require('safaridriver.message.Response');
@@ -40,7 +41,13 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger('safaridriver.inject');
 
 /** Initializes this injected script. */
 safaridriver.inject.init = function() {
-  safaridriver.console.init();
+  goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.INFO);
+
+  var handler = new safaridriver.logging.ForwardingHandler(safari.self.tab);
+  window.addEventListener('unload', function() {
+    handler.dispose();
+  }, false);
+
   safaridriver.inject.commands.module.init();
 
   var tab = safaridriver.inject.Tab.getInstance();

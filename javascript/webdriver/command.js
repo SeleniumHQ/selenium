@@ -97,7 +97,7 @@ webdriver.Command.prototype.getParameters = function() {
  * will support.
  * @enum {string}
  */
-// TODO(jleyba): Delete obsolete command names.
+// TODO: Delete obsolete command names.
 webdriver.CommandName = {
   GET_SERVER_STATUS: 'getStatus',
 

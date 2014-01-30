@@ -418,7 +418,7 @@ goog.net.WebSocket.prototype.onMessage_ = function(event) {
  * @private
  */
 goog.net.WebSocket.prototype.onError_ = function(event) {
-  var data = /** @type {string} */ event.data;
+  var data = /** @type {string} */ (event.data);
   this.logger_.severe('An error occurred: ' + data);
   this.dispatchEvent(new goog.net.WebSocket.ErrorEvent(data));
 };

@@ -22,7 +22,6 @@ goog.provide('goog.ui.ColorPalette');
 
 goog.require('goog.array');
 goog.require('goog.color');
-goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.ui.Palette');
 goog.require('goog.ui.PaletteRenderer');
@@ -64,11 +63,20 @@ goog.inherits(goog.ui.ColorPalette, goog.ui.Palette);
 
 
 /**
- * Array of normalized colors.  Inited lazily as often never needed.
- * @type {Array.<string>?}
+ * Array of normalized colors. Initialized lazily as often never needed.
+ * @type {?Array.<string>}
  * @private
  */
 goog.ui.ColorPalette.prototype.normalizedColors_ = null;
+
+
+/**
+ * Array of labels for the colors. Will be used for the tooltips and
+ * accessibility.
+ * @type {?Array.<string>}
+ * @private
+ */
+goog.ui.ColorPalette.prototype.labels_ = null;
 
 
 /**
@@ -83,9 +91,12 @@ goog.ui.ColorPalette.prototype.getColors = function() {
 /**
  * Sets the colors that are contained in the palette.
  * @param {Array.<string>} colors Array of colors in any valid CSS color format.
+ * @param {Array.<string>=} opt_labels The array of labels to be used as
+ *        tooltips. When not provided, the color value will be used.
  */
-goog.ui.ColorPalette.prototype.setColors = function(colors) {
+goog.ui.ColorPalette.prototype.setColors = function(colors, opt_labels) {
   this.colors_ = colors;
+  this.labels_ = opt_labels || null;
   this.normalizedColors_ = null;
   this.setContent(this.createColorNodes());
 };
@@ -128,14 +139,18 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
  * @protected
  */
 goog.ui.ColorPalette.prototype.createColorNodes = function() {
-  return goog.array.map(this.colors_, function(color) {
+  return goog.array.map(this.colors_, function(color, index) {
     var swatch = this.getDomHelper().createDom('div', {
-        'class': goog.getCssName(this.getRenderer().getCssClass(),
-            'colorswatch'),
-        'style': 'background-color:' + color
-      });
-    swatch.title = color.charAt(0) == '#' ?
-        'RGB (' + goog.color.hexToRgb(color).join(', ') + ')' : color;
+      'class': goog.getCssName(this.getRenderer().getCssClass(),
+          'colorswatch'),
+      'style': 'background-color:' + color
+    });
+    if (this.labels_ && this.labels_[index]) {
+      swatch.title = this.labels_[index];
+    } else {
+      swatch.title = color.charAt(0) == '#' ?
+          'RGB (' + goog.color.hexToRgb(color).join(', ') + ')' : color;
+    }
     return swatch;
   }, this);
 };

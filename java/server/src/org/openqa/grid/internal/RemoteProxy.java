@@ -100,7 +100,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    * the number of test slots because a test slot only indicates what type of test session can be run on the remote.
    * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M <= N.
    *
-   * @return
+   * @return Maximum number of concurrent tests that can run on this node.
    */
   int getMaxNumberOfConcurrentTestSessions();
 

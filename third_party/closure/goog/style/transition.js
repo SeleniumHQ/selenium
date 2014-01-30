@@ -22,6 +22,8 @@ goog.provide('goog.style.transition.Css3Property');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.vendor');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 
 
@@ -94,25 +96,25 @@ goog.style.transition.isSupported = function() {
     // browser version here instead.
     if (goog.userAgent.IE) {
       goog.style.transition.css3TransitionSupported_ =
-          goog.userAgent.isVersion('10.0');
+          goog.userAgent.isVersionOrHigher('10.0');
     } else {
-      // We create a test element with style=-webkit-transition, etc.
+      // We create a test element with style=-vendor-transition
       // We then detect whether those style properties are recognized and
       // available from js.
       var el = document.createElement('div');
-      el.innerHTML = '<div style="-webkit-transition:opacity 1s linear;' +
-          '-moz-transition:opacity 1s linear;-o-transition:opacity 1s linear;' +
-          'transition:opacity 1s linear">';
+      var transition = 'transition:opacity 1s linear;';
+      var vendorPrefix = goog.dom.vendor.getVendorPrefix();
+      var vendorTransition =
+          vendorPrefix ? vendorPrefix + '-' + transition : '';
+      el.innerHTML = '<div style="' + vendorTransition + transition + '">';
 
-      var testElement = el.firstChild;
+      var testElement = /** @type {Element} */ (el.firstChild);
+      goog.asserts.assert(testElement.nodeType == Node.ELEMENT_NODE);
+
       goog.style.transition.css3TransitionSupported_ =
-          goog.isDef(testElement.style.transition) ||
-          goog.isDef(testElement.style.WebkitTransition) ||
-          goog.isDef(testElement.style.MozTransition) ||
-          goog.isDef(testElement.style.OTransition);
+          goog.style.getStyle(testElement, 'transition') != '';
     }
   }
-
   return goog.style.transition.css3TransitionSupported_;
 };
 
@@ -132,9 +134,5 @@ goog.style.transition.css3TransitionSupported_;
  * @private
  */
 goog.style.transition.setPropertyValue_ = function(element, transitionValue) {
-  element.style.WebkitTransition = transitionValue;
-  element.style.MozTransition = transitionValue;
-  element.style.MSTransition = transitionValue;
-  element.style.OTransition = transitionValue;
-  element.style.transition = transitionValue;
+  goog.style.setStyle(element, 'transition', transitionValue);
 };

@@ -24,6 +24,9 @@ goog.require('fxdriver.moz');
 fxdriver.screenshot.grab = function(window) {
   var document = window.document;
   var documentElement = document.documentElement;
+  if (!documentElement) {
+    throw new Error('Page is not loaded yet, try later');
+  }
   var canvas = document.getElementById('fxdriver-screenshot-canvas');
   if (canvas == null) {
     canvas = document.createElement('canvas');
@@ -39,22 +42,57 @@ fxdriver.screenshot.grab = function(window) {
   if (document.body && document.body.scrollHeight > height) {
     height = document.body.scrollHeight;
   }
+
+  //
+  // CanvasRenderingContext2D::DrawWindow limits width and height up to 65535
+  //  > 65535 leads to NS_ERROR_FAILURE
+  //
+  // HTMLCanvasElement::ToDataURLImpl limits width and height up to 32767
+  //  >= 32769 leads to NS_ERROR_FAILURE
+  //  = 32768 leads to black image (moz issue?).
+  //
+  var limit = 32767;
+  if (width >= limit) {
+    width = limit - 1;
+  }
+  if (height >= limit) {
+    height = limit - 1;
+  }
+
   canvas.width = width;
   canvas.height = height;
-  var context = canvas.getContext('2d');
-  context.drawWindow(window, 0, 0, width, height, 'rgb(255,255,255)');
+
+  try {
+    var context = canvas.getContext('2d');
+  } catch (e) {
+    throw new Error('Unable to get context - ' + e);
+  }
+  try {
+    context.drawWindow(window, 0, 0, width, height, 'rgb(255,255,255)');
+  } catch (e) {
+    throw new Error('Unable to draw window - ' + e);
+  }
+
   return canvas;
 };
 
 
 fxdriver.screenshot.toBase64 = function(canvas) {
-  var dataUrl = canvas.toDataURL('image/png');
+  try {
+    var dataUrl = canvas.toDataURL('image/png');
+  } catch (e) {
+    throw new Error('Unable to load canvas into base64 string - ' + e);
+  }
   var index = dataUrl.indexOf('base64,');
   if (index == -1) {
     // No base64 data marker.
     throw new Error("Invalid base64 data: " + dataUrl);
   }
-  return dataUrl.substring(index + 'base64,'.length);
+  try {
+    return dataUrl.substring(index + 'base64,'.length);
+  } catch (e) {
+    throw new Error('Unable to get data from base64 string - ' + e);
+  }
 };
 
 

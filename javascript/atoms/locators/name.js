@@ -35,7 +35,7 @@ bot.locators.name.single = function(target, root) {
   var element = goog.array.find(allElements, function(element) {
     return bot.dom.getAttribute(element, 'name') == target;
   });
-  return (/**@type{Element}*/element);
+  return /**@type{Element}*/ (element);
 };
 
 

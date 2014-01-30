@@ -18,6 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,53 +33,31 @@ import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 public class CaptureScreenshotToStringCommandUnitTest {
 
   private CaptureScreenshotToStringCommand command;
 
   @Test
-  public void testDumbJUnit() {
-    // this test is needed to make JUnit happy since the rest of the tests are disabled temporarily
-  }
-
-  @Test
-  @Ignore
   public void testExecuteReturnsOkAndCommaWhenEmptyCaptureAndEncodeSystemScreenshotSucceeds()
       throws Exception {
 
-    command = createMock(CaptureScreenshotToStringCommand.class,
-        CaptureScreenshotToStringCommand.class
-            .getDeclaredMethod("captureAndEncodeSystemScreenshot"));
-    command.captureAndEncodeSystemScreenshot();
-    expectLastCall().andReturn("");
-    replay(command);
+    command = spy(new CaptureScreenshotToStringCommand());
+    doReturn("").when(command).captureAndEncodeSystemScreenshot();
+
     assertEquals("OK,", command.execute());
-    verify(command);
   }
 
   @Test
-  @Ignore
   public void testExecuteReturnsErrorWhenEmptyCaptureAndEncodeSystemScreenshotThrowsException()
       throws Exception {
 
-    command = createMock(CaptureScreenshotToStringCommand.class,
-        CaptureScreenshotToStringCommand.class
-            .getDeclaredMethod("captureAndEncodeSystemScreenshot"));
-    command.captureAndEncodeSystemScreenshot();
-    expectLastCall().andThrow(new RuntimeException("an error message"));
-    replay(command);
+    command = spy(new CaptureScreenshotToStringCommand());
+    doThrow(new RuntimeException("an error message")).when(command)
+        .captureAndEncodeSystemScreenshot();
 
     assertEquals(
         "ERROR: Problem capturing a screenshot to string: an error message",
         command.execute());
-    verify(command);
   }
 
   @Test

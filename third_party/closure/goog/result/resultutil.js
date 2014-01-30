@@ -23,8 +23,80 @@
 goog.provide('goog.result');
 
 goog.require('goog.array');
+goog.require('goog.result.DependentResult');
 goog.require('goog.result.Result');
 goog.require('goog.result.SimpleResult');
+
+
+/**
+ * Returns a successful result containing the provided value.
+ *
+ * Example:
+ * <pre>
+ *
+ * var value = 'some-value';
+ * var result = goog.result.immediateResult(value);
+ * assertEquals(goog.result.Result.State.SUCCESS, result.getState());
+ * assertEquals(value, result.getValue());
+ *
+ * </pre>
+ *
+ * @param {*} value The value of the result.
+ * @return {!goog.result.Result} A Result object that has already been resolved
+ *     to the supplied value.
+ */
+goog.result.successfulResult = function(value) {
+  var result = new goog.result.SimpleResult();
+  result.setValue(value);
+  return result;
+};
+
+
+/**
+ * Returns a failed result with the optional error slug set.
+ *
+ * Example:
+ * <pre>
+ *
+ * var error = new Error('something-failed');
+ * var result = goog.result.failedResult(error);
+ * assertEquals(goog.result.Result.State.ERROR, result.getState());
+ * assertEquals(error, result.getError());
+ *
+ * </pre>
+ *
+ * @param {*=} opt_error The error to which the result should resolve.
+ * @return {!goog.result.Result} A Result object that has already been resolved
+ *     to the supplied Error.
+ */
+goog.result.failedResult = function(opt_error) {
+  var result = new goog.result.SimpleResult();
+  result.setError(opt_error);
+  return result;
+};
+
+
+/**
+ * Returns a canceled result.
+ * The result will be resolved to an error of type CancelError.
+ *
+ * Example:
+ * <pre>
+ *
+ * var result = goog.result.canceledResult();
+ * assertEquals(goog.result.Result.State.ERROR, result.getState());
+ * var error = result.getError();
+ * assertTrue(error instanceof goog.result.Result.CancelError);
+ *
+ * </pre>
+ *
+ * @return {!goog.result.Result} A canceled Result.
+ */
+goog.result.canceledResult = function() {
+  var result = new goog.result.SimpleResult();
+  result.cancel();
+  return result;
+};
 
 
 /**
@@ -44,12 +116,13 @@ goog.require('goog.result.SimpleResult');
  * </pre>
  *
  * @param {!goog.result.Result} result The result to install the handlers.
- * @param {!function(!goog.result.Result)} handler The handler to be
+ * @param {function(this:T, !goog.result.Result)} handler The handler to be
  *     called. The handler is passed the result object as the only parameter.
- * @param {!Object=} opt_scope Optional scope for the handler.
+ * @param {!T=} opt_scope Optional scope for the handler.
+ * @template T
  */
 goog.result.wait = function(result, handler, opt_scope) {
-  result.wait(opt_scope ? goog.bind(handler, opt_scope) : handler);
+  result.wait(handler, opt_scope);
 };
 
 
@@ -64,17 +137,18 @@ goog.result.wait = function(result, handler, opt_scope) {
  * var result = xhr.get('testdata/xhr_test_text.data');
  *
  * // attach a success handler.
- * goog.result.waitOnSuccess(result, function(result) {
+ * goog.result.waitOnSuccess(result, function(resultValue, result) {
  *   var datavalue = result.getvalue();
- *   alert('value : ' + datavalue);
+ *   alert('value: ' + datavalue + ' == ' + resultValue);
  * });
  * </pre>
  *
  * @param {!goog.result.Result} result The result to install the handlers.
- * @param {!function(*, !goog.result.Result)} handler The handler to be
+ * @param {function(this:T, ?, !goog.result.Result)} handler The handler to be
  *     called. The handler is passed the result value and the result as
  *     parameters.
- * @param {!Object=} opt_scope Optional scope for the handler.
+ * @param {!T=} opt_scope Optional scope for the handler.
+ * @template T
  */
 goog.result.waitOnSuccess = function(result, handler, opt_scope) {
   goog.result.wait(result, function(res) {
@@ -104,15 +178,17 @@ goog.result.waitOnSuccess = function(result, handler, opt_scope) {
  * </pre>
  *
  * @param {!goog.result.Result} result The result to install the handlers.
- * @param {!function(!goog.result.Result)} handler The handler to be
- *     called. The handler is passed the result object as the only parameter.
- * @param {!Object=} opt_scope Optional scope for the handler.
+ * @param {function(this:T, ?, !goog.result.Result)} handler The handler to be
+ *     called. The handler is passed the error and the result object as
+ *     parameters.
+ * @param {!T=} opt_scope Optional scope for the handler.
+ * @template T
  */
 goog.result.waitOnError = function(result, handler, opt_scope) {
   goog.result.wait(result, function(res) {
     if (res.getState() == goog.result.Result.State.ERROR) {
       // 'this' refers to opt_scope
-      handler.call(this, res);
+      handler.call(this, res.getError(), res);
     }
   }, opt_scope);
 };
@@ -136,8 +212,8 @@ goog.result.waitOnError = function(result, handler, opt_scope) {
  * var transformedResult = goog.result.transform(result, processJson);
  *
  * // Attach success and failure handlers to the tranformed result.
- * goog.result.waitOnSuccess(transformedResult, function(result) {
- *   var jsonData = result.getValue();
+ * goog.result.waitOnSuccess(transformedResult, function(resultValue, result) {
+ *   var jsonData = resultValue;
  *   assertEquals('ok', jsonData['stat']);
  * });
  *
@@ -148,15 +224,15 @@ goog.result.waitOnError = function(result, handler, opt_scope) {
  *
  * @param {!goog.result.Result} result The result whose value will be
  *     transformed.
- * @param {!Function} transformer The transformer
+ * @param {function(?):?} transformer The transformer
  *     function. The return value of this function will become the value of the
  *     returned result.
  *
- * @return {!goog.result.Result} A new Result whose eventual value will be
- *     the returned value of the transformer function.
+ * @return {!goog.result.DependentResult} A new Result whose eventual value will
+ *     be the returned value of the transformer function.
  */
 goog.result.transform = function(result, transformer) {
-  var returnedResult = new goog.result.SimpleResult();
+  var returnedResult = new goog.result.DependentResultImpl_([result]);
 
   goog.result.wait(result, function(res) {
     if (res.getState() == goog.result.Result.State.SUCCESS) {
@@ -213,11 +289,11 @@ goog.result.transform = function(result, transformer) {
  *
  * // The chained result resolves to success when both results resolve to
  * // success.
- * goog.result.waitOnSuccess(chainedResult, function(result) {
+ * goog.result.waitOnSuccess(chainedResult, function(resultValue, result) {
  *
  *   // At this point, both results have succeeded and we can use the JSON
  *   // data returned by the second asynchronous call.
- *   var jsonData = result.getValue();
+ *   var jsonData = resultValue;
  *   assertEquals('ok', jsonData['stat']);
  * });
  *
@@ -228,41 +304,43 @@ goog.result.transform = function(result, transformer) {
  * </pre>
  *
  * @param {!goog.result.Result} result The result to chain.
- * @param {!function(!goog.result.Result):!goog.result.Result}
+ * @param {function(this:T, !goog.result.Result):!goog.result.Result}
  *     actionCallback The callback called when the result is resolved. This
  *     callback must return a Result.
- *
- * @return {!goog.result.Result} A result that is resolved when both
+ * @param {T=} opt_scope Optional scope for the action callback.
+ * @return {!goog.result.DependentResult} A result that is resolved when both
  *     the given Result and the Result returned by the actionCallback have
  *     resolved.
+ * @template T
  */
-goog.result.chain = function(result, actionCallback) {
-  var returnedResult = new goog.result.SimpleResult();
+goog.result.chain = function(result, actionCallback, opt_scope) {
+  var dependentResult = new goog.result.DependentResultImpl_([result]);
 
   // Wait for the first action.
   goog.result.wait(result, function(result) {
     if (result.getState() == goog.result.Result.State.SUCCESS) {
 
-      // The first action succeeded. Chain the dependent action.
-      var dependentResult = actionCallback(result);
-      goog.result.wait(dependentResult, function(dependentResult) {
+      // The first action succeeded. Chain the contingent action.
+      var contingentResult = actionCallback.call(opt_scope, result);
+      dependentResult.addParentResult(contingentResult);
+      goog.result.wait(contingentResult, function(contingentResult) {
 
-        // The dependent action completed. Set the returned result based on the
-        // dependent action's outcome.
-        if (dependentResult.getState() ==
+        // The contingent action completed. Set the dependent result based on
+        // the contingent action's outcome.
+        if (contingentResult.getState() ==
             goog.result.Result.State.SUCCESS) {
-          returnedResult.setValue(dependentResult.getValue());
+          dependentResult.setValue(contingentResult.getValue());
         } else {
-          returnedResult.setError(dependentResult.getError());
+          dependentResult.setError(contingentResult.getError());
         }
       });
     } else {
-      // First action failed, the returned result should also fail.
-      returnedResult.setError(result.getError());
+      // First action failed, the dependent result should also fail.
+      dependentResult.setError(result.getError());
     }
   });
 
-  return returnedResult;
+  return dependentResult;
 };
 
 
@@ -291,19 +369,21 @@ goog.result.chain = function(result, actionCallback) {
  *
  * @param {...!goog.result.Result} var_args The results to wait on.
  *
- * @return {!goog.result.Result} A new Result whose eventual value will be
- *     the resolved given Result objects.
+ * @return {!goog.result.DependentResult} A new Result whose eventual value will
+ *     be the resolved given Result objects.
  */
 goog.result.combine = function(var_args) {
+  /** @type {!Array.<!goog.result.Result>} */
   var results = goog.array.clone(arguments);
-  var combinedResult = new goog.result.SimpleResult();
+  var combinedResult = new goog.result.DependentResultImpl_(results);
 
   var isResolved = function(res) {
     return res.getState() != goog.result.Result.State.PENDING;
   };
 
   var checkResults = function() {
-    if (goog.array.every(results, isResolved)) {
+    if (combinedResult.getState() == goog.result.Result.State.PENDING &&
+        goog.array.every(results, isResolved)) {
       combinedResult.setValue(results);
     }
   };
@@ -356,21 +436,23 @@ goog.result.combine = function(var_args) {
  *
  * @param {...!goog.result.Result} var_args The results to wait on.
  *
- * @return {!goog.result.Result} A new Result whose eventual value will be
- *     an array of values of the given Result objects.
+ * @return {!goog.result.DependentResult} A new Result whose eventual value will
+ *     be an array of values of the given Result objects.
  */
 goog.result.combineOnSuccess = function(var_args) {
-  var combinedResult = new goog.result.SimpleResult();
+  var results = goog.array.clone(arguments);
+  var combinedResult = new goog.result.DependentResultImpl_(results);
 
   var resolvedSuccessfully = function(res) {
     return res.getState() == goog.result.Result.State.SUCCESS;
   };
 
   goog.result.wait(
-      goog.result.combine.apply(goog.result.combine, arguments),
+      goog.result.combine.apply(goog.result.combine, results),
       // The combined result never ERRORs
       function(res) {
-        var results = /** @type {Array} */ (res.getValue());
+        var results = /** @type {Array.<!goog.result.Result>} */ (
+            res.getValue());
         if (goog.array.every(results, resolvedSuccessfully)) {
           combinedResult.setValue(results);
         } else {
@@ -379,4 +461,90 @@ goog.result.combineOnSuccess = function(var_args) {
       });
 
   return combinedResult;
+};
+
+
+/**
+ * Given a DependentResult, cancels the Results it depends on (that is, the
+ * results returned by getParentResults). This function does not recurse,
+ * so e.g. parents of parents are not canceled; only the immediate parents of
+ * the given Result are canceled.
+ *
+ * Example using @see goog.result.combine:
+ * <pre>
+ * var result1 = xhr.get('testdata/xhr_test_text.data');
+ *
+ * // Get a second independent Result.
+ * var result2 = xhr.getJson('testdata/xhr_test_json.data');
+ *
+ * // Create a Result that resolves when both prior results resolve.
+ * var combinedResult = goog.result.combineOnSuccess(result1, result2);
+ *
+ * combinedResult.wait(function() {
+ *   if (combinedResult.isCanceled()) {
+ *     goog.result.cancelParentResults(combinedResult);
+ *   }
+ * });
+ *
+ * // Now, canceling combinedResult will cancel both result1 and result2.
+ * combinedResult.cancel();
+ * </pre>
+ * @param {!goog.result.DependentResult} dependentResult A Result that is
+ *     dependent on the values of other Results (for example the Result of a
+ *     goog.result.combine, goog.result.chain, or goog.result.transform call).
+ * @return {boolean} True if any results were successfully canceled; otherwise
+ *     false.
+ * TODO(user): Implement a recursive version of this that cancels all
+ * ancestor results.
+ */
+goog.result.cancelParentResults = function(dependentResult) {
+  var anyCanceled = false;
+  var results = dependentResult.getParentResults();
+  for (var n = 0; n < results.length; n++) {
+    anyCanceled |= results[n].cancel();
+  }
+  return !!anyCanceled;
+};
+
+
+
+/**
+ * A DependentResult represents a Result whose eventual value depends on the
+ * value of one or more other Results. For example, the Result returned by
+ * @see goog.result.chain or @see goog.result.combine is dependent on the
+ * Results given as arguments.
+ *
+ * @param {!Array.<!goog.result.Result>} parentResults A list of Results that
+ *     will affect the eventual value of this Result.
+ * @constructor
+ * @implements {goog.result.DependentResult}
+ * @extends {goog.result.SimpleResult}
+ * @private
+ */
+goog.result.DependentResultImpl_ = function(parentResults) {
+  goog.base(this);
+  /**
+   * A list of Results that will affect the eventual value of this Result.
+   * @type {!Array.<!goog.result.Result>}
+   * @private
+   */
+  this.parentResults_ = parentResults;
+};
+goog.inherits(goog.result.DependentResultImpl_, goog.result.SimpleResult);
+
+
+/**
+ * Adds a Result to the list of Results that affect this one.
+ * @param {!goog.result.Result} parentResult A result whose value affects the
+ *     value of this Result.
+ */
+goog.result.DependentResultImpl_.prototype.addParentResult = function(
+    parentResult) {
+  this.parentResults_.push(parentResult);
+};
+
+
+/** @override */
+goog.result.DependentResultImpl_.prototype.getParentResults = function() {
+  return this.parentResults_;
 };

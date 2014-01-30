@@ -33,8 +33,8 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
-<li>Next Class</li>
+<li><a href="../../../../org/openqa/selenium/safari/ConnectionClosedException.html" title="class in org.openqa.selenium.safari"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/safari/SafariDriver.html" target="_top">Frames</a></li>
@@ -59,13 +59,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested_classes_inherited_from_class_org.openqa.selenium.remote.RemoteWebDriver">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -98,7 +98,7 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
 <br>
@@ -106,7 +106,9 @@
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></pre>
 <div class="block">A WebDriver implementation that controls Safari using a browser extension
- (consequently, only Safari 5.1+ is supported).</div>
+ (consequently, only Safari 5.1+ is supported).
+
+ This driver can be configured using the <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> class.</div>
 </li>
 </ul>
 </div>
@@ -135,35 +137,6 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </ul>
 </li>
 </ul>
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#CLEAN_SESSION_CAPABILITY">CLEAN_SESSION_CAPABILITY</a></strong></code>
-<div class="block">A boolean capability that instructs the SafariDriver to delete all existing
- session data when starting a new session.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#DATA_DIR_CAPABILITY">DATA_DIR_CAPABILITY</a></strong></code>
-<div class="block">Capability that defines the path to a Safari installations data
- directory.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -176,10 +149,20 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#SafariDriver()">SafariDriver</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#SafariDriver()">SafariDriver</a></strong>()</code>
+<div class="block">Initializes a new SafariDriver} class with default <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#SafariDriver(org.openqa.selenium.Capabilities)">SafariDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#SafariDriver(org.openqa.selenium.Capabilities)">SafariDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>
+<div class="block">Converts the specified <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a> to a <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>
+ instance and initializes a new SafariDriver using these options.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#SafariDriver(org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></strong>(<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</code>
+<div class="block">Initializes a new SafariDriver using the specified <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -243,50 +226,6 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="CLEAN_SESSION_CAPABILITY">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CLEAN_SESSION_CAPABILITY</h4>
-<pre>public static final&nbsp;java.lang.String CLEAN_SESSION_CAPABILITY</pre>
-<div class="block">A boolean capability that instructs the SafariDriver to delete all existing
- session data when starting a new session. This includes browser history,
- cache, cookies, HTML5 local storage, and HTML5 databases.
-
- <p><strong>Warning:</strong> Since Safari uses a single profile for the
- current user, enabling this capability will permanently erase any existing
- session data.</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariDriver.CLEAN_SESSION_CAPABILITY">Constant Field Values</a></dd></dl>
-</li>
-</ul>
-<a name="DATA_DIR_CAPABILITY">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>DATA_DIR_CAPABILITY</h4>
-<pre>public static final&nbsp;java.lang.String DATA_DIR_CAPABILITY</pre>
-<div class="block">Capability that defines the path to a Safari installations data
- directory. If omitted, the default installation location for the current
- platform will be used:
- <ul>
-   <li>OS X: /Users/$USER/Library/Safari
-   <li>Windows: %APPDATA%\Apple Computer\Safari
- </ul>
-
- <p>This capability may be set either as a String or File object.</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariDriver.DATA_DIR_CAPABILITY">Constant Field Values</a></dd></dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -300,15 +239,29 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>SafariDriver</h4>
 <pre>public&nbsp;SafariDriver()</pre>
+<div class="block">Initializes a new SafariDriver} class with default <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
 </li>
 </ul>
 <a name="SafariDriver(org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SafariDriver</h4>
 <pre>public&nbsp;SafariDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</pre>
+<div class="block">Converts the specified <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a> to a <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>
+ instance and initializes a new SafariDriver using these options.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#fromCapabilities(org.openqa.selenium.Capabilities)"><code>SafariOptions.fromCapabilities(org.openqa.selenium.Capabilities)</code></a></dd></dl>
+</li>
+</ul>
+<a name="SafariDriver(org.openqa.selenium.safari.SafariOptions)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SafariDriver</h4>
+<pre>public&nbsp;SafariDriver(<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</pre>
+<div class="block">Initializes a new SafariDriver using the specified <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
 </li>
 </ul>
 </li>
@@ -426,8 +379,8 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev Class</li>
-<li>Next Class</li>
+<li><a href="../../../../org/openqa/selenium/safari/ConnectionClosedException.html" title="class in org.openqa.selenium.safari"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/safari/SafariDriver.html" target="_top">Frames</a></li>
@@ -452,13 +405,13 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested_classes_inherited_from_class_org.openqa.selenium.remote.RemoteWebDriver">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>

@@ -52,6 +52,7 @@ goog.provide('goog.cssom.iframe.style');
 goog.require('goog.cssom');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -244,7 +245,8 @@ goog.cssom.iframe.style.CssRuleSet_.prototype.writeToArray = function(array) {
     if (i < (selectorCount - 1)) {
       array.push(goog.cssom.iframe.style.SELECTOR_DELIMITER_);
     }
-    if (goog.userAgent.GECKO && !goog.userAgent.isVersion('1.9a')) {
+    if (goog.userAgent.GECKO &&
+        !goog.userAgent.isVersionOrHigher('1.9a')) {
       // In Gecko pre-1.9 (Firefox 2 and lower) we need to add !important
       // to rulesets that match "A" tags, otherwise Gecko's built-in
       // stylesheet will take precedence when designMode is on.

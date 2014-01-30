@@ -12,6 +12,7 @@ py_test(
   ff_specific_tests = [ "test/selenium/webdriver/firefox/*_tests.py" ],
   deps = [ ":test_ff" ],
   resources = [
+    { "//javascript/firefox-driver:webdriver_prefs" : "selenium/webdriver/firefox/webdriver_prefs.json" },
     { "//javascript/firefox-driver:webdriver" : "selenium/webdriver/firefox/" }
   ],
   browsers = [ "ff" ])
@@ -46,6 +47,11 @@ py_test(
   deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])
 
+py_test(
+  name = "safari_test",
+  deps = [ ":test_safari" ],
+  browsers = [ "safari" ])
+
 py_env(
   name = "test_env",
   packages = [
@@ -66,5 +72,26 @@ py_test(
     "ie",
     "phantomjs",
     "remote_firefox",
-    "opera"
+    "opera",
+    "safari",
   ])
+
+py_docs(
+  name = "docs",
+  source_folder = "py/docs/source",
+  target_folder = "docs/api/py",
+  deps = [ "//py:test_env_docs" ]
+)
+
+py_env(
+  name = "test_env_docs",
+  packages = [
+    "third_party/py/py-1.4.13.tar.gz",
+    "third_party/py/docutils-0.11.tar.gz",
+    "third_party/py/Jinja2-2.7.tar.gz",
+    "third_party/py/MarkupSafe-0.18.tar.gz",
+    "third_party/py/Pygments-1.6.tar.gz",
+    "third_party/py/Sphinx-1.2b1.tar.gz",
+  ],
+  dest = "build/python"
+)

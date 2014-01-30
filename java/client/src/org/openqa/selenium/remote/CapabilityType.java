@@ -38,10 +38,14 @@ public interface CapabilityType {
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
+  String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
+  String HAS_TOUCHSCREEN = "hasTouchScreen";
 
   String LOGGING_PREFS = "loggingPrefs";
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
+
+  String PAGE_LOADING_STRATEGY = "pageLoadingStrategy";
 
   /**
    * Moved InternetExplorer specific CapabilityTypes into InternetExplorerDriver.java for consistency

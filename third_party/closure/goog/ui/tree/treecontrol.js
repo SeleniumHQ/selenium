@@ -29,8 +29,9 @@
 
 goog.provide('goog.ui.tree.TreeControl');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
-goog.require('goog.dom.a11y');
 goog.require('goog.dom.classes');
 goog.require('goog.events.EventType');
 goog.require('goog.events.FocusHandler');
@@ -48,7 +49,7 @@ goog.require('goog.userAgent');
  * view a hierarchical set of data.
  * @param {string} html The HTML content of the node label.
  * @param {Object=} opt_config The configuration for the tree. See
- *    goog.ui.tree.TreeControl.DefaultConfig. If not specified, a default config
+ *    goog.ui.tree.TreeControl.defaultConfig. If not specified, a default config
  *    will be used.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
@@ -459,8 +460,9 @@ goog.ui.tree.TreeControl.prototype.initAccessibility = function() {
   goog.ui.tree.TreeControl.superClass_.initAccessibility.call(this);
 
   var elt = this.getElement();
-  goog.dom.a11y.setRole(elt, 'tree');
-  goog.dom.a11y.setState(elt, 'labelledby', this.getLabelElement().id);
+  goog.asserts.assert(elt, 'The DOM element for the tree cannot be null.');
+  goog.a11y.aria.setRole(elt, 'tree');
+  goog.a11y.aria.setState(elt, 'labelledby', this.getLabelElement().id);
 };
 
 

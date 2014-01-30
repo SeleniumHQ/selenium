@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
     BasicMouseInterfaceTest.class,
     CombinedInputActionsTest.class,
     CompositeActionTest.class,
+    DragAndDropTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
 })

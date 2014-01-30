@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2013 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@ limitations under the License.
 */
 
 package org.openqa.selenium;
+
+import java.util.Arrays;
 
 /**
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
@@ -34,11 +36,11 @@ public enum Keys implements CharSequence {
   RETURN       ('\uE006'),
   ENTER        ('\uE007'),
   SHIFT        ('\uE008'),
-  LEFT_SHIFT   ('\uE008'), // alias
+  LEFT_SHIFT   (Keys.SHIFT),
   CONTROL      ('\uE009'),
-  LEFT_CONTROL ('\uE009'), // alias
+  LEFT_CONTROL (Keys.CONTROL),
   ALT          ('\uE00A'),
-  LEFT_ALT     ('\uE00A'), // alias
+  LEFT_ALT     (Keys.ALT),
   PAUSE        ('\uE00B'),
   ESCAPE       ('\uE00C'),
   SPACE        ('\uE00D'),
@@ -47,19 +49,20 @@ public enum Keys implements CharSequence {
   END          ('\uE010'),
   HOME         ('\uE011'),
   LEFT         ('\uE012'),
-  ARROW_LEFT   ('\uE012'), // alias
+  ARROW_LEFT   (Keys.LEFT),
   UP           ('\uE013'),
-  ARROW_UP     ('\uE013'), // alias
+  ARROW_UP     (Keys.UP),
   RIGHT        ('\uE014'),
-  ARROW_RIGHT  ('\uE014'), // alias
+  ARROW_RIGHT  (Keys.RIGHT),
   DOWN         ('\uE015'),
-  ARROW_DOWN   ('\uE015'), // alias
+  ARROW_DOWN   (Keys.DOWN),
   INSERT       ('\uE016'),
   DELETE       ('\uE017'),
   SEMICOLON    ('\uE018'),
   EQUALS       ('\uE019'),
 
-  NUMPAD0      ('\uE01A'),  // number pad keys
+  // Number pad keys
+  NUMPAD0      ('\uE01A'),
   NUMPAD1      ('\uE01B'),
   NUMPAD2      ('\uE01C'),
   NUMPAD3      ('\uE01D'),
@@ -76,7 +79,8 @@ public enum Keys implements CharSequence {
   DECIMAL      ('\uE028'),
   DIVIDE       ('\uE029'),
 
-  F1           ('\uE031'),  // function keys
+  // Function keys
+  F1           ('\uE031'),
   F2           ('\uE032'),
   F3           ('\uE033'),
   F4           ('\uE034'),
@@ -90,11 +94,15 @@ public enum Keys implements CharSequence {
   F12          ('\uE03C'),
 
   META         ('\uE03D'),
-  COMMAND      ('\uE03D'),  // Alias
+  COMMAND      (Keys.META),
 
   ZENKAKU_HANKAKU ('\uE040');
 
   private final char keyCode;
+
+  Keys(Keys key) {
+    this(key.charAt(0));
+  }
 
   Keys(char keyCode) {
     this.keyCode = keyCode;
@@ -136,6 +144,13 @@ public enum Keys implements CharSequence {
    * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
    */
   public static String chord(CharSequence... value) {
+    return chord(Arrays.asList(value));
+  }
+
+  /**
+   * @see #chord(CharSequence...)
+   */
+  public static String chord(Iterable<CharSequence> value) {
     StringBuilder builder = new StringBuilder();
 
     for (CharSequence seq : value) {

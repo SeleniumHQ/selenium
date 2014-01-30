@@ -127,6 +127,54 @@ class DriverElementFindingTests(unittest.TestCase):
         except InvalidSelectorException:
             pass #This is expected
 
+    def testShouldThrowAnErrorIfUserPassesInNone(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_element(By.ID, None)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInInvalidBy(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_element("css", "body")
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInIntegerWhenFindElements(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_elements(By.ID, 333333)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInTupleWhenFindElements(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_elements((By.ID, 333333))
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInNoneWhenFindElements(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_elements(By.ID, None)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInInvalidByWhenFindElements(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_elements("css", "body")
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
  

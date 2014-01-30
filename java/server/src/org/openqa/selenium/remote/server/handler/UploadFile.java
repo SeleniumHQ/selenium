@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
@@ -26,8 +28,6 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.io.File;
 import java.util.Map;
-
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
 
 public class UploadFile extends ResponseAwareWebDriverHandler implements JsonParametersAware {
 

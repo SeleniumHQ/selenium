@@ -88,8 +88,8 @@ objectExtend(TreeView.prototype, {
             };
             this.tree.controllers.appendController(controller);
             
-            this.atomService = Components.classes["@mozilla.org/atom-service;1"].
-                getService(Components.interfaces.nsIAtomService);
+//            this.atomService = Components.classes["@mozilla.org/atom-service;1"].
+//                getService(Components.interfaces.nsIAtomService);
             
             this._loadSeleniumCommands();
         },
@@ -126,6 +126,12 @@ objectExtend(TreeView.prototype, {
         setTextBox: function(id,value,disabled) {
             this.document.getElementById(id).value = value;
             this.document.getElementById(id).disabled = disabled;
+        },
+
+        updateTarget: function(value, disabled) {
+            this.setTextBox("commandTarget", value, disabled);
+            this.document.getElementById('selectElementButton').disabled = disabled;
+            this.document.getElementById('findElementButton').disabled = disabled;
         },
 
         getCommand: function(row) {
@@ -225,11 +231,11 @@ objectExtend(TreeView.prototype, {
                 Editor.GENERIC_AUTOCOMPLETE.setCandidatesWithComments(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandTarget")),
                                                                       XulUtils.toXPCOMArray(locators),
                                                                       XulUtils.toXPCOMArray(types));
-                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                this.updateTarget(this.encodeText(command.target), false);
             } else {
                 targetBox.setAttribute("enablehistory", "false");
                 targetBox.disableAutoComplete = true;
-                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                this.updateTarget(this.encodeText(command.target), false);
             }
         },
         
@@ -325,7 +331,7 @@ objectExtend(TreeView.prototype, {
                     this.setTextBox("commandValue", this.encodeText(command.value), false);
                 } else if (command.type == 'comment') {
                     this.setTextBox("commandAction", command.comment, false);
-                    this.setTextBox("commandTarget", '', true);
+                    this.updateTarget('', true);
                     this.setTextBox("commandValue", '', true);
                 }
                 
@@ -335,7 +341,7 @@ objectExtend(TreeView.prototype, {
                 this.editor.showRollupReference(command);
             } else {
                 this.setTextBox("commandAction", '', true);
-                this.setTextBox("commandTarget", '', true);
+                this.updateTarget('', true);
                 this.setTextBox("commandValue", '', true);
                 this.currentCommand = null;
             }
@@ -355,6 +361,13 @@ objectExtend(TreeView.prototype, {
                     this.updateSeleniumTargets();
                     this.editor.showReference(this.currentCommand);
                 }
+                else if (key == 'targetCandidates') {
+                  this.updateSeleniumTargets();
+                  if (value != null && value instanceof Array && value[0]) {
+                    this.updateCurrentCommand('target', value[0][0]);
+                    this.selectCommand();
+                  }
+                }
                 else if (key == 'target') {
                     this.updateSeleniumValues();
                     this.editor.showUIReference(value);
@@ -367,7 +380,7 @@ objectExtend(TreeView.prototype, {
         },
         onHide: function() {
             this.setTextBox("commandAction", '', true);
-            this.setTextBox("commandTarget", '', true);
+            this.updateTarget('', true);
             this.setTextBox("commandValue", '', true);
             this.currentCommand = null;
         },
@@ -534,35 +547,36 @@ objectExtend(TreeView.prototype, {
             var command = this.getCommand(row);
             if (this.selection.isSelected(row)) return;
             if (row == this.testCase.debugContext.debugIndex) {
-                props.AppendElement(this.atomService.getAtom("debugIndex"));
+                return XulUtils.setProperty(props, "debugIndex");
             } else if (command.result == 'done') {
-                props.AppendElement(this.atomService.getAtom("commandDone"));
+                return XulUtils.setProperty(props, "commandDone");
             } else if (command.result == 'passed') {
-                props.AppendElement(this.atomService.getAtom("commandPassed"));
+                return XulUtils.setProperty(props, "commandPassed");
             } else if (command.result == 'failed') {
-                props.AppendElement(this.atomService.getAtom("commandFailed"));
+                return XulUtils.setProperty(props, "commandFailed");
             } else if (command.selectedForReplacement) {
-                props.AppendElement(this.atomService.getAtom(
-                    'commandSelectedForReplacement'));
+                return XulUtils.setProperty(props, "commandSelectedForReplacement");
             }
         },
         getCellProperties: function(row, col, props) {
             var command = this.getCommand(row);
+            var propRa = [];
             if (command.type == 'comment') {
-                props.AppendElement(this.atomService.getAtom("comment"));
+                XulUtils.setPropertyRa(props, "comment", propRa);
             }
             if (command == this.currentCommand) {
-                props.AppendElement(this.atomService.getAtom("currentCommand"));
+                XulUtils.setPropertyRa(props, "currentCommand", propRa);
             }
             if (row == this.recordIndex) {
-                props.AppendElement(this.atomService.getAtom("recordIndex"));
+                XulUtils.setPropertyRa(props, "recordIndex", propRa);
             }
             if (0 == col.index && command.breakpoint) {
-                props.AppendElement(this.atomService.getAtom("breakpoint"));
+                XulUtils.setPropertyRa(props, "breakpoint", propRa);
             }
             if ((this.testCase.startPoint) && 0 == col.index && this.testCase.startPoint == command) {
-                props.AppendElement(this.atomService.getAtom("startpoint"));
+                XulUtils.setPropertyRa(props, "startpoint", propRa);
             }
+            return propRa.join(' ');
         },
 
         getParentIndex: function(index){return -1;},
@@ -671,7 +685,9 @@ TreeView.UpdateCommandAction.prototype = {
 			this.treeView.treebox.rowCountChanged(this.treeView.rowCount - 1, -1);
 			this.treeView.rowCount--;
 			this.treeView.log.debug("removed new command");
-		}
+		} else if (this.index == this.treeView.tree.currentIndex) {
+      this.treeView.selectCommand();
+    }
 	}
 }
 

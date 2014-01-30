@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -33,8 +34,17 @@ public class SetWindowPosition extends WebDriverHandler implements JsonParameter
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    int x = ((Number) allParameters.get("x")).intValue();
-    int y = ((Number) allParameters.get("y")).intValue();
+    int x, y;
+    try {
+      x = ((Number) allParameters.get("x")).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) x window position value passed: " + allParameters.get("x"), ex);
+    }
+    try {
+      y = ((Number) allParameters.get("y")).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) y window position value passed: " + allParameters.get("y"), ex);
+    }
 
     position = new Point(x, y);
   }

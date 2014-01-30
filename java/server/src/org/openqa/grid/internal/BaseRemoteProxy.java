@@ -17,6 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.PATH;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,11 +47,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.grid.common.RegistrationRequest.*;
 
 public class BaseRemoteProxy implements RemoteProxy {
   private final RegistrationRequest request;
@@ -76,6 +83,9 @@ public class BaseRemoteProxy implements RemoteProxy {
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
 
+  // connection and socket timeout for getStatus node alive check
+  // 0 means default timeouts of grid http client will be used.
+  private final int statusCheckTimeout;
 
   public List<TestSlot> getTestSlots() {
     return testSlots;
@@ -133,6 +143,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
+    Object tm = this.config.get(RegistrationRequest.STATUS_CHECK_TIMEOUT);
+    if (tm == null) {
+      tm = new Integer(0);
+    }
+    statusCheckTimeout = ((Integer) tm).intValue();
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -208,7 +223,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       if (cleanUpCycle > 0 && timeOutMs > 0) {
         log.fine("starting cleanup thread");
         cleanUpThread = new CleanUpThread(this);
-        new Thread(cleanUpThread, "RemoteProxy CleanUpThread")
+        new Thread(cleanUpThread, "RemoteProxy CleanUpThread for " + getId())
             .start(); // Thread safety reviewed (hopefully ;)
       }
     }
@@ -327,11 +342,15 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
+    log.info("Trying to create a new session on node " + this);
+
     if (!hasCapability(requestedCapability)) {
+      log.info("Node " + this + " has no matching capability");
       return null;
     }
     // any slot left at all?
     if (getTotalUsed() >= maxConcurrentSession) {
+      log.info("Node " + this + " has no free slots");
       return null;
     }
     // any slot left for the given app ?
@@ -455,7 +474,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public String toString() {
-    return "host :" + getRemoteHost() + (timeOutMs != -1 ? " time out : " + timeOutMs : "");
+    return "host :" + getRemoteHost();
   }
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
@@ -479,7 +498,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public JSONObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
-    HttpClient client = getHttpClientFactory().getHttpClient();
+    HttpClient client = getHttpClientFactory().getGridHttpClient(statusCheckTimeout, statusCheckTimeout);
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
@@ -490,7 +509,16 @@ public class BaseRemoteProxy implements RemoteProxy {
       int code = response.getStatusLine().getStatusCode();
 
       if (code == 200) {
-        JSONObject status = extractObject(response);
+        JSONObject status = new JSONObject();
+        try {
+          status = extractObject(response);
+        } catch (Exception e) {
+          // ignored due it's not required from node to return anything. Just 200 code is enough.
+        }
+        EntityUtils.consume(response.getEntity());
+        return status;
+      } else if (code == 404) { // selenium RC case
+        JSONObject status = new JSONObject();
         EntityUtils.consume(response.getEntity());
         return status;
       } else {
@@ -520,7 +548,6 @@ public class BaseRemoteProxy implements RemoteProxy {
   
   
   public float getResourceUsageInPercent() {
-    float percent = 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
-    return percent;
+    return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
 }

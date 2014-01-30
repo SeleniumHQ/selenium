@@ -41,7 +41,6 @@ wgxpath.Literal.prototype.evaluate = function(context) {
 /**
  * @override
  */
-wgxpath.Literal.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  return indent + 'literal: ' + this.text_;
+wgxpath.Literal.prototype.toString = function() {
+  return 'Literal: ' + this.text_;
 };

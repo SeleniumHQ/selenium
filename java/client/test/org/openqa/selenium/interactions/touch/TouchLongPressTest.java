@@ -16,44 +16,41 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import org.jmock.Expectations;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.StubRenderedWebElement;
-import org.openqa.selenium.TouchScreen;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.testing.MockTestBase;
 
 /**
  * Tests the long press action.
  */
-public class TouchLongPressTest extends MockTestBase {
+public class TouchLongPressTest {
 
-  private TouchScreen dummyTouch;
-  private Locatable locatableElement;
-  private Coordinates dummyCoordinates;
+  @Mock private TouchScreen mockTouch;
+  @Mock private Coordinates mockCoordinates;
+  @Mock private Locatable locatableStub;
 
   @Before
   public void setUp() {
-    dummyTouch = mock(TouchScreen.class);
-    dummyCoordinates = mock(Coordinates.class);
-
-    locatableElement = new StubRenderedWebElement() {
-      @Override
-      public Coordinates getCoordinates() {
-        return dummyCoordinates;
-      }
-    };
+    MockitoAnnotations.initMocks(this);
+    when(locatableStub.getCoordinates()).thenReturn(mockCoordinates);
   }
 
   @Test
   public void testCanLongPress() {
-    checking(new Expectations() {{
-      one(dummyTouch).longPress(dummyCoordinates);
-    }});
-
-    LongPressAction longPress = new LongPressAction(dummyTouch, locatableElement);
+    LongPressAction longPress = new LongPressAction(mockTouch, locatableStub);
     longPress.perform();
+
+    verify(mockTouch).longPress(mockCoordinates);
+    verifyNoMoreInteractions(mockTouch);
+    verifyZeroInteractions(mockCoordinates);
   }
 }

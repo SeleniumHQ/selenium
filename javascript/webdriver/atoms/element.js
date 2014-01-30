@@ -23,10 +23,9 @@ goog.provide('webdriver.atoms.element');
 goog.require('bot.Keyboard.Keys');
 goog.require('bot.action');
 goog.require('bot.dom');
-goog.require('goog.dom');
+goog.require('goog.array');
 goog.require('goog.dom.TagName');
-goog.require('goog.math');
-goog.require('goog.string');
+goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 goog.require('webdriver.Key');
 
@@ -129,14 +128,14 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   var value = null;
   var name = attribute.toLowerCase();
 
-  if ('style' == attribute.toLowerCase()) {
+  if ('style' == name) {
     value = element.style;
 
     if (value && !goog.isString(value)) {
       value = value.cssText;
     }
 
-    return (/** @type {?string} */value);
+    return /** @type {?string} */ (value);
   }
 
   if (('selected' == name || 'checked' == name) &&
@@ -158,7 +157,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
       // We want the full URL if present
       value = bot.dom.getProperty(element, name);
     }
-    return (/** @type {?string} */value);
+    return /** @type {?string} */ (value);
   }
 
   var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
@@ -208,6 +207,27 @@ webdriver.atoms.element.getLocation = function(element) {
     return null;
   }
   return goog.style.getBounds(element);
+};
+
+
+/**
+ * Scrolls the element into the client's view and returns its position
+ * relative to the client viewport. If the element or region is too
+ * large to fit in the view, it will be aligned to the top-left of the
+ * container.
+ *
+ * The element should be attached to the current document.
+ *
+ * @param {!Element} elem The element to use.
+ * @param {!goog.math.Rect=} opt_elemRegion The region relative to the element
+ *     to be scrolled into view.
+ * @return {!goog.math.Coordinate} The coordinate of the element in client
+ *     space.
+ */
+webdriver.atoms.element.getLocationInView = function(elem, opt_elemRegion) {
+  bot.action.scrollIntoView(elem, opt_elemRegion);
+  var region = bot.dom.getClientRegion(elem, opt_elemRegion);
+  return new goog.math.Coordinate(region.left, region.top);
 };
 
 

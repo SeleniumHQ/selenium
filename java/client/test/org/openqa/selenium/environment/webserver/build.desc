@@ -1,4 +1,4 @@
-java_binary(
+java_library(
   name = "webserver",
   srcs = [ 
     "AppServer.java",
@@ -37,7 +37,10 @@ java_binary(
 
     "//third_party/java/commons-fileupload",
     "//third_party/java/webbit",
-  ],
+  ])
+
+java_binary(name = "WebServer",
+  deps = [":webserver"],
   main_class = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
 
 java_test(name = "webserver_test",

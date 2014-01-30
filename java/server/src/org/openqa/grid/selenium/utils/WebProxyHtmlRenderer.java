@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.selenium.utils;
 
-import java.util.Map;
-
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
@@ -27,6 +25,8 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.utils.BrowserNameUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.util.Map;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
 

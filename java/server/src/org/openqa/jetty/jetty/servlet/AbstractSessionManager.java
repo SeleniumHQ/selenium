@@ -116,6 +116,7 @@ public abstract class AbstractSessionManager implements SessionManager
      * @deprecated use getCrossContextSessionIDs
      * session IDs
      */
+    @Deprecated
     public boolean getUseRequestedId()
     {
         return _crossContextSessionIDs;
@@ -127,6 +128,7 @@ public abstract class AbstractSessionManager implements SessionManager
      * @deprecated use setCrossContextSessionIDs
      * session IDs
      */
+    @Deprecated
     public void setUseRequestedId(boolean useRequestedId)
     {   
         _crossContextSessionIDs = useRequestedId;
@@ -716,6 +718,7 @@ public abstract class AbstractSessionManager implements SessionManager
         /**
          * @deprecated
          */
+        @Deprecated
         public HttpSessionContext getSessionContext()
         throws IllegalStateException
         {
@@ -892,6 +895,7 @@ public abstract class AbstractSessionManager implements SessionManager
          * @deprecated 	As of Version 2.2, this method is
          * 		replaced by {@link #getAttribute}
          */
+        @Deprecated
         public Object getValue(String name)
         throws IllegalStateException
         {
@@ -903,6 +907,7 @@ public abstract class AbstractSessionManager implements SessionManager
          * @deprecated 	As of Version 2.2, this method is
          * 		replaced by {@link #getAttributeNames}
          */
+        @Deprecated
         public synchronized String[] getValueNames()
         throws IllegalStateException
         {
@@ -918,6 +923,7 @@ public abstract class AbstractSessionManager implements SessionManager
          * @deprecated 	As of Version 2.2, this method is
          * 		replaced by {@link #setAttribute}
          */
+        @Deprecated
         public void putValue(java.lang.String name,
                 java.lang.Object value)
         throws IllegalStateException
@@ -930,6 +936,7 @@ public abstract class AbstractSessionManager implements SessionManager
          * @deprecated 	As of Version 2.2, this method is
          * 		replaced by {@link #removeAttribute}
          */
+        @Deprecated
         public void removeValue(java.lang.String name)
         throws IllegalStateException
         {

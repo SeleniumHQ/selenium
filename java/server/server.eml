@@ -20,8 +20,6 @@
 	<lib name="junit-dep-4.10.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/junit/junit-dep-4.10-src.jar"/>
 	</lib>
-	<lib name="testng-6.8.jar" scope="COMPILE">
-		<srcroot url="file:///third-party/java/testng/testng-6.8-sources.jar"/>
 	</lib>
 	<lib name="bcprov-jdk15on-1.48.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/bouncycastle/bcprov-jdk15on-1.48-sources.jar"/>

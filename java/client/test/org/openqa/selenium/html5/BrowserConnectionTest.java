@@ -16,16 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.TestWaiter;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.concurrent.Callable;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class BrowserConnectionTest extends JUnit4TestBase {
 
@@ -41,20 +40,20 @@ public class BrowserConnectionTest extends JUnit4TestBase {
     
     networkAwareDriver.setOnline(false);
 
-    TestWaiter.waitFor(new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+    wait.until(new ExpectedCondition<Boolean>() {
+      @Override public Boolean apply(WebDriver ignored) {
         return !networkAwareDriver.isOnline();
       }
     });
     assertFalse("Failed to set browser offline.", networkAwareDriver.isOnline());
     networkAwareDriver.setOnline(true);
 
-    TestWaiter.waitFor(new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+    wait.until(new ExpectedCondition<Boolean>() {
+      @Override public Boolean apply(WebDriver ignored) {
         return networkAwareDriver.isOnline();
       }
     });
-        
+
     assertTrue("Failed to set browser online.",
         networkAwareDriver.isOnline());
   }

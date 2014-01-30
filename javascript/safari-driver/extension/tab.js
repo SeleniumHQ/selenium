@@ -82,7 +82,8 @@ safaridriver.extension.Tab.prototype.onLoad_ = function() {
 safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
   goog.asserts.assert(e.name === 'canLoad',
       'Received an async pending frame query');
-  this.log('onPendingFrame_(frameIsLoading=' + this.frameIsLoading_ + ')');
+  this.logConfig(
+      'onPendingFrame_(frameIsLoading=' + this.frameIsLoading_ + ')');
   e.message = this.frameIsLoading_;
   e.stopPropagation();
 };
@@ -93,8 +94,8 @@ safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
  * @private
  */
 safaridriver.extension.Tab.prototype.onUnload_ = function(message) {
-  this.log('Received unload notification: ' + message);
-  this.log('Is frame currently ready? ' + this.isReady());
+  this.logConfig('Received unload notification: ' + message);
+  this.logConfig('Is frame currently ready? ' + this.isReady());
   if (message.isFrame() && this.isReady()) {
     this.frameIsLoading_ = true;
   } else {
@@ -244,7 +245,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
           'The window closed before a response was received.' +
               'returning a null-success response.',
           goog.debug.Logger.Level.WARNING);
-      // TODO(jleyba): Is a null success response always the correct action
+      // TODO: Is a null success response always the correct action
       // when the window closes before a response is received?
       response.fulfill(bot.response.createResponse(null));
     }

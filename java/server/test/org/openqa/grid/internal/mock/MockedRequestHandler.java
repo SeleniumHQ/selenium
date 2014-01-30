@@ -18,15 +18,15 @@ limitations under the License.
 
 package org.openqa.grid.internal.mock;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 
 public class MockedRequestHandler extends RequestHandler {
 

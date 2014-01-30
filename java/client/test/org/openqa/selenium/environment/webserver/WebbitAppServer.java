@@ -21,6 +21,7 @@ package org.openqa.selenium.environment.webserver;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.concurrent.Future;
@@ -182,7 +183,8 @@ public class WebbitAppServer implements AppServer {
   
   private InputStream getKeystoreFile() {
     try {
-      return new FileInputStream(InProject.locate("java/client/test/keystore"));
+      return new FileInputStream(InProject.locate(
+          "java/client/test/org/openqa/selenium/environment/webserver/keystore"));
     } catch (Throwable t) {
       throw Throwables.propagate(t);
     }

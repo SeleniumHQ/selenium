@@ -53,9 +53,9 @@ limitations under the License.
   }
 
   function setUp() {
-    // In IE, we need to initialize the JScript engine in our frame before
+    // In IE < 11, we need to initialize the JScript engine in our frame before
     // continuing with the test.
-    if (goog.userAgent.IE) {
+    if (goog.userAgent.IE && goog.global.execScript) {
       goog.dom.getFrameContentWindow(iframeElement).
           execScript('1', 'JavaScript');
     }

@@ -31,6 +31,11 @@ See the COPYING file for details.
       visibility: hidden;
     }
 
+    .bug {
+      color: red;
+      font-style: italic;
+    }
+
     .horiz1_class,
     .horiz3_class,
     .horiz5_class {
@@ -132,7 +137,7 @@ See the COPYING file for details.
 <body>
 
   <h1>goog.fx.DragListGroup</h1>
-  <h2>You can drag any square into any of the first 6 lists.</h2>
+  <h2>You can drag any squares into any of the first 4 lists.</h2>
   <hr class="hr_clear">
 
   <h4>Horizontal list 1 (grows right):</h4>
@@ -171,7 +176,7 @@ See the COPYING file for details.
   </table>
   <hr class="hr_clear">
   <h4>Horizontal list 3 (grows left):</h4>
-  <p style="color:red;font-style:italic">Bug: drop position is off by one.</p>
+  <p class="bug">Bug: drop position is off by one.</p>
   <div id="horiz3_div" class="horiz3_class">
     <div class="yellow_box">1</div>
     <div class="yellow_box">2</div>
@@ -181,7 +186,7 @@ See the COPYING file for details.
   <hr class="hr_clear">
 
   <h4>Horizontal list 5 (grows right, has multiple rows, hysteresis is enabled):</h4>
-  <p style="color:red;font-style:italic">Bug: can't drop into the last row.</p>
+  <p class="bug">Bug: can't drop into the last row.</p>
   <div id="horiz5_div" class="horiz5_class">
     <div class="blue_box">11</div>
     <div class="blue_box">22</div>
@@ -200,6 +205,19 @@ See the COPYING file for details.
     <div class="red_box">1</div>
     <div class="red_box">2</div>
     <div class="red_box">3</div>
+    <div class="red_box">4</div>
+  </div>
+  <hr class="hr_clear">
+
+  <h4>The items have different width:</h4>
+  <p class="bug">
+    Bug: the drop positions are off.
+    For example try moving box 1 a bit to the left.
+  </p>
+  <div id="horiz7_div" class="horiz1_class">
+    <div class="red_box" style="width: 200px">1</div>
+    <div class="red_box">2</div>
+    <div class="red_box" style="width: 200px">3</div>
     <div class="red_box">4</div>
   </div>
   <hr class="hr_clear">
@@ -242,6 +260,14 @@ See the COPYING file for details.
         }
       });
   dlg3.init();
+
+  var dlg4 = new goog.fx.DragListGroup();
+  dlg4.setDragItemHoverClass('cursor_move');
+  dlg4.setDraggerElClass('cursor_move opacity_40');
+  dlg4.setIsCurrDragItemAlwaysDisplayed();
+  dlg4.addDragList(goog.dom.getElement('horiz7_div'),
+      goog.fx.DragListDirection.RIGHT);
+  dlg4.init();
   </script>
 </body>
 </html>

@@ -16,43 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
-
-import org.openqa.selenium.WebDriver;
-
-public class Timer {
-  private volatile long timeout;
-  private boolean stopped;
+/**
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.commands.Timer} instead.
+ */
+@Deprecated
+public class Timer extends com.thoughtworks.selenium.webdriven.commands.Timer {
 
   public Timer(long timeout) {
-    this.timeout = timeout;
-  }
-
-  public <T> T run(SeleneseCommand<T> command, WebDriver driver, String[] args) {
-    if (stopped) {
-      throw new IllegalStateException("Timer has already been stopped");
-    }
-
-    command.setDefaultTimeout(timeout);
-
-    long start = System.currentTimeMillis();
-
-    T value = command.apply(driver, args);
-
-    long duration = System.currentTimeMillis() - start;
-
-    if (duration > timeout) {
-      throw new SeleniumException("Timed out waiting for action to finish");
-    }
-
-    return value;
-  }
-
-  public void setTimeout(long timeout) {
-    this.timeout = timeout;
-  }
-
-  public void stop() {
-    this.stopped = true;
+    super(timeout);
   }
 }

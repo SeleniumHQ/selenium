@@ -91,7 +91,7 @@
       // NOTE(jleyba): Test does not work on IE 8 with the new IE Driver,
       // I suspect due to something similar to
       // http://support.microsoft.com/kb/973528
-      if (goog.userAgent.IE && goog.userAgent.isVersion('8')) {
+      if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('8')) {
         return;
       }
       if (!bot.test.isWindowFocused()) {
@@ -158,7 +158,7 @@
 
     function testIsFocusable() {
       if (goog.userAgent.IE) {
-        // TODO(user): Don't skip this.
+        // TODO: Don't skip this.
         return;
       }
       function assertIsFocusable(element, opt_reason) {

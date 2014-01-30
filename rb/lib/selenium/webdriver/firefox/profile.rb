@@ -156,6 +156,7 @@ module Selenium
             set_manual_proxy_preference "ftp", proxy.ftp
             set_manual_proxy_preference "http", proxy.http
             set_manual_proxy_preference "ssl", proxy.ssl
+            set_manual_proxy_preference "socks", proxy.socks
 
             if proxy.no_proxy
               self["network.proxy.no_proxies_on"] = proxy.no_proxy

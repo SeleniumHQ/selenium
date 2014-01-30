@@ -33,7 +33,7 @@ class AlertsTest(unittest.TestCase):
         self.driver.find_element(by=By.ID, value="alert").click()
         try:
             self.assertEqual(self.driver.find_element_by_id('text').text, "cheese")
-        except Exception, e:
+        except Exception as e:
             # if we're here, likely the alert is displayed
             # not dismissing it will affect other tests
             try:

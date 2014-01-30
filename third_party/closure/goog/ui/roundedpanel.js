@@ -27,8 +27,10 @@ goog.provide('goog.ui.RoundedPanel.Corner');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.graphics');
+goog.require('goog.graphics.Path');
 goog.require('goog.graphics.SolidFill');
 goog.require('goog.graphics.Stroke');
+goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -57,8 +59,9 @@ goog.ui.RoundedPanel.create = function(radius,
                                        opt_domHelper) {
   // This variable checks for the presence of Safari 3.0+ or Gecko 1.9+,
   // which can leverage special CSS styles to create rounded corners.
-  var isCssReady = goog.userAgent.WEBKIT && goog.userAgent.isVersion('500') ||
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9a');
+  var isCssReady = goog.userAgent.WEBKIT &&
+      goog.userAgent.isVersionOrHigher('500') ||
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9a');
 
   if (isCssReady) {
     // Safari 3.0+ and Firefox 3.0+ support this instance.

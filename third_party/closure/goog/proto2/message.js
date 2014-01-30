@@ -175,8 +175,9 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
 goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
   var scope = opt_scope || this;
   for (var key in this.values_) {
-    if (!this.fields_[/** @type {number} */ (key)]) {
-      callback.call(scope, Number(key), this.values_[key]);
+    var keyNum = Number(key);
+    if (!this.fields_[keyNum]) {
+      callback.call(scope, keyNum, this.values_[key]);
     }
   }
 };
@@ -196,7 +197,7 @@ goog.proto2.Message.prototype.getDescriptor = function() {
   var Ctor = this.constructor;
   return Ctor.descriptor_ ||
       (Ctor.descriptor_ = goog.proto2.Message.create$Descriptor(
-           Ctor, Ctor.descriptorObj_));
+          Ctor, Ctor.descriptorObj_));
 };
 
 
@@ -361,9 +362,9 @@ goog.proto2.Message.prototype.equals = function(other) {
     if (this.has(field)) {
       var isComposite = field.isCompositeType();
 
-      function fieldsEqual(value1, value2) {
+      var fieldsEqual = function(value1, value2) {
         return isComposite ? value1.equals(value2) : value1 == value2;
-      }
+      };
 
       var thisValue = this.getValueForField_(field);
       var otherValue = other.getValueForField_(field);
@@ -397,11 +398,13 @@ goog.proto2.Message.prototype.copyFrom = function(message) {
   goog.proto2.Util.assert(this.constructor == message.constructor,
       'The source message must have the same type.');
 
-  this.values_ = {};
-  if (this.deserializedFields_) {
-    this.deserializedFields_ = {};
+  if (this != message) {
+    this.values_ = {};
+    if (this.deserializedFields_) {
+      this.deserializedFields_ = {};
+    }
+    this.mergeFrom(message);
   }
-  this.mergeFrom(message);
 };
 
 
@@ -644,7 +647,7 @@ goog.proto2.Message.prototype.array$Values = function(tag) {
   var field = this.getFieldByTag_(tag);
   var value = this.getValueForField_(field);
   goog.proto2.Util.assert(value == null || goog.isArray(value));
-  return (/** @type {Array} */value) || [];
+  return /** @type {Array} */ (value) || [];
 };
 
 

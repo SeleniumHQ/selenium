@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.InProject;
@@ -29,6 +30,8 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,6 +49,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -53,18 +57,24 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
+  @Before
+  public void setUp() throws Exception {
+    assumeTrue(driver instanceof JavascriptExecutor);
+  }
+
+  private Object executeScript(String script, Object... args) {
+    return ((JavascriptExecutor) driver).executeScript(script, args);
+  }
+
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return document.title;");
@@ -76,10 +86,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.nestedPage);
 
     Object result = executeScript("return document.getElementsByName('checky').length;");
@@ -91,10 +97,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return document.getElementById('id1');");
@@ -107,10 +109,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return true;");
@@ -124,10 +122,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     List<Object> expectedResult = new ArrayList<Object>();
     expectedResult.add("zero");
@@ -143,10 +137,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     List<Object> expectedResult = new ArrayList<Object>();
     expectedResult.add("zero");
@@ -166,10 +156,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     Object result = executeScript("return {abc: '123', tired: false};");
@@ -194,10 +180,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     Map<String, Object> expectedResult = new HashMap<String, Object>() {
@@ -237,10 +219,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore({IE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     Object result = executeScript("return window.location;");
@@ -272,40 +250,28 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testPassingAndReturningALongShouldReturnAWholeNumber() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be an Integer or Long but was a " +
                result.getClass(), result instanceof Integer || result instanceof Long);
-    assertEquals(expectedResult.longValue(), result);
+    assertEquals(expectedResult, result);
   }
 
   @JavascriptEnabled
   @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be a Double or Float but was a " +
                result.getClass(), result instanceof Float || result instanceof Double);
-    assertEquals(expectedResult.doubleValue(), result);
+    assertEquals(expectedResult, result);
   }
 
   @JavascriptEnabled
   @Test
   public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.xhtmlTestPage);
 
     try {
@@ -319,12 +285,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.xhtmlTestPage);
 
     String js = "function functionB() { throw Error('errormessage'); };"
@@ -347,15 +309,10 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     }
   }
 
-
-
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     executeScript("displayMessage('I like cheese');");
     String text = driver.findElement(By.id("result")).getText();
@@ -363,17 +320,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("I like cheese", text.trim());
   }
 
-  private Object executeScript(String script, Object... args) {
-    return ((JavascriptExecutor) driver).executeScript(script, args);
-  }
-
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassAStringAnAsArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     String value =
         (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
@@ -384,10 +333,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassABooleanAsArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     boolean value = (Boolean) executeScript("return arguments[0] == true;", true);
 
@@ -397,10 +342,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassANumberAnAsArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     boolean value = (Boolean) executeScript("return arguments[0] == 1 ? true : false;", 1);
 
@@ -410,10 +351,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassAWebElementAsArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     WebElement button = driver.findElement(By.id("plainButton"));
     String value =
@@ -427,10 +364,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testPassingArrayAsOnlyArgumentFlattensArray() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
     String value = (String) executeScript("return arguments[0]", array);
@@ -441,10 +374,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore({OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
     long length = (Long) executeScript("return arguments[1].length", "string", array);
@@ -454,10 +383,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     Collection<Object> collection = new ArrayList<Object>();
     collection.add("Cheddar");
@@ -478,10 +403,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     try {
       executeScript("return arguments[0];", driver);
@@ -494,10 +415,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassInMoreThanOneArgument() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     String result = (String) executeScript("return arguments[0] + arguments[1];", "one", "two");
 
@@ -506,13 +423,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({OPERA, OPERA_MOBILE})
+  @Ignore({MARIONETTE, OPERA, OPERA_MOBILE})
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
 
     driver.switchTo().frame("editFrame");
-    WebElement body =
-        (WebElement) ((JavascriptExecutor) driver).executeScript("return document.body");
+    WebElement body = (WebElement) executeScript("return document.body");
     String text = body.getText();
     driver.switchTo().defaultContent();
 
@@ -522,11 +438,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
 
-    List<WebElement> items = (List<WebElement>) ((JavascriptExecutor) driver)
-        .executeScript("return document.getElementsByName('snack');");
+    List<WebElement> items = (List<WebElement>) executeScript(
+        "return document.getElementsByName('snack');");
 
     assertFalse(items.isEmpty());
   }
@@ -562,12 +479,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
 
-    List<WebElement> resultsList = (List<WebElement>) ((JavascriptExecutor) driver)
-        .executeScript(scriptToExec);
+    List<WebElement> resultsList = (List<WebElement>) executeScript(scriptToExec);
 
     assertFalse(resultsList.isEmpty());
   }
@@ -580,7 +497,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
     try {
-      ((JavascriptExecutor) driver).executeScript("return 1;");
+      executeScript("return 1;");
     } catch (WebDriverException e) {
       // Expected
       return;
@@ -589,7 +506,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
+  @Ignore({OPERA, MARIONETTE})
   @Test
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
@@ -617,8 +534,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
-          reason = "Opera and HtmlUnit obey the method contract. Android not tested")
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
+          reason = "Opera obeys the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
@@ -633,11 +550,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE}, reason = "Opera: failed")
   public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
-
     driver.get(pages.simpleTestPage);
 
     final WebElement el = driver.findElement(By.id("oneline"));
@@ -657,6 +571,21 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       // This is expected
     } catch (Exception ex) {
       fail("Expected an StaleElementReferenceException exception, got " + ex);
+    }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  public void testShouldBeAbleToReturnADateObject() {
+    driver.get(pages.simpleTestPage);
+
+    String date = (String) executeScript("return new Date();");
+
+    try {
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+    } catch (ParseException e) {
+      assertTrue(false);
     }
   }
 

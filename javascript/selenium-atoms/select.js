@@ -260,7 +260,7 @@ core.select.isSomethingSelected = function(locator) {
  * @return {string} The visible text of the selected option.
  */
 core.select.getSelectedText = function(locator) {
-  // TODO(simon): This doesn't match "bot.dom.getVisibleText"
+  // TODO: This doesn't match "bot.dom.getVisibleText"
   return core.select.findSelectedOptionProperty_(locator, "text");
 };
 

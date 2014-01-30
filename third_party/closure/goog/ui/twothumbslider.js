@@ -39,9 +39,9 @@
 
 goog.provide('goog.ui.TwoThumbSlider');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.Role');
 goog.require('goog.ui.SliderBase');
 
 
@@ -113,7 +113,7 @@ goog.ui.TwoThumbSlider.prototype.getCssClass = function(orient) {
  */
 goog.ui.TwoThumbSlider.prototype.createThumb_ = function(cs) {
   var thumb = this.getDomHelper().createDom('div', cs);
-  goog.dom.a11y.setRole(thumb, goog.dom.a11y.Role.BUTTON);
+  goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
   return /** @type {HTMLDivElement} */ (thumb);
 };
 

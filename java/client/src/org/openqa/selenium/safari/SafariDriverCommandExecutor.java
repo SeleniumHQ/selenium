@@ -17,29 +17,39 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Stopwatch;
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonException;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Stopwatch;
-import com.google.common.io.Files;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * A CommandExecutor that communicates with the SafariDriver extension using
@@ -47,28 +57,26 @@ import java.util.concurrent.TimeUnit;
  */
 class SafariDriverCommandExecutor implements CommandExecutor {
 
-  private final SafariDriverExtension extension;
+  private static final Logger log = Logger.getLogger(SafariDriverCommandExecutor.class.getName());
+
+  private final SafariExtensions safariExtensions;
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
   private final SessionData sessionData;
   private final boolean cleanSession;
 
   private CommandLine commandLine;
-  private SafariDriverConnection connection;
+  private WebSocketConnection connection;
 
   /**
-   * @param port The port the {@link SafariDriverServer} should be started on,
-   *     or 0 if the server should select a free port.
-   * @param cleanSession Whether all system data should be cleared before
-   *     starting a new session.
-   * @param extension The extension to use.
+   * @param options The {@link SafariOptions} instance
    */
-  SafariDriverCommandExecutor(int port, boolean cleanSession, SafariDriverExtension extension) {
-    this.extension = checkNotNull(extension, "null extension");
-    server = new SafariDriverServer(port);
-    browserLocator = new SafariLocator();
-    sessionData = SessionData.forCurrentPlatform();
-    this.cleanSession = cleanSession;
+  SafariDriverCommandExecutor(SafariOptions options) {
+    this.safariExtensions = new SafariExtensions(options);
+    this.server = new SafariDriverServer(options.getPort());
+    this.browserLocator = new SafariLocator();
+    this.sessionData = SessionData.forCurrentPlatform();
+    this.cleanSession = options.getUseCleanSession();
   }
 
   /**
@@ -77,14 +85,14 @@ class SafariDriverCommandExecutor implements CommandExecutor {
    *
    * @throws IOException If an error occurs while launching Safari.
    */
-  void start() throws IOException {
+  synchronized void start() throws IOException {
     if (commandLine != null) {
       return;
     }
 
     server.start();
 
-    extension.install();
+    safariExtensions.install();
     if (cleanSession) {
       sessionData.clear();
     }
@@ -97,12 +105,13 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     // "open -a Safari $URL", but we need a cross platform solution. So, we generate a simple
     // HTML file that redirects to the base of our SafariDriverServer, which kicks off the
     // connection sequence.
+    log.info("Launching Safari");
     commandLine = new CommandLine(installation.launcherFilePath(), connectFile.getAbsolutePath());
     commandLine.executeAsync();
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
     try {
+      log.info("Waiting for SafariDriver to connect");
       connection = server.getConnection(45, TimeUnit.SECONDS);
     } catch (InterruptedException ignored) {
       // Do nothing.
@@ -114,6 +123,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
           "Failed to connect to SafariDriver after %d ms",
           stopwatch.elapsed(TimeUnit.MILLISECONDS)));
     }
+    log.info(String.format("Driver connected in %d ms", stopwatch.elapsed(TimeUnit.MILLISECONDS)));
   }
 
   private File prepareConnectFile(String serverUri) throws IOException {
@@ -133,23 +143,35 @@ class SafariDriverCommandExecutor implements CommandExecutor {
    * Shuts down this executor, killing Safari and the SafariDriverServer along
    * with it.
    */
-  void stop() {
+  synchronized void stop() {
+    log.info("Shutting down");
+    if (connection != null) {
+      log.info("Closing connection");
+      connection.close();
+      connection = null;
+    }
+
     if (commandLine != null) {
+      log.info("Stopping Safari");
       commandLine.destroy();
       commandLine = null;
     }
+
+    log.info("Stopping server");
     server.stop();
-    connection = null;
 
     try {
-      extension.uninstall();
+      log.info("Uninstalling extensions");
+      safariExtensions.uninstall();
     } catch (IOException e) {
-      throw new WebDriverException("Unable to uninstall extension", e);
+      throw new WebDriverException("Unable to uninstall extensions", e);
     }
+
+    log.info("Shutdown complete");
   }
 
   @Override
-  public Response execute(Command command) {
+  public synchronized Response execute(Command command) {
     if (!server.isRunning() && DriverCommand.QUIT.equals(command.getName())) {
       Response itsOkToQuitMultipleTimes = new Response();
       itsOkToQuitMultipleTimes.setStatus(ErrorCodes.SUCCESS);
@@ -157,10 +179,68 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
 
     checkState(connection != null, "Executor has not been started yet");
+
+    // On quit(), the SafariDriver's browser extension simply returns a stub success
+    // response, so we can short-circuit the process and just return that here.
+    // The SafarIDriver's browser extension doesn't do anything on qu
+    // There's no need to wait for a response when quitting.
+    if (DriverCommand.QUIT.equals(command.getName())) {
+      Response response = new Response(command.getSessionId());
+      response.setStatus(ErrorCodes.SUCCESS);
+      response.setState(ErrorCodes.SUCCESS_STRING);
+      return response;
+    }
+
     try {
-      return connection.send(command);
+      SafariCommand safariCommand = new SafariCommand(command);
+      String rawJsonCommand = new BeanToJsonConverter().convert(serialize(safariCommand));
+      ListenableFuture<String> futureResponse = connection.send(rawJsonCommand);
+
+      JSONObject jsonResponse = new JSONObject(futureResponse.get());
+      Response response = new JsonToBeanConverter().convert(
+          Response.class, jsonResponse.getJSONObject("response").toString());
+      if (response.getStatus() == ErrorCodes.SUCCESS) {
+        checkArgument(
+            safariCommand.getId().equals(jsonResponse.getString("id")),
+            "Response ID<%s> does not match command ID<%s>",
+            jsonResponse.getString("id"), safariCommand.getId());
+      }
+
+      return response;
+    } catch (JSONException e) {
+      throw new JsonException(e);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
+    } catch (ExecutionException e) {
+      throw Throwables.propagate(e.getCause());
+    }
+  }
+
+  private static String serialize(SafariCommand command) throws JSONException {
+    String rawJsonCommand = new BeanToJsonConverter().convert(command);
+    return new JSONObject()
+        .put("origin", "webdriver")
+        .put("type", "command")
+        .put("command", new JSONObject(rawJsonCommand))
+        .toString();
+  }
+
+  /**
+   * Extends the standard Command object to include an ID field. Used to
+   * synchronize messages with the SafariDriver browser extension.
+   */
+  private static class SafariCommand extends Command {
+
+    private final UUID id;
+
+    private SafariCommand(Command command) {
+      super(command.getSessionId(), command.getName(), command.getParameters());
+      this.id = UUID.randomUUID();
+    }
+
+    public String getId() {
+      return id.toString();
     }
   }
 }

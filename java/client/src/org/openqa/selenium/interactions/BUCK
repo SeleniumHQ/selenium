@@ -1,0 +1,43 @@
+java_library(name = 'interactions',
+  srcs = [
+    'Actions.java',
+  ] + glob(['*Action.java', 'internal/*Action.java']),
+  export_deps = True,
+  deps = [
+    ':core',
+    ':exceptions',
+    '//java/client/src/org/openqa/selenium:core',
+  ],
+  visibility = ['PUBLIC'],
+)
+
+java_library(name = 'core',
+  srcs = [
+    'HasInputDevices.java',
+    'HasTouchScreen.java',
+    'Keyboard.java',
+    'Mouse.java',
+    'TouchScreen.java',
+    'internal/Coordinates.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:primitives',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:core',
+  ],
+)
+
+java_library(name = 'exceptions',
+  srcs = [
+    'InvalidCoordinatesException.java',
+    'MoveTargetOutOfBoundsException.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:exceptions',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+  ],
+)

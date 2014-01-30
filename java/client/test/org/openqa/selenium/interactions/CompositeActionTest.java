@@ -17,17 +17,18 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import org.openqa.selenium.testing.MockTestBase;
-
-import org.jmock.Expectations;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 /**
  * Tests the CompositeAction class
  * 
  */
-public class CompositeActionTest extends MockTestBase {
+public class CompositeActionTest {
+
   @Test
   public void addingActions() {
     CompositeAction sequence = new CompositeAction();
@@ -52,13 +53,12 @@ public class CompositeActionTest extends MockTestBase {
     sequence.addAction(dummyAction1);
     sequence.addAction(dummyAction2);
     sequence.addAction(dummyAction3);
-
-    checking(new Expectations() {{
-      one(dummyAction1).perform();
-      one(dummyAction2).perform();
-      one(dummyAction3).perform();
-    }});
-
     sequence.perform();
+
+    InOrder order = Mockito.inOrder(dummyAction1, dummyAction2, dummyAction3);
+    order.verify(dummyAction1).perform();
+    order.verify(dummyAction2).perform();
+    order.verify(dummyAction3).perform();
+    order.verifyNoMoreInteractions();
   }
 }

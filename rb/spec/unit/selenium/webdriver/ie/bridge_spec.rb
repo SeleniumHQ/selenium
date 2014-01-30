@@ -7,14 +7,14 @@ module Selenium
 
       describe Bridge do
         let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json }}
-        let(:server)  { mock(Server, :start => 5555, :uri => "http://example.com") }
+        let(:server)  { double(Server, :start => 5555, :uri => "http://example.com") }
         let(:caps)    { {} }
-        let(:http)    { mock(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http)    { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         before do
-          Server.stub!(:get => server)
+          Server.stub(:get => server)
           @default_capabilities = Remote::Capabilities.internet_explorer
-          Remote::Capabilities.stub!(:internet_explorer => caps)
+          Remote::Capabilities.stub(:internet_explorer => caps)
         end
 
         it "raises ArgumentError if passed invalid options" do

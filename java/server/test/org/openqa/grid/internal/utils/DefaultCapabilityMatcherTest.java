@@ -17,18 +17,18 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.BROWSER;
 import static org.openqa.grid.common.RegistrationRequest.PLATFORM;
 import static org.openqa.grid.common.RegistrationRequest.VERSION;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
-
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,20 +67,20 @@ public class DefaultCapabilityMatcherTest {
 
   @Test
   public void smokeTest() {
-    Assert.assertTrue(helper.matches(tl, tl));
-    Assert.assertFalse(helper.matches(tl, tl2));
-    Assert.assertTrue(helper.matches(tl2, tl));
-    Assert.assertTrue(helper.matches(tl2, tl2));
+    assertTrue(helper.matches(tl, tl));
+    assertFalse(helper.matches(tl, tl2));
+    assertTrue(helper.matches(tl2, tl));
+    assertTrue(helper.matches(tl2, tl2));
 
-    Assert.assertTrue(helper.matches(firefox, firefox));
-    Assert.assertFalse(helper.matches(firefox, firefox2));
-    Assert.assertFalse(helper.matches(firefox2, firefox));
-    Assert.assertFalse(helper.matches(firefox, firefox2));
+    assertTrue(helper.matches(firefox, firefox));
+    assertFalse(helper.matches(firefox, firefox2));
+    assertFalse(helper.matches(firefox2, firefox));
+    assertFalse(helper.matches(firefox, firefox2));
 
-    Assert.assertFalse(helper.matches(tl, null));
-    Assert.assertFalse(helper.matches(null, null));
-    Assert.assertFalse(helper.matches(tl, firefox));
-    Assert.assertFalse(helper.matches(firefox, tl2));
+    assertFalse(helper.matches(tl, null));
+    assertFalse(helper.matches(null, null));
+    assertFalse(helper.matches(tl, firefox));
+    assertFalse(helper.matches(firefox, tl2));
   }
 
   @Test
@@ -88,10 +88,10 @@ public class DefaultCapabilityMatcherTest {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
     Platform p = Platform.WINDOWS;
 
-    Assert.assertTrue(matcher.extractPlatform("WINDOWS") == p);
-    Assert.assertTrue(matcher.extractPlatform("xp").is(p));
-    Assert.assertTrue(matcher.extractPlatform("windows VISTA").is(p));
-    Assert.assertTrue(matcher.extractPlatform("windows 7").is(p));
+    assertTrue(matcher.extractPlatform("WINDOWS") == p);
+    assertTrue(matcher.extractPlatform("xp").is(p));
+    assertTrue(matcher.extractPlatform("windows VISTA").is(p));
+    assertTrue(matcher.extractPlatform("windows 7").is(p));
   }
 
 
@@ -109,7 +109,7 @@ public class DefaultCapabilityMatcherTest {
     node.put(CapabilityType.PLATFORM, Platform.LINUX);
     node.put(CapabilityType.VERSION, "3.6");
 
-    Assert.assertTrue(matcher.matches(node, requested));
+    assertTrue(matcher.matches(node, requested));
 
 
   }

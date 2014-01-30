@@ -16,13 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
-  
+
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
 
@@ -61,11 +63,21 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getSystemInformation() {
-    return String.format("System info: os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-        System.getProperty("os.name"),
-        System.getProperty("os.arch"),
-        System.getProperty("os.version"),
-        System.getProperty("java.version"));
+    String host = "N/A";
+    String ip   = "N/A";
+
+    try{
+      host = InetAddress.getLocalHost().getHostName();
+      ip   = InetAddress.getLocalHost().getHostAddress();
+    } catch (UnknownHostException throw_away) {}
+
+    return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
+      host,
+      ip,
+      System.getProperty("os.name"),
+      System.getProperty("os.arch"),
+      System.getProperty("os.version"),
+      System.getProperty("java.version"));
   }
 
   public String getSupportUrl() {

@@ -21,6 +21,7 @@
 
 goog.provide('goog.ui.CustomButtonRenderer');
 
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.string');
@@ -71,12 +72,12 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {
   var button = /** @type {goog.ui.Button} */ (control);
   var classNames = this.getClassNames(button);
   var attributes = {
-    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
-    'title': button.getTooltip() || ''
+    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
   };
   var buttonElement = button.getDomHelper().createDom('div', attributes,
       this.createButton(button.getContent(), button.getDomHelper()));
-
+  this.setTooltip(
+      buttonElement, /** @type {!string}*/ (button.getTooltip()));
   this.setAriaStates(button, buttonElement);
 
   return buttonElement;
@@ -85,11 +86,11 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {
 
 /**
  * Returns the ARIA role to be applied to custom buttons.
- * @return {goog.dom.a11y.Role|undefined} ARIA role.
+ * @return {goog.a11y.aria.Role|undefined} ARIA role.
  * @override
  */
 goog.ui.CustomButtonRenderer.prototype.getAriaRole = function() {
-  return goog.dom.a11y.Role.BUTTON;
+  return goog.a11y.aria.Role.BUTTON;
 };
 
 

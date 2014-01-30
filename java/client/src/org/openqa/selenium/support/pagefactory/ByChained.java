@@ -21,6 +21,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,9 @@ import java.util.List;
  * will find all elements that match <var>by2</var> and appear under an element that matches
  * <var>by1</var>.
  */
-public class ByChained extends By {
+public class ByChained extends By implements Serializable {
+
+  private static final long serialVersionUID = 1563769051170172451L;
 
   private By[] bys;
 

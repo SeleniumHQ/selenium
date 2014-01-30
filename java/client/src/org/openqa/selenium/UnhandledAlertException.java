@@ -17,20 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.security.Credentials;
-
-import java.io.Serializable;
-
 public class UnhandledAlertException extends WebDriverException {
   
   private final String alertText;
 
-  public UnhandledAlertException(String commandName) {
-    this(commandName, null);
+  public UnhandledAlertException(String message) {
+    this(message, null);
   }
   
-  public UnhandledAlertException(String commandName, String alertText) {
-    super(commandName);
+  public UnhandledAlertException(String message, String alertText) {
+    super(message + ": " + alertText);
     this.alertText = alertText;
   }
 
@@ -39,49 +35,5 @@ public class UnhandledAlertException extends WebDriverException {
    */
   public String getAlertText() {
     return alertText;
-  }
-  
-  /**
-   * Returns null if alert text could not be retrieved.
-   * @deprecated To be removed in 2.31, use {@link #getAlertText()} instead.
-   */
-  @Deprecated
-  public Alert getAlert() {
-    return new LocallyStoredAlert(alertText);
-  }
-  
-  private static class LocallyStoredAlert implements Alert, Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private final String alertText;
-
-    public LocallyStoredAlert(String alertText) {
-      this.alertText = alertText;
-    }
-
-    public void dismiss() {
-      throwAlreadyDismissed();
-    }
-
-    public void accept() {
-      throwAlreadyDismissed();
-    }
-
-    public String getText() {
-      return this.alertText;
-    }
-
-    public void sendKeys(String keysToSend) {
-      throwAlreadyDismissed();
-    }
-
-    @Override
-    public void authenticateUsing(Credentials credentials) {
-      throwAlreadyDismissed();
-    }
-
-    private void throwAlreadyDismissed() {
-      throw new UnsupportedOperationException("Alert was already dismissed");
-    }
   }
 }

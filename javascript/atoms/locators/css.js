@@ -13,10 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(simon): Add support for using sizzle to locate elements
+// TODO: Add support for using sizzle to locate elements
 
 goog.provide('bot.locators.css');
 
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
 goog.require('goog.dom.NodeType');
 goog.require('goog.string');
@@ -41,15 +43,22 @@ bot.locators.css.single = function(target, root) {
   }
 
   if (!target) {
-    throw Error('No selector specified');
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'No selector specified');
   }
 
   target = goog.string.trim(target);
 
-  var element = root.querySelector(target);
+  var element;
+  try {
+    element = root.querySelector(target);
+  } catch (e) {
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'An invalid or illegal selector was specified');
+  }
 
   return element && element.nodeType == goog.dom.NodeType.ELEMENT ?
-      (/**@type {Element}*/element) : null;
+      /**@type {Element}*/ (element) : null;
 };
 
 
@@ -70,10 +79,16 @@ bot.locators.css.many = function(target, root) {
   }
 
   if (!target) {
-    throw Error('No selector specified');
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'No selector specified');
   }
 
   target = goog.string.trim(target);
 
-  return root.querySelectorAll(target);
+  try {
+    return root.querySelectorAll(target);
+  } catch (e) {
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'An invalid or illegal selector was specified');
+  }
 };

@@ -17,6 +17,9 @@
 <!ENTITY options.formats.delete-button.label "Supprimer">
 <!ENTITY options.formats.source-button.label "Source">
 
+<!ENTITY options.disableBadPluginCode.label "Automatically disable plugin provided code on plugin errors">
+<!ENTITY options.disableBadPluginAddon.label "Disabling plugin should completely disable the addon in Firefox">
+
 <!ENTITY options.enableUIElement.description "Activer UI-Element (exp&#233;rimentale, n&#233;cessite le red&#233;marrage de l'IDE)">
 <!ENTITY options.enableUIElement.about "A propos d'UI-Element">
 

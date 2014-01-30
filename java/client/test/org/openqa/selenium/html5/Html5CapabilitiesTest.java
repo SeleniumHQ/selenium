@@ -28,10 +28,10 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEX
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -49,7 +49,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI})
+@Ignore({ANDROID,HTMLUNIT,IE,IPHONE,OPERA,SAFARI, MARIONETTE})
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;  

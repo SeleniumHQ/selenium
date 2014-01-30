@@ -23,8 +23,8 @@ import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
 import org.openqa.selenium.browserlaunchers.locators.Firefox2Locator;
 import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 

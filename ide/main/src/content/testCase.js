@@ -106,7 +106,19 @@ Command.loadAPI = function() {
         if (comments.length > 0) {
           def.comment = this.innerHTML(comments.item(0));
         }
-        
+
+        var alternatives = element.getElementsByTagName("alternatives");
+        if (alternatives.length > 0) {
+          def.alternatives = this.innerHTML(alternatives.item(0));
+        }
+        var deprecated = element.getElementsByTagName("deprecated");
+        if (deprecated.length > 0) {
+          def.deprecated = this.innerHTML(deprecated.item(0));
+          if (def.deprecated.length == 0 && def.alternatives) {
+            def.deprecated = "Use the ${alternatives} command instead.";
+          }
+        }
+
         var params = element.getElementsByTagName("param");
         for (var j = 0; j < params.length; j++) {
           var paramElement = params.item(j);
@@ -137,7 +149,7 @@ Command.loadAPI = function() {
     this.functions = functions;
   }
   return this.functions;
-}
+};
 
 function CommandDefinition(name) {
 	this.name = name;
@@ -178,13 +190,21 @@ CommandDefinition.prototype.getReferenceFor = function(command) {
     if (this.returnDescription) {
         returns += "<dl><dt>Returns:</dt><dd>" + this.returnDescription + "</dd></dl>";
     }
+  var deprecated = "";
+  if (this.deprecated) {
+    deprecated += '<div class="deprecated">This command is deprecated. ' + this.deprecated + "</div>";
+    if (this.alternatives) {
+      deprecated = deprecated.replace("${alternatives}", "<strong>" + CommandDefinition.getAlternative(command.command, this.alternatives) + "</strong>");
+    }
+  }
+
 	return "<dl><dt><strong>" + (command.command || this.name) + "(" +
-        paramNames.join(", ") + ")</strong></dt>" +
-        note +
+      paramNames.join(", ") + ")</strong></dt>" +
+      deprecated + note +
 	    '<dd style="margin:5px;">' + 
         params + returns +
 	    this.comment + "</dd></dl>";
-}
+};
 
 CommandDefinition.prototype.negativeAccessor = function() {
 	var def = new CommandDefinition(this.name);
@@ -195,6 +215,41 @@ CommandDefinition.prototype.negativeAccessor = function() {
 	def.negative = true;
 	return def;
 }
+
+/**
+ * Figure out the correct alternative command to use based on the current command flavour
+ * @param command - e.g. "waitForTextNotPresent"
+ * @param alternative - e.g. "Text
+ * @returns {string}
+ */
+CommandDefinition.getAlternative = function(command, alternative) {
+  if (command == null) return '';
+  var alt = alternative;
+  var r = /^(.*?)(AndWait)?$/.exec(command);
+  var commandName = r[1];
+  var prefix = '';
+  var suffix = r[2] ? r[2] : '';
+  var negate = false;
+  r = /^(assert|verify|store|waitFor)(.*)$/.exec(commandName);
+  if (r) {
+    prefix = r[1];
+    var commandName = r[2];
+    if ((r = /^(.*)NotPresent$/.exec(commandName)) != null) {
+      negate = true;
+    } else if ((r = /^Not(.*)$/.exec(commandName)) != null) {
+      negate = true;
+    }
+    if (negate) {
+      if (alt.match(/Present$/)) {
+        alt = alt.replace(/Present$/, 'NotPresent');
+      } else {
+        prefix += 'Not';
+      }
+    }
+  }
+
+  return prefix + (prefix.length > 0 ? alt.charAt(0).toUpperCase() : alt.charAt(0).toLowerCase()) + alt.substr(1) + suffix;
+};
 
 Command.prototype.getDefinition = function() {
 	if (this.command == null) return null;

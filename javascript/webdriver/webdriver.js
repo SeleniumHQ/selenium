@@ -52,7 +52,7 @@ goog.require('webdriver.promise');
  * object to manipulate the command result or catch an expected error. Any
  * commands scheduled with a callback are considered sub-commands and will
  * execute before the next command in the current frame. For example:
- *
+ * <pre><code>
  *   var message = [];
  *   driver.call(message.push, message, 'a').then(function() {
  *     driver.call(message.push, message, 'b');
@@ -61,6 +61,7 @@ goog.require('webdriver.promise');
  *   driver.call(function() {
  *     alert('message is abc? ' + (message.join('') == 'abc'));
  *   });
+ * </code></pre>
  *
  * @param {!(webdriver.Session|webdriver.promise.Promise)} session Either a
  *     known session or a promise that will be resolved to a session.
@@ -102,8 +103,8 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  * Creates a new WebDriver session.
  * @param {!webdriver.CommandExecutor} executor The executor to create the new
  *     session with.
- * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
- *     new session.
+ * @param {!webdriver.Capabilities} desiredCapabilities The desired
+ *     capabilities for the new session.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
@@ -127,13 +128,13 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  * @private
  */
 webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
-  var fn = goog.bind(executor.execute, executor, command);
   var session = webdriver.promise.controlFlow().execute(function() {
-    return webdriver.promise.checkedNodeCall(fn).then(function(response) {
-      bot.response.checkResponse(response);
-      return new webdriver.Session(response['sessionId'],
-          response['value']);
-    });
+    return webdriver.WebDriver.executeCommand_(executor, command).
+        then(function(response) {
+          bot.response.checkResponse(response);
+          return new webdriver.Session(response['sessionId'],
+              response['value']);
+        });
   }, description);
   return new webdriver.WebDriver(session, executor);
 };
@@ -162,7 +163,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
   switch (goog.typeOf(obj)) {
     case 'array':
       return webdriver.promise.fullyResolved(
-          goog.array.map((/** @type {!Array} */obj),
+          goog.array.map(/** @type {!Array} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'object':
       if (goog.isFunction(obj.toWireValue)) {
@@ -177,7 +178,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
         ].join(''));
       }
       return webdriver.promise.fullyResolved(
-          goog.object.map((/** @type {!Object} */obj),
+          goog.object.map(/** @type {!Object} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'function':
       return webdriver.promise.fulfilled('' + obj);
@@ -204,18 +205,38 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
   if (goog.isArray(value)) {
-    value = goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    value = goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
-  } else if (value && goog.isObject(value)) {
+  } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
       value = new webdriver.WebElement(driver,
           value[webdriver.WebElement.ELEMENT_KEY]);
     } else {
-      value = goog.object.map((/**@type {!Object}*/value),
+      value = goog.object.map(/**@type {!Object}*/ (value),
           goog.partial(webdriver.WebDriver.fromWireValue_, driver));
     }
   }
   return value;
+};
+
+
+/**
+ * Translates a command to its wire-protocol representation before passing it
+ * to the given {@code executor} for execution.
+ * @param {!webdriver.CommandExecutor} executor The executor to use.
+ * @param {!webdriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will resolve with the
+ *     command response.
+ * @private
+ */
+webdriver.WebDriver.executeCommand_ = function(executor, command) {
+  return webdriver.promise.fullyResolved(command.getParameters()).
+      then(webdriver.WebDriver.toWireValue_).
+      then(function(parameters) {
+        command.setParameters(parameters);
+        return webdriver.promise.checkedNodeCall(
+            goog.bind(executor.execute, executor, command));
+      });
 };
 
 
@@ -249,14 +270,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
     // driver has quit above.  Therefore, we need to make another quick check.
     // We still check above so we can fail as early as possible.
     checkHasNotQuit();
-
-    return webdriver.promise.fullyResolved(command.getParameters()).
-        then(webdriver.WebDriver.toWireValue_).
-        then(function(parameters) {
-          command.setParameters(parameters);
-          return webdriver.promise.checkedNodeCall(
-              goog.bind(self.executor_.execute, self.executor_, command));
-        });
+    return webdriver.WebDriver.executeCommand_(self.executor_, command);
   }, description).then(function(response) {
     try {
       bot.response.checkResponse(response);
@@ -296,14 +310,27 @@ webdriver.WebDriver.prototype.getSession = function() {
 
 
 /**
+ * @return {!webdriver.promise.Promise} A promise that will resolve with the
+ *     this instance's capabilities.
+ */
+webdriver.WebDriver.prototype.getCapabilities = function() {
+  return webdriver.promise.when(this.session_, function(session) {
+    return session.getCapabilities();
+  });
+};
+
+
+/**
  * Returns a promise for one of this driver's capabilities.
  * @param {string} name The name of the capability to query.
  * @return {!webdriver.promise.Promise} A promise that will resolve with the
  *     given capability once its value is ready.
+ * @deprecated Use {@link #getCapabilities()}; this function will be removed
+ *     in 2.35.0.
  */
 webdriver.WebDriver.prototype.getCapability = function(name) {
   return webdriver.promise.when(this.session_, function(session) {
-    return session.capabilities[name];
+    return session.getCapabilities().get(name);
   });
 };
 
@@ -321,9 +348,9 @@ webdriver.WebDriver.prototype.quit = function() {
       'WebDriver.quit()');
   // Delete our session ID when the quit command finishes; this will allow us to
   // throw an error when attemnpting to use a driver post-quit.
-  return result.addBoth(function() {
+  return result.thenFinally(goog.bind(function() {
     delete this.session_;
-  }, this);
+  }, this));
 };
 
 
@@ -655,7 +682,7 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
   var id;
   if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    var element = (/** @type {!Element} */locatorOrElement);
+    var element = /** @type {!Element} */ (locatorOrElement);
     id = this.findDomElement_(element).
         then(function(elements) {
           if (!elements.length) {
@@ -756,7 +783,7 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
                                                           var_args) {
   var findElement =
       locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
-          this.findDomElement_((/** @type {!Element} */locatorOrElement)) :
+          this.findDomElement_(/** @type {!Element} */ (locatorOrElement)) :
           this.findElements.apply(this, arguments);
   return findElement.then(function(result) {
     return !!result.length;
@@ -957,7 +984,7 @@ webdriver.WebDriver.Options.prototype.addCookie = function(
     if (goog.isNumber(opt_expiry)) {
       expiryDate = new Date(opt_expiry);
     } else {
-      expiryDate = (/** @type {!Date} */opt_expiry);
+      expiryDate = /** @type {!Date} */ (opt_expiry);
       opt_expiry = expiryDate.getTime();
     }
     cookieString += ';expires=' + expiryDate.toUTCString();
@@ -1032,7 +1059,7 @@ webdriver.WebDriver.Options.prototype.getCookies = function() {
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
  */
 webdriver.WebDriver.Options.prototype.getCookie = function(name) {
-  return this.getCookies().addCallback(function(cookies) {
+  return this.getCookies().then(function(cookies) {
     return goog.array.find(cookies, function(cookie) {
       return cookie && cookie['name'] == name;
     });
@@ -1424,22 +1451,24 @@ webdriver.Key.chord = function(var_args) {
  * Represents a DOM element. WebElements can be found by searching from the
  * document root using a {@code webdriver.WebDriver} instance, or by searching
  * under another {@code webdriver.WebElement}:
- *
+ * <pre><code>
  *   driver.get('http://www.google.com');
  *   var searchForm = driver.findElement(By.tagName('form'));
  *   var searchBox = searchForm.findElement(By.name('q'));
  *   searchBox.sendKeys('webdriver');
+ * </code></pre>
  *
  * The WebElement is implemented as a promise for compatibility with the promise
  * API. It will always resolve itself when its internal state has been fully
  * resolved and commands may be issued against the element. This can be used to
  * catch errors when an element cannot be located on the page:
- *
+ * <pre><code>
  *   driver.findElement(By.id('not-there')).then(function(element) {
  *     alert('Found an element that was not expected to be there!');
  *   }, function(error) {
  *     alert('The element was not found, as expected');
  *   });
+ * </code></pre>
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
@@ -1685,7 +1714,7 @@ webdriver.WebElement.prototype.click = function() {
  * this key is encountered, all modifier keys current in the down state are
  * released (with accompanying keyup events). The NULL key can be used to
  * simulate common keyboard shortcuts:
- * <code>
+ * <code><pre>
  *     element.sendKeys("text was",
  *                      webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
  *                      "now text is");
@@ -1693,7 +1722,7 @@ webdriver.WebElement.prototype.click = function() {
  *     element.sendKeys("text was",
  *                      webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
  *                      "now text is");
- * </code></li>
+ * </pre></code></li>
  * <li>The end of the keysequence is encountered. When there are no more keys
  * to type, all depressed modifier keys are released (with accompanying keyup
  * events).
@@ -1765,13 +1794,14 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
 
 /**
  * Schedules a command to query for the value of the given attribute of the
- * element. Will return the current value even if it has been modified after the
- * page has been loaded. More exactly, this method will return the value of the
- * given attribute, unless that attribute is not present, in which case the
+ * element. Will return the current value, even if it has been modified after
+ * the page has been loaded. More exactly, this method will return the value of
+ * the given attribute, unless that attribute is not present, in which case the
  * value of the property with the same name is returned. If neither value is
- * set, null is returned. The "style" attribute is converted as best can be to a
+ * set, null is returned (for example, the "value" property of a textarea
+ * element). The "style" attribute is converted as best can be to a
  * text representation with a trailing semi-colon. The following are deemed to
- * be "boolean" attributes and will be returned as thus:
+ * be "boolean" attributes and will return either "true" or null:
  *
  * <p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
  * defaultchecked, defaultselected, defer, disabled, draggable, ended,
@@ -1788,7 +1818,8 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
  * </ul>
  * @param {string} attributeName The name of the attribute to query.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     attribute's value.
+ *     attribute's value. The returned value will always be either a string or
+ *     null.
  */
 webdriver.WebElement.prototype.getAttribute = function(attributeName) {
   return this.schedule_(

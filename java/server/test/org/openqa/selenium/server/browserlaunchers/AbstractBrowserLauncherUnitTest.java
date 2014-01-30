@@ -18,7 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import static com.thoughtworks.selenium.SeleneseTestNgHelper.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;

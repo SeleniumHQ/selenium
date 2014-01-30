@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.net.URL;
 import java.util.List;
@@ -141,7 +142,7 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Return a set of window handles which can be used to iterate over all open windows of this
-   * webdriver instance by passing them to {@link #switchTo().window(String)}
+   * WebDriver instance by passing them to {@link #switchTo()}.{@link Options#window()}
    * 
    * @return A set of window handles which can be used to iterate over all open windows.
    */
@@ -246,7 +247,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Gets the {@link Logs} interface used to fetch different types of logs.
      *
-     * <p>To set the logging preferences {@see LoggingPreferences}.
+     * <p>To set the logging preferences {@link LoggingPreferences}.
      *
      * @return A Logs interface.
      */
@@ -295,7 +296,7 @@ public interface WebDriver extends SearchContext {
      *
      * @param time The timeout value.
      * @param unit The unit of time.
-     * @return
+     * @return A Timeouts interface.
      */
     Timeouts pageLoadTimeout(long time, TimeUnit unit);
   }
@@ -305,10 +306,10 @@ public interface WebDriver extends SearchContext {
    */
   interface TargetLocator {
     /**
-     * Select a frame by its (zero-based) index. That is, if a page has three frames, the first
-     * frame would be at index "0", the second at index "1" and the third at index "2". Once the
-     * frame has been selected, all subsequent calls on the WebDriver interface are made to that
-     * frame.
+     * Select a frame by its (zero-based) index. Selecting a frame by index is equivalent to the
+     * JS expression window.frames[index] where "window" is the DOM window represented by the
+     * current context. Once the frame has been selected, all subsequent calls on the WebDriver
+     * interface are made to that frame.
      * 
      * @param index (zero-based) index
      * @return This driver focused on the given frame

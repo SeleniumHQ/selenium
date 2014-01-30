@@ -17,14 +17,23 @@
 /*
  * type
  */
+Recorder.inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
 Recorder.addEventHandler('type', 'change', function(event) {
-		var tagName = event.target.tagName.toLowerCase();
-		var type = event.target.type;
-		if (('input' == tagName && ('text' == type || 'password' == type || 'file' == type)) ||
-			'textarea' == tagName) {
-			this.record("type", this.findLocators(event.target), event.target.value);
-		}
-	});
+  var tagName = event.target.tagName.toLowerCase();
+  var type = event.target.type;
+  if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
+    if (event.target.value.length > 0) {
+      // TODO figure out if we need sendKeys or type and record it
+      this.record("type", this.findLocators(event.target), event.target.value);
+    } else {
+      //use type to clear
+      this.record("type", this.findLocators(event.target), event.target.value);
+    }
+  } else if ('textarea' == tagName) {
+    //use type for file uploads
+    this.record("type", this.findLocators(event.target), event.target.value);
+  }
+});
 
 /*
  * select / addSelection / removeSelection
@@ -75,7 +84,7 @@ Recorder.prototype.getOptionLocator = function(option) {
     } else {
         return "label=" + label;
     }
-}
+};
 
 Recorder.addEventHandler('select', 'change', function(event) {
 		var tagName = event.target.tagName.toLowerCase();
@@ -154,7 +163,7 @@ Recorder.prototype.findClickableElement = function(e) {
 			return null;
 		}
 	}
-}
+};
 
 // remember clicked element to be used in CommandBuilders
 Recorder.addEventHandler('rememberClickedElement', 'mousedown', function(event) {
@@ -185,7 +194,7 @@ Recorder.prototype.domModified = function() {
             clearTimeout(this.domModifiedTimeout);
         }
     }
-}
+};
 
 Recorder.prototype.callIfMeaningfulEvent = function(handler) {
     this.log.debug("callIfMeaningfulEvent");
@@ -196,4 +205,4 @@ Recorder.prototype.callIfMeaningfulEvent = function(handler) {
             self.delayedRecorder = null;
             self.domModifiedTimeout = null;
         }, 50);
-}
+};

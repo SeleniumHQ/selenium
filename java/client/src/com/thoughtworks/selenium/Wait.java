@@ -56,7 +56,6 @@ public abstract class Wait {
    * Wait until the "until" condition returns true or time runs out.
    * 
    * @param message the failure message
-   * @param timeoutInMilliseconds the amount of time to wait before giving up
    * @throws WaitTimedOutException if "until" doesn't return true until the timeout
    * @see #until()
    */

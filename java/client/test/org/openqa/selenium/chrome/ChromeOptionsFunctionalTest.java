@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -29,7 +28,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
  * Functional tests for {@link ChromeOptions}.
  */
 public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
-
   private ChromeDriver driver = null;
 
   @After
@@ -47,20 +45,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     driver = new ChromeDriver(options);
 
     driver.get(pages.clickJacker);
-    Object userAgent = driver.executeScript(
-        "return window.navigator.userAgent");
-
-    DesiredCapabilities capabilities =
-        (DesiredCapabilities) driver.getCapabilities();
-    String chromeDriverVersion =
-        (String) capabilities.getCapability("chrome.chromedriverVersion");
-
-    assertEquals(
-        String.format(
-            "This test requires chromedriver 17.0.963.0 or newer. You appear " +
-                "to be using %s; please download the latest chromedriver from" +
-                " http://code.google.com/p/chromedriver/downloads/list",
-            chromeDriverVersion),
-        "foo;bar", userAgent);
+    Object userAgent = driver.executeScript("return window.navigator.userAgent");
+    assertEquals("foo;bar", userAgent);
   }
 }

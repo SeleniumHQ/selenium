@@ -8,7 +8,6 @@ goog.provide('safaridriver.client');
 goog.require('goog.Uri');
 goog.require('goog.debug.DivConsole');
 goog.require('goog.debug.Logger');
-goog.require('goog.dom');
 goog.require('safaridriver.message.Connect');
 
 
@@ -30,7 +29,8 @@ safaridriver.client.init = function() {
 
   var url = new goog.Uri(window.location).getQueryData().get('url');
   if (!url) {
-    log.severe('No url specified. Please reload this page with the url parameter set');
+    log.severe(
+        'No url specified. Please reload this page with the url parameter set');
     return;
   }
   url = new goog.Uri(url);
@@ -44,7 +44,7 @@ safaridriver.client.init = function() {
     numAttempts += 1;
     var acknowledged = message.sendSync(window);
     if (acknowledged) {
-      log.info('Request acknowledged; connecting...');;
+      log.info('Request acknowledged; connecting...');
     } else if (numAttempts < 5) {
       var timeout = 250 * numAttempts;
       setTimeout(connect, timeout);

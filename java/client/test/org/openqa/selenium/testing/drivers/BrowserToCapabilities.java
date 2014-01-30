@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.testing.drivers;
 
 import com.opera.core.systems.OperaProduct;
+import com.opera.core.systems.OperaProfile;
 import com.opera.core.systems.OperaSettings;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
@@ -34,11 +35,6 @@ public class BrowserToCapabilities {
     DesiredCapabilities caps;
 
     switch (browser) {
-      case android:
-      case android_real_phone:
-        caps = DesiredCapabilities.android();
-        break;
-
       case chrome:
         caps = DesiredCapabilities.chrome();
         break;
@@ -62,7 +58,14 @@ public class BrowserToCapabilities {
         break;
 
       case opera:
+        OperaProfile profile = new OperaProfile();
+        profile.preferences().set("Geolocation", "Enable geolocation", true);
+        // This pref allows all sites to access geolocation without prompting.
+        // A 0 value would deny all sites and -1 would prompt for all sites.
+        profile.preferences().set("User Prefs", "Geolocation site state", 1);
+
         caps = DesiredCapabilities.opera();
+        caps.setCapability("opera.profile", profile);
         break;
 
       case opera_mobile:
@@ -76,14 +79,6 @@ public class BrowserToCapabilities {
 
       case safari:
         caps = DesiredCapabilities.safari();
-        break;
-
-      case ipad:
-        caps = DesiredCapabilities.ipad();
-        break;
-
-      case iphone:
-        caps = DesiredCapabilities.iphone();
         break;
 
       default:

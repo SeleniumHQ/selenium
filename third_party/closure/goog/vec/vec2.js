@@ -20,6 +20,7 @@
 
 goog.provide('goog.vec.Vec2');
 
+/** @suppress {extraRequire} */
 goog.require('goog.vec');
 
 

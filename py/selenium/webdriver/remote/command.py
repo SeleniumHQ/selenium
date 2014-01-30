@@ -26,7 +26,9 @@ class Command(object):
 
     # Keep in sync with org.openqa.selenium.remote.DriverCommand
 
+    STATUS = "status"
     NEW_SESSION = "newSession"
+    GET_ALL_SESSIONS = "getAllSessions"
     DELETE_SESSION = "deleteSession"
     CLOSE = "close"
     QUIT = "quit"
@@ -45,12 +47,10 @@ class Command(object):
     FIND_CHILD_ELEMENTS = "findChildElements"
     CLEAR_ELEMENT = "clearElement"
     CLICK_ELEMENT = "clickElement"
-    HOVER_OVER_ELEMENT = "hoverOverElement"
     SEND_KEYS_TO_ELEMENT = "sendKeysToElement"
     SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement"
     SUBMIT_ELEMENT = "submitElement"
     UPLOAD_FILE = "uploadFile"
-    TOGGLE_ELEMENT = "toggleElement"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
@@ -64,15 +64,12 @@ class Command(object):
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
-    GET_SPEED = "getSpeed"
-    SET_SPEED = "setSpeed"
     SET_BROWSER_VISIBLE = "setBrowserVisible"
     IS_BROWSER_VISIBLE = "isBrowserVisible"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
     SET_ELEMENT_SELECTED = "setElementSelected"
-    DRAG_ELEMENT = "dragElement"
     IS_ELEMENT_SELECTED = "isElementSelected"
     IS_ELEMENT_ENABLED = "isElementEnabled"
     IS_ELEMENT_DISPLAYED = "isElementDisplayed"
@@ -88,6 +85,8 @@ class Command(object):
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
+    GET_LOG = "getLog"
+    GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 
     #Alerts
     DISMISS_ALERT = "dismissAlert"

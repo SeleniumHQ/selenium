@@ -86,6 +86,26 @@ goog.inherits(goog.positioning.AnchoredViewportPosition,
 
 
 /**
+ * @return {goog.math.Box|undefined} The box object describing the
+ *     dimensions in which the movable element will be shown.
+ */
+goog.positioning.AnchoredViewportPosition.prototype.getOverflowConstraint =
+    function() {
+  return this.overflowConstraint_;
+};
+
+
+/**
+ * @param {goog.math.Box|undefined} overflowConstraint Box object describing the
+ *     dimensions in which the movable element could be shown.
+ */
+goog.positioning.AnchoredViewportPosition.prototype.setOverflowConstraint =
+    function(overflowConstraint) {
+  this.overflowConstraint_ = overflowConstraint;
+};
+
+
+/**
  * @return {number} A bitmask for the "last resort" overflow.
  */
 goog.positioning.AnchoredViewportPosition.prototype.getLastResortOverflow =

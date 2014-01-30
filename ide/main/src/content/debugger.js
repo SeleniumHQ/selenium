@@ -67,22 +67,53 @@ function Debugger(editor) {
       }
     }
 
-    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
-    if (typeof pluginProvided != 'undefined') {
-      try {
-        var split_pluginProvided = pluginProvided.split(",");
-        for (var sp = 0; sp < split_pluginProvided.length; sp++) {
-          var js_pluginProvided = split_pluginProvided[sp].split(";");
-          ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], this.runner);
+//    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
+//    if (typeof pluginProvided != 'undefined') {
+//      try {
+//        var split_pluginProvided = pluginProvided.split(",");
+//        for (var sp = 0; sp < split_pluginProvided.length; sp++) {
+//          var js_pluginProvided = split_pluginProvided[sp].split(";");
+//          ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], this.runner);
+//        }
+//      } catch (error) {
+//        this.log.error("error loading plugin provided user extension: " + error);
+//      }
+//    }
+    var pluginManager = editor.pluginManager;
+    pluginManager.getEnabledUserExtensions().forEach(function (plugin) {
+      for (var i = 0; i < plugin.code.length; i++) {
+        try {
+          var js_pluginProvided = plugin.code[i].split(";");
+          if (!(js_pluginProvided.length >= 2 && js_pluginProvided[2] == "1")) {
+            // Load the user extensions that cannot handle webdriver playback here
+            ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], self.runner);
+          }
+        } catch (error) {
+          pluginManager.setPluginError(plugin.id, plugin.code[i], error);
+          break;
         }
-      } catch (error) {
-        this.log.error("error loading plugin provided user extension: " + error);
       }
-    }
+    });
+
     if (executeUsingWebDriver) {
       subScriptLoader.loadSubScript('chrome://selenium-ide/content/deferred.js', this.runner);
       subScriptLoader.loadSubScript('chrome://selenium-ide/content/webdriver-backed-selenium.js', this.runner);
     }
+    pluginManager.getEnabledUserExtensions().forEach(function (plugin) {
+      for (var i = 0; i < plugin.code.length; i++) {
+        try {
+          var js_pluginProvided = plugin.code[i].split(";");
+          if (js_pluginProvided.length >= 2 && js_pluginProvided[2] == "1") {
+            // User extensions that can handle webdriver playback are loaded here, so that they can access webdriver
+            // playback stuff
+            ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], self.runner);
+          }
+        } catch (error) {
+          pluginManager.setPluginError(plugin.id, plugin.code[i], error);
+          break;
+        }
+      }
+    });
     subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-runner.js', this.runner);
 
     this.editor.infoPanel.logView.setLog(this.runner.LOG);
@@ -172,6 +203,53 @@ Debugger.prototype.doContinue = function (step) {
 Debugger.prototype.showElement = function (locator) {
   this.init();
   this.runner.showElement(locator);
+};
+
+Debugger.prototype.selectElement = function () {
+  this.init();
+  var button = document.getElementById("selectElementButton");
+  var help = document.getElementById("selectElementTip");
+  if (this.targetSelecter) {
+    this.targetSelecter.cleanup();
+    this.targetSelecter = null;
+    return;
+  }
+  var self = this;
+  var isRecording = this.editor.recordingEnabled;
+  if (isRecording) {
+    this.editor.setRecordingEnabled(false);
+  }
+  button.label = "Cancel";
+  help.removeAttribute("style");
+  this.targetSelecter = new TargetSelecter(function (element, win) {
+    if (element && win) {
+      var locatorBuilders = new LocatorBuilders(win);
+      var target = locatorBuilders.buildAll(element);
+      locatorBuilders.detach();
+      if (target != null && target instanceof Array) {
+        if (target[0]) {
+          self.editor.treeView.updateCurrentCommand('targetCandidates', target);
+        } else {
+          alert("LOCATOR_DETECTION_FAILED");
+        }
+      }
+
+    }
+    self.targetSelecter = null;
+  }, function () {
+    button.label = "Select";
+    help.setAttribute("style", "display: none;");
+    if (isRecording) {
+      self.editor.setRecordingEnabled(true);
+    }
+  });
+};
+
+Debugger.prototype.unload = function () {
+  if (this.targetSelecter) {
+    this.targetSelecter.cleanup();
+    this.targetSelecter = null;
+  }
 };
 
 /*

@@ -26,10 +26,9 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
-    bytes
-except NameError: # Python 2.x compatibility
-    bytes = str
-    str = unicode
+    str = basestring
+except NameError:
+    pass
 
 class WebDriver(object):
     """
@@ -46,7 +45,7 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None, proxy=None):
+        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -63,7 +62,7 @@ class WebDriver(object):
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or type(self.command_executor) is str:
-            self.command_executor = RemoteConnection(command_executor)
+            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
@@ -672,8 +671,10 @@ class WebDriver(object):
 
         :Usage:
             Use the corresponding find_element_by_* instead of this.
+
+        :rtype: WebElement
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENT,
@@ -685,8 +686,10 @@ class WebDriver(object):
 
         :Usage:
             Use the corresponding find_elements_by_* instead of this.
+
+        :rtype: list of WebElement
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENTS,
@@ -709,14 +712,26 @@ class WebDriver(object):
         :Usage:
             driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
-        png = self.execute(Command.SCREENSHOT)['value']
+        png = self.get_screenshot_as_png()
         try:
             with open(filename, 'wb') as f:
-                f.write(base64.b64decode(png.encode('ascii')))
+                f.write(png)
         except IOError:
             return False
-        del png
+        finally:
+            del png
         return True
+
+    save_screenshot = get_screenshot_as_file
+
+    def get_screenshot_as_png(self):
+        """
+        Gets the screenshot of the current window as a binary data.
+
+        :Usage:
+            driver.get_screenshot_as_png()
+        """
+        return base64.b64decode(self.get_screenshot_as_base64().encode('ascii'))
 
     def get_screenshot_as_base64(self):
         """
@@ -739,7 +754,7 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        self.execute(Command.SET_WINDOW_SIZE, {'width': width, 'height': height,
+        self.execute(Command.SET_WINDOW_SIZE, {'width': int(width), 'height': int(height),
           'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
@@ -763,7 +778,7 @@ class WebDriver(object):
         :Usage:
             driver.set_window_position(0,0)
         """
-        self.execute(Command.SET_WINDOW_POSITION, {'x': x, 'y': y,
+        self.execute(Command.SET_WINDOW_POSITION, {'x': int(x), 'y': int(y),
           'windowHandle': windowHandle})
 
     def get_window_position(self, windowHandle='current'):
@@ -812,18 +827,27 @@ class WebDriver(object):
         """ Returns a ApplicationCache Object to interact with the browser app cache"""
         return ApplicationCache(self)
 
-    def save_screenshot(self, filename):
+    @property
+    def log_types(self):
         """
-        Gets the screenshot of the current window. Returns False if there is
-        any IOError, else returns True. Use full paths in your filename.
+        Gets a list of the available log types
+
+        :Usage:
+            driver.log_types
         """
-        png = self.execute(Command.SCREENSHOT)['value']
-        try:
-            f = open(filename, 'wb')
-            f.write(base64.b64decode(png.encode('ascii')))
-            f.close()
-        except IOError:
-            return False
-        finally:
-            del png
-        return True
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
+
+    def get_log(self, log_type):
+        """
+        Gets the log for a given log type
+
+        :Args:
+         - log_type: type of log that which will be returned
+
+        :Usage:
+            driver.get_log('browser')
+            driver.get_log('driver')
+            driver.get_log('client')
+            driver.get_log('server')
+        """
+        return self.execute(Command.GET_LOG, {'type': log_type})['value']

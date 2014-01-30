@@ -1,8 +1,85 @@
-2.33.0 (???)
-============
+2.39.0 (2013-12-17)
+===================
+
+* Firefox: Native events support for Firefox 26.
+* Add deprecation warning to the Android driver.
+* Make sure selenium/client doesn't require Rake (#6709)
+
+2.38.0 (2013-12-05)
+===================
+
+* Enforce required Ruby version in gemspec, not just transitively through rubyzip.
+* Expose the logging API (beta API, subject to change) in the Ruby client: driver.manage.logs #=> Selenium::WebDriver::Logs
+* Update to support native events for Firefox 25
+
+
+2.37.0 (2013-10-18)
+===================
+
+* As of this version, selenium-webdriver no longer supports Ruby < 1.9.2
+* Depend on rubyzip ~> 1.0.0
+* Added SOCKS proxy support
+* Fixed support for SVG documents in the atoms.
+* Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
+* Added Capabilities.htmlunitwithjs
+
+Chrome:
+  * Pass through the prefs option as a Chrome capability (#5929).
+Firefox:
+  * Updated Firefox native event components to support Firefox 24.
+  * New elementScrollBehavior capability.
+  * Fixed getLocation to work on scrolled pages.
+  * Fixed autoscrolling for elements located in frames.
+  * Fixed drag-n-drop for elements in frames with native events
+IE:
+  * Use native events by default, also for remote IE (#4695)
+Safari:
+  * Enable screenshots and input devices in the client.
+
+2.35.1 (2013-08-26)
+===================
+
+* Depend on rubyzip < 1.0.0
+
+2.35.0 (2013-08-14)
+===================
+
+Firefox:
+  * Updated Firefox native event components to support Firefox 23.
+
+2.34.0 (2013-08-06)
+===================
 
 Remote:
-  * Support rotating devices, such iPhone & iPad in simulator and Android browser in emulator
+  * Add `Driver#remote_status` (remote driver only) (#5669)
+Firefox:
+  * Updated Firefox native event components to support Firefox 22.
+iPhone:
+  * The driver is now deprecated (see http://appium.io/ or http://ios-driver.github.io/ios-driver/ for a replacement)
+Various:
+  * Updated our copy of the Closure compiler and library to the most
+    recent versions.
+  * Updated the atoms library, including support for MS pointer events
+    and refinements to element visibility tests.
+  * Update synthesized mouse implementation. Mouse moves are
+    implemented using nsIDOMWindowUtils.
+  * Added support for the HTML5 "hidden" attribute. If an element, or
+    ancestor, has hidden attribute make, it is not shown.
+
+2.33.0 (2013-05-26)
+===================
+
+Remote:
+  * Support rotating devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Support for interacting with touch screen devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Improve error messages for invalid wire protocol responses
+Chrome:
+  * Accept :service_log_path for Chrome. (#3475)
+IE:
+  * IE >=9 versions triggerMouseEvent like other browsers (#2218).
+Various:
+  * Element#text ignores elements in <head>
+
 
 2.32.1 (2013-04-11)
 ===================
@@ -15,7 +92,7 @@ Safari:
 
 Safari:
   * The Safari extension is now packaged with the gem and automatically installed (#5322)
-  * Improved detection of the binary location on 64-bit windows (5273)
+  * Improved detection of the binary location on 64-bit windows (#5273)
 Opera:
   * Allow passing :desired_capabailities (#5279)
 Firefox:

@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server.handler.html5;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
@@ -39,14 +38,16 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
     super(session);
   }
 
+  @Override
   public ResultType call() throws Exception {
-    Object value =
-        ((DatabaseStorage) getUnwrappedDriver()).executeSQL(dbName, query, args.toArray());
+    Object value = Utils.getDatabaseStorage(getUnwrappedDriver())
+        .executeSQL(dbName, query, args.toArray());
     Object result = new ResultConverter(getKnownElements()).apply(value);
     response.setValue(result);
     return ResultType.SUCCESS;
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     dbName = (String) allParameters.get("dbName");
     query = (String) allParameters.get("query");

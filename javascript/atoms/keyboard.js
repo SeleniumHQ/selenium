@@ -40,8 +40,7 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
- * @param {{pressed: !Array.<!bot.Keyboard.Key>,
-            currentPos: number}=} opt_state Optional keyboard state.
+ * @param {bot.Keyboard.State=} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
 bot.Keyboard = function(opt_state) {
@@ -60,19 +59,26 @@ bot.Keyboard = function(opt_state) {
     // If a state is passed, let's assume we were passed an object with
     // the correct properties.
     goog.array.forEach(opt_state['pressed'], function(key) {
-      this.setKeyPressed_(key, true);
+      this.setKeyPressed_(/** @type {!bot.Keyboard.Key} */ (key), true);
     }, this);
 
-    this.currentPos_ = opt_state['currentPos'];
+    this.currentPos_ = opt_state['currentPos'] || 0;
   }
 };
 goog.inherits(bot.Keyboard, bot.Device);
 
 
 /**
+ * Describes the current state of a keyboard.
+ * @typedef {{pressed: !Array.<!bot.Keyboard.Key>,
+ *            currentPos: number}}
+ */
+bot.Keyboard.State;
+
+
+/**
  * Maps characters to (key,boolean) pairs, where the key generates the
  * character and the boolean is true when the shift must be pressed.
- *
  * @private {!Object.<string, {key: !bot.Keyboard.Key, shift: boolean}>}
  * @const
  */
@@ -84,7 +90,8 @@ bot.Keyboard.CHAR_TO_KEY_ = {};
  * character to is in the CHAR_TO_KEY_ map. Using this factory function instead
  * of the new keyword, also helps reduce the size of the compiled Js fragment.
  *
- * @param {?number|{gecko: ?number, ieWebkit: ?number, opera: ?number}} code
+ * @param {null|number|
+ *         {gecko: (?number), ieWebkit: (?number), opera: (?number)}} code
  *     Either a single keycode or a record of per-browser keycodes.
  * @param {string=} opt_char Character when shift is not pressed.
  * @param {string=} opt_shiftChar Character when shift is pressed.
@@ -327,6 +334,7 @@ bot.Keyboard.MODIFIERS = [
   bot.Keyboard.Keys.SHIFT
 ];
 
+
 /**
  * Map of modifier to key.
  * @private {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
@@ -353,7 +361,7 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();
   goog.array.forEach(modifiersMap.getKeys(), function(m) {
-      keyToModifierMap.set(modifiersMap.get(m).code, m);
+    keyToModifierMap.set(modifiersMap.get(m).code, m);
   });
 
   return keyToModifierMap;
@@ -363,8 +371,8 @@ bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
 /**
  * Set the modifier state if the provided key is one, otherwise just add
  * to the list of pressed keys.
- * @param {bot.Keyboard.Key} key
- * @param {boolean} isPressed
+ * @param {!bot.Keyboard.Key} key The key to update.
+ * @param {boolean} isPressed Whether the key is pressed.
  * @private
  */
 bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
@@ -396,7 +404,7 @@ bot.Keyboard.NEW_LINE_ =
 /**
  * Returns whether the key is currently pressed.
  *
- * @param {bot.Keyboard.Key} key Key.
+ * @param {!bot.Keyboard.Key} key Key.
  * @return {boolean} Whether the key is pressed.
  */
 bot.Keyboard.prototype.isPressed = function(key) {
@@ -444,7 +452,7 @@ bot.Keyboard.prototype.pressKey = function(key) {
 
 /**
  * Whether the given key currently requires a keypress.
- * TODO(user): Make this dependent on the state of the modifier keys.
+ * TODO: Make this dependent on the state of the modifier keys.
  *
  * @param {bot.Keyboard.Key} key Key.
  * @return {boolean} Whether it requires a keypress event.
@@ -577,9 +585,8 @@ bot.Keyboard.prototype.getChar_ = function(key) {
 /**
  * Whether firing a keypress event causes text to be edited without any
  * additional logic to surgically apply the edit.
- *
- * @const
  * @private {boolean}
+ * @const
  */
 bot.Keyboard.KEYPRESS_EDITS_TEXT_ = goog.userAgent.GECKO &&
     !bot.userAgent.isEngineVersion(12);
@@ -596,8 +603,12 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
 
   var character = this.getChar_(key);
   var newPos = goog.dom.selection.getStart(this.getElement()) + 1;
-  goog.dom.selection.setText(this.getElement(), character);
-  goog.dom.selection.setStart(this.getElement(), newPos);
+  if (bot.Keyboard.supportsSelection(this.getElement())) {
+    goog.dom.selection.setText(this.getElement(), character);
+    goog.dom.selection.setStart(this.getElement(), newPos);
+  } else {
+    this.getElement().value += character;
+  }
   if (goog.userAgent.WEBKIT) {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
@@ -620,10 +631,14 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
   if (bot.dom.isElement(this.getElement(), goog.dom.TagName.TEXTAREA)) {
-    var newPos = goog.dom.selection.getStart(this.getElement()) + 
+    var newPos = goog.dom.selection.getStart(this.getElement()) +
         bot.Keyboard.NEW_LINE_.length;
-    goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
-    goog.dom.selection.setStart(this.getElement(), newPos);
+    if (bot.Keyboard.supportsSelection(this.getElement())) {
+      goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
+      goog.dom.selection.setStart(this.getElement(), newPos);
+    } else {
+      this.getElement().value += bot.Keyboard.NEW_LINE_;
+    }
     if (!goog.userAgent.IE) {
       this.fireHtmlEvent(bot.events.EventType.INPUT);
     }
@@ -643,6 +658,7 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
 
   // Determine what should be deleted.  If text is already selected, that
   // text is deleted, else we move left/right from the current cursor.
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var endpoints = goog.dom.selection.getEndPoints(this.getElement());
   if (endpoints[0] == endpoints[1]) {
     if (key == bot.Keyboard.Keys.BACKSPACE) {
@@ -685,6 +701,7 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var element = this.getElement();
   var start = goog.dom.selection.getStart(element);
   var end = goog.dom.selection.getEnd(element);
@@ -751,6 +768,7 @@ bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var element = this.getElement();
   var start = goog.dom.selection.getStart(element);
   var end = goog.dom.selection.getEnd(element);
@@ -760,7 +778,7 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
       goog.dom.selection.setStart(element, 0);
       // If current position is at the end of the selection, typing home
       // changes the selection to begin at the beginning of the text, running
-      // to the where the current selection begins. 
+      // to the where the current selection begins.
       var endPos = this.currentPos_ == start ? end : start;
       // On IE, changing goog.dom.selection.setStart also changes the end.
       goog.dom.selection.setEnd(element, endPos);
@@ -772,8 +790,8 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
     if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
       if (this.currentPos_ == start) {
         // Current position is at the beginning of the selection. Typing end
-        // changes the selection to begin where the current selection ends, 
-        // running to the end of the text. 
+        // changes the selection to begin where the current selection ends,
+        // running to the end of the text.
         goog.dom.selection.setStart(element, end);
       }
       goog.dom.selection.setEnd(element, element.value.length);
@@ -784,8 +802,50 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
   }
 };
 
+
 /**
-* @param {number} pos New position of the cursor
+ * Checks that the cursor position can be updated for the given element.
+ * @param {!Element} element The element to test.
+ * @throws {Error} If the cursor position cannot be updated for the given
+ *     element.
+ * @see https://code.google.com/p/chromium/issues/detail?id=330456
+ * @private
+ */
+bot.Keyboard.checkCanUpdateSelection_ = function(element) {
+  try {
+    /** @suppress {suspiciousCode} */
+    element.selectionStart;
+  } catch (ex) {
+    // The native error message is actually pretty informative, just add a
+    // reference to the relevant Chrome bug to provide more context.
+    if (ex.message.indexOf('does not support selection.') != -1) {
+      // message is a readonly property, so need to rethrow.
+      throw Error(ex.message + ' (For more information, see ' +
+          'https://code.google.com/p/chromium/issues/detail?id=330456)');
+    }
+    throw ex;
+  }
+};
+
+
+/**
+ * @param {!Element} element The element to test.
+ * @return {boolean} Whether the given element supports the input element
+ *     selection API.
+ * @see https://code.google.com/p/chromium/issues/detail?id=330456
+ */
+bot.Keyboard.supportsSelection = function(element) {
+  try {
+    bot.Keyboard.checkCanUpdateSelection_(element);
+  } catch (ex) {
+    return false;
+  }
+  return true;
+};
+
+
+/**
+* @param {number} pos New position of the cursor.
 * @private
 */
 bot.Keyboard.prototype.updateCurrentPos_ = function(pos) {
@@ -843,10 +903,9 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 /**
  * Serialize the current state of the keyboard.
  *
- * @return {{pressed: !Array.<!bot.Keyboard.Key>, currentPos: number}} The 
- *     current keyboard state.
+ * @return {bot.Keyboard.State} The current keyboard state.
  */
-bot.Keyboard.prototype.getState = function () {
+bot.Keyboard.prototype.getState = function() {
   // Need to use quoted literals here, so the compiler will not rename the
   // properties of the emitted object. When the object is created via the
   // "constructor", we will look for these *specific* properties. Everywhere
@@ -857,6 +916,7 @@ bot.Keyboard.prototype.getState = function () {
     'currentPos': this.currentPos_
   };
 };
+
 
 /**
  * Returns the state of the modifier keys, to be shared with other input

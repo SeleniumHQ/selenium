@@ -45,8 +45,8 @@ module Selenium
       def scroll(*args)
         case args.size
         when 2
-          x, y = args
-          @bridge.touchScroll nil, x, y
+          x_offset, y_offset = args
+          @bridge.touchScroll nil, Integer(x_offset), Integer(y_offset)
         when 3
           element, x_offset, y_offset = args
           assert_element element

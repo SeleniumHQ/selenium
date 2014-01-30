@@ -16,6 +16,8 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
+
 import com.google.common.base.Charsets;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
@@ -27,8 +29,6 @@ import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-
-import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
 
 /**
  * Renders a HTTP response for a {@link CrossDomainRpc}.

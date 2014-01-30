@@ -11,6 +11,7 @@ js_module(
         "//javascript/safari-driver/inject:encoder",
         "//javascript/safari-driver/inject:message",
         "//javascript/webdriver:base_lib",
+        "//javascript/webdriver:logging_lib",
     ])
 
 js_module(

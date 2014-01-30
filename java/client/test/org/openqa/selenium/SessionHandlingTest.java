@@ -25,9 +25,9 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -35,7 +35,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @RunWith(SeleniumTestRunner.class)
-@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE, SAFARI},
+@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE, MARIONETTE},
     reason = "Not tested")
 public class SessionHandlingTest {
 
@@ -54,7 +54,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {CHROME, PHANTOMJS})
+  @Ignore(value = {PHANTOMJS})
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -69,7 +69,9 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {OPERA}, reason = "Opera: throws Opera-specific exception")
+  @Ignore(value = {OPERA, SAFARI}, reason =
+      "Opera: throws Opera-specific exception,"
+      + "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.quit();
@@ -77,11 +79,11 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, CHROME, OPERA, PHANTOMJS}, reason =
-      "Chrome: throws generic WebDriverException,"
-      + "Firefox: can perform an operation after closing the last window,"
+  @Ignore(value = {FIREFOX, OPERA, PHANTOMJS, SAFARI}, reason =
+      "Firefox: can perform an operation after closing the last window,"
       + "Opera: throws Opera-specific exception,"
-      + "PhantomJS: throws NoSuchWindowException")
+      + "PhantomJS: throws NoSuchWindowException,"
+      + "Safari: throws NullPointerException")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.close();

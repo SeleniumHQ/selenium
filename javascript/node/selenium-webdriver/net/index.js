@@ -61,7 +61,7 @@ function getAddress(loopback, opt_family) {
 
 /**
  * Retrieves the external IP address for this host.
- * @param {string} opt_family The IP family to retrieve. Defaults to "IPv4".
+ * @param {string=} opt_family The IP family to retrieve. Defaults to "IPv4".
  * @return {string} The IP address or undefined if not available.
  */
 exports.getAddress = function(opt_family) {
@@ -71,7 +71,7 @@ exports.getAddress = function(opt_family) {
 
 /**
  * Retrieves a loopback address for this machine.
- * @param {string} opt_family The IP family to retrieve. Defaults to "IPv4".
+ * @param {string=} opt_family The IP family to retrieve. Defaults to "IPv4".
  * @return {string} The IP address or undefined if not available.
  */
 exports.getLoopbackAddress = function(opt_family) {

@@ -17,10 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
-import java.util.logging.Logger;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -32,12 +36,12 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import java.util.logging.Logger;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase implements WrapsDriver {
@@ -49,6 +53,8 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   protected Pages pages;
   private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<WebDriver>();
   protected WebDriver driver;
+  protected Wait<WebDriver> wait;
+  protected Wait<WebDriver> shortWait;
 
   @Before
   public void prepareEnvironment() throws Exception {
@@ -66,7 +72,12 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   @Before
   public void createDriver() throws Exception {
     driver = actuallyCreateDriver();
+    wait = new WebDriverWait(driver, 30);
+    shortWait = new WebDriverWait(driver, 5);
   }
+
+  @Rule
+  public TestName testName = new TestName();
 
   @Rule
   public TestRule traceMethodName = new TestWatcher() {

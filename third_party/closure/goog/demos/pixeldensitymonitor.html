@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<!--
+Copyright 2013 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.labs.style.PixelDensityMonitor</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.events');
+    goog.require('goog.labs.style.PixelDensityMonitor');
+    goog.require('goog.labs.style.PixelDensityMonitor.Density');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <h1>goog.labs.style.PixelDensityMonitor</h1>
+  <div>
+    Move between high dpi and normal screens to see density change events.
+  </div>
+  <fieldset class="goog-debug-panel">
+    <legend>Event log</legend>
+    <div class="log" id="log"></div>
+  </fieldset>
+  <script>
+    var logger = goog.debug.Logger.getLogger('PixelDensityMonitor');
+
+    new goog.debug.DivConsole(goog.dom.getElement('log')).setCapturing(true);
+
+    var monitor = new goog.labs.style.PixelDensityMonitor();
+    monitor.start();
+
+    var densityMap = goog.object.create(
+        goog.labs.style.PixelDensityMonitor.Density.NORMAL, 'NORMAL',
+        goog.labs.style.PixelDensityMonitor.Density.HIGH, 'HIGH');
+
+    goog.events.listen(monitor,
+        goog.labs.style.PixelDensityMonitor.EventType.CHANGE,
+        function() {
+          logger.info('Density change: ' + densityMap[monitor.getDensity()]);
+        });
+
+    logger.info('Starting density: ' + densityMap[monitor.getDensity()]);
+  </script>
+</body>
+</html>

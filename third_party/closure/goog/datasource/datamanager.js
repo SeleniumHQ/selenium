@@ -373,7 +373,7 @@ goog.ds.DataManager.prototype.addIndexedListener = function(fn, dataPath,
       match.shift();
       fn(path, opt_id, match);
     }
-  }
+  };
   this.addListener(matcher, listenPath, opt_id);
 
   // Add the indexed listener to the map so that we can remove it later.

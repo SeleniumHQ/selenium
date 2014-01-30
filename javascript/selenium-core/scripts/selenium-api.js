@@ -415,14 +415,24 @@ Selenium.prototype.doContextMenuAt = function(locator, coordString) {
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
     /**
-   * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
-   * handler.
-   *
-   * @param locator an <a href="#locators">element locator</a>
-   * @param eventName the event name, e.g. "focus" or "blur"
-   */
+     * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+     * handler.
+     *
+     * @param locator an <a href="#locators">element locator</a>
+     * @param eventName the event name, e.g. "focus" or "blur"
+     */
     var element = this.browserbot.findElement(locator);
-    triggerEvent(element, eventName, false);
+    var doc = goog.dom.getOwnerDocument(element);
+    var view = goog.dom.getWindow(doc);
+
+    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
+        var ieEvent = createEventObject(element, false, false, false, false);
+        element.fireEvent('on' + eventName, ieEvent);
+    } else {
+        var evt = doc.createEvent('HTMLEvents');
+        evt.initEvent(eventName, true, true);
+        element.dispatchEvent(evt);
+    }
 };
 
 Selenium.prototype.doFocus = function(locator) {
@@ -434,7 +444,7 @@ Selenium.prototype.doFocus = function(locator) {
     if (element.focus) {
         element.focus();
     } else {
-         triggerEvent(element, "focus", false);
+         bot.events.fire(element, bot.events.EventType.FOCUS);
     }
 }
 
@@ -1902,7 +1912,9 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     {
         try {
             win = selenium.browserbot.openedWindows[windowName];
-            attributes.push(eval("win."+attributeName));
+            if (! selenium.browserbot._windowClosed(win)) {
+              attributes.push(eval("win."+attributeName));
+            }
         } catch (e) {} // DGF If we miss one... meh. It's probably closed or inaccessible anyway.
     }
     return attributes;
@@ -2122,7 +2134,7 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
         element.setSelectionRange(/*start*/position,/*end*/position);
    }
    else if( element.createTextRange ) {
-      triggerEvent(element, 'focus', false);
+      bot.events.fire(element, bot.events.EventType.FOCUS);
       var range = element.createTextRange();
       range.collapse(true);
       range.moveEnd('character',position);
@@ -2988,12 +3000,28 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     // compute dimensions
     var window = this.browserbot.getCurrentWindow();
     var doc = window.document.documentElement;
+    var body = window.document.body;
     var box = {
         x: 0,
         y: 0,
-        width: doc.scrollWidth,
-        height: doc.scrollHeight
+        width: Math.max(doc.scrollWidth, body.scrollWidth),
+        height: Math.max(doc.scrollHeight, body.scrollHeight)
     };
+
+    // CanvasRenderingContext2D::DrawWindow limits width and height up to 65535
+    //  > 65535 leads to NS_ERROR_FAILURE
+    //
+    // HTMLCanvasElement::ToDataURLImpl limits width and height up to 32767
+    //  >= 32769 leads to NS_ERROR_FAILURE
+    //  >= 32767 leads to transparent image (moz issue?).
+    //
+    var limit = 32766;
+    if (box.width > limit) {
+      box.width = limit;
+    }
+    if (box.height > limit) {
+      box.height = limit;
+    }
     LOG.debug('computed dimensions');
     
     var originalBackground = doc.style.background;

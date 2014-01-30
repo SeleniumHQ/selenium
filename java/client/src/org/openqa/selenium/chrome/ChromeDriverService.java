@@ -58,7 +58,7 @@ public class ChromeDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private ChromeDriverService(File executable, int port, ImmutableList<String> args,
+  public ChromeDriverService(File executable, int port, ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
@@ -74,7 +74,7 @@ public class ChromeDriverService extends DriverService {
   public static ChromeDriverService createDefaultService() {
     File exe = findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
       "http://code.google.com/p/selenium/wiki/ChromeDriver",
-      "http://code.google.com/p/chromedriver/downloads/list");
+      "http://chromedriver.storage.googleapis.com/index.html");
     return new Builder().usingDriverExecutable(exe).usingAnyFreePort().build();
   }
 
@@ -88,6 +88,7 @@ public class ChromeDriverService extends DriverService {
     private ImmutableMap<String, String> environment = ImmutableMap.of();
     String chromeLogFile = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
     private File logFile = chromeLogFile == null ? null : new File(chromeLogFile);
+    private boolean verbose;
 
     /**
      * Sets which driver executable the builder will use.
@@ -152,6 +153,17 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
+     * Configures the driver server verbosity.
+     *
+     * @param verbose true for verbose output, false otherwise.
+     * @return A self reference.
+    */
+    public Builder withVerbose(boolean verbose) {
+      this.verbose = verbose;
+      return this;
+    }
+
+    /**
      * Creates a new service to manage the driver server. Before creating a new service, the
      * builder will find a port for the server to listen to.
      *
@@ -169,6 +181,9 @@ public class ChromeDriverService extends DriverService {
         argsBuilder.add(String.format("--port=%d", port));
         if (logFile != null) {
           argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
+        }
+        if (verbose) {
+          argsBuilder.add("--verbose");
         }
 
         return new ChromeDriverService(exe, port, argsBuilder.build(), environment);

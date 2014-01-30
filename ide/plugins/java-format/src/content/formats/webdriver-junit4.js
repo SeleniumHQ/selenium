@@ -2,8 +2,13 @@
  * Formatter for Selenium 2 / WebDriver Java client.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+}
 
 function useSeparateEqualsForArray() {
   return true;
@@ -144,6 +149,90 @@ function formatComment(comment) {
     return "// " + str;
   });
 }
+
+function keyVariable(key) {
+  return "Keys." + key;
+}
+
+this.sendKeysMaping = {
+  BKSP: "BACK_SPACE",
+  BACKSPACE: "BACK_SPACE",
+  TAB: "TAB",
+  ENTER: "ENTER",
+  SHIFT: "SHIFT",
+  CONTROL: "CONTROL",
+  CTRL: "CONTROL",
+  ALT: "ALT",
+  PAUSE: "PAUSE",
+  ESCAPE: "ESCAPE",
+  ESC: "ESCAPE",
+  SPACE: "SPACE",
+  PAGE_UP: "PAGE_UP",
+  PGUP: "PAGE_UP",
+  PAGE_DOWN: "PAGE_DOWN",
+  PGDN: "PAGE_DOWN",
+  END: "END",
+  HOME: "HOME",
+  LEFT: "LEFT",
+  UP: "UP",
+  RIGHT: "RIGHT",
+  DOWN: "DOWN",
+  INSERT: "INSERT",
+  INS: "INSERT",
+  DELETE: "DELETE",
+  DEL: "DELETE",
+  SEMICOLON: "SEMICOLON",
+  EQUALS: "EQUALS",
+
+  NUMPAD0: "NUMPAD0",
+  N0: "NUMPAD0",
+  NUMPAD1: "NUMPAD1",
+  N1: "NUMPAD1",
+  NUMPAD2: "NUMPAD2",
+  N2: "NUMPAD2",
+  NUMPAD3: "NUMPAD3",
+  N3: "NUMPAD3",
+  NUMPAD4: "NUMPAD4",
+  N4: "NUMPAD4",
+  NUMPAD5: "NUMPAD5",
+  N5: "NUMPAD5",
+  NUMPAD6: "NUMPAD6",
+  N6: "NUMPAD6",
+  NUMPAD7: "NUMPAD7",
+  N7: "NUMPAD7",
+  NUMPAD8: "NUMPAD8",
+  N8: "NUMPAD8",
+  NUMPAD9: "NUMPAD9",
+  N9: "NUMPAD9",
+  MULTIPLY: "MULTIPLY",
+  MUL: "MULTIPLY",
+  ADD: "ADD",
+  PLUS: "ADD",
+  SEPARATOR: "SEPARATOR",
+  SEP: "SEPARATOR",
+  SUBTRACT: "SUBTRACT",
+  MINUS: "SUBTRACT",
+  DECIMAL: "DECIMAL",
+  PERIOD: "DECIMAL",
+  DIVIDE: "DIVIDE",
+  DIV: "DIVIDE",
+
+  F1: "F1",
+  F2: "F2",
+  F3: "F3",
+  F4: "F4",
+  F5: "F5",
+  F6: "F6",
+  F7: "F7",
+  F8: "F8",
+  F9: "F9",
+  F10: "F10",
+  F11: "F11",
+  F12: "F12",
+
+  META: "META",
+  COMMAND: "COMMAND"
+};
 
 /**
  * Returns a string representing the suite for this formatter language.

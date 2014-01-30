@@ -29,6 +29,7 @@ import org.openqa.selenium.interactions.InteractionTests;
 import org.openqa.selenium.logging.AvailableLogsTest;
 import org.openqa.selenium.logging.GetLogsTest;
 import org.openqa.selenium.logging.PerformanceLoggingTest;
+import org.openqa.selenium.logging.PerformanceLogTypeTest;
 import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.ParallelSuite;
@@ -45,9 +46,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     ClickScrollingTest.class,
     ClickTest.class,
     CookieImplementationTest.class,
-    CoordinatesTest.class,
     CorrectEventFiringTest.class,
-    DragAndDropTest.class,
     ElementAttributeTest.class,
     ElementEqualityTest.class,
     ElementFindingTest.class,
@@ -58,18 +57,18 @@ import org.openqa.selenium.testing.ParallelSuite;
     FormHandlingTest.class,
     FrameSwitchingTest.class,
     GetLogsTest.class,
-    GetMultipleAttributeTest.class,
     I18nTest.class,
     ImplicitWaitTest.class,
     JavascriptEnabledDriverTest.class,
     MiscTest.class,
     ObjectStateAssumptionsTest.class,
-    OpacityTest.class,
     PageLoadingTest.class,
-    PartialLinkTextMatchTest.class,
     PerformanceLoggingTest.class,
+    PerformanceLogTypeTest.class,
+    PositionAndSizeTest.class,
     ProxySettingTest.class,
-    RenderedWebElementTest.class,
+    ReferrerTest.class,
+    CssValueTest.class,
     RotatableTest.class,
     SelectElementTest.class,
     SelectElementHandlingTest.class,
@@ -78,7 +77,6 @@ import org.openqa.selenium.testing.ParallelSuite;
     StaleElementReferenceTest.class,
     SvgElementTest.class,
     SvgDocumentTest.class,
-    TagNameTest.class,
     TakesScreenshotTest.class,
     TextHandlingTest.class,
     TextPagesTest.class,
@@ -89,7 +87,6 @@ import org.openqa.selenium.testing.ParallelSuite;
     WebElementTest.class,
     WindowSwitchingTest.class,
     WindowTest.class,
-    XPathElementFindingTest.class,
 
     Html5Tests.class,
     InteractionTests.class

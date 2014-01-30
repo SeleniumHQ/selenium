@@ -112,6 +112,12 @@ wdSession.prototype.implicitWait_ = 0;
 wdSession.prototype.pageLoadTimeout_ = -1;
 
 /**
+ * The flag that makes all commands delay until a page to be loaded or page load timeout exceeded.
+ * @private {boolean}
+ */
+wdSession.prototype.waitForPageLoad_ = true;
+
+/**
  * Current position of the mouse cursor, in X,Y coordinates.
  */
 wdSession.prototype.mousePosition_ = {
@@ -134,6 +140,15 @@ wdSession.prototype.mousePosition_ = {
  * @private {number}
  */
 wdSession.prototype.scriptTimeout_ = 0;
+
+
+/**
+ * Allows the user to specify whether elements are scrolled into the viewport
+ * for interaction to align with the top (0) or bottom (1) of the viewport.
+ * The default value is to align with the top of the viewport.
+ * @private {number}
+ */
+wdSession.prototype.elementScrollBehavior = 0;
 
 
 /** @see nsISupports.QueryInterface */
@@ -215,9 +230,21 @@ wdSession.prototype.getWindow = function() {
 };
 
 
+/** @return @return {?nsIDOMWindow} This session's top window. */
+wdSession.prototype.getTopWindow = function() {
+  return this.getWindow().top;
+};
+
+
 /** @return {nsIDOMDocument} This session's current document. */
 wdSession.prototype.getDocument = function() {
   return this.getWindow().document;
+};
+
+
+/** @return {nsIDOMDocument} The document of the top window for this session. */
+wdSession.prototype.getTopDocument = function() {
+  return this.getTopWindow().document;
 };
 
 
@@ -327,6 +354,26 @@ wdSession.prototype.getPageLoadTimeout = function() {
 wdSession.prototype.setPageLoadTimeout = function(timeout) {
   this.pageLoadTimeout_ = timeout;
 };
+
+
+/**
+ * @return {boolean} The current page loading wait flag.
+ */
+wdSession.prototype.getWaitForPageLoad = function() {
+  return this.waitForPageLoad_;
+};
+
+
+/**
+ * Set the flag that makes all commands delay until a page to be loaded or page load timeout exceeded..
+ *
+ * @param {boolean} flag The new flag value.
+ */
+wdSession.prototype.setWaitForPageLoad = function(flag) {
+  this.waitForPageLoad_ = flag;
+  fxdriver.logging.info("setWaitForPageLoad " + flag);
+};
+
 
 /**
  * @return {number} the amount of time, in milliseconds, that asynchronous

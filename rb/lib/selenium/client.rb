@@ -18,7 +18,6 @@ require 'selenium/client/base'
 require 'selenium/client/driver'
 require 'selenium/client/selenium_helper'
 require 'selenium/server'
-require 'selenium/rake/server_task'
 
 module Selenium
   DEPRECATED_CONSTANTS = {
@@ -34,4 +33,6 @@ module Selenium
       super
     end
   end
+
+  autoload :Rake, 'selenium/rake/server_task'
 end # Selenium

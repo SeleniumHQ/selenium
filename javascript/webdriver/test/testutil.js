@@ -19,6 +19,7 @@ goog.require('goog.json');
 goog.require('goog.string');
 goog.require('goog.testing.MockClock');
 goog.require('goog.testing.recordFunction');
+goog.require('webdriver.stacktrace');
 
 
 /** @type {?goog.testing.MockClock} */
@@ -30,6 +31,10 @@ webdriver.test.testutil.messages = [];
 /** @type {!Error} */
 webdriver.test.testutil.STUB_ERROR = new Error('ouch');
 webdriver.test.testutil.STUB_ERROR.stack = '(stub error; stack irrelevant)';
+
+webdriver.test.testutil.getStackTrace = function() {
+  return webdriver.stacktrace.get();
+};
 
 webdriver.test.testutil.throwStubError = function() {
   throw webdriver.test.testutil.STUB_ERROR;
@@ -178,7 +183,7 @@ webdriver.test.testutil.assertNotPromise = function(obj) {
  * <ul>
  * <li>assertCalled: Asserts that the function was called.
  * <li>assertNotCalled: Asserts that the function was not called.
- * </ul> 
+ * </ul>
  * @param {Function=} opt_fn The function to wrap; defaults to
  *     goog.nullFunction.
  * @return {!Function} The wrapped function.

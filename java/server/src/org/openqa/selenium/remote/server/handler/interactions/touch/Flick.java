@@ -16,9 +16,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.TouchScreen;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -69,12 +70,32 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
       elementId = (String) allParameters.get(ELEMENT);
-      xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
-      yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
-      speed = ((Long) allParameters.get(SPEED)).intValue();
+      try {
+        xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) x offset value for flick passed: " + allParameters.get(XOFFSET), ex);
+      }
+      try {
+        yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) y offset value for flick passed: " + allParameters.get(YOFFSET), ex);
+      }
+      try {
+        speed = ((Number) allParameters.get(SPEED)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) speed value for flick passed: " + allParameters.get(SPEED), ex);
+      }
     } else if (allParameters.containsKey(XSPEED) && allParameters.containsKey(YSPEED)) {
-      xSpeed = ((Long) allParameters.get(XSPEED)).intValue();
-      ySpeed = ((Long) allParameters.get(YSPEED)).intValue();
+      try {
+        xSpeed = ((Number) allParameters.get(XSPEED)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) x speed value for flick passed: " + allParameters.get(XSPEED), ex);
+      }
+      try {
+        ySpeed = ((Number) allParameters.get(YSPEED)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) y speed value for flick passed: " + allParameters.get(YSPEED), ex);
+      }
     }
   }
 

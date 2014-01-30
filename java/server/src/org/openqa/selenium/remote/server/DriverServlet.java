@@ -16,6 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Supplier;
+
+import org.openqa.selenium.logging.LoggingHandler;
+import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
+import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -24,17 +33,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.SessionNotFoundException;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.ResultConfig;
-import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
-import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
-import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
@@ -100,31 +98,6 @@ public class DriverServlet extends HttpServlet {
 
   protected Logger getLogger() {
     return Logger.getLogger(getClass().getName());
-  }
-
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewGetMapping(path, implementationClass);
-  }
-
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewPostMapping(path, implementationClass);
-  }
-
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewDeleteMapping(String path,
-      Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewDeleteMapping(path, implementationClass);
   }
 
   @Override

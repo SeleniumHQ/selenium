@@ -1,5 +1,0 @@
-
-rake_file(name = "iphonesim-binary",
-  src = [
-    "ios-sim",
-  ])

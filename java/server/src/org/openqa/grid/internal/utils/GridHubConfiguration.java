@@ -15,6 +15,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
+import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.grid.common.CommandLineOptionHelper;
@@ -35,7 +39,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import static org.openqa.grid.internal.utils.ServerJsonValues.*;
 
 public class GridHubConfiguration {
 

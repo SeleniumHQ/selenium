@@ -47,6 +47,7 @@ module Selenium
           return if @installed
 
           if install_directory.exist?
+            backup_directory.rmtree if backup_directory.exist?
             FileUtils.mv install_directory.to_s, backup_directory.to_s
           end
 
@@ -94,7 +95,7 @@ module Selenium
             data_dir = Pathname.new(@custom_data_dir || safari_data_dir)
 
             unless data_dir.exist? && data_dir.directory?
-              raise Errno::ENOENT, "Safari data directory not found at #{dir.to_s}"
+              raise Errno::ENOENT, "Safari data directory not found at #{data_dir.to_s}"
             end
 
             data_dir.join('Extensions')

@@ -1,0 +1,7 @@
+prebuilt_jar(
+  name = 'commons-exec',
+  binary_jar = 'commons-exec-1.1.jar',
+  visibility = [
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
+)

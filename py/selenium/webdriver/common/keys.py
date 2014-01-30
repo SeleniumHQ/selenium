@@ -13,14 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+The Keys implementation.
+"""
+
 from __future__ import unicode_literals
 
 class Keys(object):
+    """
+    Set of special keys codes.
+    """
 
     NULL         = '\ue000'
     CANCEL       = '\ue001' #  ^break
     HELP         = '\ue002'
-    BACK_SPACE   = '\ue003'
+    BACKSPACE    = '\ue003'
+    BACK_SPACE   = '\ue003' #  alias
     TAB          = '\ue004'
     CLEAR        = '\ue005'
     RETURN       = '\ue006'

@@ -1,5 +1,4 @@
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
+# Copyright 2008-2013 Software Freedom Conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,4 +15,4 @@
 from selenium import selenium
 
 
-__version__ = "2.32.0"
+__version__ = "2.39.0"

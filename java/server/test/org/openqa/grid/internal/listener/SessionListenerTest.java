@@ -17,23 +17,21 @@ limitations under the License.
 
 package org.openqa.grid.internal.listener;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
@@ -41,9 +39,14 @@ import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class SessionListenerTest {
 
-  static class MyRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
+  static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -82,14 +85,14 @@ public class SessionListenerTest {
 
     req.process();
     TestSession session = req.getSession();
-    Assert.assertEquals(true, session.get("FLAG"));
+    assertEquals(true, session.get("FLAG"));
     registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
     try {
       Thread.sleep(250);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    Assert.assertEquals(false, session.get("FLAG"));
+    assertEquals(false, session.get("FLAG"));
   }
 
   /**
@@ -97,7 +100,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyBeforeRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
+  static class MyBuggyBeforeRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
     private boolean firstCall = true;
 
@@ -137,14 +140,14 @@ public class SessionListenerTest {
       Thread.sleep(250);
     }
 
-    Assert.assertEquals(registry.getActiveSessions().size(), 0);
+    assertEquals(registry.getActiveSessions().size(), 0);
 
     RequestHandler req2 = GridHelper.createNewSessionHandler(registry, app1);
     req2.process();
 
     TestSession session = req2.getSession();
-    Assert.assertNotNull(session);
-    Assert.assertEquals(registry.getActiveSessions().size(), 1);
+    assertNotNull(session);
+    assertEquals(registry.getActiveSessions().size(), 1);
 
   }
 
@@ -153,7 +156,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyAfterRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
+  static class MyBuggyAfterRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
     public MyBuggyAfterRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -180,8 +183,8 @@ public class SessionListenerTest {
       RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
       req.process();
       TestSession session = req.getSession();
-      Assert.assertEquals(registry.getActiveSessions().size(), 1);
-      Assert.assertNotNull(session);
+      assertEquals(registry.getActiveSessions().size(), 1);
+      assertNotNull(session);
       registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
       try {
         Thread.sleep(250);
@@ -200,13 +203,13 @@ public class SessionListenerTest {
           }).start();
 
       Thread.sleep(100);
-      Assert.assertFalse(processed);
+      assertFalse(processed);
     } finally {
       registry.stop();
     }
   }
 
-  class SlowAfterSession extends BaseRemoteProxy implements TestSessionListener, TimeoutListener {
+  class SlowAfterSession extends DetachedRemoteProxy implements TestSessionListener, TimeoutListener {
 
     private Lock lock = new ReentrantLock();
     private boolean firstTime = true;
@@ -275,14 +278,14 @@ public class SessionListenerTest {
 
       Thread.sleep(150);
       // the session has timed out -> doing the long after method.
-      Assert.assertEquals(session.get("after"), true);
+      assertEquals(session.get("after"), true);
 
       // manually closing the session, starting a 2nd release process.
       registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
 
       // the 2nd release process shouldn't be executed as one is already
       // processed.
-      Assert.assertNull(session.get("ERROR"));
+      assertNull(session.get("ERROR"));
     } finally {
       registry.stop();
     }

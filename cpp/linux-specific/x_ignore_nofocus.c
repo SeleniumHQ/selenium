@@ -539,6 +539,21 @@ int is_library_for_architecture(const char* lib_path, uint16_t arch)
   return FALSE;
 }
 
+int is_usable_library(const char *candidate_library, uint16_t desired_architecture)
+{
+  if (access(candidate_library, F_OK) == 0 &&
+      is_library_for_architecture(candidate_library, desired_architecture) == TRUE) {
+    void *ret_handle = dlopen(candidate_library, RTLD_LAZY);
+    if (ret_handle == NULL) {
+      return FALSE;
+    }
+    dlclose(ret_handle);
+
+    return TRUE;
+  }
+  return FALSE;
+}
+
 int find_xlib_by_arch(const char* possible_locations[],
     int locations_length, uint16_t desired_architecture)
 {
@@ -546,14 +561,40 @@ int find_xlib_by_arch(const char* possible_locations[],
   for (i = 0; i < locations_length; i++) {
     const char* possible_location = possible_locations[i];
 
-    if (access(possible_location, F_OK) == 0 &&
-        is_library_for_architecture(possible_location, desired_architecture) == TRUE)
+    if (is_usable_library(possible_location, desired_architecture))
     {
       return i;
     }
   }
 
   return -1;
+}
+
+
+int find_xlib_by_env(char *library, uint16_t desired_architecture)
+{
+  char *ld_env = getenv("LD_LIBRARY_PATH");
+  if (ld_env == 0) {
+    return FALSE;
+  }
+
+  char *ld_to_parse = strdup(ld_env);
+
+  int found_library = FALSE;
+  char *t = strtok(ld_to_parse, ":");
+  char potential_library[MAX_LIBRARY_PATH + 1];
+
+  while ((t != NULL) && (!found_library)) {
+    snprintf(potential_library, MAX_LIBRARY_PATH, "%s/libX11.so.6", t);
+    if (is_usable_library(potential_library, desired_architecture)) {
+      strcpy(library, potential_library);
+      found_library = TRUE;
+    }
+    t = strtok(NULL, ":");
+  }
+
+  free(ld_to_parse);
+  return found_library;
 }
 
 void* get_xlib_handle()
@@ -577,22 +618,27 @@ void* get_xlib_handle()
     required_lib_arch = EM_X86_64;
   }
   int suitable_xlib_index = find_xlib_by_arch(possible_locations, locations_len, required_lib_arch);
-  if (suitable_xlib_index < 0) {
+  int found_library = FALSE;
+  if (suitable_xlib_index >= 0) {
+    snprintf(library, MAX_LIBRARY_PATH, "%s", possible_locations[suitable_xlib_index]);
+    found_library = TRUE;
+  } else {
+    found_library = find_xlib_by_env(library, required_lib_arch);
+  }
+  if (found_library == FALSE) {
     const char* desired_arch = (required_lib_arch == EM_386 ? "32-bit" : "64-bit");
-	  fprintf(stderr, "None of the following is a %s version of Xlib:", desired_arch);
+    fprintf(stderr, "None of the following is a %s version of Xlib:", desired_arch);
     int i;
     for (i = 0; i < locations_len; i++) {
-		  fprintf(stderr, " %s\n", possible_locations[i]);
+      fprintf(stderr, " %s\n", possible_locations[i]);
     }
     return NULL;
   }
 
-  snprintf(library, MAX_LIBRARY_PATH, possible_locations[suitable_xlib_index]);
-
-	ret_handle = dlopen(library, RTLD_LAZY);
+  ret_handle = dlopen(library, RTLD_LAZY);
   if (ret_handle == NULL) {
     fprintf(stderr, "Failed to dlopen %s\n", library);
-		fprintf(stderr, "dlerror says: %s\n", dlerror());
+    fprintf(stderr, "dlerror says: %s\n", dlerror());
   }
 
   return ret_handle;

@@ -24,12 +24,16 @@
 goog.provide('goog.ui.FilteredMenu');
 
 goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
+goog.require('goog.style');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.FilterObservingMenuItem');
 goog.require('goog.ui.Menu');
+goog.require('goog.userAgent');
 
 
 
@@ -473,7 +477,7 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
  * @return {boolean} Whether the event was handled.
  * @override
  */
-goog.ui.FilteredMenu.prototype.handleKeyEvent = function(e) {
+goog.ui.FilteredMenu.prototype.handleKeyEventInternal = function(e) {
   // Home, end and the arrow keys are normally used to change the selected menu
   // item. Return false here to prevent the menu from preventing the default
   // behavior for HOME, END and any key press with a modifier.
@@ -488,7 +492,7 @@ goog.ui.FilteredMenu.prototype.handleKeyEvent = function(e) {
     return true;
   }
 
-  return goog.ui.FilteredMenu.superClass_.handleKeyEvent.call(this, e);
+  return goog.ui.FilteredMenu.superClass_.handleKeyEventInternal.call(this, e);
 };
 
 
@@ -504,7 +508,7 @@ goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   var el = this.getHighlighted() ? this.getHighlighted().getElement() : null;
 
   if (el && goog.dom.contains(contentEl, el)) {
-    var contentTop = goog.userAgent.IE && !goog.userAgent.isVersion(8) ?
+    var contentTop = goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8) ?
         0 : contentEl.offsetTop;
 
     // IE (tested on IE8) sometime does not scroll enough by about

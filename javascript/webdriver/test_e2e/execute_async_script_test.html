@@ -59,7 +59,7 @@ function testShouldBeAbleToReturnJavaScriptPrimitiesFromAsyncScripts_nullAndUnde
 
 function testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
   driver.executeAsyncScript('arguments[arguments.length - 1]([]);').
-      addCallback(function(result) {
+      then(function(result) {
         assertNotNull(result);
         assertTrue(goog.typeOf(result), goog.isArray(result));
         assertEquals(0, result.length);
@@ -68,7 +68,7 @@ function testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
 
 function testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
   driver.executeAsyncScript('arguments[arguments.length - 1](new Array());').
-      addCallback(function(result) {
+      then(function(result) {
         assertNotNull(result);
         assertTrue(goog.typeOf(result), goog.isArray(result));
         assertEquals(0, result.length);
@@ -78,7 +78,7 @@ function testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
 function testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
   var result = driver.executeAsyncScript(
       "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
-  result.addCallback(function(results) {
+  result.then(function(results) {
     assertNotNull(results);
     assertEquals(5, results.length);
 
@@ -94,7 +94,7 @@ function testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
 
 function testShouldBeAbleToReturnWebElementsFromAsyncScripts() {
   driver.executeAsyncScript("arguments[arguments.length - 1](document.body);").
-      addCallback(function(result) {
+      then(function(result) {
         assertThat(result.getTagName(), matchesRegex(/^body$/i));
       });
 }
@@ -103,7 +103,7 @@ function testShouldBeAbleToReturnWebElementsFromAsyncScripts() {
 function testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
   driver.executeAsyncScript(
       "arguments[arguments.length - 1]([document.body, document.body]);").
-      addCallback(function(results) {
+      then(function(results) {
         assertNotNull(results);
         assertEquals(2, results.length);
         assertThat(results[0].getTagName(), matchesRegex(/^body$/i));
@@ -118,7 +118,7 @@ function testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
 function testShouldTimeoutIfScriptDoesNotInvokeCallback() {
   // Script is expected to be async and explicitly callback, so this should timeout.
   driver.executeAsyncScript("return 1 + 2;").
-      addCallbacks(
+      then(
       function() {
         fail('Should have timed out!');
       },
@@ -129,7 +129,7 @@ function testShouldTimeoutIfScriptDoesNotInvokeCallback() {
 
 function testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
   driver.executeAsyncScript("window.setTimeout(function() {}, 0);").
-      addCallbacks(
+      then(
       function() {
         fail('Should have timed out!');
       },
@@ -150,7 +150,7 @@ function testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
   driver.executeAsyncScript(
       "var callback = arguments[arguments.length - 1];" +
           "window.setTimeout(callback, 1500);").
-      addCallbacks(
+      then(
       function() {
         fail('Should have timed out!');
       },
@@ -176,7 +176,7 @@ function testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() 
   }
 
   driver.manage().timeouts().setScriptTimeout(100);
-  driver.executeAsyncScript(script).addCallbacks(
+  driver.executeAsyncScript(script).then(
       function() {
         fail('Page load should have triggered an error.');
       },
@@ -187,7 +187,7 @@ function testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() 
 
 function testShouldCatchErrorsWhenExecutingInitialScript() {
   driver.executeAsyncScript("throw Error('you should catch this!');").
-      addCallbacks(fail, function() {
+      then(fail, function() {
         return true;  // Expected.
       });
 }

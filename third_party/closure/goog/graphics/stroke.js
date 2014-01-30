@@ -29,6 +29,9 @@ goog.provide('goog.graphics.Stroke');
  * @param {number|string} width The width of the stroke.
  * @param {string} color The color of the stroke.
  * @constructor
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.Stroke = function(width, color) {
   /**

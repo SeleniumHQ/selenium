@@ -229,7 +229,7 @@
         return;
       }
       if (goog.userAgent.IE) {
-        // TODO(jleyba): Test must be async to handle focus events properly.
+        // TODO: Test must be async to handle focus events properly.
         return;
       }
 
@@ -342,7 +342,7 @@
         return;
       }
       var clickJacker = findElement({id: 'clickJacker'});
-      if (bot.userAgent.IE_DOC_PRE10) {
+      if (bot.userAgent.IE_DOC_PRE9) {
         clickJacker.style.filter = 'alpha(opacity=0)';
       } else {
         clickJacker.style.opacity = 0;
@@ -393,8 +393,12 @@
       var target = findElement({id: 'targetNotInView'});
       var oldPos = goog.style.getClientPosition(target);
       bot.action.click(target);
-      var newPos = goog.style.getClientPosition(target);
-      assertNotEquals(oldPos.y, newPos.y);
+      // In Safari 6, the affects of window.scrollTo are applied
+      // applied asynchronously, so we cannot verify scrolling here.
+      if (!bot.userAgent.SAFARI_6) {
+        var newPos = goog.style.getClientPosition(target);
+        assertNotEquals(oldPos.y, newPos.y);
+      }
       window.scrollTo(0, 0);
     }
   </script>
@@ -428,7 +432,7 @@
     <script type="text/javascript">
       var clickJacker = document.getElementById('clickJacker');
       function setOpacity(opacity) {
-        if (bot.userAgent.IE_DOC_PRE10) {
+        if (bot.userAgent.IE_DOC_PRE9) {
           clickJacker.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
         } else {
           clickJacker.style.opacity = opacity;

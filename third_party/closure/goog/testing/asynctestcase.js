@@ -248,10 +248,10 @@ goog.testing.AsyncTestCase.prototype.nextStepName_ = '';
 
 /**
  * The handle to the current setTimeout timer.
- * @type {number|undefined}
+ * @type {number}
  * @private
  */
-goog.testing.AsyncTestCase.prototype.timeoutHandle_;
+goog.testing.AsyncTestCase.prototype.timeoutHandle_ = 0;
 
 
 /**
@@ -321,7 +321,7 @@ goog.testing.AsyncTestCase.prototype.getCurrentStepName = function() {
  * Preferred way of creating an AsyncTestCase. Creates one and initializes it
  * with the G_testRunner.
  * @param {string=} opt_name A descriptive name for the test case.
- * @return {goog.testing.AsyncTestCase} The created AsyncTestCase.
+ * @return {!goog.testing.AsyncTestCase} The created AsyncTestCase.
  */
 goog.testing.AsyncTestCase.createAndInstall = function(opt_name) {
   var asyncTestCase = new goog.testing.AsyncTestCase(opt_name);
@@ -634,7 +634,7 @@ goog.testing.AsyncTestCase.prototype.startTimeoutTimer_ = function() {
   if (!this.timeoutHandle_ && this.stepTimeout > 0) {
     this.timeoutHandle_ = this.timeout(goog.bind(function() {
       this.dbgLog_('Timeout timer fired with id ' + this.timeoutHandle_);
-      this.timeoutHandle_ = null;
+      this.timeoutHandle_ = 0;
 
       this.doTopOfStackAsyncError_('Timed out while waiting for ' +
           'continueTesting() to be called.');

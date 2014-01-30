@@ -16,17 +16,17 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.util.Map;
 
 public class SqlDatabaseTest extends JUnit4TestBase {
   private static final String INSERT_STATEMENT =
@@ -54,7 +54,7 @@ public class SqlDatabaseTest extends JUnit4TestBase {
   @Test
   public void testResultSetsReturnNegativeLastInsertedRowId() {
     driver.get(pages.html5Page);
-    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("db_completed")));
 
     ResultSet resultSet = executeQuery(SELECT_STATEMENT);
     assertTrue(resultSet.getLastInsertedRowId() == -1);
@@ -63,7 +63,7 @@ public class SqlDatabaseTest extends JUnit4TestBase {
   @Test
   public void testResultSetsReturnPositiveLastInsertedRowId() {
     driver.get(pages.html5Page);
-    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("db_completed")));
 
     ResultSet resultSet = executeQuery(INSERT_STATEMENT, "DocFoo");
     assertTrue(resultSet.getLastInsertedRowId() != -1);
@@ -78,7 +78,7 @@ public class SqlDatabaseTest extends JUnit4TestBase {
   @Test
   public void testResultSetsNumberOfRowsAffected() {
     driver.get(pages.html5Page);
-    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("db_completed")));
 
     ResultSet resultSet = executeQuery(INSERT_STATEMENT, "DocFooBar");
     assertTrue(resultSet.getNumberOfRowsAffected() == 1);
@@ -98,7 +98,7 @@ public class SqlDatabaseTest extends JUnit4TestBase {
   @Test
   public void testResultSetRowsContainsInsertedRows() {
     driver.get(pages.html5Page);
-    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("db_completed")));
 
     executeQuery(INSERT_STATEMENT, "DocFoo");
     executeQuery(INSERT_STATEMENT, "DocFooBar");

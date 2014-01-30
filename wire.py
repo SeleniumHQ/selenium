@@ -401,16 +401,6 @@ def main():
 
   error_codes = [
       ErrorCode(0, 'Success', 'The command executed successfully.'),
-#      ErrorCode(1, 'IndexOutOfBounds', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(2, 'NoCollection', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(3, 'NoString', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(4, 'NoStringLength', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(5, 'NoStringWrapper', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(6, 'NoSuchDriver', 'A session is either terminated or not started'),
       ErrorCode(7, 'NoSuchElement', 'An element could not be located on the \
 page using the given search parameters.'),
@@ -428,24 +418,14 @@ completed because the element is in an invalid state (e.g. attempting to \
 click a disabled element).'),
       ErrorCode(13, 'UnknownError', 'An unknown server-side error occurred \
 while processing the command.'),
-#      ErrorCode(14, 'ExpectedError', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(15, 'ElementIsNotSelectable', 'An attempt was made to select \
 an element that cannot be selected.'),
-#      ErrorCode(16, 'NoSuchDocument', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(17, 'JavaScriptError', 'An error occurred while executing user \
 supplied !JavaScript.'),
-#      ErrorCode(18, 'NoScriptResult', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(19, 'XPathLookupError', 'An error occurred while searching for \
 an element by XPath.'),
-#      ErrorCode(20, 'NoSuchCollection', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(21, 'Timeout', 'An operation did not complete before its \
 timeout expired.'),
-#      ErrorCode(22, 'NullPointer', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(23, 'NoSuchWindow', 'A request to switch to a different window \
 could not be satisfied because the window could not be found.'),
       ErrorCode(24, 'InvalidCookieDomain', 'An illegal attempt was made to set \
@@ -525,9 +505,9 @@ to be created.''').
                        '{object}',
                        'An object describing the session\'s '
                        '[#Desired_Capabilities required capabilities] (Optional).').
-      SetReturnType(None,
-                    'A `303 See Other` redirect to `/session/:sessionId`, where'
-                    ' `:sessionId` is the ID of the newly created session.').
+      SetReturnType('{object}',
+                    'An object describing the session\'s '
+                    '[#Actual_Capabilities capabilities].').
       AddError('SessionNotCreatedException', 'If a required capability could not be set.'))
 
   resources.append(
@@ -1237,22 +1217,22 @@ location for correctly generating native events.''').
       SessionResource('/session/:sessionId/orientation').
       Get('Get the current browser orientation. The server should return a '
           'valid orientation value as defined in [http://selenium.googlecode.'
-          'com/svn/trunk/docs/api/java/org/openqa/selenium/ScreenOrientation'
+          'com/git/docs/api/java/org/openqa/selenium/ScreenOrientation'
           '.html ScreenOrientation]: `{LANDSCAPE|PORTRAIT}`.').
       SetReturnType('{string}', 'The current browser orientation corresponding'
                     ' to a value defined in [http://selenium.googlecode.com/'
-                    'svn/trunk/docs/api/java/org/openqa/selenium/'
+                    'git/docs/api/java/org/openqa/selenium/'
                     'ScreenOrientation.html ScreenOrientation]: '
                     '`{LANDSCAPE|PORTRAIT}`.').
       AddError('NoSuchWindow',
                'If the currently selected window has been closed.').
       Post('Set the browser orientation. The orientation should be specified '
-           'as defined in [http://selenium.googlecode.com/svn/trunk/docs/api/'
+           'as defined in [http://selenium.googlecode.com/git/docs/api/'
            'java/org/openqa/selenium/ScreenOrientation.html ScreenOrientation]'
            ': `{LANDSCAPE|PORTRAIT}`.').
       AddJsonParameter('orientation', '{string}',
                        'The new browser orientation as defined in '
-                       '[http://selenium.googlecode.com/svn/trunk/docs/api/'
+                       '[http://selenium.googlecode.com/git/docs/api/'
                        'java/org/openqa/selenium/ScreenOrientation.html '
                        'ScreenOrientation]: `{LANDSCAPE|PORTRAIT}`.').
       AddError('NoSuchWindow',
@@ -1390,9 +1370,9 @@ location for correctly generating native events.''').
       SessionResource('session/:sessionId/touch/flick').
       Post('Flick on the touch screen using finger motion events. Use this '
            'flick command if you don\'t care where the flick starts on the screen.').
-      AddJsonParameter('xSpeed', '{number}', 'The x speed in pixels per '
+      AddJsonParameter('xspeed', '{number}', 'The x speed in pixels per '
                        'second.').
-      AddJsonParameter('ySpeed', '{number}', 'The y speed in pixels per '
+      AddJsonParameter('yspeed', '{number}', 'The y speed in pixels per '
                       'second.'))
 
   resources.append(
@@ -1497,7 +1477,7 @@ communicate with remote instances
 
 DO NOT EDIT THIS WIKI PAGE THROUGH THE UI.
 
-Instead, use http://selenium.googlecode.com/svn/trunk/wire.py
+Instead, use http://selenium.googlecode.com/git/wire.py
 
 $ svn co https://selenium.googlecode.com/svn/ --depth=empty wire_protocol
 $ cd wire_protocol
@@ -1701,16 +1681,22 @@ A JSON object describing a Proxy configuration.
 || proxyType || string || (Required) The type of proxy being used. Possible \
 values are: *direct* - A direct connection - no proxy in use, *manual* - \
 Manual proxy settings configured, e.g. setting a proxy for HTTP, a proxy for \
-FTP, etc, *pac* - Proxy autoconfiguration from a URL), autodetect (proxy \
+FTP, etc, *pac* - Proxy autoconfiguration from a URL, *autodetect* - Proxy \
 autodetection, probably with WPAD, *system* - Use system settings ||
-|| proxyAutoconfigUrl || string || (Required if proxyType == pac, Ignored \
+|| proxyAutoconfigUrl || string || (Required if proxyType == *pac*, Ignored \
 otherwise) Specifies the URL to be used for proxy autoconfiguration. \
 Expected format example: http://hostname.com:1234/pacfile ||
-|| ftpProxy, httpProxy, sslProxy || string || (Optional, Ignored if proxyType \
-!= manual) Specifies the proxies to be used for FTP, HTTP and HTTPS requests \
+|| ftpProxy, httpProxy, sslProxy, socksProxy || string || (Optional, Ignored if proxyType \
+!= *manual*) Specifies the proxies to be used for FTP, HTTP, HTTPS and SOCKS requests \
 respectively. Behaviour is undefined if a request is made, where the proxy \
-for the particular protocol is undefined, if proxyType is manual. Expected \
+for the particular protocol is undefined, if proxyType is *manual*. Expected \
 format example: hostname.com:1234 ||
+|| socksUsername || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy username. || 
+|| socksPassword || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy password. ||
+|| noProxy || string || (Optional, Ignored if proxyType != *manual*) \
+Specifies proxy bypass addresses. Format is driver specific. ||
 
 </dd>
 </dl>

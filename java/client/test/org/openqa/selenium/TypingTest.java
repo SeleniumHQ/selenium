@@ -17,38 +17,45 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
-
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+
+import com.google.common.base.Joiner;
+
+import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore(ANDROID)
+  @Ignore({ANDROID, MARIONETTE})
   @Test
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
@@ -62,6 +69,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -74,6 +82,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFireKeyUpEvents() {
     driver.get(pages.javascriptPage);
 
@@ -85,6 +94,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -95,6 +105,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -105,6 +116,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -115,6 +127,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -131,6 +144,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -141,7 +155,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE})
+  @Ignore({IPHONE, MARIONETTE})
   @Test
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
@@ -152,7 +166,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore(value = {HTMLUNIT, IPHONE, OPERA_MOBILE})
+  @Ignore(value = {HTMLUNIT, IPHONE, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -250,7 +264,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, IE, ANDROID},
+  @Ignore(value = {FIREFOX, IE, ANDROID, MARIONETTE},
           reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the "
                    + "focus on the window already., Android: Uses native key events.")
   @Test
@@ -265,12 +279,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, IPHONE, PHANTOMJS, ANDROID},
+  @Ignore(value = {HTMLUNIT, IE, IPHONE, PHANTOMJS, ANDROID, MARIONETTE},
           reason = "firefox-specific. Android uses prev/next.")
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -300,12 +314,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -333,7 +347,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID}, reason = "untested user agent")
+  @Ignore(value = {ANDROID, MARIONETTE}, reason = "untested user agent")
   @Test
   public void testNumericNonShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -347,7 +361,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agent")
   @Test
   public void testNumericShiftKeys() {
@@ -364,7 +378,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = ANDROID, reason = "untested user agent")
+  @Ignore(value = {ANDROID, MARIONETTE}, reason = "untested user agent")
   @Test
   public void testLowerCaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -378,7 +392,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID},
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testUppercaseAlphaKeys() {
@@ -395,7 +409,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testAllPrintableKeys() {
@@ -413,7 +427,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testArrowKeysAndPageUpAndDown() {
@@ -427,14 +441,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -447,7 +459,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA, HTMLUNIT, IPHONE, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {OPERA, HTMLUNIT, IPHONE, ANDROID, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testDeleteAndBackspaceKeys() {
@@ -466,7 +478,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, IPHONE, MARIONETTE}, reason = "untested user agents")
   @Test
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
@@ -478,7 +490,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testNumberpadKeys() {
@@ -494,8 +506,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA, IPHONE, ANDROID},
-          reason = "untested user agents, Opera: F4 triggers sidebar")
+  @Ignore(value = {OPERA, IPHONE, ANDROID, IE, MARIONETTE},
+          reason = "untested user agents, Opera: F4 triggers sidebar," +
+                   "IE: F4 triggers address bar")
   @Test
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
@@ -508,7 +521,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents. Opera: F2 focuses location bar" +
                    "Safari: issue 4221",
           issues = {4221})
@@ -527,14 +540,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testChordControlHomeShiftEndDelete() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -552,14 +563,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -588,14 +597,16 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "untested user agents")
   @Test
   public void testChordControlCutAndPaste() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
+                isFirefox(driver) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.javascriptPage);
 
@@ -614,7 +625,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
 
     element.sendKeys(Keys.CONTROL, "v");
-    waitFor(elementValueToEqual(element, paste));
+    wait.until(elementValueToEqual(element, paste));
 
     // Cut the last 3 letters.
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
@@ -650,7 +661,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = IPHONE, reason = "untested user agents")
+  @Ignore(value = {IPHONE, MARIONETTE}, reason = "untested user agents")
   @Test
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
@@ -662,21 +673,23 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, SAFARI, OPERA, OPERA_MOBILE, PHANTOMJS},
-          reason = "firefox-specific")
+  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, MARIONETTE, HTMLUNIT},
+          reason = "HtmlUnit: failure, others: not tested")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
+    assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
+    assumeTrue(((RemoteWebDriver)driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS));
     driver.get(pages.javascriptPage);
 
     WebElement silent = driver.findElement(By.name("suppress"));
     WebElement result = driver.findElement(By.id("result"));
 
     silent.sendKeys("s");
-    assertThat(result.getText(), containsString("press"));
+    assertThat(result.getText().trim(), is(""));
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Android/iOS/Opera Mobile: does not support contentEditable;" +
                    "Safari/Selenium: cannot type on contentEditable with synthetic events")
   @Test
@@ -700,15 +713,12 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE})
+  @Ignore(value = {FIREFOX, HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE, MARIONETTE}, issues = {6711})
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    driver.get(pages.richTextPage);
+    assumeFalse("not tested on mac", getEffectivePlatform().is(Platform.MAC));
 
-    // not tested on mac
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    driver.get(pages.richTextPage);
 
     driver.switchTo().frame("editFrame");
     WebElement element = driver.switchTo().activeElement();
@@ -754,4 +764,39 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SAFARI, OPERA, IPHONE, ANDROID}, reason = "Untested")
+  @Test
+  public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
+    driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
+
+    WebElement input = driver.findElement(By.id("target"));
+    WebElement log = driver.findElement(By.id("log"));
+
+    assertEquals("", log.getAttribute("value"));
+
+    input.sendKeys("b");
+    assertThat(getValueText(log), equalTo(Joiner.on('\n').join(
+        "keydown (target)",
+        "keyup (target)",
+        "keyup (body)")));
+
+    input.sendKeys("a");
+
+    // Some drivers (IE, Firefox) do not always generate the final keyup event since the element
+    // is removed from the DOM in response to the keypress (note, this is a product of how events
+    // are generated and does not match actual user behavior).
+    String expected = Joiner.on('\n').join(
+        "keydown (target)",
+        "keyup (target)",
+        "keyup (body)",
+        "keydown (target)",
+        "a pressed; removing");
+    assertThat(getValueText(log), anyOf(equalTo(expected), equalTo(expected + "\nkeyup (body)")));
+  }
+
+  private static String getValueText(WebElement el) {
+    // Standardize on \n and strip any trailing whitespace.
+    return el.getAttribute("value").replace("\r\n", "\n").trim();
+  }
 }

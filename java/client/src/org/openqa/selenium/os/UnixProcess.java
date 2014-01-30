@@ -192,7 +192,7 @@ class UnixProcess implements OsProcess {
     }
 
     private String getPID() {
-      return this.process.toString();
+      return String.valueOf(ProcessUtils.getProcessId(process));
     }
 
     private void waitForProcessStarted() {

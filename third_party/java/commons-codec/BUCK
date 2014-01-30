@@ -1,0 +1,6 @@
+prebuilt_jar(name = 'commons-codec',
+  binary_jar = 'commons-codec-1.8.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)

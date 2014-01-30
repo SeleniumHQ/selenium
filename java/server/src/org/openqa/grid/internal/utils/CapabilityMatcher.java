@@ -16,15 +16,13 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
-import org.openqa.grid.internal.RemoteProxy;
-
 import java.util.Map;
 
 /**
  * Used to find out if a capabilities requested by the client matches something on the remote and
  * should be forwarded by the grid.
- * 
- * @link {@link RemoteProxy#setCapabilityHelper(CapabilityHelper)}
+ *
+ * @link {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
  */
 public interface CapabilityMatcher {
   public boolean matches(Map<String, Object> currentCapability,

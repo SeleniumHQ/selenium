@@ -1,5 +1,5 @@
 rubygem(
-  version = "2.33.0.dev",
+  version = "2.40.0.rc1",
   name = "selenium-webdriver",
   dir = "build/rb",
   deps = [
@@ -18,7 +18,7 @@ rubygem(
   ],
   gemdeps = [
     { "multi_json"   : "~> 1.0"   },
-    { "rubyzip"      : ">= 0"     },
+    { "rubyzip"      : "~> 1.0"   },
     { "childprocess" : ">= 0.2.5" },
     { "websocket"    : "~> 1.0.4" }
   ],
@@ -33,12 +33,14 @@ rubygem(
   author = ["Jari Bakken"],
   email = "jari.bakken@gmail.com",
   homepage = "http://selenium.googlecode.com",
+  license = "Apache",
   files = [
     "lib/**/*",
     "CHANGES",
     "README.md",
     "COPYING"
-  ]
+  ],
+  required_ruby_version = ">= 1.9.2"
 )
 
 rubydocs(

@@ -89,13 +89,10 @@ wgxpath.PathExpr.RootHelperExpr.prototype.evaluate = function(ctx) {
 
 
 /**
- * Returns the string representation of the RootHelperExpr for debugging.
- *
- * @param {string=} opt_indent An optional indentation.
- * @return {string} The string representation.
+ * @override
  */
-wgxpath.PathExpr.RootHelperExpr.prototype.toString = function(opt_indent) {
-  return opt_indent + 'RootHelperExpr';
+wgxpath.PathExpr.RootHelperExpr.prototype.toString = function() {
+  return 'Root Helper Expression';
 };
 
 
@@ -126,13 +123,10 @@ wgxpath.PathExpr.ContextHelperExpr.prototype.evaluate = function(ctx) {
 
 
 /**
- * Returns the string representation of the ContextHelperExpr for debugging.
- *
- * @param {string=} opt_indent An optional indentation.
- * @return {string} The string representation.
+ * @override
  */
-wgxpath.PathExpr.ContextHelperExpr.prototype.toString = function(opt_indent) {
-  return opt_indent + 'ContextHelperExpr';
+wgxpath.PathExpr.ContextHelperExpr.prototype.toString = function() {
+  return 'Context Helper Expression';
 };
 
 
@@ -154,7 +148,7 @@ wgxpath.PathExpr.isValidOp = function(token) {
 wgxpath.PathExpr.prototype.evaluate = function(ctx) {
   var nodeset = this.filter_.evaluate(ctx);
   if (!(nodeset instanceof wgxpath.NodeSet)) {
-    throw Error('FilterExpr must evaluate to nodeset.');
+    throw Error('Filter expression must evaluate to nodeset.');
   }
   var steps = this.steps_;
   for (var i = 0, l0 = steps.length; i < l0 && nodeset.getLength(); i++) {
@@ -200,17 +194,14 @@ wgxpath.PathExpr.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.PathExpr.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'PathExpr:' + '\n';
-  indent += wgxpath.Expr.INDENT;
-  text += this.filter_.toString(indent);
+wgxpath.PathExpr.prototype.toString = function() {
+  var text = 'Path Expression:';
+  text += wgxpath.Expr.indent(this.filter_);
   if (this.steps_.length) {
-    text += indent + 'Steps:' + '\n';
-    indent += wgxpath.Expr.INDENT;
-    goog.array.forEach(this.steps_, function(step) {
-      text += step.toString(indent);
-    });
+    var steps = goog.array.reduce(this.steps_, function(prev, curr) {
+      return prev + wgxpath.Expr.indent(curr);
+    }, 'Steps:');
+    text += wgxpath.Expr.indent(steps);
   }
   return text;
 };

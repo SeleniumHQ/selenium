@@ -17,30 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
-
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.List;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -80,6 +81,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -89,7 +91,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     element.click();
 
-    waitFor(elementNotToDisplayed(element));
+    wait.until(not(visibilityOf(element)));
 
     assertFalse(element.isDisplayed());
   }
@@ -148,15 +150,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  private Callable<Boolean> elementNotToDisplayed(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        return !element.isDisplayed();
-      }
-    };
-  }
-
   @Test
   public void parentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
     String url = appServer.whereIs("visibility-css.html");
@@ -166,7 +159,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -183,7 +176,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
   @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
@@ -218,7 +211,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI})
+  @Ignore({IE, SAFARI, MARIONETTE})
   @Test
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
@@ -252,7 +245,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();
@@ -269,6 +262,73 @@ public class VisibilityTest extends JUnit4TestBase {
     } finally {
       window.setSize(originalSize);
     }
+  }
+
+  @Test
+  @Ignore({IE, HTMLUNIT})
+  public void shouldShowElementNotVisibleWithHiddenAttribute() {
+    String url = appServer.whereIs("hidden.html");
+    driver.get(url);
+    WebElement element = driver.findElement(By.id("singleHidden"));
+    assertFalse(element.isDisplayed());
+  }
+
+  @Test
+  @Ignore({IE, HTMLUNIT})
+  public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
+    String url = appServer.whereIs("hidden.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("child"));
+    assertFalse(element.isDisplayed());
+  }
+
+  /**
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
+   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   */
+  @JavascriptEnabled
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
+    driver.get(pages.clickJacker);
+
+    WebElement element = driver.findElement(By.id("clickJacker"));
+    assertEquals("Precondition failed: clickJacker should be transparent",
+                 "0", element.getCssValue("opacity"));
+    element.click();
+    assertEquals("1", element.getCssValue("opacity"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
+    driver.get(pages.formPage);
+
+    WebElement select = driver.findElement(By.id("invisi_select"));
+
+    List<WebElement> options = select.findElements(By.tagName("option"));
+    WebElement apples = options.get(0);
+    WebElement oranges = options.get(1);
+
+    assertTrue("Apples should be selected", apples.isSelected());
+    assertFalse("Oranges should be selected", oranges.isSelected());
+
+    oranges.click();
+    assertFalse("Apples should not be selected", apples.isSelected());
+    assertTrue("Oranges should be selected", oranges.isSelected());
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testCorrectlyDetectMapElementsAreShown() {
+    driver.get(pages.mapVisibilityPage);
+
+    final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
+
+    boolean isShown = area.isDisplayed();
+    assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
 }

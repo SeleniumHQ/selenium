@@ -23,7 +23,7 @@ var promise = require('../index').promise;
 
 
 /**
- * The IANA suggested epheremal port range.
+ * The IANA suggested ephemeral port range.
  * @type {{min: number, max: number}}
  * @const
  * @see http://en.wikipedia.org/wiki/Ephemeral_ports
@@ -51,8 +51,8 @@ function findSystemPortRange() {
   }
   var range = process.platform === 'win32' ?
       findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.addErrback(function() {
-    DEFAULT_IANA_RANGE;
+  return systemRange = range.thenCatch(function() {
+    return DEFAULT_IANA_RANGE;
   });
 }
 
@@ -69,7 +69,7 @@ function execute(cmd) {
     if (err) {
       result.reject(err);
     } else {
-      result.resolve(stdout);
+      result.fulfill(stdout);
     }
   });
   return result.promise;
@@ -91,10 +91,11 @@ function findUnixPortRange() {
     cmd = 'cat /proc/sys/net/ipv4/ip_local_port_range';
   } else {
     cmd = 'sysctl net.inet.ip.portrange.first net.inet.ip.portrange.last' +
-        ' | sed -e "s/.*:\s*//"';
+        ' | sed -e "s/.*:\\s*//"';
   }
 
   return execute(cmd).then(function(stdout) {
+    if (!stdout || !stdout.length) return DEFAULT_IANA_RANGE;
     var range = stdout.trim().split(/\s+/).map(Number);
     if (range.some(isNaN)) return DEFAULT_IANA_RANGE;
     return {min: range[0], max: range[1]};
@@ -153,7 +154,7 @@ function isFree(port, opt_host) {
 
   var server = net.createServer().on('error', function(e) {
     if (e.code === 'EADDRINUSE') {
-      result.resolve(false);
+      result.fulfill(false);
     } else {
       result.reject(e);
     }
@@ -161,12 +162,12 @@ function isFree(port, opt_host) {
 
   server.listen(port, opt_host, function() {
     server.close(function() {
-      result.resolve(true);
+      result.fulfill(true);
     });
   });
 
   return result.promise;
-};
+}
 
 
 /**
@@ -191,14 +192,14 @@ function findFreePort(opt_host) {
           Math.random() * (range.max - range.min) + range.min);
       isFree(port, opt_host).then(function(isFree) {
         if (isFree) {
-          deferredPort.resolve(port);
+          deferredPort.fulfill(port);
         } else {
           findPort();
         }
       });
     }
   });
-};
+}
 
 
 // PUBLIC API

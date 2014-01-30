@@ -1,13 +1,13 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.32.1",
+    "version": "2.39.0",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
-    	"automation",
-    	"selenium",
-    	"testing",
-    	"webdriver",
-    	"webdriverjs"
+        "automation",
+        "selenium",
+        "testing",
+        "webdriver",
+        "webdriverjs"
     ],
     "homepage": "https://code.google.com/p/selenium/",
     "bugs": {
@@ -15,10 +15,16 @@
     },
     "main": "./index",
     "repository": {
-    	"type": "git",
-    	"url": "https://code.google.com/p/selenium/"
+        "type": "git",
+        "url": "https://code.google.com/p/selenium/"
     },
     "engines": {
-    	"node": ">= 0.8.x"
+        "node": ">= 0.8.x"
+    },
+    "devDependencies" : {
+        "mocha" : "~1.10.0"
+    },
+    "scripts": {
+        "test": "node_modules/mocha/bin/mocha -R list --recursive test"
     }
 }

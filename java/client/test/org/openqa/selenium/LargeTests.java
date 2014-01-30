@@ -23,8 +23,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     ByTest.class,
     CookieImplementationTest.class,
-    ExecutingAsyncJavascriptTest.class,
-    TagNameTest.class
+    ExecutingAsyncJavascriptTest.class
 })
 public class LargeTests {
 

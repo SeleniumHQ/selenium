@@ -83,6 +83,18 @@ goog.functions.error = function(message) {
 
 
 /**
+ * Creates a function that throws the given object.
+ * @param {*} err An object to be thrown.
+ * @return {!Function} The error-throwing function.
+ */
+goog.functions.fail = function(err) {
+  return function() {
+    throw err;
+  }
+};
+
+
+/**
  * Given a function, create a function that keeps opt_numArgs arguments and
  * silently discards all additional arguments.
  * @param {Function} f The original function.

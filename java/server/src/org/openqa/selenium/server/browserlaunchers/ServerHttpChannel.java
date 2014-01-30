@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -159,8 +160,8 @@ public class ServerHttpChannel implements Runnable {
     }
 
     StringBuilder response = new StringBuilder("postedData=");
-    response.append(postedData);
-    
+    response.append(URLEncoder.encode(postedData, Charsets.UTF_8.name()));
+
     byte[] toSend = response.toString().getBytes(Charsets.UTF_8);
 
     connection = (HttpURLConnection) new URL(builder.toString()).openConnection();

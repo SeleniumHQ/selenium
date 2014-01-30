@@ -23,6 +23,8 @@ goog.require('bot.response');
 goog.require('webdriver.ActionSequence');
 goog.require('webdriver.Builder');
 goog.require('webdriver.Button');
+goog.require('webdriver.Capabilities');
+goog.require('webdriver.Capability');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.EventEmitter');
@@ -39,11 +41,15 @@ goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.process');
 goog.require('webdriver.promise');
 goog.require('webdriver.stacktrace');
+goog.require('webdriver.testing.assert');
+goog.require('webdriver.testing.asserts');
 
 exports.ActionSequence = webdriver.ActionSequence;
 exports.Builder = webdriver.Builder;
 exports.Button = webdriver.Button;
 exports.By = webdriver.Locator.Strategy;
+exports.Capabilities = webdriver.Capabilities;
+exports.Capability = webdriver.Capability;
 exports.Command = webdriver.Command;
 exports.CommandName = webdriver.CommandName;
 exports.Error = bot.Error;
@@ -72,3 +78,8 @@ exports.process = {
 
 exports.promise = webdriver.promise;
 exports.stacktrace = webdriver.stacktrace;
+
+exports.testing = {
+  assert: webdriver.testing.assert,
+  asserts: webdriver.testing.asserts
+};

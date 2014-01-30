@@ -18,8 +18,13 @@ package org.openqa.selenium.support.ui;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -27,17 +32,14 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+public class WebDriverWaitTest {
 
-public class WebDriverWaitTest extends MockTestBase {
-
-  private WebDriver mockDriver;
+  @Mock private WebDriver mockDriver;
+  @Mock private WebElement mockElement;
 
   @Before
   public void createMocks() {
-    mockDriver = mock(WebDriver.class);
+    MockitoAnnotations.initMocks(this);
   }
 
   @Test
@@ -56,32 +58,23 @@ public class WebDriverWaitTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void shouldSilentlyCaptureNoSuchElementExceptions() {
-    final WebElement element = mock(WebElement.class);
-
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
-      will(throwException(new NoSuchElementException("foo")));
-      one(condition).apply(mockDriver);
-      will(returnValue(element));
-    }});
+    when(condition.apply(mockDriver))
+        .thenThrow(new NoSuchElementException("foo"))
+        .thenReturn(mockElement);
 
     TickingClock clock = new TickingClock(500);
     Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
-    assertSame(element, wait.until(condition));
+    assertSame(mockElement, wait.until(condition));
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void shouldSilentlyCaptureNoSuchFrameExceptions() {
-
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
-      will(throwException(new NoSuchFrameException("foo")));
-      one(condition).apply(mockDriver);
-      will(returnValue(true));
-    }});
+    when(condition.apply(mockDriver))
+        .thenThrow(new NoSuchFrameException("foo"))
+        .thenReturn(mockElement);
 
     TickingClock clock = new TickingClock(500);
     Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
@@ -93,12 +86,9 @@ public class WebDriverWaitTest extends MockTestBase {
   public void shouldSilentlyCaptureNoSuchWindowExceptions() {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
-      will(throwException(new NoSuchWindowException("foo")));
-      one(condition).apply(mockDriver);
-      will(returnValue(true));
-    }});
+    when(condition.apply(mockDriver))
+        .thenThrow(new NoSuchWindowException("foo"))
+        .thenReturn(mockElement);
 
     TickingClock clock = new TickingClock(500);
     Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);

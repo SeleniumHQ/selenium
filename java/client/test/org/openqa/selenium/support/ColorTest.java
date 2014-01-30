@@ -148,4 +148,26 @@ public class ColorTest {
     Color objectB = Color.fromString("rgb(255, 0, 0)");
     assertEquals(objectA.hashCode(), objectB.hashCode());
   }
+
+  @Test
+  public void checkSettingOpacityRGB() {
+    String initial = "rgb(1, 255, 3)";
+    Color actual = Color.fromString(initial);
+
+    actual.setOpacity(0.5);
+
+    String expected = "rgba(1, 255, 3, 0.5)";
+    assertEquals(expected, actual.asRgba());
+  }
+
+  @Test
+  public void checkSettingOpacityRGBA() {
+    String initial = "rgba(1, 255, 3, 1)";
+    Color actual = Color.fromString(initial);
+
+    actual.setOpacity(0);
+
+    String expected = "rgba(1, 255, 3, 0)";
+    assertEquals(expected, actual.asRgba());
+  }
 }

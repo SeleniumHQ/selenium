@@ -18,9 +18,14 @@ package org.openqa.selenium.support.pagefactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
@@ -28,15 +33,14 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-import org.jmock.Expectations;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-public class DefaultElementLocatorTest extends MockTestBase {
+public class DefaultElementLocatorTest {
+
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new DefaultElementLocator(driver, field);
   }
@@ -48,10 +52,7 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by);
-      will(returnValue(element));
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
@@ -66,12 +67,9 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("list");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(by);
-      will(returnValue(list));
-    }});
+    when(driver.findElements(by)).thenReturn(list);
 
     ElementLocator locator = newLocator(driver, f);
     List<WebElement> returnedList = locator.findElements();
@@ -86,14 +84,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("cached");
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by);
-      will(returnValue(element));
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
     locator.findElement();
+
+    verify(driver, times(1)).findElement(by);
   }
 
   @Test
@@ -103,16 +100,15 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("cachedList");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(by);
-      will(returnValue(list));
-    }});
+    when(driver.findElements(by)).thenReturn(list);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElements();
     locator.findElements();
+
+    verify(driver, times(1)).findElements(by);
   }
 
   @Test
@@ -122,14 +118,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(2).of(driver).findElement(by);
-      will(returnValue(element));
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
     locator.findElement();
+
+    verify(driver, times(2)).findElement(by);
   }
 
   @Test
@@ -139,16 +134,15 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("list");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(2).of(driver).findElements(by);
-      will(returnValue(list));
-    }});
+    when(driver.findElements(by)).thenReturn(list);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElements();
     locator.findElements();
+
+    verify(driver, times(2)).findElements(by);
   }
 
   @Test
@@ -158,10 +152,7 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = By.id("foo");
     final WebElement element = mock(WebElement.class);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by);
-      will(returnValue(element));
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
@@ -174,12 +165,9 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final By by = By.id("foo");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElements(by);
-      will(returnValue(list));
-    }});
+    when(driver.findElements(by)).thenReturn(list);
 
     ElementLocator locator = newLocator(driver, f);
     locator.findElements();
@@ -191,10 +179,7 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = By.id("foo");
 
-    checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by);
-      will(throwException(new NoSuchElementException("Foo")));
-    }});
+    when(driver.findElement(by)).thenThrow(new NoSuchElementException("Foo"));
 
     ElementLocator locator = newLocator(driver, f);
 

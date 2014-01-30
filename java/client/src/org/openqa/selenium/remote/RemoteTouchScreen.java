@@ -16,7 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.TouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.HashMap;

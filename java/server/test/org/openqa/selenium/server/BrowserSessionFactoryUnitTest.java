@@ -18,30 +18,30 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.StdOutHandler;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -80,8 +80,8 @@ public class BrowserSessionFactoryUnitTest {
 
     final RemoteControlConfiguration configuration;
 
-    BrowserLauncherFactory blf = createMock(BrowserLauncherFactory.class);
-    DummyLauncher launcherMock = createMock(DummyLauncher.class);
+    BrowserLauncherFactory blf = mock(BrowserLauncherFactory.class);
+    DummyLauncher launcherMock = mock(DummyLauncher.class);
 
     configuration = new RemoteControlConfiguration();
     configuration.setTimeoutInSeconds(1);
@@ -92,24 +92,23 @@ public class BrowserSessionFactoryUnitTest {
       @Override
       protected FrameGroupCommandQueueSet makeQueueSet(String sessionId,
           int port, RemoteControlConfiguration configuration) {
-        return createMock(FrameGroupCommandQueueSet.class);
+        return mock(FrameGroupCommandQueueSet.class);
       }
 
       @Override
       protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
-        return createMock(FrameGroupCommandQueueSet.class);
+        return mock(FrameGroupCommandQueueSet.class);
       }
     };
 
-    expect(blf.getBrowserLauncher(isA(String.class), isA(String.class),
-        isA(RemoteControlConfiguration.class), isA(Capabilities.class))).andReturn(launcherMock);
-    launcherMock.launchRemoteSession("");
-    expectLastCall().once();
-    replay(launcherMock);
-    replay(blf);
+    when(blf.getBrowserLauncher(isA(String.class), isA(String.class),
+                                isA(RemoteControlConfiguration.class), isA(Capabilities.class)))
+        .thenReturn(launcherMock);
+
     factory.createNewRemoteSession("", "", "", bco, true, configuration);
     String expected = ((BrowserSessionInfo) (factory.activeSessions.toArray()[0])).sessionId;
     assertEquals(expected, SessionIdTracker.getLastSessionId());
+    verify(launcherMock, times(1)).launchRemoteSession("");
   }
 
   @Test

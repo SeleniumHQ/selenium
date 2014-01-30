@@ -232,10 +232,10 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html
 <h4>frame</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;frame(int&nbsp;frameIndex)</pre>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html#frame(int)">WebDriver.TargetLocator</a></code></strong></div>
-<div class="block">Select a frame by its (zero-based) index. That is, if a page has three frames, the first
- frame would be at index "0", the second at index "1" and the third at index "2". Once the
- frame has been selected, all subsequent calls on the WebDriver interface are made to that
- frame.</div>
+<div class="block">Select a frame by its (zero-based) index. Selecting a frame by index is equivalent to the
+ JS expression window.frames[index] where "window" is the DOM window represented by the
+ current context. Once the frame has been selected, all subsequent calls on the WebDriver
+ interface are made to that frame.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html#frame(int)">frame</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>

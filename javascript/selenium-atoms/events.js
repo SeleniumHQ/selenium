@@ -33,6 +33,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+goog.require('goog.userAgent.product.isVersion');
 
 
 core.events.controlKeyDown_ = false;
@@ -68,7 +69,8 @@ core.events.getEventFactory_ = function(eventName) {
       }
 
       return event;
-    }
+    },
+    type_: eventName
   };
 };
 
@@ -104,7 +106,7 @@ core.events.fire = function(locator, eventName) {
 core.events.parseCoordinates_ = function(coordString) {
 
   if (goog.isString(coordString)) {
-    // TODO(simon): Tighten constraints on what a valid coordString is.
+    // TODO: Tighten constraints on what a valid coordString is.
     var pieces = coordString.split(/,/);
     var x = parseInt(pieces[0], 0);
     var y = parseInt(pieces[1], 0);
@@ -127,7 +129,9 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
   var coords = core.events.parseCoordinates_(opt_coordString || '0,0');
 
-  if (goog.userAgent.IE || goog.userAgent.product.CHROME) {
+  if (goog.userAgent.IE || goog.userAgent.product.CHROME ||
+      (goog.userAgent.product.FIREFOX &&
+          goog.userAgent.product.isVersion(27))) {
     var bounds = goog.style.getBounds(element);
     coords.x += bounds.left;
     coords.y += bounds.top;
@@ -144,7 +148,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
       metaKey: false,
       relatedTarget: null
   };
-  bot.events.fire(element, type, (/** @type {!bot.events.MouseArgs} */args));
+  bot.events.fire(element, type, /** @type {!bot.events.MouseArgs} */ (args));
 };
 
 
@@ -209,7 +213,7 @@ core.events.setValue = function(locator, value) {
         'controlKeyDown() or altKeyDown() or metaKeyDown()');
   }
 
-  // TODO(simon): fail if it can't be typed into.
+  // TODO: fail if it can't be typed into.
   var element = core.locators.findElement(locator);
 
   var newValue = core.events.shiftKeyDown_ ?

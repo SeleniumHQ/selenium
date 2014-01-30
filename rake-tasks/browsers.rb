@@ -26,15 +26,11 @@ BROWSERS = {
       :ignore => "ie",
       :dir => "ie",
       :file_string => "ie",
-      :class => "Ie",
-      :resources => [
-        {"//cpp:ie_win32_dll" => "selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
-        {"//cpp:ie_x64_dll" => "selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
-      ]
+      :class => "Ie"
     },
     :java => {
       :class => "org.openqa.selenium.ie.InternetExplorerDriver",
-      :deps => [ "//java/client/src/org/openqa/selenium/ie:ie", "//cpp:ie_win32_exe" ]
+      :deps => [ "//java/client/src/org/openqa/selenium/ie:ie", "//cpp/iedriverserver:win32" ]
     },
     :browser_name => "internet explorer",
     :available => windows?
@@ -87,5 +83,19 @@ BROWSERS = {
       :class => "Remote",
       :constructor_args => "desired_capabilities=webdriver.DesiredCapabilities.FIREFOX"
     }
+  },
+  "safari" => {
+    :python => {
+      :ignore => "safari",
+      :dir => "safari",
+      :file_string => "safari",
+      :class => "Safari"
+    },
+    :java => {
+      :class => "org.openqa.selenium.safari.SafariDriver",
+      :deps => [ "//java/client/src/org/openqa/selenium/safari:safari" ]
+    },
+    :browser_name => "safari",
+    :available => mac?
   }
 }

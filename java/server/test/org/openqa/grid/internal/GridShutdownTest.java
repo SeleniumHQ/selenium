@@ -23,16 +23,16 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 
+import org.junit.Test;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Test;
-import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class GridShutdownTest {
 
