@@ -538,9 +538,7 @@ objectExtend(TreeView.prototype, {
             if (command.type == 'command') {
                 return command[colId];
             } else if (command.type == 'comment') {
-                return colId == 'comment'
-                    ? command.comment
-                    : '';
+                return colId == 'command' ? command.comment : '';
             } else {
                 return null;
             }
