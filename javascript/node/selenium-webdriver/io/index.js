@@ -24,7 +24,7 @@ var PATH_SEPARATOR = process.platform === 'win32' ? ';' : ':';
 
 
 /**
- * Searches the PATH environment variable for the given file.
+ * Searches the {@code PATH} environment variable for the given file.
  * @param {string} file The file to locate on the PATH.
  * @param {boolean=} opt_checkCwd Whether to always start with the search with
  *     the current working directory, regardless of whether it is explicitly

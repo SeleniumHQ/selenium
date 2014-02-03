@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Defines functions for configuring a webdriver proxy:
+ * <pre><code>
+ * var webdriver = require('selenium-webdriver'),
+ *     proxy = require('selenium-webdriver/proxy');
+ *
+ * var driver = new webdriver.Builder()
+ *     .withCapabilities(webdriver.Capabilities.chrome())
+ *     .setProxy(proxy.manual({http: 'host:1234'}))
+ *     .build();
+ * </code></pre>
+ */
+
 'use strict';
 
 var util = require('util');
@@ -19,14 +32,15 @@ var util = require('util');
 
 /**
  * Proxy configuration object, as defined by the WebDriver wire protocol.
- * @typedef {{
- *     proxyType: string,
- *     ftpProxy: (string|undefined),
- *     httpProxy: (string|undefined),
- *     sslProxy: (string|undefined),
- *     noProxy: (string|undefined),
- *     proxyAutoconfigUrl: (string|undefined)
- * }}
+ * @typedef {(
+ *     {proxyType: string}|
+ *     {proxyType: string,
+ *      proxyAutoconfigUrl: string}|
+ *     {proxyType: string,
+ *      ftpProxy: string,
+ *      httpProxy: string,
+ *      sslProxy: string,
+ *      noProxy: string})}
  */
 var ProxyConfig;
 
@@ -47,12 +61,14 @@ exports.direct = function() {
 /**
  * Manually configures the browser proxy.  The following options are
  * supported:
- * - ftp: Proxy host to use for FTP requests
- * - http: Proxy host to use for HTTP requests
- * - https: Proxy host to use for HTTPS requests
- * - bypass: A list of hosts requests should directly connect to, bypassing
- *     any other proxies for that request. May be specified as a comma
- *     separated string, or a list of strings.
+ * <ul>
+ * <li>{@code ftp}: Proxy host to use for FTP requests
+ * <li>{@code http}: Proxy host to use for HTTP requests
+ * <li>{@code https}: Proxy host to use for HTTPS requests
+ * <li>{@code bypass}: A list of hosts requests should directly connect to,
+ *     bypassing any other proxies for that request. May be specified as a
+ *     comma separated string, or a list of strings.
+ * </ul>
  *
  * Behavior is undefined for FTP, HTTP, and HTTPS requests if the
  * corresponding key is omitted from the configuration options.

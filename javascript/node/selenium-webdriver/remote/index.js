@@ -29,18 +29,21 @@ var promise = require('../').promise,
 
 /**
  * Configuration options for a DriverService instance.
- * - port: The port to start the server on (must be > 0). If the port is
- *     provided as a promise, the service will wait for the promise to
+ * <ul>
+ * <li>{@code port} - The port to start the server on (must be > 0). If the
+ *     port is provided as a promise, the service will wait for the promise to
  *     resolve before starting.
- * - args: The arguments to pass to the service. If a promise is provided,
- *     the service will wait for it to resolve before starting.
- * - path: The base path on the server for the WebDriver wire protocol
- *     (e.g. '/wd/hub'). Defaults to '/'.
- * - env: The environment variables that should be visible to the server
- *     process. Defaults to inheriting the current process's environment.
- * - stdio: IO configuration for the spawned server process. For more
- *     information, refer to the documentation of
+ * <li>{@code args} - The arguments to pass to the service. If a promise is
+ *     provided, the service will wait for it to resolve before starting.
+ * <li>{@code path} - The base path on the server for the WebDriver wire
+ *     protocol (e.g. '/wd/hub'). Defaults to '/'.
+ * <li>{@code env} - The environment variables that should be visible to the
+ *     server process. Defaults to inheriting the current process's
+ *     environment.
+ * <li>{@code stdio} - IO configuration for the spawned server process. For
+ *     more information, refer to the documentation of
  *     {@code child_process.spawn}.
+ * </ul>
  *
  * @typedef {{
  *   port: (number|!webdriver.promise.Promise.<number>),
@@ -289,32 +292,28 @@ util.inherits(SeleniumServer, DriverService);
 
 /**
  * Options for the Selenium server:
- * <dl>
- * <dt>port
- * <dd>The port to start the server on (must be > 0). If the port is
- *     provided as a promise, the service will wait for the promise to
+ * <ul>
+ * <li>{@code port} - The port to start the server on (must be > 0). If the
+ *     port is provided as a promise, the service will wait for the promise to
  *     resolve before starting.
- * <dt>args
- * <dd>The arguments to pass to the service. If a promise is provided,
- *     the service will wait for it to resolve before starting.
- * <dt>jvmArgs
- * <dd>The arguments to pass to the JVM. If a promise is provided, the service
- *     will wait for it to resolve before starting.
- * <dt>env
- * <dd>The environment variables that should be visible to the server
- *     process. Defaults to inheriting the current process's environment.
- * <dt>stdio
- * <dd>IO configuration for the spawned server process. For more
- *     information, refer to the documentation of
+ * <li>{@code args} - The arguments to pass to the service. If a promise is
+ *     provided, the service will wait for it to resolve before starting.
+ * <li>{@code jvmArgs} - The arguments to pass to the JVM. If a promise is
+ *     provided, the service will wait for it to resolve before starting.
+ * <li>{@code env} - The environment variables that should be visible to the
+ *     server process. Defaults to inheriting the current process's
+ *     environment.
+ * <li>{@code stdio} - IO configuration for the spawned server process. For
+ *     more information, refer to the documentation of
  *     {@code child_process.spawn}.
- * </dl>
+ * </ul>
  *
  * @typedef {{
  *   port: (number|!webdriver.promise.Promise.<number>),
  *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
  *   jvmArgs: (!Array.<string>|
  *             !webdriver.promise.Promise.<!Array.<string>>|
- *             undefined)
+ *             undefined),
  *   env: (!Object.<string, string>|undefined),
  *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
  * }}
@@ -324,10 +323,5 @@ SeleniumServer.Options;
 
 // PUBLIC API
 
-
-/** @constructor */
 exports.DriverService = DriverService;
-
-
-/** @constructor */
 exports.SeleniumServer = SeleniumServer;

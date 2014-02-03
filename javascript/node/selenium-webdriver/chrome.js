@@ -45,6 +45,7 @@ var CHROMEDRIVER_EXE =
  * @constructor
  */
 var ServiceBuilder = function(opt_exe) {
+  /** @private {string} */
   this.exe_ = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
   if (!this.exe_) {
     throw Error(
@@ -58,6 +59,7 @@ var ServiceBuilder = function(opt_exe) {
     throw Error('File does not exist: ' + this.exe_);
   }
 
+  /** @private {!Array.<string>} */
   this.args_ = [];
   this.stdio_ = 'ignore';
 };
