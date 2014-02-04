@@ -1,3 +1,74 @@
+v2.40.0
+=======
+ * Issue #1175: Implemented ByIdOrName in .NET support package.
+ * Issue #3283: Escaping backslashes when writing Firefox preferences to
+   profile in .NET
+ * Issue #3719: No longer redirecting console output for Firefox. This
+   information was largely unused by anyone, and the implementation had a
+   chance to produce deadlocks when reading from the console output stream for
+   stdout and stderr.
+ * Issue #4248: Added exception handling in .NET WebDriverBackedSelenium.
+ * Issue #5692: Fixed when cookie expiration date received by .NET exceeds
+   maximum DateTime value. When receiving a cookie via the JSON wire protocol,
+   the expiration date is represented as the number of seconds after
+   12:00:00 AM January 1, 1970 GMT. When a number greater than or equal
+   253402300800, this is larger than the maximum value of .NET's DateTime
+   value. This change catches the ArgumentOutOfRangeException and forcibly sets
+   the expiration to DateTime.MaxValue (12:59:59 PM December 31, 9999 GMT).
+ * Issue #5755: Exposing property on .NET PhantomJSDriverService to specify IP
+   address on which to listen for connections. When specifying a port on which
+   PhantomJS should listen for WebDriver commands, the user has the option to
+   also specify an IP address to which to bind to listen. This commit exposes
+   that ability. It also exposes the ability to specify a Selenium Grid hub
+   with which this instance of PhantomJS should register as a node.
+ * Issue #6699: Exposing process ID of service executable in .NET DriverService
+   class. This allows the user to attempt to add the process to a Windows job
+   object if they so desire, which will automatically kill child processes when
+   the parent process is exited. Note that job objects are subject to security
+   restrictions when used on Windows Vista or later.
+ * Issue #6860: Updating .NET SafariDriver browser launch code. The initial
+   start page from the temp directory that launches the WebSocket is loaded in
+   Safari via a command line parameter. If the path contains a space, the load
+   will fail. This is fixed by surrounding the temp file name with quotes.
+ * Issue #6870: Updated FirefoxDriver constructor for ICapabilities. This
+   allows the user to pass an ICapabilities object to the Firefox driver
+   constructor and have specific capabilities used in driver instantiation.
+ * Issue #6935: Changing .NET random temp file generation to be truly random. 
+   The .NET bindings now use GUIDs as part of the file names for files and
+   directories created in the temp directory. This is to work around potential
+   collisions in random number generation encountered when using the .NET
+   Random class, particularly in different processes. GUIDs are used as their
+   generation in the .NET Framework is optimized for performance.
+ * Updated .NET bindings to use webdriver.json for default Firefox profile.    
+   Other language bindings have been using a common JSON file containing the
+   default profile setting for the anonymous Firefox profile used by the
+   Firefox driver. The .NET bindings now do the same.
+ * Now provide an option to hide command prompt window for driver service
+   executables (IEDriverServer.exe, chromedriver.exe, etc.) in .NET bindings.
+ * Modified to allow user to specify name of driver service executable in .NET.
+   We now give an overload to CreateDefaultService for ChromeDriverService,
+   PhantomJSDriverService, and InternetExplorerDriverService to allow the
+   user to specify the name of the service exectuable. This is particularly
+   useful for non-Windows platforms where the executable does not end with
+   '.exe'. It also allows the user to rename the executable to a name of
+   their choosing and still be able to use it from the .NET bindings.
+ * Added a type safe option for IE to use ForceUseShellWindowsApi.
+ * Updated .NET ChromeOptions to include latest options for Chrome. Also fixed
+   the AddAdditionalCapability method to correctly add additional options to
+   the chromeOptions object passed to chromedriver.exe, instead of to the top-
+   level of the capabilities object. Adding new top-level capabilities is
+   handled by a new overload of AddAdditionalCapability that contains a boolean
+   argument to indicate that the capability should be added to the root of the
+   capabilities object. This handles the 80% case where new "experimental"
+   options are added by the chromedriver team.
+ * Implemented FindsBySequence attribute for .NET PageFactory. This new
+   attribute allows the user to mark a field or property in a page object such
+   that any FindsBy attributes set on the member are used in sequence, as
+   specified by the Priority property. Note that when not specifying a Priority
+   value, or specifying multiple FindsBy attributes with the same Priority
+   value, the behavior is undefined.
+ * Fixed cleaning up leftover temp directory when using SafariDriver.
+
 v2.39.0
 =======
  * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
