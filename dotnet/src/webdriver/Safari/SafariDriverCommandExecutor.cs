@@ -165,7 +165,7 @@ namespace OpenQA.Selenium.Safari
 
         private string PrepareConnectFile()
         {
-            string directoryName = FileUtilities.GenerateRandomTempDirectoryName("SafariDriverConnect{0}");
+            string directoryName = FileUtilities.GenerateRandomTempDirectoryName("SafariDriverConnect.{0}");
             this.temporaryDirectoryPath = Path.Combine(Path.GetTempPath(), directoryName);
             string tempFileName = Path.Combine(this.temporaryDirectoryPath, "connect.html");
             string contents = string.Format(CultureInfo.InvariantCulture, "<!DOCTYPE html><script>window.location = '{0}';</script>", this.server.ServerUri.ToString());

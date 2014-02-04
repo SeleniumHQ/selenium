@@ -179,7 +179,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The constructed <see cref="FirefoxProfile"/>.</returns>
         public static FirefoxProfile FromBase64String(string base64)
         {
-            string destinationDirectory = FileUtilities.GenerateRandomTempDirectoryName("webdriver{0}.duplicated");
+            string destinationDirectory = FileUtilities.GenerateRandomTempDirectoryName("webdriver.{0}.duplicated");
             byte[] zipContent = Convert.FromBase64String(base64);
             using (MemoryStream zipStream = new MemoryStream(zipContent))
             {
@@ -355,7 +355,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A random directory name for the profile.</returns>
         private static string GenerateProfileDirectoryName()
         {
-            return FileUtilities.GenerateRandomTempDirectoryName("anonymous{0}.webdriver-profile");
+            return FileUtilities.GenerateRandomTempDirectoryName("anonymous.{0}.webdriver-profile");
         }
 
         /// <summary>
