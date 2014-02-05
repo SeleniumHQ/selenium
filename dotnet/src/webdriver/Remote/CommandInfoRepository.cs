@@ -28,10 +28,10 @@ namespace OpenQA.Selenium.Remote
     public class CommandInfoRepository
     {
         #region Private members
-        private static object lockObject = new object();
+        private static readonly object lockObject = new object();
         private static CommandInfoRepository collectionInstance;
 
-        private Dictionary<string, CommandInfo> commandDictionary;
+        private readonly Dictionary<string, CommandInfo> commandDictionary;
         #endregion
 
         #region Constructor
@@ -53,11 +53,14 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                lock (lockObject)
+                if (collectionInstance == null)
                 {
-                    if (collectionInstance == null)
+                    lock (lockObject)
                     {
-                        collectionInstance = new CommandInfoRepository();
+                        if (collectionInstance == null)
+                        {
+                            collectionInstance = new CommandInfoRepository();
+                        }
                     }
                 }
 
@@ -82,6 +85,35 @@ namespace OpenQA.Selenium.Remote
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Tries the add an additional command to the defaults list.
+        /// </summary>
+        /// <param name="commandName">Name of the command.</param>
+        /// <param name="commandInfo">The command information.</param>
+        /// <returns>true if the new command has been added, false if there's already a command defined for the same name</returns>
+        /// <remarks>
+        /// This method is used by webdriver implementations to add additional custom driver-specific commands
+        /// </remarks>
+        internal bool TryAddAdditionalCommand(string commandName, CommandInfo commandInfo)
+        {
+            if (string.IsNullOrEmpty(commandName))
+            {
+                throw new ArgumentNullException("commandName");
+            }
+            else if (commandInfo == null)
+            {
+                throw new ArgumentNullException("commandInfo");
+            }
+
+            if (this.commandDictionary.ContainsKey(commandName))
+            {
+                return false;
+            }
+            this.commandDictionary.Add(commandName, commandInfo);
+            return true;
+        }
+
         #endregion
 
         #region Private support methods
