@@ -21,6 +21,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Internal;
+using System.Collections;
+using System.Linq;
 
 namespace OpenQA.Selenium.PhantomJS
 {
@@ -64,6 +67,18 @@ namespace OpenQA.Selenium.PhantomJS
     /// </example>
     public class PhantomJSDriver : RemoteWebDriver, ITakesScreenshot
     {
+        /// <summary>
+        /// Command name of the phantomjs specific command to execute native script in pahntomjs.
+        /// </summary>
+        private const string CommandExecutePhantomScript = "executePhantomScript";
+
+        static PhantomJSDriver()
+        {
+            //add the custom commandInfo of PahtomJSDriver
+            var commandInfo = new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/phantom/execute");
+            CommandInfoRepository.Instance.TryAddAdditionalCommand(CommandExecutePhantomScript, commandInfo);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class.
         /// </summary>
@@ -159,6 +174,40 @@ namespace OpenQA.Selenium.PhantomJS
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        /// <summary>
+        ///Execute a PhantomJS fragment. Provides extra functionality not found in WebDriver
+        ///but available in PhantomJS.
+        ///<p/>
+        ///See the <a href="https://github.com/ariya/phantomjs/wiki/API-Reference">PhantomJS API</a>
+        ///for details on what is available.
+        ///<p/>
+        ///A 'page' variable pointing to currently selected page is available for use.
+        ///If there is no page yet, one is created.
+        ///<p/>
+        ///When overriding any callbacks be sure to wrap in a try/catch block, as failures
+        ///may cause future WebDriver calls to fail.
+        ///<p/>
+        ///Certain callbacks are used by GhostDriver (the PhantomJS WebDriver implementation)
+        ///already. Overriding these may cause the script to fail. It's a good idea to check
+        ///for existing callbacks before overriding.
+        /// </summary>
+        /// <param name="script">The fragment of PhantomJS JavaScript to execute.</param>
+        /// <param name="args">List of arguments to pass to the function that the script is wrapped in.
+        /// These can accessed in the script as 'arguments[0]', 'arguments[1]','arguments[2]', etc
+        ///</param>
+        /// <returns>The result of the evaluation.</returns>
+        public object ExecutePhantomJS(string script, params object[] args)
+        {
+            //script = script.Replace("\"", "\\\"");
+
+            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
+
+            var parameters = new Dictionary<string, object>();
+            parameters.Add("script", script);
+            parameters.Add("args", convertedArgs);
+            return Execute(CommandExecutePhantomScript, parameters).Value;
         }
 
         #region ITakesScreenshot Members

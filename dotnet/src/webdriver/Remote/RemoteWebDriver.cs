@@ -778,6 +778,26 @@ namespace OpenQA.Selenium.Remote
 
         #region Protected Members
         /// <summary>
+        /// Converts the arguments to java script objects.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
+        protected static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
+        {
+            if (args == null)
+            {
+                return new object[] { null };
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                args[i] = ConvertObjectToJavaScriptObject(args[i]);
+            }
+
+            return args;
+        }
+
+        /// <summary>
         /// Stops the client from running
         /// </summary>
         /// <param name="disposing">if its in the process of disposing</param>
@@ -960,21 +980,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             return converted;
-        }
-
-        private static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
-        {
-            if (args == null)
-            {
-                return new object[] { null };
-            }
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                args[i] = ConvertObjectToJavaScriptObject(args[i]);
-            }
-
-            return args;
         }
 
         private static void UnpackAndThrowOnError(Response errorResponse)
