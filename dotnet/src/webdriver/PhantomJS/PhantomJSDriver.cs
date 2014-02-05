@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.PhantomJS
 {
@@ -64,6 +65,11 @@ namespace OpenQA.Selenium.PhantomJS
     /// </example>
     public class PhantomJSDriver : RemoteWebDriver, ITakesScreenshot
     {
+        /// <summary>
+        /// Command name of the PhantomJS-specific command to execute native script in PhantomJS.
+        /// </summary>
+        private const string CommandExecutePhantomScript = "executePhantomScript";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class.
         /// </summary>
@@ -143,6 +149,9 @@ namespace OpenQA.Selenium.PhantomJS
         public PhantomJSDriver(PhantomJSDriverService service, PhantomJSOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout, false), options.ToCapabilities())
         {
+            // Add the custom commandInfo of PhantomJSDriver
+            CommandInfo commandInfo = new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/phantom/execute");
+            CommandInfoRepository.Instance.TryAddAdditionalCommand(CommandExecutePhantomScript, commandInfo);
         }
 
         /// <summary>
@@ -159,6 +168,39 @@ namespace OpenQA.Selenium.PhantomJS
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        /// <summary>
+        /// Execute a PhantomJS script fragment. Provides extra functionality not found in WebDriver
+        /// but available in PhantomJS.
+        /// </summary>
+        /// <param name="script">The fragment of PhantomJS JavaScript to execute.</param>
+        /// <param name="args">List of arguments to pass to the function that the script is wrapped in.
+        /// These can accessed in the script as 'arguments[0]', 'arguments[1]','arguments[2]', etc
+        /// </param>
+        /// <returns>The result of the evaluation.</returns>
+        /// <remarks>
+        /// <para>
+        /// See the <a href="https://github.com/ariya/phantomjs/wiki/API-Reference">PhantomJS API</a>
+        /// for details on what is available.
+        /// </para>
+        /// <para>
+        /// A 'page' variable pointing to currently selected page is available for use.
+        /// If there is no page yet, one is created.
+        /// </para>
+        /// <para>
+        /// When overriding any callbacks be sure to wrap in a try/catch block, as failures
+        /// may cause future WebDriver calls to fail.
+        /// </para>
+        /// <para>
+        /// Certain callbacks are used by GhostDriver (the PhantomJS WebDriver implementation)
+        /// already. Overriding these may cause the script to fail. It's a good idea to check
+        /// for existing callbacks before overriding.
+        /// </para>
+        /// </remarks>
+        public object ExecutePhantomJS(string script, params object[] args)
+        {
+            return this.ExecuteScriptCommand(script, CommandExecutePhantomScript, args);
         }
 
         #region ITakesScreenshot Members

@@ -24,14 +24,19 @@ namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Holds the information about all commands specified by the JSON wire protocol.
+    /// This class cannot be inherited, as it is intended to be a singleton, and 
+    /// allowing subclasses introduces the possibility of multiple instances.
     /// </summary>
-    public class CommandInfoRepository
+    public sealed class CommandInfoRepository
     {
         #region Private members
-        private static object lockObject = new object();
-        private static CommandInfoRepository collectionInstance;
+        private static readonly object lockObject = new object();
 
-        private Dictionary<string, CommandInfo> commandDictionary;
+        // Note this is marked volatile to force the runtime to allow
+        // serialized access to the value.
+        private static volatile CommandInfoRepository collectionInstance;
+
+        private readonly Dictionary<string, CommandInfo> commandDictionary;
         #endregion
 
         #region Constructor
@@ -53,11 +58,16 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                lock (lockObject)
+                // This is an implementation using double-checked locking as described
+                // at http://msdn.microsoft.com/en-us/library/ff650316.aspx
+                if (collectionInstance == null)
                 {
-                    if (collectionInstance == null)
+                    lock (lockObject)
                     {
-                        collectionInstance = new CommandInfoRepository();
+                        if (collectionInstance == null)
+                        {
+                            collectionInstance = new CommandInfoRepository();
+                        }
                     }
                 }
 
@@ -82,6 +92,38 @@ namespace OpenQA.Selenium.Remote
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Tries the add an additional command to the list of known commands.
+        /// </summary>
+        /// <param name="commandName">Name of the command.</param>
+        /// <param name="commandInfo">The command information.</param>
+        /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
+        /// <remarks>
+        /// This method is used by WebDriver implementations to add additional custom driver-specific commands.
+        /// This method will not overwrite existing commands for a specific name.
+        /// </remarks>
+        internal bool TryAddAdditionalCommand(string commandName, CommandInfo commandInfo)
+        {
+            if (string.IsNullOrEmpty(commandName))
+            {
+                throw new ArgumentNullException("commandName", "The name of the command cannot be null or the empty string.");
+            }
+
+            if (commandInfo == null)
+            {
+                throw new ArgumentNullException("commandInfo", "The command information object cannot be null.");
+            }
+
+            if (this.commandDictionary.ContainsKey(commandName))
+            {
+                return false;
+            }
+
+            this.commandDictionary.Add(commandName, commandInfo);
+            return true;
+        }
+
         #endregion
 
         #region Private support methods

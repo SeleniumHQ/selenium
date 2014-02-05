@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyTeardown.cs" />
     <Compile Include="PhantomJSDriverServiceTests.cs" />
+    <Compile Include="PhantomJSSpecificTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +69,10 @@
     <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
       <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
       <Name>WebDriver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\common\WebDriver.Common.Tests.csproj">
+      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
+      <Name>WebDriver.Common.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

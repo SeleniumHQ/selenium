@@ -39,6 +39,9 @@ v2.40.0
    collisions in random number generation encountered when using the .NET
    Random class, particularly in different processes. GUIDs are used as their
    generation in the .NET Framework is optimized for performance.
+ * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
+   context. This allows the user to execute PhantomJS-specific commands using
+   the PhantomJS JavaScript API.
  * Updated .NET bindings to use webdriver.json for default Firefox profile.    
    Other language bindings have been using a common JSON file containing the
    default profile setting for the anonymous Firefox profile used by the

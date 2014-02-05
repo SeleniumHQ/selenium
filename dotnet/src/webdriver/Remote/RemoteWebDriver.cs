@@ -423,7 +423,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The value returned by the script.</returns>
         public object ExecuteScript(string script, params object[] args)
         {
-            return this.ExecuteScriptInternal(script, false, args);
+            return this.ExecuteScriptCommand(script, DriverCommand.ExecuteScript, args);
         }
 
         /// <summary>
@@ -434,7 +434,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The value returned by the script.</returns>
         public object ExecuteAsyncScript(string script, params object[] args)
         {
-            return this.ExecuteScriptInternal(script, true, args);
+            return this.ExecuteScriptCommand(script, DriverCommand.ExecuteAsyncScript, args);
         }
         #endregion
 
@@ -903,6 +903,33 @@ namespace OpenQA.Selenium.Remote
             RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
             return toReturn;
         }
+
+        protected object ExecuteScriptCommand(string script, string commandName, params object[] args)
+        {
+            if (!this.Capabilities.IsJavaScriptEnabled)
+            {
+                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
+            }
+
+            // Escape the quote marks
+            // script = script.Replace("\"", "\\\"");
+            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("script", script);
+
+            if (convertedArgs != null && convertedArgs.Length > 0)
+            {
+                parameters.Add("args", convertedArgs);
+            }
+            else
+            {
+                parameters.Add("args", new object[] { });
+            }
+
+            Response commandResponse = this.Execute(commandName, parameters);
+            return this.ParseJavaScriptReturnValue(commandResponse.Value);
+        }
         #endregion
 
         #region Private methods
@@ -962,6 +989,11 @@ namespace OpenQA.Selenium.Remote
             return converted;
         }
 
+        /// <summary>
+        /// Converts the arguments to java script objects.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns></returns>
         private static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
         {
             if (args == null)
@@ -1058,34 +1090,6 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Unexpected error. " + errorResponse.Value.ToString());
                 }
             }
-        }
-
-        private object ExecuteScriptInternal(string script, bool async, params object[] args)
-        {
-            if (!this.Capabilities.IsJavaScriptEnabled)
-            {
-                throw new NotSupportedException("You must be using an underlying instance of WebDriver that supports executing javascript");
-            }
-
-            // Escape the quote marks
-            // script = script.Replace("\"", "\\\"");
-            object[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("script", script);
-
-            if (convertedArgs != null && convertedArgs.Length > 0)
-            {
-                parameters.Add("args", convertedArgs);
-            }
-            else
-            {
-                parameters.Add("args", new object[] { });
-            }
-
-            string command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
-            Response commandResponse = this.Execute(command, parameters);
-            return this.ParseJavaScriptReturnValue(commandResponse.Value);
         }
 
         private object ParseJavaScriptReturnValue(object responseValue)
