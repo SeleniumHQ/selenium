@@ -844,12 +844,14 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
   var self = this;
   self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
+  self.app.notify("testCasePlayStart", self.app.getTestCase());
   this.selDebugger.start(function (failed) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
       testCase.testResult = failed ? "failed" : "passed";
       self.getUserLog().info("Test case " + testCase.testResult);
+      self.app.notify("testCasePlayDone", testCase);
     } else {
       self.getUserLog().error("current test case not found");
       self.log.error("current test case not found");
@@ -875,6 +877,7 @@ Editor.prototype.playTestSuite = function (startIndex) {
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
   var self = this;
+  self.app.notify("testSuitePlayStart");
   var total = this.app.getTestSuite().tests.length - startIndex;
   (function () {
     if (++index < self.app.getTestSuite().tests.length) {
@@ -884,6 +887,7 @@ Editor.prototype.playTestSuite = function (startIndex) {
     } else {
       //Suite done
       self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
+      self.app.notify("testSuitePlayDone", total, self.testSuiteProgress.runs, self.testSuiteProgress.failures);
     }
   })();
 };
