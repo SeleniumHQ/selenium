@@ -198,7 +198,7 @@ function Editor(window) {
 
   document.addEventListener("focus", Editor.checkTimestamp, false);
 
-  this.log.info("initialized");
+  this.log.debug("initialized");
 
   setTimeout("editor.showLoadErrors()", 500);
 
@@ -213,6 +213,8 @@ function Editor(window) {
     openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
+  this.log.info("Ready");
+  this.app.notify('initComplete');
 }
 
 Editor.prototype.saveTC = function () {
