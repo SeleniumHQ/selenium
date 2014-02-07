@@ -843,12 +843,15 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
   var self = this;
+  self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
   this.selDebugger.start(function (failed) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
       testCase.testResult = failed ? "failed" : "passed";
+      self.getUserLog().info("Test case " + testCase.testResult);
     } else {
+      self.getUserLog().error("current test case not found");
       self.log.error("current test case not found");
     }
     self.suiteTreeView.currentRowUpdated();
@@ -878,6 +881,9 @@ Editor.prototype.playTestSuite = function (startIndex) {
       self.suiteTreeView.scrollToRow(index);
       self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
       self.playCurrentTestCase(arguments.callee, index, total);
+    } else {
+      //Suite done
+      self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
     }
   })();
 };
