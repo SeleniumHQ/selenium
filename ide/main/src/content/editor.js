@@ -547,13 +547,11 @@ Editor.prototype.getOptions = function (options) {
 };
 
 Editor.prototype.updateTitle = function () {
-  var title;
   var testCase = this.getTestCase();
-  if (testCase && testCase.file) {
-    title = testCase.file.leafName + " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  } else {
-    title = Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  }
+  var title = testCase ? testCase.getTitle() : '';
+  var testSuite = this.app.getTestSuite();
+  title += " (" + (testSuite && testSuite.file ? testSuite.file.leafName : 'untitled suite') + ") ";
+  title += " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
   if (testCase && testCase.modified) {
     title += " *";
   }
