@@ -69,7 +69,7 @@ var CLOSURE_BASE_FILE_PATH = (function() {
 var DEPS_FILE_PATH = (function() {
   var relativePath = isDevMode() ?
       '../../../javascript/deps.js' :
-      './lib/deps.js';
+      './lib/goog/deps.js';
   return path.join(__dirname, relativePath);
 })();
 

@@ -1,5 +1,6 @@
 ## v2.40.0-dev
 
+* API documentation is now included in the docs directory.
 * Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
 * Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
     `Promise#addErrback()`, and `Promise#addBoth()`.
