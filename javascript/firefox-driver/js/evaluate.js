@@ -65,15 +65,16 @@ limitations under the License.
 
     var startTime = new Date().getTime();
     try {
-      var result = new Function(script).apply(null, args);
       if (isAsync) {
         timeoutId = window.setTimeout(function() {
           sendResponse(
               Error('Timed out waiting for async script result after ' +
-                  (new Date().getTime() - startTime) + 'ms'),
+                    (new Date().getTime() - startTime) + 'ms'),
               28);  // "script timeout" == 28
         }, timeout);
-      } else {
+      }
+      var result = new Function(script).apply(null, args);
+      if (!isAsync) {
         sendResponse(result, 0);
       }
     } catch (e) {
