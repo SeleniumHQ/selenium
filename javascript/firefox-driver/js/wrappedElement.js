@@ -80,6 +80,10 @@ WebElement.clickElement = function(respond, parameters) {
   var elementHalfWidth = (location.width ? Math.floor(location.width / 2) : 0);
   var elementHalfHeight = (location.height ? Math.floor(location.height / 2) : 0);
 
+  // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
+  Utils.installWindowCloseListener(respond);
+  Utils.installClickListener(respond, WebLoadingListener);
+
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.logging.info('Using native events for click');
 
@@ -120,8 +124,6 @@ WebElement.clickElement = function(respond, parameters) {
       Utils.waitForNativeEventsProcessing(unwrapped, Utils.getNativeEvents(),
           pageUnloadedIndicator, this.jsTimer);
 
-      respond.send();
-
       return;
     } catch (e) {
       // Make sure that we only fall through only if
@@ -139,10 +141,6 @@ WebElement.clickElement = function(respond, parameters) {
   }
 
   fxdriver.logging.info('Falling back to synthesized click');
-
-  // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
-  Utils.installWindowCloseListener(respond);
-  Utils.installClickListener(respond, WebLoadingListener);
 
   var res = this.mouse.move(element, elementHalfWidth, elementHalfHeight);
   if (res.status != bot.ErrorCode.SUCCESS) {

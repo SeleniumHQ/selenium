@@ -408,6 +408,44 @@ public class PageLoadingTest extends JUnit4TestBase {
           issues = {687})
   @NeedsLocalEnvironment
   @Test
+  public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
+    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+
+    driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
+    WebElement link = driver.findElement(By.id("link-to-slow-loading-page"));
+
+    long start = System.currentTimeMillis();
+    try {
+      link.click();
+      fail("I should have timed out");
+    } catch (RuntimeException e) {
+      long end = System.currentTimeMillis();
+
+      assertThat(e, is(instanceOf(TimeoutException.class)));
+
+      int duration = (int) (end - start);
+      assertThat(duration, greaterThan(2000));
+      assertThat(duration, lessThan(5000));
+
+      // check that after the exception another page can be loaded
+
+      start = System.currentTimeMillis();
+      driver.get(pages.xhtmlTestPage);
+      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      end = System.currentTimeMillis();
+      duration = (int) (end - start);
+      assertThat(duration, lessThan(2000));
+
+    } finally {
+      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+    }
+  }
+
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+          reason = "Not implemented; Safari: see issue 687, comment 41",
+          issues = {687})
+  @NeedsLocalEnvironment
+  @Test
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");

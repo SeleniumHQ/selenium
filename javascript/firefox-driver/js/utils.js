@@ -1030,7 +1030,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     respond.send();
     return;
   }
-  contentWindow.setTimeout(checkForLoad, 50);
+  contentWindow.setTimeout(checkForLoad, 200);
 };
 
 Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData, jsTimer) {
