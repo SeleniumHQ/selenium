@@ -143,7 +143,7 @@ function checkWebDriver() {
   assertFunction('webdriver.WebDriver', 'attachToSession');
   assertFunction('webdriver.WebDriver', 'createSession');
   assertFunction('webdriver.WebDriver.prototype', 'getSession');
-  assertFunction('webdriver.WebDriver.prototype', 'getCapability');
+  assertFunction('webdriver.WebDriver.prototype', 'getCapabilities');
   assertFunction('webdriver.WebDriver.prototype', 'quit');
   assertFunction('webdriver.WebDriver.prototype', 'call');
   assertFunction('webdriver.WebDriver.prototype', 'sleep');

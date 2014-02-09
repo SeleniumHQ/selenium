@@ -321,21 +321,6 @@ webdriver.WebDriver.prototype.getCapabilities = function() {
 
 
 /**
- * Returns a promise for one of this driver's capabilities.
- * @param {string} name The name of the capability to query.
- * @return {!webdriver.promise.Promise} A promise that will resolve with the
- *     given capability once its value is ready.
- * @deprecated Use {@link #getCapabilities()}; this function will be removed
- *     in 2.35.0.
- */
-webdriver.WebDriver.prototype.getCapability = function(name) {
-  return webdriver.promise.when(this.session_, function(session) {
-    return session.getCapabilities().get(name);
-  });
-};
-
-
-/**
  * Schedules a command to quit the current session. After calling quit, this
  * instance will be invalidated and may no longer be used to issue commands
  * against the browser.
