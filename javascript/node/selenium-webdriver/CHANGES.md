@@ -6,6 +6,7 @@
 * Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
 * Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
     `Promise#addErrback()`, and `Promise#addBoth()`.
+* FIXED: 6826: Added support for custom locators.
 
 ## v2.39.0
 

@@ -36,6 +36,10 @@ exports.ActionSequence = base.require('webdriver.ActionSequence');
 exports.Builder = builder.Builder;
 
 
+/** @type {webdriver.By.} */
+exports.By = base.require('webdriver.By');
+
+
 /** @type {function(new: webdriver.Capabilities)} */
 exports.Capabilities = base.require('webdriver.Capabilities');
 
@@ -73,12 +77,6 @@ exports.WebElement = base.require('webdriver.WebElement');
 /** @type {webdriver.Button.} */
 (exports.__defineGetter__('Button', function() {
   return base.require('webdriver.Button');
-}));
-
-
-/** @type {webdriver.Locator.Strategy.} */
-(exports.__defineGetter__('By', function() {
-  return base.require('webdriver.Locator.Strategy');
 }));
 
 

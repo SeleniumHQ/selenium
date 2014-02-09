@@ -57,10 +57,10 @@ limitations under the License.
       callbackHelper = webdriver.test.testutil.callbackHelper,
       callbackPair = webdriver.test.testutil.callbackPair;
 
-  // By is exported by webdriver.Locator, but IDEs don't
-  // recognize goog.exportSymbol. Explicitly define it here to make
-  // the IDE stop complaining.
-  var By = webdriver.Locator.Strategy;
+  // By is exported by webdriver.By, but IDEs don't recognize
+  // goog.exportSymbol. Explicitly define it here to make the
+  // IDE stop complaining.
+  var By = webdriver.By;
 
   var clock;
   var driver;
@@ -1605,7 +1605,7 @@ limitations under the License.
         expectingFailure(function(e) {
           assertEquals(
               'Not the expected error message',
-              'JS locator script result was not a WebElement', e.message);
+              'Custom locator did not return a WebElement', e.message);
         }).
         expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
         andReturnSuccess(123).
@@ -1628,7 +1628,42 @@ limitations under the License.
         andReturnSuccess({'ELEMENT':'one'}).
         replayAll();
     var driver = testHelper.createDriver();
-    driver.findElement(By.js(script), 'div');
+    driver.findElement(By.js(script, 'div'));
+    testHelper.execute();
+  }
+
+
+  function testFindElement_customLocator() {
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.FIND_ELEMENTS, {'using':'tag name', 'value':'a'}).
+        andReturnSuccess([{'ELEMENT':'foo'}, {'ELEMENT':'bar'}]).
+        expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'foo'}}).
+        andReturnSuccess().
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    var element = driver.findElement(function(d) {
+      assertEquals(driver, d);
+      return d.findElements(By.tagName('a'));
+    });
+    element.click();
+    testHelper.execute();
+  }
+
+
+  function testFindElement_customLocatorThrowsIfResultIsNotAWebElement() {
+    var testHelper = TestHelper.
+        expectingFailure(function(e) {
+          assertEquals(
+              'Not the expected error message',
+              'Custom locator did not return a WebElement', e.message);
+        }).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    driver.findElement(function() {
+      return 1;
+    });
     testHelper.execute();
   }
 
@@ -1706,7 +1741,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.isElementPresent(By.js(script), 'div');
+    driver.isElementPresent(By.js(script, 'div'));
     testHelper.execute();
   }
 
@@ -1876,7 +1911,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.findElements(By.js(script), 'div');
+    driver.findElements(By.js(script, 'div'));
     testHelper.execute();
   }
 
