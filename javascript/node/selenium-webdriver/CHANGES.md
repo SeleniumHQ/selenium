@@ -1,6 +1,8 @@
 ## v2.40.0-dev
 
 * API documentation is now included in the docs directory.
+* Added utility functions for working with an array of promises:
+    `promise.all`, `promise.map`, and `promise.filter`
 * Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
 * Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
     `Promise#addErrback()`, and `Promise#addBoth()`.

@@ -753,6 +753,116 @@ webdriver.promise.asap = function(value, callback, opt_errback) {
 
 
 /**
+ * Given an array of promises, will return a promise that will be fulfilled
+ * with the fulfillment values of the input array's values. If any of the
+ * input array's promises are rejected, the returned promise will be rejected
+ * with the same reason.
+ *
+ * @param {!Array.<(T|!webdriver.promise.Promise.<T>)>} arr An array of
+ *     promises to wait on.
+ * @return {!webdriver.promise.Promise.<!Array.<T>>} A promise that is
+ *     fulfilled with an array containing the fulfilled values of the
+ *     input array, or rejected with the same reason as the first
+ *     rejected value.
+ * @template T
+ */
+webdriver.promise.all = function(arr) {
+  var n = arr.length;
+  if (!n) {
+    return webdriver.promise.fulfilled([]);
+  }
+
+  var toFulfill = n;
+  var result = webdriver.promise.defer();
+  var values = [];
+
+  var onFulfill = function(index, value) {
+    values[index] = value;
+    toFulfill--;
+    if (toFulfill == 0 && result.isPending()) {
+      result.fulfill(values);
+    }
+  };
+
+  var onReject = function(err) {
+    if (result.isPending()) {
+      result.reject(err);
+    }
+  };
+
+  for (var i = 0; i < n; ++i) {
+    webdriver.promise.asap(arr[i], goog.partial(onFulfill, i), onReject);
+  }
+
+  return result.promise;
+};
+
+
+/**
+ * Calls a function for each element in an array and inserts the result into a
+ * new array, which is used as the fulfillment value of the promise returned
+ * by this function.
+ *
+ * <p>If the return value of the mapping function is a promise, this function
+ * will wait for it to be fulfilled before inserting it into the new array.
+ *
+ * <p>If the mapping function throws or returns a rejected promise, the
+ * promise returned by this function will be rejected with the same reason.
+ * Only the first failure will be reported; all subsequent errors will be
+ * silently ignored.
+ *
+ * @param {!(Array.<TYPE>|webdriver.promise.Promise.<!Array.<TYPE>>)} arr The
+ *     array to iterator over, or a promise that will resolve to said array.
+ * @param {function(this: SELF, TYPE, number, !Array.<TYPE>): ?} fn The
+ *     function to call for each element in the array. This function should
+ *     expect three arguments (the element, the index, and the array itself.
+ * @param {SELF=} opt_self The object to be used as the value of 'this' within
+ *     {@code fn}.
+ * @template TYPE, SELF
+ */
+webdriver.promise.map = function(arr, fn, opt_self) {
+  return webdriver.promise.when(arr, function(arr) {
+    var result = goog.array.map(arr, fn, opt_self);
+    return webdriver.promise.all(result);
+  });
+};
+
+
+/**
+ * Calls a function for each element in an array, and if the function returns
+ * true adds the element to a new array.
+ *
+ * <p>If the return value of the filter function is a promise, this function
+ * will wait for it to be fulfilled before determining whether to insert the
+ * element into the new array.
+ *
+ * <p>If the filter function throws or returns a rejected promise, the promise
+ * returned by this function will be rejected with the same reason. Only the
+ * first failure will be reported; all subsequent errors will be silently
+ * ignored.
+ *
+ * @param {!(Array.<TYPE>|webdriver.promise.Promise.<!Array.<TYPE>>)} arr The
+ *     array to iterator over, or a promise that will resolve to said array.
+ * @param {function(this: SELF, TYPE, number, !Array.<TYPE>): (
+ *             boolean|webdriver.promise.Promise.<boolean>)} fn The function
+ *     to call for each element in the array.
+ * @param {SELF=} opt_self The object to be used as the value of 'this' within
+ *     {@code fn}.
+ * @template TYPE, SELF
+ */
+webdriver.promise.filter = function(arr, fn, opt_self) {
+  return webdriver.promise.when(arr, function(arr) {
+    var originalValues = goog.array.clone(arr);
+    return webdriver.promise.map(arr, fn, opt_self).then(function(include) {
+      return goog.array.filter(originalValues, function(value, index) {
+        return include[index];
+      });
+    });
+  });
+};
+
+
+/**
  * Returns a promise that will be resolved with the input value in a
  * fully-resolved state. If the value is an array, each element will be fully
  * resolved. Likewise, if the value is an object, all keys will be fully
