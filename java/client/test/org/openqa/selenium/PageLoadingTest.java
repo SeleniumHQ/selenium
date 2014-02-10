@@ -47,6 +47,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.TestUtilities.isLocal;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.After;
 import org.junit.Test;
@@ -57,7 +61,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -251,7 +254,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
-    if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
+    if (SauceDriver.shouldUseSauce() && isInternetExplorer(driver)) {
       // Sauce opens about:blank after the browser loads, which IE doesn't include in history
       // Navigate back past it, so when we do the next navigation back, there is nothing to go
       // back to, rather than skipping past about:blank (whose title we will get as originalTitle)
@@ -320,7 +323,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
-    assumeTrue(TestUtilities.isLocal());
+    assumeTrue(isLocal());
 
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(ACCEPT_SSL_CERTS, false);
@@ -403,12 +406,14 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {ANDROID, IPHONE, HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
   @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 
     driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
