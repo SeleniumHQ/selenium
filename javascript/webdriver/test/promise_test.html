@@ -153,8 +153,8 @@ function testTwoStepResolvedChain() {
 function testCanResolveOnlyOnce_resolved() {
   var deferred = new webdriver.promise.Deferred();
   deferred.fulfill(1);
-  assertThrows(deferred.fulfill);
-  assertThrows(deferred.reject);
+  deferred.fulfill(2);
+  deferred.reject(3);
 
   var callback;
   deferred.then(callback = callbackHelper(function(value) {
@@ -167,11 +167,31 @@ function testCanResolveOnlyOnce_resolved() {
 function testCanResolveOnlyOnce_rejected() {
   var deferred = new webdriver.promise.Deferred();
   deferred.reject(STUB_ERROR);
-  assertThrows(deferred.fulfill);
-  assertThrows(deferred.reject);
+  deferred.fulfill(1);
+  deferred.reject(2);
 
   var callback;
   deferred.then(null, callback = callbackHelper(assertIsStubError));
+  callback.assertCalled();
+}
+
+
+function testIfFulfilledWithOtherPromiseCannotChangeValueWhileWaiting() {
+  var deferred = webdriver.promise.defer();
+  var other = webdriver.promise.defer();
+
+  debugger;
+  deferred.fulfill(other.promise);
+  deferred.fulfill('different value');
+
+  var callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  });
+
+  deferred.then(callback);
+  callback.assertNotCalled();
+
+  other.fulfill(123);
   callback.assertCalled();
 }
 

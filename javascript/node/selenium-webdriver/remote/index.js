@@ -190,13 +190,11 @@ DriverService.prototype.start = function(opt_timeoutMs) {
   return this.address_;
 
   function onServerExit(code, signal) {
-    if (self.address_.isPending()) {
-      self.address_.reject(code == null ?
-          Error('Server was killed with ' + signal) :
-          Error('Server exited with ' + code));
-    }
+    self.address_.reject(code == null ?
+        Error('Server was killed with ' + signal) :
+        Error('Server exited with ' + code));
 
-    if (self.shutdownHook_ && self.shutdownHook_.isPending()) {
+    if (self.shutdownHook_) {
       self.shutdownHook_.fulfill();
     }
 
