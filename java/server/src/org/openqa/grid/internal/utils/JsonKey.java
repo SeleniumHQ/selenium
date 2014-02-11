@@ -32,7 +32,7 @@ public class JsonKey {
   }
 
   public boolean matches(String arg) {
-     return (asParam.equalsIgnoreCase(arg));
+    return (asParam.equalsIgnoreCase(arg));
   }
 
   public String getAsParam() {
