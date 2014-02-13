@@ -1356,7 +1356,6 @@ function testPromiseAll_usesFirstRejection() {
 function testMappingAnArray() {
   var a = [1, 2, 3];
   var result = webdriver.promise.map(a, function(value, index, a2) {
-    console.log('called %s at %s = %s', a2, index, value);
     assertEquals(a, a2);
     assertEquals('not a number', 'number', typeof index);
     return value + 1;
