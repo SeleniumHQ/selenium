@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
@@ -56,6 +55,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -267,7 +267,32 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     driver.navigate().back();
     // We may have returned to the browser's home page
-    assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
+    wait.until(either(titleIs(originalTitle), titleIs("We Leave From Here")));
+  }
+
+  /**
+   * A logical OR of the two given conditions.
+   * TODO: Move to ExpectedConditions: generalize to N conditions, unit test.
+   */
+  public static ExpectedCondition<Object> either(
+      final ExpectedCondition<?> one,
+      final ExpectedCondition<?> two) {
+    return new ExpectedCondition<Object>() {
+      @Override
+      public Object apply(WebDriver driver) {
+        Object result = one.apply(driver);
+        if (result != null && !Boolean.FALSE.equals(result)) {
+          return result;
+        } else {
+          return two.apply(driver);
+        }
+      }
+
+      @Override
+      public String toString() {
+        return "either of the conditions to be valid: " + one + ", " + two;
+      }
+    };
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
@@ -436,7 +461,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       start = System.currentTimeMillis();
       driver.get(pages.xhtmlTestPage);
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      wait.until(titleIs("XHTML Test Page"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
@@ -510,7 +535,9 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
 
-      wait.until(elementTextToEqual(By.tagName("body"), "Slept for 5s"));
+      new WebDriverWait(driver, 30)
+          .ignoring(StaleElementReferenceException.class)
+          .until(elementTextToEqual(By.tagName("body"), "Slept for 5s"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, greaterThan(5000));
