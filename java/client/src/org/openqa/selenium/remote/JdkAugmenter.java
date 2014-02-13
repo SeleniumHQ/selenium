@@ -96,8 +96,6 @@ public class JdkAugmenter extends BaseAugmenter {
         checkState(null == oldHandler, "Both %s and %s attempt to define %s.",
             oldHandler, augmentedImplementation.getClass(), method.getName());
       }
-      checkState(proxiedInterfaces.add(interfaceProvided), "%s already defines interface %s",
-          objectToAugment.getClass(), interfaceProvided);
     }
 
     if (augmentationHandlers.isEmpty()) {
