@@ -62,10 +62,14 @@ public class Augmenter extends BaseAugmenter {
 
   @Override
   protected RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {
-    if (driver.getClass() == RemoteWebDriver.class) {
+    if (driver.getClass() == RemoteWebDriver.class
+        || driver.getClass().getName().startsWith("org.openqa.selenium.remote.RemoteWebDriver$$EnhancerByCGLIB"))
+    {
       return (RemoteWebDriver) driver;
+
     } else {
-      logger.warning("Augmenter should be applied to RemoteWebDriver instances only");
+      logger.warning("Augmenter should be applied to RemoteWebDriver instances " +
+                     "or previously augmented instances only");
       return null;
     }
   }
