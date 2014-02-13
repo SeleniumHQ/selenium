@@ -51,6 +51,13 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
+   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * with verbose logging.
+   */
+  public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
+      "webdriver.chrome.verboseLogging";
+
+  /**
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
@@ -88,7 +95,7 @@ public class ChromeDriverService extends DriverService {
     private ImmutableMap<String, String> environment = ImmutableMap.of();
     String chromeLogFile = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
     private File logFile = chromeLogFile == null ? null : new File(chromeLogFile);
-    private boolean verbose;
+    private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent;
 
     /**
