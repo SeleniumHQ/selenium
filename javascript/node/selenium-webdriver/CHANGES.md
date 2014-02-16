@@ -1,4 +1,4 @@
-## v2.40.0-dev
+## v2.40.0
 
 * API documentation is now included in the docs directory.
 * Added utility functions for working with an array of promises:
