@@ -21,6 +21,8 @@ v2.40.0
    also specify an IP address to which to bind to listen. This commit exposes
    that ability. It also exposes the ability to specify a Selenium Grid hub
    with which this instance of PhantomJS should register as a node.
+ * Issue #6343: (on behalf of Ulrich Buchgraber) Make .NET DefaultWait stop
+   swallowing original exception stack trace.
  * Issue #6699: Exposing process ID of service executable in .NET DriverService
    class. This allows the user to attempt to add the process to a Windows job
    object if they so desire, which will automatically kill child processes when
@@ -39,6 +41,11 @@ v2.40.0
    collisions in random number generation encountered when using the .NET
    Random class, particularly in different processes. GUIDs are used as their
    generation in the .NET Framework is optimized for performance.
+ * Issue #6966: Changed .NET WebDriverBackedSelenium OpenWindow to mimic Java.
+   The JavaScript evaluated by the .NET WebDriverBackedSelenium OpenWindow
+   command handler should return a null value from the eval() of the
+   JavaScript to open the window. This is what the Java implementation does,
+   and this commit brings the .NET implementation into line with that.
  * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
    context. This allows the user to execute PhantomJS-specific commands using
    the PhantomJS JavaScript API.
