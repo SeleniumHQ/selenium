@@ -1,3 +1,12 @@
+2.40.0 (???)
+============
+
+* Fix bug where FileReaper would not reap files added in a child process
+* Document AbstractEventListener (#5994)
+* Safari:
+  * Add Safari::Options + clean up Safari extension handling (#6382)
+  * Add support for user extensions (#6815)
+
 2.39.0 (2013-12-17)
 ===================
 
