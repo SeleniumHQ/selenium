@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::Rake::ServerTask
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -111,29 +111,29 @@ server.</p>
 
 <p>Usage:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;selenium/rake/server_task&#39;</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>selenium/rake/server_task</span><span class='tstring_end'>&#39;</span></span>
 
-<span class="ruby-constant">Selenium</span><span class="ruby-operator">::</span><span class="ruby-constant">Rake</span><span class="ruby-operator">::</span><span class="ruby-constant">ServerTask</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">t</span>.<span class="ruby-identifier">jar</span> = <span class="ruby-string">&quot;/path/to/selenium-server-standalone.jar&quot;</span>
-  <span class="ruby-identifier">t</span>.<span class="ruby-identifier">port</span> = <span class="ruby-value">4444</span>
-  <span class="ruby-identifier">t</span>.<span class="ruby-identifier">opts</span> = <span class="ruby-node">%w[-some options]</span>
-<span class="ruby-keyword">end</span>
-</pre>
+<span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_jar'>jar</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='int'>4444</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>-some</span><span class='words_sep'> </span><span class='tstring_content'>options</span><span class='words_sep'>]</span>
+<span class='kw'>end</span>
+</code></pre>
 
 <p>Alternatively, you can have the task download a specific version of the
 server:</p>
 
-<pre class="ruby"><span class="ruby-constant">Selenium</span><span class="ruby-operator">::</span><span class="ruby-constant">Rake</span><span class="ruby-operator">::</span><span class="ruby-constant">ServerTask</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">server</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">t</span>.<span class="ruby-identifier">version</span> = <span class="ruby-string">&#39;2.6.0&#39;</span>
-<span class="ruby-keyword">end</span>
-</pre>
+<pre class="code ruby"><code class="ruby"><span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>&#39;</span></span>
+<span class='kw'>end</span>
+</code></pre>
 
 <p>or the latest version</p>
 
-<pre class="ruby"><span class="ruby-constant">Selenium</span><span class="ruby-operator">::</span><span class="ruby-constant">Rake</span><span class="ruby-operator">::</span><span class="ruby-constant">ServerTask</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">server</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span>
-  <span class="ruby-identifier">t</span>.<span class="ruby-identifier">version</span> = :<span class="ruby-identifier">latest</span>
-<span class="ruby-keyword">end</span>
-</pre>
+<pre class="code ruby"><code class="ruby"><span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='symbol'>:latest</span>
+<span class='kw'>end</span>
+</code></pre>
 
 <p>Tasks defined:</p>
 
@@ -403,7 +403,7 @@ rake selenium:server:restart</code></pre>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>A new instance of ServerTask</p>
+<p>Returns a new instance of ServerTask</p>
 
 
   </div>
@@ -840,9 +840,9 @@ specified file</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:38:58 2013 by
+  Generated on Mon Feb 17 23:05:57 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

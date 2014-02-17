@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Profile
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -1591,7 +1591,8 @@ profile.</p>
 172
 173
 174
-175</pre>
+175
+176</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 147</span>
@@ -1608,6 +1609,7 @@ profile.</p>
     <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ftp</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ftp'>ftp</span>
     <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_http'>http</span>
     <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ssl</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ssl'>ssl</span>
+    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>socks</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_socks'>socks</span>
 
     <span class='kw'>if</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
       <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
@@ -1687,9 +1689,9 @@ profile.</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:39:05 2013 by
+  Generated on Mon Feb 17 23:05:59 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::TouchScreen
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -350,7 +350,7 @@
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>A new instance of TouchScreen</p>
+<p>Returns a new instance of TouchScreen</p>
 
 
   </div>
@@ -615,8 +615,8 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
   <span class='kw'>when</span> <span class='int'>2</span>
-    <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
-    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchScroll'>touchScroll</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
+    <span class='id identifier rubyid_x_offset'>x_offset</span><span class='comma'>,</span> <span class='id identifier rubyid_y_offset'>y_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchScroll'>touchScroll</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_offset'>x_offset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_offset'>y_offset</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='int'>3</span>
     <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x_offset'>x_offset</span><span class='comma'>,</span> <span class='id identifier rubyid_y_offset'>y_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
     <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
@@ -699,9 +699,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:39:04 2013 by
+  Generated on Mon Feb 17 23:05:58 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>
