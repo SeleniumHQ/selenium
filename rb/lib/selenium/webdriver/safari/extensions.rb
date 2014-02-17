@@ -5,7 +5,7 @@ module Selenium
       # @api private
       #
 
-      class Extension
+      class Extensions
 
         PLIST = <<-XML
           <?xml version="1.0" encoding="UTF-8"?>
@@ -21,20 +21,7 @@ module Selenium
             </dict>
             <key>Installed Extensions</key>
             <array>
-              <dict>
-                <key>Added Non-Default Toolbar Items</key>
-                <array/>
-                <key>Archive File Name</key>
-                <string>WebDriver.safariextz</string>
-                <key>Bundle Directory Name</key>
-                <string>WebDriver.safariextension</string>
-                <key>Enabled</key>
-                <true/>
-                <key>Hidden Bars</key>
-                <array/>
-                <key>Removed Default Toolbar Items</key>
-                <array/>
-              </dict>
+              %s
             </array>
             <key>Version</key>
             <integer>1</integer>
@@ -42,15 +29,34 @@ module Selenium
           </plist>
         XML
 
-        def initialize(opts = {})
-          @data_dir  = opts[:data_dir] || safari_data_dir
+        PLIST_EXTENSION_LINE = <<-XML
+          <dict>
+            <key>Added Non-Default Toolbar Items</key>
+            <array/>
+            <key>Archive File Name</key>
+            <string>%s.safariextz</string>
+            <key>Bundle Directory Name</key>
+            <string>%s.safariextension</string>
+            <key>Enabled</key>
+            <true/>
+            <key>Hidden Bars</key>
+            <array/>
+            <key>Removed Default Toolbar Items</key>
+            <array/>
+          </dict>
+        XML
 
-          @backup    = Backup.new
-          @installed = false
+        def initialize(opts = {})
+          @data_dir   = opts.data_dir || safari_data_dir
+          @skip       = opts.skip_extension_installation?
+          @extensions = opts.extensions
+          @backup     = Backup.new
+          @installed  = false
         end
 
         def install
           return if @installed
+          installed_extensions = []
 
           if install_directory.exist?
             @backup.backup install_directory
@@ -58,10 +64,32 @@ module Selenium
 
           install_directory.mkpath
 
-          extension_destination.rmtree if extension_destination.exist?
-          FileUtils.cp extension_source.to_s, extension_destination.to_s
+          unless @skip
+            extension_destination.rmtree if extension_destination.exist?
+            FileUtils.cp extension_source.to_s, extension_destination.to_s
 
-          plist_destination.open('w') { |io| io << PLIST }
+            installed_extensions << extension_destination
+          end
+
+          @extensions.each do |extension|
+            target = install_directory.join(extension.basename)
+
+            if extension.expand_path == target.expand_path
+              @backup.backup(target)
+            else
+              FileUtils.cp extension, target
+            end
+
+            installed_extensions << target
+          end
+
+          plist_destination.open('w') do |io|
+            extension_lines = installed_extensions.map do |ext|
+              name = ext.basename('.safariextz').to_s
+              PLIST_EXTENSION_LINE % [name, name]
+            end
+            io << PLIST % extension_lines.join("\n")
+          end
 
           Platform.exit_hook { uninstall }
           @installed = true
@@ -115,7 +143,7 @@ module Selenium
 
         class Backup
           def initialize
-            @dir = Pathname.new(Dir.mktmpdir('webdriver-safari-backups'))
+            @dir     = Pathname.new(Dir.mktmpdir('webdriver-safari-backups'))
             @backups = {}
           end
 

@@ -6,19 +6,17 @@ module Selenium
         COMMAND_TIMEOUT = 60
 
         def initialize(opts = {})
-          timeout     = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          caps        = fetch_capability_options(opts)
-          safari_opts = caps['safari.options']
+          command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          safari_options  = opts.kind_of?(Safari::Options) ? opts  : Safari::Options.new(opts)
+          capabilities    = merge_capabilities(opts, safari_options)
 
           @command_id ||= 0
 
-          unless safari_opts['skipExtensionInstallation']
-            @extension = Extension.new(:data_dir => safari_opts['dataDir'])
-            @extension.install
-          end
+          @extensions = Extensions.new(safari_options)
+          @extensions.install
 
           # TODO: handle safari_opts['cleanSession']
-          @server = Server.new(safari_opts['port'], timeout)
+          @server = Server.new(safari_options.port, command_timeout)
           @server.start
 
           @safari = Browser.new
@@ -26,7 +24,7 @@ module Selenium
 
           @server.wait_for_connection
 
-          super(desired_capabilities: caps)
+          super(desired_capabilities: capabilities)
         end
 
         def quit
@@ -34,7 +32,7 @@ module Selenium
 
           @server.stop
           @safari.stop
-          @extension && @extension.uninstall
+          @extensions && @extensions.uninstall
         end
 
         def driver_extensions
@@ -103,39 +101,18 @@ module Selenium
           path
         end
 
-        def fetch_capability_options(opts)
-          # TODO: deprecate
-          #
-          #   :custom_data_dir (replaced by :data_dir)
-          #   :install_extension (replaced by :skip_extension_installation)
+        def merge_capabilities(opts, safari_options)
+          caps  = safari_options.to_capabilities
+          other = opts[:desired_capabilities]
 
-          capabilities   = opts.fetch(:desired_capabilities) { Remote::Capabilities.safari }
-          safari_options = capabilities['safari.options'] ||= {}
-
-          port          = Integer(opts[:port] || safari_options['port'] || PortProber.random)
-          data_dir      = opts[:custom_data_dir] || opts[:data_dir] || safari_options['dataDir']
-          clean_session = opts.fetch(:clean_session) { safari_options['cleanSession'] }
-
-          skip_extension = false
-
-          if opts.key?(:install_extension)
-            skip_extension = !opts[:install_extension]
-          elsif opts.key?(:skip_extension_installation)
-            skip_extension = opts[:skip_extension_installation]
-          elsif safari_options['skipExtensionInstallation'] != nil
-            skip_extension = opts['skipExtensionInstallation']
+          if other
+            other = opts[:desired_capabilities].as_json
+            caps['safari.options'].merge!(other.delete('safari.options') || {})
+            caps.merge!(other)
           end
 
-          safari_options['port']                      = port
-          safari_options['skipExtensionInstallation'] = skip_extension
-          safari_options['dataDir']                   = data_dir
-          safari_options['cleanSession']              = clean_session
-
-          # TODO: customDriverExtension
-
-          capabilities
+          caps
         end
-
       end
 
     end
