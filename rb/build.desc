@@ -19,7 +19,7 @@ rubygem(
   gemdeps = [
     { "multi_json"   : "~> 1.0"   },
     { "rubyzip"      : "~> 1.0"   },
-    { "childprocess" : ">= 0.2.5" },
+    { "childprocess" : ">= 0.5.0" },
     { "websocket"    : "~> 1.0.4" }
   ],
   devdeps = [
