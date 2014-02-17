@@ -7,7 +7,7 @@ module Selenium
 
         def initialize(opts = {})
           command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          safari_options  = opts.kind_of?(Safari::Options) ? opts  : Safari::Options.new(opts)
+          safari_options  = opts.delete(:options) || Safari::Options.new(opts)
           capabilities    = merge_capabilities(opts, safari_options)
 
           @command_id ||= 0
