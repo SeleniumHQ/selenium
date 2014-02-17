@@ -7,6 +7,7 @@ module Selenium
         let(:caps)    { {} }
         let(:server)  { double(Server, receive: response).as_null_object }
         let(:browser) { double(Browser).as_null_object }
+        let(:extensions) { double(Extensions).as_null_object }
 
         let :bridge_options do
           { skip_extension_installation: true }
@@ -28,6 +29,7 @@ module Selenium
           Remote::Capabilities.stub(:safari).and_return(caps)
           Server.stub(:new).and_return(server)
           Browser.stub(:new).and_return(browser)
+          Extensions.stub(:new).and_return(extensions)
         end
 
 
