@@ -298,6 +298,7 @@ ruby_test(name = "unit",
     ":iphone",
     ":opera",
     ":remote",
+    ":safari",
     ":phantomjs",
     ":support",
   ]

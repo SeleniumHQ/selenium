@@ -1,6 +1,10 @@
 module Selenium
   module WebDriver
     module Safari
+      #
+      # @api private
+      #
+
       class Extension
 
         PLIST = <<-XML
@@ -39,16 +43,17 @@ module Selenium
         XML
 
         def initialize(opts = {})
-          @custom_data_dir = opts[:custom_data_dir]
-          @installed       = false
+          @data_dir  = opts[:data_dir] || safari_data_dir
+
+          @backup    = Backup.new
+          @installed = false
         end
 
         def install
           return if @installed
 
           if install_directory.exist?
-            backup_directory.rmtree if backup_directory.exist?
-            FileUtils.mv install_directory.to_s, backup_directory.to_s
+            @backup.backup install_directory
           end
 
           install_directory.mkpath
@@ -58,7 +63,7 @@ module Selenium
 
           plist_destination.open('w') { |io| io << PLIST }
 
-          at_exit { uninstall }
+          Platform.exit_hook { uninstall }
           @installed = true
         end
 
@@ -66,10 +71,7 @@ module Selenium
           return unless @installed
 
           install_directory.rmtree if install_directory.exist?
-
-          if backup_directory.exist?
-            FileUtils.mv backup_directory.to_s, install_directory.to_s
-          end
+          @backup.restore_all
         ensure
           @installed = false
         end
@@ -82,17 +84,13 @@ module Selenium
           install_directory.join('WebDriver.safariextz')
         end
 
-        def backup_directory
-          Pathname.new("#{install_directory.to_s}.bak")
-        end
-
         def plist_destination
           install_directory.join('Extensions.plist')
         end
 
         def install_directory
           @install_directory ||= (
-            data_dir = Pathname.new(@custom_data_dir || safari_data_dir)
+            data_dir = Pathname.new(@data_dir || safari_data_dir)
 
             unless data_dir.exist? && data_dir.directory?
               raise Errno::ENOENT, "Safari data directory not found at #{data_dir.to_s}"
@@ -112,6 +110,25 @@ module Selenium
             Pathname.new(ENV['APPDATA']).join('Apple Computer/Safari')
           else
             raise Error::WebDriverError, "unsupported platform: #{current}"
+          end
+        end
+
+        class Backup
+          def initialize
+            @dir = Pathname.new(Dir.mktmpdir('webdriver-safari-backups'))
+            @backups = {}
+          end
+
+          def backup(file)
+            src = file
+            dst = @dir.join(file.basename).to_s
+
+            FileUtils.cp_r src.to_s, dst.to_s
+            @backups[src] = dst
+          end
+
+          def restore_all
+            @backups.each {|src, dst| FileUtils.cp_r dst.to_s, src.to_s }
           end
         end
 

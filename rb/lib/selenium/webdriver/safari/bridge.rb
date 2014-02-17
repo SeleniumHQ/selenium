@@ -6,19 +6,19 @@ module Selenium
         COMMAND_TIMEOUT = 60
 
         def initialize(opts = {})
-          port              = Integer(opts[:port] || PortProber.random)
-          timeout           = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          custom_data_dir   = opts[:custom_data_dir]
-          install_extension = opts.fetch(:install_extension) { true }
+          timeout     = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          caps        = fetch_capability_options(opts)
+          safari_opts = caps['safari.options']
 
           @command_id ||= 0
 
-          if install_extension
-            @extension = Extension.new(:custom_data_dir => custom_data_dir)
+          unless safari_opts['skipExtensionInstallation']
+            @extension = Extension.new(:data_dir => safari_opts['dataDir'])
             @extension.install
           end
 
-          @server = Server.new(port, timeout)
+          # TODO: handle safari_opts['cleanSession']
+          @server = Server.new(safari_opts['port'], timeout)
           @server.start
 
           @safari = Browser.new
@@ -26,7 +26,7 @@ module Selenium
 
           @server.wait_for_connection
 
-          super(:desired_capabilities => :safari)
+          super(desired_capabilities: caps)
         end
 
         def quit
@@ -75,8 +75,8 @@ module Selenium
             raise Error.for_code(status_code), response['value']['message']
           end
 
-          if raw['id'] != @command_id.to_s
-            raise Error::WebDriverError, "response id does not match command id"
+          if raw['id'].to_s != @command_id.to_s
+            raise Error::WebDriverError, "response id does not match command id: #{raw['id']} != #{@command_id}"
           end
 
           response
@@ -101,6 +101,39 @@ module Selenium
           path.gsub! "/", "\\" if Platform.windows?
 
           path
+        end
+
+        def fetch_capability_options(opts)
+          # TODO: deprecate
+          #
+          #   :custom_data_dir (replaced by :data_dir)
+          #   :install_extension (replaced by :skip_extension_installation)
+
+          capabilities   = opts.fetch(:desired_capabilities) { Remote::Capabilities.safari }
+          safari_options = capabilities['safari.options'] ||= {}
+
+          port          = Integer(opts[:port] || safari_options['port'] || PortProber.random)
+          data_dir      = opts[:custom_data_dir] || opts[:data_dir] || safari_options['dataDir']
+          clean_session = opts.fetch(:clean_session) { safari_options['cleanSession'] }
+
+          skip_extension = false
+
+          if opts.key?(:install_extension)
+            skip_extension = !opts[:install_extension]
+          elsif opts.key?(:skip_extension_installation)
+            skip_extension = opts[:skip_extension_installation]
+          elsif safari_options['skipExtensionInstallation'] != nil
+            skip_extension = opts['skipExtensionInstallation']
+          end
+
+          safari_options['port']                      = port
+          safari_options['skipExtensionInstallation'] = skip_extension
+          safari_options['dataDir']                   = data_dir
+          safari_options['cleanSession']              = clean_session
+
+          # TODO: customDriverExtension
+
+          capabilities
         end
 
       end
