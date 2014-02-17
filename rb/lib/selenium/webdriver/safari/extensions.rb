@@ -145,6 +145,8 @@ module Selenium
           def initialize
             @dir     = Pathname.new(Dir.mktmpdir('webdriver-safari-backups'))
             @backups = {}
+
+            FileReaper << @dir.to_s
           end
 
           def backup(file)
