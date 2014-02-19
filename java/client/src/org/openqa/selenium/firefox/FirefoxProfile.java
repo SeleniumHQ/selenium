@@ -16,13 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
+import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
+import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
@@ -40,10 +42,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.Map;
-
-import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
 
 
 public class FirefoxProfile {
@@ -231,52 +229,6 @@ public class FirefoxProfile {
   public void setPreference(String key, int value) {
     additionalPrefs.setPreference(key, value);
   }
-
-  /**
-   * Set proxy preferences for this profile.
-   * 
-   * @param proxy The proxy preferences.
-   * @return The profile, for further settings.
-   * @deprecated This is now handled by the driver itself.
-   */
-  @Deprecated
-  public FirefoxProfile setProxyPreferences(Proxy proxy) {
-    if (proxy.getProxyType() == ProxyType.UNSPECIFIED) {
-      return this;
-    }
-    setPreference("network.proxy.type", proxy.getProxyType().ordinal());
-
-    switch (proxy.getProxyType()) {
-      case MANUAL:// By default, assume we're proxying the lot
-        setPreference("network.proxy.no_proxies_on", "");
-
-        setManualProxyPreference("ftp", proxy.getFtpProxy());
-        setManualProxyPreference("http", proxy.getHttpProxy());
-        setManualProxyPreference("ssl", proxy.getSslProxy());
-        setManualProxyPreference("socks", proxy.getSocksProxy());
-        if (proxy.getNoProxy() != null) {
-          setPreference("network.proxy.no_proxies_on", proxy.getNoProxy());
-        }
-
-        break;
-      case PAC:
-        setPreference("network.proxy.autoconfig_url", proxy.getProxyAutoconfigUrl());
-        break;
-    }
-    return this;
-  }
-
-  private void setManualProxyPreference(String key, String settingString) {
-    if (settingString == null) {
-      return;
-    }
-    String[] hostPort = settingString.split(":");
-    setPreference("network.proxy." + key, hostPort[0]);
-    if (hostPort.length > 1) {
-      setPreference("network.proxy." + key + "_port", Integer.parseInt(hostPort[1]));
-    }
-  }
-
 
   protected Preferences getAdditionalPreferences() {
     return additionalPrefs;
