@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module Safari
 
-      describe 'with custom extension', focus: true do
+      describe 'with custom extension' do
         before { GlobalTestEnv.quit_driver }
         after  { @driver.quit if @driver }
 

@@ -32,7 +32,7 @@ module Selenium
 
           @server.stop
           @safari.stop
-          @extensions && @extensions.uninstall
+          @extensions.uninstall
         end
 
         def driver_extensions

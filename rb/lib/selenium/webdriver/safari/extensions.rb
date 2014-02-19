@@ -100,6 +100,8 @@ module Selenium
 
           install_directory.rmtree if install_directory.exist?
           @backup.restore_all
+
+          nil
         ensure
           @installed = false
         end
