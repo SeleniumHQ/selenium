@@ -66,7 +66,7 @@ java_library(name = "tests",
   deps = [
     ":base",
     "//java/client/src/org/openqa/selenium/interactions",
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:api",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:api",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/support/ui:wait",
