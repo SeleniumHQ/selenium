@@ -11,8 +11,8 @@ dotnet_library(name = "webdriverbackedselenium",
     "//dotnet/src/core:core"
   ],
   resources = [
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/htmlutils.js" : "htmlutils.js"},
     {"//javascript/selenium-atoms:findElement" : "findElement.js" },
     {"//javascript/selenium-atoms:findOption" : "findOption.js" },
     {"//javascript/selenium-atoms:fireEvent" : "fireEvent.js" },
@@ -43,8 +43,8 @@ dotnet_library(name = "webdriverbackedselenium35",
     "//dotnet/src/core:core35"
   ],
   resources = [
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/htmlutils.js" : "htmlutils.js"},
     {"//javascript/selenium-atoms:findElement" : "findElement.js" },
     {"//javascript/selenium-atoms:findOption" : "findOption.js" },
     {"//javascript/selenium-atoms:fireEvent" : "fireEvent.js" },
@@ -75,8 +75,8 @@ dotnet_library(name = "strongnamed",
     "//dotnet/src/core:strongnamed"
   ],
   resources = [
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/htmlutils.js" : "htmlutils.js"},
     {"//javascript/selenium-atoms:findElement" : "findElement.js" },
     {"//javascript/selenium-atoms:findOption" : "findOption.js" },
     {"//javascript/selenium-atoms:fireEvent" : "fireEvent.js" },
@@ -108,8 +108,8 @@ dotnet_library(name = "strongnamed35",
     "//dotnet/src/core:strongnamed35"
   ],
   resources = [
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
+    {"java/client/src/com/thoughtworks/selenium/webdriven/htmlutils.js" : "htmlutils.js"},
     {"//javascript/selenium-atoms:findElement" : "findElement.js" },
     {"//javascript/selenium-atoms:findOption" : "findOption.js" },
     {"//javascript/selenium-atoms:fireEvent" : "fireEvent.js" },
