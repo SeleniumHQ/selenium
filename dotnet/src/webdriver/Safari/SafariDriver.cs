@@ -111,30 +111,5 @@ namespace OpenQA.Selenium.Safari
             // ... and convert it.
             return new Screenshot(base64);
         }
-
-        /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor)this.CommandExecutor;
-            try
-            {
-                executor.Start();
-            }
-            catch (IOException e)
-            {
-                throw new WebDriverException("Unexpected error launching Safari", e);
-            }
-        }
-
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor)this.CommandExecutor;
-            executor.Dispose();
-        }
     }
 }

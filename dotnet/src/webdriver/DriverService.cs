@@ -26,13 +26,14 @@ using System.Net.Sockets;
 using System.Security.Permissions;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Exposes the service provided by a native WebDriver server executable.
     /// </summary>
-    public abstract class DriverService : IDisposable
+    public abstract class DriverService : ICommandServer
     {
         private string driverServicePath;
         private string driverServiceExecutableName;

@@ -1,7 +1,5 @@
-﻿// <copyright file="SafariDriverCommandExecutor.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
+﻿// <copyright file="FirefoxDriverCommandExecutor.cs" company="WebDriver Committers">
+// Copyright 2014 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,33 +16,33 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Firefox.Internal;
 
-namespace OpenQA.Selenium.Safari
+namespace OpenQA.Selenium.Firefox
 {
     /// <summary>
-    /// Provides a way of executing Commands using the SafariDriver.
+    /// Provides a way of executing Commands using the FirefoxDriver.
     /// </summary>
-    public class SafariDriverCommandExecutor : ICommandExecutor
+    public class FirefoxDriverCommandExecutor : ICommandExecutor
     {
-        private SafariDriverServer server;
+        private FirefoxDriverServer server;
+        private HttpCommandExecutor internalExecutor;
+        private TimeSpan commandTimeout;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafariDriverCommandExecutor"/> class.
+        /// Initializes a new instance of the <see cref="FirefoxDriverCommandExecutor"/> class.
         /// </summary>
-        /// <param name="options">The <see cref="SafariOptions"/> used to create the command executor.</param>
-        public SafariDriverCommandExecutor(SafariOptions options)
+        /// <param name="binary">The <see cref="FirefoxBinary"/> on which to make the connection.</param>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> creating the connection.</param>
+        /// <param name="host">The name of the host on which to connect to the Firefox extension (usually "localhost").</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public FirefoxDriverCommandExecutor(FirefoxBinary binary, FirefoxProfile profile, string host, TimeSpan commandTimeout)
         {
-            this.server = new SafariDriverServer(options);
+            this.server = new FirefoxDriverServer(binary, profile, host);
+            this.commandTimeout = commandTimeout;
         }
 
         /// <summary>
@@ -58,13 +56,14 @@ namespace OpenQA.Selenium.Safari
             if (commandToExecute.Name == DriverCommand.NewSession)
             {
                 this.server.Start();
+                this.internalExecutor = new HttpCommandExecutor(this.server.ExtensionUri, this.commandTimeout);
             }
 
             // Use a try-catch block to catch exceptions for the Quit
             // command, so that we can get the finally block.
             try
             {
-                toReturn = this.server.SendCommand(commandToExecute);
+                toReturn = this.internalExecutor.Execute(commandToExecute);
             }
             finally
             {

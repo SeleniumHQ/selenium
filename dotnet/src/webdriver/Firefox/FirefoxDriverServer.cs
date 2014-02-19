@@ -1,7 +1,5 @@
-﻿// <copyright file="ExtensionConnection.cs" company="WebDriver Committers">
-// Copyright 2007-2011 WebDriver committers
-// Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservancy
+﻿// <copyright file="FirefoxDriverServer.cs" company="WebDriver Committers">
+// Copyright 2014 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,43 +16,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+using System.Linq;
 using System.Text;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Firefox.Internal;
+using System.Net.Sockets;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Globalization;
 
-namespace OpenQA.Selenium.Firefox.Internal
+namespace OpenQA.Selenium.Firefox
 {
     /// <summary>
-    /// Represents the connection to the WebDriver Firefox extension.
+    /// Provides methods for launching Firefox with the WebDriver extension installed.
     /// </summary>
-    internal class ExtensionConnection : IExtensionConnection
+    public class FirefoxDriverServer : ICommandServer
     {
-        #region Private members
+        private string host;
         private List<IPEndPoint> addresses = new List<IPEndPoint>();
         private FirefoxProfile profile;
         private FirefoxBinary process;
-        private HttpCommandExecutor executor;
-        private string host;
-        private TimeSpan timeout;
-        #endregion
+        private Uri extensionUri;
 
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExtensionConnection"/> class.
+        /// Initializes a new instance of the <see cref="FirefoxDriverServer"/> class.
         /// </summary>
         /// <param name="binary">The <see cref="FirefoxBinary"/> on which to make the connection.</param>
         /// <param name="profile">The <see cref="FirefoxProfile"/> creating the connection.</param>
         /// <param name="host">The name of the host on which to connect to the Firefox extension (usually "localhost").</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public ExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, string host, TimeSpan commandTimeout)
+        public FirefoxDriverServer(FirefoxBinary binary, FirefoxProfile profile, string host)
         {
             this.host = host;
-            this.timeout = commandTimeout;
-            this.profile = profile;
+            if (profile == null)
+            {
+                this.profile = new FirefoxProfile();
+            }
+            else
+            {
+                this.profile = profile;
+            }
+
             if (binary == null)
             {
                 this.process = new FirefoxBinary();
@@ -63,20 +64,18 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 this.process = binary;
             }
-        } 
-        #endregion
-
-        /// <summary>
-        /// Gets the <see cref="FirefoxProfile"/> associated with this connection.
-        /// </summary>
-        public FirefoxProfile Profile
-        {
-            get { return this.profile; }
         }
 
-        #region IExtensionConnection Members
         /// <summary>
-        /// Starts the connection to the extension.
+        /// Gets the <see cref="Uri"/> for communicating with this server.
+        /// </summary>
+        public Uri ExtensionUri
+        {
+            get { return this.extensionUri; }
+        }
+
+        /// <summary>
+        /// Starts the server.
         /// </summary>
         public void Start()
         {
@@ -94,7 +93,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     this.SetAddress(portToUse);
 
                     // TODO (JimEvans): Get a better url algorithm.
-                    this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)), this.timeout);
+                    this.extensionUri = new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse));
                     this.ConnectToBrowser(this.process.Timeout);
                 }
                 finally
@@ -105,30 +104,33 @@ namespace OpenQA.Selenium.Firefox.Internal
         }
 
         /// <summary>
-        /// Closes the connection to the extension.
+        /// Releases all resources used by the <see cref="FirefoxDriverServer"/>.
         /// </summary>
-        public void Quit()
+        public void Dispose()
         {
-            // This should only be called after the QUIT command has been sent,
-            // so go ahead and clean up our process and profile.
-            this.process.Quit();
-            this.profile.Clean();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region ICommandExecutor Members
         /// <summary>
-        /// Executes a command
+        /// Releases the unmanaged resources used by the <see cref="FirefoxDriverServer"/> and optionally 
+        /// releases the managed resources.
         /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A response from the browser</returns>
-        public Response Execute(Command commandToExecute)
+        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
-            return this.executor.Execute(commandToExecute);
-        }
-        #endregion
+            if (disposing)
+            {
+                // This should only be called after the QUIT command has been sent,
+                // so go ahead and clean up our process and profile.
+                this.process.Quit();
+                this.profile.Clean();
+            }
 
-        #region Support methods
+            GC.SuppressFinalize(this);
+        }
+
         private static int DetermineNextFreePort(string host, int port)
         {
             // Attempt to connect to the given port on the host
@@ -259,7 +261,18 @@ namespace OpenQA.Selenium.Firefox.Internal
                 {
                     if (extensionSocket == null || extensionSocket.RemoteEndPoint == null)
                     {
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} ms", timeToWait.TotalMilliseconds));
+                        StringBuilder addressBuilder = new StringBuilder();
+                        foreach (IPEndPoint address in this.addresses)
+                        {
+                            if (addressBuilder.Length > 0)
+                            {
+                                addressBuilder.Append(", ");
+                            }
+
+                            addressBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}:{1}", address.Address.ToString(), address.Port.ToString(CultureInfo.InvariantCulture));
+                        }
+
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} ms. Attempted to connect to the following addresses: {1}", timeToWait.TotalMilliseconds, addressBuilder.ToString()));
                     }
                     else
                     {
@@ -274,6 +287,5 @@ namespace OpenQA.Selenium.Firefox.Internal
                 extensionSocket.Close();
             }
         }
-        #endregion
     }
 }

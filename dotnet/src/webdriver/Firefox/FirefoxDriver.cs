@@ -226,31 +226,6 @@ namespace OpenQA.Selenium.Firefox
 
         #region Support methods
         /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            try
-            {
-                ExtensionConnection connection = (ExtensionConnection)this.CommandExecutor;
-                connection.Profile.AddWebDriverExtension();
-                ((ExtensionConnection)this.CommandExecutor).Start();
-            }
-            catch (IOException e)
-            {
-                throw new WebDriverException("An error occurred while connecting to Firefox", e);
-            }
-        }
-
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            ((ExtensionConnection)this.CommandExecutor).Quit();
-        }
-
-        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
@@ -333,7 +308,7 @@ namespace OpenQA.Selenium.Firefox
             return profile;
         }
 
-        private static ExtensionConnection CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
+        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
         {
             FirefoxProfile profileToUse = profile;
 
@@ -347,8 +322,8 @@ namespace OpenQA.Selenium.Firefox
                 profileToUse = new FirefoxProfile();
             }
 
-            ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost", commandTimeout);
-            return extension;
+            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
+            return executor;
         }
 
         private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
