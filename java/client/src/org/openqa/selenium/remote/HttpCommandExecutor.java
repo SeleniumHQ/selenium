@@ -496,15 +496,15 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     return response;
   }
 
-  private static CommandInfo get(String url) {
+  protected static CommandInfo get(String url) {
     return new CommandInfo(url, HttpVerb.GET);
   }
 
-  private static CommandInfo post(String url) {
+  protected static CommandInfo post(String url) {
     return new CommandInfo(url, HttpVerb.POST);
   }
 
-  private static CommandInfo delete(String url) {
+  protected static CommandInfo delete(String url) {
     return new CommandInfo(url, HttpVerb.DELETE);
   }
 
