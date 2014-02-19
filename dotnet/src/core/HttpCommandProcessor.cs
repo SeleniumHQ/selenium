@@ -150,6 +150,7 @@ namespace Selenium
         /// <summary>
         /// Sets the extension Javascript to be used in the created session
         /// </summary>
+        /// <param name="extensionJs">The extension JavaScript to use.</param>
         public void SetExtensionJs(string extensionJs) 
         {
             this.extensionJs = extensionJs;

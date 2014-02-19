@@ -904,6 +904,13 @@ namespace OpenQA.Selenium.Remote
             return toReturn;
         }
 
+        /// <summary>
+        /// Executes JavaScript in the context of the currently selected frame or window using a specific command.
+        /// </summary>
+        /// <param name="script">The JavaScript code to execute.</param>
+        /// <param name="commandName">The name of the command to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <returns>The value returned by the script.</returns>
         protected object ExecuteScriptCommand(string script, string commandName, params object[] args)
         {
             if (!this.Capabilities.IsJavaScriptEnabled)
