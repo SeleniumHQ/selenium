@@ -6,7 +6,7 @@ java_test(name = "test",
     "WaitTests.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
+    "//java/client/src/com/thoughtworks/selenium/webdriven",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/test/com/thoughtworks/selenium/condition:test",
