@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.40.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to synchronize with release of Selenium project.
+
 v2.39.0.7
 =========
  * Improved error message for findElements in the failure case.
