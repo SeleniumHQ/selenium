@@ -1,8 +1,8 @@
 com.thoughtworks.selenium
 com.thoughtworks.selenium.condition
+com.thoughtworks.selenium.webdriven
+com.thoughtworks.selenium.webdriven.commands
 org.openqa.selenium
-org.openqa.selenium.android
-org.openqa.selenium.android.library
 org.openqa.selenium.browserlaunchers
 org.openqa.selenium.browserlaunchers.locators
 org.openqa.selenium.chrome
@@ -16,7 +16,6 @@ org.openqa.selenium.interactions.internal
 org.openqa.selenium.interactions.touch
 org.openqa.selenium.internal
 org.openqa.selenium.io
-org.openqa.selenium.iphone
 org.openqa.selenium.lift
 org.openqa.selenium.lift.find
 org.openqa.selenium.lift.match
