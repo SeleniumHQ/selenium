@@ -33,6 +33,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -47,7 +48,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isLocal;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
@@ -55,7 +55,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -254,45 +253,16 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
-    if (SauceDriver.shouldUseSauce() && isInternetExplorer(driver)) {
-      // Sauce opens about:blank after the browser loads, which IE doesn't include in history
-      // Navigate back past it, so when we do the next navigation back, there is nothing to go
-      // back to, rather than skipping past about:blank (whose title we will get as originalTitle)
-      // to whatever as before (the WebDriver placeholder page).
-      driver.navigate().back();
-    }
-
+    ((JavascriptExecutor) driver).executeScript(
+        "window.open('" + pages.formPage + "', 'newWindow')");
+    driver.switchTo().window("newWindow");
     String originalTitle = driver.getTitle();
-    driver.get(pages.formPage);
-
+    driver.get(pages.blankPage);
+    wait.until(not(titleIs(originalTitle)));
     driver.navigate().back();
-    // We may have returned to the browser's home page
-    wait.until(either(titleIs(originalTitle), titleIs("We Leave From Here")));
-  }
-
-  /**
-   * A logical OR of the two given conditions.
-   * TODO: Move to ExpectedConditions: generalize to N conditions, unit test.
-   */
-  public static ExpectedCondition<Object> either(
-      final ExpectedCondition<?> one,
-      final ExpectedCondition<?> two) {
-    return new ExpectedCondition<Object>() {
-      @Override
-      public Object apply(WebDriver driver) {
-        Object result = one.apply(driver);
-        if (result != null && !Boolean.FALSE.equals(result)) {
-          return result;
-        } else {
-          return two.apply(driver);
-        }
-      }
-
-      @Override
-      public String toString() {
-        return "either of the conditions to be valid: " + one + ", " + two;
-      }
-    };
+    wait.until(titleIs(originalTitle));
+    driver.navigate().back(); // Nothing to go back to, must stay.
+    assertThat(driver.getTitle(), equalTo(originalTitle));
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
