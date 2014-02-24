@@ -147,7 +147,11 @@ class frame_to_be_available_and_switch_to_it(object):
 
     def __call__(self, driver):
         try:
-            driver.switch_to_frame(self.frame_locator)
+            if isinstance(self.frame_locator, tuple):
+                driver.switch_to_frame(_find_element(driver,
+                                                     self.frame_locator))
+            else:
+                driver.switch_to_frame(self.frame_locator)
             return True
         except NoSuchFrameException:
             return False
