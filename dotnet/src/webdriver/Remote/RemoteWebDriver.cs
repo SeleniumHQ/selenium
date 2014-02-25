@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices, IHasCapabilities, IAllowsFileDetection
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IAllowsFileDetection
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -701,6 +701,22 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
             return this.FindElements("css selector", cssSelector);
+        }
+        #endregion
+
+        #region ITakesScreenshot Members
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetScreenshot()
+        {
+            // Get the screenshot as base64.
+            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
+            string base64 = screenshotResponse.Value.ToString();
+
+            // ... and convert it.
+            return new Screenshot(base64);
         }
         #endregion
 

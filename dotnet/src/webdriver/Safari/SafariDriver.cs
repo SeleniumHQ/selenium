@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Safari
     /// }
     /// </code>
     /// </example>
-    public class SafariDriver : RemoteWebDriver, ITakesScreenshot
+    public class SafariDriver : RemoteWebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class.
@@ -96,20 +96,6 @@ namespace OpenQA.Selenium.Safari
         {
             get { return base.FileDetector; }
             set { }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
-        {
-            // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
-            return new Screenshot(base64);
         }
     }
 }
