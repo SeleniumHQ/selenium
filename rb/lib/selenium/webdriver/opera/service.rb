@@ -7,7 +7,7 @@ module Selenium
       #
 
       class Service
-        MISSING_TEXT = 'Unable to find the Selenium server jar.  Please download the standalone server from http://code.google.com/p/selenium/downloads/list and set the SELENIUM_SERVER_JAR environmental variable to its location.  More info at http://code.google.com/p/selenium/wiki/OperaDriver.'
+        MISSING_TEXT = 'Unable to find the Selenium server jar.  Please download the standalone server from http://selenium-release.storage.googleapis.com/index.html and set the SELENIUM_SERVER_JAR environmental variable to its location.  More info at http://code.google.com/p/selenium/wiki/OperaDriver.'
 
         def self.selenium_server_jar
           @selenium_server_jar ||= (
