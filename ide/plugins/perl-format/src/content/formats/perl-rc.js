@@ -30,9 +30,9 @@ string = function(value) {
 		value = value.replace(/\'/g, '\\\'');
 		value = value.replace(/\r/g, '\\r');
 		value = value.replace(/\n/g, '\\n');
-		return '\'' + value + '\'';
+		return "'" + value + "'";
 	} else {
-		return '\'\'';
+		return "'";
 	}
 }
 
