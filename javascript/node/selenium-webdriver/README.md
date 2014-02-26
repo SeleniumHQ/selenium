@@ -11,7 +11,7 @@ implementations you wish to utilize. As of 2.34.0, `selenium-webdriver`
 natively supports the [ChromeDriver](http://chromedriver.storage.googleapis.com/index.html).
 Simply download a copy and make sure it can be found on your `PATH`. The other
 drivers (e.g. Firefox, Internet Explorer, and Safari), still require the
-[standalone Selenium server](https://code.google.com/p/selenium/downloads/list).
+[standalone Selenium server](http://selenium-release.storage.googleapis.com/index.html).
 
 ### Running the tests
 
@@ -22,7 +22,7 @@ sure it can be found on your `PATH`.
     npm test selenium-webdriver
 
 To run the tests against multiple browsers, download the
-[Selenium server](https://code.google.com/p/selenium/downloads/list) and
+[Selenium server](http://selenium-release.storage.googleapis.com/index.html) and
 specify its location through the `SELENIUM_SERVER_JAR` environment variable.
 You can use the `SELENIUM_BROWSER` environment variable to define a
 comma-separated list of browsers you wish to test against. For example:
