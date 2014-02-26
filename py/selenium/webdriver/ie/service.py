@@ -69,7 +69,7 @@ class Service(object):
         except:
             raise WebDriverException(
                 "IEDriver executable needs to be available in the path. \
-                Please download from http://code.google.com/p/selenium/downloads/list\
+                Please download from http://selenium-release.storage.googleapis.com/index.html\
                 and read up at http://code.google.com/p/selenium/wiki/InternetExplorerDriver")
         count = 0
         while not utils.is_url_connectable(self.port):

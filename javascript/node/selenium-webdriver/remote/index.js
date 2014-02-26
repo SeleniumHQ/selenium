@@ -256,7 +256,7 @@ DriverService.prototype.stop = function() {
 
 /**
  * Manages the life and death of the Selenium standalone server. The server
- * may be obtained from https://code.google.com/p/selenium/downloads/list.
+ * may be obtained from http://selenium-release.storage.googleapis.com/index.html.
  * @param {string} jar Path to the Selenium server jar.
  * @param {!SeleniumServer.Options} options Configuration options for the
  *     server.
