@@ -27,14 +27,12 @@ var formatter = this;
 string = function(value) {
 	if (value != null) {
 		value = value.replace(/\\/g, '\\\\');
-		value = value.replace(/\"/g, '\\"');
+		value = value.replace(/\'/g, '\\\'');
 		value = value.replace(/\r/g, '\\r');
 		value = value.replace(/\n/g, '\\n');
-		value = value.replace(/@/g, '\\@');
-		value = value.replace(/\$/g, '\\$');
-		return '"' + value + '"';
+		return '\'' + value + '\'';
 	} else {
-		return '""';
+		return '\'\'';
 	}
 }
 
