@@ -22,5 +22,5 @@ import org.openqa.selenium.remote.DriverCommand;
 final class ChromeDriverCommand implements DriverCommand {
   private ChromeDriverCommand(){}
 
-  static final String LAUNCH_APP = "launchApp";
+  static final String LAUNCH_APP = "chromium.launchApp";
 }
