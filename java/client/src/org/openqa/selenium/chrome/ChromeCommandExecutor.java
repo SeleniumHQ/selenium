@@ -62,7 +62,7 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
    * Creates a new ChromeCommandExecutor which will communicate with the chromedriver as configured
    * by the given {@code service}.
    * 
-   * @param service The ChromeDriverService to send commands to.
+   * @param serviceUrl The URL of the service to communicate with.
    */
   public ChromeCommandExecutor(URL serviceUrl) {
     super(CHROME_COMMANDS_NAME_TO_URL, serviceUrl);
