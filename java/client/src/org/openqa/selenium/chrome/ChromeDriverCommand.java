@@ -19,6 +19,8 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.remote.DriverCommand;
 
-public interface ChromeDriverCommand extends DriverCommand {
-  String LAUNCH_APP = "launchApp";
+final class ChromeDriverCommand implements DriverCommand {
+  private ChromeDriverCommand(){}
+
+  static final String LAUNCH_APP = "launchApp";
 }
