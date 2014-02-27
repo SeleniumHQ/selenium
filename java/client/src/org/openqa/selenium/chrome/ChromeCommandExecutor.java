@@ -41,11 +41,11 @@ import java.util.HashMap;
  */
 class ChromeCommandExecutor extends HttpCommandExecutor {
 
-  private final ChromeDriverService service;
-
   private static final Map<String, CommandInfo> CHROME_COMMANDS_NAME_TO_URL = ImmutableMap.of(
       ChromeDriverCommand.LAUNCH_APP,
       post("/session/:sessionId/chromium/launch_app"));
+
+  private final ChromeDriverService service;
 
   /**
    * Creates a new ChromeCommandExecutor which will communicate with the chromedriver as configured
