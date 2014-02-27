@@ -43,7 +43,7 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
 
   private final ChromeDriverService service;
 
-  private final static Map<String, CommandInfo> chromeCommandsNameToUrl = ImmutableMap.of(
+  private static final Map<String, CommandInfo> CHROME_COMMANDS_NAME_TO_URL = ImmutableMap.of(
       ChromeDriverCommand.LAUNCH_APP,
       post("/session/:sessionId/chromium/launch_app"));
 
@@ -54,7 +54,7 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
    * @param service The ChromeDriverService to send commands to.
    */
   public ChromeCommandExecutor(ChromeDriverService service) {
-    super(chromeCommandsNameToUrl, service.getUrl());
+    super(CHROME_COMMANDS_NAME_TO_URL, service.getUrl());
     this.service = service;
   }
 
@@ -65,7 +65,7 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
    * @param service The ChromeDriverService to send commands to.
    */
   public ChromeCommandExecutor(URL serviceUrl) {
-    super(chromeCommandsNameToUrl, serviceUrl);
+    super(CHROME_COMMANDS_NAME_TO_URL, serviceUrl);
     this.service = null;
   }
 
