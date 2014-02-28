@@ -45,10 +45,11 @@ class WebDriver(RemoteWebDriver):
          - service_args : A List of command line arguments to pass to PhantomJS
          - service_log_path: Path for phantomjs service to log to.
         """
+        service_args=service_args[:]
         self.service = Service(executable_path, port=port,
             service_args=service_args, log_path=service_log_path)
         self.service.start()
-
+        
         try:
             RemoteWebDriver.__init__(self,
                 command_executor=self.service.service_url,
