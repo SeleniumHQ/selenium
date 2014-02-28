@@ -372,7 +372,7 @@ class WebDriver(object):
          - css_selector: The css selector to use when finding elements.
 
         :Usage:
-            driver.find_element_by_css_selector('#foo')
+            driver.find_elements_by_css_selector('.foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
