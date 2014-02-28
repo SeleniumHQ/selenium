@@ -14,7 +14,10 @@
 
 
 """WebElement implementation."""
-import hashlib
+try: 
+   from hashlib import md5
+except ImportError:
+   from md5 import md5
 import os
 import zipfile
 try:
@@ -24,8 +27,8 @@ except ImportError:  # 3+
 import base64
 
 
-from .command import Command
-from selenium.common.exceptions import WebDriverException 
+from command import Command
+from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -384,7 +387,7 @@ class WebElement(object):
                              {"using": by, "value": value})['value']
 
     def __hash__(self):
-        return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = StringIO()
@@ -394,7 +397,7 @@ class WebElement(object):
         try:
             return self._execute(Command.UPLOAD_FILE, 
                             {'file': base64.encodestring(fp.getvalue())})['value']
-        except WebDriverException as e:
+        except WebDriverException, e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename
             elif "Command not found: POST " in e.__str__():

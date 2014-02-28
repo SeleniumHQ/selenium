@@ -15,10 +15,12 @@
 The WebDriver implementation.
 """
 import base64
-from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
-from .errorhandler import ErrorHandler
+import sys
+import __builtin__
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
@@ -29,6 +31,42 @@ try:
     str = basestring
 except NameError:
     pass
+
+# For Python 2.5-, this will enable the simliar property mechanism as in
+# Python 2.6+/3.0+. The code is based on
+# http://bruynooghe.blogspot.com/2008/04/xsetter-syntax-in-python-25.html
+if sys.version_info[:2] <= (2, 5):
+  # If you need to acces original built-in propery(), uncomment the next line.
+  # __builtin__._property = property
+  class property(property):
+
+      def __init__(self, fget, *args, **kwargs):
+          self.__doc__ = fget.__doc__
+          super(property, self).__init__(fget, *args, **kwargs)
+
+
+      def setter(self, fset):
+          cls_ns = sys._getframe(1).f_locals
+          for k, v in cls_ns.iteritems():
+              if v == self:
+                  propname = k
+                  break
+          cls_ns[propname] = property(self.fget, fset,
+                                      self.fdel, self.__doc__)
+          return cls_ns[propname]
+
+
+      def deleter(self, fdel):
+          cls_ns = sys._getframe(1).f_locals
+          for k, v in cls_ns.iteritems():
+              if v == self:
+                  propname = k
+                  break
+          cls_ns[propname] = property(self.fget, self.fset,
+                                      fdel, self.__doc__)
+          return cls_ns[propname]
+
+  __builtin__.property = property
 
 class WebDriver(object):
     """
@@ -61,7 +99,7 @@ class WebDriver(object):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or type(self.command_executor) is str:
+        if isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
@@ -183,7 +221,10 @@ class WebDriver(object):
             driver.title
         """
         resp = self.execute(Command.GET_TITLE)
-        return resp['value'] if resp['value'] is not None else ""
+        if resp['value'] is not None:
+            return resp['value']
+        else:
+            return ""
 
     def find_element_by_id(self, id_):
         """Finds an element by id.
@@ -714,12 +755,13 @@ class WebDriver(object):
         """
         png = self.get_screenshot_as_png()
         try:
-            with open(filename, 'wb') as f:
-                f.write(png)
+            f = open(filename, 'wb')
+            f.write(png)
+            f.close()
         except IOError:
-            return False
-        finally:
             del png
+            return False
+        del png
         return True
 
     save_screenshot = get_screenshot_as_file

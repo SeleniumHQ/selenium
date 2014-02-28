@@ -78,11 +78,11 @@ class ErrorHandler(object):
     def check_response(self, response):
         """
         Checks that a JSON response from the WebDriver does not have an error.
-        
+
         :Args:
          - response - The JSON response from the WebDriver server as a dictionary
            object.
-        
+
         :Raises: If the response contains an error message.
         """
         status = response['status']
@@ -164,4 +164,8 @@ class ErrorHandler(object):
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):
-      return obj[key] if key in obj else default
+        if key in obj:
+            return obj[key]
+        else:
+            return default
+

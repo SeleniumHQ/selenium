@@ -21,16 +21,24 @@ try:
     import http.client as httplib
     from urllib import request as url_request
     from urllib import parse
-except ImportError: # above is available in py3+, below is py2.7
+except ImportError:
+    # above is available in py3+, below is py2.7
     import httplib as httplib
     import urllib2 as url_request
-    import urlparse as parse
+    from selenium.webdriver.common import urlparser as parse
 
-from .command import Command
-from .errorhandler import ErrorCode
-from . import utils
+from command import Command
+from errorhandler import ErrorCode
+import utils
 
 LOGGER = logging.getLogger(__name__)
+
+
+def any(iterable):
+    for element in iterable:
+        if element:
+            return True
+    return False
 
 
 class Request(url_request.Request):
@@ -51,6 +59,8 @@ class Request(url_request.Request):
         elif method != 'POST' and method != 'PUT':
             data = None
         self._method = method
+        self._Request__fragment = None
+        self._tunnel_host = None
         url_request.Request.__init__(self, url, data=data)
 
     def get_method(self):

@@ -17,6 +17,12 @@
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 
+def all(iterable):
+    for element in iterable:
+        if not element:
+            return False
+    return True
+
 class Select:
 
     def __init__(self, webelement):

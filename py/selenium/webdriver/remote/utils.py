@@ -12,8 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 import logging
 import os
 import tempfile
@@ -100,6 +102,6 @@ def unzip_to_temp_dir(zip_file_name):
         LOGGER.info("Unzipped file can be found at %s" % tempdir)
         return tempdir
 
-    except IOError as err:
+    except IOError, err:
         LOGGER.error("Error in extracting webdriver.xpi: %s" % err)
         return None
