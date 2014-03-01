@@ -44,6 +44,8 @@ class Service(object):
             self.port = utils.free_port()
         if self.service_args is None:
             self.service_args = []
+        else:
+            self.service_args=service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         if not log_path:
