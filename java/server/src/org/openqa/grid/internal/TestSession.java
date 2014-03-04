@@ -263,8 +263,9 @@ public class TestSession {
           }
 
           final byte[] bytes = drainInputStream(in);
+          
           writeRawBody(response, bytes);
-
+          contentBeingForwarded = bytes;
         } finally {
           EntityUtils.consume(responseBody);
         }
