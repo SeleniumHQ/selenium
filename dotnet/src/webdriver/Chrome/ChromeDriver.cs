@@ -83,11 +83,11 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-		/// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified driver service.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified driver service.
         /// </summary>
-		/// <param name="service">The <see cref="ChromeDriverService"/> used to initialize the driver.</param>
-		public ChromeDriver(ChromeDriverService service)
-			: this(service, new ChromeOptions())
+        /// <param name="service">The <see cref="ChromeDriverService"/> used to initialize the driver.</param>
+        public ChromeDriver(ChromeDriverService service)
+            : this(service, new ChromeOptions())
         {
         }
 
