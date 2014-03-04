@@ -16,10 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Cookie {
+public class Cookie implements Serializable {
+  private static final long serialVersionUID = 4115876353625612383L;
+
   private final String name;
   private final String value;
   private final String path;
