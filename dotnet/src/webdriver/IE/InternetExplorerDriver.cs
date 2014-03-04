@@ -86,6 +86,15 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified driver service.
+        /// </summary>
+        /// <param name="service">The <see cref="InternetExplorerDriverService"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(InternetExplorerDriverService service)
+            : this(service, new InternetExplorerOptions())
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path 
         /// to the directory containing IEDriverServer.exe.
         /// </summary>
