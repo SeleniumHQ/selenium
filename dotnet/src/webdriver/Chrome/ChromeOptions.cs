@@ -422,6 +422,7 @@ namespace OpenQA.Selenium.Chrome
                 capabilityName == ChromeOptions.DetachChromeOption ||
                 capabilityName == ChromeOptions.DebuggerAddressChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
+                capabilityName == ChromeOptions.ExcludeSwitchesChromeOption ||
                 capabilityName == ChromeOptions.MinidumpPathChromeOption)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
