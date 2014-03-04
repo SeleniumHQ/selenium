@@ -49,9 +49,7 @@ namespace OpenQA.Selenium.Chrome
     /// <para>For use with RemoteWebDriver:</para>
     /// <para></para>
     /// <code>
-    /// DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
-    /// capabilities.SetCapability(ChromeOptions.Capability, options);
-    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), capabilities);
+    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
     public class ChromeOptions
