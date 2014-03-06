@@ -143,11 +143,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
-    Object tm = this.config.get(RegistrationRequest.STATUS_CHECK_TIMEOUT);
-    if (tm == null) {
-      tm = new Integer(0);
-    }
-    statusCheckTimeout = ((Integer) tm).intValue();
+    statusCheckTimeout = getConfigInteger(RegistrationRequest.STATUS_CHECK_TIMEOUT);
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -178,6 +174,9 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   private Integer getConfigInteger(String key){
     Object o = this.config.get(key);
+    if (o == null) {
+      return 0;
+    }
     if (o instanceof String){
       return Integer.parseInt((String)o);
     }
