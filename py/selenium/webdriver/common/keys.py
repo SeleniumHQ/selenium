@@ -38,7 +38,7 @@ class Keys(object):
     CONTROL      = '\ue009'
     LEFT_CONTROL = CONTROL
     ALT          = '\ue00a'
-    LEFT_ALT     = LEFT_ALT
+    LEFT_ALT     = ALT
     PAUSE        = '\ue00b'
     ESCAPE       = '\ue00c'
     SPACE        = '\ue00d'
