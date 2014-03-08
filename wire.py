@@ -1624,6 +1624,7 @@ A JSON object describing a Cookie.
 || path || string || (Optional) The cookie path.^1^ ||
 || domain || string || (Optional) The domain the cookie is visible to.^1^ ||
 || secure || boolean || (Optional) Whether the cookie is a secure cookie.^1^ ||
+|| httpOnly || boolean || (Optional) Whether the cookie is an httpOnly cookie.^1^ ||
 || expiry || number || (Optional) When the cookie expires, specified in \
 seconds since midnight, January 1, 1970 UTC.^1^ ||
 
