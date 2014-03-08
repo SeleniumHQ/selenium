@@ -387,10 +387,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
@@ -406,10 +402,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_async_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_ASYNC_SCRIPT,
             {'script': script, 'args':converted_args})['value']
