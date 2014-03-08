@@ -40,11 +40,15 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class CookieImplementationTest extends JUnit4TestBase {
 
@@ -357,6 +361,21 @@ public class CookieImplementationTest extends JUnit4TestBase {
     Cookie retrieved = driver.manage().getCookieNamed("fish");
     assertNotNull(retrieved);
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
+  }
+
+  @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Test
+  public void testRetainsHttpOnlyFlag() {
+    Cookie addedCookie =
+        new Cookie.Builder("fish", "cod")
+            .path("/common/animals")
+            .isHttpOnly(true)
+            .build();
+    driver.manage().addCookie(addedCookie);
+
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+    assertTrue(retrieved.isHttpOnly());
   }
 
   @Ignore(ANDROID)

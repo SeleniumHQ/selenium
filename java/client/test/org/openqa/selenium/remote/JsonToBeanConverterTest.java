@@ -224,7 +224,7 @@ public class JsonToBeanConverterTest {
   @Test
   public void testShouldConvertObjectsInArraysToMaps() throws Exception {
     Date date = new Date();
-    Cookie cookie = new Cookie("foo", "bar", "/rooted", date);
+    Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
     String rawJson = new BeanToJsonConverter().convert(Collections.singletonList(cookie));
     List<?> list = new JsonToBeanConverter().convert(List.class, rawJson);
@@ -235,7 +235,10 @@ public class JsonToBeanConverterTest {
     Map<?,?> map = (Map<?,?>) first;
     assertMapEntry(map, "name", "foo");
     assertMapEntry(map, "value", "bar");
+    assertMapEntry(map, "domain", "localhost");
     assertMapEntry(map, "path", "/rooted");
+    assertMapEntry(map, "secure", true);
+    assertMapEntry(map, "httpOnly", true);
     assertMapEntry(map, "expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
   }
 
