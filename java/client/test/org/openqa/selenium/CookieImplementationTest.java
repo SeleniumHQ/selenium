@@ -53,12 +53,16 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 public class CookieImplementationTest extends JUnit4TestBase {
 
   private DomainHelper domainHelper;
+  private String cookiePage;
   private static final Random random = new Random();
 
   @Before
   public void setUp() throws Exception {
     domainHelper = new DomainHelper(appServer);
+    cookiePage = domainHelper.getUrlForFirstValidHostname("/common/cookie");
     assumeTrue(domainHelper.checkIsOnValidHostname());
+
+    deleteAllCookiesOnServerSide();
 
     // This page is the deepest page we go to in the cookie tests
     // We go to it to ensure that cookies with /common/... paths are deleted
@@ -84,8 +88,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     String value = "set";
     assertCookieIsNotPresentWithName(key);
 
-    ((JavascriptExecutor) driver).executeScript(
-        "document.cookie = arguments[0] + '=' + arguments[1];", key, value);
+    addCookieOnServerSide(new Cookie(key, value));
 
     Cookie cookie = driver.manage().getCookieNamed(key);
     assertEquals(value, cookie.getValue());
@@ -101,6 +104,9 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     driver.manage().addCookie(cookie);
 
+    assertCookieHasValue(key, value);
+
+    openAnotherPage();
     assertCookieHasValue(key, value);
   }
 
@@ -121,7 +127,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().addCookie(one);
     driver.manage().addCookie(two);
 
-    driver.get(domainHelper.getUrlForFirstValidHostname("simpleTest.html"));
+    openAnotherPage();
     cookies = driver.manage().getCookies();
     assertEquals(countBefore + 2, cookies.size());
 
@@ -132,11 +138,14 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testDeleteAllCookies() {
-    ((JavascriptExecutor) driver).executeScript("document.cookie = 'foo=set';");
+    addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
 
     driver.manage().deleteAllCookies();
 
+    assertNoCookiesArePresent();
+
+    openAnotherPage();
     assertNoCookiesArePresent();
   }
 
@@ -146,14 +155,18 @@ public class CookieImplementationTest extends JUnit4TestBase {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
 
-    ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=set';", key1);
-    ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=set';", key2);
+    addCookieOnServerSide(new Cookie(key1, "set"));
+    addCookieOnServerSide(new Cookie(key2, "set"));
 
     assertCookieIsPresentWithName(key1);
     assertCookieIsPresentWithName(key2);
 
     driver.manage().deleteCookieNamed(key1);
 
+    assertCookieIsNotPresentWithName(key1);
+    assertCookieIsPresentWithName(key2);
+
+    openAnotherPage();
     assertCookieIsNotPresentWithName(key1);
     assertCookieIsPresentWithName(key2);
   }
@@ -204,7 +217,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
     driver.manage().addCookie(cookie);
 
-    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     assertNull(driver.manage().getCookieNamed(cookieName));
   }
 
@@ -417,7 +430,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   private void assertNoCookiesArePresent() {
     Set<Cookie> cookies = driver.manage().getCookies();
     assertTrue("Cookies were not empty, present: " + cookies,
-        cookies.isEmpty());
+               cookies.isEmpty());
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertEquals("Cookies were not empty", "", documentCookie);
@@ -426,7 +439,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   private void assertSomeCookiesArePresent() {
     assertFalse("Cookies were empty",
-        driver.manage().getCookies().isEmpty());
+                driver.manage().getCookies().isEmpty());
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertNotSame("Cookies were empty", "", documentCookie);
@@ -438,8 +451,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat("Cookie was present with name " + key,
-          documentCookie,
-          not(containsString(key + "=")));
+                 documentCookie,
+                 not(containsString(key + "=")));
     }
   }
 
@@ -455,8 +468,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   private void assertCookieHasValue(final String key, final String value) {
     assertEquals("Cookie had wrong value",
-        value,
-        driver.manage().getCookieNamed(key).getValue());
+                 value,
+                 driver.manage().getCookieNamed(key).getValue());
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat("Cookie was present with name " + key,
@@ -478,5 +491,36 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   private Date someTimeInTheFuture() {
     return new Date(System.currentTimeMillis() + 100000);
+  }
+
+  private void openAnotherPage() {
+    driver.get(domainHelper.getUrlForFirstValidHostname("simpleTest.html"));
+  }
+
+  private void deleteAllCookiesOnServerSide() {
+    driver.get(cookiePage + "?action=deleteAll");
+  }
+
+  private void addCookieOnServerSide(Cookie cookie) {
+    StringBuilder url = new StringBuilder(cookiePage);
+    url.append("?action=add");
+    url.append("&name=").append(cookie.getName());
+    url.append("&value=").append(cookie.getValue());
+    if (cookie.getDomain() != null) {
+      url.append("&domain=").append(cookie.getDomain());
+    }
+    if (cookie.getPath() != null) {
+      url.append("&path=").append(cookie.getPath());
+    }
+    if (cookie.getExpiry() != null) {
+      url.append("&expiry=").append(cookie.getExpiry().getTime());
+    }
+    if (cookie.isSecure()) {
+      url.append("&secure=").append(cookie.isSecure());
+    }
+    if (cookie.isHttpOnly()) {
+      url.append("&httpOnly=").append(cookie.isHttpOnly());
+    }
+    driver.get(url.toString());
   }
 }
