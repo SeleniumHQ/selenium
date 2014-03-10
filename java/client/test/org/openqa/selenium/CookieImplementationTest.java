@@ -376,6 +376,25 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
+  @Ignore(value = {ANDROID, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Test
+  public void testRetainsCookieSecure() {
+    driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
+
+    Cookie addedCookie =
+        new Cookie.Builder("fish", "cod")
+            .path("/common/animals")
+            .isSecure(true)
+            .build();
+    driver.manage().addCookie(addedCookie);
+
+    driver.navigate().refresh();
+
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+    assertTrue(retrieved.isSecure());
+  }
+
   @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsHttpOnlyFlag() {
@@ -384,7 +403,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
             .path("/common/animals")
             .isHttpOnly(true)
             .build();
-    driver.manage().addCookie(addedCookie);
+
+    addCookieOnServerSide(addedCookie);
 
     Cookie retrieved = driver.manage().getCookieNamed("fish");
     assertNotNull(retrieved);
