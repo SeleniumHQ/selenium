@@ -739,6 +739,11 @@ should switch to the page's default content.''').
       AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/frame/parent').
+          Post('''Change focus to the parent context. If the current context is the top level \
+browsing context, the context remains unchanged.'''))
+
+  resources.append(
       SessionResource('/session/:sessionId/window').
       Post('''Change focus to another window. The window to change focus to \
 may be specified by its
