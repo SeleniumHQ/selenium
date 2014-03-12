@@ -354,6 +354,14 @@ public interface WebDriver extends SearchContext {
     WebDriver frame(WebElement frameElement);
 
     /**
+     * Change focus to the parent context. If the current context is the top level browsing context,
+     * the context remains unchanged.
+     *
+     * @return This driver focused on the parent frame
+     */
+    WebDriver parentFrame();
+
+    /**
      * Switch the focus of future commands for this driver to the window with the given name/handle.
      * 
      * @param nameOrHandle The name of the window or the handle as returned by

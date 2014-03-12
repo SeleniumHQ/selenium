@@ -1183,6 +1183,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return HtmlUnitDriver.this;
     }
 
+    public WebDriver parentFrame() {
+      throw new UnsupportedOperationException();
+    }
+
     public WebDriver window(String windowId) {
       try {
         WebWindow window = getWebClient().getWebWindowByName(windowId);

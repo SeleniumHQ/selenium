@@ -65,6 +65,7 @@ public interface DriverCommand {
   String SWITCH_TO_WINDOW = "switchToWindow";
   String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";

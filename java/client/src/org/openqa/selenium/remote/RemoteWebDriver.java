@@ -865,6 +865,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       return RemoteWebDriver.this;
     }
 
+    public WebDriver parentFrame() {
+      execute(DriverCommand.SWITCH_TO_PARENT_FRAME);
+      return RemoteWebDriver.this;
+    }
+
     public WebDriver window(String windowName) {
       execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowName));
       return RemoteWebDriver.this;
