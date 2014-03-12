@@ -271,7 +271,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({ANDROID, CHROME, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
@@ -280,7 +280,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({ANDROID, CHROME, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
@@ -290,7 +290,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({ANDROID, CHROME, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
