@@ -177,6 +177,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(DELETE_ALL_COOKIES, delete("/session/:sessionId/cookie"))
         .put(DELETE_COOKIE, delete("/session/:sessionId/cookie/:name"))
         .put(SWITCH_TO_FRAME, post("/session/:sessionId/frame"))
+        .put(SWITCH_TO_PARENT_FRAME, post("/session/:sessionId/frame/parent"))
         .put(SWITCH_TO_WINDOW, post("/session/:sessionId/window"))
         .put(GET_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"))
         .put(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"))
