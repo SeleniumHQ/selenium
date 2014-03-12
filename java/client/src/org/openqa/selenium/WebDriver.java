@@ -393,7 +393,7 @@ public interface WebDriver extends SearchContext {
      * Switch the focus of future commands for this driver to the context with the given name.
      *
      * @param name The name of the context as returned by
-     *        {@link WebDriver#getContexts()}
+     *        {@link WebDriver#getContextHandles()}
      * @return This driver focused on the given window
      * @throws NoSuchContextException If the context cannot be found
      */
