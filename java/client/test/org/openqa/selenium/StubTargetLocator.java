@@ -47,4 +47,9 @@ public class StubTargetLocator implements WebDriver.TargetLocator {
   public Alert alert() {
     throw new UnsupportedOperationException("alert()");
   }
+
+  @Override
+  public WebDriver context(String name) {
+    throw new UnsupportedOperationException("context(String)");
+  }
 }

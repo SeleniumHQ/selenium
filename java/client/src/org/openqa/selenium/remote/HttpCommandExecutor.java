@@ -197,6 +197,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
 
+        .put(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"))
+        .put(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"))
+        .put(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"))
+
             // TODO (user): Would it be better to combine this command with
             // GET_LOCAL_STORAGE_SIZE?
         .put(GET_LOCAL_STORAGE_ITEM, get("/session/:sessionId/local_storage/key/:key"))

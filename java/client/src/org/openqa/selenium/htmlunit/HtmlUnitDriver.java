@@ -592,6 +592,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return String.valueOf(System.identityHashCode(topWindow));
   }
 
+  @Override
+  public Set<String> getContextHandles() {
+    throw new UnsupportedOperationException("getContextHandles");
+  }
+
+  @Override
+  public String getContext() {
+    throw new UnsupportedOperationException("getContext");
+  }
+
   public Object executeScript(String script, final Object... args) {
     HtmlPage page = getPageToInjectScriptInto();
 
@@ -1222,6 +1232,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public Alert alert() {
       throw new UnsupportedOperationException("alert()");
+    }
+
+    public WebDriver context(String name) {
+      throw new UnsupportedOperationException("context(String)");
     }
   }
 

@@ -155,6 +155,20 @@ public interface WebDriver extends SearchContext {
   String getWindowHandle();
 
   /**
+   * Return a set of context handles which can be used to iterate over all contexts of this
+   * WebDriver instance
+   *
+   * @return A set of context handles which can be used to iterate over available contexts.
+   */
+  Set<String> getContextHandles();
+
+  /**
+   * Return an opaque handle to this context that uniquely identifies it within this driver instance.
+   * This can be used to switch to this context at a later date
+   */
+  String getContext();
+
+  /**
    * Send future commands to a different frame or window.
    * 
    * @return A TargetLocator which can be used to select a frame or window
@@ -374,6 +388,17 @@ public interface WebDriver extends SearchContext {
      * @throws NoAlertPresentException If the dialog cannot be found
      */
     Alert alert();
+
+    /**
+     * Switch the focus of future commands for this driver to the context with the given name.
+     *
+     * @param name The name of the context as returned by
+     *        {@link WebDriver#getContexts()}
+     * @return This driver focused on the given window
+     * @throws NoSuchContextException If the context cannot be found
+     */
+    WebDriver context(String name);
+
   }
 
   interface Navigation {
