@@ -30,10 +30,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
@@ -264,6 +269,32 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     } catch (NoSuchFrameException e) {
       // This is expected
     }
+  }
+
+  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSwitchToParentFrame() {
+    driver.get(pages.framesetPage);
+
+    driver.switchTo().frame("fourth").switchTo().parentFrame().switchTo().frame("first");
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
+  }
+
+  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
+    driver.get(pages.framesetPage);
+
+    driver.switchTo().frame("fourth").switchTo().frame("child1")
+        .switchTo().parentFrame().switchTo().frame("child2");
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
+  }
+
+  @Ignore({ANDROID, CHROME, HTMLUNIT, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Test
+  public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
+    driver.get(pages.xhtmlTestPage);
+    driver.switchTo().parentFrame();
   }
 
   // ----------------------------------------------------------------------------------------------
