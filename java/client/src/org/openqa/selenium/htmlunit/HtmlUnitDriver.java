@@ -1398,7 +1398,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void deleteCookie(Cookie cookie) {
-      deleteCookieNamed(cookie.getName());
+      getWebClient().getCookieManager().removeCookie(convertSeleniumCookieToHtmlUnit(cookie));
     }
 
     public void deleteAllCookies() {
@@ -1419,6 +1419,18 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return ImmutableSet.copyOf(Collections2.transform(
           getWebClient().getCookieManager().getCookies(url),
           htmlUnitCookieToSeleniumCookieTransformer));
+    }
+
+    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(Cookie cookie) {
+      return new com.gargoylesoftware.htmlunit.util.Cookie(
+          cookie.getDomain(),
+          cookie.getName(),
+          cookie.getValue(),
+          cookie.getPath(),
+          cookie.getExpiry(),
+          cookie.isSecure(),
+          cookie.isHttpOnly()
+      );
     }
 
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =

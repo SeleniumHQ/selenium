@@ -443,6 +443,27 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
+  @Ignore(value = {ANDROID, CHROME, FIREFOX, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Test
+  public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
+    Cookie cookie1 = new Cookie.Builder("fish", "cod")
+        .domain(domainHelper.getHostName()).path("/common/animals").build();
+    Cookie cookie2 = new Cookie.Builder("fish", "tune")
+        .domain(domainHelper.getHostName()).path("/common/").build();
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
+    assertEquals(driver.manage().getCookies().size(), 2);
+
+    driver.manage().deleteCookie(cookie1);
+
+    assertEquals(driver.manage().getCookies().size(), 1);
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull("Cookie was null", retrieved);
+    assertEquals(cookie2, retrieved);
+  }
+
   private String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
   }
