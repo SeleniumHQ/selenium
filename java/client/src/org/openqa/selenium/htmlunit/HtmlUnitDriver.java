@@ -86,7 +86,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
@@ -205,7 +204,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
-    setProxySettings(Proxies.extractProxy(capabilities));
+    setProxySettings(Proxy.extractFrom(capabilities));
   }
 
   // Package visibility for testing

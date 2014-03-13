@@ -34,7 +34,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.MarionetteConnection;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -311,7 +310,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }));
 
     // Ensure that the proxy is in a state fit to be sent to the extension
-    Proxy proxy = Proxies.extractProxy(capabilities);
+    Proxy proxy = Proxy.extractFrom(capabilities);
     if (proxy != null) {
       caps.setCapability(PROXY, new BeanToJsonConverter().convert(proxy));
     }
