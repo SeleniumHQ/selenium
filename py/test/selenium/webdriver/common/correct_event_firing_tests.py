@@ -131,8 +131,8 @@ class CorrectEventFiringTests(unittest.TestCase):
         self.assertTrue(eventName in text, "No " + eventName + " fired: " + text)
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

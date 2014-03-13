@@ -218,7 +218,7 @@ class AlertsTest(unittest.TestCase):
         return WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

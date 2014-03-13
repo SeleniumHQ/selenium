@@ -49,8 +49,8 @@ class PageLoadTimeoutTest(unittest.TestCase):
             pass
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 
