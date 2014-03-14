@@ -91,6 +91,12 @@ public class Windows {
       return;
     }
 
+    if ("relative=up".equals(locator)) {
+      driver.switchTo().parentFrame();
+      lastFrame.put(driver.getWindowHandle(), locator);
+      return;
+    }
+
     if (locator.startsWith("index=")) {
       try {
         int index = Integer.parseInt(locator.substring("index=".length()));

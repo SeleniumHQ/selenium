@@ -21,7 +21,6 @@
 	<classpathentry kind="lib" path="/third-party/java/phantomjs-driver/phantomjsdriver-1.1.0.jar" sourcepath="/third-party/java/phantomjs-driver/phantomjsdriver-1.1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.3.1.jar" sourcepath="/third-party/java/apache-httpclient/httpclient-4.3.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpcore-4.3.jar" sourcepath="/third-party/java/apache-httpclient/httpcore-4.3-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/android/android-14.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-io/commons-io-2.2.jar" sourcepath="/third-party/java/commons-io/commons-io-2.2-src.zip"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-codec/commons-codec-1.8.jar" sourcepath="/third-party/java/commons-codec/commons-codec-1.8-sources.jar"/>

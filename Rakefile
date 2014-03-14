@@ -49,7 +49,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.39.0"
+  "2.40.0"
 end
 ide_version = "1.10.0"
 
@@ -753,25 +753,12 @@ namespace :docs do
     sh "svn propset svn:mime-type text/css #{Dir['docs/api/**/*.css'].join ' '}"
   end
 
-  task :js do
+  task :js => [ "//javascript/node:selenium-webdriver" ] do
     # First, delete the old docs.
     rm_rf "docs/api/javascript"
 
-    cmd = "java -jar third_party/java/dossier/dossier-0.2.1.jar"
-    cmd << " --closure_library third_party/closure/goog"
-    cmd << " -o docs/api/javascript"
-    cmd << " -s javascript/atoms"
-    cmd << " -s javascript/webdriver"
-    cmd << " -s third_party/js/wgxpath"
-    cmd << " -x javascript/atoms/test"
-    cmd << " -x javascript/node"  # TODO(jleyba): Include this.
-    cmd << " -x javascript/webdriver/exports"
-    cmd << " -x javascript/webdriver/externs"
-    cmd << " -x javascript/webdriver/test"
-    cmd << " -x javascript/webdriver/test_e2e"
-    cmd << " -x third_party/js/wgxpath/test_js_deps.js"
-
-    sh cmd
+    mkdir_p "docs/api/javascript"
+    cp_r "build/javascript/node/selenium-webdriver/docs/.", "docs/api/javascript"
   end
 end
 

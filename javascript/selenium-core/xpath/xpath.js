@@ -1236,7 +1236,10 @@ FunctionCallExpr.prototype.xpathfunctions = {
     var s2 = this.args[2].evaluate(ctx).stringValue();
 
     for (var i = 0; i < s1.length; ++i) {
-      s0 = s0.replace(new RegExp(s1.charAt(i), 'g'), s2.charAt(i));
+      var c = s1.charAt(i);
+      if ("^.|?+*(){}[]\\$".indexOf(c) != -1)
+        c = "\\" + c; // escape special characters
+      s0 = s0.replace(new RegExp(c, 'g'), s2.charAt(i));
     }
     return new StringValue(s0);
   },

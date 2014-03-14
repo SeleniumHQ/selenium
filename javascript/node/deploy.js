@@ -19,6 +19,7 @@
 'use strict';
 
 var assert = require('assert'),
+    child_process = require('child_process'),
     fs = require('fs'),
     path = require('path'),
     vm = require('vm');
@@ -207,7 +208,7 @@ function copyLibraries(outputDirPath, filePaths) {
   providedSymbols.forEach(resolveDeps);
   symbols.forEach(resolveDeps);
 
-  var depsPath = path.join(outputDirPath, 'lib', 'deps.js');
+  var depsPath = path.join(outputDirPath, 'lib', 'goog', 'deps.js');
   fs.writeFileSync(depsPath, depsFileContents.join('\n') + '\n', 'utf8');
 
   function resolveDeps(symbol) {
@@ -320,6 +321,56 @@ function copyResources(outputDirPath, resources, exclusions) {
 }
 
 
+function generateDocs(outputDir) {
+  var libDir = path.join(outputDir, 'lib');
+  var excludedDirs = [
+    path.join(outputDir, 'example'),
+    path.join(libDir, 'test'),
+    path.join(outputDir, 'test')
+  ];
+
+  var endsWith = function(str, suffix) {
+    var l = str.length - suffix.length;
+    return l >= 0 && str.indexOf(suffix, l) == l;
+  };
+
+  var getFiles = function(dir) {
+    return fs.readdirSync(dir).map(function(file) {
+      return path.join(dir, file);
+    }).filter(function(file) {
+      if (fs.statSync(file).isDirectory()) {
+        return excludedDirs.indexOf(file) == -1;
+      }
+      return endsWith(path.basename(file), '.js');
+    });
+  };
+
+  var config = {
+    'output': path.join(outputDir, 'docs'),
+    'closureLibraryDir': path.join(outputDir, 'lib', 'goog'),
+    'license': path.join(outputDir, 'COPYING'),
+    'readme': path.join(outputDir, 'README.md'),
+    'language': 'ES5',
+    'sources': getFiles(libDir),
+    'modules': getFiles(outputDir).filter(function(file) {
+      return file != libDir;
+    })
+  };
+
+  var configFile = outputDir + '-docs.json';
+  fs.writeFileSync(configFile, JSON.stringify(config), 'utf8');
+
+  var command = [
+      'java -jar', path.join(
+          __dirname, '../../third_party/java/dossier/dossier-0.3.0.jar'),
+      '-c', configFile
+  ].join(' ');
+  child_process.exec(command, function(error) {
+    if (error) throw error;
+  });
+}
+
+
 function main() {
   var parser = new optparse.OptionParser().
       path('output', { help: 'Path to the output directory' }).
@@ -365,9 +416,16 @@ function main() {
 
   processLibraryFiles(options.lib, options.root);
 
+  console.log('Copying sources...');
   copySrcs(options.src, options.output);
+  console.log('Copying library files...');
   copyLibraries(options.output, options.lib);
+  console.log('Copying resource files...');
   copyResources(options.output, options.resource, options.exclude_resource);
+  console.log('Generating documentation...');
+  generateDocs(options.output);
+
+  console.log('ALL DONE');
 }
 
 

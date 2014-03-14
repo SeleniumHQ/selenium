@@ -61,13 +61,13 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#fields_inherited_from_class_com.thoughtworks.selenium.DefaultSelenium">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method_summary">Method</a></li>
+<li><a href="#methods_inherited_from_class_com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method_detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip-navbar_top">
@@ -87,7 +87,12 @@
 <li><a href="../../../com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.DefaultSelenium</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.WebDriverBackedSelenium</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -101,10 +106,13 @@
 <dd><a href="../../../com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</a>, <a href="../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a></dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Use <a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven"><code>WebDriverBackedSelenium</code></a> instead.</i></div>
+</div>
 <br>
-<pre>public class <span class="strong">WebDriverBackedSelenium</span>
-extends <a href="../../../com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a>
-implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a></pre>
+<pre>@Deprecated
+public class <span class="strong">WebDriverBackedSelenium</span>
+extends <a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverBackedSelenium</a></pre>
 </li>
 </ul>
 </div>
@@ -139,11 +147,15 @@ implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="in
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../org/openqa/selenium/WebDriverBackedSelenium.html#WebDriverBackedSelenium(com.google.common.base.Supplier, java.lang.String)">WebDriverBackedSelenium</a></strong>(com.google.common.base.Supplier&lt;<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;maker,
-                       java.lang.String&nbsp;baseUrl)</code>&nbsp;</td>
+                       java.lang.String&nbsp;baseUrl)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../org/openqa/selenium/WebDriverBackedSelenium.html#WebDriverBackedSelenium(org.openqa.selenium.WebDriver, java.lang.String)">WebDriverBackedSelenium</a></strong>(<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;baseDriver,
-                       java.lang.String&nbsp;baseUrl)</code>&nbsp;</td>
+                       java.lang.String&nbsp;baseUrl)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -154,21 +166,13 @@ implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="in
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverBackedSelenium.html#getCapabilities()">getCapabilities</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverBackedSelenium.html#getWrappedDriver()">getWrappedDriver</a></strong>()</code>&nbsp;</td>
-</tr>
-</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;com.thoughtworks.selenium.webdriven.<a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverBackedSelenium</a></h3>
+<code><a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html#getCapabilities()">getCapabilities</a>, <a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html#getWrappedDriver()">getWrappedDriver</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_com.thoughtworks.selenium.DefaultSelenium">
 <!--   -->
@@ -205,6 +209,7 @@ implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="in
 <h4>WebDriverBackedSelenium</h4>
 <pre>public&nbsp;WebDriverBackedSelenium(com.google.common.base.Supplier&lt;<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;maker,
                        java.lang.String&nbsp;baseUrl)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="WebDriverBackedSelenium(org.openqa.selenium.WebDriver, java.lang.String)">
@@ -215,40 +220,7 @@ implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="in
 <h4>WebDriverBackedSelenium</h4>
 <pre>public&nbsp;WebDriverBackedSelenium(<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;baseDriver,
                        java.lang.String&nbsp;baseUrl)</pre>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method_detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="getWrappedDriver()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getWrappedDriver</h4>
-<pre>public&nbsp;<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;getWrappedDriver()</pre>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../org/openqa/selenium/internal/WrapsDriver.html#getWrappedDriver()">getWrappedDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>The driver that contains this element.</dd></dl>
-</li>
-</ul>
-<a name="getCapabilities()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getCapabilities</h4>
-<pre>public&nbsp;<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCapabilities()</pre>
-<dl>
-<dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../org/openqa/selenium/HasCapabilities.html#getCapabilities()">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>The capabilities of the current driver.</dd></dl>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -304,13 +276,13 @@ implements <a href="../../../org/openqa/selenium/HasCapabilities.html" title="in
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#fields_inherited_from_class_com.thoughtworks.selenium.DefaultSelenium">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method_summary">Method</a></li>
+<li><a href="#methods_inherited_from_class_com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method_detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip-navbar_bottom">

@@ -321,21 +321,6 @@ webdriver.WebDriver.prototype.getCapabilities = function() {
 
 
 /**
- * Returns a promise for one of this driver's capabilities.
- * @param {string} name The name of the capability to query.
- * @return {!webdriver.promise.Promise} A promise that will resolve with the
- *     given capability once its value is ready.
- * @deprecated Use {@link #getCapabilities()}; this function will be removed
- *     in 2.35.0.
- */
-webdriver.WebDriver.prototype.getCapability = function(name) {
-  return webdriver.promise.when(this.session_, function(session) {
-    return session.getCapabilities().get(name);
-  });
-};
-
-
-/**
  * Schedules a command to quit the current session. After calling quit, this
  * instance will be invalidated and may no longer be used to issue commands
  * against the browser.
@@ -644,20 +629,36 @@ webdriver.WebDriver.prototype.getTitle = function() {
 
 /**
  * Schedule a command to find an element on the page. If the element cannot be
- * found, a {@code bot.ErrorCode.NO_SUCH_ELEMENT} result will be returned
+ * found, a {@link bot.ErrorCode.NO_SUCH_ELEMENT} result will be returned
  * by the driver. Unlike other commands, this error cannot be suppressed. In
  * other words, scheduling a command to find an element doubles as an assert
  * that the element is present on the page. To test whether an element is
- * present on the page, use {@code #isElementPresent} instead.
+ * present on the page, use {@link #isElementPresent} instead.
  *
- * <p>The search criteria for find an element may either be a
- * {@code webdriver.Locator} object, or a simple JSON object whose sole key
- * is one of the accepted locator strategies, as defined by
- * {@code webdriver.Locator.Strategy}. For example, the following two statements
+ * <p>The search criteria for an element may be defined using one of the
+ * factories in the {@link webdriver.By} namespace, or as a short-hand
+ * {@link webdriver.By.Hash} object. For example, the following two statements
  * are equivalent:
  * <code><pre>
  * var e1 = driver.findElement(By.id('foo'));
  * var e2 = driver.findElement({id:'foo'});
+ * </pre></code>
+ *
+ * <p>You may also provide a custom locator function, which takes as input
+ * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
+ * promise that will resolve to a WebElement. For example, to find the first
+ * visible link on a page, you could write:
+ * <code><pre>
+ * var link = driver.findElement(firstVisibleLink);
+ *
+ * function firstVisibleLink(driver) {
+ *   var links = driver.findElements(By.tagName('a'));
+ *   return webdriver.promise.filter(links, function(link) {
+ *     return links.isDisplayed();
+ *   }).then(function(visibleLinks) {
+ *     return visibleLinks[0];
+ *   });
+ * }
  * </pre></code>
  *
  * <p>When running in the browser, a WebDriver cannot manipulate DOM elements
@@ -669,20 +670,16 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * one this instance is currently focused on), a
  * {@link bot.ErrorCode.NO_SUCH_ELEMENT} error will be returned.
  *
- * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
- *     locator strategy to use when searching for the element, or the actual
- *     DOM element to be located by the server.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Element|Function)} locator The
+ *     locator to use.
  * @return {!webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
  */
-webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
-                                                     var_args) {
+webdriver.WebDriver.prototype.findElement = function(locator) {
   var id;
-  if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    var element = /** @type {!Element} */ (locatorOrElement);
+  if ('nodeType' in locator && 'ownerDocument' in locator) {
+    var element = /** @type {!Element} */ (locator);
     id = this.findDomElement_(element).
         then(function(elements) {
           if (!elements.length) {
@@ -693,18 +690,9 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
           return elements[0];
         });
   } else {
-    var locator = webdriver.Locator.checkLocator(locatorOrElement);
-    if (locator.using == 'js') {
-      var args = goog.array.slice(arguments, 1);
-      goog.array.splice(args, 0, 0, locator.value);
-
-      id = this.executeScript.apply(this, args).
-          then(function(value) {
-            if (!(value instanceof webdriver.WebElement)) {
-              throw new Error('JS locator script result was not a WebElement');
-            }
-            return value;
-          });
+    locator = webdriver.Locator.checkLocator(locator);
+    if (goog.isFunction(locator)) {
+      id = this.findElementInternal_(locator, this);
     } else {
       var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
           setParameter('using', locator.using).
@@ -713,6 +701,28 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
     }
   }
   return new webdriver.WebElement(this, id);
+};
+
+
+/**
+ * @param {!Function} locatorFn The locator function to use.
+ * @param {!(webdriver.WebDriver|webdriver.WebElement)} context The search
+ *     context.
+ * @return {!webdriver.promise.Promise.<!webdriver.WebElement>} A
+ *     promise that will resolve to a list of WebElements.
+ * @private
+ */
+webdriver.WebDriver.prototype.findElementInternal_ = function(
+    locatorFn, context) {
+  return this.call(goog.partial(locatorFn, context)).then(function(result) {
+    if (goog.isArray(result)) {
+      result = result[0];
+    }
+    if (!(result instanceof webdriver.WebElement)) {
+      throw new TypeError('Custom locator did not return a WebElement');
+    }
+    return result;
+  });
 };
 
 
@@ -771,18 +781,15 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
  * document the driver is currently focused on. Otherwise, the function will
  * test if at least one element can be found with the given search criteria.
  *
- * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
- *     locator strategy to use when searching for the element, or the actual
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Element|
+ *           Function)} locatorOrElement The locator to use, or the actual
  *     DOM element to be located by the server.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will resolve to whether
- *     the element is present on the page.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will resolve
+ *     with whether the element is present on the page.
  */
-webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
-                                                          var_args) {
+webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement) {
   var findElement =
-      locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
+      ('nodeType' in locatorOrElement && 'ownerDocument' in locatorOrElement) ?
           this.findDomElement_(/** @type {!Element} */ (locatorOrElement)) :
           this.findElements.apply(this, arguments);
   return findElement.then(function(result) {
@@ -794,36 +801,47 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
 /**
  * Schedule a command to search for multiple elements on the page.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The locator
  *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
- *     JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved to an
- *     array of the located {@link webdriver.WebElement}s.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
  */
-webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
+webdriver.WebDriver.prototype.findElements = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    var args = goog.array.slice(arguments, 1);
-    goog.array.splice(args, 0, 0, locator.value);
-
-    return this.executeScript.apply(this, args).
-        then(function(value) {
-          if (value instanceof webdriver.WebElement) {
-            return [value];
-          } else if (!goog.isArray(value)) {
-            return [];
-          }
-          return goog.array.filter(value, function(item) {
-            return item instanceof webdriver.WebElement;
-          });
-        });
+  if (goog.isFunction(locator)) {
+    return this.findElementsInternal_(locator, this);
   } else {
     var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENTS).
         setParameter('using', locator.using).
         setParameter('value', locator.value);
     return this.schedule(command, 'WebDriver.findElements(' + locator + ')');
   }
+};
+
+
+/**
+ * @param {!Function} locatorFn The locator function to use.
+ * @param {!(webdriver.WebDriver|webdriver.WebElement)} context The search
+ *     context.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
+ * @private
+ */
+webdriver.WebDriver.prototype.findElementsInternal_ = function(
+    locatorFn, context) {
+  return this.call(goog.partial(locatorFn, context)).then(function(result) {
+    if (result instanceof webdriver.WebElement) {
+      return [result];
+    }
+
+    if (!goog.isArray(result)) {
+      return [];
+    }
+
+    return goog.array.filter(result, function(item) {
+      return item instanceof webdriver.WebElement;
+    });
+  });
 };
 
 
@@ -1599,38 +1617,51 @@ webdriver.WebElement.prototype.schedule_ = function(command, description) {
  * suppressed. In other words, scheduling a command to find an element doubles
  * as an assert that the element is present on the page. To test whether an
  * element is present on the page, use {@code #isElementPresent} instead.
- * <p/>
- * The search criteria for find an element may either be a
- * {@code webdriver.Locator} object, or a simple JSON object whose sole key
- * is one of the accepted locator strategies, as defined by
- * {@code webdriver.Locator.Strategy}. For example, the following two
- * statements are equivalent:
+ *
+ * <p>The search criteria for an element may be defined using one of the
+ * factories in the {@link webdriver.By} namespace, or as a short-hand
+ * {@link webdriver.By.Hash} object. For example, the following two statements
+ * are equivalent:
  * <code><pre>
  * var e1 = element.findElement(By.id('foo'));
  * var e2 = element.findElement({id:'foo'});
  * </pre></code>
- * <p/>
- * Note that JS locator searches cannot be restricted to a subtree. All such
- * searches are delegated to this instance's parent WebDriver.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {webdriver.WebElement} A WebElement that can be used to issue
+ * <p>You may also provide a custom locator function, which takes as input
+ * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
+ * promise that will resolve to a WebElement. For example, to find the first
+ * visible link on a page, you could write:
+ * <code><pre>
+ * var link = element.findElement(firstVisibleLink);
+ *
+ * function firstVisibleLink(element) {
+ *   var links = element.findElements(By.tagName('a'));
+ *   return webdriver.promise.filter(links, function(link) {
+ *     return links.isDisplayed();
+ *   }).then(function(visibleLinks) {
+ *     return visibleLinks[0];
+ *   });
+ * }
+ * </pre></code>
+ *
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the element.
+ * @return {!webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
  */
-webdriver.WebElement.prototype.findElement = function(locator, var_args) {
+webdriver.WebElement.prototype.findElement = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.findElement.apply(this.driver_, arguments);
+  var id;
+  if (goog.isFunction(locator)) {
+    id = this.driver_.findElementInternal_(locator, this);
+  } else {
+    var command = new webdriver.Command(
+        webdriver.CommandName.FIND_CHILD_ELEMENT).
+        setParameter('using', locator.using).
+        setParameter('value', locator.value);
+    id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
   }
-
-  var command = new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENT).
-      setParameter('using', locator.using).
-      setParameter('value', locator.value);
-  var id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
   return new webdriver.WebElement(this.driver_, id);
 };
 
@@ -1639,51 +1670,38 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
  * Schedules a command to test if there is at least one descendant of this
  * element that matches the given search criteria.
  *
- * <p>Note that JS locator searches cannot be restricted to a subtree of the
- * DOM. All such searches are delegated to this instance's parent WebDriver.
- *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     whether an element could be located on the page.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the element.
+ * @return {!webdriver.promise.Promise.<boolean>} A promise that will be
+ *     resolved with whether an element could be located on the page.
  */
-webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
-  locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.isElementPresent.apply(this.driver_, arguments);
-  }
-  return this.findElements.apply(this, arguments).then(function(result) {
+webdriver.WebElement.prototype.isElementPresent = function(locator) {
+  return this.findElements(locator).then(function(result) {
     return !!result.length;
   });
 };
 
 
 /**
- * Schedules a command to find all of the descendants of this element that match
- * the given search criteria.
- * <p/>
- * Note that JS locator searches cannot be restricted to a subtree. All such
- * searches are delegated to this instance's parent WebDriver.
+ * Schedules a command to find all of the descendants of this element that
+ * match the given search criteria.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the elements.
- * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
- *     using a JavaScript locator.  Otherwise ignored.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with an
- *     array of located {@link webdriver.WebElement}s.
+ * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
+ *     locator strategy to use when searching for the elements.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.WebElement>>} A
+ *     promise that will resolve to an array of WebElements.
  */
-webdriver.WebElement.prototype.findElements = function(locator, var_args) {
+webdriver.WebElement.prototype.findElements = function(locator) {
   locator = webdriver.Locator.checkLocator(locator);
-  if (locator.using == 'js') {
-    return this.driver_.findElements.apply(this.driver_, arguments);
+  if (goog.isFunction(locator)) {
+    return this.driver_.findElementsInternal_(locator, this);
+  } else {
+    var command = new webdriver.Command(
+        webdriver.CommandName.FIND_CHILD_ELEMENTS).
+        setParameter('using', locator.using).
+        setParameter('value', locator.value);
+    return this.schedule_(command, 'WebElement.findElements(' + locator + ')');
   }
-  var command =
-      new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENTS).
-          setParameter('using', locator.using).
-          setParameter('value', locator.value);
-  return this.schedule_(command, 'WebElement.findElements(' + locator + ')');
 };
 
 

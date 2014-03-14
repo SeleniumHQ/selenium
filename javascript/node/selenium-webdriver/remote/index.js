@@ -190,13 +190,11 @@ DriverService.prototype.start = function(opt_timeoutMs) {
   return this.address_;
 
   function onServerExit(code, signal) {
-    if (self.address_.isPending()) {
-      self.address_.reject(code == null ?
-          Error('Server was killed with ' + signal) :
-          Error('Server exited with ' + code));
-    }
+    self.address_.reject(code == null ?
+        Error('Server was killed with ' + signal) :
+        Error('Server exited with ' + code));
 
-    if (self.shutdownHook_ && self.shutdownHook_.isPending()) {
+    if (self.shutdownHook_) {
       self.shutdownHook_.fulfill();
     }
 
@@ -258,7 +256,7 @@ DriverService.prototype.stop = function() {
 
 /**
  * Manages the life and death of the Selenium standalone server. The server
- * may be obtained from https://code.google.com/p/selenium/downloads/list.
+ * may be obtained from http://selenium-release.storage.googleapis.com/index.html.
  * @param {string} jar Path to the Selenium server jar.
  * @param {!SeleniumServer.Options} options Configuration options for the
  *     server.

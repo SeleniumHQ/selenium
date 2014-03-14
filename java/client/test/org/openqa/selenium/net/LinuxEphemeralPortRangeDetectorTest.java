@@ -15,29 +15,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-import org.junit.Assume;
-import org.junit.Test;
-import org.openqa.selenium.Platform;
-
-import java.io.StringReader;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Platform.LINUX;
 
+import org.junit.Assume;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.Platform;
+
+import java.io.StringReader;
+
+@RunWith(JUnit4.class)
 public class LinuxEphemeralPortRangeDetectorTest {
+
+  @BeforeClass
+  public static void requiresLinux() {
+    Assume.assumeTrue(Platform.getCurrent().is(LINUX));
+  }
 
   @Test
   public void decodeEphemeralPorts() throws Exception {
     String range ="1234 65533";
-    EphemeralPortRangeDetector ephemeralEphemeralPortDetector = new LinuxEphemeralPortRangeDetector(new StringReader(range));
+    EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
+        new LinuxEphemeralPortRangeDetector(new StringReader(range));
     assertEquals( 1234, ephemeralEphemeralPortDetector.getLowestEphemeralPort());
     assertEquals( 65533, ephemeralEphemeralPortDetector.getHighestEphemeralPort());
   }
 
   @Test
   public void currentValues(){
-    Assume.assumeTrue(Platform.getCurrent().is(LINUX));
     LinuxEphemeralPortRangeDetector detector = LinuxEphemeralPortRangeDetector.getInstance();
     assertTrue( detector.getLowestEphemeralPort() > 1024);
     assertTrue( detector.getHighestEphemeralPort() < 65536);

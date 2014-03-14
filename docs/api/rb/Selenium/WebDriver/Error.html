@@ -6,13 +6,13 @@
 <title>
   Module: Selenium::WebDriver::Error
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -257,15 +257,13 @@
 199
 200
 201
-202
-203</pre>
+202</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/error.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_for_code'>for_code</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_code'>code</span> <span class='op'>==</span> <span class='int'>0</span>
-  <span class='kw'>return</span> <span class='const'>WebDriverError</span> <span class='kw'>if</span> <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_code'>code</span>
 
   <span class='const'>Errors</span><span class='lbracket'>[</span><span class='id identifier rubyid_code'>code</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>WebDriverError</span>
 <span class='kw'>end</span></pre>
@@ -279,9 +277,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:38:56 2013 by
+  Generated on Mon Feb 17 23:05:56 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

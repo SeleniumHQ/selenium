@@ -31,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string[] args = { string.Format(CultureInfo.InvariantCulture, "window.open('{0}', '{1}');", locator, value) };
+            string[] args = { string.Format(CultureInfo.InvariantCulture, "window.open('{0}', '{1}'); null;", locator, value) };
 
             this.opener.Apply(driver, args);
 

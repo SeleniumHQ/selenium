@@ -626,6 +626,18 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 };
 
 
+/**
+ * Changes the command session's focus to the parent frame.
+ * @param {Response} respond Object to send the command response with.
+ */
+FirefoxDriver.prototype.switchToParentFrame = function(respond) {
+  var p = respond.session.getWindow().parent;
+  respond.session.setWindow(p);
+  respond.session.setFrame(p.frameElement);
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
   var id = Utils.addToKnownElements(element);

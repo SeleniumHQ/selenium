@@ -256,7 +256,7 @@ public class Actions {
    * Moves the mouse to an offset from the top-left corner of the element.
    * The element is scrolled into view and its location is calculated using getBoundingClientRect.
    * @param toElement element to move to.
-   * @param xOffset Offset from the top-left corner. A negative value means coordinates right from
+   * @param xOffset Offset from the top-left corner. A negative value means coordinates left from
    * the element.
    * @param yOffset Offset from the top-left corner. A negative value means coordinates above
    * the element.

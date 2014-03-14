@@ -14,6 +14,7 @@
 
 
 """WebElement implementation."""
+import hashlib
 import os
 import zipfile
 try:
@@ -381,6 +382,9 @@ class WebElement(object):
 
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
+
+    def __hash__(self):
+        return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = StringIO()

@@ -63,6 +63,16 @@ public class StubDriver implements WebDriver, org.openqa.selenium.interactions.H
     throw new UnsupportedOperationException("getWindowHandle");
   }
 
+  @Override
+  public Set<String> getContextHandles() {
+    throw new UnsupportedOperationException("getContextHandles");
+  }
+
+  @Override
+  public String getContext() {
+    throw new UnsupportedOperationException("getContext");
+  }
+
   public TargetLocator switchTo() {
     throw new UnsupportedOperationException("switchTo");
   }

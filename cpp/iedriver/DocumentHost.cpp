@@ -292,20 +292,21 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering DocumentHost::IsHtmlPage";
 
   CComBSTR type;
-  if (!SUCCEEDED(doc->get_mimeType(&type))) {
-    LOG(WARN) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
+  HRESULT hr = doc->get_mimeType(&type);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
     return false;
   }
 
   // Call once to get the required buffer size, then again to fill
   // the buffer.
   DWORD mime_type_name_buffer_size = 0;
-  HRESULT hr = ::AssocQueryString(0,
-                                  ASSOCSTR_FRIENDLYDOCNAME,
-                                  L".htm",
-                                  NULL,
-                                  NULL,
-                                  &mime_type_name_buffer_size);
+  hr = ::AssocQueryString(0,
+                          ASSOCSTR_FRIENDLYDOCNAME,
+                          L".htm",
+                          NULL,
+                          NULL,
+                          &mime_type_name_buffer_size);
 
   std::vector<wchar_t> mime_type_name_buffer(mime_type_name_buffer_size);
   hr = ::AssocQueryString(0,

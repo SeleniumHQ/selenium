@@ -207,24 +207,18 @@ public class CaptureNetworkTrafficCommand extends Command {
   }
 
   private Object json(String s) {
-    return escape(s);
+    if(s==null)
+      return null;
+    StringBuffer sb = new StringBuffer();
+    sb.append("\"");
+    escape(s, sb);
+    sb.append("\"");
+    return sb.toString();
   }
 
   // -------------- Copied from JSONValue -------------------
   /**
    * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-   * @param s
-   * @return
-   */
-  private static String escape(String s){
-    if(s==null)
-      return null;
-    StringBuffer sb = new StringBuffer();
-    escape(s, sb);
-    return sb.toString();
-  }
-
-  /**
    * @param s - Must not be null.
    * @param sb
    */

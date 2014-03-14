@@ -85,15 +85,6 @@ java_library(name = "webdriver-api",
     "//java/client/src/org/openqa/selenium/security",
   ])
 
-java_library(name = "webdriver-backed-selenium",
-  srcs = [
-    "WebDriverBackedSelenium.java",
-    "WebDriverCommandProcessor.java",
-  ],
-  deps = [
-    "//java/client/src/com/thoughtworks/selenium/webdriven",
-  ])
-
 java_library(name = "client-combined",
   deps = [
     "//java/client/src/com/thoughtworks/selenium:selenium",
@@ -105,7 +96,6 @@ java_library(name = "client-combined",
     "//java/client/src/org/openqa/selenium/safari",
     "//java/client/src/com/thoughtworks/selenium:api",
     "//java/client/src/org/openqa/selenium/support",
-    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
     "//java/client/src/org/openqa/selenium/remote:augmenter",
     "//third_party/java/opera-driver",
     "//third_party/java/phantomjs-driver"

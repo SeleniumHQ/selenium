@@ -19,10 +19,12 @@
 goog.provide('webdriver.ie');
 
 goog.require('bot.dom');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.locators');
+goog.require('bot.userAgent');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
-goog.require('goog.userAgent');
 
 
 /**
@@ -53,6 +55,21 @@ webdriver.ie.findElement = function(mechanism, criteria, opt_root) {
  *     DOM.
  */
 webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
+  // For finding multiple elements by class name in IE, if the document
+  // mode is below 8 (which includes quirks mode), the findElements atom
+  // drops into a branch of the Closure library that doesn't validate
+  // that the class name is valid, and therefore just returns an empty
+  // array. Thus, we pre-screen the class name in this special case.
+  // Note: the regex used herein may not be entirely correct; judging
+  // this to be an acceptable risk due to the (hopefully) limited nature
+  // of the bug.
+  if (mechanism == 'className' && bot.userAgent.IE_DOC_PRE8) {
+    var invalidTokenRegex = /[~!@\$%\^&\*\(\)_\+=,\.\/';:"\?><\[\]\\\{\}\|`#]+/;
+    if (invalidTokenRegex.test(criteria)) {
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                          'Invalid character in class name.');
+    }
+  }
   var locator = {};
   locator[mechanism] = criteria;
   return bot.locators.findElements(locator, opt_root);
@@ -68,7 +85,7 @@ webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
  * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
  *     are scrolled in the parent overflow.
  */
-webdriver.ie.isInParentOverflow = function (element) {
+webdriver.ie.isInParentOverflow = function(element) {
   var rect = bot.dom.getClientRect(element);
   var x = Math.round(rect.width / 2);
   var y = Math.round(rect.height / 2);

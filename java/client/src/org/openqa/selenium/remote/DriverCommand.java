@@ -59,8 +59,13 @@ public interface DriverCommand {
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
 
+  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
+  String GET_CONTEXT_HANDLES = "getContextHandles";
+
   String SWITCH_TO_WINDOW = "switchToWindow";
+  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";

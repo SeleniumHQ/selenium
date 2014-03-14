@@ -104,7 +104,7 @@
 <br>
 <pre>public class <span class="strong">FirefoxDriver</span>
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
-implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/internal/Killable.html" title="interface in org.openqa.selenium.internal">Killable</a></pre>
+implements <a href="../../../../org/openqa/selenium/internal/Killable.html" title="interface in org.openqa.selenium.internal">Killable</a></pre>
 <div class="block">An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
  firefox extension, which gets installed automatically if necessary. Important system variables
  are:
@@ -603,6 +603,8 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
 <dt><span class="strong">Type Parameters:</span></dt><dd><code>X</code> - Return type for getScreenshotAs.</dd><dt><span class="strong">Parameters:</span></dt><dd><code>target</code> - target type, @see OutputType</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Object in which is stored information about the screenshot.</dd></dl>
 </li>

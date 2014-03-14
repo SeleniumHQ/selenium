@@ -333,7 +333,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldBeAbleToConvertACookie() throws JSONException {
     Date expiry = new Date();
-    Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true);
+    Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true, true);
 
     String jsonStr = new BeanToJsonConverter().convert(cookie);
     JSONObject json = new JSONObject(jsonStr);
@@ -343,6 +343,7 @@ public class BeanToJsonConverterTest {
     assertEquals("domain", json.getString("domain"));
     assertEquals("/path", json.getString("path"));
     assertTrue(json.getBoolean("secure"));
+    assertTrue(json.getBoolean("httpOnly"));
     assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
   }
 

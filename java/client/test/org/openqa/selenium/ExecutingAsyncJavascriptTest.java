@@ -239,6 +239,16 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
+    driver.get(pages.ajaxyPage);
+    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MILLISECONDS);
+    assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
+    assertTrue((Boolean) executor.executeAsyncScript(
+        "var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"));
+  }
+
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
   public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);

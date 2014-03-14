@@ -83,7 +83,7 @@ class FindElementCommandHandler : public IECommandHandler {
       } while (clock() < end);
 
       response->SetErrorResponse(status_code, 
-        "Unable to find element with " + mechanism + " == " + value);
+          "Unable to find element with " + mechanism + " == " + value);
       return;
     }
   }

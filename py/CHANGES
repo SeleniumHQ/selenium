@@ -1,3 +1,8 @@
+Selenium 2.40
+* Support for Firefox 27
+* Fixes related to http connection
+* Fix for phantomjs running on windows #6736
+
 Selenium 2.39
 * Support for Firefox 26
 

@@ -64,4 +64,16 @@ public class CookieTest {
     Cookie cookie = new Cookie("name", "value");
     assertFalse(cookie.isSecure());
   }
+
+  @Test
+  public void testCookiesShouldAllowHttpOnlyToBeSet() {
+    Cookie cookie = new Cookie("name", "value", "", "/", new Date(), false, true);
+    assertTrue(cookie.isHttpOnly());
+  }
+
+  @Test
+  public void testHttpOnlyDefaultsToFalse() {
+    Cookie cookie = new Cookie("name", "value");
+    assertFalse(cookie.isHttpOnly());
+  }
 }

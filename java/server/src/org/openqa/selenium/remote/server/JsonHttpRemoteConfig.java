@@ -90,6 +90,7 @@ import org.openqa.selenium.remote.server.handler.SetWindowSize;
 import org.openqa.selenium.remote.server.handler.Status;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
+import org.openqa.selenium.remote.server.handler.SwitchToParentFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
@@ -364,6 +365,8 @@ public class JsonHttpRemoteConfig {
         .on(ResultType.SUCCESS, emptyResponse);
 
     postMapper.bind("/session/:sessionId/frame", SwitchToFrame.class)
+        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/frame/parent", SwitchToParentFrame.class)
         .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/window", SwitchToWindow.class)
         .on(ResultType.SUCCESS, emptyResponse);

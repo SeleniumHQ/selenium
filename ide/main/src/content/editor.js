@@ -198,7 +198,7 @@ function Editor(window) {
 
   document.addEventListener("focus", Editor.checkTimestamp, false);
 
-  this.log.info("initialized");
+  this.log.debug("initialized");
 
   setTimeout("editor.showLoadErrors()", 500);
 
@@ -213,6 +213,8 @@ function Editor(window) {
     openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
+  this.log.info("Ready");
+  this.app.notify('initComplete');
 }
 
 Editor.prototype.saveTC = function () {
@@ -545,13 +547,11 @@ Editor.prototype.getOptions = function (options) {
 };
 
 Editor.prototype.updateTitle = function () {
-  var title;
   var testCase = this.getTestCase();
-  if (testCase && testCase.file) {
-    title = testCase.file.leafName + " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  } else {
-    title = Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  }
+  var title = testCase ? testCase.getTitle() : '';
+  var testSuite = this.app.getTestSuite();
+  title += " (" + (testSuite && testSuite.file ? testSuite.file.leafName : 'untitled suite') + ") ";
+  title += " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
   if (testCase && testCase.modified) {
     title += " *";
   }
@@ -843,12 +843,17 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
   var self = this;
+  self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
+  self.app.notify("testCasePlayStart", self.app.getTestCase());
   this.selDebugger.start(function (failed) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
       testCase.testResult = failed ? "failed" : "passed";
+      self.getUserLog().info("Test case " + testCase.testResult);
+      self.app.notify("testCasePlayDone", testCase);
     } else {
+      self.getUserLog().error("current test case not found");
       self.log.error("current test case not found");
     }
     self.suiteTreeView.currentRowUpdated();
@@ -872,12 +877,17 @@ Editor.prototype.playTestSuite = function (startIndex) {
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
   var self = this;
+  self.app.notify("testSuitePlayStart");
   var total = this.app.getTestSuite().tests.length - startIndex;
   (function () {
     if (++index < self.app.getTestSuite().tests.length) {
       self.suiteTreeView.scrollToRow(index);
       self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
       self.playCurrentTestCase(arguments.callee, index, total);
+    } else {
+      //Suite done
+      self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
+      self.app.notify("testSuitePlayDone", total, self.testSuiteProgress.runs, self.testSuiteProgress.failures);
     }
   })();
 };

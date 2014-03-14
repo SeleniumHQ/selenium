@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.browserlaunchers;
 
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class MacProxyManager {
     }
     customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
     if (customProxyPACDir.exists()) {
-      LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+      FileHandler.delete(customProxyPACDir);
     }
     customProxyPACDir.mkdir();
     log.info("Modifying OS X global network settings...");

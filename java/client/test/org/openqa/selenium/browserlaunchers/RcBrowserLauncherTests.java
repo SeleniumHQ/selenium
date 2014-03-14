@@ -27,7 +27,6 @@ import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTes
     Firefox3LocatorUnitTest.class,
     LauncherUtilsUnitTest.class,
     MacProxyManagerUnitTest.class,
-    ProxiesTest.class,
     ProxyPacTest.class,
     WindowsProxyManagerUnitTest.class,
     SingleBrowserLocatorUnitTest.class

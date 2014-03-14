@@ -37,6 +37,13 @@ class ElementEqualityTests(unittest.TestCase):
 
         self.assertNotEqual(body, div)
 
+    def testSameElementsFoundDifferentWaysShouldNotBeDuplicatedInASet(self):
+        self._loadSimplePage()
+        body = self.driver.find_element(By.TAG_NAME, "body")
+        xbody = self.driver.find_elements(By.XPATH, "//body")
+        s = set(xbody)
+        s.add(body)
+        self.assertEqual(1, len(s))
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

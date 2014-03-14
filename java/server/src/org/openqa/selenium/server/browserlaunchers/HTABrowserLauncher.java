@@ -153,7 +153,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
     if (htaProcess == null) return;
     htaProcess.destroy();
-    LauncherUtils.recursivelyDeleteDir(dir);
+    FileHandler.delete(dir);
   }
 
   public void launchHTMLSuite(String suiteUrl, String browserURL) {

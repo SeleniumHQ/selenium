@@ -206,6 +206,16 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return driver.getWindowHandle();
   }
 
+  @Override
+  public Set<String> getContextHandles() {
+    return driver.getContextHandles();
+  }
+
+  @Override
+  public String getContext() {
+    return driver.getContext();
+  }
+
   public Object executeScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
       dispatcher.beforeScript(script, driver);
@@ -581,6 +591,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return targetLocator.frame(frameElement);
     }
 
+    public WebDriver parentFrame() {
+      return targetLocator.parentFrame();
+    }
+
     public WebDriver window(String windowName) {
       return targetLocator.window(windowName);
     }
@@ -595,6 +609,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public Alert alert() {
       return targetLocator.alert();
+    }
+
+    public WebDriver context(String name) {
+      return targetLocator.context(name);
     }
   }
 

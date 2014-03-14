@@ -86,7 +86,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
@@ -205,7 +204,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
-    setProxySettings(Proxies.extractProxy(capabilities));
+    setProxySettings(Proxy.extractFrom(capabilities));
   }
 
   // Package visibility for testing
@@ -590,6 +589,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchWindowException("Window is closed");
     }
     return String.valueOf(System.identityHashCode(topWindow));
+  }
+
+  @Override
+  public Set<String> getContextHandles() {
+    throw new UnsupportedOperationException("getContextHandles");
+  }
+
+  @Override
+  public String getContext() {
+    throw new UnsupportedOperationException("getContext");
   }
 
   public Object executeScript(String script, final Object... args) {
@@ -1173,6 +1182,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return HtmlUnitDriver.this;
     }
 
+    public WebDriver parentFrame() {
+      currentWindow = currentWindow.getParentWindow();
+      return HtmlUnitDriver.this;
+    }
+
     public WebDriver window(String windowId) {
       try {
         WebWindow window = getWebClient().getWebWindowByName(windowId);
@@ -1222,6 +1236,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public Alert alert() {
       throw new UnsupportedOperationException("alert()");
+    }
+
+    public WebDriver context(String name) {
+      throw new UnsupportedOperationException("context(String)");
     }
   }
 
@@ -1398,7 +1416,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void deleteCookie(Cookie cookie) {
-      deleteCookieNamed(cookie.getName());
+      getWebClient().getCookieManager().removeCookie(convertSeleniumCookieToHtmlUnit(cookie));
     }
 
     public void deleteAllCookies() {
@@ -1419,6 +1437,18 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return ImmutableSet.copyOf(Collections2.transform(
           getWebClient().getCookieManager().getCookies(url),
           htmlUnitCookieToSeleniumCookieTransformer));
+    }
+
+    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(Cookie cookie) {
+      return new com.gargoylesoftware.htmlunit.util.Cookie(
+          cookie.getDomain(),
+          cookie.getName(),
+          cookie.getValue(),
+          cookie.getPath(),
+          cookie.getExpiry(),
+          cookie.isSecure(),
+          cookie.isHttpOnly()
+      );
     }
 
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =

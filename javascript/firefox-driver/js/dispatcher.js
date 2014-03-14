@@ -225,6 +225,8 @@ Dispatcher.prototype.init_ = function() {
 
   this.bind_('/session/:sessionId/frame').
       on(Request.Method.POST, Dispatcher.executeAs('switchToFrame'));
+  this.bind_('/session/:sessionId/frame/parent').
+      on(Request.Method.POST, Dispatcher.executeAs('switchToParentFrame'));
   this.bind_('/session/:sessionId/window').
       on(Request.Method.POST, Dispatcher.executeAs('switchToWindow')).
       on(Request.Method.DELETE, Dispatcher.executeAs('close'));

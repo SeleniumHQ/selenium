@@ -7,7 +7,6 @@ java_library(name = 'firefox',
   deps = [
     ':prefs',
     '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/browserlaunchers:proxies',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',

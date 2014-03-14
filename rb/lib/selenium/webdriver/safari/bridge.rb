@@ -6,19 +6,17 @@ module Selenium
         COMMAND_TIMEOUT = 60
 
         def initialize(opts = {})
-          port              = Integer(opts[:port] || PortProber.random)
-          timeout           = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          custom_data_dir   = opts[:custom_data_dir]
-          install_extension = opts.fetch(:install_extension) { true }
+          command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          safari_options  = opts.delete(:options) || Safari::Options.new(opts)
+          capabilities    = merge_capabilities(opts, safari_options)
 
           @command_id ||= 0
 
-          if install_extension
-            @extension = Extension.new(:custom_data_dir => custom_data_dir)
-            @extension.install
-          end
+          @extensions = Extensions.new(safari_options)
+          @extensions.install
 
-          @server = Server.new(port, timeout)
+          # TODO: handle safari_opts['cleanSession']
+          @server = Server.new(safari_options.port, command_timeout)
           @server.start
 
           @safari = Browser.new
@@ -26,7 +24,7 @@ module Selenium
 
           @server.wait_for_connection
 
-          super(:desired_capabilities => :safari)
+          super(desired_capabilities: capabilities)
         end
 
         def quit
@@ -34,7 +32,7 @@ module Selenium
 
           @server.stop
           @safari.stop
-          @extension && @extension.uninstall
+          @extensions.uninstall
         end
 
         def driver_extensions
@@ -75,8 +73,8 @@ module Selenium
             raise Error.for_code(status_code), response['value']['message']
           end
 
-          if raw['id'] != @command_id.to_s
-            raise Error::WebDriverError, "response id does not match command id"
+          if raw['id'].to_s != @command_id.to_s
+            raise Error::WebDriverError, "response id does not match command id: #{raw['id']} != #{@command_id}"
           end
 
           response
@@ -103,6 +101,18 @@ module Selenium
           path
         end
 
+        def merge_capabilities(opts, safari_options)
+          caps  = safari_options.to_capabilities
+          other = opts[:desired_capabilities]
+
+          if other
+            other = opts[:desired_capabilities].as_json
+            caps['safari.options'].merge!(other.delete('safari.options') || {})
+            caps.merge!(other)
+          end
+
+          caps
+        end
       end
 
     end
