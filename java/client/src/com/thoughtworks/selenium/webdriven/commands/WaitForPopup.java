@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.webdriven.commands;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+import com.thoughtworks.selenium.webdriven.Windows;
 
 import org.openqa.selenium.WebDriver;
 

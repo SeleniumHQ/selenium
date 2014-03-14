@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package com.thoughtworks.selenium.webdriven.commands;
+package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
