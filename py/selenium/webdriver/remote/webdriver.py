@@ -518,6 +518,16 @@ class WebDriver(object):
         """
         self.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
+    def switch_to_parent_frame(self):
+        """
+        Switches focus to the parent context. If the current context is the top
+        level browsing context, the context remains unchanged.
+
+        :Usage:
+            driver.switch_to_parent_frame()
+        """
+        self.execute(Command.SWITCH_TO_PARENT_FRAME)
+
     def switch_to_default_content(self):
         """
         Switch focus to the default frame.
