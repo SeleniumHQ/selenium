@@ -709,7 +709,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        public virtual Screenshot GetScreenshot()
         {
             // Get the screenshot as base64.
             Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
