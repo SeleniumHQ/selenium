@@ -137,7 +137,7 @@ public class IndividualKeyboardActionsTest {
   }
 
   @Test
-  public void testAllModifierKeysRegardedAsSuch() throws Exception {
+  public void testAllModifierKeysRegardedAsSuch() {
     new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.SHIFT);
     new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_SHIFT);
     new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.CONTROL);
