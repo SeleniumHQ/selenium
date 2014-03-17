@@ -16,30 +16,31 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.junit.Assume.assumeTrue;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class ContextSwitchingTest extends JUnit4TestBase {
 
+  @Before
+  public void assumeBrowserIsContextAware() {
+    assumeTrue("Driver is not ContextAware", driver.switchTo() instanceof ContextAware);
+  }
+
   @Test(expected = UnsupportedCommandException.class)
   public void testShouldNotBeAbleToSwitchContext() {
-    driver.switchTo().context("WEBVIEW");
+    ((ContextAware) driver.switchTo()).context("WEBVIEW");
   }
 
   @Test(expected = UnsupportedCommandException.class)
   public void testShouldNotBeAbleToGetContextHandle() {
-    driver.getContext();
+    ((ContextAware) driver.switchTo()).getContext();
   }
 
   @Test(expected = UnsupportedCommandException.class)
   public void testShouldNotBeAbleToGetContextHandles() {
-    driver.getContextHandles();
+    ((ContextAware) driver.switchTo()).getContextHandles();
   }
 }
