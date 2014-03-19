@@ -83,7 +83,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
     <Compile Include="DefaultFileDetector.cs" />
     <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
