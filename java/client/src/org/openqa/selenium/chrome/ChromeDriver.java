@@ -18,10 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.collect.ImmutableMap;
+
+import java.net.URL;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeDriverCommand;
+import org.openqa.selenium.chrome.ChromeCommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -160,6 +166,17 @@ public class ChromeDriver extends RemoteWebDriver {
     super(new DriverCommandExecutor(service), capabilities);
   }
 
+  /**
+   * Creates a new ChromeDriver instance. The {@code service} will be started along with the
+   * driver, and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param capabilities The capabilities required from the ChromeDriver.
+   */
+  public ChromeDriver(URL serviceUrl, Capabilities capabilities) {
+    super(new ChromeCommandExecutor(serviceUrl), capabilities);
+  }
+
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
@@ -172,6 +189,10 @@ public class ChromeDriver extends RemoteWebDriver {
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
     // ... and convert it.
     return target.convertFromBase64Png(base64);
+  }
+
+  public void launchApp(String id) {
+    execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
 
   @Override

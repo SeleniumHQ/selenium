@@ -15,6 +15,8 @@
 # limitations under the License.
 
 import base64
+from command import ChromeCommand
+from remote_connection import ChromeRemoteConnection
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
@@ -61,12 +63,20 @@ class WebDriver(RemoteWebDriver):
         try:
             RemoteWebDriver.__init__(self,
                 command_executor=self.service.service_url,
+                remote_connection_client=ChromeRemoteConnection,
                 desired_capabilities=desired_capabilities,
                 keep_alive=True)
         except:
             self.quit()
             raise 
         self._is_remote = False
+
+    def launch_app(self, app_id):
+        """
+        Launches an app with the specified id
+        """
+        return self.execute(ChromeCommand.LAUNCH_APP,
+                            {'id': app_id})
 
     def quit(self):
         """

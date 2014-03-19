@@ -19,15 +19,20 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeDriverCommand;
 import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link ChromeDriverService} that lives
@@ -36,17 +41,32 @@ import java.net.ConnectException;
  */
 class ChromeCommandExecutor extends HttpCommandExecutor {
 
+  private static final Map<String, CommandInfo> CHROME_COMMANDS_NAME_TO_URL = ImmutableMap.of(
+      ChromeDriverCommand.LAUNCH_APP,
+      post("/session/:sessionId/chromium/launch_app"));
+
   private final ChromeDriverService service;
 
   /**
    * Creates a new ChromeCommandExecutor which will communicate with the chromedriver as configured
    * by the given {@code service}.
-   * 
+   *
    * @param service The ChromeDriverService to send commands to.
    */
   public ChromeCommandExecutor(ChromeDriverService service) {
-    super(service.getUrl());
+    super(CHROME_COMMANDS_NAME_TO_URL, service.getUrl());
     this.service = service;
+  }
+
+  /**
+   * Creates a new ChromeCommandExecutor which will communicate with the chromedriver as configured
+   * by the given {@code service}.
+   * 
+   * @param serviceUrl The URL of the service to communicate with.
+   */
+  public ChromeCommandExecutor(URL serviceUrl) {
+    super(CHROME_COMMANDS_NAME_TO_URL, serviceUrl);
+    this.service = null;
   }
 
   /**
@@ -60,7 +80,8 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
    */
   @Override
   public Response execute(Command command) throws IOException {
-    if (DriverCommand.NEW_SESSION.equals(command.getName())) {
+    if (ChromeDriverCommand.NEW_SESSION.equals(command.getName()) &&
+        this.service != null) {
       service.start();
     }
 
@@ -76,7 +97,8 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
       Throwables.propagateIfPossible(t);
       throw new WebDriverException(t);
     } finally {
-      if (DriverCommand.QUIT.equals(command.getName())) {
+      if (ChromeDriverCommand.QUIT.equals(command.getName()) &&
+          this.service != null) {
         service.stop();
       }
     }
