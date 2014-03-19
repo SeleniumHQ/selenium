@@ -1,4 +1,4 @@
-# Copyright 2008-2013 Software freedom conservancy
+# Copyright 2008-2014 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
 The WebDriver implementation.
 """
 import base64
+import warnings
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
+from .switch_to import SwitchTo
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
@@ -69,6 +70,7 @@ class WebDriver(object):
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
+        self.switch_to = SwitchTo(self)
 
     @property
     def name(self):
@@ -483,68 +485,40 @@ class WebDriver(object):
 
     #Target Locators
     def switch_to_active_element(self):
+        """ Deprecated use driver.switch_to.active_element
         """
-        Returns the element with focus, or BODY if nothing has focus.
-
-        :Usage:
-            driver.switch_to_active_element()
-        """
-        return self.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        warnings.warn("use driver.switch_to.active_element instead", DeprecationWarning)
+        return self.switch_to.active_element
 
     def switch_to_window(self, window_name):
+        """ Deprecated use driver.switch_to.window
         """
-        Switches focus to the specified window.
-
-        :Args:
-         - window_name: The name or window handle of the window to switch to.
-
-        :Usage:
-            driver.switch_to_window('main')
-        """
-        self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
+        warnings.warn("use driver.switch_to.window instead", DeprecationWarning)
+        self.switch_to.window(window_name)
 
     def switch_to_frame(self, frame_reference):
+        """ Deprecated use driver.switch_to.frame
         """
-        Switches focus to the specified frame, by index, name, or webelement.
-
-        :Args:
-         - frame_reference: The name of the window to switch to, an integer representing the index,
-                            or a webelement that is an (i)frame to switch to.
-
-        :Usage:
-            driver.switch_to_frame('frame_name')
-            driver.switch_to_frame(1)
-            driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[0])
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
+        warnings.warn("use driver.switch_to.frame instead", DeprecationWarning)
+        self.switch_to.frame(frame_reference)
 
     def switch_to_parent_frame(self):
+        """ Deprecated use driver.switch_to.parent_frame
         """
-        Switches focus to the parent context. If the current context is the top
-        level browsing context, the context remains unchanged.
-
-        :Usage:
-            driver.switch_to_parent_frame()
-        """
-        self.execute(Command.SWITCH_TO_PARENT_FRAME)
+        warnings.warn("use driver.switch_to.parent_frame instead", DeprecationWarning)
+        self.switch_to.parent_frame()
 
     def switch_to_default_content(self):
+        """ Deprecated use driver.switch_to.default_content
         """
-        Switch focus to the default frame.
-
-        :Usage:
-            driver.switch_to_default_content()
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': None})
+        warnings.warn("use driver.switch_to.default_content instead", DeprecationWarning)
+        self.switch_to.default_content()
 
     def switch_to_alert(self):
+        """ Deprecated use driver.switch_to.alert
         """
-        Switches focus to an alert on the page.
-
-        :Usage:
-            driver.switch_to_alert()
-        """
-        return Alert(self)
+        warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
+        return self.switch_to.alert
 
     #Navigation
     def back(self):
