@@ -277,110 +277,6 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 GeckoSDKs.new do |sdks|
-  sdks.add 'third_party/gecko-1.9.2/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.23/sdk/xulrunner-3.6.23.en-US.linux-i686.sdk.tar.bz2',
-           'f13055d2b793b6ab32797cc292f18de4'
-
-  sdks.add 'third_party/gecko-2/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
-           '1ec6039ee99596551845f27d4bc83436'
-
-  sdks.add 'third_party/gecko-2/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '101eb57d3f76f77e9c94d3cb25a8d56c'
-
-  sdks.add 'third_party/gecko-2/mac',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2',
-           'ac2ddb114107680fe75ee712cddf1ab4'
-
-  sdks.add 'third_party/gecko-2/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
-           '5cfa95a2d46334ce6283a772eff19382'
-
-  sdks.add 'third_party/gecko-10/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-i686.sdk.tar.bz2',
-           '9ce89327cab356bc133675e5307cbdd3'
-
-  sdks.add 'third_party/gecko-10/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '251cd1529050aa656a633a26883f12ac'
-
-  sdks.add 'third_party/gecko-10/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.win32.sdk.zip',
-           'c160fb382345282603ded4bf87abff45'
-
-  sdks.add 'third_party/gecko-11/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.linux-i686.sdk.tar.bz2',
-           '917b8cba75988a3943773519d2b74228'
-
-  sdks.add 'third_party/gecko-11/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'f5e84aa2ec8a1ce13ed50ad2c311ae9e'
-
-  sdks.add 'third_party/gecko-11/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/11.0/sdk/xulrunner-11.0.en-US.win32.sdk.zip',
-           '783dcb0b01a849836c9e3627a87d2dc4'
-
-  sdks.add 'third_party/gecko-12/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.linux-i686.sdk.tar.bz2',
-           '7a355c79aeffd975e9c4a4da407e0b78'
-
-  sdks.add 'third_party/gecko-12/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'e9cfc4708a551235e3223cf5b3cc771e'
-
-  sdks.add 'third_party/gecko-12/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/12.0/sdk/xulrunner-12.0.en-US.win32.sdk.zip',
-           '18daaa5a06bea14f811351bbb0723092'
-
-  sdks.add 'third_party/gecko-13/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.linux-i686.sdk.tar.bz2',
-           'da05198bf5d7452f7ac3c43d894a1779'
-
-  sdks.add 'third_party/gecko-13/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '68886fdc8ea8361e6243d8318d7210b8'
-
-  sdks.add 'third_party/gecko-13/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/13.0/sdk/xulrunner-13.0.en-US.win32.sdk.zip',
-           '8d613999d51be945c7498c9d63946dcc'
-
-  sdks.add 'third_party/gecko-14/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.linux-i686.sdk.tar.bz2',
-           '8af526ccdd0cf1c41fc825d19218fac8'
-
-  sdks.add 'third_party/gecko-14/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.linux-x86_64.sdk.tar.bz2',
-           '246ec6eff6b2ce90a14bf29f3a2f529d'
-
-  sdks.add 'third_party/gecko-14/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/14.0.1/sdk/xulrunner-14.0.1.en-US.win32.sdk.zip',
-           'ace1b22a31a3566f92755c5464868cb3'
-
-  sdks.add 'third_party/gecko-15/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.linux-i686.sdk.tar.bz2',
-           '4c72e60b1af10a5c46a4fae4082d3358'
-
-  sdks.add 'third_party/gecko-15/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.linux-x86_64.sdk.tar.bz2',
-           '28bb789e3c49e1510fc085b07e87deae'
-
-  sdks.add 'third_party/gecko-15/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/15.0.1/sdk/xulrunner-15.0.1.en-US.win32.sdk.zip',
-           '1273ae07fe999c6f4cd3768fb100f741'
-
-  sdks.add 'third_party/gecko-16/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-i686.sdk.tar.bz2',
-           '600018d47b803d36abdbb2c12d0aa0d5'
-
-  sdks.add 'third_party/gecko-16/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-x86_64.sdk.tar.bz2',
-           'f2bcdce0c60bb59dba7492dcc38aac0d'
-
-  sdks.add 'third_party/gecko-16/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.win32.sdk.zip',
-           'dc016c839bdcab13c95a5bee65008055'
-
   sdks.add 'third_party/gecko-17/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.linux-i686.sdk.tar.bz2',
            '78629c1187112b8daf09d60d5fbd44c1'
@@ -392,78 +288,6 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-17/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.win32.sdk.zip',
            '5c0a467a581778bda72a6a3daea2f8f0'
-
-  sdks.add 'third_party/gecko-18/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.linux-i686.sdk.tar.bz2',
-           'd8a67c4c841a26b3af3dcb98e06bef18'
-
-  sdks.add 'third_party/gecko-18/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.linux-x86_64.sdk.tar.bz2',
-           '655ed52cff27a8afacee180eceaa2f3d'
-
-  sdks.add 'third_party/gecko-18/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/18.0.2/sdk/xulrunner-18.0.2.en-US.win32.sdk.zip',
-           'ce4965e2660052c6a06ad50a10b3f97d'
-
-  sdks.add 'third_party/gecko-19/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.linux-i686.sdk.tar.bz2',
-           '9e7decd8866eb7b66afe6ed1a0e8d941'
-
-  sdks.add 'third_party/gecko-19/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'fb27bc9cbf9109469f0247c1ba1812e5'
-
-  sdks.add 'third_party/gecko-19/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/19.0/sdk/xulrunner-19.0.en-US.win32.sdk.zip',
-           '44e7c7f9dda4dc08a294d66c504361be'
-
-  sdks.add 'third_party/gecko-20/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.linux-i686.sdk.tar.bz2',
-           '5da7a8870d35f6b8535ed8d24f5c09ba'
-
-  sdks.add 'third_party/gecko-20/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'b2659dfd81011e77ae7dcabb2dbed4e6'
-
-  sdks.add 'third_party/gecko-20/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/20.0/sdk/xulrunner-20.0.en-US.win32.sdk.zip',
-           'c1808d3dcf55ba3cdbb774cbf5148071'
-
-  sdks.add 'third_party/gecko-21/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.linux-i686.sdk.tar.bz2',
-           'ae88daa3a2d9a94f634ee69604e31fba'
-
-  sdks.add 'third_party/gecko-21/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '76bdfe044fd62a1085bb49df035b6a93'
-
-  sdks.add 'third_party/gecko-21/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.win32.sdk.zip',
-           '246304f40c6b970b7a0c53305452630d'
-
-  sdks.add 'third_party/gecko-22/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-i686.sdk.tar.bz2',
-           '39fde24e395bf49d2e74d31b60c7e514'
-
-  sdks.add 'third_party/gecko-22/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-x86_64.sdk.tar.bz2',
-           'a8d41f23fad4fa6a2d534b10daf9ab97'
-
-  sdks.add 'third_party/gecko-22/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.win32.sdk.zip',
-           '2f9cd784be008aa2b18231a365d6b59a'
-
-  sdks.add 'third_party/gecko-23/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.linux-i686.sdk.tar.bz2',
-           '19cf2596c01fe981f72a5726104e4f06'
-
-  sdks.add 'third_party/gecko-23/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '17dec0f03d6c3c793a6d532dabfd0124'
-
-  sdks.add 'third_party/gecko-23/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/23.0/sdk/xulrunner-23.0.en-US.win32.sdk.zip',
-           'f5e5945ee9a541fca65f3f9355160104'
 
   sdks.add 'third_party/gecko-24/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.linux-i686.sdk.tar.bz2',
@@ -477,30 +301,6 @@ GeckoSDKs.new do |sdks|
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.win32.sdk.zip',
            '29d8fcf397038930a4220b7d60bb3cbf'
 
-  sdks.add 'third_party/gecko-25/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-i686.sdk.tar.bz2',
-           '879f79424299a14ede90032b2839ae2f'
-
-  sdks.add 'third_party/gecko-25/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '46614a6fb18f4978a1df701a2feb275a'
-
-  sdks.add 'third_party/gecko-25/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.win32.sdk.zip',
-           '9dcc079405984ae01f40da51920ae737'
-
-  sdks.add 'third_party/gecko-26/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.linux-i686.sdk.tar.bz2',
-           'a2553aa77512772544d3e48b3303754e'
-
-  sdks.add 'third_party/gecko-26/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '11eb859c67f3540f5331a0c124f9197d'
-
-  sdks.add 'third_party/gecko-26/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/26.0/sdk/xulrunner-26.0.en-US.win32.sdk.zip',
-           '5df776bf4feb107392ac32c90652dcb8'
-
   sdks.add 'third_party/gecko-27/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/27.0/sdk/xulrunner-27.0.en-US.linux-i686.sdk.tar.bz2',
            '61b0ea1087a532d331edc8a458198bdd'
@@ -512,6 +312,18 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-27/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/27.0/sdk/xulrunner-27.0.en-US.win32.sdk.zip',
            'c4c85e5304aeab7054de53e6067e5cc3'
+
+  sdks.add 'third_party/gecko-28/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/28.0/sdk/xulrunner-28.0.en-US.linux-i686.sdk.tar.bz2',
+           'f672ff98d2e301adfa94c0baaf03400d'
+
+  sdks.add 'third_party/gecko-28/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/28.0/sdk/xulrunner-28.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '595d7cfa2c0ad750556cd8f1d1880301'
+
+  sdks.add 'third_party/gecko-28/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/28.0/sdk/xulrunner-28.0.en-US.win32.sdk.zip',
+           'd7cdf541a15e2125a3658d569579dc44'
 end
 
 task :'selenium-server_zip' do
