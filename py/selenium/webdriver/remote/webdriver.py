@@ -502,12 +502,6 @@ class WebDriver(object):
         warnings.warn("use driver.switch_to.frame instead", DeprecationWarning)
         self.switch_to.frame(frame_reference)
 
-    def switch_to_parent_frame(self):
-        """ Deprecated use driver.switch_to.parent_frame
-        """
-        warnings.warn("use driver.switch_to.parent_frame instead", DeprecationWarning)
-        self.switch_to.parent_frame()
-
     def switch_to_default_content(self):
         """ Deprecated use driver.switch_to.default_content
         """
