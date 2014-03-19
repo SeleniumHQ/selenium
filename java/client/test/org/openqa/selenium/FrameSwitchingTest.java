@@ -31,8 +31,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -295,6 +293,17 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
+    assertEquals(driver.getTitle(), "XHTML Test Page");
+  }
+
+  @Ignore({ANDROID, CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSwitchToParentFromAnIframe() {
+    driver.get(pages.iframePage);
+    driver.switchTo().frame(0);
+
+    driver.switchTo().parentFrame();
+    driver.findElement(By.id("iframe_page_heading"));
   }
 
   // ----------------------------------------------------------------------------------------------

@@ -50,12 +50,12 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.security.Credentials;
@@ -461,24 +461,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public String getWindowHandle() {
     return String.valueOf(execute(DriverCommand.GET_CURRENT_WINDOW_HANDLE).getValue());
-  }
-
-  @Override
-  public Set<String> getContextHandles() {
-    Response response = execute(DriverCommand.GET_CONTEXT_HANDLES);
-    Object value = response.getValue();
-    try {
-      List<String> returnedValues = (List<String>) value;
-      return new LinkedHashSet<String>(returnedValues);
-    } catch (ClassCastException ex) {
-      throw new WebDriverException(
-          "Returned value cannot be converted to List<String>: " + value, ex);
-    }
-  }
-
-  @Override
-  public String getContext() {
-    return String.valueOf(execute(DriverCommand.GET_CURRENT_CONTEXT_HANDLE).getValue());
   }
 
   public Object executeScript(String script, Object... args) {
@@ -890,12 +872,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public Alert alert() {
       execute(DriverCommand.GET_ALERT_TEXT);
       return new RemoteAlert();
-    }
-
-    @Override
-    public WebDriver context(String name) {
-      execute(DriverCommand.SWITCH_TO_CONTEXT, ImmutableMap.of("name", name));
-      return RemoteWebDriver.this;
     }
   }
 
