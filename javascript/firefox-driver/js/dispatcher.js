@@ -60,9 +60,7 @@ Dispatcher.executeAs = function(name) {
   return function(request, response) {
     var json = {
       'name': name,
-      'sessionId': {
-        'value': request.getAttribute('sessionId')
-      },
+      'sessionId': request.getAttribute('sessionId'),
       'parameters': JSON.parse(request.getBody() || '{}')
     };
 
