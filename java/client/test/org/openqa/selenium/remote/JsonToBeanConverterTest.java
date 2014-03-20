@@ -48,6 +48,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.Maps;
+
 @RunWith(JUnit4.class)
 public class JsonToBeanConverterTest {
 
@@ -336,6 +338,23 @@ public class JsonToBeanConverterTest {
     assertNotNull(convertedInner);
     assertThat(convertedInner, instanceOf(String.class));
     assertThat(convertedInner.toString(), equalTo(inner.toString()));
+  }
+
+  @Test
+  public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() throws JSONException {
+    SessionId expectedId = new SessionId("thisisakey");
+
+    JSONObject rawJson = new JSONObject();
+    // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
+    rawJson.put("sessionId", expectedId.toString());
+    rawJson.put("name", "some command");
+    rawJson.put("parameters", Maps.newHashMap());
+
+    String stringified = rawJson.toString();
+
+    Command converted = new JsonToBeanConverter().convert(Command.class, stringified);
+
+    assertEquals(expectedId, converted.getSessionId());
   }
 
   public static class SimpleBean {
