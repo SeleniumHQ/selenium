@@ -282,10 +282,22 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
     }
 
+    CommandInfo info = nameToUrl.get(command.getName());
     try {
-      HttpUriRequest httpMethod = buildRequest(command);
+      HttpUriRequest httpMethod = info.getMethod(remoteServer, command);
 
       setAcceptHeader(httpMethod);
+
+      if (httpMethod instanceof HttpPost) {
+        String payload = new BeanToJsonConverter().convert(command.getParameters());
+        ((HttpPost) httpMethod).setEntity(new StringEntity(payload, "utf-8"));
+        httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
+      }
+
+      // Do not allow web proxy caches to cache responses to "get" commands
+      if (httpMethod instanceof HttpGet)  {
+        httpMethod.addHeader("Cache-Control", "no-cache");
+      }
 
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse response = fallBackExecute(context, httpMethod);
@@ -304,23 +316,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       throw e;
     }
-  }
-
-  protected HttpUriRequest buildRequest(Command command) throws UnsupportedEncodingException {
-    HttpUriRequest httpMethod = nameToUrl.get(command.getName()).getMethod(remoteServer, command);
-
-    if (httpMethod instanceof HttpPost) {
-      String payload = new BeanToJsonConverter().convert(command.getParameters());
-      ((HttpPost) httpMethod).setEntity(new StringEntity(payload, "utf-8"));
-      httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
-    }
-
-    // Do not allow web proxy caches to cache responses to "get" commands
-    if (httpMethod instanceof HttpGet)  {
-      httpMethod.addHeader("Cache-Control", "no-cache");
-    }
-
-    return httpMethod;
   }
 
   private HttpResponse fallBackExecute(HttpContext context, HttpUriRequest httpMethod)

@@ -1075,7 +1075,7 @@ FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnVa
   }
 };
 
-FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
+FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   // Coordinate spaces in use:
   //   * Owner document space: Coordinates are relative to the top-left of the
   //     top-level document contained by the window handle containing the
@@ -1198,7 +1198,7 @@ FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
   }
 };
 
-FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
+FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
@@ -1236,7 +1236,7 @@ FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
   respond.send();
 };
 
-FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
+FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
