@@ -17,14 +17,11 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Security.Permissions;
-using System.Text;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
@@ -181,22 +178,39 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
-            Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("status", UriKind.Relative));
+            Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
             bool processStarted = false;
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
             while (!processStarted && DateTime.Now < timeout)
             {
                 try
                 {
+                    // If the driver service process has exited, we can exit early.
+                    if (this.driverServiceProcess.HasExited)
+                    {
+                        break;
+                    }
+
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
                     request.KeepAlive = false;
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+                    // Checking the response from the 'status' end point. Note that we are simply checking
+                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                    // Content-Type header. A more sophisticated check would parse the JSON response and
+                    // validate its values. At the moment we do not do this more sophisticated check.
+                    processStarted = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
                     response.Close();
-                    processStarted = true;
                 }
                 catch (WebException)
                 {
                 }
+            }
+
+            if (!processStarted)
+            {
+                string msg = "Cannot start the driver service on " + this.ServiceUrl;
+                throw new WebDriverException(msg);
             }
         }
 
