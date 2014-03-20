@@ -261,11 +261,11 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/click').
       on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/moveto').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseMoveTo'));
   this.bind_('/session/:sessionId/buttondown').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseDown'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonDown'));
   this.bind_('/session/:sessionId/buttonup').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonUp'));
   this.bind_('/session/:sessionId/click').
       on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
   this.bind_('/session/:sessionId/doubleclick').
