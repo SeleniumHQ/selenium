@@ -199,7 +199,7 @@ class FrameSwitchingTest(unittest.TestCase):
     def testShouldBeAbleToSwitchToParentFrame(self):
         self._loadPage("iframes")
         self.driver.switch_to_frame(0)
-        self.driver.switch_to_parent_frame()
+        self.driver.switch_to.parent_frame()
         self.driver.find_element_by_id('iframe_page_heading')
 
     # Disabled till we use the Java WebServer
