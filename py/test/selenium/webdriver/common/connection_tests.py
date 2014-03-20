@@ -15,9 +15,12 @@
 
 
 import unittest
+import pytest
+
 
 class ConnectionTests(unittest.TestCase):
 
+    @pytest.mark.ignore_firefox
     def testWeCanSeeTheBrowserIsOnline(self):
         self._loadPage('html5Page')
         self.assertTrue(self.driver.is_online())
