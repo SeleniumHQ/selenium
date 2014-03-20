@@ -50,6 +50,31 @@ Dispatcher.notImplemented = function(request, response) {
 
 
 /**
+ * Execute a command
+ * @param {Request} request The request to respond to.
+ * @param {Response} response Class used to send the response.
+ */
+Dispatcher.prototype.execute_v1 = function(request, response) {
+  var callback = function(jsonResponseString) {
+    var jsonResponse = JSON.parse(jsonResponseString);
+    // Going to need more granularity here I think.
+    if (jsonResponse.status != bot.ErrorCode.SUCCESS) {
+      response.setStatus(Response.INTERNAL_ERROR);
+    }
+
+    response.setContentType('application/json');
+    response.setBody(jsonResponseString);
+    response.commit();
+  };
+
+  // Dispatch the command.
+  Components.classes['@googlecode.com/webdriver/command-processor;1'].
+      getService(Components.interfaces.nsICommandProcessor).
+      execute(request.getBody(), callback);
+};
+
+
+/**
  * Returns a function that translates a WebDriver HTTP request to a legacy
  * command.
  * @param {string} name The legacy command name.
@@ -261,11 +286,11 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/click').
       on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/moveto').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseMoveTo'));
   this.bind_('/session/:sessionId/buttondown').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseDown'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonDown'));
   this.bind_('/session/:sessionId/buttonup').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonUp'));
   this.bind_('/session/:sessionId/click').
       on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
   this.bind_('/session/:sessionId/doubleclick').
@@ -307,6 +332,17 @@ Dispatcher.prototype.bind_ = function(path) {
   return resource;
 };
 
+
+/**
+ * Dispatches a request to the appropriately registered handler.
+ * @param {Request} request The request to dispatch.
+ * @param {Response} response The request response.
+ */
+Dispatcher.prototype.dispatch_v1 = function(request, response) {
+  var path = request.getPathInfo();
+  request.setServletPath('/v1');
+  this.execute_v1(request, response);
+};
 
 
 /**

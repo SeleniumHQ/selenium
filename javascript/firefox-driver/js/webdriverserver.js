@@ -53,6 +53,10 @@ WebDriverServer = function() {
     response.processAsync();
     dispatcher_.dispatch(new Request(request), new Response(response));
   }});
+  this.server_.registerGlobHandler('.*/v1', { handle: function(request, response) {
+    response.processAsync();
+    dispatcher_.dispatch_v1(new Request(request), new Response(response));
+  }});
 };
 
 

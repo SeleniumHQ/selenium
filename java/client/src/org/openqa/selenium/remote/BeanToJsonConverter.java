@@ -47,6 +47,15 @@ import java.util.logging.Level;
 public class BeanToJsonConverter {
 
   private static final int MAX_DEPTH = 5;
+  private final boolean v1; // W3C WebDriver Level 1 compatibility flag
+
+  public BeanToJsonConverter() {
+    this(false);
+  }
+
+  public BeanToJsonConverter(boolean v1) {
+    this.v1 = v1;
+  }
 
   /**
    * Convert an object that may or may not be a JSONArray or JSONObject into its JSON string
@@ -190,9 +199,13 @@ public class BeanToJsonConverter {
     }
 
     if (toConvert instanceof SessionId) {
-      JSONObject converted = new JSONObject();
-      converted.put("value", toConvert.toString());
-      return converted;
+      if (v1) {
+        return toConvert.toString();
+      } else {
+        JSONObject converted = new JSONObject();
+        converted.put("value", toConvert.toString());
+        return converted;
+      }
     }
 
     if (toConvert instanceof Capabilities) {

@@ -30,6 +30,7 @@ import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.HttpCommandExecutorV1;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
@@ -90,7 +91,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
       process.clean(profile, profileDir);
 
-      delegate = new HttpCommandExecutor(buildUrl(host, port));
+      delegate = new HttpCommandExecutorV1(buildUrl(host, port));
       delegate.setLocalLogs(logs);
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
 
@@ -213,7 +214,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   private static URL buildUrl(String host, int port) {
     String hostToUse = "localhost".equals(host) ? networkUtils.obtainLoopbackIp4Address() : host;
     try {
-      return new URL("http", hostToUse, port, "/hub");
+      return new URL("http", hostToUse, port, "/v1");
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
