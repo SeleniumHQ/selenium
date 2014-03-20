@@ -70,7 +70,7 @@ class WebDriver(object):
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
-        self.switch_to = SwitchTo(self)
+        self._switch_to = SwitchTo(self)
 
     @property
     def name(self):
@@ -483,36 +483,40 @@ class WebDriver(object):
         """
         self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
 
+    @property
+    def switch_to(self):
+        return self._switch_to
+
     #Target Locators
     def switch_to_active_element(self):
         """ Deprecated use driver.switch_to.active_element
         """
         warnings.warn("use driver.switch_to.active_element instead", DeprecationWarning)
-        return self.switch_to.active_element
+        return self._switch_to.active_element
 
     def switch_to_window(self, window_name):
         """ Deprecated use driver.switch_to.window
         """
         warnings.warn("use driver.switch_to.window instead", DeprecationWarning)
-        self.switch_to.window(window_name)
+        self._switch_to.window(window_name)
 
     def switch_to_frame(self, frame_reference):
         """ Deprecated use driver.switch_to.frame
         """
         warnings.warn("use driver.switch_to.frame instead", DeprecationWarning)
-        self.switch_to.frame(frame_reference)
+        self._switch_to.frame(frame_reference)
 
     def switch_to_default_content(self):
         """ Deprecated use driver.switch_to.default_content
         """
         warnings.warn("use driver.switch_to.default_content instead", DeprecationWarning)
-        self.switch_to.default_content()
+        self._switch_to.default_content()
 
     def switch_to_alert(self):
         """ Deprecated use driver.switch_to.alert
         """
         warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
-        return self.switch_to.alert
+        return self._switch_to.alert
 
     #Navigation
     def back(self):
