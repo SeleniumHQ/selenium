@@ -148,10 +148,10 @@ class frame_to_be_available_and_switch_to_it(object):
     def __call__(self, driver):
         try:
             if isinstance(self.frame_locator, tuple):
-                driver.switch_to_frame(_find_element(driver,
+                driver.switch_to.frame(_find_element(driver,
                                                      self.frame_locator))
             else:
-                driver.switch_to_frame(self.frame_locator)
+                driver.switch_to.frame(self.frame_locator)
             return True
         except NoSuchFrameException:
             return False
@@ -260,7 +260,7 @@ class alert_is_present(object):
 
     def __call__(self, driver):
         try:
-            alert = driver.switch_to_alert()
+            alert = driver.switch_to.alert
             alert.text
             return alert
         except NoAlertPresentException:

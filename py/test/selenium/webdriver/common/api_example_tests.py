@@ -131,12 +131,12 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("xhtmlTest")
         self.driver.find_element_by_link_text("Open new window").click()
         self.assertEquals(title_1, self.driver.title)
-        wait.until(lambda dr: dr.switch_to_window("result") is None)
+        wait.until(lambda dr: dr.switch_to.window("result") is None)
         self.assertEquals(title_2, self.driver.title)
 
     def testSwitchFrameByName(self):
         self._loadPage("frameset")
-        self.driver.switch_to_frame("third")
+        self.driver.switch_to.frame("third")
         checkbox = self.driver.find_element_by_id("checky")
         checkbox.click()
         checkbox.submit()

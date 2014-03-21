@@ -140,7 +140,7 @@ class AlertsTest(unittest.TestCase):
 
     def testShouldAllowUsersToAcceptAnAlertInAFrame(self):
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame("iframeWithAlert")
         self.driver.find_element_by_id("alertInFrame").click()
 
         alert = self._waitForAlert()
@@ -150,8 +150,8 @@ class AlertsTest(unittest.TestCase):
 
     def testShouldAllowUsersToAcceptAnAlertInANestedFrame(self):
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithIframe")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame("iframeWithIframe")
+        self.driver.switch_to.frame("iframeWithAlert")
 
         self.driver.find_element_by_id("alertInFrame").click()
 
@@ -226,7 +226,7 @@ class AlertsTest(unittest.TestCase):
     def _loadPage(self, name):
         try:
             # just in case a previous test left open an alert
-            self.driver.switch_to_alert().dismiss()
+            self.driver.switch_to.alert().dismiss()
         except:
             pass
         self.driver.get(self._pageURL(name))

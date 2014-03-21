@@ -162,7 +162,7 @@ class ElementAttributeTests(unittest.TestCase):
     # Disabled due to issues with Frames    
     #def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(self):
     #    self._loadPage("iframes")
-    #    self.driver.switch_to_frame("iframe1")
+    #    self.driver.switch_to.frame("iframe1")
     #
     #    wallace = self.driver.find_element_by_xpath("//div[@id='wallace']")
     #    classname = wallace.get_attribute("class")

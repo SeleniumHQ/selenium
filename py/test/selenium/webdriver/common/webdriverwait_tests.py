@@ -321,7 +321,7 @@ class WebDriverWaitTest(unittest.TestCase):
             pass
         self.driver.execute_script("setTimeout(function(){alert('alerty')}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())
-        alert = self.driver.switch_to_alert()
+        alert = self.driver.switch_to.alert
         self.assertEqual('alerty', alert.text)
         alert.dismiss()
 
