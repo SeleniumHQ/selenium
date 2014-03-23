@@ -199,11 +199,7 @@ public class CaptureNetworkTrafficCommand extends Command {
   }
 
   private String jsonKey(final String key) {
-    final StringBuilder ret = new StringBuilder();
-
-    ret.append("  \"").append(key).append("\"").append(":");
-
-    return ret.toString();
+    return "  \"" + key + "\"" + ":";
   }
 
   private Object json(String s) {
