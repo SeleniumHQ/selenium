@@ -100,6 +100,10 @@ public class GridHubConfiguration {
   private String logFilename;
 
   /**
+   * max number of thread for Jetty. Default is normally 255.
+   */
+  private int jettyMaxThreads = -1;
+  /**
    * to specify that logging level should be set to Level.DEBUG
    */
   private boolean isDebug = false;
@@ -112,6 +116,7 @@ public class GridHubConfiguration {
   private String[] args = {};
   private String grid1Yml = null;
   private String grid2JSON = null;
+
 
   public GridHubConfiguration() {
     loadDefault();
@@ -179,6 +184,9 @@ public class GridHubConfiguration {
     }
     if (helper.isParamPresent("-port")) {
       port = Integer.parseInt(helper.getParamValue("-port"));
+    }
+    if (helper.isParamPresent("-jettyMaxThreads")) {
+      jettyMaxThreads = Integer.parseInt(helper.getParamValue("-jettyMaxThreads"));
     }
     if (helper.isParamPresent("-cleanUpCycle")) {
       cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
@@ -305,6 +313,9 @@ public class GridHubConfiguration {
         for (int i = 0; i < jsservlets.length(); i++) {
           servlets.add(jsservlets.getString(i));
         }
+      }
+      if (o.has("jettyMaxThreads") && !o.isNull("jettyMaxThreads")) {
+        jettyMaxThreads = o.getInt("jettyMaxThreads");
       }
       if (o.has("prioritizer") && !o.isNull("prioritizer")) {
         String prioritizerClass = o.getString("prioritizer");
@@ -516,4 +527,7 @@ public class GridHubConfiguration {
     return allParams;
   }
 
+  public int getJettyMaxThreads() {
+    return jettyMaxThreads;
+  }
 }
