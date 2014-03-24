@@ -113,7 +113,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       startClient();
     } catch (Exception e) {
-      stopClient();
+      try {
+        stopClient();
+      } catch (Exception ignored) {
+        // Ignore the clean-up exception. We'll propagate the original failure.
+      }
 
       throw new WebDriverException("Failed to start client.", e);
     }
@@ -121,7 +125,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       startSession(desiredCapabilities, requiredCapabilities);
     } catch (Exception e) {
-      quit();
+      try {
+        quit();
+      } catch (Exception ignored) {
+        // Ignore the clean-up exception. We'll propagate the original failure.
+      }
 
       throw new WebDriverException("Failed to start session.", e);
     }
