@@ -108,6 +108,7 @@ public class Hub {
         socketListener.setHost(host);
       }
       socketListener.setPort(port);
+      socketListener.setLowResourcesMaxIdleTime(6000);
       server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
