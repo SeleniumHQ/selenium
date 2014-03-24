@@ -109,8 +109,22 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
     }
-    startClient();
-    startSession(desiredCapabilities, requiredCapabilities);
+
+    try {
+      startClient();
+    } catch (Exception e) {
+      stopClient();
+
+      throw new WebDriverException("Failed to start client.", e);
+    }
+
+    try {
+      startSession(desiredCapabilities, requiredCapabilities);
+    } catch (Exception e) {
+      quit();
+
+      throw new WebDriverException("Failed to start session.", e);
+    }
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
