@@ -265,6 +265,7 @@ public class TestSession {
           final byte[] bytes = drainInputStream(in);
           writeRawBody(response, bytes);
 
+          contentBeingForwarded = bytes;
         } finally {
           EntityUtils.consume(responseBody);
         }
@@ -276,7 +277,9 @@ public class TestSession {
         wrappedResponse.setForwardedContent(contentBeingForwarded);
         ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
       }
+
       response.flushBuffer();
+
       return res;
     } finally {
       forwardingRequest = false;
