@@ -99,8 +99,8 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
                                         remote.getCapabilities(),
                                         remote.getCapabilities(),
                                         stopCalled);
-    } catch (WebDriverException e) {
-      assertTrue(e.getMessage().contains("Failed to start client."));
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Stub client that should fail"));
 
       exceptionThrown = true;
     }
@@ -123,8 +123,8 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
       new BadStartSessionRemoteWebDriver(remote.getCommandExecutor(),
                                         remote.getCapabilities(),
                                         remote.getCapabilities());
-    } catch (WebDriverException e) {
-      assertTrue(e.getMessage().contains("Failed to start session."));
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Stub session that should fail"));
 
       exceptionThrown = true;
     }
