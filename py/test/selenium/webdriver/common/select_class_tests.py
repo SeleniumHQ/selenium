@@ -305,7 +305,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
           pass
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))

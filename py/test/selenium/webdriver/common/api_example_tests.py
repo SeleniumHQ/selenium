@@ -43,7 +43,7 @@ class ApiExampleTest (unittest.TestCase):
     def testGetCurrentUrl(self):
         self._loadSimplePage()
         url = self.driver.current_url
-        self.assertEquals("http://localhost:%d/simpleTest.html" % self.webserver.port, url)
+        self.assertEquals(self.webserver.where_is('simpleTest.html'), url)
 
     def testFindElementsByXPath(self):
         self._loadSimplePage()
@@ -175,7 +175,8 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage(page)
         elem = self.driver.find_element_by_id("id1")
         attr = elem.get_attribute("href")
-        self.assertEquals("http://localhost:%d/xhtmlTest.html#" % self.webserver.port, attr)
+
+        self.assertEquals(self.webserver.where_is('xhtmlTest.html#'), attr)
 
     def testGetImplicitAttribute(self):
         self._loadPage("nestedElements")
@@ -264,7 +265,7 @@ class ApiExampleTest (unittest.TestCase):
             self.assertTrue(log)
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
