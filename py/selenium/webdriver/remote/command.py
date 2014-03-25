@@ -65,8 +65,6 @@ class Command(object):
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
-    SET_BROWSER_VISIBLE = "setBrowserVisible"
-    IS_BROWSER_VISIBLE = "isBrowserVisible"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"

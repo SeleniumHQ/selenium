@@ -147,8 +147,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(GET_TITLE, get("/session/:sessionId/title"))
         .put(GET_PAGE_SOURCE, get("/session/:sessionId/source"))
         .put(SCREENSHOT, get("/session/:sessionId/screenshot"))
-        .put(SET_BROWSER_VISIBLE, post("/session/:sessionId/visible"))
-        .put(IS_BROWSER_VISIBLE, get("/session/:sessionId/visible"))
         .put(FIND_ELEMENT, post("/session/:sessionId/element"))
         .put(FIND_ELEMENTS, post("/session/:sessionId/elements"))
         .put(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"))
