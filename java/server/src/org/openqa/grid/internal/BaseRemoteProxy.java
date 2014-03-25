@@ -22,6 +22,7 @@ import static org.openqa.grid.common.RegistrationRequest.PATH;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -501,10 +502,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
-
+    HttpEntity entity = null;
     try {
       Thread.currentThread().setName("Probing status of " + url);
       response = client.execute(host, r);
+      entity = response.getEntity();
       int code = response.getStatusLine().getStatusCode();
 
       if (code == 200) {
@@ -529,6 +531,12 @@ public class BaseRemoteProxy implements RemoteProxy {
       throw new GridException(e.getMessage(), e);
     } finally {
       Thread.currentThread().setName(existingName);
+      try { //Added by jojo to release connection thoroughly
+          EntityUtils.consume(entity);
+          } catch (IOException e) {
+            log.info("Exception thrown when consume entity");
+          }
+
     }
   }
 
