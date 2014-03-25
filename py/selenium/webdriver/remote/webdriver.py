@@ -518,9 +518,6 @@ class WebDriver(object):
         warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
         return self._switch_to.alert
 
-    def switch_to_parent_frame(self):
-        self._switch_to.parent_frame
-
     #Navigation
     def back(self):
         """
