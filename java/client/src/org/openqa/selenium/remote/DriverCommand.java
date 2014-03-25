@@ -75,9 +75,6 @@ public interface DriverCommand {
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
 
-  String SET_BROWSER_VISIBLE = "setBrowserVisible";
-  String IS_BROWSER_VISIBLE = "isBrowserVisible";
-
   String GET_ELEMENT_TEXT = "getElementText";
   String GET_ELEMENT_VALUE = "getElementValue";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";

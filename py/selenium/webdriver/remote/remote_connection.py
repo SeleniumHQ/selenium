@@ -175,9 +175,6 @@ class RemoteConnection(object):
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
             Command.SCREENSHOT: ('GET', '/session/$sessionId/screenshot'),
-            Command.SET_BROWSER_VISIBLE:
-                ('POST', '/session/$sessionId/visible'),
-            Command.IS_BROWSER_VISIBLE: ('GET', '/session/$sessionId/visible'),
             Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
             Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
             Command.GET_ACTIVE_ELEMENT:
