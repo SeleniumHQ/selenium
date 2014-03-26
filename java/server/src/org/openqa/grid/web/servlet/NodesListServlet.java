@@ -96,7 +96,6 @@ public class NodesListServlet extends RegistryBasedServlet {
 
     oneNode.put("id", remoteProxy.getId());
     oneNode.put("capabilities", capabilities);
-    oneNode.put("configuration", remoteProxy.getConfig());
 
     return oneNode;
   }
