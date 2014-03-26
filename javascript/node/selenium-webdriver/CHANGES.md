@@ -1,3 +1,7 @@
+## v2.41.0-dev
+
+* FIXED: 7105: beforeEach/it/afterEach properly bind `this` for Mocha tests.
+
 ## v2.40.0
 
 * API documentation is now included in the docs directory.
