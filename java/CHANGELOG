@@ -1,3 +1,87 @@
+v2.41.0
+=======
+WebDriver:
+ * Update to support native events for Firefox 28 (removed native event
+   support for Firefox 26). Native events are now supported for the
+   following Firefox versions:
+
+   17 (immediately previous ESR release)
+   24 (current ESR release)
+   27 (immediately previous release
+   28 (current release)
+
+ * Fixed capabilities to be sent properly encoded. For instance,
+   capabilities for mobile have copyright signs.
+ * Renamed some commands in the Firefox driver to prepare for Selenium
+   3. This essentially means that we're mirroring the names of the
+   commands in the function names within the driver. Also implemented
+   handling a Selenium 3 style "sessionId" in a Command received by a
+   Selenium 2 server.
+ * Implemented support for switching context as described here:
+   http://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#133.
+   This feature will be used by mobile WebDriver users to switch
+   between different contexts like the native or the webview UI element
+   tree. The feature is end to end tested with latest Selendroid
+   snapshot version (6a126ab). In the langauge bindings, this is
+   implemented as a role-based interface. Subclasses of RemoteWEbDriver
+   that need this should extend TargetLocator and use covariant return
+   types to keep everything happy and sweet.
+ * Removed InternetExplorerDriver constructor that accepts
+   WindowsProxyManager as a parameter. Proxy management moved to
+   IEDriverServer and WindowsProxyManager is used for RC only now.
+ * Removed use of VK_ENTER since its been removed from Firefox. PUA
+   code uses VK_RETURN now like Mozilla Tools.
+ * Added switch to parent frame command to the wire protocol and API.
+ * Added httpOnly flag to Cookie JSON object.
+ * (on behalf of Tobias Lidskog): Added property for silencing
+   chromedriver. The Java property "webdriver.chrome.silentOutput" is
+   now used to set the default value for silent mode in chromedriver
+   using the ChromeDriverService class. This is analogous to the
+   existing system property for controlling verbose mode.
+ * (on behalf of Yi Zeng): Updated download link to googleapis.com
+ * Reduced the visibility of a deprecated class in the htmlunit driver.
+ * Removed deprecated FirefoxProfile.setProxyPreferences method.
+ * Removed deprecated ChromeOptions.setExperimentalOptions
+ * FIXED: 4843: (on behalf of Jonatan Kronqvist): Regard all modifier
+   keys in SingleKeyAction. An earlier commit added META, but COMMAND
+   and LEFT_* were left out as they were misinterpreted as aliases,
+   which they aren't (they onlyuse the enum definition to get the same
+   character code of the keys).
+ * FIXED: 5331: Added javadoc to JavascriptExecutor executeAsyncScript
+   about the default timeout. Also added some extra information on
+   troubleshooting common issues.
+ * FIXED: 7014: Fixed parameters parsing.
+ * FIXED: 7033: Fixed javadoc.
+
+WebDriverJS:
+ * FIXED: 7105: Properly bind "this" for beforeEach/it/afterEach in
+   mocha integration.
+
+Grid:
+ * Modified to ignore exceptions during the clean-up process if failing
+   to start a RemoteWebDriver instance.
+ * FIXED: 6770: Setting a timeout when Jetty has low resources to
+   prevent hub from hanging.
+ * FIXED: 6771: If a session times out and the browser was never
+   started, it should still be cleaned up on the hub side.
+   BeforeRelease should then be a no-op and not throw.
+ * FIXED: 6772: Added a configuration parameter to set the number of
+   threads Jetty uses. Default is -1, which implements the current
+   behavior (255 threads from Jetty's default settings)
+ * FIXED 6773: Consuming the request in all cases to properly release
+   resources.
+ * FIXED: 6811: Clean up immediately if starting a driver or session
+   errors in RemoteWebDriver.
+ * FIXED: 6878: Actually pass the response body to CommandListener
+   implementations, per the interface contract.
+ * FIXED: 7047: Updated a grid timeout property that seems to have been
+   overlooked in a previous cleanup.
+
+RC:
+ * Added lost quotes in JSON format (RC).
+ * Removed old version of Selenium RC emulation and leaving the new one
+   in place.
+
 v2.40.0
 =======
 WebDriver:
