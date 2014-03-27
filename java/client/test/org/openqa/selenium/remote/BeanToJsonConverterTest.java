@@ -51,6 +51,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -400,6 +401,31 @@ public class BeanToJsonConverterTest {
     assertEquals("WARNING", obj2.get("level"));
     assertEquals(timestamp, obj2.get("timestamp"));
     assertEquals("entry2", obj2.get("message"));
+  }
+
+  @Test
+  public void testShouldBeAbleToConvertACommand() throws JSONException {
+    SessionId sessionId = new SessionId("some id");
+    String commandName = "some command";
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("param1", "value1");
+    parameters.put("param2", "value2");
+    Command command = new Command(sessionId, commandName, parameters);
+
+    System.out.println(new BeanToJsonConverter().convert(command));
+    JSONObject json = new JSONObject(new BeanToJsonConverter().convert(command));
+
+    assertNotNull(json.get("sessionId"));
+    JSONObject sid = (JSONObject) json.get("sessionId");
+    assertEquals(sid.getString("value"), sessionId.toString());
+
+    assertEquals(json.getString("name"), commandName);
+
+    assertNotNull(json.get("parameters"));
+    JSONObject pars = (JSONObject) json.get("parameters");
+    assertEquals(pars.length(), 2);
+    assertEquals(pars.getString("param1"), parameters.get("param1"));
+    assertEquals(pars.getString("param2"), parameters.get("param2"));
   }
 
   @SuppressWarnings("unused")
