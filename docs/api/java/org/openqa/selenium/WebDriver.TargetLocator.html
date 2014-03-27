@@ -153,6 +153,12 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()">parentFrame</a></strong>()</code>
+<div class="block">Change focus to the parent context.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)">window</a></strong>(java.lang.String&nbsp;nameOrHandle)</code>
 <div class="block">Switch the focus of future commands for this driver to the window with the given name/handle.</div>
 </td>
@@ -218,6 +224,18 @@
 <dt><span class="strong">Throws:</span></dt>
 <dd><code><a href="../../../org/openqa/selenium/NoSuchFrameException.html" title="class in org.openqa.selenium">NoSuchFrameException</a></code> - If the given element is neither an IFRAME nor a FRAME element.</dd>
 <dd><code><a href="../../../org/openqa/selenium/StaleElementReferenceException.html" title="class in org.openqa.selenium">StaleElementReferenceException</a></code> - If the WebElement has gone stale.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By)</code></a></dd></dl>
+</li>
+</ul>
+<a name="parentFrame()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parentFrame</h4>
+<pre><a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;parentFrame()</pre>
+<div class="block">Change focus to the parent context. If the current context is the top level browsing context,
+ the context remains unchanged.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>This driver focused on the parent frame</dd></dl>
 </li>
 </ul>
 <a name="window(java.lang.String)">

@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/Cookie.Builder.html" title="class in org.openqa.selenium"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -149,7 +149,7 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;value,
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry)</code>
-<div class="block">Creates an insecure cookie with no domain specified.</div>
+<div class="block">Creates an insecure non-httpOnly cookie with no domain specified.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -158,7 +158,7 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;domain,
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry)</code>
-<div class="block">Creates an insecure cookie.</div>
+<div class="block">Creates an insecure non-httpOnly cookie.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -168,6 +168,17 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry,
       boolean&nbsp;isSecure)</code>
+<div class="block">Creates a non-httpOnly cookie.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, boolean, boolean)">Cookie</a></strong>(java.lang.String&nbsp;name,
+      java.lang.String&nbsp;value,
+      java.lang.String&nbsp;domain,
+      java.lang.String&nbsp;path,
+      java.util.Date&nbsp;expiry,
+      boolean&nbsp;isSecure,
+      boolean&nbsp;isHttpOnly)</code>
 <div class="block">Creates a cookie.</div>
 </td>
 </tr>
@@ -218,13 +229,17 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#isSecure()">isSecure</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#isHttpOnly()">isHttpOnly</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#isSecure()">isSecure</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Cookie.html#validate()">validate</a></strong>()</code>&nbsp;</td>
 </tr>
@@ -260,7 +275,7 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;value,
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry)</pre>
-<div class="block">Creates an insecure cookie with no domain specified.</div>
+<div class="block">Creates an insecure non-httpOnly cookie with no domain specified.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The name of the cookie; may not be null or an empty string.</dd><dd><code>value</code> - The cookie value; may not be null.</dd><dd><code>path</code> - The path the cookie is visible to. If left blank or set to null, will be set to
         "/".</dd><dd><code>expiry</code> - The cookie's expiration date; may be null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date)"><code>Cookie(String, String, String, String, Date)</code></a></dd></dl>
 </li>
@@ -276,7 +291,7 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;domain,
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry)</pre>
-<div class="block">Creates an insecure cookie.</div>
+<div class="block">Creates an insecure non-httpOnly cookie.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The name of the cookie; may not be null or an empty string.</dd><dd><code>value</code> - The cookie value; may not be null.</dd><dd><code>domain</code> - The domain the cookie is visible to.</dd><dd><code>path</code> - The path the cookie is visible to. If left blank or set to null, will be set to
         "/".</dd><dd><code>expiry</code> - The cookie's expiration date; may be null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, boolean)"><code>Cookie(String, String, String, String, Date, boolean)</code></a></dd></dl>
 </li>
@@ -293,9 +308,27 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;path,
       java.util.Date&nbsp;expiry,
       boolean&nbsp;isSecure)</pre>
-<div class="block">Creates a cookie.</div>
+<div class="block">Creates a non-httpOnly cookie.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The name of the cookie; may not be null or an empty string.</dd><dd><code>value</code> - The cookie value; may not be null.</dd><dd><code>domain</code> - The domain the cookie is visible to.</dd><dd><code>path</code> - The path the cookie is visible to. If left blank or set to null, will be set to
         "/".</dd><dd><code>expiry</code> - The cookie's expiration date; may be null.</dd><dd><code>isSecure</code> - Whether this cookie requires a secure connection.</dd></dl>
+</li>
+</ul>
+<a name="Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, boolean, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Cookie</h4>
+<pre>public&nbsp;Cookie(java.lang.String&nbsp;name,
+      java.lang.String&nbsp;value,
+      java.lang.String&nbsp;domain,
+      java.lang.String&nbsp;path,
+      java.util.Date&nbsp;expiry,
+      boolean&nbsp;isSecure,
+      boolean&nbsp;isHttpOnly)</pre>
+<div class="block">Creates a cookie.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The name of the cookie; may not be null or an empty string.</dd><dd><code>value</code> - The cookie value; may not be null.</dd><dd><code>domain</code> - The domain the cookie is visible to.</dd><dd><code>path</code> - The path the cookie is visible to. If left blank or set to null, will be set to
+        "/".</dd><dd><code>expiry</code> - The cookie's expiration date; may be null.</dd><dd><code>isSecure</code> - Whether this cookie requires a secure connection.</dd><dd><code>isHttpOnly</code> - Whether this cookie is a httpOnly cooke.</dd></dl>
 </li>
 </ul>
 <a name="Cookie(java.lang.String, java.lang.String)">
@@ -374,6 +407,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>isSecure</h4>
 <pre>public&nbsp;boolean&nbsp;isSecure()</pre>
+</li>
+</ul>
+<a name="isHttpOnly()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isHttpOnly</h4>
+<pre>public&nbsp;boolean&nbsp;isHttpOnly()</pre>
 </li>
 </ul>
 <a name="getExpiry()">
@@ -459,7 +501,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/Cookie.Builder.html" title="class in org.openqa.selenium"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">

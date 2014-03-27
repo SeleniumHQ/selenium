@@ -1030,6 +1030,11 @@
 <div class="block">System property that defines the location of the log that will be written by
  the <a href="./org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</a></span> - Static variable in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></dt>
+<dd>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
+ in silent mode.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_VERBOSE_LOG_PROPERTY">CHROME_DRIVER_VERBOSE_LOG_PROPERTY</a></span> - Static variable in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></dt>
 <dd>
 <div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
@@ -1374,6 +1379,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxProfile.html#containsWebDriverExtension()">containsWebDriverExtension()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/ContextAware.html#context(java.lang.String)">context(String)</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></dt>
+<dd>
+<div class="block">Switch the focus of future commands for this driver to the context with the given name.</div>
+</dd>
+<dt><a href="./org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium"><span class="strong">ContextAware</span></a> - Interface in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
+<dd>
+<div class="block">Some implementations of WebDriver, notably those that support native testing, need the ability
+ to switch between the native and web-based contexts.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitMouse.html#contextClick(org.openqa.selenium.interactions.internal.Coordinates)">contextClick(Coordinates)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitMouse.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitMouse</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/interactions/Actions.html#contextClick(org.openqa.selenium.WebElement)">contextClick(WebElement)</a></span> - Method in class org.openqa.selenium.interactions.<a href="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></dt>
@@ -1451,13 +1465,17 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.util.Date)">Cookie(String, String, String, Date)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.html" title="class in org.openqa.selenium">Cookie</a></dt>
 <dd>
-<div class="block">Creates an insecure cookie with no domain specified.</div>
+<div class="block">Creates an insecure non-httpOnly cookie with no domain specified.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date)">Cookie(String, String, String, String, Date)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.html" title="class in org.openqa.selenium">Cookie</a></dt>
 <dd>
-<div class="block">Creates an insecure cookie.</div>
+<div class="block">Creates an insecure non-httpOnly cookie.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, boolean)">Cookie(String, String, String, String, Date, boolean)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.html" title="class in org.openqa.selenium">Cookie</a></dt>
+<dd>
+<div class="block">Creates a non-httpOnly cookie.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Cookie.html#Cookie(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, boolean, boolean)">Cookie(String, String, String, String, Date, boolean, boolean)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.html" title="class in org.openqa.selenium">Cookie</a></dt>
 <dd>
 <div class="block">Creates a cookie.</div>
 </dd>
@@ -1818,7 +1836,7 @@
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/DeselectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">DeselectPopUp</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/DeselectPopUp.html#DeselectPopUp(com.thoughtworks.selenium.webdriven.commands.Windows)">DeselectPopUp(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/DeselectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands">DeselectPopUp</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/DeselectPopUp.html#DeselectPopUp(com.thoughtworks.selenium.webdriven.Windows)">DeselectPopUp(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/DeselectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands">DeselectPopUp</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><span class="strong">DesiredCapabilities</span></a> - Class in <a href="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
@@ -2346,6 +2364,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/lift/find/XPathFinder.html#extractFrom(org.openqa.selenium.WebDriver)">extractFrom(WebDriver)</a></span> - Method in class org.openqa.selenium.lift.find.<a href="./org/openqa/selenium/lift/find/XPathFinder.html" title="class in org.openqa.selenium.lift.find">XPathFinder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Proxy.html#extractFrom(org.openqa.selenium.Capabilities)">extractFrom(Capabilities)</a></span> - Static method in class org.openqa.selenium.<a href="./org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Architecture.html#extractFromSysProperty(java.lang.String)">extractFromSysProperty(String)</a></span> - Static method in enum org.openqa.selenium.<a href="./org/openqa/selenium/Architecture.html" title="enum in org.openqa.selenium">Architecture</a></dt>
 <dd>
 <div class="block">Extracts architectures based on system properties in Java and a heuristic to overcome
@@ -2364,7 +2384,9 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html#extractHTAFile(java.io.File, int, java.lang.String, java.lang.String)">extractHTAFile(File, int, String, String)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html" title="class in org.openqa.selenium.browserlaunchers">LauncherUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/Proxies.html#extractProxy(org.openqa.selenium.Capabilities)">extractProxy(Capabilities)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/Proxies.html" title="class in org.openqa.selenium.browserlaunchers">Proxies</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span></div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/Augmenter.html#extractRemoteWebDriver(org.openqa.selenium.WebDriver)">extractRemoteWebDriver(WebDriver)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote">Augmenter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/BaseAugmenter.html#extractRemoteWebDriver(org.openqa.selenium.WebDriver)">extractRemoteWebDriver(WebDriver)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">BaseAugmenter</a></dt>
@@ -3089,7 +3111,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#GET_CAPABILITIES">GET_CAPABILITIES</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#GET_CONTEXT_HANDLES">GET_CONTEXT_HANDLES</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#GET_COOKIE">GET_COOKIE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#GET_CURRENT_CONTEXT_HANDLE">GET_CURRENT_CONTEXT_HANDLE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#GET_CURRENT_URL">GET_CURRENT_URL</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -3372,6 +3398,15 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxBinary.html#getConsoleOutput()">getConsoleOutput()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></dt>
 <dd>
 <div class="block">Gets all console output of the binary.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/ContextAware.html#getContext()">getContext()</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></dt>
+<dd>
+<div class="block">Return an opaque handle to this context that uniquely identifies it within this driver instance.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/ContextAware.html#getContextHandles()">getContextHandles()</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></dt>
+<dd>
+<div class="block">Return a set of context handles which can be used to iterate over all contexts of this
+ WebDriver instance</div>
 </dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#getCookie()">getCookie()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>&nbsp;</dd>
@@ -4975,7 +5010,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver(org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities)">InternetExplorerDriver(InternetExplorerDriverService, Capabilities)</a></span> - Constructor for class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver(org.openqa.selenium.browserlaunchers.WindowsProxyManager, org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">InternetExplorerDriver(WindowsProxyManager, InternetExplorerDriverService, Capabilities, int)</a></span> - Constructor for class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver(org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">InternetExplorerDriver(InternetExplorerDriverService, Capabilities, int)</a></span> - Constructor for class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><span class="strong">InternetExplorerDriverLogLevel</span></a> - Enum in <a href="./org/openqa/selenium/ie/package-summary.html">org.openqa.selenium.ie</a></dt>
 <dd>&nbsp;</dd>
@@ -5107,8 +5142,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#IS_BROWSER_ONLINE">IS_BROWSER_ONLINE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#IS_BROWSER_VISIBLE">IS_BROWSER_VISIBLE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#IS_ELEMENT_DISPLAYED">IS_ELEMENT_DISPLAYED</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#IS_ELEMENT_ENABLED">IS_ELEMENT_ENABLED</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
@@ -5135,10 +5168,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#isAltPressed()">isAltPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitKeyboard</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#isAltPressed()">isAltPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Proxy.html#isAutodetect()">isAutodetect()</a></span> - Method in class org.openqa.selenium.<a href="./org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></dt>
 <dd>
 <div class="block">Whether to autodetect proxy settings.</div>
@@ -5189,10 +5218,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#isCtrlPressed()">isCtrlPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitKeyboard</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#isCtrlPressed()">isCtrlPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#isDisplayed()">isDisplayed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebElement.html#isDisplayed()">isDisplayed()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
@@ -5240,6 +5265,10 @@
 <div class="block">Check for well known error cases, which would mean that loading has finished, but an error
  condition was seen.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Cookie.Builder.html#isHttpOnly(boolean)">isHttpOnly(boolean)</a></span> - Method in class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.Builder.html" title="class in org.openqa.selenium">Cookie.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Cookie.html#isHttpOnly()">isHttpOnly()</a></span> - Method in class org.openqa.selenium.<a href="./org/openqa/selenium/Cookie.html" title="class in org.openqa.selenium">Cookie</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorHandler.html#isIncludeServerErrors()">isIncludeServerErrors()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/net/NetworkInterface.html#isIp4AddressBindingOnly()">isIp4AddressBindingOnly()</a></span> - Method in class org.openqa.selenium.net.<a href="./org/openqa/selenium/net/NetworkInterface.html" title="class in org.openqa.selenium.net">NetworkInterface</a></dt>
@@ -5336,10 +5365,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#isShiftPressed()">isShiftPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitKeyboard</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#isShiftPressed()">isShiftPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/BrowserConfigurationOptions.html#isSingleWindow()">isSingleWindow()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/BrowserConfigurationOptions.html" title="class in com.thoughtworks.selenium">BrowserConfigurationOptions</a></dt>
 <dd>
 <div class="block">Returns true if the <code>SINGLE_WINDOW</code> field is set.</div>
@@ -5526,16 +5551,6 @@
 <dd>
 <div class="block">Interface representing basic, low-level keyboard operations.</div>
 </dd>
-<dt><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">KeyboardModifiersState</span></a> - Class in <a href="./org/openqa/selenium/htmlunit/package-summary.html">org.openqa.selenium.htmlunit</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>This class will soon be marked private</i></div>
-</div>
-</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#KeyboardModifiersState()">KeyboardModifiersState()</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#keyDown(java.lang.String, java.lang.String)">keyDown(String, String)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/Selenium.html#keyDown(java.lang.String, java.lang.String)">keyDown(String, String)</a></span> - Method in interface com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</a></dt>
@@ -6279,6 +6294,15 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/NoOp.html#NoOp(java.lang.Object)">NoOp(Object)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/NoOp.html" title="class in com.thoughtworks.selenium.webdriven.commands">NoOp</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/NoSuchContextException.html" title="class in org.openqa.selenium"><span class="strong">NoSuchContextException</span></a> - Exception in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
+<dd>
+<div class="block">Thrown by <code>WebDriver.switchTo().context(String
+ name)</code>.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/NoSuchContextException.html#NoSuchContextException(java.lang.String)">NoSuchContextException(String)</a></span> - Constructor for exception org.openqa.selenium.<a href="./org/openqa/selenium/NoSuchContextException.html" title="class in org.openqa.selenium">NoSuchContextException</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/NoSuchContextException.html#NoSuchContextException(java.lang.String, java.lang.Throwable)">NoSuchContextException(String, Throwable)</a></span> - Constructor for exception org.openqa.selenium.<a href="./org/openqa/selenium/NoSuchContextException.html" title="class in org.openqa.selenium">NoSuchContextException</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/NoSuchElementException.html" title="class in org.openqa.selenium"><span class="strong">NoSuchElementException</span></a> - Exception in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
 <dd>
 <div class="block">Thrown by <a href="./org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By by)</code></a> and
@@ -6532,6 +6556,12 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebElement.html#parent">parent</a></span> - Variable in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebDriver.RemoteTargetLocator.html#parentFrame()">parentFrame()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebDriver.RemoteTargetLocator.html" title="class in org.openqa.selenium.remote">RemoteWebDriver.RemoteTargetLocator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()">parentFrame()</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></dt>
+<dd>
+<div class="block">Change focus to the parent context.</div>
+</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultRemoteCommand.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultRemoteCommand.html" title="class in com.thoughtworks.selenium">DefaultRemoteCommand</a></dt>
 <dd>
 <div class="block">Factory method to create a RemoteCommand from a wiki-style input string</div>
@@ -6832,10 +6862,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/os/Kernel32.IO_COUNTERS.html#ReadTransferCount">ReadTransferCount</a></span> - Variable in class org.openqa.selenium.os.<a href="./org/openqa/selenium/os/Kernel32.IO_COUNTERS.html" title="class in org.openqa.selenium.os">Kernel32.IO_COUNTERS</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html#recursivelyDeleteDir(java.io.File)">recursivelyDeleteDir(File)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html" title="class in org.openqa.selenium.browserlaunchers">LauncherUtils</a></dt>
-<dd>
-<div class="block">Delete a directory and all subdirectories</div>
-</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#refresh()">refresh()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/Selenium.html#refresh()">refresh()</a></span> - Method in interface com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</a></dt>
@@ -7102,7 +7128,7 @@
 <dd>
 <div class="block">Returns the rows returned by the statement executed in the order returned by the database.</div>
 </dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html#run(com.thoughtworks.selenium.webdriven.SeleneseCommand, org.openqa.selenium.WebDriver, java.lang.String[])">run(SeleneseCommand&lt;T&gt;, WebDriver, String[])</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html" title="class in com.thoughtworks.selenium.webdriven.commands">Timer</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Timer.html#run(com.thoughtworks.selenium.webdriven.SeleneseCommand, org.openqa.selenium.WebDriver, java.lang.String[])">run(SeleneseCommand&lt;T&gt;, WebDriver, String[])</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Timer.html" title="class in com.thoughtworks.selenium.webdriven">Timer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/SeleneseTestCase.html#runBare()">runBare()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/SeleneseTestCase.html" title="class in com.thoughtworks.selenium">SeleneseTestCase</a></dt>
 <dd>
@@ -7255,7 +7281,7 @@
 <dd>
 <div class="block">Constructor.</div>
 </dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html#selectBlankWindow(org.openqa.selenium.WebDriver)">selectBlankWindow(WebDriver)</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands">Windows</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Windows.html#selectBlankWindow(org.openqa.selenium.WebDriver)">selectBlankWindow(WebDriver)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven">Windows</a></dt>
 <dd>
 <div class="block">Selects the only <code>_blank</code> window.</div>
 </dd>
@@ -7281,9 +7307,9 @@
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/SelectFrame.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">SelectFrame</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectFrame.html#SelectFrame(com.thoughtworks.selenium.webdriven.commands.Windows)">SelectFrame(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectFrame.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectFrame</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectFrame.html#SelectFrame(com.thoughtworks.selenium.webdriven.Windows)">SelectFrame(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectFrame.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectFrame</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html#selectFrame(org.openqa.selenium.WebDriver, java.lang.String)">selectFrame(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands">Windows</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Windows.html#selectFrame(org.openqa.selenium.WebDriver, java.lang.String)">selectFrame(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven">Windows</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/lift/match/SelectionMatcher.html#selection()">selection()</a></span> - Static method in class org.openqa.selenium.lift.match.<a href="./org/openqa/selenium/lift/match/SelectionMatcher.html" title="class in org.openqa.selenium.lift.match">SelectionMatcher</a></dt>
 <dd>&nbsp;</dd>
@@ -7308,9 +7334,9 @@
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/SelectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">SelectPopUp</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectPopUp.html#SelectPopUp(com.thoughtworks.selenium.webdriven.commands.Windows)">SelectPopUp(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectPopUp</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectPopUp.html#SelectPopUp(com.thoughtworks.selenium.webdriven.Windows)">SelectPopUp(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectPopUp.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectPopUp</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html#selectPopUp(org.openqa.selenium.WebDriver, java.lang.String)">selectPopUp(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands">Windows</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Windows.html#selectPopUp(org.openqa.selenium.WebDriver, java.lang.String)">selectPopUp(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven">Windows</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#selectWindow(java.lang.String)">selectWindow(String)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>&nbsp;</dd>
@@ -7321,9 +7347,9 @@
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/SelectWindow.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">SelectWindow</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectWindow.html#SelectWindow(com.thoughtworks.selenium.webdriven.commands.Windows)">SelectWindow(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectWindow.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectWindow</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SelectWindow.html#SelectWindow(com.thoughtworks.selenium.webdriven.Windows)">SelectWindow(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SelectWindow.html" title="class in com.thoughtworks.selenium.webdriven.commands">SelectWindow</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html#selectWindow(org.openqa.selenium.WebDriver, java.lang.String)">selectWindow(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands">Windows</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Windows.html#selectWindow(org.openqa.selenium.WebDriver, java.lang.String)">selectWindow(WebDriver, String)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven">Windows</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/SeleneseCommand.html" title="class in com.thoughtworks.selenium.webdriven"><span class="strong">SeleneseCommand</span></a>&lt;<a href="./com/thoughtworks/selenium/webdriven/SeleneseCommand.html" title="type parameter in SeleneseCommand">T</a>&gt; - Class in <a href="./com/thoughtworks/selenium/webdriven/package-summary.html">com.thoughtworks.selenium.webdriven</a></dt>
 <dd>&nbsp;</dd>
@@ -7546,8 +7572,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_BROWSER_ONLINE">SET_BROWSER_ONLINE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_BROWSER_VISIBLE">SET_BROWSER_VISIBLE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_LOCAL_STORAGE_ITEM">SET_LOCAL_STORAGE_ITEM</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_LOCATION">SET_LOCATION</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
@@ -7685,12 +7709,6 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOption(java.lang.String, java.lang.Object)">setExperimentalOption(String, Object)</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></dt>
 <dd>
 <div class="block">Sets an experimental option.</div>
-</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOptions(java.lang.String, java.lang.Object)">setExperimentalOptions(String, Object)</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>Use <a href="./org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOption(java.lang.String, java.lang.Object)"><code>ChromeOptions.setExperimentalOption(String, Object)</code></a>.</i></div>
-</div>
 </dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/CommandProcessor.html#setExtensionJs(java.lang.String)">setExtensionJs(String)</a></span> - Method in interface com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></dt>
 <dd>
@@ -7856,12 +7874,6 @@
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/Proxies.html#setProxyEverything(org.openqa.selenium.Capabilities, boolean)">setProxyEverything(Capabilities, boolean)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/Proxies.html" title="class in org.openqa.selenium.browserlaunchers">Proxies</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxProfile.html#setProxyPreferences(org.openqa.selenium.Proxy)">setProxyPreferences(Proxy)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>This is now handled by the driver itself.</i></div>
-</div>
-</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/Proxies.html#setProxyRequired(org.openqa.selenium.Capabilities, boolean)">setProxyRequired(Capabilities, boolean)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/Proxies.html" title="class in org.openqa.selenium.browserlaunchers">Proxies</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setProxySettings(org.openqa.selenium.Proxy)">setProxySettings(Proxy)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
@@ -7954,9 +7966,9 @@
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/SetTimeout.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">SetTimeout</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SetTimeout.html#SetTimeout(com.thoughtworks.selenium.webdriven.commands.Timer)">SetTimeout(Timer)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SetTimeout.html" title="class in com.thoughtworks.selenium.webdriven.commands">SetTimeout</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/SetTimeout.html#SetTimeout(com.thoughtworks.selenium.webdriven.Timer)">SetTimeout(Timer)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/SetTimeout.html" title="class in com.thoughtworks.selenium.webdriven.commands">SetTimeout</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html#setTimeout(long)">setTimeout(long)</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html" title="class in com.thoughtworks.selenium.webdriven.commands">Timer</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Timer.html#setTimeout(long)">setTimeout(long)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Timer.html" title="class in com.thoughtworks.selenium.webdriven">Timer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxBinary.html#setTimeout(long)">setTimeout(long)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></dt>
 <dd>&nbsp;</dd>
@@ -8305,7 +8317,7 @@
 <dd>
 <div class="block">Ends the test session, killing the browser</div>
 </dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html#stop()">stop()</a></span> - Method in class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html" title="class in com.thoughtworks.selenium.webdriven.commands">Timer</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Timer.html#stop()">stop()</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Timer.html" title="class in com.thoughtworks.selenium.webdriven">Timer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html#stop()">stop()</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
@@ -8321,14 +8333,6 @@
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/safari/SafariDriver.html#stopClient()">stopClient()</a></span> - Method in class org.openqa.selenium.safari.<a href="./org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#storeKeyDown(java.lang.CharSequence)">storeKeyDown(CharSequence)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html#storeKeyUp(java.lang.CharSequence)">storeKeyUp(CharSequence)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">KeyboardModifiersState</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/firefox/internal/Streams.html" title="class in org.openqa.selenium.firefox.internal"><span class="strong">Streams</span></a> - Class in <a href="./org/openqa/selenium/firefox/internal/package-summary.html">org.openqa.selenium.firefox.internal</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/Streams.html#Streams()">Streams()</a></span> - Constructor for class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/Streams.html" title="class in org.openqa.selenium.firefox.internal">Streams</a></dt>
@@ -8380,7 +8384,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_WEB_STORAGE">SUPPORTS_WEB_STORAGE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_CONTEXT">SWITCH_TO_CONTEXT</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_FRAME">SWITCH_TO_FRAME</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_PARENT_FRAME">SWITCH_TO_PARENT_FRAME</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_WINDOW">SWITCH_TO_WINDOW</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
@@ -8589,9 +8597,9 @@
 <dd>
 <div class="block">Returns the interface for managing driver timeouts.</div>
 </dd>
-<dt><a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">Timer</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
+<dt><a href="./com/thoughtworks/selenium/webdriven/Timer.html" title="class in com.thoughtworks.selenium.webdriven"><span class="strong">Timer</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/package-summary.html">com.thoughtworks.selenium.webdriven</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html#Timer(long)">Timer(long)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Timer.html" title="class in com.thoughtworks.selenium.webdriven.commands">Timer</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Timer.html#Timer(long)">Timer(long)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Timer.html" title="class in com.thoughtworks.selenium.webdriven">Timer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/lift/find/PageTitleFinder.html#title()">title()</a></span> - Static method in class org.openqa.selenium.lift.find.<a href="./org/openqa/selenium/lift/find/PageTitleFinder.html" title="class in org.openqa.selenium.lift.find">PageTitleFinder</a></dt>
 <dd>&nbsp;</dd>
@@ -9416,7 +9424,7 @@ the order they are declared.</div>
 </dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/commands/WaitForPopup.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">WaitForPopup</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/WaitForPopup.html#WaitForPopup(com.thoughtworks.selenium.webdriven.commands.Windows)">WaitForPopup(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/WaitForPopup.html" title="class in com.thoughtworks.selenium.webdriven.commands">WaitForPopup</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/WaitForPopup.html#WaitForPopup(com.thoughtworks.selenium.webdriven.Windows)">WaitForPopup(Windows)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/WaitForPopup.html" title="class in com.thoughtworks.selenium.webdriven.commands">WaitForPopup</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/condition/DefaultConditionRunner.Log4jMonitor.html#waitHasBegun(com.thoughtworks.selenium.condition.ConditionRunner.Context, com.thoughtworks.selenium.condition.Condition)">waitHasBegun(ConditionRunner.Context, Condition)</a></span> - Method in class com.thoughtworks.selenium.condition.<a href="./com/thoughtworks/selenium/condition/DefaultConditionRunner.Log4jMonitor.html" title="class in com.thoughtworks.selenium.condition">DefaultConditionRunner.Log4jMonitor</a></dt>
 <dd>&nbsp;</dd>
@@ -9465,20 +9473,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html#WebDriverBackedSelenium(org.openqa.selenium.WebDriver, java.lang.String)">WebDriverBackedSelenium(WebDriver, String)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverBackedSelenium</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="./org/openqa/selenium/WebDriverBackedSelenium.html" title="class in org.openqa.selenium"><span class="strong">WebDriverBackedSelenium</span></a> - Class in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>Use <a href="./com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven"><code>WebDriverBackedSelenium</code></a> instead.</i></div>
-</div>
-</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/WebDriverBackedSelenium.html#WebDriverBackedSelenium(com.google.common.base.Supplier, java.lang.String)">WebDriverBackedSelenium(Supplier&lt;WebDriver&gt;, String)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverBackedSelenium.html" title="class in org.openqa.selenium">WebDriverBackedSelenium</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/WebDriverBackedSelenium.html#WebDriverBackedSelenium(org.openqa.selenium.WebDriver, java.lang.String)">WebDriverBackedSelenium(WebDriver, String)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverBackedSelenium.html" title="class in org.openqa.selenium">WebDriverBackedSelenium</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven"><span class="strong">WebDriverCommandProcessor</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/package-summary.html">com.thoughtworks.selenium.webdriven</a></dt>
 <dd>
 <div class="block">A CommandProcessor which delegates commands down to an underlying webdriver instance.</div>
@@ -9487,20 +9481,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)">WebDriverCommandProcessor(String, Supplier&lt;WebDriver&gt;)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="./org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium"><span class="strong">WebDriverCommandProcessor</span></a> - Class in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>Use <a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven"><code>WebDriverCommandProcessor</code></a> instead.</i></div>
-</div>
-</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, org.openqa.selenium.WebDriver)">WebDriverCommandProcessor(String, WebDriver)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium">WebDriverCommandProcessor</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)">WebDriverCommandProcessor(String, Supplier&lt;WebDriver&gt;)</a></span> - Constructor for class org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium">WebDriverCommandProcessor</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events"><span class="strong">WebDriverEventListener</span></a> - Interface in <a href="./org/openqa/selenium/support/events/package-summary.html">org.openqa.selenium.support.events</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium"><span class="strong">WebDriverException</span></a> - Exception in <a href="./org/openqa/selenium/package-summary.html">org.openqa.selenium</a></dt>
@@ -9577,9 +9557,9 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/WindowMaximize.html#WindowMaximize(com.thoughtworks.selenium.webdriven.JavascriptLibrary)">WindowMaximize(JavascriptLibrary)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/WindowMaximize.html" title="class in com.thoughtworks.selenium.webdriven.commands">WindowMaximize</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands"><span class="strong">Windows</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/commands/package-summary.html">com.thoughtworks.selenium.webdriven.commands</a></dt>
+<dt><a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven"><span class="strong">Windows</span></a> - Class in <a href="./com/thoughtworks/selenium/webdriven/package-summary.html">com.thoughtworks.selenium.webdriven</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html#Windows(org.openqa.selenium.WebDriver)">Windows(WebDriver)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.commands.<a href="./com/thoughtworks/selenium/webdriven/commands/Windows.html" title="class in com.thoughtworks.selenium.webdriven.commands">Windows</a></dt>
+<dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/Windows.html#Windows(org.openqa.selenium.WebDriver)">Windows(WebDriver)</a></span> - Constructor for class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/Windows.html" title="class in com.thoughtworks.selenium.webdriven">Windows</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/os/WindowsProcessGroup.html" title="class in org.openqa.selenium.os"><span class="strong">WindowsProcessGroup</span></a> - Class in <a href="./org/openqa/selenium/os/package-summary.html">org.openqa.selenium.os</a></dt>
 <dd>

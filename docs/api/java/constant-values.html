@@ -318,6 +318,13 @@
 <td class="colLast"><code>"webdriver.chrome.logfile"</code></td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a name="org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">
+<!--   -->
+</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
+<td><code><a href="org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</a></code></td>
+<td class="colLast"><code>"webdriver.chrome.silentOutput"</code></td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_VERBOSE_LOG_PROPERTY">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
@@ -1468,11 +1475,25 @@
 <td class="colLast"><code>"getCapabilities"</code></td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.GET_CONTEXT_HANDLES">
+<!--   -->
+</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
+<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#GET_CONTEXT_HANDLES">GET_CONTEXT_HANDLES</a></code></td>
+<td class="colLast"><code>"getContextHandles"</code></td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.GET_COOKIE">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#GET_COOKIE">GET_COOKIE</a></code></td>
 <td class="colLast"><code>"getCookie"</code></td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE">
+<!--   -->
+</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
+<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#GET_CURRENT_CONTEXT_HANDLE">GET_CURRENT_CONTEXT_HANDLE</a></code></td>
+<td class="colLast"><code>"getCurrentContextHandle"</code></td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL">
@@ -1713,144 +1734,130 @@
 <td class="colLast"><code>"isBrowserOnline"</code></td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.IS_BROWSER_VISIBLE">
-<!--   -->
-</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
-<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#IS_BROWSER_VISIBLE">IS_BROWSER_VISIBLE</a></code></td>
-<td class="colLast"><code>"isBrowserVisible"</code></td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#IS_ELEMENT_DISPLAYED">IS_ELEMENT_DISPLAYED</a></code></td>
 <td class="colLast"><code>"isElementDisplayed"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#IS_ELEMENT_ENABLED">IS_ELEMENT_ENABLED</a></code></td>
 <td class="colLast"><code>"isElementEnabled"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#IS_ELEMENT_SELECTED">IS_ELEMENT_SELECTED</a></code></td>
 <td class="colLast"><code>"isElementSelected"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.MAXIMIZE_WINDOW">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#MAXIMIZE_WINDOW">MAXIMIZE_WINDOW</a></code></td>
 <td class="colLast"><code>"maximizeWindow"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#MOUSE_DOWN">MOUSE_DOWN</a></code></td>
 <td class="colLast"><code>"mouseButtonDown"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.MOUSE_UP">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#MOUSE_UP">MOUSE_UP</a></code></td>
 <td class="colLast"><code>"mouseButtonUp"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.MOVE_TO">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#MOVE_TO">MOVE_TO</a></code></td>
 <td class="colLast"><code>"mouseMoveTo"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.NEW_SESSION">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#NEW_SESSION">NEW_SESSION</a></code></td>
 <td class="colLast"><code>"newSession"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.QUIT">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#QUIT">QUIT</a></code></td>
 <td class="colLast"><code>"quit"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.REFRESH">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#REFRESH">REFRESH</a></code></td>
 <td class="colLast"><code>"refresh"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#REMOVE_LOCAL_STORAGE_ITEM">REMOVE_LOCAL_STORAGE_ITEM</a></code></td>
 <td class="colLast"><code>"removeLocalStorageItem"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#REMOVE_SESSION_STORAGE_ITEM">REMOVE_SESSION_STORAGE_ITEM</a></code></td>
 <td class="colLast"><code>"removeSessionStorageItem"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SCREENSHOT">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SCREENSHOT">SCREENSHOT</a></code></td>
 <td class="colLast"><code>"screenshot"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SEND_KEYS_TO_ACTIVE_ELEMENT">SEND_KEYS_TO_ACTIVE_ELEMENT</a></code></td>
 <td class="colLast"><code>"sendKeysToActiveElement"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SEND_KEYS_TO_ELEMENT">SEND_KEYS_TO_ELEMENT</a></code></td>
 <td class="colLast"><code>"sendKeysToElement"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_SESSION">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SEND_KEYS_TO_SESSION">SEND_KEYS_TO_SESSION</a></code></td>
 <td class="colLast"><code>"sendKeys"</code></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SET_ALERT_VALUE">SET_ALERT_VALUE</a></code></td>
 <td class="colLast"><code>"setAlertValue"</code></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SET_BROWSER_ONLINE">SET_BROWSER_ONLINE</a></code></td>
 <td class="colLast"><code>"setBrowserOnline"</code></td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SET_BROWSER_VISIBLE">
-<!--   -->
-</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
-<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SET_BROWSER_VISIBLE">SET_BROWSER_VISIBLE</a></code></td>
-<td class="colLast"><code>"setBrowserVisible"</code></td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM">
@@ -1923,11 +1930,25 @@
 <td class="colLast"><code>"submitElement"</code></td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT">
+<!--   -->
+</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
+<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_CONTEXT">SWITCH_TO_CONTEXT</a></code></td>
+<td class="colLast"><code>"switchToContext"</code></td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME">
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
 <td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_FRAME">SWITCH_TO_FRAME</a></code></td>
 <td class="colLast"><code>"switchToFrame"</code></td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME">
+<!--   -->
+</a><code>public&nbsp;static&nbsp;final&nbsp;java.lang.String</code></td>
+<td><code><a href="org/openqa/selenium/remote/DriverCommand.html#SWITCH_TO_PARENT_FRAME">SWITCH_TO_PARENT_FRAME</a></code></td>
+<td class="colLast"><code>"switchToParentFrame"</code></td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a name="org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW">
