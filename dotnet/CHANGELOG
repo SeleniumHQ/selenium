@@ -1,3 +1,15 @@
+v2.41.0
+=======
+ * Removed deprecated AndroidDriver
+ * Added excludeSwitches to the list of known Chrome options
+ * Implemented ITakesScreenshot in RemoteWebDriver base class instead of
+   in browser-specific subclasses.
+ * Refactored usage of command executors. We now use the same algorithm for
+   creating and using a "command executor" for all current driver
+   implementations. This removes some of the differences between Firefox and
+   other implementations. It also prepares the way for unifying the
+   construction of drivers using a common base Options class.
+
 v2.40.0
 =======
  * Issue #1175: Implemented ByIdOrName in .NET support package.
