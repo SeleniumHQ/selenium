@@ -1,3 +1,10 @@
+2.41.0 (2014-03-28)
+===================
+
+* Removed dead browser visibility methods.
+* Firefox:
+  * Native events support for Firefox 28 (removed support for 26)
+
 2.40.0 (2014-02-19)
 ===================
 
