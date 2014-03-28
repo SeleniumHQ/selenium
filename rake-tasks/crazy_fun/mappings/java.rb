@@ -319,7 +319,8 @@ module CrazyFunJava
             :debug                => true,
             :nowarn               => true,
             :source               => '1.6',
-            :target               => '1.6'
+            :target               => '1.6',
+            :compiler             => 'extJavac'
           ) { |ant|
             ant.classpath(:refid => "#{args[:name]}.path")
 
