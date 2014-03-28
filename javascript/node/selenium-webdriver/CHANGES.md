@@ -1,4 +1,4 @@
-## v2.41.0-dev
+## v2.41.0
 
 * FIXED: 7138: export logging API from webdriver module.
 * FIXED: 7105: beforeEach/it/afterEach properly bind `this` for Mocha tests.
