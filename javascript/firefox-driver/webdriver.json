@@ -22,6 +22,7 @@
     "extensions.logging.enabled": true,
     "extensions.update.enabled": false,
     "extensions.update.notifyUser": false,
+    "layout.css.devPixelsPerPx": "1.0",
     "network.manage-offline-status": false,
     "network.http.phishy-userpass-length": 255,
     "offline-apps.allow_by_default": true,
