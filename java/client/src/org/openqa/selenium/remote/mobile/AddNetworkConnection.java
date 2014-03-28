@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2010 Selenium committers
+Copyright 2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.remote.html5;
+package org.openqa.selenium.remote.mobile;
 
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
@@ -27,11 +27,11 @@ import org.openqa.selenium.remote.InterfaceImplementation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class AddBrowserConnection implements AugmenterProvider {
+public class AddNetworkConnection implements AugmenterProvider {
 
   @Override
   public Class<?> getDescribedInterface() {
-    return BrowserConnection.class;
+    return NetworkConnection.class;
   }
 
   @Override
@@ -40,8 +40,8 @@ public class AddBrowserConnection implements AugmenterProvider {
 
       @Override
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-          Object... args) {
-        BrowserConnection connection = new RemoteBrowserConnection(executeMethod);
+                           Object... args) {
+        NetworkConnection connection = new RemoteNetworkConnection(executeMethod);
         try {
           return method.invoke(connection, args);
         } catch (IllegalAccessException e) {

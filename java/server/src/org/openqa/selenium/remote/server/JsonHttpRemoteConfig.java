@@ -1,6 +1,5 @@
 /*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -104,10 +103,8 @@ import org.openqa.selenium.remote.server.handler.html5.GetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageSize;
-import org.openqa.selenium.remote.server.handler.html5.IsBrowserOnline;
 import org.openqa.selenium.remote.server.handler.html5.RemoveLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.RemoveSessionStorageItem;
-import org.openqa.selenium.remote.server.handler.html5.SetBrowserConnection;
 import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
@@ -400,10 +397,6 @@ public class JsonHttpRemoteConfig {
         .on(ResultType.SUCCESS, emptyResponse);
 
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
         .on(ResultType.SUCCESS, jsonResponse);
 
     getMapper.bind("/session/:sessionId/local_storage/key/:key", GetLocalStorageItem.class)

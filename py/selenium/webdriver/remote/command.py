@@ -124,8 +124,8 @@ class Command(object):
     GET_APP_CACHE_STATUS = "getAppCacheStatus"
     CLEAR_APP_CACHE = "clearAppCache"
 
-    IS_BROWSER_ONLINE = "isBrowserOnline"
-    SET_BROWSER_ONLINE = "setBrowserOnline"
+    GET_NETWORK_CONNECTION = "getNetworkConnection"
+    SET_NETWORK_CONNECTION = "setNetworkConnection"
 
     GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem"
     REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem"

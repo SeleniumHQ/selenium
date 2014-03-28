@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -193,8 +193,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(GET_LOCATION, get("/session/:sessionId/location"))
         .put(SET_LOCATION, post("/session/:sessionId/location"))
         .put(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"))
-        .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
-        .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
 
         .put(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"))
         .put(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"))
@@ -249,6 +247,11 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
         .put(GET_LOG, post("/session/:sessionId/log"))
         .put(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/log/types"))
+
+        // Mobile Spec
+        // https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile
+        .put(GET_NETWORK_CONNECTION, get("/session/:sessionId/network_connection"))
+        .put(SET_NETWORK_CONNECTION, post("/session/:sessionId/network_connection"))
 
         .put(STATUS, get("/status"));
 
