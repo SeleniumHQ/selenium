@@ -33,10 +33,10 @@ Installing
 ==========
 
 If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply install or upgrade the Python bindings::
-    
+
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.40.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.41.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -65,17 +65,17 @@ Example 1:
 
 ::
 
-    from selenium import webdriver 
+    from selenium import webdriver
     from selenium.webdriver.common.keys import Keys
 
     browser = webdriver.Firefox()
-    
+
     browser.get('http://www.yahoo.com')
     assert 'Yahoo!' in browser.title
 
     elem = browser.find_element_by_name('p')  # Find the search box
     elem.send_keys('seleniumhq' + Keys.RETURN)
-    
+
     browser.quit()
 
 Example 2:
@@ -105,13 +105,13 @@ Selenium Server (optional)
 
 For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
-However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).  
+However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/2.40/selenium-server-standalone-2.40.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/2.41/selenium-server-standalone-2.41.0.jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.40.0.jar
+    java -jar selenium-server-standalone-2.41.0.jar
 
 Then run your Python client scripts.
 

@@ -1,3 +1,7 @@
+Selenium 2.41
+* Support for Firefox 28
+* deprecating switch_to_* in favour of driver.switch_to.*
+
 Selenium 2.40
 * Support for Firefox 27
 * Fixes related to http connection
