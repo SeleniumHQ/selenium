@@ -395,20 +395,6 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
 }
 
 
-function testInvokesCallbacksInRegisteredScope() {
-  var callback1, callback2;
-  webdriver.promise.fulfilled('abc').
-      addCallback(callback1 = callbackHelper(function(value) {
-        return value + this.count;
-      }), {count:123}).
-      then(callback2 = callbackHelper(function(value) {
-        assertEquals('abc123', value);
-      }));
-  callback1.assertCalled();
-  callback2.assertCalled();
-}
-
-
 function testResolvingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   var d1 = new webdriver.promise.Deferred();
   var d2 = new webdriver.promise.Deferred();

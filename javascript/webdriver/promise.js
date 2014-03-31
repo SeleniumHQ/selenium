@@ -182,87 +182,6 @@ webdriver.promise.Promise.prototype.thenFinally = function(callback) {
 };
 
 
-/**
- * Registers a function to be invoked when this promise is successfully
- * resolved. This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #then()} instead.
- */
-webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
-  return this.then(goog.bind(callback, opt_self));
-};
-
-
-/**
- * Registers a function to be invoked when this promise is rejected.
- * This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #thenCatch()} instead.
- */
-webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
-  return this.thenCatch(goog.bind(errback, opt_self));
-};
-
-
-/**
- * Registers a function to be invoked when this promise is either rejected or
- * resolved. This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} callback The function to call when this promise is
- *     either resolved or rejected. The function should expect a single
- *     argument: the resolved value or rejection error.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #thenFinally()} instead.
- */
-webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
-  return this.thenFinally(goog.bind(callback, opt_self));
-};
-
-
-/**
- * An alias for {@code webdriver.promise.Promise.prototype.then} that permits
- * the scope of the invoked function to be specified. This function is provided
- * for backwards compatibility with the Dojo Deferred API.
- *
- * @param {Function} callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #then()} instead.
- */
-webdriver.promise.Promise.prototype.addCallbacks = function(
-    callback, errback, opt_self) {
-  return this.then(goog.bind(callback, opt_self),
-      goog.bind(errback, opt_self));
-};
-
-
 
 /**
  * Represents a value that will be resolved at some point in the future. This
@@ -1849,7 +1768,7 @@ webdriver.promise.Frame_.prototype.lastInsertedChild_ = null;
  *     webdriver.promise.createFlow(function(flow) {
  *       someResult = flow.execute(function() {});
  *       throw Error();
- *     }).addErrback(function(err) {
+ *     }).thenCatch(function(err) {
  *       console.log('flow failed: ' + err);
  *       someResult.then(function() {
  *         console.log('task succeeded!');
