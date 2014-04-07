@@ -173,20 +173,4 @@ public class ChromeDriver extends RemoteWebDriver {
     // ... and convert it.
     return target.convertFromBase64Png(base64);
   }
-
-  @Override
-  protected void startSession(Capabilities desiredCapabilities,
-                              Capabilities requiredCapabilities) {
-    try {
-      super.startSession(desiredCapabilities, requiredCapabilities);
-    } catch (WebDriverException e) {
-      try {
-        quit();
-      } catch (Throwable t) {
-         // Ignoring to report the exception thrown earlier.
-      }
-
-      throw e;
-    }
-  }
 }
