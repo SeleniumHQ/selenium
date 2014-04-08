@@ -107,8 +107,6 @@
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
     <Compile Include="Remote\ICommandServer.cs" />
-    <Compile Include="Remote\JsonConverters\CharArrayJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
