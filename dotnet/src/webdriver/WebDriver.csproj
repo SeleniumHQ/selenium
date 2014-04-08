@@ -66,7 +66,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\dotnet\json-net-4.5r11\Net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\third_party\dotnet\json-net-6.0r2\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

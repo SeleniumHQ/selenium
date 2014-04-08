@@ -8,7 +8,7 @@ dotnet_library(name = "webdriver",
     "System.Xml.dll"
   ],
   merge_refs = [
-    "third_party/dotnet/json-net-4.5r11/net40/Newtonsoft.Json.dll",
+    "third_party/dotnet/json-net-6.0r2/net40/Newtonsoft.Json.dll",
     "third_party/dotnet/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
@@ -32,7 +32,7 @@ dotnet_library(name = "webdriver35",
     "System.Xml.dll"
   ],
   merge_refs = [
-    "third_party/dotnet/json-net-4.5r11/net35/Newtonsoft.Json.dll",
+    "third_party/dotnet/json-net-6.0r2/net35/Newtonsoft.Json.dll",
     "third_party/dotnet/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
@@ -56,7 +56,7 @@ dotnet_library(name = "strongnamed",
     "System.Xml.dll"
   ],
   merge_refs = [
-    "third_party/dotnet/json-net-4.5r11/net40/Newtonsoft.Json.dll",
+    "third_party/dotnet/json-net-6.0r2/net40/Newtonsoft.Json.dll",
     "third_party/dotnet/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
@@ -81,7 +81,7 @@ dotnet_library(name = "strongnamed35",
     "System.Xml.dll"
   ],
   merge_refs = [
-    "third_party/dotnet/json-net-4.5r11/net35/Newtonsoft.Json.dll",
+    "third_party/dotnet/json-net-6.0r2/net35/Newtonsoft.Json.dll",
     "third_party/dotnet/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
