@@ -174,5 +174,5 @@ public class ExpectedConditionsTest {
     verify(mockSleeper, times(1)).sleep(new Duration(250, TimeUnit.MILLISECONDS));
   }
 
-  interface GenericCondition extends ExpectedCondition<Object> {}
+  interface GenericCondition extends AnticipatedCondition<Object> {}
 }

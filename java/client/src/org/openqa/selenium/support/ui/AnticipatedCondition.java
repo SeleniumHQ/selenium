@@ -18,7 +18,7 @@ package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Function;
 
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 
 /**
  * Models a condition that might reasonably be expected to eventually evaluate to something that is
@@ -30,7 +30,5 @@ import org.openqa.selenium.WebDriver;
  * have unexpected side-effects.
  * 
  * @param <T> The return type
- * @deprecated Use {@link AnticipatedCondition} instead
  */
-@Deprecated
-public interface ExpectedCondition<T> extends Function<WebDriver, T> {}
+public interface AnticipatedCondition<T> extends Function<SearchContext, T>{}

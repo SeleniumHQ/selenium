@@ -18,7 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.AnticipatedCondition;
+import org.openqa.selenium.support.ui.ContextInfo;
 
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class WaitingConditions {
     // utility class
   }
 
-  private static abstract class ElementTextComperator implements ExpectedCondition<String> {
+  private static abstract class ElementTextComperator implements AnticipatedCondition<String> {
     private String lastText = "";
     private WebElement element;
     private String expectedValue;
@@ -37,7 +38,7 @@ public class WaitingConditions {
       this.expectedValue = expectedValue;
     }
 
-    public String apply(WebDriver ignored) {
+    public String apply(SearchContext ignored) {
       lastText = element.getText();
       if (compareText(expectedValue, lastText)) {
         return lastText;
@@ -54,7 +55,7 @@ public class WaitingConditions {
     }
   }
 
-  public static ExpectedCondition<String> elementTextToEqual(
+  public static AnticipatedCondition<String> elementTextToEqual(
       final WebElement element, final String value) {
     return new ElementTextComperator(element, value) {
 
@@ -65,7 +66,7 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> elementTextToContain(
+  public static AnticipatedCondition<String> elementTextToContain(
       final WebElement element, final String value) {
     return new ElementTextComperator(element, value) {
 
@@ -76,12 +77,12 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
-    return new ExpectedCondition<String>() {
+  public static AnticipatedCondition<String> elementTextToEqual(final By locator, final String value) {
+    return new AnticipatedCondition<String>() {
 
       @Override
-      public String apply(WebDriver driver) {
-        String text = driver.findElement(locator).getText();
+      public String apply(SearchContext context) {
+        String text = context.findElement(locator).getText();
         if (value.equals(text)) {
           return text;
         }
@@ -97,14 +98,14 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> elementValueToEqual(
+  public static AnticipatedCondition<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {
-    return new ExpectedCondition<String>() {
+    return new AnticipatedCondition<String>() {
 
       private String lastValue = "";
 
       @Override
-      public String apply(WebDriver ignored) {
+      public String apply(SearchContext ignored) {
         lastValue = element.getAttribute("value");
         if (expectedValue.equals(lastValue)) {
           return lastValue;
@@ -119,11 +120,11 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> pageSourceToContain(final String expectedText) {
-    return new ExpectedCondition<String>() {
+  public static AnticipatedCondition<String> pageSourceToContain(final String expectedText) {
+    return new AnticipatedCondition<String>() {
       @Override
-      public String apply(WebDriver driver) {
-        String source = driver.getPageSource();
+      public String apply(SearchContext context) {
+        String source = ContextInfo.getDriver(context).getPageSource();
 
         if (source.contains(expectedText)) {
           return source;
@@ -138,12 +139,12 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<Point> elementLocationToBe(
+  public static AnticipatedCondition<Point> elementLocationToBe(
       final WebElement element, final Point expectedLocation) {
-    return new ExpectedCondition<Point>() {
+    return new AnticipatedCondition<Point>() {
       private Point currentLocation = new Point(0, 0);
 
-      public Point apply(WebDriver ignored) {
+      public Point apply(SearchContext ignored) {
         currentLocation = element.getLocation();
         if (currentLocation.equals(expectedLocation)) {
           return expectedLocation;
@@ -159,10 +160,10 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<Set<String>> windowHandleCountToBe(final int count) {
-    return new ExpectedCondition<Set<String>>() {
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
+  public static AnticipatedCondition<Set<String>> windowHandleCountToBe(final int count) {
+    return new AnticipatedCondition<Set<String>>() {
+      public Set<String> apply(SearchContext context) {
+        Set<String> handles = ContextInfo.getDriver(context).getWindowHandles();
 
         if (handles.size() == count) {
           return handles;
@@ -172,12 +173,12 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<Set<String>> windowHandleCountToBeGreaterThan(final int count) {
+  public static AnticipatedCondition<Set<String>> windowHandleCountToBeGreaterThan(final int count) {
 
-    return new ExpectedCondition<Set<String>>() {
+    return new AnticipatedCondition<Set<String>>() {
       @Override
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
+      public Set<String> apply(SearchContext context) {
+        Set<String> handles = ContextInfo.getDriver(context).getWindowHandles();
 
         if (handles.size() > count) {
           return handles;
@@ -187,12 +188,12 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
+  public static AnticipatedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
+    return new AnticipatedCondition<String>() {
 
       @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
+      public String apply(SearchContext context) {
+        Set<String> currentWindowHandles = ContextInfo.getDriver(context).getWindowHandles();
         if (currentWindowHandles.size() > originalHandles.size()) {
           currentWindowHandles.removeAll(originalHandles);
           return currentWindowHandles.iterator().next();
@@ -204,12 +205,12 @@ public class WaitingConditions {
     
   }
 
-  public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
-    return new ExpectedCondition<WebDriver>() {
+  public static AnticipatedCondition<SearchContext> windowToBeSwitchedToWithName(final String windowName) {
+    return new AnticipatedCondition<SearchContext>() {
 
       @Override
-      public WebDriver apply(WebDriver driver) {
-        return driver.switchTo().window(windowName);
+      public WebDriver apply(SearchContext context) {
+        return ContextInfo.getDriver(context).switchTo().window(windowName);
       }
 
       @Override
