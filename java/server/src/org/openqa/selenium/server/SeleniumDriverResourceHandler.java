@@ -22,6 +22,12 @@ import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
 import org.apache.commons.logging.Log;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpException;
 import org.openqa.jetty.http.HttpFields;
@@ -69,6 +75,7 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -469,6 +476,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         results = "OK";
         shutDown(res);
         break;
+      case gracefullyShutDownSeleniumServer:
+        results = "OK";
+        gracefullyShutDown(res);
+        break;
       case getLogMessages:
         results = "OK," + logMessagesBuffer.toString();
         logMessagesBuffer.setLength(0);
@@ -796,6 +807,47 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       }
     }
 
+  }
+
+  private void gracefullyShutDown(HttpResponse res) {
+    log.info("Gracefully Shutdown command received");
+
+    Runnable initiateShutDownGracefully = new Runnable() {
+      public void run() {
+        log.info("initiating shutdown gracefully");
+        Sleeper.sleepTight(1500);
+
+        // Waiting for current sessions to finish.
+        boolean done = false;
+        while (!done) {
+          int activeBrowsers = browserLauncherFactory.getWebdriverSessionsSize();
+          log.info(String.format("Waiting for every session to finish: %s active browsers.", activeBrowsers));
+
+          done = (0 == activeBrowsers);
+          try {
+            Thread.sleep(5000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+
+        remoteControl.stop();
+        System.exit(0);
+      }
+    };
+
+    Thread isd = new Thread(initiateShutDownGracefully); // Thread safety reviewed
+    isd.setName("initiateShutDownGracefully");
+    isd.start();
+
+    if (res != null) {
+      try {
+        res.getOutputStream().write("OK".getBytes());
+        res.commit();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   private String generateNewSessionId() {

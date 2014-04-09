@@ -22,6 +22,7 @@ public enum SpecialCommand {
   getNewBrowserSession,
   testComplete,
   shutDownSeleniumServer,
+  gracefullyShutDownSeleniumServer,
   getLogMessages,
   retrieveLastRemoteControlLogs,
   captureEntirePageScreenshotToString,

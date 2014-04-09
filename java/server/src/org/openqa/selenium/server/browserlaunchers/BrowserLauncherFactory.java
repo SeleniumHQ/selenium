@@ -74,6 +74,10 @@ public class BrowserLauncherFactory {
   public BrowserLauncherFactory(DriverSessions webdriverSessions) {
     this.webdriverSessions = webdriverSessions;
   }
+  
+  public int getWebdriverSessionsSize() {
+    return webdriverSessions.getSessions().size();
+  } 
 
   /**
    * Returns the browser given by the specified browser string

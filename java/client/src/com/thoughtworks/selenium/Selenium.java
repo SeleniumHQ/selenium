@@ -1726,6 +1726,15 @@ public interface Selenium {
   void shutDownSeleniumServer();
 
   /**
+   * Kills gracefully the running Selenium Server. Waits for sessions to finish before kills the
+   * selenium server. After you run this command, you will no longer be able to send commands to
+   * the server; you can't remotely start the server once it has been stopped. Normally you should
+   * prefer to run the "stop" command, which terminates the current browser session, rather than
+   * shutting down the entire server.
+   */
+  void gracefullyShutDownSeleniumServer();
+
+  /**
    * Retrieve the last messages logged on a specific remote control. Useful for error reports,
    * especially when running multiple remote controls in a distributed environment. The maximum
    * number of log messages that can be retrieve is configured on remote control startup.

@@ -772,6 +772,10 @@ public class DefaultSelenium implements Selenium {
     commandProcessor.doCommand("shutDownSeleniumServer", new String[] {});
   }
 
+  public void gracefullyShutDownSeleniumServer() {
+    commandProcessor.doCommand("gracefullyShutDownSeleniumServer", new String[] {});
+  }
+
   public String retrieveLastRemoteControlLogs() {
     return commandProcessor.getString("retrieveLastRemoteControlLogs", new String[] {});
   }
