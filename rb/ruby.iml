@@ -17,7 +17,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rake (v10.0.3, ruby-1.9) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.13.0, ruby-1.9) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v1.0.0, ruby-1.9) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v2.40.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v2.41.0, ruby-1.9) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="websocket (v1.0.7, ruby-1.9) [gem]" level="application" />
   </component>
 </module>
