@@ -71,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
