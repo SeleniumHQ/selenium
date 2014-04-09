@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.TopLevelWindow;
 import com.gargoylesoftware.htmlunit.UnexpectedPage;
+import com.gargoylesoftware.htmlunit.Version;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
@@ -443,6 +444,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     capabilities.setPlatform(Platform.getCurrent());
     capabilities.setJavascriptEnabled(isJavascriptEnabled());
+    capabilities.setVersion(Version.getProductVersion());
     capabilities.setCapability(SUPPORTS_FINDING_BY_CSS, true);
 
     return capabilities;
