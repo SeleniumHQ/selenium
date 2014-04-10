@@ -66,4 +66,14 @@ public class ByIdOrName extends By implements Serializable {
   public String toString() {
     return "by id or name \"" + idOrName + '"';
   }
+
+  @Override
+  public String getCssSelector() {
+    return "#" + idOrName + ",[name='" + idOrName + "']";
+  }
+
+  @Override
+  public String getXPathSelector() {
+    return ".//*[@id='" + idOrName + "' or @name='" + idOrName + "']";
+  }
 }

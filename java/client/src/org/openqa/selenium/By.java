@@ -343,7 +343,7 @@ public abstract class By {
 
 	@Override
 	public String getXPathSelector() {
-		return "[@name='" + name + "']";
+		return ".//*[@name='" + name + "']";
 	}
   }
 
@@ -531,11 +531,15 @@ public abstract class By {
    * Get the CSS selector associated with this object.
    * @return CSS selector string
    */
-  public abstract String getCssSelector();
+  public String getCssSelector() {
+	  throw new UnsupportedOperationException("Selectors of type '" + getClass().getSimpleName() + "' don't export CSS selector strings");
+  }
   
   /**
    * Get the XPath selector associated with this object.
    * @return XPath selector string
    */
-  public abstract String getXPathSelector();
+  public String getXPathSelector() {
+	  throw new UnsupportedOperationException("Selectors of type '" + getClass().getSimpleName() + "' don't export XPath selector strings");
+  }
 }
