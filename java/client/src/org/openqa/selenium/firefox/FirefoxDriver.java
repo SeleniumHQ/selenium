@@ -266,7 +266,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
       String host) {
-    Lock lock = obtainLock();
+    Lock lock = obtainLock(profile);
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
 
@@ -283,8 +283,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
   }
 
-  protected Lock obtainLock() {
-    return new SocketLock();
+  protected static Lock obtainLock(FirefoxProfile profile) {
+    int preferredPort =
+        profile.getIntegerPreference(FirefoxProfile.PORT_PREFERENCE, SocketLock.DEFAULT_PORT);
+    return new SocketLock(preferredPort);
   }
 
   @Override

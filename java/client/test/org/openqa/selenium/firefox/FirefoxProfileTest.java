@@ -79,6 +79,24 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void getIntegerPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    int value = 1234;
+    profile.setPreference(key, value);
+
+    int defaultValue = -42;
+    assertEquals(1234, profile.getIntegerPreference(key, defaultValue));
+  }
+
+  @Test
+  public void getIntegerPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
+
+    int defaultValue = 42;
+    assertEquals(defaultValue, profile.getIntegerPreference(key, defaultValue));
+  }
+
+  @Test
   public void shouldSetBooleanPreferences() throws Exception {
     profile.setPreference("cheese", false);
 

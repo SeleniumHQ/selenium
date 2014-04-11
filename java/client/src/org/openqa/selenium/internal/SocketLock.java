@@ -129,4 +129,12 @@ public class SocketLock implements Lock {
       return false;
     }
   }
+
+  /**
+   * Gets the port number that is being-locked.
+   * @return
+   */
+  public int getLockPort(){
+    return this.address.getPort();
+  }
 }

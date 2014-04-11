@@ -143,6 +143,14 @@ public class FirefoxProfile {
     throw new WebDriverException("Expected boolean value is not a boolean. It is: " + value);
   }
 
+  public int getIntegerPreference(String key, int defaultValue) {
+    Object preference=additionalPrefs.getPreference(key);
+    if(preference!=null && preference instanceof Integer){
+      return (Integer)preference;
+    }
+    return defaultValue;
+  }
+
   private void verifyModel(File model) {
     if (model == null) {
       return;
