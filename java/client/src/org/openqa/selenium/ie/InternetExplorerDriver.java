@@ -162,7 +162,8 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(service, capabilities, DEFAULT_PORT);
   }
 
-  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities, int port) {
+  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities,
+      int port) {
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }

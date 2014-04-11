@@ -17,8 +17,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 /**
- * Thrown by {@link org.openqa.selenium.WebDriver.TargetLocator#context(String) WebDriver.switchTo().context(String
- * name)}.
+ * Thrown by {@link org.openqa.selenium.WebDriver.TargetLocator#context(String)
+ * WebDriver.switchTo().context(String name)}.
  */
 public class NoSuchContextException extends NotFoundException {
 

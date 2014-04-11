@@ -398,7 +398,7 @@ public class BrowserSessionFactory {
     perSessionLogHandler.attachToCurrentThread(new SessionId(sessionId));
     try {
       launcher.launchRemoteSession(startURL);
-      queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
+      queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000L);
 
       // TODO DGF log4j only
       // NDC.push("sessionId="+sessionId);

@@ -347,7 +347,7 @@ public class FrameGroupCommandQueueSet {
           // an exception then we should simply return the
           // command result
           uniqueId =
-              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000l));
+              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000L));
 
           // if (!result.equals("OK")) {
           // return result;
@@ -371,7 +371,7 @@ public class FrameGroupCommandQueueSet {
         try {
           result =
               waitForLoad(currentWindowName, waitingForThisFrameName,
-                  (int) (timeoutInMilliseconds / 1000l));
+                  (int) (timeoutInMilliseconds / 1000L));
         } catch (RemoteCommandException e) {
           return e.getMessage();
         }
@@ -530,7 +530,7 @@ public class FrameGroupCommandQueueSet {
   public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
     final String uniqueId;
 
-    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000l);
+    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000L);
     if (timeoutInSeconds == 0) {
       timeoutInSeconds = 1;
     }

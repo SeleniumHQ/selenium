@@ -83,7 +83,7 @@ public class ClassPathResource extends Resource {
    */
   @Override
   public long lastModified() {
-    return System.currentTimeMillis() + 1000l * 3600l * 24l * 365l;
+    return System.currentTimeMillis() + 1000L * 3600L * 24L * 365L;
   }
 
   @Override

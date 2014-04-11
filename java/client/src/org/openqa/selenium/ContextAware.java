@@ -44,8 +44,8 @@ public interface ContextAware {
   Set<String> getContextHandles();
 
   /**
-   * Return an opaque handle to this context that uniquely identifies it within this driver instance.
-   * This can be used to switch to this context at a later date
+   * Return an opaque handle to this context that uniquely identifies it within this driver
+   * instance. This can be used to switch to this context at a later date
    */
   String getContext();
 }
