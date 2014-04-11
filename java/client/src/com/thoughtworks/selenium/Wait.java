@@ -47,10 +47,10 @@ public abstract class Wait {
   public abstract boolean until();
 
   /** The amount of time to wait before giving up; the default is 30 seconds */
-  public static final long DEFAULT_TIMEOUT = 30000l;
+  public static final long DEFAULT_TIMEOUT = 30000L;
 
   /** The interval to pause between checking; the default is 500 milliseconds */
-  public static final long DEFAULT_INTERVAL = 500l;
+  public static final long DEFAULT_INTERVAL = 500L;
 
   /**
    * Wait until the "until" condition returns true or time runs out.

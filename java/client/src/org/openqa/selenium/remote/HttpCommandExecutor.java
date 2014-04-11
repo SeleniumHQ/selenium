@@ -276,7 +276,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
-        throw new SessionNotFoundException("Session ID is null. Using WebDriver after calling quit()?");
+        throw new SessionNotFoundException(
+            "Session ID is null. Using WebDriver after calling quit()?");
       }
     }
 

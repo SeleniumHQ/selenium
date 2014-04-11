@@ -80,7 +80,7 @@ public class Proxies {
   }
 
   /**
-   * @Deprecated Use Proxy.extractFrom(Capabilities)
+   * @deprecated Use Proxy.extractFrom(Capabilities)
    */
   @Deprecated
   @SuppressWarnings({"unchecked"})

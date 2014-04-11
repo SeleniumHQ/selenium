@@ -486,7 +486,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
-    
+
     try {
       driver.findElement(By.id("killIframe")).click();
       fail("NoSuchFrameException should be thrown");
