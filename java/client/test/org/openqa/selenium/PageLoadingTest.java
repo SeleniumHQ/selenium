@@ -398,7 +398,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       start = System.currentTimeMillis();
       driver.get(pages.xhtmlTestPage);
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      wait.until(titleIs("XHTML Test Page"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
@@ -478,7 +478,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       start = System.currentTimeMillis();
       driver.get(pages.xhtmlTestPage);
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      wait.until(titleIs("XHTML Test Page"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
