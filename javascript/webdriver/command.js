@@ -199,9 +199,9 @@ webdriver.CommandName = {
   // optional for these commands.
   CLICK: 'mouseClick',
   DOUBLE_CLICK: 'mouseDoubleClick',
-  MOUSE_DOWN: 'mouseDown',
-  MOUSE_UP: 'mouseUp',
-  MOVE_TO: 'mouseMove',
+  MOUSE_DOWN: 'mouseButtonDown',
+  MOUSE_UP: 'mouseButtonUp',
+  MOVE_TO: 'mouseMoveTo',
   SEND_KEYS_TO_ACTIVE_ELEMENT: 'sendKeysToActiveElement',
 
   // These belong to the Advanced Touch API
