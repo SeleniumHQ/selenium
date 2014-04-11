@@ -83,7 +83,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
     lock.lock(connectTimeout);
     try {
-      port = determineNextFreePort(DEFAULT_PORT);
+      port = determineNextFreePort(profile.getIntegerPreference(PORT_PREFERENCE, DEFAULT_PORT));
       profile.setPreference(PORT_PREFERENCE, port);
 
       profileDir = profile.layoutOnDisk();
