@@ -74,7 +74,7 @@ public class Windows {
     if ("null".equals(windowID) || "".equals(windowID)) {
       Set<String> windowHandles = driver.getWindowHandles();
       windowHandles.remove(originalWindowHandle);
-      if (windowHandles.size() > 0) {
+      if (!windowHandles.isEmpty()) {
         driver.switchTo().window(windowHandles.iterator().next());
       } else {
         throw new SeleniumException("Unable to find a popup window");

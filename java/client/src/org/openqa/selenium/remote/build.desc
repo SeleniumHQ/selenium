@@ -65,6 +65,7 @@ java_library(name = "augmenter",
     "html5/AddWebStorage.java",
   ],
   deps = [
+    ":api",
     ":remote",
     "//third_party/java/cglib",
     "//third_party/java/guava-libraries",
