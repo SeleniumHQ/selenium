@@ -127,8 +127,6 @@ import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
-import org.openqa.selenium.remote.server.renderer.ResourceCopyResult;
-import org.openqa.selenium.remote.server.resource.StaticResource;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
@@ -227,17 +225,6 @@ public class JsonHttpRemoteConfig {
     for (ResultType resultType : EnumSet.allOf(ResultType.class)) {
       addGlobalHandler(resultType, xdrpcResult);
     }
-
-    // When requesting the command root from a JSON-client, just return the server
-    // status. For everyone else, redirect to the web front end.
-    getMapper.bind("/", Status.class)
-        .on(ResultType.SUCCESS, new RedirectResult("/static/resource/hub.html"))
-        .on(ResultType.SUCCESS, jsonResponse, "application/json");
-
-    getMapper.bind("/static/resource/:file", StaticResource.class)
-        .on(ResultType.SUCCESS, new ResourceCopyResult(RESPONSE))
-            // Nope, JSON clients don't get access to static resources.
-        .on(ResultType.SUCCESS, emptyResponse, "application/json");
 
     postMapper.bind("/config/drivers", AddConfig.class)
         .on(ResultType.SUCCESS, emptyResponse);

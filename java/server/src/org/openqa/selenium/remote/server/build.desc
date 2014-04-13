@@ -29,6 +29,18 @@ java_library(name = "restish",
     "//third_party/java/guava-libraries",
   ])
 
+rename(name = "client",
+  deps = ["//javascript/remote:clientbin.js"],
+  out = "client.js")
+
+rename(name = "hub",
+  deps = ["//javascript/remote:hub.html"],
+  out = "hub.html")
+
+rename(name = "style",
+  deps = ["//javascript/remote:style.css"],
+  out = "style.css")
+
 java_library(name = "server_core",
   srcs = [
     "DriverServlet.java",
@@ -37,7 +49,13 @@ java_library(name = "server_core",
   deps = [
     ":jee-http-api",
     ":server_very_core",
+    "//third_party/java/guava-libraries",
     "//third_party/java/servlet-api",
+  ],
+  embedded = [
+    ":client",
+    ":hub",
+    ":style",
   ])
 
 java_library(name = "http-api",
@@ -84,7 +102,6 @@ java_library(name = "server_very_core",
     "//java/client/src/org/openqa/selenium/logging",
     "//java/client/src/org/openqa/selenium/support/events",
     "//java/server/src/org/openqa/selenium/remote/server/log",
-    "//java/server/src/org/openqa/selenium/remote/server/resource",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])

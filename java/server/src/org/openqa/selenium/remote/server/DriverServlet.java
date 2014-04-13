@@ -16,8 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
+import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionNotFoundException;
@@ -26,6 +33,9 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -38,6 +48,8 @@ public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
+
+  private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
 
   private final Supplier<DriverSessions> sessionsSupplier;
 
@@ -128,7 +140,13 @@ public class DriverServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    handleRequest(request, response);
+    if (request.getPathInfo() == null || "/".equals(request.getPathInfo())) {
+      staticResourceHandler.redirectToHub(request, response);
+    } else if (staticResourceHandler.isStaticResourceRequest(request)) {
+      staticResourceHandler.service(request, response);
+    } else {
+      handleRequest(request, response);
+    }
   }
 
   @Override
@@ -166,7 +184,7 @@ public class DriverServlet extends HttpServlet {
   }
 
   protected void handleRequest(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException {
+      throws ServletException, IOException {
     try {
       HttpRequest req = new JeeServletHttpRequest(request);
       HttpResponse res = new JeeServletHttpResponse(response);
@@ -187,6 +205,69 @@ public class DriverServlet extends HttpServlet {
         attribute = new DefaultDriverSessions();
       }
       return (DriverSessions) attribute;
+    }
+  }
+
+  private static class StaticResourceHandler {
+    private static final ImmutableMap<String, MediaType> MIME_TYPES = ImmutableMap.of(
+        "css", MediaType.CSS_UTF_8.withoutParameters(),
+        "html", MediaType.HTML_UTF_8.withoutParameters(),
+        "js", MediaType.JAVASCRIPT_UTF_8.withoutParameters());
+
+    private static final String STATIC_RESOURCE_BASE_PATH = "/static/resource/";
+    private static final String HUB_HTML_PATH = STATIC_RESOURCE_BASE_PATH + "hub.html";
+
+    public boolean isStaticResourceRequest(HttpServletRequest request) {
+      return "GET".equalsIgnoreCase(request.getMethod())
+             && nullToEmpty(request.getPathInfo()).startsWith(STATIC_RESOURCE_BASE_PATH);
+    }
+
+    public void redirectToHub(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+      response.sendRedirect(request.getContextPath() + request.getServletPath() + HUB_HTML_PATH);
+    }
+
+    public void service(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+      checkArgument(isStaticResourceRequest(request));
+
+      String path = String.format(
+          "/%s/%s",
+          StaticResourceHandler.class.getPackage().getName().replace(".", "/"),
+          request.getPathInfo().substring(STATIC_RESOURCE_BASE_PATH.length()));
+      URL url = StaticResourceHandler.class.getResource(path);
+
+      if (url == null) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
+
+      response.setStatus(HttpServletResponse.SC_OK);
+
+      String extension = Files.getFileExtension(path);
+      if (MIME_TYPES.containsKey(extension)) {
+        response.setContentType(MIME_TYPES.get(extension).toString());
+      }
+
+      byte[] data = getResourceData(url);
+      response.setContentLength(data.length);
+
+      OutputStream output = response.getOutputStream();
+      output.write(data);
+      output.flush();
+      output.close();
+    }
+
+    private byte[] getResourceData(URL url) throws IOException {
+      InputStream stream = null;
+      try {
+        stream = url.openStream();
+        return ByteStreams.toByteArray(stream);
+      } finally {
+        if (stream != null) {
+          stream.close();
+        }
+      }
     }
   }
 }
