@@ -16,19 +16,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
-
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class AcceptAlert extends WebDriverHandler {
+public class AcceptAlert extends WebDriverHandler<Void> {
   public AcceptAlert(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  public Void call() throws Exception {
     getDriver().switchTo().alert().accept();
-    return SUCCESS;
+    return null;
   }
 
   @Override

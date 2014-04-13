@@ -90,8 +90,6 @@ java_library(name = "server_very_core",
     "DefaultSession.java",
     "SessionCleaner.java",
     "SnapshotScreenListener.java",
-    "renderer/*.java",
-    "xdrpc/CrossDomainRpcRenderer.java",
   ],
   deps = [
     ":http-api",

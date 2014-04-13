@@ -16,13 +16,21 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.net.MediaType.JSON_UTF_8;
+
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
@@ -50,19 +58,17 @@ import java.util.logging.Logger;
 
 public class ResultConfig {
 
-  private final Renderer successRenderer;
-  private final Renderer errorRenderer;
-
   private final String[] sections;
   private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
   private final String url;
   private final Logger log;
 
+  private final ErrorCodes errorCodes = new ErrorCodes();
+
   public ResultConfig(
-      String url, Class<? extends RestishHandler> handlerClazz,
-      DriverSessions sessions, Logger log,
-      Renderer successRenderer, Renderer errorRenderer) {
+      String url, Class<? extends RestishHandler<?>> handlerClazz,
+      DriverSessions sessions, Logger log) {
     if (url == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the url");
     }
@@ -72,8 +78,6 @@ public class ResultConfig {
     this.sections = url.split("/");
     this.sessions = sessions;
     this.handlerFactory = getHandlerFactory(handlerClazz);
-    this.successRenderer = successRenderer;
-    this.errorRenderer = errorRenderer;
   }
 
 
@@ -105,7 +109,7 @@ public class ResultConfig {
   }
 
   interface HandlerFactory {
-    RestishHandler createHandler(SessionId sessionId) throws Exception;
+    RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
   }
 
 
@@ -136,7 +140,8 @@ public class ResultConfig {
     
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
-    ResultType result;
+    Response result = new Response();
+    result.setSessionId(nullToEmpty(sessionId));
     throwUpIfSessionTerminated(sessId);
     final RestishHandler handler = getHandler(pathInfo, sessId);
 
@@ -145,8 +150,6 @@ public class ResultConfig {
         setJsonParameters(request, handler);
       }
 
-      request.setAttribute("handler", handler);
-
       throwUpIfSessionTerminated(sessId);
 
       if ("/status".equals(pathInfo)) {
@@ -154,7 +157,16 @@ public class ResultConfig {
       } else {
         log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       }
-      result = handler.handle();
+
+      Object value = handler.handle();
+      if (value instanceof Response) {
+        result = (Response) value;
+      } else {
+        result.setValue(value);
+        result.setState(ErrorCodes.SUCCESS_STRING);
+        result.setStatus(ErrorCodes.SUCCESS);
+      }
+
       addHandlerAttributesToRequest(request, handler);
       if ("/status".equals(pathInfo)) {
         log.fine("Done: " + pathInfo);
@@ -163,32 +175,29 @@ public class ResultConfig {
       }
     } catch (UnreachableBrowserException e){
       throwUpIfSessionTerminated(sessId);
-      request.setAttribute("exception",  e);
-      errorRenderer.render(request, response, null);
+      prepareErrorResponse(result, e, Optional.<String>absent());
+      render(result, response);
       return;
     } catch (SessionNotFoundException e){
       throw e;
     } catch (Exception e) {
-      result = ResultType.ERROR;
       log.log(Level.WARNING, "Exception thrown", e);
 
       Throwable toUse = getRootExceptionCause(e);
 
       log.warning("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
+      Optional<String> screenshot = Optional.absent();
       if (handler instanceof WebDriverHandler) {
-        request.setAttribute("screen", ((WebDriverHandler) handler).getScreenshot());
+        screenshot = Optional.fromNullable(((WebDriverHandler) handler).getScreenshot());
       }
+      prepareErrorResponse(result, toUse, screenshot);
     } catch (Error e) {
       log.info("Error: " + e.getMessage());
-      result = ResultType.ERROR;
-      request.setAttribute("exception", e);
+      prepareErrorResponse(result, e, Optional.<String>absent());
     }
 
-    final Renderer renderer = result == ResultType.SUCCESS ? successRenderer : errorRenderer;
-
-    renderer.render(request, response, handler);
-    response.end();
+    render(result, response);
 
     if (handler instanceof DeleteSession) {
       // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
@@ -196,6 +205,28 @@ public class ResultConfig {
       logHandler.transferThreadTempLogsToSessionLogs(sessId);
       logHandler.removeSessionLogs(sessId);
       sessions.deleteSession(sessId);
+    }
+  }
+
+  private void render(Response response, HttpResponse httpResponse) {
+    String json = new BeanToJsonConverter().convert(response);
+    byte[] data = json.getBytes(UTF_8);
+
+    httpResponse.setContentType(JSON_UTF_8.toString());
+    httpResponse.setContent(data);
+    httpResponse.end();
+  }
+
+  private void prepareErrorResponse(
+      Response response, Throwable error, Optional<String> base64Screenshot) throws Exception {
+    response.setStatus(errorCodes.toStatusCode(error));
+    response.setState(errorCodes.toState(response.getStatus()));
+
+    if (error != null) {
+      String raw = new BeanToJsonConverter().convert(error);
+      JSONObject jsonError = new JSONObject(raw);
+      jsonError.put("screen", base64Screenshot.orNull());
+      response.setValue(jsonError);
     }
   }
 
@@ -279,35 +310,44 @@ public class ResultConfig {
     return ec.isMappableError(nextCause) ? nextCause : rootCause;
   }
 
-  private HandlerFactory getHandlerFactory(Class<? extends RestishHandler> handlerClazz) {
-    final Constructor<? extends RestishHandler> sessionAware = getConstructor(handlerClazz, Session.class);
-    if (sessionAware != null) return new HandlerFactory() {
-      public RestishHandler createHandler(SessionId sessionId) throws Exception {
-        return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
-      }
-    };
+  private HandlerFactory getHandlerFactory(Class<? extends RestishHandler<?>> handlerClazz) {
+    final Constructor<? extends RestishHandler<?>> sessionAware = getConstructor(handlerClazz, Session.class);
+    if (sessionAware != null) {
+      return new HandlerFactory() {
+        @Override
+        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
+          return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
+        }
+      };
+    }
 
     final Constructor<? extends RestishHandler> driverSessions =
         getConstructor(handlerClazz, DriverSessions.class);
-    if (driverSessions != null) return new HandlerFactory() {
-      public RestishHandler createHandler(SessionId sessionId) throws Exception {
-        return driverSessions.newInstance(sessions);
-      }
-    };
+    if (driverSessions != null) {
+      return new HandlerFactory() {
+        @Override
+        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
+          return driverSessions.newInstance(sessions);
+        }
+      };
+    }
 
 
     final Constructor<? extends RestishHandler> norags = getConstructor(handlerClazz);
-    if (norags != null) return new HandlerFactory() {
-      public RestishHandler createHandler(SessionId sessionId) throws Exception {
-        return norags.newInstance();
-      }
-    };
+    if (norags != null) {
+      return new HandlerFactory() {
+        @Override
+        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
+          return norags.newInstance();
+        }
+      };
+    }
 
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
   }
 
-  private static Constructor<? extends RestishHandler> getConstructor(
-      Class<? extends RestishHandler> handlerClazz, Class... types) {
+  private static Constructor<? extends RestishHandler<?>> getConstructor(
+      Class<? extends RestishHandler<?>> handlerClazz, Class... types) {
     try {
       return handlerClazz.getConstructor(types);
     } catch (NoSuchMethodException e) {

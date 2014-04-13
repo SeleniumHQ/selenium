@@ -18,18 +18,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class RefreshPage extends WebDriverHandler {
+public class RefreshPage extends WebDriverHandler<Void> {
 
   public RefreshPage(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().navigate().refresh();
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

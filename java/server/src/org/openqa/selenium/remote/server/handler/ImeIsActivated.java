@@ -17,19 +17,15 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class ImeIsActivated extends ResponseAwareWebDriverHandler {
+public class ImeIsActivated extends WebDriverHandler<Boolean> {
 
   public ImeIsActivated(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    boolean isActivated = getDriver().manage().ime().isActivated();
-
-    response.setValue(isActivated);
-
-    return ResultType.SUCCESS;
+  @Override
+  public Boolean call() throws Exception {
+    return getDriver().manage().ime().isActivated();
   }
 }

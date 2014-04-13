@@ -18,20 +18,14 @@ package org.openqa.selenium.remote.server.rest;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.StubHandler;
-import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 import java.util.logging.Logger;
 
@@ -42,8 +36,7 @@ public class UrlMapperTest {
 
   @Before
   public void setUp() {
-    JsonResult renderer = new JsonResult("success");
-    mapper = new UrlMapper(new DefaultDriverSessions(), log, renderer, renderer);
+    mapper = new UrlMapper(new DefaultDriverSessions(), log);
   }
 
   @Test
@@ -65,7 +58,7 @@ public class UrlMapperTest {
     assertThat(handler.getSessions(), is(notNullValue()));
   }
 
-  public static class SessionHandler implements RestishHandler {
+  public static class SessionHandler implements RestishHandler<Void> {
 
     private final DriverSessions sessions;
 
@@ -77,8 +70,9 @@ public class UrlMapperTest {
       return sessions;
     }
 
-    public ResultType handle() {
-      return ResultType.SUCCESS;
+    @Override
+    public Void handle() {
+      return null;
     }
   }
 }

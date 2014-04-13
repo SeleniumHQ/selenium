@@ -27,25 +27,20 @@ public class UrlMapper {
   private final Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
   private final Logger log;
-  private final Renderer successRenderer;
-  private final Renderer errorRenderer;
 
-  public UrlMapper(DriverSessions sessions, Logger log,
-                   Renderer successRenderer, Renderer errorRenderer) {
+  public UrlMapper(DriverSessions sessions, Logger log) {
     this.sessions = sessions;
     this.log = log;
-    this.successRenderer = successRenderer;
-    this.errorRenderer = errorRenderer;
   }
 
-  public void bind(String url, Class<? extends RestishHandler> handlerClazz) {
+  public void bind(String url, Class<? extends RestishHandler<?>> handlerClazz) {
     ResultConfig existingConfig = getConfig(url);
     if (existingConfig != null) {
       configs.remove(existingConfig);
     }
 
     ResultConfig config = new ResultConfig(
-        url, handlerClazz, sessions, log, successRenderer, errorRenderer);
+        url, handlerClazz, sessions, log);
     configs.add(config);
   }
 

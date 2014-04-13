@@ -21,15 +21,14 @@ import com.google.common.collect.Lists;
 
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.List;
 import java.util.Map;
 
-public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class ExecuteSQL extends WebDriverHandler<Object> implements JsonParametersAware {
   private String dbName;
   private String query;
   private List<Object> args = Lists.newArrayList();
@@ -39,12 +38,10 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
   }
 
   @Override
-  public ResultType call() throws Exception {
+  public Object call() throws Exception {
     Object value = Utils.getDatabaseStorage(getUnwrappedDriver())
         .executeSQL(dbName, query, args.toArray());
-    Object result = new ResultConverter(getKnownElements()).apply(value);
-    response.setValue(result);
-    return ResultType.SUCCESS;
+    return new ResultConverter(getKnownElements()).apply(value);
   }
 
   @Override

@@ -17,18 +17,16 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementText extends WebElementHandler {
+public class GetElementText extends WebElementHandler<String> {
 
   public GetElementText(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getElement().getText());
-
-    return ResultType.SUCCESS;
+  @Override
+  public String call() throws Exception {
+    return getElement().getText();
   }
 
   @Override

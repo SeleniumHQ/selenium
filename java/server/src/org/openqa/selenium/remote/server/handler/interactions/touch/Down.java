@@ -22,11 +22,10 @@ import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class Down extends WebElementHandler implements JsonParametersAware {
+public class Down extends WebElementHandler<Void> implements JsonParametersAware {
 
   private static final String X = "x";
   private static final String Y = "y";
@@ -37,12 +36,13 @@ public class Down extends WebElementHandler implements JsonParametersAware {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     touchScreen.down(x, y);
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

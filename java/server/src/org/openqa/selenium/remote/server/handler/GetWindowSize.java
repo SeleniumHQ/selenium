@@ -17,18 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetWindowSize extends ResponseAwareWebDriverHandler {
+public class GetWindowSize extends WebDriverHandler<Dimension> {
 
   public GetWindowSize(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getDriver().manage().window().getSize());
-    return ResultType.SUCCESS;
+  @Override
+  public Dimension call() throws Exception {
+    return getDriver().manage().window().getSize();
   }
 
   @Override

@@ -20,11 +20,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class SwitchToFrame extends WebDriverHandler implements JsonParametersAware {
+public class SwitchToFrame extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private volatile Object id;
 
@@ -40,7 +39,8 @@ public class SwitchToFrame extends WebDriverHandler implements JsonParametersAwa
     setId(new ArgumentConverter(getKnownElements()).apply(allParameters.get("id")));
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     if (id == null) {
       getDriver().switchTo().defaultContent();
     } else if (id instanceof Number) {
@@ -53,7 +53,7 @@ public class SwitchToFrame extends WebDriverHandler implements JsonParametersAwa
       throw new IllegalArgumentException("Unsupported frame locator: " + id.getClass().getName());
     }
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

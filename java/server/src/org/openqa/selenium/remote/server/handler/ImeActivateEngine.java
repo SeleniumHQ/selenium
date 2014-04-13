@@ -18,25 +18,25 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
 
-public class ImeActivateEngine extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class ImeActivateEngine extends WebDriverHandler<Void> implements JsonParametersAware {
   private String engine = null;
 
   public ImeActivateEngine(Session session) {
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     engine = (String) allParameters.get("engine");
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().manage().ime().activateEngine(engine);
-
-    return ResultType.SUCCESS;
+    return null;
   }
 }

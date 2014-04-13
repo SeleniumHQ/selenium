@@ -122,20 +122,10 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
-import org.openqa.selenium.remote.server.renderer.EmptyResult;
-import org.openqa.selenium.remote.server.renderer.ForwardResult;
-import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
-import org.openqa.selenium.remote.server.renderer.JsonResult;
-import org.openqa.selenium.remote.server.renderer.RedirectResult;
-import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
-import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
-import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
 
-import java.util.EnumSet;
 import java.util.logging.Logger;
 
 public class JsonHttpRemoteConfig {
@@ -152,16 +142,18 @@ public class JsonHttpRemoteConfig {
     setUpMappings(sessions, log);
   }
 
-  public void addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
+  public void addNewGetMapping(
+      String path, Class<? extends RestishHandler<?>> implementationClass) {
     getMapper.bind(path, implementationClass);
   }
 
-  public void addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
+  public void addNewPostMapping(
+      String path, Class<? extends RestishHandler<?>> implementationClass) {
     postMapper.bind(path, implementationClass);
   }
 
   public void addNewDeleteMapping(
-      String path, Class<? extends RestishHandler> implementationClass) {
+      String path, Class<? extends RestishHandler<?>> implementationClass) {
     deleteMapper.bind(path, implementationClass);
   }
 
@@ -204,12 +196,9 @@ public class JsonHttpRemoteConfig {
   }
 
   private void setUpMappings(DriverSessions driverSessions, Logger logger) {
-    Renderer successRenderer = new JsonResult(RESPONSE);
-    Renderer errorRenderer = new JsonErrorExceptionResult(EXCEPTION, RESPONSE);
-
-    getMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
-    postMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
-    deleteMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
+    getMapper = new UrlMapper(driverSessions, logger);
+    postMapper = new UrlMapper(driverSessions, logger);
+    deleteMapper = new UrlMapper(driverSessions, logger);
 
     postMapper.bind("/config/drivers", AddConfig.class);
 
@@ -313,7 +302,8 @@ public class JsonHttpRemoteConfig {
     getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class);
 
     getMapper.bind("/session/:sessionId/session_storage/key/:key", GetSessionStorageItem.class);
-    deleteMapper.bind("/session/:sessionId/session_storage/key/:key", RemoveSessionStorageItem.class);
+    deleteMapper.bind("/session/:sessionId/session_storage/key/:key",
+                      RemoveSessionStorageItem.class);
     getMapper.bind("/session/:sessionId/session_storage", GetSessionStorageKeys.class);
     postMapper.bind("/session/:sessionId/session_storage", SetSessionStorageItem.class);
     deleteMapper.bind("/session/:sessionId/session_storage", ClearSessionStorage.class);

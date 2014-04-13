@@ -24,14 +24,12 @@ import org.openqa.selenium.remote.server.handler.html5.UtilsTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.rest.UrlMapperTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
-import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRendererTest;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxyTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CapabilitiesComparatorTest.class,
     CrossDomainRpcLoaderTest.class,
-    CrossDomainRpcRendererTest.class,
     DefaultSessionTest.class,
     DriverFactoryTest.class,
     DriverServletTest.class,

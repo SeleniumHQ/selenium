@@ -17,19 +17,17 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.List;
 
-public class ImeGetAvailableEngines extends ResponseAwareWebDriverHandler {
+public class ImeGetAvailableEngines extends WebDriverHandler<List<String>> {
 
   public ImeGetAvailableEngines(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    List<String> engines = getDriver().manage().ime().getAvailableEngines();
-    response.setValue(engines);
-    return ResultType.SUCCESS;
+  @Override
+  public List<String> call() throws Exception {
+    return getDriver().manage().ime().getAvailableEngines();
   }
 }

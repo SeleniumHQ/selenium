@@ -20,19 +20,19 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class SwitchToParentFrame extends WebDriverHandler {
+public class SwitchToParentFrame extends WebDriverHandler<Void> {
 
   public SwitchToParentFrame(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     WebDriver driver = getDriver();
     driver.switchTo().parentFrame();
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

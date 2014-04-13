@@ -18,18 +18,16 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public abstract class WebDriverHandler implements RestishHandler, Callable<ResultType> {
+public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable<T> {
 
   private final Session session;
 
@@ -37,8 +35,9 @@ public abstract class WebDriverHandler implements RestishHandler, Callable<Resul
     this.session = session;
   }
 
-  public final ResultType handle() throws Exception {
-    FutureTask<ResultType> future = new FutureTask<ResultType>(this);
+  @Override
+  public final T handle() throws Exception {
+    FutureTask<T> future = new FutureTask<T>(this);
     try {
       return getSession().execute(future);
     } catch (ExecutionException e) {
@@ -69,10 +68,6 @@ public abstract class WebDriverHandler implements RestishHandler, Callable<Resul
 
   protected KnownElements getKnownElements() {
     return getSession().getKnownElements();
-  }
-
-  protected Response newResponse() {
-    return new Response(session.getSessionId());
   }
 
   protected SessionId getRealSessionId() {

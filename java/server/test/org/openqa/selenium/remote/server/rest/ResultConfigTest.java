@@ -29,8 +29,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.StubHandler;
-import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
-import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -40,14 +38,11 @@ import java.util.logging.Logger;
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
-  private static final JsonResult successRenderer = new JsonResult("result");
-  private static final JsonErrorExceptionResult errorRenderer = new JsonErrorExceptionResult(
-      "exception", "result");
 
   @Test
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig(
-        "/fish", StubHandler.class, null, logger, successRenderer, errorRenderer);
+        "/fish", StubHandler.class, null, logger);
 
     assertThat(config.getHandler("/fish", dummySessionId), is(notNullValue()));
     assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
@@ -56,7 +51,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     try {
-      new ResultConfig(null, StubHandler.class, null, logger, successRenderer, errorRenderer);
+      new ResultConfig(null, StubHandler.class, null, logger);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -66,7 +61,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
     try {
-      new ResultConfig("/cheese", null, null, logger, successRenderer, errorRenderer);
+      new ResultConfig("/cheese", null, null, logger);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -75,8 +70,8 @@ public class ResultConfigTest {
 
   @Test
   public void testShouldMatchNamedParameters() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger,
-                                           successRenderer, errorRenderer);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
+    );
     RestishHandler handler = config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler, is(notNullValue()));
@@ -84,8 +79,8 @@ public class ResultConfigTest {
 
   @Test
   public void testShouldSetNamedParametersOnHandler() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger,
-                                           successRenderer, errorRenderer);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
+    );
     NamedParameterHandler handler =
         (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
 
@@ -95,8 +90,8 @@ public class ResultConfigTest {
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   public void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
-                                           successRenderer, errorRenderer);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     assertNull(config.getRootExceptionCause(null));
   }
 
@@ -111,8 +106,8 @@ public class ResultConfigTest {
     ExecutionException execution = new ExecutionException("General WebDriver error",
         webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
-                                           successRenderer, errorRenderer);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
   }
@@ -125,8 +120,8 @@ public class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
-                                           successRenderer, errorRenderer);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
   }
@@ -134,7 +129,7 @@ public class ResultConfigTest {
   private void exceptionWasExpected() {
   }
 
-  public static class NamedParameterHandler implements RestishHandler {
+  public static class NamedParameterHandler implements RestishHandler<Void> {
 
     private String bar;
 
@@ -147,8 +142,9 @@ public class ResultConfigTest {
       this.bar = bar;
     }
 
-    public ResultType handle() {
-      return ResultType.SUCCESS;
+    @Override
+    public Void handle() {
+      return null;
     }
   }
 

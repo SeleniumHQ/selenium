@@ -71,8 +71,7 @@ public class UploadFileTest {
     UploadFile uploadFile = new UploadFile(session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     uploadFile.setJsonParameters(args);
-    uploadFile.call();
-    String path = (String) uploadFile.getResponse().getValue();
+    String path = uploadFile.call();
 
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));

@@ -19,17 +19,17 @@ package org.openqa.selenium.remote.server.handler;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
+public class GetSessionCapabilities extends WebDriverHandler<Map<String, Object>> {
 
   public GetSessionCapabilities(Session session) {
     super(session);
   }
 
-  public ResultType call() {
+  @Override
+  public Map<String, Object> call() {
     Session session = getSession();
     Map<String, Object> capabilities = (Map<String, Object>) session.getCapabilities().asMap();
     capabilities = Maps.newHashMap(capabilities);
@@ -38,9 +38,7 @@ public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
     // to return this particular value
     capabilities.put("webdriver.remote.sessionid", session.getSessionId().toString());
 
-    response.setValue(describeSession(capabilities));
-
-    return ResultType.SUCCESS;
+    return describeSession(capabilities);
   }
 
   protected Map<String, Object> describeSession(Map<String, Object> capabilities) {

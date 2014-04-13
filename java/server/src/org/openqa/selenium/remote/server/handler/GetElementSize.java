@@ -16,21 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementSize extends WebElementHandler {
+public class GetElementSize extends WebElementHandler<Dimension> {
 
   public GetElementSize(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Dimension call() throws Exception {
     WebElement element = getElement();
-    response.setValue(element.getSize());
-
-    return ResultType.SUCCESS;
+    return element.getSize();
   }
 
 

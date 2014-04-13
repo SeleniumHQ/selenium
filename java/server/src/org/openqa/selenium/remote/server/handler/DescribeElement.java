@@ -16,19 +16,21 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
+import com.google.common.collect.ImmutableMap;
 
-public class DescribeElement extends WebElementHandler {
+import org.openqa.selenium.remote.server.Session;
+
+import java.util.Map;
+
+public class DescribeElement extends WebElementHandler<Map<String,String>> {
 
   public DescribeElement(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getElement());
-
-    return ResultType.SUCCESS;
+  @Override
+  public Map<String, String> call() throws Exception {
+    return ImmutableMap.of("ELEMENT", getElementId());
   }
 
   @Override
