@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.StubHandler;
+import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 import java.util.logging.Logger;
 
@@ -41,7 +42,8 @@ public class UrlMapperTest {
 
   @Before
   public void setUp() {
-    mapper = new UrlMapper(new DefaultDriverSessions(), log);
+    JsonResult renderer = new JsonResult("success");
+    mapper = new UrlMapper(new DefaultDriverSessions(), log, renderer, renderer);
   }
 
   @Test
@@ -63,49 +65,6 @@ public class UrlMapperTest {
     assertThat(handler.getSessions(), is(notNullValue()));
   }
 
-  @Test
-  public void testAppliesGlobalHandlersToNewConfigs() {
-    Renderer renderer = new StubRenderer();
-    Result result = new Result("", renderer);
-    HttpRequest mockRequest = mock(HttpRequest.class);
-
-    mapper.addGlobalHandler(ResultType.SUCCESS, result);
-    mapper.bind("/example", SessionHandler.class);
-
-    ResultConfig config = mapper.getConfig("/example");
-    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testAppliesNewGlobalHandlersToExistingConfigs() {
-    Renderer renderer = new StubRenderer();
-    Result result = new Result("", renderer);
-    HttpRequest mockRequest = mock(HttpRequest.class);
-
-    mapper.bind("/example", SessionHandler.class);
-    mapper.addGlobalHandler(ResultType.SUCCESS, result);
-
-    ResultConfig config = mapper.getConfig("/example");
-    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testPermitsMultipleGlobalHandlersWithDifferentMimeTypes() {
-    Renderer renderer = new StubRenderer();
-
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    mapper.addGlobalHandler(ResultType.SUCCESS, new Result("", new StubRenderer()));
-    mapper.addGlobalHandler(ResultType.SUCCESS, new Result("application/json", renderer ));
-    mapper.bind("/example", SessionHandler.class)
-        .on(ResultType.SUCCESS, new Result("text/plain", new StubRenderer()));
-
-    ResultConfig config = mapper.getConfig("/example");
-    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
   public static class SessionHandler implements RestishHandler {
 
     private final DriverSessions sessions;
@@ -120,11 +79,6 @@ public class UrlMapperTest {
 
     public ResultType handle() {
       return ResultType.SUCCESS;
-    }
-  }
-
-  private static class StubRenderer implements Renderer {
-    public void render(HttpRequest request, HttpResponse response, RestishHandler handler) throws Exception {
     }
   }
 }

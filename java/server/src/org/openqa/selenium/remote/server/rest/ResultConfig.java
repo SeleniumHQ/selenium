@@ -16,12 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -46,7 +41,6 @@ import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,24 +50,30 @@ import java.util.logging.Logger;
 
 public class ResultConfig {
 
+  private final Renderer successRenderer;
+  private final Renderer errorRenderer;
+
   private final String[] sections;
   private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
-  private final Multimap<ResultType, Result> resultToRender = LinkedHashMultimap.create();
   private final String url;
   private final Logger log;
 
-  public ResultConfig(String url, Class<? extends RestishHandler> handlerClazz, DriverSessions sessions,
-      Logger log) {
-    this.url = url;
-    this.log = log;
+  public ResultConfig(
+      String url, Class<? extends RestishHandler> handlerClazz,
+      DriverSessions sessions, Logger log,
+      Renderer successRenderer, Renderer errorRenderer) {
     if (url == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the url");
     }
 
-    sections = url.split("/");
+    this.url = url;
+    this.log = log;
+    this.sections = url.split("/");
     this.sessions = sessions;
     this.handlerFactory = getHandlerFactory(handlerClazz);
+    this.successRenderer = successRenderer;
+    this.errorRenderer = errorRenderer;
   }
 
 
@@ -130,50 +130,6 @@ public class ResultConfig {
     return handler;
   }
 
-  /**
-   * Configures this instance to handle a particular type of result with the given renderer. This
-   * result handler will be registered with an empty mime-type.  Accordingly, it will only be used
-   * if there are no other handlers registered with an exact mime-type match.
-   *
-   * @param resultType The type of result to configure.
-   * @param renderer The renderer to use.
-   * @return A self reference for fluency.
-   * @see #on(ResultType, Result)
-   */
-  public ResultConfig on(ResultType resultType, Renderer renderer) {
-    return on(resultType, renderer, "");
-  }
-
-  /*
-   * Configure this ResultConfig to handle results of type ResultType with a specific renderer. The
-   * mimeType is used to distinguish between JSON calls and "ordinary" browser pointed at the remote
-   * WD Server, which is not implemented at all yet.
-   * @see #on(ResultType, Result)
-   */
-  public ResultConfig on(ResultType success, Renderer renderer, String mimeType) {
-    return on(success, new Result(mimeType, renderer));
-  }
-
-  /**
-   * Configures how this instance will handle specific types of results. Each ResultType may be
-   * handled by multiple Results. Upon rendering a response, this instance will select the first
-   * Result that is an exact mime-type match for the original HTTP request (results are checked in
-   * the order registered). There may only be one Result registered for each mime-type.
-   *
-   * @param type The type of result to configure for.
-   * @param result The handler for the given result type.
-   * @return A self reference for fluency.
-   */
-  public ResultConfig on(ResultType type, Result result) {
-    // There should not be more than one renderer for each result and
-    // mime type.
-    for (Result existingResult : resultToRender.get(type)) {
-      assert(!existingResult.isExactMimeTypeMatch(result.getMimeType()));
-    }
-    resultToRender.put(type, result);
-    return this;
-  }
-
   public void handle(String pathInfo, final HttpRequest request,
       final HttpResponse response) throws Exception {
     String sessionId = HttpSessionId.getSessionId(request.getUri());
@@ -185,7 +141,6 @@ public class ResultConfig {
     final RestishHandler handler = getHandler(pathInfo, sessId);
 
     try {
-
       if (handler instanceof JsonParametersAware) {
         setJsonParameters(request, handler);
       }
@@ -208,7 +163,8 @@ public class ResultConfig {
       }
     } catch (UnreachableBrowserException e){
       throwUpIfSessionTerminated(sessId);
-      replyError(request, response, e);
+      request.setAttribute("exception",  e);
+      errorRenderer.render(request, response, null);
       return;
     } catch (SessionNotFoundException e){
       throw e;
@@ -229,7 +185,7 @@ public class ResultConfig {
       request.setAttribute("exception", e);
     }
 
-    final Renderer renderer = getRenderer(result, request);
+    final Renderer renderer = result == ResultType.SUCCESS ? successRenderer : errorRenderer;
 
     renderer.render(request, response, handler);
     response.end();
@@ -243,13 +199,6 @@ public class ResultConfig {
     }
   }
 
-  private void replyError(HttpRequest request, final HttpResponse response, Exception e)
-      throws Exception {
-    Renderer renderer2 = getRenderer(ResultType.ERROR, request);
-    request.setAttribute("exception",  e);
-    renderer2.render(request, response, null);
-  }
-
   private void throwUpIfSessionTerminated(SessionId sessId) throws Exception {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
@@ -257,19 +206,6 @@ public class ResultConfig {
     if (isTerminated){
       throw new SessionNotFoundException();
     }
-  }
-
-  @VisibleForTesting
-  Renderer getRenderer(ResultType resultType, HttpRequest request) {
-    Collection<Result> results = checkNotNull(resultToRender.get(resultType));
-    Result tempToUse = null;
-    for (Result res : results) {
-      if (tempToUse == null && !res.isOnlyForExactMatch()
-          || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
-        tempToUse = res;
-      }
-    }
-    return checkNotNull(tempToUse).getRenderer();
   }
 
   @SuppressWarnings("unchecked")

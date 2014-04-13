@@ -23,15 +23,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.StubHandler;
+import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
+import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -41,10 +40,14 @@ import java.util.logging.Logger;
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
+  private static final JsonResult successRenderer = new JsonResult("result");
+  private static final JsonErrorExceptionResult errorRenderer = new JsonErrorExceptionResult(
+      "exception", "result");
 
   @Test
   public void testShouldMatchBasicUrls() throws Exception {
-    ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig(
+        "/fish", StubHandler.class, null, logger, successRenderer, errorRenderer);
 
     assertThat(config.getHandler("/fish", dummySessionId), is(notNullValue()));
     assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
@@ -53,7 +56,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     try {
-      new ResultConfig(null, StubHandler.class, null, logger);
+      new ResultConfig(null, StubHandler.class, null, logger, successRenderer, errorRenderer);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -63,7 +66,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
     try {
-      new ResultConfig("/cheese", null, null, logger);
+      new ResultConfig("/cheese", null, null, logger, successRenderer, errorRenderer);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -72,7 +75,8 @@ public class ResultConfigTest {
 
   @Test
   public void testShouldMatchNamedParameters() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger,
+                                           successRenderer, errorRenderer);
     RestishHandler handler = config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler, is(notNullValue()));
@@ -80,7 +84,8 @@ public class ResultConfigTest {
 
   @Test
   public void testShouldSetNamedParametersOnHandler() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger,
+                                           successRenderer, errorRenderer);
     NamedParameterHandler handler =
         (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
 
@@ -90,7 +95,8 @@ public class ResultConfigTest {
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   public void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
+                                           successRenderer, errorRenderer);
     assertNull(config.getRootExceptionCause(null));
   }
 
@@ -105,7 +111,8 @@ public class ResultConfigTest {
     ExecutionException execution = new ExecutionException("General WebDriver error",
         webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
+                                           successRenderer, errorRenderer);
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
   }
@@ -118,81 +125,10 @@ public class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger,
+                                           successRenderer, errorRenderer);
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
-  }
-
-  @Test
-  public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    try {
-      config.getRenderer(ResultType.ERROR, mockRequest);
-      fail("Should have thrown a NPE");
-    } catch (NullPointerException expected) {
-    }
-  }
-
-  @Test
-  public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypeMatches() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1, "text/plain")
-        .on(ResultType.SUCCESS, mockRenderer2, "text/html");
-
-    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testSelectsRenderWithMimeTypeMatch() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1)
-        .on(ResultType.SUCCESS, mockRenderer2, "application/json");
-
-    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1, "text/html")
-        .on(ResultType.SUCCESS, mockRenderer2);
-
-    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testSkipsRenderersThatRequireASpecificTypeOfMimeType() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, new Result("text/html", mockRenderer1, true))
-        .on(ResultType.SUCCESS, mockRenderer2);
-
-    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
   private void exceptionWasExpected() {

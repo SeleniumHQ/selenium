@@ -127,6 +127,7 @@ import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
+import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
@@ -151,23 +152,17 @@ public class JsonHttpRemoteConfig {
     setUpMappings(sessions, log);
   }
 
-  public void addGlobalHandler(ResultType type, Result result) {
-    getMapper.addGlobalHandler(type, result);
-    postMapper.addGlobalHandler(type, result);
-    deleteMapper.addGlobalHandler(type, result);
+  public void addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
+    getMapper.bind(path, implementationClass);
   }
 
-  public ResultConfig addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return getMapper.bind(path, implementationClass);
+  public void addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
+    postMapper.bind(path, implementationClass);
   }
 
-  public ResultConfig addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return postMapper.bind(path, implementationClass);
-  }
-
-  public ResultConfig addNewDeleteMapping(String path,
-                                             Class<? extends RestishHandler> implementationClass) {
-    return deleteMapper.bind(path, implementationClass);
+  public void addNewDeleteMapping(
+      String path, Class<? extends RestishHandler> implementationClass) {
+    deleteMapper.bind(path, implementationClass);
   }
 
   public void handleRequest(HttpRequest request, HttpResponse response)
@@ -209,261 +204,149 @@ public class JsonHttpRemoteConfig {
   }
 
   private void setUpMappings(DriverSessions driverSessions, Logger logger) {
-    final EmptyResult emptyResponse = new EmptyResult();
-    final JsonResult jsonResponse = new JsonResult(RESPONSE);
+    Renderer successRenderer = new JsonResult(RESPONSE);
+    Renderer errorRenderer = new JsonErrorExceptionResult(EXCEPTION, RESPONSE);
 
-    getMapper = new UrlMapper(driverSessions, logger);
-    postMapper = new UrlMapper(driverSessions, logger);
-    deleteMapper = new UrlMapper(driverSessions, logger);
+    getMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
+    postMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
+    deleteMapper = new UrlMapper(driverSessions, logger, successRenderer, errorRenderer);
 
-    Result jsonErrorResult = new Result(MimeType.EMPTY,
-                                        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    addGlobalHandler(ResultType.ERROR, jsonErrorResult);
+    postMapper.bind("/config/drivers", AddConfig.class);
 
-    Result xdrpcResult = new Result(MimeType.CROSS_DOMAIN_RPC,
-                                    new CrossDomainRpcRenderer(RESPONSE, EXCEPTION), true);
-    for (ResultType resultType : EnumSet.allOf(ResultType.class)) {
-      addGlobalHandler(resultType, xdrpcResult);
-    }
+    getMapper.bind("/status", Status.class);
 
-    postMapper.bind("/config/drivers", AddConfig.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/sessions", GetAllSessions.class);
 
-    getMapper.bind("/status", Status.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session", NewSession.class);
+    getMapper.bind("/session/:sessionId", GetSessionCapabilities.class);
 
-    getMapper.bind("/sessions", GetAllSessions.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    deleteMapper.bind("/session/:sessionId", DeleteSession.class);
 
-    postMapper.bind("/session", NewSession.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId", GetSessionCapabilities.class)
-        .on(ResultType.SUCCESS, new ForwardResult("/WEB-INF/views/sessionCapabilities.jsp"))
-        .on(ResultType.SUCCESS, jsonResponse, "application/json");
+    getMapper.bind("/session/:sessionId/window_handle", GetCurrentWindowHandle.class);
+    getMapper.bind("/session/:sessionId/window_handles", GetAllWindowHandles.class);
 
-    deleteMapper.bind("/session/:sessionId", DeleteSession.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/dismiss_alert", DismissAlert.class);
+    postMapper.bind("/session/:sessionId/accept_alert", AcceptAlert.class);
+    getMapper.bind("/session/:sessionId/alert_text", GetAlertText.class);
+    postMapper.bind("/session/:sessionId/alert_text", SetAlertText.class);
 
-    getMapper.bind("/session/:sessionId/window_handle", GetCurrentWindowHandle.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/window_handles", GetAllWindowHandles.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/url", ChangeUrl.class);
+    getMapper.bind("/session/:sessionId/url", GetCurrentUrl.class);
 
-    postMapper.bind("/session/:sessionId/dismiss_alert", DismissAlert.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/accept_alert", AcceptAlert.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/alert_text", GetAlertText.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/alert_text", SetAlertText.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/forward", GoForward.class);
+    postMapper.bind("/session/:sessionId/back", GoBack.class);
+    postMapper.bind("/session/:sessionId/refresh", RefreshPage.class);
 
-    postMapper.bind("/session/:sessionId/url", ChangeUrl.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/url", GetCurrentUrl.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/execute", ExecuteScript.class);
+    postMapper.bind("/session/:sessionId/execute_async", ExecuteAsyncScript.class);
 
-    postMapper.bind("/session/:sessionId/forward", GoForward.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/back", GoBack.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/refresh", RefreshPage.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/source", GetPageSource.class);
 
-    postMapper.bind("/session/:sessionId/execute", ExecuteScript.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/execute_async", ExecuteAsyncScript.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/screenshot", CaptureScreenshot.class);
 
-    getMapper.bind("/session/:sessionId/source", GetPageSource.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/title", GetTitle.class);
 
-    getMapper.bind("/session/:sessionId/screenshot", CaptureScreenshot.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/element", FindElement.class);
+    getMapper.bind("/session/:sessionId/element/:id", DescribeElement.class);
 
-    getMapper.bind("/session/:sessionId/title", GetTitle.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/elements", FindElements.class);
+    postMapper.bind("/session/:sessionId/element/active", FindActiveElement.class);
 
-    postMapper.bind("/session/:sessionId/element", FindElement.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id", DescribeElement.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-
-    postMapper.bind("/session/:sessionId/elements", FindElements.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/element/active", FindActiveElement.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-
-    postMapper.bind("/session/:sessionId/element/:id/element", FindChildElement.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/element/:id/elements", FindChildElements.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/element/:id/element", FindChildElement.class);
+    postMapper.bind("/session/:sessionId/element/:id/elements", FindChildElements.class);
 
 
-    postMapper.bind("/session/:sessionId/element/:id/click", ClickElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/element/:id/text", GetElementText.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/element/:id/submit", SubmitElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/element/:id/click", ClickElement.class);
+    getMapper.bind("/session/:sessionId/element/:id/text", GetElementText.class);
+    postMapper.bind("/session/:sessionId/element/:id/submit", SubmitElement.class);
 
-    postMapper.bind("/session/:sessionId/file", UploadFile.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/element/:id/value", SendKeys.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/element/:id/value", GetElementValue.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/name", GetTagName.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/file", UploadFile.class);
+    postMapper.bind("/session/:sessionId/element/:id/value", SendKeys.class);
+    getMapper.bind("/session/:sessionId/element/:id/value", GetElementValue.class);
+    getMapper.bind("/session/:sessionId/element/:id/name", GetTagName.class);
 
-    postMapper.bind("/session/:sessionId/element/:id/clear", ClearElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/element/:id/selected", GetElementSelected.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/enabled", GetElementEnabled.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/location", GetElementLocation.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/element/:id/clear", ClearElement.class);
+    getMapper.bind("/session/:sessionId/element/:id/selected", GetElementSelected.class);
+    getMapper.bind("/session/:sessionId/element/:id/enabled", GetElementEnabled.class);
+    getMapper.bind("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class);
+    getMapper.bind("/session/:sessionId/element/:id/location", GetElementLocation.class);
     getMapper.bind("/session/:sessionId/element/:id/location_in_view",
-                   GetElementLocationInView.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/size", GetElementSize.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+                   GetElementLocationInView.class);
+    getMapper.bind("/session/:sessionId/element/:id/size", GetElementSize.class);
+    getMapper.bind("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class);
 
-    getMapper.bind("/session/:sessionId/element/:id/attribute/:name", GetElementAttribute.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/element/:id/equals/:other", ElementEquality.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/element/:id/attribute/:name", GetElementAttribute.class);
+    getMapper.bind("/session/:sessionId/element/:id/equals/:other", ElementEquality.class);
 
-    getMapper.bind("/session/:sessionId/cookie", GetAllCookies.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/cookie", AddCookie.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    deleteMapper.bind("/session/:sessionId/cookie", DeleteCookie.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    deleteMapper.bind("/session/:sessionId/cookie/:name", DeleteNamedCookie.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/cookie", GetAllCookies.class);
+    postMapper.bind("/session/:sessionId/cookie", AddCookie.class);
+    deleteMapper.bind("/session/:sessionId/cookie", DeleteCookie.class);
+    deleteMapper.bind("/session/:sessionId/cookie/:name", DeleteNamedCookie.class);
 
-    postMapper.bind("/session/:sessionId/frame", SwitchToFrame.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/frame/parent", SwitchToParentFrame.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/window", SwitchToWindow.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    deleteMapper.bind("/session/:sessionId/window", CloseWindow.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/frame", SwitchToFrame.class);
+    postMapper.bind("/session/:sessionId/frame/parent", SwitchToParentFrame.class);
+    postMapper.bind("/session/:sessionId/window", SwitchToWindow.class);
+    deleteMapper.bind("/session/:sessionId/window", CloseWindow.class);
 
-    getMapper.bind("/session/:sessionId/window/:windowHandle/size", GetWindowSize.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/window/:windowHandle/size", SetWindowSize.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/window/:windowHandle/position", GetWindowPosition.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/window/:windowHandle/position", SetWindowPosition.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/window/:windowHandle/maximize", MaximizeWindow.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/window/:windowHandle/size", GetWindowSize.class);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/size", SetWindowSize.class);
+    getMapper.bind("/session/:sessionId/window/:windowHandle/position", GetWindowPosition.class);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/position", SetWindowPosition.class);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/maximize", MaximizeWindow.class);
 
-    postMapper.bind("/session/:sessionId/timeouts", ConfigureTimeout.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/timeouts/async_script", SetScriptTimeout.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/timeouts", ConfigureTimeout.class);
+    postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class);
+    postMapper.bind("/session/:sessionId/timeouts/async_script", SetScriptTimeout.class);
 
-    postMapper.bind("/session/:sessionId/execute_sql", ExecuteSQL.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/execute_sql", ExecuteSQL.class);
 
-    getMapper.bind("/session/:sessionId/location", GetLocationContext.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/location", SetLocationContext.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/location", GetLocationContext.class);
+    postMapper.bind("/session/:sessionId/location", SetLocationContext.class);
 
-    getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class);
 
-    getMapper.bind("/session/:sessionId/local_storage/key/:key", GetLocalStorageItem.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    deleteMapper.bind("/session/:sessionId/local_storage/key/:key", RemoveLocalStorageItem.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/local_storage", GetLocalStorageKeys.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/local_storage", SetLocalStorageItem.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    deleteMapper.bind("/session/:sessionId/local_storage", ClearLocalStorage.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/local_storage/key/:key", GetLocalStorageItem.class);
+    deleteMapper.bind("/session/:sessionId/local_storage/key/:key", RemoveLocalStorageItem.class);
+    getMapper.bind("/session/:sessionId/local_storage", GetLocalStorageKeys.class);
+    postMapper.bind("/session/:sessionId/local_storage", SetLocalStorageItem.class);
+    deleteMapper.bind("/session/:sessionId/local_storage", ClearLocalStorage.class);
+    getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class);
 
-    getMapper.bind("/session/:sessionId/session_storage/key/:key", GetSessionStorageItem.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    deleteMapper.bind("/session/:sessionId/session_storage/key/:key", RemoveSessionStorageItem.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/session_storage", GetSessionStorageKeys.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/session_storage", SetSessionStorageItem.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    deleteMapper.bind("/session/:sessionId/session_storage", ClearSessionStorage.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    getMapper.bind("/session/:sessionId/session_storage/size", GetSessionStorageSize.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/session_storage/key/:key", GetSessionStorageItem.class);
+    deleteMapper.bind("/session/:sessionId/session_storage/key/:key", RemoveSessionStorageItem.class);
+    getMapper.bind("/session/:sessionId/session_storage", GetSessionStorageKeys.class);
+    postMapper.bind("/session/:sessionId/session_storage", SetSessionStorageItem.class);
+    deleteMapper.bind("/session/:sessionId/session_storage", ClearSessionStorage.class);
+    getMapper.bind("/session/:sessionId/session_storage/size", GetSessionStorageSize.class);
 
-    getMapper.bind("/session/:sessionId/orientation", GetScreenOrientation.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/orientation", Rotate.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/orientation", GetScreenOrientation.class);
+    postMapper.bind("/session/:sessionId/orientation", Rotate.class);
 
-    postMapper.bind("/session/:sessionId/moveto", MouseMoveToLocation.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/click", ClickInSession.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/doubleclick", DoubleClickInSession.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/buttondown", MouseDown.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/buttonup", MouseUp.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/keys", SendKeyToActiveElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/moveto", MouseMoveToLocation.class);
+    postMapper.bind("/session/:sessionId/click", ClickInSession.class);
+    postMapper.bind("/session/:sessionId/doubleclick", DoubleClickInSession.class);
+    postMapper.bind("/session/:sessionId/buttondown", MouseDown.class);
+    postMapper.bind("/session/:sessionId/buttonup", MouseUp.class);
+    postMapper.bind("/session/:sessionId/keys", SendKeyToActiveElement.class);
 
-    getMapper.bind("/session/:sessionId/ime/available_engines", ImeGetAvailableEngines.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/ime/active_engine", ImeGetActiveEngine.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    getMapper.bind("/session/:sessionId/ime/activated", ImeIsActivated.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/ime/deactivate", ImeDeactivate.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/ime/activate", ImeActivateEngine.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/ime/available_engines", ImeGetAvailableEngines.class);
+    getMapper.bind("/session/:sessionId/ime/active_engine", ImeGetActiveEngine.class);
+    getMapper.bind("/session/:sessionId/ime/activated", ImeIsActivated.class);
+    postMapper.bind("/session/:sessionId/ime/deactivate", ImeDeactivate.class);
+    postMapper.bind("/session/:sessionId/ime/activate", ImeActivateEngine.class);
 
     // Advanced Touch API
-    postMapper.bind("/session/:sessionId/touch/click", SingleTapOnElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/down", Down.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/up", Up.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/move", Move.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/scroll", Scroll.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/doubleclick", DoubleTapOnElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/longclick", LongPressOnElement.class)
-        .on(ResultType.SUCCESS, emptyResponse);
-    postMapper.bind("/session/:sessionId/touch/flick", Flick.class)
-        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/touch/click", SingleTapOnElement.class);
+    postMapper.bind("/session/:sessionId/touch/down", Down.class);
+    postMapper.bind("/session/:sessionId/touch/up", Up.class);
+    postMapper.bind("/session/:sessionId/touch/move", Move.class);
+    postMapper.bind("/session/:sessionId/touch/scroll", Scroll.class);
+    postMapper.bind("/session/:sessionId/touch/doubleclick", DoubleTapOnElement.class);
+    postMapper.bind("/session/:sessionId/touch/longclick", LongPressOnElement.class);
+    postMapper.bind("/session/:sessionId/touch/flick", Flick.class);
 
-    getMapper.bind("/session/:sessionId/log/types", GetAvailableLogTypesHandler.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/session/:sessionId/log", GetLogHandler.class)
-        .on(ResultType.SUCCESS, jsonResponse);
-    postMapper.bind("/logs", GetSessionLogsHandler.class)
-        .on(ResultType.SUCCESS, jsonResponse);
+    getMapper.bind("/session/:sessionId/log/types", GetAvailableLogTypesHandler.class);
+    postMapper.bind("/session/:sessionId/log", GetLogHandler.class);
+    postMapper.bind("/logs", GetSessionLogsHandler.class);
   }
 }

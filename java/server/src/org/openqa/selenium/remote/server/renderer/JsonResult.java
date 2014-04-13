@@ -16,9 +16,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
+import static com.google.common.base.Strings.nullToEmpty;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+
 import com.google.common.base.Charsets;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.Renderer;
@@ -41,6 +46,9 @@ public class JsonResult implements Renderer {
   public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
     Object result = request.getAttribute(propertyName);
+    if (result == null) {
+      result = prepareDefaultResponse(request);
+    }
 
     String json = new BeanToJsonConverter().convert(result);
     ByteBuffer bb = Charsets.UTF_8.encode(json);
@@ -51,5 +59,14 @@ public class JsonResult implements Renderer {
     response.setEncoding(Charsets.UTF_8);
     response.setContent(data);
     response.end();
+  }
+
+  private Response prepareDefaultResponse(HttpRequest request) {
+    Response response = new Response();
+    response.setStatus(ErrorCodes.SUCCESS);
+    response.setState(ErrorCodes.SUCCESS_STRING);
+    response.setSessionId(nullToEmpty(getSessionId(request.getUri())));
+    response.setValue(null);
+    return response;
   }
 }

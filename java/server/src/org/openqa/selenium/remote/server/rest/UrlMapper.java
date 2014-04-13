@@ -16,44 +16,37 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-
 import org.openqa.selenium.remote.server.DriverSessions;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
 public class UrlMapper {
 
-  private final Multimap<ResultType, Result> globals = LinkedHashMultimap.create();
   private final Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
   private final Logger log;
+  private final Renderer successRenderer;
+  private final Renderer errorRenderer;
 
-  public UrlMapper(DriverSessions sessions, Logger log) {
+  public UrlMapper(DriverSessions sessions, Logger log,
+                   Renderer successRenderer, Renderer errorRenderer) {
     this.sessions = sessions;
     this.log = log;
+    this.successRenderer = successRenderer;
+    this.errorRenderer = errorRenderer;
   }
 
-  public ResultConfig bind(String url, Class<? extends RestishHandler> handlerClazz) {
+  public void bind(String url, Class<? extends RestishHandler> handlerClazz) {
     ResultConfig existingConfig = getConfig(url);
     if (existingConfig != null) {
       configs.remove(existingConfig);
     }
 
-    ResultConfig config = new ResultConfig(url, handlerClazz, sessions, log);
+    ResultConfig config = new ResultConfig(
+        url, handlerClazz, sessions, log, successRenderer, errorRenderer);
     configs.add(config);
-    Map<ResultType, Collection<Result>> map = globals.asMap();
-    for (Map.Entry<ResultType, Collection<Result>> entry : map.entrySet()) {
-      for (Result result : entry.getValue()) {
-        config.on(entry.getKey(), result);
-      }
-    }
-    return config;
   }
 
   public ResultConfig getConfig(String url) {
@@ -64,13 +57,5 @@ public class UrlMapper {
     }
 
     return null;
-  }
-
-  public void addGlobalHandler(ResultType type, Result result) {
-    globals.put(type, result);
-
-    for (ResultConfig config : configs) {
-      config.on(type, result);
-    }
   }
 }
