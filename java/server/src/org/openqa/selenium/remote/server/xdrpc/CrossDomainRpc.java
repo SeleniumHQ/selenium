@@ -16,11 +16,8 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.StringReader;
 
 /**
  * A cross-domain RPC that specifies a command to execute in the WebDriver
@@ -60,7 +57,7 @@ public class CrossDomainRpc {
     return data;
   }
 
-  public Reader getDataReader() {
-    return new BufferedReader(new StringReader(data));
+  public byte[] getContent() {
+    return data.getBytes(UTF_8);
   }
 }

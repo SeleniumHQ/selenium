@@ -16,11 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.remote.server.HttpStatusCodes.INTERNAL_SERVER_ERROR;
 import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -162,23 +160,18 @@ public class JsonHttpRemoteConfig {
     try {
       UrlMapper mapper = getUrlMapper(request.getMethod());
       if (mapper == null) {
-        response.setStatus(INTERNAL_SERVER_ERROR);
-        response.end();
+        response.setStatus(NOT_FOUND);
         return;
       }
 
-      ResultConfig config = mapper.getConfig(request.getPath());
+      ResultConfig config = mapper.getConfig(request.getUri());
       if (config == null) {
         response.setStatus(NOT_FOUND);
-        response.end();
       } else {
-        config.handle(request.getPath(), request, response);
+        config.handle(request.getUri(), request, response);
       }
-    } catch (SessionNotFoundException e){
-      response.setStatus(NOT_FOUND);
-      response.end();
     } catch (Exception e) {
-      log.warning("Fatal, unhandled exception: " + request.getPath() + ": " + e);
+      log.warning("Fatal, unhandled exception: " + request.getUri() + ": " + e);
       throw new WebDriverException(e);
     }
   }

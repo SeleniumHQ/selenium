@@ -18,6 +18,8 @@ package org.openqa.selenium.remote.server.rest;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 
 import com.google.common.base.Optional;
@@ -33,7 +35,6 @@ import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SessionNotFoundException;
-import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.HttpRequest;
@@ -45,9 +46,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
-import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -167,7 +166,6 @@ public class ResultConfig {
         result.setStatus(ErrorCodes.SUCCESS);
       }
 
-      addHandlerAttributesToRequest(request, handler);
       if ("/status".equals(pathInfo)) {
         log.fine("Done: " + pathInfo);
       } else {
@@ -178,15 +176,17 @@ public class ResultConfig {
       prepareErrorResponse(result, e, Optional.<String>absent());
       render(result, response);
       return;
-    } catch (SessionNotFoundException e){
-      throw e;
+
+    } catch (SessionNotFoundException e) {
+      response.setStatus(404);
+      return;
+
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown", e);
 
       Throwable toUse = getRootExceptionCause(e);
 
       log.warning("Exception: " + toUse.getMessage());
-      request.setAttribute("exception", toUse);
       Optional<String> screenshot = Optional.absent();
       if (handler instanceof WebDriverHandler) {
         screenshot = Optional.fromNullable(((WebDriverHandler) handler).getScreenshot());
@@ -212,9 +212,14 @@ public class ResultConfig {
     String json = new BeanToJsonConverter().convert(response);
     byte[] data = json.getBytes(UTF_8);
 
-    httpResponse.setContentType(JSON_UTF_8.toString());
+    httpResponse.setStatus(200);
+    if (response.getStatus() != ErrorCodes.SUCCESS) {
+      httpResponse.setStatus(500);
+    }
+
+    httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
     httpResponse.setContent(data);
-    httpResponse.end();
   }
 
   private void prepareErrorResponse(
@@ -241,32 +246,13 @@ public class ResultConfig {
 
   @SuppressWarnings("unchecked")
   private void setJsonParameters(HttpRequest request, RestishHandler handler) throws Exception {
-    BufferedReader reader = new BufferedReader(request.getReader());
-    StringBuilder builder = new StringBuilder();
-    for (String line = reader.readLine(); line != null; line = reader.readLine())
-      builder.append(line);
-
-    String raw = builder.toString();
-    if (raw.length() > 0) {
+    byte[] data = request.getContent();
+    String raw = new String(data, UTF_8);
+    if (!raw.isEmpty()) {
       Map<String, Object> parameters = (Map<String, Object>) new JsonToBeanConverter()
-          .convert(HashMap.class, builder.toString());
+          .convert(HashMap.class, raw);
 
       ((JsonParametersAware) handler).setJsonParameters(parameters);
-    }
-  }
-
-  protected void addHandlerAttributesToRequest(HttpRequest request, RestishHandler handler)
-      throws Exception {
-    SimplePropertyDescriptor[] properties =
-        SimplePropertyDescriptor.getPropertyDescriptors(handler.getClass());
-    for (SimplePropertyDescriptor property : properties) {
-      Method readMethod = property.getReadMethod();
-      if (readMethod == null) {
-        continue;
-      }
-
-      Object result = readMethod.invoke(handler);
-      request.setAttribute(property.getName(), result);
     }
   }
 

@@ -17,23 +17,40 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface HttpResponse {
+public class HttpResponse {
 
-  void setStatus(int status);
+  private final Map<String, String> headers = new HashMap<String, String>();
+  private int status = HttpStatusCodes.OK;
+  private byte[] data = new byte[0];
 
-  void setContentType(String mimeType);
+  public int getStatus() {
+    return status;
+  }
 
-  void setContent(byte[] data);
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-  void setContent(String message);
+  public void setHeader(String name, String value) {
+    headers.put(name, value);
+  }
 
-  void setEncoding(Charset charset);
+  public Iterable<String> getHeaderNames() {
+    return headers.keySet();
+  }
 
-  void sendRedirect(String to);
+  public String getHeader(String name) {
+    return headers.get(name);
+  }
 
-  void end();
+  public void setContent(byte[] data) {
+    this.data = data;
+  }
 
-
+  public byte[] getContent() {
+    return data;
+  }
 }

@@ -47,7 +47,7 @@ java_library(name = "server_core",
     "xdrpc/*.java",
   ],
   deps = [
-    ":jee-http-api",
+    ":http-api",
     ":server_very_core",
     "//third_party/java/guava-libraries",
     "//third_party/java/servlet-api",
@@ -63,18 +63,6 @@ java_library(name = "http-api",
     "HttpRequest.java",
     "HttpResponse.java",
     "HttpStatusCodes.java",
-  ])
-
-java_library(name = "jee-http-api",
-  srcs = [
-    "JeeServletHttpRequest.java",
-    "JeeServletHttpResponse.java",
-  ],
-  deps = [
-    ":http-api",
-    "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/servlet-api",
   ])
 
 java_library(name = "server_very_core",

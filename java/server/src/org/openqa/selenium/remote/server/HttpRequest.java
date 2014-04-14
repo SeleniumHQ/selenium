@@ -17,25 +17,44 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface HttpRequest {
+public class HttpRequest {
 
-  String getAppUri();
+  private final String method;
+  private final String uri;
 
-  String getUri();
+  private final Map<String, String> headers = new HashMap<String, String>();
 
-  String getPath();
+  private byte[] data = new byte[0];
 
-  String getMethod();
+  public HttpRequest(String method, String uri) {
+    this.method = method;
+    this.uri = uri;
+  }
 
-  String getHeader(String header);
+  public String getUri() {
+    return uri;
+  }
 
-  Object getAttribute(String attributeName);
+  public String getMethod() {
+    return method;
+  }
 
-  void setAttribute(String attributeName, Object value);
+  public String getHeader(String header) {
+    return headers.get(header);
+  }
 
-  Reader getReader();
+  public void setHeader(String name, String value) {
+    headers.put(name, value);
+  }
 
-  void forward(HttpResponse response, String to);
+  public byte[] getContent() {
+    return data;
+  }
+
+  public void setContent(byte[] data) {
+    this.data = data;
+  }
 }

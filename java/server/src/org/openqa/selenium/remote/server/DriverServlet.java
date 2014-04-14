@@ -18,24 +18,26 @@ package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
+import static java.util.Collections.list;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
-import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -165,37 +167,92 @@ public class DriverServlet extends HttpServlet {
     handleRequest(request, response);
   }
 
-  private void handleCrossDomainRpc(HttpServletRequest request, HttpServletResponse response)
+  private void handleCrossDomainRpc(
+      HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
     CrossDomainRpc rpc;
 
     try {
-      rpc = new CrossDomainRpcLoader().loadRpc(request);
+      rpc = new CrossDomainRpcLoader().loadRpc(servletRequest);
     } catch (IllegalArgumentException e) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.getOutputStream().println(e.getMessage());
-      response.getOutputStream().flush();
+      servletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      servletResponse.getOutputStream().println(e.getMessage());
+      servletResponse.getOutputStream().flush();
       return;
     }
 
-    request = HttpServletRequestProxy.createProxy(request, rpc,
-        CROSS_DOMAIN_RPC_PATH, MimeType.CROSS_DOMAIN_RPC);
+    HttpRequest request = new HttpRequest(rpc.getMethod(), rpc.getPath());
+    request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
+    request.setContent(rpc.getContent());
+
+    HttpResponse response = new HttpResponse();
+
     handleRequest(request, response);
+    sendResponse(response, servletResponse);
   }
 
-  protected void handleRequest(HttpServletRequest request, HttpServletResponse response)
+  protected void handleRequest(
+      HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
-    try {
-      HttpRequest req = new JeeServletHttpRequest(request);
-      HttpResponse res = new JeeServletHttpResponse(response);
+    HttpRequest request = createInternalRequest(servletRequest);
+    HttpResponse response = new HttpResponse();
+    handleRequest(request, response);
+    sendResponse(response, servletResponse);
+  }
 
-      mappings.handleRequest(req, res);
+  private void handleRequest(HttpRequest request, HttpResponse response) throws ServletException {
+    try {
+      mappings.handleRequest(request, response);
     } catch (SessionNotFoundException e){
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.setStatus(HttpStatusCodes.NOT_FOUND);
     } catch (Exception e) {
-      log("Fatal, unhandled exception: " + request.getPathInfo() + ": " + e);
+      log("Fatal, unhandled exception: " + request.getUri() + ": " + e);
       throw new ServletException(e);
     }
+  }
+
+  private static HttpRequest createInternalRequest(HttpServletRequest servletRequest)
+      throws IOException {
+    HttpRequest request = new HttpRequest(
+        servletRequest.getMethod(), servletRequest.getPathInfo());
+
+    @SuppressWarnings("unchecked")
+    Enumeration<String> headerNames = servletRequest.getHeaderNames();
+    for (String name : list(headerNames)) {
+      @SuppressWarnings("unchecked")
+      Enumeration<String> headerValues = servletRequest.getHeaders(name);
+      for (String value : list(headerValues)) {
+        request.setHeader(name, value);
+      }
+    }
+
+    InputStream stream = null;
+    try {
+      stream = servletRequest.getInputStream();
+      request.setContent(ByteStreams.toByteArray(stream));
+    } finally {
+      if (stream != null) {
+        try {
+          stream.close();
+        } catch (IOException ignored) {
+          // Do nothing.
+        }
+      }
+    }
+
+    return request;
+  }
+
+  private static void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
+      throws IOException {
+    servletResponse.setStatus(response.getStatus());
+    for (String name : response.getHeaderNames()) {
+      servletResponse.setHeader(name, response.getHeader(name));
+    }
+    OutputStream output = servletResponse.getOutputStream();
+    output.write(response.getContent());
+    output.flush();
+    output.close();
   }
 
   private class DriverSessionsSupplier implements Supplier<DriverSessions> {
