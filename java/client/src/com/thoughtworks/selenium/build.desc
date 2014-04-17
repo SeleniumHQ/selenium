@@ -1,17 +1,10 @@
-
-
-# The SelenimCommandTimedOutException never seems to be thrown.
-# TODO(simon): Investigate deleting this.
-
 java_library(name = "api",
   srcs = [
     "CommandProcessor.java",
     "Selenium.java",
-    "SeleniumCommandTimedOutException.java",
     "SeleniumException.java",
   ])
 
-# TODO(simon): Break dependency of selenium on webdriver
 java_library(name = "selenium",
   srcs = [
     "BrowserConfigurationOptions.java",

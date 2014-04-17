@@ -13,6 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import platform
+import signal
 import subprocess
 import time
 
@@ -42,6 +44,8 @@ class Service(object):
             self.port = utils.free_port()
         if self.service_args is None:
             self.service_args = []
+        else:
+            self.service_args=service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         if not log_path:
@@ -57,8 +61,10 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen(self.service_args,
+            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
+                                            close_fds=platform.system() != 'Windows',
                                             stdout=self._log, stderr=self._log)
+
         except Exception as e:
             raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
         count = 0
@@ -89,7 +95,7 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
-                self.process.kill()
+                self.process.send_signal(signal.SIGTERM)
                 self.process.wait()
         except OSError:
             # kill may not be available under windows environment

@@ -19,14 +19,14 @@ package org.openqa.selenium.remote.server.log;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.logging.LogRecord;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.SessionLogs;
 import org.openqa.selenium.remote.SessionId;
+
+import java.util.logging.LogRecord;
 
 /**
  * @author Kristian Rosenvold

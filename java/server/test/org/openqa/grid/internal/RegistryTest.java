@@ -17,16 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -36,6 +31,12 @@ import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegistryTest {
 
@@ -58,7 +59,7 @@ public class RegistryTest {
       registry.add(p2);
       registry.add(p3);
       registry.add(p4);
-      Assert.assertTrue(registry.getAllProxies().size() == 4);
+      assertTrue(registry.getAllProxies().size() == 4);
     } finally {
       registry.stop();
     }
@@ -82,7 +83,7 @@ public class RegistryTest {
       registry.add(p3);
       registry.add(p4);
       registry.add(p4);
-      Assert.assertTrue(registry.getAllProxies().size() == 4);
+      assertTrue(registry.getAllProxies().size() == 4);
     } finally {
       registry.stop();
     }
@@ -111,7 +112,7 @@ public class RegistryTest {
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
     } catch (Exception e) {
-      Assert.assertEquals(GridException.class, e.getCause().getClass());
+      assertEquals(GridException.class, e.getCause().getClass());
     } finally {
       registry.stop();
     }
@@ -141,7 +142,7 @@ public class RegistryTest {
       newSessionRequest.process();
       System.out.println("new " + newSessionRequest.getSession());
     } catch (Exception e) {
-      Assert.assertEquals(CapabilityNotPresentOnTheGridException.class, e.getCause().getClass());
+      assertEquals(CapabilityNotPresentOnTheGridException.class, e.getCause().getClass());
     } finally {
       registry.stop();
     }
@@ -179,7 +180,7 @@ public class RegistryTest {
       }
 
       latch.await();
-      Assert.assertEquals(registry.getAllProxies().size(), 1);
+      assertEquals(registry.getAllProxies().size(), 1);
     } finally {
       registry.stop();
     }
@@ -230,8 +231,8 @@ public class RegistryTest {
       while (counter.get() != TOTAL_THREADS) {
         Thread.sleep(250);
       }
-      Assert.assertEquals(counter.get(), TOTAL_THREADS);
-      Assert.assertEquals(registry.getAllProxies().size(), 1);
+      assertEquals(counter.get(), TOTAL_THREADS);
+      assertEquals(registry.getAllProxies().size(), 1);
     } finally {
       registry.stop();
     }

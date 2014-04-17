@@ -1,9 +1,9 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 describe Selenium::WebDriver::ActionBuilder do
-  let(:bridge)      { mock("Bridge").as_null_object }
-  let(:keyboard)    { mock(Selenium::WebDriver::Keyboard) }
-  let(:mouse)       { mock(Selenium::WebDriver::Mouse)    }
+  let(:bridge)      { double("Bridge").as_null_object }
+  let(:keyboard)    { double(Selenium::WebDriver::Keyboard) }
+  let(:mouse)       { double(Selenium::WebDriver::Mouse)    }
   let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element')  }
   let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
 

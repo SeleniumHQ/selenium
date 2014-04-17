@@ -15,10 +15,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import org.junit.Test;
 
 import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
-import static org.openqa.grid.internal.utils.ServerJsonValues.*;
+import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
+import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
+
+import org.junit.Test;
 
 public class GridHubConfigurationTest {
 

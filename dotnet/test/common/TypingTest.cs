@@ -565,6 +565,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
+        [IgnoreBrowser(Browser.WindowsPhone, "JavaScript-only implementations cannot use system clipboard")]
         public void ChordControlCutAndPaste()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -664,6 +665,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -687,6 +689,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver 2 does not support contentEditable")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -725,6 +728,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void testShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
             driver.Url = readOnlyPage;

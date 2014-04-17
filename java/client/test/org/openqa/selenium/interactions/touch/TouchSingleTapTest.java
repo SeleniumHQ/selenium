@@ -17,12 +17,11 @@ limitations under the License.
 package org.openqa.selenium.interactions.touch;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
@@ -46,7 +45,7 @@ public class TouchSingleTapTest extends TouchTestBase {
   public void testCanSingleTapOnALinkAndFollowIt() {
     driver.get(pages.clicksPage);
     singleTapOnElement("normal");
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    wait.until(titleIs("XHTML Test Page"));
   }
 
   @Test

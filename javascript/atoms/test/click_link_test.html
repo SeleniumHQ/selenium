@@ -561,8 +561,10 @@
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
     // Android needs a longer timeout due to emulator slowness.
     // Opera 12, IE9+, Firefox 10 are sometimes slow to load new iframe pages.
-    if (goog.userAgent.product.ANDROID || bot.userAgent.IE_DOC_9) {
+    if (goog.userAgent.product.ANDROID) {
       asyncTestCase.stepTimeout = 5000;
+    } else if (bot.userAgent.IE_DOC_9) {
+      asyncTestCase.stepTimeout = 50000;
     } else if ((goog.userAgent.product.OPERA &&
                bot.userAgent.isEngineVersion(12)) ||
                (goog.userAgent.GECKO &&

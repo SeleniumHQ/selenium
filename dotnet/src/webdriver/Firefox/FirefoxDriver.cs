@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Firefox
     /// }
     /// </code>
     /// </example>
-    public class FirefoxDriver : RemoteWebDriver, ITakesScreenshot
+    public class FirefoxDriver : RemoteWebDriver
     {
         #region Public members
         /// <summary>
@@ -101,6 +101,11 @@ namespace OpenQA.Selenium.Firefox
         /// Indicates whether the driver will accept untrusted SSL certificates.
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
+
+        /// <summary>
+        /// Indicates whether the driver assume the issuer of untrusted certificates is untrusted.
+        /// </summary>
+        public static readonly bool AssumeUntrustedCertificateIssuer = true;
 
         private FirefoxBinary binary;
 
@@ -132,7 +137,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
         /// capabilities of this FirefoxDriver.</param>
         public FirefoxDriver(ICapabilities capabilities)
-            : this(ExtractBinary(capabilities), ExtractProfile(capabilities))
+            : this(ExtractBinary(capabilities), ExtractProfile(capabilities), capabilities, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -157,7 +162,12 @@ namespace OpenQA.Selenium.Firefox
         /// to be used in starting Firefox.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : base(CreateExtensionConnection(binary, profile, commandTimeout), DesiredCapabilities.Firefox())
+            : this(binary, profile, DesiredCapabilities.Firefox(), commandTimeout)
+        {
+        }
+
+        private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
+            : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
         {
             this.binary = binary;
             this.profile = profile;
@@ -198,48 +208,7 @@ namespace OpenQA.Selenium.Firefox
         }
         #endregion
 
-        #region ITakesScreenshot Members
-        /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
-        {
-            // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
-            return new Screenshot(base64);
-        }
-        #endregion
-
         #region Support methods
-        /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            try
-            {
-                ExtensionConnection connection = (ExtensionConnection)this.CommandExecutor;
-                connection.Profile.AddWebDriverExtension();
-                ((ExtensionConnection)this.CommandExecutor).Start();
-            }
-            catch (IOException e)
-            {
-                throw new WebDriverException("An error occurred while connecting to Firefox", e);
-            }
-        }
-
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            ((ExtensionConnection)this.CommandExecutor).Quit();
-        }
-
         /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
@@ -323,7 +292,7 @@ namespace OpenQA.Selenium.Firefox
             return profile;
         }
 
-        private static ExtensionConnection CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
+        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
         {
             FirefoxProfile profileToUse = profile;
 
@@ -337,8 +306,16 @@ namespace OpenQA.Selenium.Firefox
                 profileToUse = new FirefoxProfile();
             }
 
-            ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost", commandTimeout);
-            return extension;
+            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
+            return executor;
+        }
+
+        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
+        {
+            DesiredCapabilities caps = capabilities as DesiredCapabilities;
+            caps.Capabilities.Remove(FirefoxDriver.ProfileCapabilityName);
+            caps.Capabilities.Remove(FirefoxDriver.BinaryCapabilityName);
+            return caps;
         }
         #endregion
     }

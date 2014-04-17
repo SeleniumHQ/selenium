@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.server;
 
+import static java.lang.String.format;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.jetty.http.HashUserRealm;
@@ -33,14 +35,14 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.remote.server.log.LoggingOptions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -52,8 +54,6 @@ import java.net.BindException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
-
-import static java.lang.String.format;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -189,7 +189,7 @@ import static java.lang.String.format;
  * the "null" session. You may then similarly send commands to this browser by not specifying a
  * sessionId when issuing commands.
  * </p>
- * 
+ *
  * @author plightbo
  */
 public class SeleniumServer implements SslCertificateGenerator {
@@ -226,7 +226,7 @@ public class SeleniumServer implements SslCertificateGenerator {
   /**
    * Starts up the server on the specified port (or default if no port was specified) and then
    * starts interactive mode if specified.
-   * 
+   *
    * @param args - either "-port" followed by a number, or "-interactive"
    * @throws Exception - you know, just in case.
    */
@@ -259,7 +259,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Prepares a Jetty server with its HTTP handlers.
-   * 
+   *
    * @param slowResources should the webserver return static resources more slowly? (Note that this
    *        will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML
    *        tests.)
@@ -476,7 +476,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Starts the Jetty server
-   * 
+   *
    * @throws Exception on error.
    */
   public void start() throws Exception {
@@ -570,7 +570,7 @@ public class SeleniumServer implements SslCertificateGenerator {
    * Exposes the internal Jetty server used by Selenium. This lets users add their own webapp to the
    * Selenium Server jetty instance. It is also a minor violation of encapsulation principles (what
    * if we stop using Jetty?) but life is too short to worry about such things.
-   * 
+   *
    * @return the internal Jetty server, pre-configured with the /selenium-server context as well as
    *         the proxy server on /
    */
@@ -598,7 +598,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Get the number of threads that the server will use to configure the embedded Jetty instance.
-   * 
+   *
    * @return Returns the number of threads for Jetty.
    */
   public int getJettyThreads() {
@@ -614,11 +614,21 @@ public class SeleniumServer implements SslCertificateGenerator {
         RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile);
         System.exit(1);
       }
+      String fileName = suiteFile.getName();
+      if (! (fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".xhtml"))) {
+        RemoteControlLauncher.usage("Suite file must have extension .html or .htm or .xhtml");
+        System.exit(1);
+      }
       addNewStaticContent(suiteFile.getParentFile());
       String startURL = getRequiredSystemProperty("htmlSuite.startURL");
       HTMLLauncher launcher = new HTMLLauncher(this);
       String resultFilePath = getRequiredSystemProperty("htmlSuite.resultFilePath");
       File resultFile = new File(resultFilePath);
+      File resultDir = resultFile.getParentFile();
+      if ((resultDir != null) && !resultDir.exists() && !resultDir.mkdirs()) {
+        RemoteControlLauncher.usage("can't create directory for result file " + resultFilePath);
+        System.exit(1);
+      }
       resultFile.createNewFile();
 
       if (!resultFile.canWrite()) {

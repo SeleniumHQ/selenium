@@ -21,6 +21,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,9 @@ import java.util.List;
  * will find all elements that match <var>by1</var> and then all elements that match <var>by2</var>.
  * This means that the list of elements returned may not be in document order.
  */
-public class ByAll extends By {
+public class ByAll extends By implements Serializable {
+
+  private static final long serialVersionUID = 4573668832699497306L;
 
   private By[] bys;
 

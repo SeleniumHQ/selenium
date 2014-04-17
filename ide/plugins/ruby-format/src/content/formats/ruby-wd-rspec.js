@@ -194,68 +194,67 @@ function keyVariable(key) {
 }
 
 this.sendKeysMaping = {
-  BACK_SPACE: "backspace",
+  BKSP: "backspace",
   BACKSPACE: "backspace",
   TAB: "tab",
   ENTER: "enter",
   SHIFT: "shift",
-  LEFT_SHIFT: "left_shift",
   CONTROL: "control",
-  LEFT_CONTROL: "left_control",
+  CTRL: "control",
   ALT: "alt",
-  LEFT_ALT: "left_alt",
   PAUSE: "pause",
   ESCAPE: "escape",
   ESC: "escape",
   SPACE: "space",
   PAGE_UP: "page_up",
+  PGUP: "page_up",
   PAGE_DOWN: "page_down",
+  PGDN: "page_down",
   END: "end",
   HOME: "home",
   LEFT: "left",
-  ARROW_LEFT: "arrow_left",
   UP: "up",
-  ARROW_UP: "arrow_up",
   RIGHT: "right",
-  ARROW_RIGHT: "arrow_right",
   DOWN: "down",
-  ARROW_DOWN: "arrow_down",
   INSERT: "insert",
+  INS: "insert",
   DELETE: "delete",
+  DEL: "delete",
   SEMICOLON: "semicolon",
   EQUALS: "equals",
 
   NUMPAD0: "numpad0",
-  NUM_ZERO: "numpad0",
+  N0: "numpad0",
   NUMPAD1: "numpad1",
-  NUM_ONE: "numpad1",
+  N1: "numpad1",
   NUMPAD2: "numpad2",
-  NUM_TWO: "numpad2",
+  N2: "numpad2",
   NUMPAD3: "numpad3",
-  NUM_THREE: "numpad3",
+  N3: "numpad3",
   NUMPAD4: "numpad4",
-  NUM_FOUR: "numpad4",
+  N4: "numpad4",
   NUMPAD5: "numpad5",
-  NUM_FIVE: "numpad5",
+  N5: "numpad5",
   NUMPAD6: "numpad6",
-  NUM_SIX: "numpad6",
+  N6: "numpad6",
   NUMPAD7: "numpad7",
-  NUM_SEVEN: "numpad7",
+  N7: "numpad7",
   NUMPAD8: "numpad8",
-  NUM_EIGHT: "numpad8",
+  N8: "numpad8",
   NUMPAD9: "numpad9",
-  NUM_NINE: "numpad9",
+  N9: "numpad9",
   MULTIPLY: "multiply",
-  NUM_MULTIPLY: "multiply",
+  MUL: "multiply",
   ADD: "add",
-  NUM_PLUS: "add",
+  PLUS: "add",
   SEPARATOR: "separator",
+  SEP: "separator",
   SUBTRACT: "subtract",
-  NUM_MINUS: "subtract",
+  MINUS: "subtract",
   DECIMAL: "decimal",
-  NUM_PERIOD: "decimal",
+  PERIOD: "decimal",
   DIVIDE: "divide",
-  NUM_DIVISION: "divide",
+  DIV: "divide",
 
   F1: "f1",
   F2: "f2",
@@ -332,14 +331,14 @@ this.options = {
   footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
-          "    @driver.find_element(how, what)\n" +
+          "    ${receiver}.find_element(how, what)\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoSuchElementError\n" +
           "    false\n" +
           "  end\n" +
           "  \n" +
           "  def alert_present?()\n" +
-          "    @driver.switch_to.alert\n" +
+          "    ${receiver}.switch_to.alert\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoAlertPresentError\n" +
           "    false\n" +
@@ -352,7 +351,7 @@ this.options = {
           "  end\n" +
           "  \n" +
           "  def close_alert_and_get_its_text(how, what)\n" +
-          "    alert = @driver.switch_to().alert()\n" +
+          "    alert = ${receiver}.switch_to().alert()\n" +
           "    alert_text = alert.text\n" +
           "    if (@accept_next_alert) then\n" +
           "      alert.accept()\n" +
@@ -502,7 +501,7 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit";
 };
 
-WDAPI.Element.prototype.select = function(label) {
+WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'index') {
     return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:index, " + selectLocator.string + ")";
   }

@@ -75,7 +75,7 @@
 <span class="sd">    Controls the ChromeDriver and allows you to drive the browser.</span>
 
 <span class="sd">    You will need to download the ChromeDriver executable from</span>
-<span class="sd">    http://code.google.com/p/chromedriver/downloads/list</span>
+<span class="sd">    http://chromedriver.storage.googleapis.com/index.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;chromedriver&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -110,7 +110,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">command_executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
-                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">)</span>
+                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
+                <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="k">raise</span> 

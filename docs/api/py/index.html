@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Introduction &mdash; Selenium 2.0 documentation</title>
+    <title>Selenium Client Driver &mdash; Selenium 2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,8 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="#" />
-    <link rel="next" title="Selenium Documentation" href="api.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +35,6 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="api.html" title="Selenium Documentation"
-             accesskey="N">next</a> |</li>
         <li><a href="#">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,129 +44,137 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
+  <div class="section" id="selenium-client-driver">
+<h1>Selenium Client Driver<a class="headerlink" href="#selenium-client-driver" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Python language bindings for Selenium WebDriver.</p>
+<p>The <cite>selenium</cite> package is used automate web browser interaction from Python.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">David Burns</td>
+<tr class="row-odd"><td><strong>Home</strong>:</td>
+<td><a class="reference external" href="http://www.seleniumhq.org">http://www.seleniumhq.org</a></td>
+</tr>
+<tr class="row-even"><td><strong>Docs</strong>:</td>
+<td><a class="reference external" href="http://selenium.googlecode.com/git/docs/api/py/api.html">selenium package API</a></td>
+</tr>
+<tr class="row-odd"><td><strong>Dev</strong>:</td>
+<td><a class="reference external" href="https://code.google.com/p/selenium/">https://code.google.com/p/selenium/</a></td>
+</tr>
+<tr class="row-even"><td><strong>PyPI</strong>:</td>
+<td><a class="reference external" href="https://pypi.python.org/pypi/selenium">https://pypi.python.org/pypi/selenium</a></td>
+</tr>
+<tr class="row-odd"><td><strong>IRC</strong>:</td>
+<td><strong>#selenium</strong> channel on freenode</td>
 </tr>
 </tbody>
 </table>
-<p>Selenium Python Client Driver is a Python language binding for Selenium Remote
-Control (version 1.0 and 2.0).</p>
-<p>Currently the remote protocol, Firefox and Chrome for Selenium 2.0 are
-supported, as well as the Selenium 1.0 bindings. As work will progresses we&#8217;ll
-add more &#8220;native&#8221; drivers.</p>
-<p>See <a class="reference external" href="http://code.google.com/p/selenium/">here</a> for more information.</p>
+<p>Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS), as well as the Remote protocol.</p>
+</div>
+<div class="section" id="supported-python-versions">
+<h2>Supported Python Versions<a class="headerlink" href="#supported-python-versions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Python 2.6, 2.7</li>
+<li>Python 3.2, 3.3</li>
+</ul>
+</div>
 <div class="section" id="installing">
 <h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="python-client">
-<h3>Python Client<a class="headerlink" href="#python-client" title="Permalink to this headline">¶</a></h3>
+<p>If you have <a class="reference external" href="http://www.pip-installer.org">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
 <div class="highlight-python"><pre>pip install -U selenium</pre>
 </div>
+<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.40.tar.gz), unarchive it, and run:</p>
+<div class="highlight-python"><pre>python setup.py install</pre>
 </div>
-<div class="section" id="java-server">
-<h3>Java Server<a class="headerlink" href="#java-server" title="Permalink to this headline">¶</a></h3>
-<p>Download the server from <a class="reference external" href="http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar">http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar</a></p>
-<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.35.0.jar</pre>
+<p>Note: both of the methods described above install <cite>selenium</cite> as a system-wide package  That will require administrative/root access to ther machine.  You may consider using a <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> to create isolated Python environments instead.</p>
 </div>
-</div>
-</div>
-<div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-0">
+<h2>Example 0:<a class="headerlink" href="#example-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>open a new Firefox browser</li>
+<li>load the page at the given URL</li>
+</ul>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
-<span class="kn">import</span> <span class="nn">time</span>
 
-<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span> <span class="c"># Get local session of firefox</span>
-<span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;http://www.yahoo.com&quot;</span><span class="p">)</span> <span class="c"># Load page</span>
-<span class="k">assert</span> <span class="s">&quot;Yahoo!&quot;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
-<span class="n">elem</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">&quot;p&quot;</span><span class="p">)</span> <span class="c"># Find the query box</span>
-<span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">&quot;seleniumhq&quot;</span> <span class="o">+</span> <span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
-<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span> <span class="c"># Let the page load, will be added to the API</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">&quot;//a[contains(@href,&#39;http://seleniumhq.org&#39;)]&quot;</span><span class="p">)</span>
-<span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;can&#39;t find seleniumhq&quot;</span>
-<span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+<span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://seleniumhq.org/&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">Auto Generated API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#selenium">Selenium</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="selenium/selenium.selenium.html">selenium.selenium</a></li>
+<div class="section" id="example-1">
+<h2>Example 1:<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>open a new Firefox browser</li>
+<li>load the Yahoo homepage</li>
+<li>search for &#8220;seleniumhq&#8221;</li>
+<li>close the browser</li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#common">Common</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common/selenium.common.exceptions.html">selenium.common.exceptions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-common">Webdriver.common</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.action_chains.html">selenium.webdriver.common.action_chains</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.alert.html">selenium.webdriver.common.alert</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.by.html">selenium.webdriver.common.by</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.desired_capabilities.html">selenium.webdriver.common.desired_capabilities</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.keys.html">selenium.webdriver.common.keys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.touch_actions.html">selenium.webdriver.common.touch_actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.utils.html">selenium.webdriver.common.utils</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.proxy.html">selenium.webdriver.common.proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver/selenium.webdriver.common.html5.application_cache.html">selenium.webdriver.common.html5.application_cache</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-support">Webdriver.support</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.abstract_event_listener.html">selenium.webdriver.support.abstract_event_listener</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.color.html">selenium.webdriver.support.color</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.event_firing_webdriver.html">selenium.webdriver.support.event_firing_webdriver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.expected_conditions.html">selenium.webdriver.support.expected_conditions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.select.html">selenium.webdriver.support.select</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_support/selenium.webdriver.support.wait.html">selenium.webdriver.support.wait</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-chrome">Webdriver.chrome</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_chrome/selenium.webdriver.chrome.service.html">selenium.webdriver.chrome.service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_chrome/selenium.webdriver.chrome.webdriver.html">selenium.webdriver.chrome.webdriver</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-firefox">Webdriver.firefox</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_firefox/selenium.webdriver.firefox.extension_connection.html">selenium.webdriver.firefox.extension_connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html">selenium.webdriver.firefox.firefox_binary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html">selenium.webdriver.firefox.firefox_profile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_firefox/selenium.webdriver.firefox.webdriver.html">selenium.webdriver.firefox.webdriver</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-ie">Webdriver.ie</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_ie/selenium.webdriver.ie.webdriver.html">selenium.webdriver.ie.webdriver</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-phantomjs">Webdriver.phantomjs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_phantomjs/selenium.webdriver.phantomjs.service.html">selenium.webdriver.phantomjs.service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_phantomjs/selenium.webdriver.phantomjs.webdriver.html">selenium.webdriver.phantomjs.webdriver</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#webdriver-remote">Webdriver.remote</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.command.html">selenium.webdriver.remote.command</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.errorhandler.html">selenium.webdriver.remote.errorhandler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.remote_connection.html">selenium.webdriver.remote.remote_connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.utils.html">selenium.webdriver.remote.utils</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.webdriver.html">selenium.webdriver.remote.webdriver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="webdriver_remote/selenium.webdriver.remote.webelement.html">selenium.webdriver.remote.webelement</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+
+<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+
+<span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://www.yahoo.com&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="s">&#39;Yahoo!&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
+
+<span class="n">elem</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">&#39;p&#39;</span><span class="p">)</span>  <span class="c"># Find the search box</span>
+<span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">&#39;seleniumhq&#39;</span> <span class="o">+</span> <span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+
+<span class="n">browser</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre></div>
 </div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2:<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>Selenium WebDriver is often used as a basis for testing web applications.  Here is a simple example uisng Python&#8217;s standard <a class="reference external" href="http://docs.python.org/3/library/unittest.html">unittest</a> library:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="k">class</span> <span class="nc">GoogleTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addCleanup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">testPageTitle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://www.google.com&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s">&#39;Google&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browser</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="selenium-server-optional">
+<h2>Selenium Server (optional)<a class="headerlink" href="#selenium-server-optional" title="Permalink to this headline">¶</a></h2>
+<p>For normal WebDriver scripts (non-Remote), the Java server is not needed.</p>
+<p>However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).</p>
+<p>Download the server separately, from: <a class="reference external" href="http://selenium-release.storage.googleapis.com/2.40/selenium-server-standalone-2.40.0.jar">http://selenium-release.storage.googleapis.com/2.40/selenium-server-standalone-2.40.0.jar</a></p>
+<p>Run the server from the command line:</p>
+<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.40.0.jar</pre>
+</div>
+<p>Then run your Python client scripts.</p>
 </div>
 <div class="section" id="use-the-source-luke">
 <h2>Use The Source Luke!<a class="headerlink" href="#use-the-source-luke" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://code.google.com/p/selenium/source/browse/py/selenium/webdriver/remote/webdriver.py">https://code.google.com/p/selenium/source/browse/py/selenium/webdriver/remote/webdriver.py</a></p>
+<p>View source code online:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>official:</td>
+<td><a class="reference external" href="https://code.google.com/p/selenium/source/browse/py">https://code.google.com/p/selenium/source/browse/py</a></td>
+</tr>
+<tr class="row-even"><td>mirror:</td>
+<td><a class="reference external" href="https://github.com/SeleniumHQ/selenium/tree/master/py">https://github.com/SeleniumHQ/selenium/tree/master/py</a></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -182,24 +186,19 @@ add more &#8220;native&#8221; drivers.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Introduction</a><ul>
-<li><a class="reference internal" href="#installing">Installing</a><ul>
-<li><a class="reference internal" href="#python-client">Python Client</a></li>
-<li><a class="reference internal" href="#java-server">Java Server</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#documentation">Documentation</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Selenium Client Driver</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#supported-python-versions">Supported Python Versions</a></li>
+<li><a class="reference internal" href="#installing">Installing</a></li>
+<li><a class="reference internal" href="#example-0">Example 0:</a></li>
+<li><a class="reference internal" href="#example-1">Example 1:</a></li>
+<li><a class="reference internal" href="#example-2">Example 2:</a></li>
+<li><a class="reference internal" href="#selenium-server-optional">Selenium Server (optional)</a></li>
 <li><a class="reference internal" href="#use-the-source-luke">Use The Source Luke!</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="api.html"
-                        title="next chapter">Selenium Documentation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -231,9 +230,6 @@ add more &#8220;native&#8221; drivers.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="api.html" title="Selenium Documentation"
-             >next</a> |</li>
         <li><a href="#">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>

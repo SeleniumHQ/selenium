@@ -65,6 +65,7 @@
 
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
@@ -84,66 +85,15 @@
 
 
 <span class="n">WEBDRIVER_EXT</span> <span class="o">=</span> <span class="s">&quot;webdriver.xpi&quot;</span>
+<span class="n">WEBDRIVER_PREFERENCES</span> <span class="o">=</span> <span class="s">&quot;webdriver_prefs.json&quot;</span>
 <span class="n">EXTENSION_NAME</span> <span class="o">=</span> <span class="s">&quot;fxdriver@googlecode.com&quot;</span>
 
+
 <div class="viewcode-block" id="FirefoxProfile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile">[docs]</a><span class="k">class</span> <span class="nc">FirefoxProfile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">ANONYMOUS_PROFILE_NAME</span> <span class="o">=</span> <span class="s">&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
+    <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="n">ANONYMOUS_PROFILE_NAME</span>   <span class="o">=</span> <span class="s">&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
-    <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s">&quot;app.update.auto&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;app.update.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.download.manager.showWhenStarting&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.EULA.override&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.EULA.3.accepted&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.link.open_external&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.link.open_newwindow&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.offline&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.safebrowsing.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.search.update&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;extensions.blocklist.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.sessionstore.resume_from_crash&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.shell.checkDefaultBrowser&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.tabs.warnOnClose&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.tabs.warnOnOpen&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.startup.page&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.safebrowsing.malware.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;startup.homepage_welcome_url&quot;</span><span class="p">:</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">about:blank</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
-        <span class="s">&quot;devtools.errorconsole.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;dom.disable_open_during_load&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;extensions.autoDisableScopes&quot;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-        <span class="s">&quot;extensions.logging.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;extensions.update.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;extensions.update.notifyUser&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;network.manage-offline-status&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;network.http.max-connections-per-server&quot;</span><span class="p">:</span> <span class="s">&quot;10&quot;</span><span class="p">,</span>
-        <span class="s">&quot;network.http.phishy-userpass-length&quot;</span><span class="p">:</span> <span class="s">&quot;255&quot;</span><span class="p">,</span>
-        <span class="s">&quot;offline-apps.allow_by_default&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;prompts.tab_modal.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.fileuri.origin_policy&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.fileuri.strict_origin_policy&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_entering_secure&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_entering_secure.show_once&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_entering_weak&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_entering_weak.show_once&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_leaving_secure&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_leaving_secure.show_once&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_submit_insecure&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_viewing_mixed&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;security.warn_viewing_mixed.show_once&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;signon.rememberSignons&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;toolkit.networkmanager.disable&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;toolkit.telemetry.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
-        <span class="s">&quot;toolkit.telemetry.prompted&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span>
-        <span class="s">&quot;toolkit.telemetry.rejected&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascript.options.showInConsole&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;browser.dom.window.dump.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;dom.max_script_run_time&quot;</span><span class="p">:</span> <span class="s">&quot;30&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">profile_directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialises a new instance of a Firefox Profile</span>
 
@@ -152,20 +102,25 @@
 <span class="sd">           This defaults to None and will create a new</span>
 <span class="sd">           directory when object is created.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span>
+                                   <span class="n">WEBDRIVER_PREFERENCES</span><span class="p">))</span> <span class="k">as</span> <span class="n">default_prefs</span><span class="p">:</span>
+                <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">default_prefs</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
-            <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">)</span>
+            <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">[</span><span class="s">&#39;mutable&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_events_enabled</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">profile_directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_tempfolder</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
-            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">,</span>
-                <span class="s">&quot;webdriver-py-profilecopy&quot;</span><span class="p">)</span>
+            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">,</span> <span class="s">&quot;webdriver-py-profilecopy&quot;</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="n">newprof</span><span class="p">,</span>
-                <span class="n">ignore</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="s">&quot;parent.lock&quot;</span><span class="p">,</span> <span class="s">&quot;lock&quot;</span><span class="p">,</span> <span class="s">&quot;.parentlock&quot;</span><span class="p">))</span>
+                            <span class="n">ignore</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="s">&quot;parent.lock&quot;</span><span class="p">,</span> <span class="s">&quot;lock&quot;</span><span class="p">,</span> <span class="s">&quot;.parentlock&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">newprof</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_existing_userjs</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_existing_userjs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="s">&quot;user.js&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extensionsDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="s">&quot;extensions&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">userPrefs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="s">&quot;user.js&quot;</span><span class="p">)</span>
 
@@ -174,24 +129,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        sets the preference that we want in the profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;true&#39;</span>
-        <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;false&#39;</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span> <span class="c"># unicode</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">value</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">clean_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </div>
 <div class="viewcode-block" id="FirefoxProfile.add_extension"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">WEBDRIVER_EXT</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_install_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FirefoxProfile.update_preferences"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.update_preferences">[docs]</a>    <span class="k">def</span> <span class="nf">update_preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">[</span><span class="s">&#39;frozen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_user_prefs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">)</span>
 
     <span class="c">#Properties</span>
@@ -228,8 +173,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">]</span>
 
     <span class="nd">@accept_untrusted_certs.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.accept_untrusted_certs"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">[docs]</a>    <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -239,7 +183,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">]</span>
 
     <span class="nd">@assume_untrusted_cert_issuer.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.assume_untrusted_cert_issuer"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.assume_untrusted_cert_issuer">[docs]</a>    <span class="k">def</span> <span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -250,7 +194,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">native_events_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&#39;webdriver_enable_native_events&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&#39;webdriver_enable_native_events&#39;</span><span class="p">]</span>
 
     <span class="nd">@native_events_enabled.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.native_events_enabled"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.native_events_enabled">[docs]</a>    <span class="k">def</span> <span class="nf">native_events_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -266,7 +210,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
-        <span class="n">path_root</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c"># account for trailing slash</span>
+        <span class="n">path_root</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c"># account for trailing slash</span>
         <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">fyle</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">fyle</span><span class="p">)</span>
@@ -276,8 +220,10 @@
 </div>
 <div class="viewcode-block" id="FirefoxProfile.set_proxy"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">set_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxy</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">warnings</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This method has been deprecated. Please pass in the proxy object to the Driver Object&quot;</span><span class="p">,</span>
-                    <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s">&quot;This method has been deprecated. Please pass in the proxy object to the Driver Object&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;proxy can not be None&quot;</span><span class="p">)</span>
 
@@ -291,18 +237,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ftp&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ftp_proxy</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">http_proxy</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ssl&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ssl_proxy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;socks&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">socks_proxy</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.autoconfig_url&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span><span class="p">)</span>
-
-    <span class="c">#Private Methods</span></div>
-    <span class="k">def</span> <span class="nf">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s">&#39;true&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s">&#39;false&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">item</span>
-
+</div>
     <span class="k">def</span> <span class="nf">_set_manual_proxy_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">setting</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">setting</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">return</span>
@@ -324,16 +262,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">userPrefs</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">user_prefs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;user_pref(&quot;</span><span class="si">%s</span><span class="s">&quot;, </span><span class="si">%s</span><span class="s">);</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;user_pref(&quot;</span><span class="si">%s</span><span class="s">&quot;, </span><span class="si">%s</span><span class="s">);</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_read_existing_userjs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">userjs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="s">&#39;user.js&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_read_existing_userjs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userjs</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">warnings</span>
+
         <span class="n">PREF_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;user_pref\(&quot;(.*)&quot;,\s(.*)\)&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">userjs_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">userjs</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">PREF_RE</span><span class="p">,</span> <span class="n">usr</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;(skipping) failed to json.loads existing preference: &quot;</span> <span class="o">+</span>
+                                      <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="c"># The profile given hasn&#39;t had any changes made, i.e no users.js</span>
             <span class="k">pass</span>
@@ -351,7 +294,7 @@
         <span class="n">tmpdir</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">xpifile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">addon</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.xpi&#39;</span><span class="p">):</span>
-            <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">addon</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">addon</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">compressed_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">addon</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
@@ -433,7 +376,7 @@
             <span class="c"># Remove the namespace prefix from the tag for comparison</span>
             <span class="n">entry</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeName</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">details</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span> <span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="p">})</span>
+                <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)})</span>
 
         <span class="k">return</span> <span class="n">details</span></div>
 </pre></div>

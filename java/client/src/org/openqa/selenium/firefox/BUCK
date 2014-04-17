@@ -1,0 +1,23 @@
+java_library(name = 'firefox',
+  srcs = glob(['*.java', 'internal/*.java']),
+  resources = [
+    ':prefs',
+    '//javascript/firefox-driver:webdriver',
+  ],
+  deps = [
+    ':prefs',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/json:json',
+  ],
+  visibility = [ 'PUBLIC' ],
+)
+
+export_file(name = 'prefs',
+  src = '//javascript/firefox-driver:webdriver_prefs',
+  out = 'webdriver_prefs.json',
+)

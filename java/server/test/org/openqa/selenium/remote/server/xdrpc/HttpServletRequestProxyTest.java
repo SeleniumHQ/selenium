@@ -16,19 +16,18 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.common.io.CharStreams;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link HttpServletRequestProxy}.

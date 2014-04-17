@@ -98,6 +98,7 @@ public class HttpServer extends Container
     /** 
      * @deprecated User getHttpServers()
      */
+    @Deprecated
     public static List getHttpServerList()
     {
         return new ArrayList(__roServers);
@@ -639,6 +640,7 @@ public class HttpServer extends Container
      * @param classes
      * @deprecated Use HttpContext
      */
+    @Deprecated
     public void setSystemClasses(String[] classes)
     {
         _systemClasses=classes;
@@ -649,6 +651,7 @@ public class HttpServer extends Container
      * @return A String array with a list of system classes for this instance.
      * @deprecated Use HttpContext
      */
+    @Deprecated
     public String[] getSystemClasses()
     {
         return _systemClasses;
@@ -659,6 +662,7 @@ public class HttpServer extends Container
      * @param classes
      * @deprecated Use HttpContext
      */
+    @Deprecated
     public void setServerClasses(String[] classes)
     {
         _serverClasses=classes;
@@ -670,6 +674,7 @@ public class HttpServer extends Container
      * @see #setServerClasses(java.lang.String[])
      * @deprecated Use HttpContext
      */
+    @Deprecated
     public String[] getServerClasses()
     {
         return _serverClasses;
@@ -814,6 +819,7 @@ public class HttpServer extends Container
      * @param virtualHost Host name or IP
      * @param alias Alias hostname or IP
      */
+    @Deprecated
     public void addHostAlias(String virtualHost, String alias)
     {
         log.warn("addHostAlias is deprecated. Use HttpContext.addVirtualHost");

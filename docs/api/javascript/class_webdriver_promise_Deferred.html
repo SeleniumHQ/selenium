@@ -1,0 +1,110 @@
+<!DOCTYPE html><meta charset="UTF-8"><meta http-equiv="Content-Language" content="en" /><title>webdriver.promise.Deferred</title><link href="dossier.css" rel="stylesheet" type="text/css"><div id="main-wrapper"><input type="checkbox" id="sidenav-toggle" /><main><header><h1>Class webdriver.promise.Deferred</h1><a class="source" href="source/lib/webdriver/promise.js.src.html#l290">code &raquo;</a><pre><code><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a>
+  &#x2514; webdriver.promise.Deferred</code></pre></header><section><p>Represents a value that will be resolved at some point in the future. This
+ class represents the protected "producer" half of a Promise - each Deferred
+ has a <code >promise</code> property that may be returned to consumers for
+ registering callbacks, reserving the ability to resolve the deferred to the
+ producer.
+
+ <p>If this Deferred is rejected and there are no listeners registered before
+ the next turn of the event loop, the rejection will be passed to the
+ <code  class="type"><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a></code> as an unhandled failure.
+
+ <p>If this Deferred is cancelled, the cancellation reason will be forward to
+ the Deferred's canceller function (if provided). The canceller may return a
+ truth-y value to override the reason provided for rejection.<h2>Constructor</h2><div class="ctor wrap-details public"><div><div class="ctor"><span class="member">webdriver.promise.Deferred <span class="args">( opt_canceller, opt_flow )</span></span></div><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>opt_canceller: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>=</code><dd>Function to call when cancelling the
+     computation of this instance's value.<dt>opt_flow: <code class="type"><a href="class_webdriver_promise_ControlFlow.html">webdriver.promise.ControlFlow</a>=</code><dd>The control flow
+     this instance was created under. This should only be provided during
+     unit tests.</dl></table></div></div></div></section><section><h2>Enumerations</h2><div class="type-summary"><table><tbody><tr><td><dl><dt><a href="enum_webdriver_promise_Deferred_State_.html">webdriver.promise.Deferred.State_</a><dd>The three states a <code  class="type"><a href="class_webdriver_promise_Deferred.html">webdriver.promise.Deferred</a></code> object may be in.</dl></table></div></section><div id="visibility-controls"><b>Show:</b><label for="show-public"><span><input type="checkbox" id="show-public" checked/></span>Public</label><label for="show-protected"><span><input type="checkbox" id="show-protected"/></span>Protected</label><label for="show-private"><span><input type="checkbox" id="show-private"/></span>Private</label></div><section id="typedefs"><h2>Type Definitions</h2><div class="wrap-details private"><div><details><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l558">code &raquo;</a><a class="member" name="webdriver.promise.Deferred.Listener_">webdriver.promise.Deferred.Listener_</a> : <code class="type">{callback: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Undefined">undefined</a>), errback: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Undefined">undefined</a>), fulfill: function(*), reject: function(*)}</code></div><div>Type definition for a listener registered on a Deferred object.</div></summary></details></div></div></section><section id="instance-methods"><h2>Instance Methods</h2><h3>Defined in <code class="type">webdriver.promise.Deferred</code></h3><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l528">code &raquo;</a><span class="member"><a name="errback">errback</a> <span class="args">( opt_error )</span></span></div><p>Rejects this promise. If the error is itself a promise, this instance will
+ be chained to it and be rejected with the error's resolved value.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>opt_error: <code class="type">*=</code><dd>The rejection reason, typically either a
+     <code >Error</code> or a <code >string</code>.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l527">code &raquo;</a><span class="member"><a name="fulfill">fulfill</a> <span class="args">( opt_value )</span></span></div><p>Resolves this promise with the given value. If the value is itself a
+ promise and not a reference to this deferred, this instance will wait for
+ it before resolving.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>opt_value: <code class="type">*=</code><dd>The resolved value.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l528">code &raquo;</a><span class="member"><a name="reject">reject</a> <span class="args">( opt_error )</span></span></div><p>Rejects this promise. If the error is itself a promise, this instance will
+ be chained to it and be rejected with the error's resolved value.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>opt_error: <code class="type">*=</code><dd>The rejection reason, typically either a
+     <code >Error</code> or a <code >string</code>.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l533">code &raquo;</a><span class="member"><a name="removeAll">removeAll</a> <span class="args">( )</span></span></div><p>Removes all of the listeners previously registered on this deferred.</summary><div class="info"><table><tbody><tr><th>Throws<tr><td><dl><dt><code class="type"><a href="http://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/Error">Error</a></code><dd>If this deferred has already been resolved.</dl></table></div></details></div></div><h3>Defined in <code class="type"><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></h3><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l237">code &raquo;</a><span class="member deprecation-notice"><a name="addBoth">addBoth</a> <span class="args">( callback, opt_self )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><div class="deprecation-notice">Deprecated: <span class="deprecation-reason">Use <code  class="type"><a class="unresolved-link">#thenFinally()</a></code> instead.</span></div><p>Registers a function to be invoked when this promise is either rejected or
+ resolved. This function is provided for backwards compatibility with the
+ Dojo Deferred API.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>callback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call when this promise is
+     either resolved or rejected. The function should expect a single
+     argument: the resolved value or rejection error.<dt>opt_self: <code class="type">!<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>=</code><dd>The object which |this| should refer to when the
+     function is invoked.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l199">code &raquo;</a><span class="member deprecation-notice"><a name="addCallback">addCallback</a> <span class="args">( callback, opt_self )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><div class="deprecation-notice">Deprecated: <span class="deprecation-reason">Use <code  class="type"><a class="unresolved-link">#then()</a></code> instead.</span></div><p>Registers a function to be invoked when this promise is successfully
+ resolved. This function is provided for backwards compatibility with the
+ Dojo Deferred API.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>callback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call if this promise is
+     successfully resolved. The function should expect a single argument: the
+     promise's resolved value.<dt>opt_self: <code class="type">!<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>=</code><dd>The object which |this| should refer to when the
+     function is invoked.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l259">code &raquo;</a><span class="member deprecation-notice"><a name="addCallbacks">addCallbacks</a> <span class="args">( callback, errback, opt_self )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><div class="deprecation-notice">Deprecated: <span class="deprecation-reason">Use <code  class="type"><a class="unresolved-link">#then()</a></code> instead.</span></div><p>An alias for <code >webdriver.promise.Promise.prototype.then</code> that permits
+ the scope of the invoked function to be specified. This function is provided
+ for backwards compatibility with the Dojo Deferred API.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>callback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call if this promise is
+     successfully resolved. The function should expect a single argument: the
+     promise's resolved value.<dt>errback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call if this promise is
+     rejected. The function should expect a single argument: the rejection
+     reason.<dt>opt_self: <code class="type">!<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>=</code><dd>The object which |this| should refer to when the
+     function is invoked.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l218">code &raquo;</a><span class="member deprecation-notice"><a name="addErrback">addErrback</a> <span class="args">( errback, opt_self )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><div class="deprecation-notice">Deprecated: <span class="deprecation-reason">Use <code  class="type"><a class="unresolved-link">#thenCatch()</a></code> instead.</span></div><p>Registers a function to be invoked when this promise is rejected.
+ This function is provided for backwards compatibility with the
+ Dojo Deferred API.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>errback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call if this promise is
+     rejected. The function should expect a single argument: the rejection
+     reason.<dt>opt_self: <code class="type">!<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>=</code><dd>The object which |this| should refer to when the
+     function is invoked.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l86">code &raquo;</a><span class="member"><a name="cancel">cancel</a> <span class="args">( reason )</span></span></div><p>Cancels the computation of this promise's value, rejecting the promise in the
+ process.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>reason: <code class="type">*</code><dd>The reason this promise is being cancelled. If not an
+     <code >Error</code>, one will be created using the value's string
+     representation.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l92">code &raquo;</a><span class="member"><a name="isPending">isPending</a> <span class="args">( )</span> &rArr; <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code></span></div></summary><div class="info"><table><tbody><tr><th>Returns<tr><td><dl>Whether this promise's value is still being computed.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l110">code &raquo;</a><span class="member"><a name="then">then</a> <span class="args">( opt_callback, opt_errback )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><p>Registers listeners for when this instance is resolved. This function most
+ overridden by subtypes.</summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>opt_callback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>=</code><dd>The function to call if this promise is
+     successfully resolved. The function should expect a single argument: the
+     promise's resolved value.<dt>opt_errback: <code class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a>=</code><dd>The function to call if this promise is
+     rejected. The function should expect a single argument: the rejection
+     reason.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l139">code &raquo;</a><span class="member"><a name="thenCatch">thenCatch</a> <span class="args">( errback )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><p>Registers a listener for when this promise is rejected. This is synonymous
+ with the <code >catch</code> clause in a synchronous API:
+ <pre><code>
+   // Synchronous API:
+   try {
+     doSynchronousWork();
+   } catch (ex) {
+     console.error(ex);
+   }
+
+   // Asynchronous promise API:
+   doAsynchronousWork().thenCatch(function(ex) {
+     console.error(ex);
+   });
+ </code></pre></summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>errback: <code class="type">!<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></code><dd>The function to call if this promise is
+     rejected. The function should expect a single argument: the rejection
+     reason.</dl><tr><th>Returns<tr><td><dl>A new promise which will be resolved
+     with the result of the invoked callback.</dl></table></div></details></div></div><div class="wrap-details public"><div><details class="function"><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l180">code &raquo;</a><span class="member"><a name="thenFinally">thenFinally</a> <span class="args">( callback )</span> &rArr; <code class="type">!<a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><p>Registers a listener to invoke when this promise is resolved, regardless
+ of whether the promise's value was successfully computed. This function
+ is synonymous with the <code >finally</code> clause in a synchronous API:
+ <pre><code>
+   // Synchronous API:
+   try {
+     doSynchronousWork();
+   } finally {
+     cleanUp();
+   }
+
+   // Asynchronous promise API:
+   doAsynchronousWork().thenFinally(cleanUp);
+ </code></pre>
+
+ <b>Note:</b> similar to the <code >finally</code> clause, if the registered
+ callback returns a rejected promise or throws an error, it will silently
+ replace the rejection error (if any) from this promise:
+ <pre><code>
+   try {
+     throw Error('one');
+   } finally {
+     throw Error('two');  // Hides Error: one
+   }
+
+   webdriver.promise.rejected(Error('one'))
+       .thenFinally(function() {
+         throw Error('two');  // Hides Error: one
+       });
+ </code></pre></summary><div class="info"><table><tbody><tr><th>Parameters<tr><td><dl><dt>callback</dl></table></div></details></div></div></section><section id="instance-properties"><h2>Instance Properties</h2><h3>Defined in <code class="type">webdriver.promise.Deferred</code></h3><div class="wrap-details public"><div><details><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l523">code &raquo;</a><span class="member"><a name="webdriver.promise.Deferred.prototype.promise">webdriver.promise.Deferred.prototype.promise</a> : <code class="type"><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise</a></code></span></div><p>Represents the eventual value of a completed operation. Each promise may be
+ in one of three states: pending, resolved, or rejected. Each promise starts
+ in the pending state and may make a single transition to either a
+ fulfilled or failed state.
+
+ <p/>This class is based on the Promise/A proposal from CommonJS. Additional
+ functions are provided for API compatibility with Dojo Deferred objects.</summary></details></div></div></section><section id="static-properties"><h2>Static Properties</h2><div class="wrap-details public"><div><details><summary><div><a class="source" href="source/lib/webdriver/promise.js.src.html#l290">code &raquo;</a><span class="member"><a name="webdriver.promise.Deferred.superClass_">webdriver.promise.Deferred.superClass_</a> : <code class="type"><a href="class_webdriver_promise_Promise.html">webdriver.promise.Promise.prototype</a></code></span></div></summary></details></div></div></section></main><nav id="topnav"><div><div id="menubutton"><label for="sidenav-toggle">Menu</label></div><form id="searchbox"><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></nav><nav id="sidenav"><input type="checkbox" id="sidenav-types-ctrl" /><input type="checkbox" id="sidenav-files-ctrl" /><input type="checkbox" id="sidenav-modules-ctrl" /><a id="sidenav-overview"><div><h4>Overview</h4></div></a><div id="sidenav-types"><label for="sidenav-types-ctrl"><h4>Types</h4></label><i>No data</i></div><div id="sidenav-modules"><label for="sidenav-modules-ctrl"><h4>Modules</h4></label><i>No data</i></div><div id="sidenav-files"><label for="sidenav-files-ctrl"><h4>Files</h4></label><i>No data</i></div><a href="license.html"><div><h4>License</h4></div></a></nav><div id="push-footer"></div></div><footer><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></footer><script src="types.js"></script><script src="dossier.js"></script>

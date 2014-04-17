@@ -220,6 +220,12 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
 
   int result;
 
+  if (criteria == L"") {
+    // Apparently, Sizzle will happily return an empty array for an empty
+    // string as the selector. We do not want this.
+    return ENOSUCHELEMENT;
+  }
+
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
   if (result != WD_SUCCESS) {
@@ -232,7 +238,7 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
   script_source += L"}\n";
   script_source += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
   script_source += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
-  script_source += L"var results = []; Sizzle(arguments[0], root, results);";
+  script_source += L"var results = []; try { Sizzle(arguments[0], root, results); } catch(ex) { results = null; }";
   script_source += L"return results;";
   script_source += L"};})();";
 
@@ -249,9 +255,11 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
 
   result = script_wrapper.Execute();
   if (result == WD_SUCCESS) {
-
     CComVariant snapshot = script_wrapper.result();
-
+    if (snapshot.vt == VT_NULL || snapshot.vt == VT_EMPTY) {
+      // We explicitly caught an error from Sizzle. Return ENOSUCHELEMENT.
+      return ENOSUCHELEMENT;
+    }
     std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
     Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
     get_element_count_script_wrapper.AddArgument(snapshot);

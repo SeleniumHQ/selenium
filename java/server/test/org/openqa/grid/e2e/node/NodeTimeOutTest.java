@@ -17,28 +17,31 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+
+import com.google.common.base.Function;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * checks that the browser is properly stopped when a selenium1 session times out.
@@ -47,6 +50,7 @@ public class NodeTimeOutTest {
 
   private static Hub hub;
   private static SelfRegisteringRemote node;
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(8, SECONDS);
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -72,8 +76,9 @@ public class NodeTimeOutTest {
     selenium.start();
     selenium.open(url);
     
-    TestWaiter.waitFor(new Callable<Integer>() {
-      public Integer call() throws Exception {
+    wait.until(new Function<Object, Integer>() {
+      @Override
+      public Integer apply(Object input) {
         Integer i = hub.getRegistry().getActiveSessions().size();
         if (i != 0) {
           return null;
@@ -81,8 +86,8 @@ public class NodeTimeOutTest {
           return i;
         }
       }
-    },8,TimeUnit.SECONDS);
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    });
+    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 
@@ -92,9 +97,10 @@ public class NodeTimeOutTest {
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
     driver.get(url);
-    Assert.assertEquals(driver.getTitle(), "Grid overview");
-    TestWaiter.waitFor(new Callable<Integer>() {
-      public Integer call() throws Exception {
+    assertEquals(driver.getTitle(), "Grid overview");
+    wait.until(new Function<Object, Integer>() {
+      @Override
+      public Integer apply(Object input) {
         Integer i = hub.getRegistry().getActiveSessions().size();
         if (i != 0) {
           return null;
@@ -102,8 +108,8 @@ public class NodeTimeOutTest {
           return i;
         }
       }
-    },8,TimeUnit.SECONDS);
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    });
+    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 

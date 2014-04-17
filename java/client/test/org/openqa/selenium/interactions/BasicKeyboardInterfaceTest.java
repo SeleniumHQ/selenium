@@ -19,6 +19,7 @@ package org.openqa.selenium.interactions;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -32,22 +33,24 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
- * 
  */
 @Ignore(value = {SAFARI, MARIONETTE},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
+
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -173,6 +176,38 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     sendLowercase.perform();
 
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
+  }
+
+  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
+  @JavascriptEnabled
+  @Test
+  public void canGenerateKeyboardShortcuts() {
+    assumeTrue(
+        "Test fails with native events enabled, likely due to issue 4385",
+        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+
+    driver.get(appServer.whereIs("keyboard_shortcut.html"));
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    assertBackgroundColor(body, Colors.WHITE);
+
+    new Actions(driver).keyDown(Keys.SHIFT).sendKeys("1").keyUp(Keys.SHIFT).perform();
+    assertBackgroundColor(body, Colors.GREEN);
+
+    new Actions(driver).keyDown(Keys.ALT).sendKeys("1").keyUp(Keys.ALT).perform();
+    assertBackgroundColor(body, Colors.LIGHTBLUE);
+
+    new Actions(driver)
+        .keyDown(Keys.SHIFT).keyDown(Keys.ALT)
+        .sendKeys("1")
+        .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
+        .perform();
+    assertBackgroundColor(body, Colors.SILVER);
+  }
+
+  private void assertBackgroundColor(WebElement el, Colors expected) {
+    Color actual = Color.fromString(el.getCssValue("background-color"));
+    assertThat(actual, is(expected.getColorValue()));
   }
 
   private void assertThatFormEventsFiredAreExactly(String message, String expected) {

@@ -21,12 +21,8 @@ import com.google.common.io.ByteStreams;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

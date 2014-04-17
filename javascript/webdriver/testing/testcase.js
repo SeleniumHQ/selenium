@@ -156,10 +156,10 @@ webdriver.testing.TestCase.prototype.runSingleTest_ = function(test, onError) {
   flow.clearHistory();
 
   return execute(test.name + '.setUp()', this.setUp)().
-      addCallback(execute(test.name + '()', test.ref)).
-      addErrback(onError).
-      addCallback(execute(test.name + '.tearDown()', this.tearDown)).
-      addErrback(onError);
+      then(execute(test.name + '()', test.ref)).
+      thenCatch(onError).
+      then(execute(test.name + '.tearDown()', this.tearDown)).
+      thenCatch(onError);
 
   function execute(description, fn) {
     return function() {

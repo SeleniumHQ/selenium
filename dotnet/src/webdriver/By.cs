@@ -150,6 +150,9 @@ namespace OpenQA.Selenium
 
         /// <summary>
         /// Gets a mechanism to find elements by an XPath query.
+        /// When searching within a WebElement using xpath be aware that WebDriver follows standard conventions:
+        /// a search prefixed with "//" will search the entire document, not just the children of this current node.
+        /// Use ".//" to limit your search to the children of this WebElement.
         /// </summary>
         /// <param name="xpathToFind">The XPath query to use.</param>
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>

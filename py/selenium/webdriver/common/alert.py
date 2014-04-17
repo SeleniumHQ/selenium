@@ -22,7 +22,28 @@ from selenium.webdriver.remote.command import Command
 
 class Alert(object):
     """
-    Allows to work wit alerts.
+    Allows to work with alerts.
+
+    Use this class to interact with alert prompts.  It contains methods for dismissing, 
+    accepting, inputting, and getting text from alert prompts.
+
+    Accepting / Dismissing alert prompts::
+    
+        Alert(driver).accept()
+        Alert(driver).dismiss()
+
+    Inputting a value into an alert prompt:
+
+        name_prompt = Alert(driver)
+        name_prompt.send_keys("Willian Shakesphere")
+        name_prompt.accept()
+
+
+    Reading a the text of a prompt for verification:
+
+        alert_text = Alert(driver).text
+        self.assertEqual("Do you wish to quit?", alert_text)
+
     """
 
     def __init__(self, driver):
@@ -50,6 +71,9 @@ class Alert(object):
     def accept(self):
         """
         Accepts the alert available.
+
+        Usage::
+        Alert(driver).accept() # Confirm a alert dialog.
         """
         self.driver.execute(Command.ACCEPT_ALERT)
 
@@ -59,5 +83,7 @@ class Alert(object):
 
         :Args:
          - keysToSend: The text to be sent to Alert.
+
+        
         """
         self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})

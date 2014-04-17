@@ -234,6 +234,8 @@ namespace OpenQA.Selenium.Safari
                 {
                     File.Copy(backupPropertyListPath, Path.Combine(safariExtensionsDirectory, ExtensionsPropertyListFileName), true);
                 }
+
+                FileUtilities.DeleteDirectory(this.backupDirectory);
             }
         }
     }

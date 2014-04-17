@@ -16,10 +16,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import org.openqa.selenium.remote.server.DriverSessions;
-
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+
+import org.openqa.selenium.remote.server.DriverSessions;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;

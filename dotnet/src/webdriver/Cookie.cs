@@ -18,6 +18,7 @@
 
 using System;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium
 {
@@ -25,6 +26,7 @@ namespace OpenQA.Selenium
     /// Represents a cookie in the browser.
     /// </summary>
     [Serializable]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class Cookie
     {
         private string cookieName;
@@ -128,6 +130,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the name of the cookie.
         /// </summary>
+        [JsonProperty("name")]
         public string Name
         {
             get { return this.cookieName; }
@@ -136,6 +139,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the value of the cookie.
         /// </summary>
+        [JsonProperty("value")]
         public string Value
         {
             get { return this.cookieValue; }
@@ -144,14 +148,16 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the domain of the cookie.
         /// </summary>
+        [JsonProperty("domain")]
         public string Domain
         {
-            get { return this.cookieDomain; }
+            get { return string.IsNullOrEmpty(this.cookieDomain) ? string.Empty : this.cookieDomain; }
         }
 
         /// <summary>
         /// Gets the path of the cookie.
         /// </summary>
+        [JsonProperty("path")]
         public virtual string Path
         {
             get { return this.cookiePath; }
@@ -160,6 +166,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets a value indicating whether the cookie is secure.
         /// </summary>
+        [JsonProperty("secure")]
         public virtual bool Secure
         {
             get { return false; }
@@ -171,6 +178,27 @@ namespace OpenQA.Selenium
         public DateTime? Expiry
         {
             get { return this.cookieExpiry; }
+        }
+
+        /// <summary>
+        /// Gets the cookie expiration date in seconds from the defined zero date (01 January 1970 00:00:00 UTC).
+        /// </summary>
+        /// <remarks>This property only exists so that the JSON serializer can serialize a
+        /// cookie without resorting to a custom converter.</remarks>
+        [JsonProperty("expiry", NullValueHandling = NullValueHandling.Ignore)]
+        internal long? ExpirySeconds
+        {
+            get
+            {
+                if (this.cookieExpiry == null)
+                {
+                    return null;
+                }
+
+                DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                TimeSpan span = this.cookieExpiry.Value.ToUniversalTime().Subtract(zeroDate);
+                return Convert.ToInt64(span.TotalSeconds);
+            }
         }
 
         /// <summary>

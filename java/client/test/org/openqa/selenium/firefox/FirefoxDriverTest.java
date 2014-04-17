@@ -17,9 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static java.lang.Thread.sleep;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+
 import com.google.common.base.Throwables;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -37,15 +53,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,25 +71,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Callable;
-
-import static java.lang.Thread.sleep;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @RunWith(SeleniumTestRunner.class)
@@ -139,7 +138,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     String sentText = "I like cheese\n\nIt's really nice";
     String expectedText = textarea.getAttribute("value") + sentText;
     textarea.sendKeys(sentText);
-    waitFor(elementValueToEqual(textarea, expectedText));
+    wait.until(elementValueToEqual(textarea, expectedText));
     driver.quit();
   }
 
@@ -166,7 +165,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       secondDriver.quit();
     } catch (Exception e) {
       e.printStackTrace();
-      fail("Expected driver to be created succesfully");
+      fail("Expected driver to be created successfully");
     }
   }
 
@@ -177,14 +176,14 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     try {
       WebDriver secondDriver = newFirefoxDriver(profile);
-      waitFor(pageTitleToBe(secondDriver, "We Leave From Here"));
+      new WebDriverWait(secondDriver, 30).until(titleIs("We Leave From Here"));
       String title = secondDriver.getTitle();
       secondDriver.quit();
 
       assertThat(title, is("We Leave From Here"));
     } catch (Exception e) {
       e.printStackTrace();
-      fail("Expected driver to be created succesfully");
+      fail("Expected driver to be created successfully");
     }
   }
 
@@ -202,7 +201,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       secondDriver.quit();
     } catch (Exception e) {
       e.printStackTrace();
-      fail("Expected driver to be created succesfully");
+      fail("Expected driver to be created successfully");
     }
   }
 
@@ -218,7 +217,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       secondDriver.quit();
     } catch (Exception e) {
       e.printStackTrace();
-      fail("Expected driver to be created succesfully");
+      fail("Expected driver to be created successfully");
     }
   }
 
@@ -413,16 +412,17 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     final WebDriver driver2 = newFirefoxDriver(profile);
 
     try {
-      waitFor(urlToBe(driver2, pages.javascriptPage));
+      new WebDriverWait(driver2, 30).until(urlToBe(pages.javascriptPage));
     } finally {
       driver2.quit();
     }
   }
 
-  private Callable<Boolean> urlToBe(final WebDriver driver2, final String expectedUrl) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return expectedUrl.equals(driver2.getCurrentUrl());
+  private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        return expectedUrl.equals(driver.getCurrentUrl());
       }
     };
   }
@@ -456,7 +456,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       }
 
       public void assertOnRightPage() {
-        Assert.assertEquals(url, myDriver.getCurrentUrl());
+        assertEquals(url, myDriver.getCurrentUrl());
       }
     }
 

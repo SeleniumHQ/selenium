@@ -17,17 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
@@ -35,12 +31,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
-public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
+public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * Capability that defines whether to ignore the browser zoom level or not.
@@ -50,7 +42,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines to use whether to use native or javascript events during operations.
    */
-  public final static String NATIVE_EVENTS = "nativeEvents";
+  public final static String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
 
   /**
    * Capability that defines the initial URL to be used when IE is launched.
@@ -60,12 +52,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
-  public final static String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
+  public final static String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
 
   /**
    * Capability that defines which behaviour will be used if an unexpected Alert is found.
    */
-  public final static String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
+  public final static String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
   /**
    * Capability that defines to use or not cleanup of element cache on document loading.
@@ -146,81 +138,48 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   /**
-   * @deprecated please set this option as True and allow IEDriverServer sets up proxy.
-   * In next releases it will be set to True by default.
-   *
-   * Capability that defines used proxy setter. Currently it's False by default.
-   *
-   * False means WindowsProxyManager will be used for setting proxy settings.
-   * True means IEDriverServer will be used for setting proxy settings.
-   *
-   * Be note that using both variants in concurrent drivers at the same node
-   * may lead to undefined behaviour.
-   */
-  @Deprecated
-  public final static String IE_SET_PROXY_BY_SERVER = "ie.setProxyByServer";
-
-  /**
    * Port which is used by default.
    */
   private final static int DEFAULT_PORT = 0;
 
-  /**
-   * To set proxy by server or not.
-   */
-  private final boolean setProxyByServer;
-
-  /**
-   * Proxy manager.
-   */
-  private WindowsProxyManager proxyManager;
-
   public InternetExplorerDriver() {
-    this(null, null, null, DEFAULT_PORT);
+    this(null, null, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(Capabilities capabilities) {
-    this(null, null, capabilities, DEFAULT_PORT);
+    this(null, capabilities, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(int port) {
-    this(null, null, null, port);
+    this(null, null, port);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(null, service, null, DEFAULT_PORT);
+    this(service, null, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
-    this(null, service, capabilities, DEFAULT_PORT);
+    this(service, capabilities, DEFAULT_PORT);
   }
 
-  public InternetExplorerDriver(WindowsProxyManager proxy, InternetExplorerDriverService service, Capabilities capabilities, int port) {
+  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities,
+      int port) {
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }
 
-    setProxyByServer = useServerForProxy(capabilities);
-
-    if (proxy == null) {
-      proxyManager = setupProxy(capabilities);
-    } else {
-      proxyManager = proxy;
-    }
     if (service == null) {
       service = setupService(capabilities, port);
     }
-    run(service, capabilities, port);
+    run(service, capabilities);
   }
 
-  private void run(InternetExplorerDriverService service, Capabilities capabilities, int port) {
+  private void run(InternetExplorerDriverService service, Capabilities capabilities) {
     assertOnWindows();
-
-    prepareProxy(capabilities);
 
     setCommandExecutor(new DriverCommandExecutor(service));
 
-    startSession(updateCapabilities(capabilities));
+    startSession(capabilities);
   }
 
   @Override
@@ -289,77 +248,10 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
         }
       }
 
-      InternetExplorerDriverService service = builder.build();
-
-      return service;
+      return builder.build();
 
     } catch (IllegalStateException ex) {
       throw Throwables.propagate(ex);
     }
   }
-
-  private WindowsProxyManager setupProxy(Capabilities caps) {
-    // do not create proxy manager if it's not requested. see issue 4135
-    // also do not create proxy manager if it will be managed by server.
-    if (caps == null || caps.getCapability(PROXY) == null || setProxyByServer) {
-      return null;
-    }
-
-    return new WindowsProxyManager(
-      /* boolean customPACappropriate */ true,
-      /* String sessionId */ "webdriver-ie",
-      /* int port */ 0,
-      /* int portDriversShouldContact */ 0);
-  }
-
-  private void prepareProxy(Capabilities caps) {
-    // do not prepare proxy manager if it will be managed by server.
-    if (caps == null || caps.getCapability(PROXY) == null || setProxyByServer) {
-      return;
-    }
-
-    // Because of the way that the proxying is currently implemented,
-    // we can only set a single host.
-    proxyManager.backupRegistrySettings();
-    proxyManager.changeRegistrySettings(caps);
-
-    Thread cleanupThread = new Thread() { // Thread safety reviewed
-      @Override
-      public void run() {
-        proxyManager.restoreRegistrySettings(true);
-      }
-    };
-    Runtime.getRuntime().addShutdownHook(cleanupThread);
-  }
-
-  /**
-   * Determine to use server for setting proxy or not.
-   *
-   * @param caps capabilties
-   * @return to use or not
-   */
-  private boolean useServerForProxy(Capabilities caps) {
-    if (caps == null || caps.getCapability(IE_SET_PROXY_BY_SERVER) == null) {
-      return false;
-    }
-
-    return (Boolean) caps.getCapability(IE_SET_PROXY_BY_SERVER);
-  }
-
-  /**
-   * if proxy will be not managed by server overwrite proxy capability so
-   * server will do nothing.
-   */
-  private Capabilities updateCapabilities(Capabilities capabilities) {
-    if (capabilities == null || capabilities.getCapability(PROXY) == null || setProxyByServer) {
-      return capabilities;
-    }
-
-    Proxy proxy = new Proxy();
-    proxy.setProxyType(Proxy.ProxyType.SYSTEM);
-    ((DesiredCapabilities) capabilities).setCapability(PROXY, proxy);
-
-    return capabilities;
-  }
-
 }

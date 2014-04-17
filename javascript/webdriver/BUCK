@@ -1,0 +1,22 @@
+
+js_library(name = 'base-lib',
+  srcs = [
+    'command.js',
+    'events.js',
+    'promise.js',
+    'stacktrace.js',
+  ],
+  deps = [
+#    '//javascript/atoms:error_lib',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'key',
+  srcs = [
+    'key.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)

@@ -73,12 +73,20 @@ module Selenium
             }.merge(opts))
           end
 
+          def htmlunitwithjs(opts = {})
+            new({
+              :browser_name => "htmlunit",
+              :javascript_enabled => true
+            }.merge(opts))
+          end
+
           def internet_explorer(opts = {})
             new({
               :browser_name          => "internet explorer",
               :platform              => :windows,
               :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              :css_selectors_enabled => true,
+              :native_events         => true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
@@ -185,7 +193,7 @@ module Selenium
         end
 
         def merge!(other)
-          if other.respond_to?(:capabilities) && other.capabilities.kind_of?(Hash)
+          if other.respond_to?(:capabilities, true) && other.capabilities.kind_of?(Hash)
             @capabilities.merge! other.capabilities
           elsif other.kind_of? Hash
             @capabilities.merge! other

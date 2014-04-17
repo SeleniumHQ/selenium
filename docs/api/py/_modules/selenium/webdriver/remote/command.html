@@ -75,7 +75,9 @@
 
     <span class="c"># Keep in sync with org.openqa.selenium.remote.DriverCommand</span>
 
+    <span class="n">STATUS</span> <span class="o">=</span> <span class="s">&quot;status&quot;</span>
     <span class="n">NEW_SESSION</span> <span class="o">=</span> <span class="s">&quot;newSession&quot;</span>
+    <span class="n">GET_ALL_SESSIONS</span> <span class="o">=</span> <span class="s">&quot;getAllSessions&quot;</span>
     <span class="n">DELETE_SESSION</span> <span class="o">=</span> <span class="s">&quot;deleteSession&quot;</span>
     <span class="n">CLOSE</span> <span class="o">=</span> <span class="s">&quot;close&quot;</span>
     <span class="n">QUIT</span> <span class="o">=</span> <span class="s">&quot;quit&quot;</span>
@@ -94,12 +96,10 @@
     <span class="n">FIND_CHILD_ELEMENTS</span> <span class="o">=</span> <span class="s">&quot;findChildElements&quot;</span>
     <span class="n">CLEAR_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;clearElement&quot;</span>
     <span class="n">CLICK_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;clickElement&quot;</span>
-    <span class="n">HOVER_OVER_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;hoverOverElement&quot;</span>
     <span class="n">SEND_KEYS_TO_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;sendKeysToElement&quot;</span>
     <span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;sendKeysToActiveElement&quot;</span>
     <span class="n">SUBMIT_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;submitElement&quot;</span>
     <span class="n">UPLOAD_FILE</span> <span class="o">=</span> <span class="s">&quot;uploadFile&quot;</span>
-    <span class="n">TOGGLE_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;toggleElement&quot;</span>
     <span class="n">GET_CURRENT_WINDOW_HANDLE</span> <span class="o">=</span> <span class="s">&quot;getCurrentWindowHandle&quot;</span>
     <span class="n">GET_WINDOW_HANDLES</span> <span class="o">=</span> <span class="s">&quot;getWindowHandles&quot;</span>
     <span class="n">GET_WINDOW_SIZE</span> <span class="o">=</span> <span class="s">&quot;getWindowSize&quot;</span>
@@ -113,15 +113,12 @@
     <span class="n">GET_PAGE_SOURCE</span> <span class="o">=</span> <span class="s">&quot;getPageSource&quot;</span>
     <span class="n">GET_TITLE</span> <span class="o">=</span> <span class="s">&quot;getTitle&quot;</span>
     <span class="n">EXECUTE_SCRIPT</span> <span class="o">=</span> <span class="s">&quot;executeScript&quot;</span>
-    <span class="n">GET_SPEED</span> <span class="o">=</span> <span class="s">&quot;getSpeed&quot;</span>
-    <span class="n">SET_SPEED</span> <span class="o">=</span> <span class="s">&quot;setSpeed&quot;</span>
     <span class="n">SET_BROWSER_VISIBLE</span> <span class="o">=</span> <span class="s">&quot;setBrowserVisible&quot;</span>
     <span class="n">IS_BROWSER_VISIBLE</span> <span class="o">=</span> <span class="s">&quot;isBrowserVisible&quot;</span>
     <span class="n">GET_ELEMENT_TEXT</span> <span class="o">=</span> <span class="s">&quot;getElementText&quot;</span>
     <span class="n">GET_ELEMENT_VALUE</span> <span class="o">=</span> <span class="s">&quot;getElementValue&quot;</span>
     <span class="n">GET_ELEMENT_TAG_NAME</span> <span class="o">=</span> <span class="s">&quot;getElementTagName&quot;</span>
     <span class="n">SET_ELEMENT_SELECTED</span> <span class="o">=</span> <span class="s">&quot;setElementSelected&quot;</span>
-    <span class="n">DRAG_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;dragElement&quot;</span>
     <span class="n">IS_ELEMENT_SELECTED</span> <span class="o">=</span> <span class="s">&quot;isElementSelected&quot;</span>
     <span class="n">IS_ELEMENT_ENABLED</span> <span class="o">=</span> <span class="s">&quot;isElementEnabled&quot;</span>
     <span class="n">IS_ELEMENT_DISPLAYED</span> <span class="o">=</span> <span class="s">&quot;isElementDisplayed&quot;</span>

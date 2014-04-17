@@ -35,7 +35,6 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Arrays;
 import java.util.List;

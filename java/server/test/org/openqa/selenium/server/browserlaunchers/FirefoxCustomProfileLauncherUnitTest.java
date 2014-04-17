@@ -18,15 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.junit.Test;
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.thoughtworks.selenium.SeleniumException;
 
-import java.io.File;
+import org.junit.Test;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.File;
 
 public class FirefoxCustomProfileLauncherUnitTest {
 

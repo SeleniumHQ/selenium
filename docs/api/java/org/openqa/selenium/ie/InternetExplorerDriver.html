@@ -103,8 +103,7 @@
 <hr>
 <br>
 <pre>public class <span class="strong">InternetExplorerDriver</span>
-extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
-implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></pre>
+extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></pre>
 </li>
 </ul>
 </div>
@@ -154,7 +153,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#ELEMENT_SCROLL_BEHAVIOR">ELEMENT_SCROLL_BEHAVIOR</a></strong></code>
-<div class="block">Capability that defines initial browser URL.</div>
+<div class="block">Capability that defines how elements are scrolled into view in the InternetExplorerDriver.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -192,93 +191,76 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_ENSURE_CLEAN_SESSION">IE_ENSURE_CLEAN_SESSION</a></strong></code>
-<div class="block">Capability that defines to clean browser cache before launching IE by IEDriverServer.</div>
+<div class="block">Capability that defines to clean or not browser cache before launching IE by IEDriverServer.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SET_PROXY_BY_SERVER">IE_SET_PROXY_BY_SERVER</a></strong></code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>please set this option as True and allow IEDriverServer sets up proxy.
- In next releases it will be set to True by default.
-
- Capability that defines used proxy setter. Currently it's False by default.
-
- False means WindowsProxyManager will be used for setting proxy settings.
- True means IEDriverServer will be used for setting proxy settings.
-
- Be note that using both variants in concurrent drivers at the same node
- may lead to undefined behaviour.</i></div>
-</div>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SWITCHES">IE_SWITCHES</a></strong></code>
+<div class="block">Capability that defines used IE CLI switches when <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#FORCE_CREATE_PROCESS"><code>FORCE_CREATE_PROCESS</code></a> is enabled.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SWITCHES">IE_SWITCHES</a></strong></code>
-<div class="block">Capability that defines used IE CLI switches.</div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">IE_USE_PRE_PROCESS_PROXY</a></strong></code>
 <div class="block">Capability that defines setting the proxy information for a single IE process
  without affecting the proxy settings of other instances of IE.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IGNORE_ZOOM_SETTING">IGNORE_ZOOM_SETTING</a></strong></code>
-<div class="block">Capability that defines to ignore or not browser zoom level.</div>
+<div class="block">Capability that defines whether to ignore the browser zoom level or not.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#INITIAL_BROWSER_URL">INITIAL_BROWSER_URL</a></strong></code>
+<div class="block">Capability that defines the initial URL to be used when IE is launched.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#INITIAL_BROWSER_URL">INITIAL_BROWSER_URL</a></strong></code>
-<div class="block">Capability that defines to ignore or not browser zoom level.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS">INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS</a></strong></code>
 <div class="block">Capability that defines to ignore ot not browser
  protected mode settings during starting by IEDriverServer.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#LOG_FILE">LOG_FILE</a></strong></code>
 <div class="block">Capability that defines the location of the file where IEDriverServer
  should write log messages to.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#LOG_LEVEL">LOG_LEVEL</a></strong></code>
 <div class="block">Capability that defines the detalization level the IEDriverServer logs.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#NATIVE_EVENTS">NATIVE_EVENTS</a></strong></code>
-<div class="block">Capability that defines to use native or javascript events during operations..</div>
+<div class="block">Capability that defines to use whether to use native or javascript events during operations.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#REQUIRE_WINDOW_FOCUS">REQUIRE_WINDOW_FOCUS</a></strong></code>
 <div class="block">Capability that defines to focus to browser window or not before operation.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#SILENT">SILENT</a></strong></code>
 <div class="block">Capability that defines suppress or not diagnostic output of the IEDriverServer.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#UNEXPECTED_ALERT_BEHAVIOR">UNEXPECTED_ALERT_BEHAVIOR</a></strong></code>
-<div class="block">Capability that defines which behaviour will be used if unexpected Alert is found.</div>
+<div class="block">Capability that defines which behaviour will be used if an unexpected Alert is found.</div>
 </td>
 </tr>
 </table>
@@ -312,8 +294,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver(org.openqa.selenium.browserlaunchers.WindowsProxyManager, org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">InternetExplorerDriver</a></strong>(<a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" title="class in org.openqa.selenium.browserlaunchers">WindowsProxyManager</a>&nbsp;proxy,
-                      <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver(org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">InternetExplorerDriver</a></strong>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                       int&nbsp;port)</code>&nbsp;</td>
 </tr>
@@ -384,7 +365,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>IGNORE_ZOOM_SETTING</h4>
 <pre>public static final&nbsp;java.lang.String IGNORE_ZOOM_SETTING</pre>
-<div class="block">Capability that defines to ignore or not browser zoom level.</div>
+<div class="block">Capability that defines whether to ignore the browser zoom level or not.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IGNORE_ZOOM_SETTING">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -395,7 +376,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>NATIVE_EVENTS</h4>
 <pre>public static final&nbsp;java.lang.String NATIVE_EVENTS</pre>
-<div class="block">Capability that defines to use native or javascript events during operations..</div>
+<div class="block">Capability that defines to use whether to use native or javascript events during operations.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -406,7 +387,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>INITIAL_BROWSER_URL</h4>
 <pre>public static final&nbsp;java.lang.String INITIAL_BROWSER_URL</pre>
-<div class="block">Capability that defines to ignore or not browser zoom level.</div>
+<div class="block">Capability that defines the initial URL to be used when IE is launched.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -417,7 +398,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>ELEMENT_SCROLL_BEHAVIOR</h4>
 <pre>public static final&nbsp;java.lang.String ELEMENT_SCROLL_BEHAVIOR</pre>
-<div class="block">Capability that defines initial browser URL.</div>
+<div class="block">Capability that defines how elements are scrolled into view in the InternetExplorerDriver.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -428,7 +409,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>UNEXPECTED_ALERT_BEHAVIOR</h4>
 <pre>public static final&nbsp;java.lang.String UNEXPECTED_ALERT_BEHAVIOR</pre>
-<div class="block">Capability that defines which behaviour will be used if unexpected Alert is found.</div>
+<div class="block">Capability that defines which behaviour will be used if an unexpected Alert is found.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -566,7 +547,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>IE_ENSURE_CLEAN_SESSION</h4>
 <pre>public static final&nbsp;java.lang.String IE_ENSURE_CLEAN_SESSION</pre>
-<div class="block">Capability that defines to clean browser cache before launching IE by IEDriverServer.</div>
+<div class="block">Capability that defines to clean or not browser cache before launching IE by IEDriverServer.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION">Constant Field Values</a></dd></dl>
 </li>
 </ul>
@@ -585,33 +566,12 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <a name="IE_SWITCHES">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>IE_SWITCHES</h4>
 <pre>public static final&nbsp;java.lang.String IE_SWITCHES</pre>
-<div class="block">Capability that defines used IE CLI switches.</div>
+<div class="block">Capability that defines used IE CLI switches when <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#FORCE_CREATE_PROCESS"><code>FORCE_CREATE_PROCESS</code></a> is enabled.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IE_SWITCHES">Constant Field Values</a></dd></dl>
-</li>
-</ul>
-<a name="IE_SET_PROXY_BY_SERVER">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>IE_SET_PROXY_BY_SERVER</h4>
-<pre>@Deprecated
-public static final&nbsp;java.lang.String IE_SET_PROXY_BY_SERVER</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>please set this option as True and allow IEDriverServer sets up proxy.
- In next releases it will be set to True by default.
-
- Capability that defines used proxy setter. Currently it's False by default.
-
- False means WindowsProxyManager will be used for setting proxy settings.
- True means IEDriverServer will be used for setting proxy settings.
-
- Be note that using both variants in concurrent drivers at the same node
- may lead to undefined behaviour.</i></div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IE_SET_PROXY_BY_SERVER">Constant Field Values</a></dd></dl>
 </li>
 </ul>
 </li>
@@ -668,14 +628,13 @@ public static final&nbsp;java.lang.String IE_SET_PROXY_BY_SERVER</pre>
                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 </li>
 </ul>
-<a name="InternetExplorerDriver(org.openqa.selenium.browserlaunchers.WindowsProxyManager, org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">
+<a name="InternetExplorerDriver(org.openqa.selenium.ie.InternetExplorerDriverService, org.openqa.selenium.Capabilities, int)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>InternetExplorerDriver</h4>
-<pre>public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" title="class in org.openqa.selenium.browserlaunchers">WindowsProxyManager</a>&nbsp;proxy,
-                      <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
+<pre>public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                       int&nbsp;port)</pre>
 </li>
@@ -732,6 +691,8 @@ public static final&nbsp;java.lang.String IE_SET_PROXY_BY_SERVER</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
 <dt><span class="strong">Type Parameters:</span></dt><dd><code>X</code> - Return type for getScreenshotAs.</dd><dt><span class="strong">Parameters:</span></dt><dd><code>target</code> - target type, @see OutputType</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Object in which is stored information about the screenshot.</dd></dl>
 </li>

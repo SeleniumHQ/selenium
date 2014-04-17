@@ -31,13 +31,19 @@ public class RemoteLocationContext implements LocationContext {
   public RemoteLocationContext(ExecuteMethod executeMethod) {
     this.executeMethod = executeMethod;
   }
-  
+
+  @Override
   public Location location() {
+    @SuppressWarnings("unchecked")
     Map<String, Double> result = (Map<String, Double>) executeMethod.execute(
         DriverCommand.GET_LOCATION, null);
+    if (result == null) {
+      return null;
+    }
     return new Location(result.get("latitude"), result.get("longitude"), result.get("altitude"));
   }
 
+  @Override
   public void setLocation (Location location) {
     Map<String, Location> args = ImmutableMap.of("location", location);
     executeMethod.execute(DriverCommand.SET_LOCATION, args);

@@ -27,17 +27,39 @@ namespace Selenium.Internal
         public void ReplaceAlertMethod()
         {
             ((IJavaScriptExecutor)this.driver).ExecuteScript(
-              "if (window.__webdriverAlerts) { return; } " +
-              "window.__webdriverAlerts = []; " +
-              "window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
-              "window.__webdriverConfirms = []; " +
-              "window.__webdriverNextConfirm = true; " +
-              "window.confirm = function(msg) { " +
-              "  window.__webdriverConfirms.push(msg); " +
-              "  var res = window.__webdriverNextConfirm; " +
-              "  window.__webdriverNextConfirm = true; " +
-              "  return res; " +
-              "};");
+                "if (window.localStorage) { " +
+                "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify([])); " +
+                "  window.alert = function(msg) { " +
+                "    var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+                "    alerts.push(msg); " +
+                "    window.localStorage.setItem('__webdriverAlerts', JSON.stringify(alerts)); " +
+                "  }; " +
+                "  window.localStorage.setItem('__webdriverConfirms', JSON.stringify([])); " +
+                "  if (!('__webdriverNextConfirm' in window.localStorage)) { " +
+                "    window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(true)); " +
+                "  } " +
+                "  window.confirm = function(msg) { " +
+                "    var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+                "    confirms.push(msg); " +
+                "    window.localStorage.setItem('__webdriverConfirms', JSON.stringify(confirms)); " +
+                "    var res = JSON.parse(window.localStorage.getItem('__webdriverNextConfirm')); " +
+                "    window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(true)); " +
+                "    return res; " +
+                "  }; " +
+                "} else { " +
+                "  if (window.__webdriverAlerts) { return; } " +
+                "  window.__webdriverAlerts = []; " +
+                "  window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
+                "  window.__webdriverConfirms = []; " +
+                "  window.__webdriverNextConfirm = true; " +
+                "  window.confirm = function(msg) { " +
+                "    window.__webdriverConfirms.push(msg); " +
+                "    var res = window.__webdriverNextConfirm; " +
+                "    window.__webdriverNextConfirm = true; " +
+                "    return res; " +
+                "  }; " +
+                "}"
+              );
         }
 
         /// <summary>
@@ -47,10 +69,21 @@ namespace Selenium.Internal
         public string GetNextAlert()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-              "if (!window.__webdriverAlerts) { return null }; " +
-              "var t = window.__webdriverAlerts.shift();" +
-              "if (t) { t = t.replace(/\\n/g, ' '); } " +
-              "return t;");
+                "if (window.localStorage) { " +
+                "  if (!('__webdriverAlerts' in window.localStorage)) { return null } " +
+                "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+                "  if (! alerts) { return null } " +
+                "  var t = alerts.shift(); " +
+                "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify(alerts)); " +
+                "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+                "  return t; " +
+                "} else { " +
+                "  if (!window.__webdriverAlerts) { return null } " +
+                "  var t = window.__webdriverAlerts.shift(); " +
+                "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+                "  return t; " +
+                "}"
+              );
 
             if (result == null)
             {
@@ -68,7 +101,14 @@ namespace Selenium.Internal
         {
             bool alertPresent = false;
             object alertResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-              "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;");
+                "if (window.localStorage) { " +
+                "  if (!('__webdriverAlerts' in window.localStorage)) { return false } " +
+                "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+                "  return alerts && alerts.length > 0; " +
+                "} else { " +
+                "  return window.__webdriverAlerts && window.__webdriverAlerts.length > 0; " +
+                "}"
+              );
             if (alertResult != null)
             {
                 alertPresent = (bool)alertResult;
@@ -84,8 +124,19 @@ namespace Selenium.Internal
         public string GetNextConfirmation()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (!window.__webdriverConfirms) { return null; } " +
-                "return window.__webdriverConfirms.shift();");
+                "if (window.localStorage) { " +
+                "  if (!('__webdriverConfirms' in window.localStorage)) { return null } " +
+                "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+                "  if (! confirms) { return null } " +
+                "  var t = confirms.shift(); " +
+                "  window.localStorage.setItem('__webdriverConfirms', JSON.stringify(confirms)); " +
+                "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+                "  return t; " +
+                "} else { " +
+                "  if (!window.__webdriverConfirms) { return null; } " +
+                "  return window.__webdriverConfirms.shift(); " +
+                "}"
+              );
 
             if (result == null)
             {
@@ -103,7 +154,14 @@ namespace Selenium.Internal
         {
             bool confirmPresent = false;
             object confirmResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-              "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;");
+                "if (window.localStorage) { " +
+                "  if (!('__webdriverConfirms' in window.localStorage)) { return false } " +
+                "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+                "  return confirms && confirms.length > 0; " +
+                "} else { " +
+                "  return window.__webdriverConfirms && window.__webdriverConfirms.length > 0; " +
+                "}"
+              );
             if (confirmResult != null)
             {
                 confirmPresent = (bool)confirmResult;

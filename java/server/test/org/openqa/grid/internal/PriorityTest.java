@@ -17,20 +17,20 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class PriorityTest {
@@ -132,7 +132,7 @@ public class PriorityTest {
   @Test
   public void validate() throws InterruptedException {
     Thread.sleep(250);
-    Assert.assertNotNull(newSessionRequest5.getSession());
+    assertNotNull(newSessionRequest5.getSession());
   }
 
 

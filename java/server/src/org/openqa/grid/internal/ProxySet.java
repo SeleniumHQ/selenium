@@ -21,6 +21,7 @@ import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,7 +153,8 @@ public class ProxySet implements Iterable<RemoteProxy> {
   public void verifyAbilityToHandleDesiredCapabilities(Map<String, Object> desiredCapabilities) {
     if (proxies.isEmpty()) {
       if (throwOnCapabilityNotPresent) {
-        throw new GridException("Empty pool of VM for setup " + desiredCapabilities);
+        throw new GridException("Empty pool of VM for setup "
+                                + new DesiredCapabilities(desiredCapabilities));
       } else {
         log.warning("Empty pool of nodes.");
       }
@@ -162,7 +164,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
       if (throwOnCapabilityNotPresent) {
         throw new CapabilityNotPresentOnTheGridException(desiredCapabilities);
       } else {
-        log.warning("grid doesn't contain " + desiredCapabilities +
+        log.warning("grid doesn't contain " + new DesiredCapabilities(desiredCapabilities) +
                     " at the moment.");
       }
 

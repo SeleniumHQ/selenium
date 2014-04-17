@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
@@ -33,9 +36,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CaptureNetworkTrafficCommandTest {
 

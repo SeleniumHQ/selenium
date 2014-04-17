@@ -18,11 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.server.cli;
 
-import org.junit.Test;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * {@link org.openqa.selenium.server.cli.RemoteControlLauncher} unit test class.

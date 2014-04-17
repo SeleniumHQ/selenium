@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -180,7 +179,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
-    
+
     assertThat(text, equalTo("   This section has a preformatted\n" +
         "    text block    \n" +
         "  split in four lines\n" +
@@ -196,7 +195,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "   This section has a preformatted\n" +
         "    text block    \n" +
         "  split in four lines\n" +
-        "         \n" + 
+        "         \n" +
         "after pre"));
   }
 
@@ -209,7 +208,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement textarea = driver.findElement(By.id("withText"));
     textarea.clear();
 
-    waitFor(WaitingConditions.elementValueToEqual(textarea, ""));
+    wait.until(WaitingConditions.elementValueToEqual(textarea, ""));
 
     String expectedText = "i like cheese" + newLine + newLine + "it's really nice";
 
@@ -419,4 +418,14 @@ public class TextHandlingTest extends JUnit4TestBase {
     // That's the reason for the previous assert.
     assertEquals(expected, element.getText());
   }
+
+  @Test
+  @Ignore(reason = "Not all unicode whitespace characters are trimmed", issues = {6072})
+  public void testShouldTrimTextWithMultiByteWhitespaces() {
+    driver.get(pages.simpleTestPage);
+    String text = driver.findElement(By.id("trimmedSpace")).getText();
+
+    assertEquals("test", text);
+  }
+
 }

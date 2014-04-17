@@ -229,7 +229,7 @@ public class InternetExplorerDriverService extends DriverService {
       if (exe == null) {
         exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
                              "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
-                             "http://code.google.com/p/selenium/downloads/list");
+                             "http://selenium-release.storage.googleapis.com/index.html");
       }
       if (logFile == null) {
         String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);

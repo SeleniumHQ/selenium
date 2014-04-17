@@ -37,6 +37,7 @@
 #define WAIT_TIME_IN_MILLISECONDS 200
 #define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
 #define ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS 2000
+#define MAX_HTML_DIALOG_RETRIES 5
 #define IGNORE_UNEXPECTED_ALERTS "ignore"
 #define ACCEPT_UNEXPECTED_ALERTS "accept"
 #define DISMISS_UNEXPECTED_ALERTS "dismiss"
@@ -223,6 +224,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int port_;
   bool enable_persistent_hover_;
   bool enable_element_cache_cleanup_;
+  bool ignore_zoom_setting_;
+  std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
 
   Command current_command_;

@@ -64,6 +64,7 @@ WebDriver.sln.cache
 rb/.yardoc
 .tm_properties
 maven/*/src
+maven/target
 maven/*/target
 java/client/build/
 java/server/build/
@@ -71,6 +72,7 @@ java/server/build/
 dist/
 py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
+py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
 py/docs/build/
 selenium.egg-info/

@@ -66,7 +66,7 @@ describe('selenium-webdriver/http/util', function() {
     it('should return value field on success', function(done) {
       util.getStatus(baseUrl).then(function(response) {
         assert.equal('abc123', response);
-      }).addBoth(done);
+      }).thenFinally(done);
     });
 
     it('should fail if response object is not success', function(done) {
@@ -76,7 +76,7 @@ describe('selenium-webdriver/http/util', function() {
       }, function(err) {
         assert.equal(status, err.code);
         assert.equal(value, err.message);
-      }).addBoth(done);
+      }).thenFinally(done);
     });
 
     it('should fail if the server is not listening', function(done) {
@@ -87,7 +87,7 @@ describe('selenium-webdriver/http/util', function() {
           throw Error('expected a failure');
         }, function() {
           // Expected.
-        }).addBoth(done);
+        }).thenFinally(done);
       });
     });
 
@@ -99,7 +99,7 @@ describe('selenium-webdriver/http/util', function() {
       }, function(err) {
         assert.equal(status, err.code);
         assert.equal(value, err.message);
-      }).addBoth(done);
+      }).thenFinally(done);
     });
   });
 
@@ -109,7 +109,7 @@ describe('selenium-webdriver/http/util', function() {
       setTimeout(function() { status = 0; }, 50);
       util.waitForServer(baseUrl, 100).
           then(function() {}).  // done needs no argument to pass.
-          addBoth(done);
+          thenFinally(done);
     });
 
     it('should fail if server does not become ready', function(done) {
@@ -142,7 +142,7 @@ describe('selenium-webdriver/http/util', function() {
 
       util.waitForUrl(baseUrl, 200).
           then(function() {}).  // done needs no argument to pass.
-          addBoth(done);
+          thenFinally(done);
     });
 
     it('fails if URL always returns 4xx', function(done) {

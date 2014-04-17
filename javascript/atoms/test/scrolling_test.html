@@ -7,6 +7,7 @@
     goog.require('bot.action');
     goog.require('bot.dom');
     goog.require('goog.dom');
+    goog.require('goog.math.Coordinate');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -169,6 +170,39 @@
 
       assertNotEquals(0, outer.scrollTop);
     }
+
+    function testScrollingToRelativeRectangle() {
+      var elem = findElement({id: 'relative-rect'});
+      var region = new goog.math.Rect(60, 60, 10, 10);
+      assertEquals(bot.dom.OverflowState.SCROLL,
+          bot.dom.getOverflowState(elem, region));
+
+      bot.action.scrollIntoView(elem, region);
+      assertEquals(bot.dom.OverflowState.NONE,
+          bot.dom.getOverflowState(elem, region));
+    }
+
+    function testScrollingAccountsForScrollbarWidths() {
+      var elem = findElement({id: 'outside-both-scrollbars'});
+      var rectBefore = bot.dom.getClientRect(elem);
+      bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
+      var rectAfter = bot.dom.getClientRect(elem);
+
+      // If the scrollbar isn't taken into account, the minimum scrolling
+      // needed would be 26 pixels, to bring the full pixel into view.
+      // This should fail on mobile since the scrollbars aren't shown.
+      // This should also fail on IE6 since scrolling only happens to
+      // exactly the scrollbar width, which is 17 by default on Windows XP.
+      expectedFailures.expectFailureFor(
+          goog.userAgent.MOBILE ||
+          (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+      expectedFailures.run(function() {
+        assertTrue('horizontal scroll did not account for scrollbar',
+            rectBefore.left - rectAfter.left > 26);
+        assertTrue('vertical scroll did not account for scrollbar',
+            rectBefore.top - rectAfter.top > 26);
+      });
+    }
   </script>
   <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>
   <div style="position: absolute; left: 3000px; border: 2px orange solid;"><a id="offscreen">Offscreen</a></div>
@@ -205,9 +239,17 @@
     <iframe src="testdata/scrolling_iframe.html" style="width: 200px; height: 100px;" id="offscreen-scrollable-iframe"></iframe>
   </div>
 
-  <div style='overflow: scroll; width: 150px; height: 200px;' id="outer">
+  <div style="overflow: scroll; width: 150px; height: 200px;" id="outer">
     <div style="width: 150px; height: 5000px;" id="inner">
     </div>
+  </div>
+
+  <div style="position:absolute; overflow: scroll; top:0px; left:300px; width: 100px; height: 100px;">
+    <div style="position:relative; top: 50px; left: 50px; width:100px; height:100px" id="outside-both-scrollbars">H</div>
+  </div>
+
+  <div style="position:absolute; overflow: scroll; top:200px; left:300px; width: 100px; height: 100px;">
+    <div style="position:relative; top: 50px; left: 50px; width:100px; height:100px" id="relative-rect">H</div>
   </div>
 </body>
 </html>

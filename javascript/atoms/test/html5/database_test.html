@@ -32,7 +32,7 @@
 
       try {
         var win = bot.getWindow();
-        var db = win.openDatabase('testDB', '1.0', 'db name', 5*1024*1024);
+        var db = win.openDatabase('testDB', '1.0', 'db name', 5 * 1024 * 1024);
         db.transaction(transactionCallback, errorCallback, successCallback);
         asyncTestCase.waitForAsync('testExecuteSqlWithSelectAll');
       } catch (e) {
@@ -48,8 +48,8 @@
       }
 
       function transactionCallback(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER \
-            PRIMARY KEY, name TEXT, owner TEXT)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
+            'PRIMARY KEY, name TEXT, owner TEXT)');
         tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
         tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
         tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
@@ -101,7 +101,7 @@
       }
 
       try {
-        var db = bot.storage.database.open('testDB', '2.0');
+        var db = bot.storage.database.openOrCreate('testDB', '2.0');
       } catch (e) {
         // Exception should be thrown on opening a database with wrong
         // version.

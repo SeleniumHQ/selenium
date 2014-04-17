@@ -7,6 +7,8 @@ java_library(name = "small_tests",
     "VariableDeclarationTest.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
+    "//java/client/src/com/thoughtworks/selenium:api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
     "//third_party/java/junit",
   ])

@@ -33,7 +33,10 @@ module Selenium
         end
 
         def quit_driver
-          @driver_instance.quit if @driver_instance
+          if @driver_instance
+            @driver_instance.quit
+            @driver_instance = nil
+          end
         end
 
         def new_driver_instance
@@ -43,8 +46,7 @@ module Selenium
 
         def app_server
           @app_server ||= (
-            path = File.join(root_folder, "common/src/web")
-            s = RackServer.new(path)
+            s = RackServer.new(root.join("common/src/web").to_s)
             s.start
 
             s
@@ -63,7 +65,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= File.join(root_folder, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
+          @remote_server_jar ||= root.join("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar").to_s
         end
 
         def quit
@@ -93,11 +95,11 @@ module Selenium
           url
         end
 
-        private
-
-        def root_folder
-          @root_folder ||= File.expand_path("../../../../../../../", __FILE__)
+        def root
+          @root ||= Pathname.new("../../../../../../../").expand_path(__FILE__)
         end
+
+        private
 
         def create_driver
           instance = case driver
@@ -185,9 +187,13 @@ module Selenium
             WebDriver::Chrome.driver_path = server
           end
 
+          args = []
+          args << "--no-sandbox" if ENV['TRAVIS']
+
           WebDriver::Driver.for :chrome,
-                                :native_events => native_events?
-                                # :http_client   => keep_alive_client || http_client
+                                :native_events => native_events?,
+                                :args          => args
+                                # :http_client => keep_alive_client || http_client
         end
 
         def create_phantomjs_driver

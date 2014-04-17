@@ -21,310 +21,663 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ElementFindingTest extends JUnit4TestBase {
 
+  // By.id positive
+
   @Test
-  public void testShouldReturnTitleOfPageIfSet() {
+  public void testShouldBeAbleToFindASingleElementById() {
     driver.get(pages.xhtmlTestPage);
-    assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
-
-    driver.get(pages.simpleTestPage);
-    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
-  }
-
-  @Test
-  public void testShouldNotBeAbleToLocateASingleElementThatDoesNotExist() {
-    driver.get(pages.formPage);
-
-    try {
-      driver.findElement(By.id("nonExistantButton"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
-  public void testShouldBeAbleToClickOnLinkIdentifiedByText() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.linkText("click me")).click();
-
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
-
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-  }
-
-  @Test
-  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
-    driver.get(pages.formPage);
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.linkText("click me")).click();
-
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
-
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-  }
-
-  @Test
-  public void testshouldBeAbleToClickOnLinkIdentifiedById() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.id("linkId")).click();
-
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
-
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-  }
-
-  @Test
-  public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithLinkText() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      driver.findElement(By.linkText("Not here either"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
-  public void testShouldFindAnElementBasedOnId() {
-    driver.get(pages.formPage);
-
-    WebElement element = driver.findElement(By.id("checky"));
-
-    assertThat(element.isSelected(), is(false));
-  }
-
-  @Test
-  public void testShouldNotBeAbleToFindElementsBasedOnIdIfTheElementIsNotThere() {
-    driver.get(pages.formPage);
-
-    try {
-      driver.findElement(By.id("notThere"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
-  public void testShouldBeAbleToFindChildrenOfANode() {
-    driver.get(pages.selectableItemsPage);
-    List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
-    WebElement head = elements.get(0);
-    List<WebElement> importedScripts = head.findElements(By.tagName("script"));
-    assertThat(importedScripts.size(), equalTo(3));
-  }
-
-  @Test
-  public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement table = driver.findElement(By.id("table"));
-    List<WebElement> rows = table.findElements(By.tagName("tr"));
-
-    assertThat(rows.size(), equalTo(0));
-  }
-
-  @Test
-  public void testShouldFindElementsByName() {
-    driver.get(pages.formPage);
-
-    WebElement element = driver.findElement(By.name("checky"));
-
-    assertThat(element.getAttribute("value"), is("furrfu"));
-  }
-
-  @Test
-  public void testShouldFindElementsByClass() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.className("extraDiv"));
-    assertTrue(element.getText().startsWith("Another div starts here."));
-  }
-
-  @Test
-  public void testShouldFindElementsByClassWhenItIsTheFirstNameAmongMany() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.className("nameA"));
-    assertThat(element.getText(), equalTo("An H2 title"));
-  }
-
-  @Test
-  public void testShouldFindElementsByClassWhenItIsTheLastNameAmongMany() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.className("nameC"));
-    assertThat(element.getText(), equalTo("An H2 title"));
-  }
-
-  @Test
-  public void testShouldFindElementsByClassWhenItIsInTheMiddleAmongMany() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.className("nameBnoise"));
-    assertThat(element.getText(), equalTo("An H2 title"));
-  }
-
-  @Test
-  public void testShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.className("spaceAround"));
-    assertThat(element.getText(), equalTo("Spaced out"));
-  }
-
-  @Test
-  public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.className("spaceAround"));
-    assertThat(elements.size(), equalTo(1));
-    assertThat(elements.get(0).getText(), equalTo("Spaced out"));
-  }
-
-  @Test
-  public void testShouldNotFindElementsByClassWhenTheNameQueriedIsShorterThanCandidateName() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      driver.findElement(By.className("nameB"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
-  public void testShouldBeAbleToFindMultipleElementsByXPath() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.xpath("//div"));
-
-    assertTrue(elements.size() > 1);
-  }
-
-  @Test
-  public void testShouldBeAbleToFindMultipleElementsByLinkText() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.linkText("click me"));
-
-    assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
-  }
-
-  @Test
-  public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.partialLinkText("ick me"));
-
-    assertTrue(elements.size() == 2);
-  }
-
-  @Test
-  public void testShouldBeAbleToFindElementByPartialLinkText() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      driver.findElement(By.partialLinkText("anon"));
-    } catch (NoSuchElementException e) {
-      fail("Expected element to be found");
-    }
-  }
-
-  @Test
-  public void testShouldFindElementByLinkTextContainingEqualsSign() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      WebElement element = driver.findElement(By.linkText("Link=equalssign"));
-      assertEquals("linkWithEqualsSign", element.getAttribute("id"));
-    } catch (NoSuchElementException e) {
-      fail("Expected element to be found");
-    }
-  }
-
-  @Test
-  public void testShouldFindElementByPartialLinkTextContainingEqualsSign() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      WebElement element = driver.findElement(By.partialLinkText("Link="));
-      assertEquals("linkWithEqualsSign", element.getAttribute("id"));
-    } catch (NoSuchElementException e) {
-      fail("Expected element to be found");
-    }
-  }
-
-  @Test
-  public void testShouldFindElementsByLinkTextContainingEqualsSign() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.linkText("Link=equalssign"));
-    assertEquals(1, elements.size());
-    assertEquals("linkWithEqualsSign", elements.get(0).getAttribute("id"));
-  }
-
-  @Test
-  public void testShouldFindElementsByPartialLinkTextContainingEqualsSign() {
-    driver.get(pages.xhtmlTestPage);
-
-    List<WebElement> elements = driver.findElements(By.partialLinkText("Link="));
-    assertEquals(1, elements.size());
-    assertEquals("linkWithEqualsSign", elements.get(0).getAttribute("id"));
-  }
-
-  @Test
-  public void testShouldBeAbleToFindMultipleElementsByName() {
-    driver.get(pages.nestedPage);
-
-    List<WebElement> elements = driver.findElements(By.name("checky"));
-
-    assertTrue(elements.size() > 1);
+    WebElement element = driver.findElement(By.id("linkId"));
+    assertThat(element.getAttribute("id"), is("linkId"));
   }
 
   @Ignore(value = ANDROID, reason = "Bug in Android's XPath library.")
   @Test
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(pages.nestedPage);
-
     List<WebElement> elements = driver.findElements(By.id("2"));
+    assertThat(elements.size(), is(8));
+  }
 
-    assertEquals(8, elements.size());
+  // By.id negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByIdASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+    driver.findElement(By.id("nonExistentButton"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByIdMultipleElementsThatDoNotExist() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.id("nonExistentButton"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyIdShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.id(""));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByEmptyIdShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.id(""));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByIdWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.id("nonexistent button"));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.id("nonexistent button"));
+    assertThat(elements.size(), is(0));
+  }
+
+  // By.name positive
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByName() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.name("checky"));
+    assertThat(element.getAttribute("value"), is("furrfu"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByName() {
+    driver.get(pages.nestedPage);
+    List<WebElement> elements = driver.findElements(By.name("checky"));
+    assertThat(elements.size(), greaterThan(1));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindAnElementThatDoesNotSupportTheNameProperty() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.name("div1"));
+    assertThat(element.getAttribute("name"), is("div1"));
+  }
+
+  // By.name negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonExistentButton"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByNameMultipleElementsThatDoNotExist() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.name("nonExistentButton"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name(""));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByEmptyNameShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.name(""));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonexistent button"));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
+    assertThat(elements.size(), is(0));
+  }
+
+  // By.tagName positive
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByTagName() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.tagName("input"));
+    assertThat(element.getTagName().toLowerCase(), is("input"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByTagName() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.tagName("input"));
+    assertThat(elements.size(), greaterThan(1));
+  }
+
+  // By.tagName negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+    driver.findElement(By.tagName("nonExistentButton"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByTagNameMultipleElementsThatDoNotExist() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.tagName("nonExistentButton"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyTagNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.tagName(""));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.tagName(""));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByTagNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.tagName("nonexistent button"));
+  }
+
+  @Test
+  public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.tagName("nonexistent button"));
+    assertThat(elements.size(), is(0));
+  }
+
+  // By.className positive
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByClass() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.className("extraDiv"));
+    assertThat(element.getText(), startsWith("Another div starts here."));
   }
 
   @Test
   public void testShouldBeAbleToFindMultipleElementsByClassName() {
     driver.get(pages.xhtmlTestPage);
-
     List<WebElement> elements = driver.findElements(By.className("nameC"));
+    assertThat(elements.size(), greaterThan(1));
+  }
 
-    assertTrue(elements.size() > 1);
+  @Test
+  public void testShouldFindElementByClassWhenItIsTheFirstNameAmongMany() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.className("nameA"));
+    assertThat(element.getText(), is("An H2 title"));
+  }
+
+  @Test
+  public void testShouldFindElementByClassWhenItIsTheLastNameAmongMany() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.className("nameC"));
+    assertThat(element.getText(), is("An H2 title"));
+  }
+
+  @Test
+  public void testShouldFindElementByClassWhenItIsInTheMiddleAmongMany() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.className("nameBnoise"));
+    assertThat(element.getText(), is("An H2 title"));
+  }
+
+  @Test
+  public void testShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.className("spaceAround"));
+    assertThat(element.getText(), is("Spaced out"));
+  }
+
+  @Test
+  public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.className("spaceAround"));
+    assertThat(elements.size(), is(1));
+    assertThat(elements.get(0).getText(), is("Spaced out"));
+  }
+
+  // By.className negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className("nameB"));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className(""));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.className(""));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByCompoundClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className("a b"));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
+          reason = "Chrome: throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.className("a b"));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByInvalidClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className("!@#$%^&*"));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
+          reason = "Chrome: throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.className("!@#$%^&*"));
+  }
+
+  // By.xpath positive
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.xpath("//h1"));
+    assertThat(element.getText(), is("XHTML Might Be The Future"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.xpath("//div"));
+    assertThat(elements.size(), is(13));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    String xpathString = "//node()[contains(@id,'id')]";
+    assertThat(driver.findElements(By.xpath(xpathString)).size(), is(3));
+
+    xpathString = "//node()[contains(@id,'nope')]";
+    assertThat(driver.findElements(By.xpath(xpathString)).size(), is(0));
+  }
+
+  @Test
+  public void testShouldBeAbleToIdentifyElementsByClass() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement header = driver.findElement(By.xpath("//h1[@class='header']"));
+    assertThat(header.getText(), is("XHTML Might Be The Future"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindAnElementByXPathWithMultipleAttributes() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(
+        By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
+    assertThat(element.getTagName().toLowerCase(), is("input"));
+    assertThat(element.getAttribute("value"), is("Click!"));
+  }
+
+  @Test
+  public void testFindingALinkByXpathShouldLocateAnElementWithTheGivenText() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.xpath("//a[text()='click me']"));
+    assertThat(element.getText(), is("click me"));
+  }
+
+  @Test
+  public void testFindingALinkByXpathUsingContainsKeywordShouldWork() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.xpath("//a[contains(.,'hello world')]"));
+    assertThat(element.getText(), containsString("hello world"));
+  }
+
+  // By.xpath negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.xpath("//a[@id='Not here']"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
+    driver.get(pages.formPage);
+    driver.findElement(By.xpath("this][isnot][valid"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+    driver.findElements(By.xpath("this][isnot][valid"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    body.findElement(By.xpath("this][isnot][valid"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    body.findElements(By.xpath("this][isnot][valid"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
+    driver.get(pages.formPage);
+    driver.findElement(By.xpath("count(//input)"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+    driver.findElements(By.xpath("count(//input)"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
+    driver.get(pages.formPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+    body.findElement(By.xpath("count(//input)"));
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = InvalidSelectorException.class)
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    body.findElements(By.xpath("count(//input)"));
+  }
+
+  // By.cssSelector positive
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.cssSelector("div.content"));
+    assertThat(element.getTagName().toLowerCase(), is("div"));
+    assertThat(element.getAttribute("class"), is("content"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.cssSelector("p"));
+    assertThat(elements.size(), greaterThan(1));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByCompoundCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.cssSelector("div.extraDiv, div.content"));
+    assertThat(element.getTagName().toLowerCase(), is("div"));
+    assertThat(element.getAttribute("class"), is("content"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByCompoundCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.cssSelector("div.extraDiv, div.content"));
+    assertThat(elements.size(), greaterThan(1));
+    assertThat(elements.get(0).getAttribute("class"), is("content"));
+    assertThat(elements.get(1).getAttribute("class"), is("extraDiv"));
+  }
+
+  @Test
+  @Ignore(value = {IE}, reason = "IE supports only short version option[selected]")
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected='selected']"));
+    assertThat(element.getAttribute("value"), is("two"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
+    assertThat(element.getAttribute("value"), is("two"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected_html4.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
+    assertThat(element.getAttribute("value"), is("two"));
+  }
+
+  // By.cssSelector negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector(".there-is-no-such-class"));
+  }
+
+  public void testShouldNotFindElementsByCssSelectorWhenThereIsNoSuchElement() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.cssSelector(".there-is-no-such-class"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector(""));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
+          reason = "Chrome: throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.cssSelector(""));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
+  }
+
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
+          reason = "Chrome: throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.cssSelector("//a/b/c[@id='1']"));
+  }
+
+  // By.linkText positive
+
+  @Test
+  public void testShouldBeAbleToFindALinkByText() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement link = driver.findElement(By.linkText("click me"));
+    assertThat(link.getText(), is("click me"));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindMultipleLinksByText() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkText("click me"));
+    assertThat(elements.size(), is(2));
+  }
+
+  @Test
+  public void testShouldFindElementByLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.linkText("Link=equalssign"));
+    assertThat(element.getAttribute("id"), is("linkWithEqualsSign"));
+  }
+
+  @Test
+  public void testShouldFindMultipleElementsByLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkText("Link=equalssign"));
+    assertEquals(1, elements.size());
+    assertThat(elements.get(0).getAttribute("id"), is("linkWithEqualsSign"));
+  }
+
+  @Test
+  @Ignore({OPERA, MARIONETTE})
+  public void findsByLinkTextOnXhtmlPage() {
+    assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it",
+                isOldIe(driver));
+
+    driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
+    String linkText = "Foo";
+    WebElement element = driver.findElement(By.linkText(linkText));
+    assertThat(element.getText(), is(linkText));
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithFormattingTags() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with formatting tags"));
+    assertThat(res.getText(), is("link with formatting tags"));
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testDriverCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement link = driver.findElement(By.linkText("link with trailing space"));
+    assertThat(link.getAttribute("id"), is("linkWithTrailingSpace"));
+    assertThat(link.getText(), is("link with trailing space"));
+  }
+
+  // By.linkText negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByLinkTextASingleElementThatDoesNotExist() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.linkText("Not here either"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByLinkTextMultipleElementsThatDoNotExist() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkText("Not here either"));
+    assertThat(elements.size(), is(0));
+  }
+
+  // By.partialLinkText positive
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.partialLinkText("ick me"));
+    assertThat(elements.size(), is(2));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindASingleElementByPartialLinkText() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.partialLinkText("anon"));
+    assertThat(element.getText(), containsString("anon"));
+  }
+
+  @Test
+  public void testShouldFindElementByPartialLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.partialLinkText("Link="));
+    assertThat(element.getAttribute("id"), is("linkWithEqualsSign"));
+  }
+
+  @Test
+  public void testShouldFindMultipleElementsByPartialLinkTextContainingEqualsSign() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.partialLinkText("Link="));
+    assertThat(elements.size(), is(1));
+    assertThat(elements.get(0).getAttribute("id"), is("linkWithEqualsSign"));
+  }
+
+  // Misc tests
+
+  @Test
+  public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
+    driver.get(pages.formPage);
+    driver.get(pages.xhtmlTestPage);
+    WebElement link = driver.findElement(By.linkText("click me"));
+    assertThat(link.getText(), is("click me"));
   }
 
   // You don't want to ask why this is here
@@ -346,232 +699,24 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldFindGrandChildren() {
+  public void testShouldBeAbleToFindAHiddenElementsByName() {
     driver.get(pages.formPage);
-    WebElement form = driver.findElement(By.id("nested_form"));
-    form.findElement(By.name("x"));
+    WebElement element = driver.findElement(By.name("hidden"));
+    assertThat(element.getAttribute("name"), is("hidden"));
   }
 
-  @Test
-  public void testShouldNotFindElementOutSideTree() {
-    driver.get(pages.formPage);
-    WebElement element = driver.findElement(By.name("login"));
-    try {
-      element.findElement(By.name("x"));
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
-  public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
-    driver.get(pages.nestedPage);
-
-    driver.findElement(By.name("div1"));
-    // If this works, we're all good
-  }
-
-  @Test
-  public void testShouldFindHiddenElementsByName() {
-    driver.get(pages.formPage);
-
-    try {
-      driver.findElement(By.name("hidden"));
-    } catch (NoSuchElementException e) {
-      fail("Expected to be able to find hidden element");
-    }
-  }
-
-  @Test
-  public void testShouldfindAnElementBasedOnTagName() {
-    driver.get(pages.formPage);
-
-    WebElement element = driver.findElement(By.tagName("input"));
-
-    assertNotNull(element);
-  }
-
-  @Test
-  public void testShouldfindElementsBasedOnTagName() {
-    driver.get(pages.formPage);
-
-    List<WebElement> elements = driver.findElements(By.tagName("input"));
-
-    assertNotNull(elements);
-  }
-
-  @Test
-  public void testFindingByCompoundClassNameIsAnError() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      driver.findElement(By.className("a b"));
-      fail("Compound class names aren't allowed");
-    } catch (InvalidSelectorException e) {
-      // This is expected
-    }
-
-    try {
-      driver.findElements(By.className("a b"));
-      fail("Compound class names aren't allowed");
-    } catch (InvalidSelectorException e) {
-      // This is expected
-    }
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
-    driver.get(pages.javascriptPage);
-
-    WebElement element = driver.findElement(By.linkText("No href"));
-    element.click();
-
-    // if any exception is thrown, we won't get this far. Sanity check
-    waitFor(pageTitleToBe(driver, "Changed"));
-
-    assertEquals("Changed", driver.getTitle());
-  }
-
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
-
-    try {
-      // Search for anything. This used to cause an IllegalStateException in IE.
-      driver.findElement(By.tagName("a"));
-      fail("Should not have been able to find a link");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
+    driver.findElement(By.tagName("a"));
   }
 
   @Ignore({IPHONE})
   @NeedsFreshDriver
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
-
-    try {
-      driver.findElement(By.id("nonExistantButton"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @JavascriptEnabled
-  @Test
-  @Ignore(MARIONETTE)
-  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
-    driver.get(pages.javascriptPage);
-
-    WebElement toBeDeleted = driver.findElement(By.id("deleted"));
-    assertTrue(toBeDeleted.isDisplayed());
-
-    driver.findElement(By.id("delete")).click();
-
-    boolean wasStale = waitFor(elementToBeStale(toBeDeleted));
-    assertTrue("Element should be stale at this point", wasStale);
-  }
-
-  private Callable<Boolean> elementToBeStale(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        try {
-          element.isDisplayed();
-          return false;
-        } catch (StaleElementReferenceException e) {
-          return true;
-        }
-      }
-    };
-  }
-
-  @Test
-  public void testFindingALinkByXpathUsingContainsKeywordShouldWork() {
-    driver.get(pages.nestedPage);
-
-    try {
-      driver.findElement(By.xpath("//a[contains(.,'hello world')]"));
-    } catch (Exception e) {
-      fail("Should not have thrown an exception");
-    }
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindAnElementByCssSelector() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector("div.content"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindElementsByCssSelector() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.cssSelector("p"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindAnElementByCompoundCssSelector() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement element = driver.findElement(By.cssSelector("div.extraDiv, div.content"));
-    assertEquals("content", element.getAttribute("class"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindElementsByCompoundCssSelector() {
-    driver.get(pages.xhtmlTestPage);
-    List<WebElement> elements = driver.findElements(By.cssSelector("div.extraDiv, div.content"));
-    assertEquals("content", elements.get(0).getAttribute("class"));
-    assertEquals("extraDiv", elements.get(1).getAttribute("class"));
-  }
-
-  @Test
-  public void testFindingByTagNameShouldNotIncludeParentElementIfSameTagType() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement parent = driver.findElement(By.id("my_span"));
-
-    assertEquals(2, parent.findElements(By.tagName("div")).size());
-    assertEquals(2, parent.findElements(By.tagName("span")).size());
-  }
-
-  @Test
-  public void testFindingByCssShouldNotIncludeParentElementIfSameTagType() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement parent = driver.findElement(By.cssSelector("div#parent"));
-    WebElement child = parent.findElement(By.cssSelector("div"));
-
-    assertEquals("child", child.getAttribute("id"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  @Ignore(value = {IE}, reason = "IE supports only short version option[selected]")
-  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
-    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
-    WebElement element = driver.findElement(By.cssSelector("option[selected='selected']"));
-    assertEquals("two", element.getAttribute("value"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
-    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
-    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
-    assertEquals("two", element.getAttribute("value"));
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page() {
-    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected_html4.html"));
-    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
-    assertEquals("two", element.getAttribute("value"));
+    driver.findElement(By.id("nonExistantButton"));
   }
 
   @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE}, reason = "Just not working")
@@ -615,14 +760,4 @@ public class ElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  @Ignore({OPERA, MARIONETTE})
-  public void findsByLinkTextOnXhtmlPage() {
-    assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it", isOldIe(driver));
-
-    driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
-    String linkText = "Foo";
-    WebElement element = driver.findElement(By.linkText(linkText));
-    assertEquals(linkText, element.getText());
-  }
 }

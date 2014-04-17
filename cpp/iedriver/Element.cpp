@@ -92,7 +92,7 @@ int Element::IsDisplayed(bool* result) {
   // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(true);
+  script_wrapper.AddArgument(false);
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
@@ -378,7 +378,9 @@ bool Element::IsHiddenByOverflow() {
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
   if (status_code == WD_SUCCESS) {
-    isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
+    std::string overflow_state = "";
+    script_wrapper.ConvertResultToString(&overflow_state);
+    isOverflow = (overflow_state == "scroll");
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
   }
@@ -474,8 +476,8 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
   } else {
     LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
     hr = element2->getBoundingClientRect(&rect);
-    if (this->HasOnlySingleTextNodeChild()) {
-      LOG(DEBUG) << "Element has only a single child text node, using text node boundaries";
+    if (this->HasFirstChildTextNodeOfMultipleChildren()) {
+      LOG(DEBUG) << "Element has multiple children, but the first child is a text node, using text node boundaries";
       // Note that since subsequent statements in this method use the HTMLRect
       // object, we will update that object with the values of the text node.
       LocationInfo text_node_location;
@@ -814,10 +816,12 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
                 << "but getting the documentElement property failed, or the "
                 << "doctype has thrown the browser into pre-IE6 rendering. "
                 << "The view port calculation may be inaccurate";
-      int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-      window_width -= vertical_scrollbar_width;
       LocationInfo document_info;
       DocumentHost::GetDocumentDimensions(doc, &document_info);
+      if (document_info.height > window_height) {
+        int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+        window_width -= vertical_scrollbar_width;
+      }
       if (document_info.width > window_width) {
         int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
         window_height -= horizontal_scrollbar_height;
@@ -1022,7 +1026,7 @@ bool Element::IsAttachedToDom() {
   return false;
 }
 
-bool Element::HasOnlySingleTextNodeChild() {
+bool Element::HasFirstChildTextNodeOfMultipleChildren() {
   CComPtr<IHTMLDOMNode> element_node;
   HRESULT hr = this->element_.QueryInterface<IHTMLDOMNode>(&element_node);
   if (FAILED(hr)) {
@@ -1047,6 +1051,11 @@ bool Element::HasOnlySingleTextNodeChild() {
     return false;
   }
 
+  // If the element has no children, then it has no single text node child.
+  // If the element has only one child, then the element itself should be seen
+  // as the correct size by the caller. Only in the case where we have multiple
+  // children, and the first is a text element containing non-whitespace text
+  // should we have to worry about using the text node as the focal point.
   if (length > 1) {
     CComPtr<IDispatch> child_dispatch;
     hr = child_nodes->item(0, &child_dispatch);
@@ -1070,7 +1079,25 @@ bool Element::HasOnlySingleTextNodeChild() {
     }
 
     if (node_type == 3) {
-      return true;
+      CComVariant node_value;
+      hr = child_node->get_nodeValue(&node_value);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Call to get_nodeValue on child node failed.";
+        return false;
+      }
+
+      if (node_value.vt != VT_BSTR) {
+        // nodeValue is not a string.
+        return false;
+      }
+
+      CComBSTR bstr = node_value.bstrVal;
+      std::wstring node_text = node_value.bstrVal;
+      if (StringUtilities::Trim(node_text) != L"") {
+        // This element has a text node only if the text node
+        // contains actual text other than whitespace.
+        return true;
+      }
     }
   }
   return false;

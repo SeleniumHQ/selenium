@@ -16,12 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemoteTouchScreen implements org.openqa.selenium.interactions.TouchScreen {
+public class RemoteTouchScreen implements TouchScreen {
 
   private final ExecuteMethod executeMethod;
 

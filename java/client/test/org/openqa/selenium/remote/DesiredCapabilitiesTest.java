@@ -19,6 +19,8 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
@@ -28,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(JUnit4.class)
 public class DesiredCapabilitiesTest {
   @Test
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {

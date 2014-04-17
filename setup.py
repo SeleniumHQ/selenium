@@ -28,7 +28,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass':{'install': install},
     'name':'selenium',
-    'version':"2.35.0",
+    'version':"2.41.0",
     'description':'Python bindings for Selenium',
     'long_description':open(join(abspath(dirname(__file__)), "py", "README")).read(),
     'url':'http://code.google.com/p/selenium/',
@@ -73,7 +73,7 @@ setup_args = {
               'selenium.webdriver.remote',
               'selenium.webdriver.support', ],
     'package_data':{
-        'selenium.webdriver.firefox': ['*.xpi'],
+        'selenium.webdriver.firefox': ['*.xpi', 'webdriver_prefs.json'],
     },
     'data_files':[('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
             ('selenium/webdriver/firefox/amd64', ['py/selenium/webdriver/firefox/amd64/x_ignore_nofocus.so'])],

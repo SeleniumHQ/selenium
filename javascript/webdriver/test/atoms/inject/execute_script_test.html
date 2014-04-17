@@ -66,6 +66,19 @@ limitations under the License.
       assertEquals("here", getValue(webdriver.atoms.inject.executeScript(func, [])));
     }
 
+    function testCanExecuteScriptsThatReturnPrimitives() {
+      var execute = webdriver.atoms.inject.executeScript;
+      assertEquals(2, getValue(execute('return 1 + 1;', [])));
+      assertEquals('hello', getValue(execute('return "hello";', [])));
+      assertTrue(getValue(execute('return true;', [])));
+    }
+
+    function testCanReturnElements() {
+      var execute = webdriver.atoms.inject.executeScript;
+      var webElement = getValue(execute('return document.body', []));
+      assertEquals(document.body, bot.inject.cache.getElement(webElement['ELEMENT']));
+    }
+
     function getValue(rawResult) {
       return goog.json.parse(rawResult).value;
     }

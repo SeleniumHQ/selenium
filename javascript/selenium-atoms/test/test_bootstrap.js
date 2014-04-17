@@ -54,7 +54,7 @@
   // loaded, NOT alphabetical order.
   var files = [
     '../../../third_party/closure/goog/base.js',
-    '../../deps.js' 
+    '../../deps.js'
   ];
 
   for (var j = 0; j < files.length; j++) {

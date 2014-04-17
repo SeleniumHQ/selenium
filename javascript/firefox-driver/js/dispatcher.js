@@ -60,9 +60,7 @@ Dispatcher.executeAs = function(name) {
   return function(request, response) {
     var json = {
       'name': name,
-      'sessionId': {
-        'value': request.getAttribute('sessionId')
-      },
+      'sessionId': request.getAttribute('sessionId'),
       'parameters': JSON.parse(request.getBody() || '{}')
     };
 
@@ -225,6 +223,8 @@ Dispatcher.prototype.init_ = function() {
 
   this.bind_('/session/:sessionId/frame').
       on(Request.Method.POST, Dispatcher.executeAs('switchToFrame'));
+  this.bind_('/session/:sessionId/frame/parent').
+      on(Request.Method.POST, Dispatcher.executeAs('switchToParentFrame'));
   this.bind_('/session/:sessionId/window').
       on(Request.Method.POST, Dispatcher.executeAs('switchToWindow')).
       on(Request.Method.DELETE, Dispatcher.executeAs('close'));
@@ -261,11 +261,11 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/click').
       on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/moveto').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseMoveTo'));
   this.bind_('/session/:sessionId/buttondown').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseDown'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonDown'));
   this.bind_('/session/:sessionId/buttonup').
-      on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
+      on(Request.Method.POST, Dispatcher.executeAs('mouseButtonUp'));
   this.bind_('/session/:sessionId/click').
       on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
   this.bind_('/session/:sessionId/doubleclick').

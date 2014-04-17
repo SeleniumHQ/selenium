@@ -34,14 +34,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.StdOutHandler;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 
 import java.util.HashSet;
 import java.util.Set;

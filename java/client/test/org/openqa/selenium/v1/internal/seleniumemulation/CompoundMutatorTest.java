@@ -18,8 +18,8 @@ package org.openqa.selenium.v1.internal.seleniumemulation;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.internal.seleniumemulation.CompoundMutator;
-import org.openqa.selenium.internal.seleniumemulation.ScriptMutator;
+import com.thoughtworks.selenium.webdriven.CompoundMutator;
+import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import static org.junit.Assert.assertTrue;
 

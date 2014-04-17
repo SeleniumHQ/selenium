@@ -63,7 +63,7 @@
 <span class="c"># limitations under the License.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The By implemention.</span>
+<span class="sd">The By implementation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="By"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By">[docs]</a><span class="k">class</span> <span class="nc">By</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -78,7 +78,14 @@
     <span class="n">NAME</span> <span class="o">=</span> <span class="s">&quot;name&quot;</span>
     <span class="n">TAG_NAME</span> <span class="o">=</span> <span class="s">&quot;tag name&quot;</span>
     <span class="n">CLASS_NAME</span> <span class="o">=</span> <span class="s">&quot;class name&quot;</span>
-    <span class="n">CSS_SELECTOR</span> <span class="o">=</span> <span class="s">&quot;css selector&quot;</span></div>
+    <span class="n">CSS_SELECTOR</span> <span class="o">=</span> <span class="s">&quot;css selector&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="By.is_valid"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.is_valid">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span></div></div>
 </pre></div>
 
           </div>

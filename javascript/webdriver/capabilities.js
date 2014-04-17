@@ -31,11 +31,12 @@ webdriver.Browser = {
   CHROME: 'chrome',
   FIREFOX: 'firefox',
   INTERNET_EXPLORER: 'internet explorer',
-  IPAD: 'ipad',
-  IPHONE: 'iphone',
+  IPAD: 'iPad',
+  IPHONE: 'iPhone',
   OPERA: 'opera',
   PHANTOM_JS: 'phantomjs',
-  SAFARI: 'safari'
+  SAFARI: 'safari',
+  HTMLUNIT: 'htmlunit'
 };
 
 
@@ -230,6 +231,26 @@ webdriver.Capabilities.phantomjs = function() {
 webdriver.Capabilities.safari = function() {
   return new webdriver.Capabilities().
       set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI);
+};
+
+
+/**
+ * @return {!webdriver.Capabilities} A basic set of capabilities for HTMLUnit.
+ */
+webdriver.Capabilities.htmlunit = function() {
+  return new webdriver.Capabilities().
+      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.HTMLUNIT);
+};
+
+
+/**
+ * @return {!webdriver.Capabilities} A basic set of capabilities for HTMLUnit
+ *     with enabled Javascript.
+ */
+webdriver.Capabilities.htmlunitwithjs = function() {
+  return new webdriver.Capabilities().
+      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.HTMLUNIT).
+      set(webdriver.Capability.SUPPORTS_JAVASCRIPT, true);
 };
 
 

@@ -147,8 +147,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(GET_TITLE, get("/session/:sessionId/title"))
         .put(GET_PAGE_SOURCE, get("/session/:sessionId/source"))
         .put(SCREENSHOT, get("/session/:sessionId/screenshot"))
-        .put(SET_BROWSER_VISIBLE, post("/session/:sessionId/visible"))
-        .put(IS_BROWSER_VISIBLE, get("/session/:sessionId/visible"))
         .put(FIND_ELEMENT, post("/session/:sessionId/element"))
         .put(FIND_ELEMENTS, post("/session/:sessionId/elements"))
         .put(GET_ACTIVE_ELEMENT, post("/session/:sessionId/element/active"))
@@ -177,6 +175,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(DELETE_ALL_COOKIES, delete("/session/:sessionId/cookie"))
         .put(DELETE_COOKIE, delete("/session/:sessionId/cookie/:name"))
         .put(SWITCH_TO_FRAME, post("/session/:sessionId/frame"))
+        .put(SWITCH_TO_PARENT_FRAME, post("/session/:sessionId/frame/parent"))
         .put(SWITCH_TO_WINDOW, post("/session/:sessionId/window"))
         .put(GET_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"))
         .put(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"))
@@ -196,6 +195,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"))
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
+
+        .put(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"))
+        .put(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"))
+        .put(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"))
 
             // TODO (user): Would it be better to combine this command with
             // GET_LOCAL_STORAGE_SIZE?
@@ -273,7 +276,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
-        throw new SessionNotFoundException("Session ID is null");
+        throw new SessionNotFoundException(
+            "Session ID is null. Using WebDriver after calling quit()?");
       }
     }
 

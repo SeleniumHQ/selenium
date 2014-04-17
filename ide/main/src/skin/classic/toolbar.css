@@ -4,14 +4,10 @@
   list-style-image: url(chrome://selenium-ide/skin/selenium-ide-24.png);
 }
 
-toolbar[iconsize="small"] #selenium-ide-button > .toolbarbutton-icon {
+toolbar[iconsize="small"] #selenium-ide-button {
     list-style-image: url(chrome://selenium-ide/skin/selenium-ide-16.png);
-    width: 16px;
-    height: 16px;
 }
 
-toolbar[iconsize="large"] #selenium-ide-button > .toolbarbutton-icon {
+toolbar[iconsize="large"] #selenium-ide-button {
     list-style-image: url(chrome://selenium-ide/skin/selenium-ide-24.png);
-    width: 24px;
-    height: 24px;
 }

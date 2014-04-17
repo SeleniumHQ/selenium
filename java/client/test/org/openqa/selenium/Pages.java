@@ -30,8 +30,8 @@ public class Pages {
   public String clickJacker;
   public String clicksPage;
   public String colorPage;
-  public String deletingFrame;
   public String documentWrite;
+  public String dragDropOverflow;
   public String draggableLists;
   public String dragAndDropPage;
   public String droppableItems;
@@ -53,6 +53,7 @@ public class Pages {
   public String mapVisibilityPage;
   public String metaRedirectPage;
   public String missedJsReferencePage;
+  public String mouseOverPage;
   public String mouseTrackerPage;
   public String nestedPage;
   public String readOnlyPage;
@@ -72,6 +73,7 @@ public class Pages {
   public String underscorePage;
   public String unicodeLtrPage;
   public String uploadPage;
+  public String userDefinedProperty;
   public String veryLargeCanvas;
   public String xhtmlFormPage;
   public String xhtmlTestPage;
@@ -88,7 +90,7 @@ public class Pages {
     clickEventPage = appServer.whereIs("clickEventPage.html");
     clicksPage = appServer.whereIs("clicks.html");
     colorPage = appServer.whereIs("colorPage.html");
-    deletingFrame = appServer.whereIs("deletingFrame.htm");
+    dragDropOverflow = appServer.whereIs("dragDropOverflow.html");
     draggableLists = appServer.whereIs("draggableLists.html");
     dragAndDropPage = appServer.whereIs("dragAndDropTest.html");
     droppableItems = appServer.whereIs("droppableItems.html");
@@ -112,6 +114,7 @@ public class Pages {
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
     missedJsReferencePage = appServer.whereIs("missedJsReference.html");
+    mouseOverPage = appServer.whereIs("mouseOver.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
     nestedPage = appServer.whereIs("nestedElements.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
@@ -131,6 +134,7 @@ public class Pages {
     underscorePage = appServer.whereIs("underscore.html");
     unicodeLtrPage = appServer.whereIs("utf8/unicode_ltr.html");
     uploadPage = appServer.whereIs("upload.html");
+    userDefinedProperty = appServer.whereIs("userDefinedProperty.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
   }

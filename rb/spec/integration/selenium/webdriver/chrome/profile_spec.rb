@@ -5,15 +5,17 @@ module Selenium
       describe Profile do
         let(:profile) { Profile.new }
 
-        it "launches Chrome with a custom profile" do
-          profile['autofill.disabled'] = true
-
-          begin
-            driver = WebDriver.for :chrome, :profile => profile
-          ensure
-            driver.quit if driver
-          end
-        end
+        # Won't work on ChromeDriver 2.0
+        #
+        # it "launches Chrome with a custom profile" do
+        #   profile['autofill.disabled'] = true
+        #
+        #   begin
+        #     driver = WebDriver.for :chrome, :profile => profile
+        #   ensure
+        #     driver.quit if driver
+        #   end
+        # end
 
         it "should be serializable to JSON" do
           profile['foo.boolean'] = true
@@ -35,7 +37,7 @@ module Selenium
 
           profile.add_extension(ext_path)
 
-          ext_file = mock('file')
+          ext_file = double('file')
           File.should_receive(:open).with(ext_path, "rb").and_yield ext_file
           ext_file.should_receive(:read).and_return "test"
 
@@ -44,7 +46,7 @@ module Selenium
 
           profile.as_json().should == {
             'zip' => "ignored",
-            'extensions' => [Base64.strict_encode64 "test"]
+            'extensions' => [Base64.strict_encode64("test")]
           }
         end
 

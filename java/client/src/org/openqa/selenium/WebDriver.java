@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.net.URL;
 import java.util.List;
@@ -141,7 +142,7 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Return a set of window handles which can be used to iterate over all open windows of this
-   * webdriver instance by passing them to {@link #switchTo().window(String)}
+   * WebDriver instance by passing them to {@link #switchTo()}.{@link Options#window()}
    * 
    * @return A set of window handles which can be used to iterate over all open windows.
    */
@@ -246,7 +247,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Gets the {@link Logs} interface used to fetch different types of logs.
      *
-     * <p>To set the logging preferences {@see LoggingPreferences}.
+     * <p>To set the logging preferences {@link LoggingPreferences}.
      *
      * @return A Logs interface.
      */
@@ -295,7 +296,7 @@ public interface WebDriver extends SearchContext {
      *
      * @param time The timeout value.
      * @param unit The unit of time.
-     * @return
+     * @return A Timeouts interface.
      */
     Timeouts pageLoadTimeout(long time, TimeUnit unit);
   }
@@ -337,6 +338,14 @@ public interface WebDriver extends SearchContext {
      * @see WebDriver#findElement(By)
      */
     WebDriver frame(WebElement frameElement);
+
+    /**
+     * Change focus to the parent context. If the current context is the top level browsing context,
+     * the context remains unchanged.
+     *
+     * @return This driver focused on the parent frame
+     */
+    WebDriver parentFrame();
 
     /**
      * Switch the focus of future commands for this driver to the window with the given name/handle.

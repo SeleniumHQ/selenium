@@ -45,12 +45,13 @@ var CHROMEDRIVER_EXE =
  * @constructor
  */
 var ServiceBuilder = function(opt_exe) {
+  /** @private {string} */
   this.exe_ = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
   if (!this.exe_) {
     throw Error(
         'The ChromeDriver could not be found on the current PATH. Please ' +
         'download the latest version of the ChromeDriver from ' +
-        'http://code.google.com/p/chromedriver/downloads/list and ensure ' +
+        'http://chromedriver.storage.googleapis.com/index.html and ensure ' +
         'it can be found on your PATH.');
   }
 
@@ -58,6 +59,7 @@ var ServiceBuilder = function(opt_exe) {
     throw Error('File does not exist: ' + this.exe_);
   }
 
+  /** @private {!Array.<string>} */
   this.args_ = [];
   this.stdio_ = 'ignore';
 };
@@ -250,11 +252,11 @@ Options.fromCapabilities = function(capabilities) {
     options = o;
   } else if (o) {
     options.
-        addArguments(o.args).
-        addExtensions(o.extensions).
+        addArguments(o.args || []).
+        addExtensions(o.extensions || []).
+        detachDriver(!!o.detach).
         setChromeBinaryPath(o.binary).
         setChromeLogFile(o.logFile).
-        detachDriver(o.detach).
         setLocalState(o.localState).
         setUserPreferences(o.prefs);
   }

@@ -15,19 +15,21 @@
 
 /**
  * @fileoverview Provides wrappers around the following global functions from
- * Mocha's BDD interface:
- *     after
- *     afterEach
- *     before
- *     beforeEach
- *     it
- *     it.only
- *     it.skip
- *     xit
+ * <a href="http://visionmedia.github.io/mocha/">Mocha's BDD interface</a>:
+ * <ul>
+ *   <li>after
+ *   <li>afterEach
+ *   <li>before
+ *   <li>beforeEach
+ *   <li>it
+ *   <li>it.only
+ *   <li>it.skip
+ *   <li>xit
+ * </ul>
  *
- * The provided wrappers leverage the webdriver.promise.ControlFlow to simplify
- * writing asynchronous tests:
- *
+ * <p>The provided wrappers leverage the webdriver.promise.ControlFlow to
+ * simplify writing asynchronous tests:
+ * <pre><code>
  * var webdriver = require('selenium-webdriver'),
  *     remote = require('selenium-webdriver/remote'),
  *     test = require('selenium-webdriver/testing');
@@ -63,16 +65,18 @@
  *     }, 1000, 'Waiting for title to update');
  *   });
  * });
+ * </code></pre>
  *
- * You may conditionally suppress a test function using the exported
+ * <p>You may conditionally suppress a test function using the exported
  * "ignore" function. If the provided predicate returns true, the attached
  * test case will be skipped:
- *
+ * <pre><code>
  *   test.ignore(maybe()).it('is flaky', function() {
  *     if (Math.random() < 0.5) throw Error();
  *   });
  *
  *   function maybe() { return Math.random() < 0.5; }
+ * </code></pre>
  */
 
 var flow = require('..').promise.controlFlow();
@@ -116,7 +120,13 @@ function wrapped(globalFn) {
   function asyncTestFn(fn) {
     return function(done) {
       this.timeout(0);
-      flow.execute(fn).then(seal(done), done);
+      var timeout = this.timeout;
+      this.timeout = undefined;  // Do not let tests change the timeout.
+      try {
+        flow.execute(fn.bind(this)).then(seal(done), done);
+      } finally {
+        this.timeout = timeout;
+      }
     };
   }
 }
@@ -127,8 +137,8 @@ function wrapped(globalFn) {
  * true.
  * @param {function(): boolean} predicateFn A predicate to call to determine
  *     if the test should be suppressed. This function MUST be synchronous.
- * @return {!Object} An object with wrapped versions of exports.it and
- *     exports.describe that ignore tests as indicated by the predicate.
+ * @return {!Object} An object with wrapped versions of {@link #it()} and
+ *     {@link #describe()} that ignore tests as indicated by the predicate.
  */
 function ignore(predicateFn) {
   var describe = wrap(exports.xdescribe, exports.describe);
@@ -156,18 +166,70 @@ function ignore(predicateFn) {
 
 // PUBLIC API
 
-
+/**
+ * Registers a new test suite.
+ * @param {string} name The suite name.
+ * @param {function()=} fn The suite function, or {@code undefined} to define
+ *     a pending test suite.
+ */
 exports.describe = global.describe;
+
+/**
+ * Defines a suppressed test suite.
+ * @param {string} name The suite name.
+ * @param {function()=} fn The suite function, or {@code undefined} to define
+ *     a pending test suite.
+ */
 exports.xdescribe = global.xdescribe;
 exports.describe.skip = global.describe.skip;
 
+/**
+ * Register a function to call after the current suite finishes.
+ * @param {function()} fn .
+ */
 exports.after = wrapped(global.after);
+
+/**
+ * Register a function to call after each test in a suite.
+ * @param {function()} fn .
+ */
 exports.afterEach = wrapped(global.afterEach);
+
+/**
+ * Register a function to call before the current suite starts.
+ * @param {function()} fn .
+ */
 exports.before = wrapped(global.before);
+
+/**
+ * Register a function to call before each test in a suite.
+ * @param {function()} fn .
+ */
 exports.beforeEach = wrapped(global.beforeEach);
 
+/**
+ * Add a test to the current suite.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
 exports.it = wrapped(global.it);
-exports.it.only = exports.iit = wrapped(global.it.only);
-exports.it.skip = exports.xit = wrapped(global.xit);
+
+/**
+ * An alias for {@link #it()} that flags the test as the only one that should
+ * be run within the current suite.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
+exports.iit = exports.it.only = wrapped(global.it.only);
+
+/**
+ * Adds a test to the current suite while suppressing it so it is not run.
+ * @param {string} name The test name.
+ * @param {function()=} fn The test function, or {@code undefined} to define
+ *     a pending test case.
+ */
+exports.xit = exports.it.skip = wrapped(global.xit);
 
 exports.ignore = ignore;

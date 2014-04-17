@@ -17,16 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
@@ -37,6 +27,17 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -101,7 +102,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public void process() {
     switch (request.getRequestType()) {
       case START_SESSION:
-        log.info("Got a request to create a new session: " + request.getDesiredCapabilities());
+        log.info("Got a request to create a new session: "
+                 + new DesiredCapabilities(request.getDesiredCapabilities()));
         try {
           registry.addNewSessionRequest(this);
           waitForSessionBound();
@@ -129,6 +131,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
           log.log(Level.WARNING, "The client is gone for session " + session + ", terminating");
           registry.terminate(session, SessionTerminationReason.CLIENT_GONE);
         } catch (SocketTimeoutException e){
+          log.log(Level.SEVERE, "Socket timed out for session " + session + ", " + e.getMessage());
           registry.terminate(session, SessionTerminationReason.SO_TIMEOUT);
         } catch (Throwable t) {
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);

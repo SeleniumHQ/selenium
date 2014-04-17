@@ -23,10 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
-    <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.remote.webelement" href="selenium.webdriver.remote.webelement.html" />
-    <link rel="prev" title="selenium.webdriver.remote.utils" href="selenium.webdriver.remote.utils.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.webelement.html" title="selenium.webdriver.remote.webelement"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.utils.html" title="selenium.webdriver.remote.utils"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,7 +49,7 @@
 <p>The WebDriver implementation.</p>
 <dl class="class">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em>, <em>keep_alive=False</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls a browser by sending commands to a remote server.
 This server is expected to be running the WebDriver wire protocol as defined
 here: <a class="reference external" href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">http://code.google.com/p/selenium/wiki/JsonWireProtocol</a></p>
@@ -295,6 +285,8 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_element_by_* instead of this.</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">WebElement</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -469,6 +461,8 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_elements_by_* instead of this.</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of WebElement</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -506,7 +500,7 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_css_selector(&#8216;#foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_css_selector(&#8216;.foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -1183,12 +1177,6 @@ driver.switch_to_frame(driver.find_elements_by_tag_name(&#8220;iframe&#8221;)[0]
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.remote.utils.html"
-                        title="previous chapter">selenium.webdriver.remote.utils</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.remote.webelement.html"
-                        title="next chapter">selenium.webdriver.remote.webelement</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/webdriver_remote/selenium.webdriver.remote.webdriver.txt"
@@ -1220,14 +1208,7 @@ driver.switch_to_frame(driver.find_elements_by_tag_name(&#8220;iframe&#8221;)[0]
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.webelement.html" title="selenium.webdriver.remote.webelement"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.remote.utils.html" title="selenium.webdriver.remote.utils"
-             >previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

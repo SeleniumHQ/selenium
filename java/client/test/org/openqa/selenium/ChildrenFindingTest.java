@@ -23,11 +23,14 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 
 public class ChildrenFindingTest extends JUnit4TestBase {
@@ -232,4 +235,106 @@ public class ChildrenFindingTest extends JUnit4TestBase {
 
     assertEquals(2, elements.size());
   }
+
+  @Test
+  public void testShouldBeAbleToFindChildrenOfANode() {
+    driver.get(pages.selectableItemsPage);
+    List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
+    WebElement head = elements.get(0);
+    List<WebElement> importedScripts = head.findElements(By.tagName("script"));
+    assertThat(importedScripts.size(), equalTo(3));
+  }
+
+  @Test
+  public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement table = driver.findElement(By.id("table"));
+    List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+    assertThat(rows.size(), equalTo(0));
+  }
+
+  @Test
+  public void testShouldFindGrandChildren() {
+    driver.get(pages.formPage);
+    WebElement form = driver.findElement(By.id("nested_form"));
+    form.findElement(By.name("x"));
+  }
+
+  @Test
+  public void testShouldNotFindElementOutSideTree() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.name("login"));
+    try {
+      element.findElement(By.name("x"));
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
+
+  @Test
+  public void testFindingByTagNameShouldNotIncludeParentElementIfSameTagType() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement parent = driver.findElement(By.id("my_span"));
+
+    assertEquals(2, parent.findElements(By.tagName("div")).size());
+    assertEquals(2, parent.findElements(By.tagName("span")).size());
+  }
+
+  @Test
+  public void testFindingByCssShouldNotIncludeParentElementIfSameTagType() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement parent = driver.findElement(By.cssSelector("div#parent"));
+    WebElement child = parent.findElement(By.cssSelector("div"));
+
+    assertEquals("child", child.getAttribute("id"));
+  }
+
+  @Ignore({REMOTE, MARIONETTE})
+  @Test
+  public void testFindMultipleElements() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    List<WebElement> elements =
+        elem.findElements(By.partialLinkText("link"));
+    assertNotNull(elements);
+    assertEquals(6, elements.size());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithLeadingSpaces() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with leading space"));
+    assertEquals("link with leading space", res.getText());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithTrailingSpace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with trailing space"));
+    assertEquals("link with trailing space", res.getText());
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement link = null;
+    try {
+      link = elem.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
+
 }

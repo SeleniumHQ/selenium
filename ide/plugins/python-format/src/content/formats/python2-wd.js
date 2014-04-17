@@ -202,68 +202,67 @@ function keyVariable(key) {
 }
 
 this.sendKeysMaping = {
-  BACK_SPACE: "BACK_SPACE",
+  BKSP: "BACK_SPACE",
   BACKSPACE: "BACK_SPACE",
   TAB: "TAB",
   ENTER: "ENTER",
   SHIFT: "SHIFT",
-  LEFT_SHIFT: "LEFT_SHIFT",
   CONTROL: "CONTROL",
-  LEFT_CONTROL: "LEFT_CONTROL",
+  CTRL: "CONTROL",
   ALT: "ALT",
-  LEFT_ALT: "LEFT_ALT",
   PAUSE: "PAUSE",
   ESCAPE: "ESCAPE",
   ESC: "ESCAPE",
   SPACE: "SPACE",
   PAGE_UP: "PAGE_UP",
+  PGUP: "PAGE_UP",
   PAGE_DOWN: "PAGE_DOWN",
+  PGDN: "PAGE_DOWN",
   END: "END",
   HOME: "HOME",
   LEFT: "LEFT",
-  ARROW_LEFT: "ARROW_LEFT",
   UP: "UP",
-  ARROW_UP: "ARROW_UP",
   RIGHT: "RIGHT",
-  ARROW_RIGHT: "ARROW_RIGHT",
   DOWN: "DOWN",
-  ARROW_DOWN: "ARROW_DOWN",
   INSERT: "INSERT",
+  INS: "INSERT",
   DELETE: "DELETE",
+  DEL: "DELETE",
   SEMICOLON: "SEMICOLON",
   EQUALS: "EQUALS",
 
   NUMPAD0: "NUMPAD0",
-  NUM_ZERO: "NUMPAD0",
+  N0: "NUMPAD0",
   NUMPAD1: "NUMPAD1",
-  NUM_ONE: "NUMPAD1",
+  N1: "NUMPAD1",
   NUMPAD2: "NUMPAD2",
-  NUM_TWO: "NUMPAD2",
+  N2: "NUMPAD2",
   NUMPAD3: "NUMPAD3",
-  NUM_THREE: "NUMPAD3",
+  N3: "NUMPAD3",
   NUMPAD4: "NUMPAD4",
-  NUM_FOUR: "NUMPAD4",
+  N4: "NUMPAD4",
   NUMPAD5: "NUMPAD5",
-  NUM_FIVE: "NUMPAD5",
+  N5: "NUMPAD5",
   NUMPAD6: "NUMPAD6",
-  NUM_SIX: "NUMPAD6",
+  N6: "NUMPAD6",
   NUMPAD7: "NUMPAD7",
-  NUM_SEVEN: "NUMPAD7",
+  N7: "NUMPAD7",
   NUMPAD8: "NUMPAD8",
-  NUM_EIGHT: "NUMPAD8",
+  N8: "NUMPAD8",
   NUMPAD9: "NUMPAD9",
-  NUM_NINE: "NUMPAD9",
+  N9: "NUMPAD9",
   MULTIPLY: "MULTIPLY",
-  NUM_MULTIPLY: "MULTIPLY",
+  MUL: "MULTIPLY",
   ADD: "ADD",
-  NUM_PLUS: "ADD",
+  PLUS: "ADD",
   SEPARATOR: "SEPARATOR",
+  SEP: "SEPARATOR",
   SUBTRACT: "SUBTRACT",
-  NUM_MINUS: "SUBTRACT",
+  MINUS: "SUBTRACT",
   DECIMAL: "DECIMAL",
-  NUM_PERIOD: "DECIMAL",
+  PERIOD: "DECIMAL",
   DIVIDE: "DIVIDE",
-  NUM_DIVISION: "DIVIDE",
+  DIV: "DIVIDE",
 
   F1: "F1",
   F2: "F2",
@@ -298,6 +297,7 @@ this.options = {
           'from selenium.webdriver.common.keys import Keys\n' +
           'from selenium.webdriver.support.ui import Select\n' +
           'from selenium.common.exceptions import NoSuchElementException\n' +
+          'from selenium.common.exceptions import NoAlertPresentException\n' +
           'import unittest, time, re\n' +
           '\n' +
           'class ${className}(unittest.TestCase):\n' +
@@ -502,7 +502,7 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit()";
 };
 
-WDAPI.Element.prototype.select = function(label) {
+WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'index') {
     return "Select(" + this.ref + ").select_by_index(" + selectLocator.string + ")";
   }

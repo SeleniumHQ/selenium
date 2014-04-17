@@ -20,10 +20,11 @@ package org.openqa.selenium.v1;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
 
 public class FastWebDriverBackedSeleniumTest {
 

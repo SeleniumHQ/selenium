@@ -210,7 +210,7 @@ public class FutureFileResource extends URLResource {
    */
   @Override
   public long lastModified() {
-    return System.currentTimeMillis() + (1000l * 3600l * 24l * 365l * 12l);
+    return System.currentTimeMillis() + (1000L * 3600L * 24L * 365L * 12L);
   }
 
   /* -------------------------------------------------------- */
@@ -336,7 +336,8 @@ public class FutureFileResource extends URLResource {
 
   /**
    * @param o
-   * @return
+   * @return <code>true</code> if passed object uses the same File object as
+   *         this instance or if the path to both files are equal.
    */
   @Override
   public boolean equals(Object o) {

@@ -1,3 +1,4 @@
+require 'pathname'
 require 'selenium/server'
 require 'selenium/webdriver/spec_support/test_environment'
 require 'selenium/webdriver/spec_support/guards'

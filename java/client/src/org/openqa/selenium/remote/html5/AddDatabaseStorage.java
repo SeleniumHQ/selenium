@@ -16,51 +16,37 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import com.google.common.base.Throwables;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.DatabaseStorage;
-import org.openqa.selenium.html5.ResultSet;
-import org.openqa.selenium.html5.ResultSetRows;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 public class AddDatabaseStorage implements AugmenterProvider {
 
+  @Override
   public Class<?> getDescribedInterface() {
     return DatabaseStorage.class;
   }
 
+  @Override
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
+      @Override
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
-        String databaseName = (String) args[0];
-        String query = (String) args[1];
-        Object[] arguments = (Object[]) args[2];
-
-        query = query.replaceAll("\"", "\\\"");
-        Iterable<Object> convertedArgs = Iterables.transform(
-            Lists.newArrayList(arguments), new WebElementToJsonConverter());
-
-        Map<String, ?> params = ImmutableMap.of(
-            "dbName", databaseName,
-            "query", query,
-            "args", Lists.newArrayList(convertedArgs));
-
-        Map<Object, Object> resultAsMap =
-            (Map<Object, Object>) executeMethod.execute(DriverCommand.EXECUTE_SQL, params);
-        ResultSet rs = new ResultSet(((Long) resultAsMap.get("insertId")).intValue(),
-            ((Long) resultAsMap.get("rowsAffected")).intValue(),
-            new ResultSetRows((List<Map<String, Object>>) resultAsMap.get("rows")));
-        return rs;
+        RemoteDatabaseStorage storage = new RemoteDatabaseStorage(executeMethod);
+        try {
+          return method.invoke(storage, args);
+        } catch (IllegalAccessException e) {
+          throw new WebDriverException(e);
+        } catch (InvocationTargetException e) {
+          throw Throwables.propagate(e.getCause());
+        }
       }
     };
   }

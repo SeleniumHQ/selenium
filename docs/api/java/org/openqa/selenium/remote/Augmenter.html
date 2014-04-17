@@ -84,7 +84,12 @@
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.BaseAugmenter</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.Augmenter</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -94,11 +99,11 @@
 <hr>
 <br>
 <pre>public class <span class="strong">Augmenter</span>
-extends java.lang.Object</pre>
+extends <a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">BaseAugmenter</a></pre>
 <div class="block">Enhance the interfaces implemented by an instance of the
  <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote"><code>RemoteWebDriver</code></a> based on the returned
  <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> of the driver.
- 
+
  Note: this class is still experimental. Use at your own risk.</div>
 </li>
 </ul>
@@ -136,41 +141,32 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#addDriverAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">addDriverAugmentation</a></strong>(java.lang.String&nbsp;capabilityName,
-                     <a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&nbsp;handlerClass)</code>
-<div class="block">Add a mapping between a capability name and the implementation of the interface that name
- represents for instances of <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a>.</div>
+<td class="colFirst"><code>protected &lt;X&gt;&nbsp;X</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#create(org.openqa.selenium.remote.RemoteWebDriver, java.util.Map, X)">create</a></strong>(<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;driver,
+      java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&gt;&nbsp;augmentors,
+      X&nbsp;objectToAugment)</code>
+<div class="block">Subclasses should perform the requested augmentation.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#addElementAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">addElementAugmentation</a></strong>(java.lang.String&nbsp;capabilityName,
-                      <a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&nbsp;handlerClass)</code>
-<div class="block">Add a mapping between a capability name and the implementation of the interface that name
- represents for instances of <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#augment(org.openqa.selenium.remote.RemoteWebElement)">augment</a></strong>(<a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a>&nbsp;element)</code>
-<div class="block">Enhance the interfaces implemented by this instance of WebElement iff that instance is a
- <a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote"><code>RemoteWebElement</code></a>.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#augment(org.openqa.selenium.WebDriver)">augment</a></strong>(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
-<div class="block">Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
- <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote"><code>RemoteWebDriver</code></a>.</div>
+<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#extractRemoteWebDriver(org.openqa.selenium.WebDriver)">extractRemoteWebDriver</a></strong>(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<div class="block">Subclasses should extract the remote webdriver or return null if it can't extract it.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected &lt;X&gt;&nbsp;X</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#create(org.openqa.selenium.remote.Augmenter.CompoundHandler, X)">create</a></strong>(org.openqa.selenium.remote.Augmenter.CompoundHandler&nbsp;handler,
-      X&nbsp;from)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/Augmenter.html#performAugmentation(org.openqa.selenium.remote.Augmenter.CompoundHandler, X)">performAugmentation</a></strong>(org.openqa.selenium.remote.Augmenter.CompoundHandler&nbsp;handler,
+                   X&nbsp;from)</code>&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.openqa.selenium.remote.BaseAugmenter">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">BaseAugmenter</a></h3>
+<code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#addDriverAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">addDriverAugmentation</a>, <a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#addElementAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">addElementAugmentation</a>, <a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#augment(org.openqa.selenium.remote.RemoteWebElement)">augment</a>, <a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#augment(org.openqa.selenium.WebDriver)">augment</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
 <!--   -->
@@ -209,84 +205,50 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="addDriverAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">
+<a name="create(org.openqa.selenium.remote.RemoteWebDriver,java.util.Map,java.lang.Object)">
+<!--   -->
+</a><a name="create(org.openqa.selenium.remote.RemoteWebDriver, java.util.Map, X)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addDriverAugmentation</h4>
-<pre>public&nbsp;void&nbsp;addDriverAugmentation(java.lang.String&nbsp;capabilityName,
-                         <a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&nbsp;handlerClass)</pre>
-<div class="block">Add a mapping between a capability name and the implementation of the interface that name
- represents for instances of <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a>. For example (@link
- CapabilityType#TAKES_SCREENSHOT} is represents the interface
- <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium"><code>TakesScreenshot</code></a>, which is implemented via the
- <code>AddTakesScreenshot</code> provider.
- 
- Note: This method is still experimental. Use at your own risk.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>capabilityName</code> - The name of the capability to model</dd><dd><code>handlerClass</code> - The provider of the interface and implementation</dd></dl>
+<h4>create</h4>
+<pre>protected&nbsp;&lt;X&gt;&nbsp;X&nbsp;create(<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;driver,
+           java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&gt;&nbsp;augmentors,
+           X&nbsp;objectToAugment)</pre>
+<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#create(org.openqa.selenium.remote.RemoteWebDriver, java.util.Map, X)">BaseAugmenter</a></code></strong></div>
+<div class="block">Subclasses should perform the requested augmentation.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#create(org.openqa.selenium.remote.RemoteWebDriver, java.util.Map, X)">create</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">BaseAugmenter</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>an augmented version of objectToAugment.</dd></dl>
 </li>
 </ul>
-<a name="addElementAugmentation(java.lang.String, org.openqa.selenium.remote.AugmenterProvider)">
+<a name="extractRemoteWebDriver(org.openqa.selenium.WebDriver)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addElementAugmentation</h4>
-<pre>public&nbsp;void&nbsp;addElementAugmentation(java.lang.String&nbsp;capabilityName,
-                          <a href="../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&nbsp;handlerClass)</pre>
-<div class="block">Add a mapping between a capability name and the implementation of the interface that name
- represents for instances of <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>. For example (@link
- CapabilityType#TAKES_SCREENSHOT} is represents the interface
- <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal"><code>FindsByCssSelector</code></a>, which is implemented via the
- <a href="../../../../org/openqa/selenium/remote/AddFindsByCss.html" title="class in org.openqa.selenium.remote"><code>AddFindsByCss</code></a> provider.
- 
- Note: This method is still experimental. Use at your own risk.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>capabilityName</code> - The name of the capability to model</dd><dd><code>handlerClass</code> - The provider of the interface and implementation</dd></dl>
+<h4>extractRemoteWebDriver</h4>
+<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;extractRemoteWebDriver(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#extractRemoteWebDriver(org.openqa.selenium.WebDriver)">BaseAugmenter</a></code></strong></div>
+<div class="block">Subclasses should extract the remote webdriver or return null if it can't extract it.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html#extractRemoteWebDriver(org.openqa.selenium.WebDriver)">extractRemoteWebDriver</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/BaseAugmenter.html" title="class in org.openqa.selenium.remote">BaseAugmenter</a></code></dd>
+</dl>
 </li>
 </ul>
-<a name="augment(org.openqa.selenium.WebDriver)">
+<a name="performAugmentation(org.openqa.selenium.remote.Augmenter.CompoundHandler,java.lang.Object)">
 <!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>augment</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;augment(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
-<div class="block">Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
- <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote"><code>RemoteWebDriver</code></a>.
- 
- The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
- implementing class to remain constant.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>driver</code> - The driver to enhance</dd>
-<dt><span class="strong">Returns:</span></dt><dd>A class implementing the described interfaces.</dd></dl>
-</li>
-</ul>
-<a name="augment(org.openqa.selenium.remote.RemoteWebElement)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>augment</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;augment(<a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a>&nbsp;element)</pre>
-<div class="block">Enhance the interfaces implemented by this instance of WebElement iff that instance is a
- <a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote"><code>RemoteWebElement</code></a>.
- 
- The WebElement that is returned may well be a dynamic proxy. You cannot rely on the concrete
- implementing class to remain constant.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>element</code> - The driver to enhance.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>A class implementing the described interfaces.</dd></dl>
-</li>
-</ul>
-<a name="create(org.openqa.selenium.remote.Augmenter.CompoundHandler,java.lang.Object)">
-<!--   -->
-</a><a name="create(org.openqa.selenium.remote.Augmenter.CompoundHandler, X)">
+</a><a name="performAugmentation(org.openqa.selenium.remote.Augmenter.CompoundHandler, X)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>create</h4>
-<pre>protected&nbsp;&lt;X&gt;&nbsp;X&nbsp;create(org.openqa.selenium.remote.Augmenter.CompoundHandler&nbsp;handler,
-           X&nbsp;from)</pre>
+<h4>performAugmentation</h4>
+<pre>protected&nbsp;&lt;X&gt;&nbsp;X&nbsp;performAugmentation(org.openqa.selenium.remote.Augmenter.CompoundHandler&nbsp;handler,
+                        X&nbsp;from)</pre>
 </li>
 </ul>
 </li>

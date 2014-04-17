@@ -90,18 +90,18 @@ webdriver.ActionSequence.prototype.perform = function() {
  * element, or an element (in which case the middle of the element is used).
  * @param {(!webdriver.WebElement|{x: number, y: number})} location The
  *     location to drag to, as either another WebElement or an offset in pixels.
- * @param {{x: number, y: number}=} opt_offset An optional offset, in pixels.
- *     Defaults to (0, 0).
+ * @param {{x: number, y: number}=} opt_offset If the target {@code location}
+ *     is defined as a {@link webdriver.WebElement}, this parameter defines an
+ *     offset within that element. The offset should be specified in pixels
+ *     relative to the top-left corner of the element's bounding box. If
+ *     omitted, the element's center will be used as the target offset.
  * @return {!webdriver.ActionSequence} A self reference.
  */
 webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
   var command = new webdriver.Command(webdriver.CommandName.MOVE_TO);
 
-  var offset = opt_offset || {x: 0, y: 0};
-
   if (goog.isNumber(location.x)) {
-    offset.x += location.x;
-    offset.y += location.y;
+    setOffset(/** @type {{x: number, y: number}} */(location));
   } else {
     // The interactions API expect the element ID to be encoded as a simple
     // string, not the usual JSON object.
@@ -110,13 +110,19 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
           return value['ELEMENT'];
         });
     command.setParameter('element', id);
+    if (opt_offset) {
+      setOffset(opt_offset);
+    }
   }
-
-  command.setParameter('xoffset', offset.x);
-  command.setParameter('yoffset', offset.y);
 
   this.schedule_('mouseMove', command);
   return this;
+
+  /** @param {{x: number, y: number}} offset The offset to use. */
+  function setOffset(offset) {
+    command.setParameter('xoffset', offset.x || 0);
+    command.setParameter('yoffset', offset.y || 0);
+  }
 };
 
 

@@ -22,11 +22,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 
+@RunWith(JUnit4.class)
 public class ExecutableTest {
 
   @Test

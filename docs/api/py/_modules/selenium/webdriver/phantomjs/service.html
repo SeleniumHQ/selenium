@@ -62,6 +62,8 @@
 <span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
@@ -106,8 +108,10 @@
 <span class="sd">           or when it can&#39;t connect to the service</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                            <span class="n">close_fds</span><span class="o">=</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;Windows&#39;</span><span class="p">,</span>
                                             <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">)</span>
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Unable to start phantomjs with ghostdriver.&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -138,7 +142,7 @@
         <span class="c">#Tell the Server to properly die in case</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">send_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="c"># kill may not be available under windows environment</span>

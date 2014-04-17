@@ -25,7 +25,7 @@ public class Color {
   private final int red;
   private final int green;
   private final int blue;
-  private final double alpha;
+  private double alpha;
 
   private static final Converter[] CONVERTERS = {
       new RgbConverter(),
@@ -58,6 +58,10 @@ public class Color {
     this.red = red;
     this.green = green;
     this.blue = blue;
+    this.alpha = alpha;
+  }
+
+  public void setOpacity(double alpha) {
     this.alpha = alpha;
   }
 

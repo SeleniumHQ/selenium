@@ -109,8 +109,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_DOWN</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">xcoord</span><span class="p">,</span>
-                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">ycoord</span><span class="p">}))</span>
+                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xcoord</span><span class="p">),</span>
+                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ycoord</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.move"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span><span class="p">):</span>
@@ -123,8 +123,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_MOVE</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">xcoord</span><span class="p">,</span>
-                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">ycoord</span><span class="p">}))</span>
+                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xcoord</span><span class="p">),</span>
+                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ycoord</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span><span class="p">):</span>
@@ -137,8 +137,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_UP</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">xcoord</span><span class="p">,</span>
-                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">ycoord</span><span class="p">}))</span>
+                <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xcoord</span><span class="p">),</span>
+                <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ycoord</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.scroll"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.scroll">[docs]</a>    <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
@@ -151,8 +151,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_SCROLL</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.scroll_from_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.scroll_from_element">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_from_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
@@ -167,8 +167,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_SCROLL</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="n">on_element</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.long_press"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.long_press">[docs]</a>    <span class="k">def</span> <span class="nf">long_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">):</span>
@@ -192,8 +192,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FLICK</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;xspeed&#39;</span><span class="p">:</span> <span class="n">xspeed</span><span class="p">,</span>
-                <span class="s">&#39;yspeed&#39;</span><span class="p">:</span> <span class="n">yspeed</span><span class="p">}))</span>
+                <span class="s">&#39;xspeed&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xspeed</span><span class="p">),</span>
+                <span class="s">&#39;yspeed&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yspeed</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="TouchActions.flick_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.touch_actions.html#selenium.webdriver.common.touch_actions.TouchActions.flick_element">[docs]</a>    <span class="k">def</span> <span class="nf">flick_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">,</span> <span class="n">speed</span><span class="p">):</span>
@@ -210,10 +210,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FLICK</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="n">on_element</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">,</span>
-                <span class="s">&#39;speed&#39;</span><span class="p">:</span> <span class="n">speed</span><span class="p">}))</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">),</span>
+                <span class="s">&#39;speed&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span><span class="p">)}))</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c"># Context manager so TouchActions can be used in a &#39;with .. as&#39; statements.</span></div>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="c"># Return created instance of self.</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">_value</span><span class="p">,</span> <span class="n">_traceback</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c"># Do nothing, does not require additional cleanup.</span></div>
 </pre></div>
 
           </div>

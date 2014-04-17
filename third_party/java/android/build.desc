@@ -1,6 +1,0 @@
-
-# android-14.jar is ICS
-java_library(name = "android",
-  deps = [
-    "android-14.jar"
-  ])

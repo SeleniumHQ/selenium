@@ -114,46 +114,46 @@ function build_sendkeys_maps() {
 //  add_sendkeys_key("NULL", '\uE000');
 //  add_sendkeys_key("CANCEL", '\uE001'); // ^break
 //  add_sendkeys_key("HELP", '\uE002');
-  add_sendkeys_key("BACK_SPACE", '\uE003', null, "BACKSPACE");
+  add_sendkeys_key("BACKSPACE", '\uE003', "BKSP");
   add_sendkeys_key("TAB", '\uE004');
 //  add_sendkeys_key("CLEAR", '\uE005');
 //  add_sendkeys_key("RETURN", '\uE006');
   add_sendkeys_key("ENTER", '\uE007');
-  add_sendkeys_key("SHIFT", '\uE008', "LEFT_SHIFT");
-  add_sendkeys_key("CONTROL", '\uE009', "LEFT_CONTROL");
-  add_sendkeys_key("ALT", '\uE00A', "LEFT_ALT");
+  add_sendkeys_key("SHIFT", '\uE008');
+  add_sendkeys_key("CONTROL", '\uE009', "CTRL");
+  add_sendkeys_key("ALT", '\uE00A');
   add_sendkeys_key("PAUSE", '\uE00B');
-  add_sendkeys_key("ESCAPE", '\uE00C', null, "ESC");
+  add_sendkeys_key("ESC", '\uE00C', "ESCAPE");
   add_sendkeys_key("SPACE", '\uE00D');
-  add_sendkeys_key("PAGE_UP", '\uE00E');
-  add_sendkeys_key("PAGE_DOWN", '\uE00F');
+  add_sendkeys_key("PAGE_UP", '\uE00E', "PGUP");
+  add_sendkeys_key("PAGE_DOWN", '\uE00F', "PGDN");
   add_sendkeys_key("END", '\uE010');
   add_sendkeys_key("HOME", '\uE011');
-  add_sendkeys_key("LEFT", '\uE012', "ARROW_LEFT");
-  add_sendkeys_key("UP", '\uE013', "ARROW_UP");
-  add_sendkeys_key("RIGHT", '\uE014', "ARROW_RIGHT");
-  add_sendkeys_key("DOWN", '\uE015', "ARROW_DOWN");
-  add_sendkeys_key("INSERT", '\uE016');
-  add_sendkeys_key("DELETE", '\uE017');
+  add_sendkeys_key("LEFT", '\uE012');
+  add_sendkeys_key("UP", '\uE013');
+  add_sendkeys_key("RIGHT", '\uE014');
+  add_sendkeys_key("DOWN", '\uE015');
+  add_sendkeys_key("INSERT", '\uE016', "INS");
+  add_sendkeys_key("DELETE", '\uE017', "DEL");
   add_sendkeys_key("SEMICOLON", '\uE018');
   add_sendkeys_key("EQUALS", '\uE019');
 
-  add_sendkeys_key("NUMPAD0", '\uE01A', null, "NUM_ZERO");  // number pad keys
-  add_sendkeys_key("NUMPAD1", '\uE01B', null, "NUM_ONE");
-  add_sendkeys_key("NUMPAD2", '\uE01C', null, "NUM_TWO");
-  add_sendkeys_key("NUMPAD3", '\uE01D', null, "NUM_THREE");
-  add_sendkeys_key("NUMPAD4", '\uE01E', null, "NUM_FOUR");
-  add_sendkeys_key("NUMPAD5", '\uE01F', null, "NUM_FIVE");
-  add_sendkeys_key("NUMPAD6", '\uE020', null, "NUM_SIX");
-  add_sendkeys_key("NUMPAD7", '\uE021', null, "NUM_SEVEN");
-  add_sendkeys_key("NUMPAD8", '\uE022', null, "NUM_EIGHT");
-  add_sendkeys_key("NUMPAD9", '\uE023', null, "NUM_NINE");
-  add_sendkeys_key("MULTIPLY", '\uE024', null, "NUM_MULTIPLY");
-  add_sendkeys_key("ADD", '\uE025', null, "NUM_PLUS");
-  add_sendkeys_key("SEPARATOR", '\uE026');
-  add_sendkeys_key("SUBTRACT", '\uE027', null, "NUM_MINUS");
-  add_sendkeys_key("DECIMAL", '\uE028', null, "NUM_PERIOD");
-  add_sendkeys_key("DIVIDE", '\uE029', null, "NUM_DIVISION");
+  add_sendkeys_key("NUMPAD0", '\uE01A', "N0", "NUM_ZERO");  // number pad keys
+  add_sendkeys_key("NUMPAD1", '\uE01B', "N1", "NUM_ONE");
+  add_sendkeys_key("NUMPAD2", '\uE01C', "N2", "NUM_TWO");
+  add_sendkeys_key("NUMPAD3", '\uE01D', "N3", "NUM_THREE");
+  add_sendkeys_key("NUMPAD4", '\uE01E', "N4", "NUM_FOUR");
+  add_sendkeys_key("NUMPAD5", '\uE01F', "N5", "NUM_FIVE");
+  add_sendkeys_key("NUMPAD6", '\uE020', "N6", "NUM_SIX");
+  add_sendkeys_key("NUMPAD7", '\uE021', "N7", "NUM_SEVEN");
+  add_sendkeys_key("NUMPAD8", '\uE022', "N8", "NUM_EIGHT");
+  add_sendkeys_key("NUMPAD9", '\uE023', "N9", "NUM_NINE");
+  add_sendkeys_key("MULTIPLY", '\uE024', "MUL", "NUM_MULTIPLY");
+  add_sendkeys_key("ADD", '\uE025', "PLUS", "NUM_PLUS");
+  add_sendkeys_key("SEPARATOR", '\uE026', "SEP");
+  add_sendkeys_key("SUBTRACT", '\uE027', "MINUS", "NUM_MINUS");
+  add_sendkeys_key("DECIMAL", '\uE028', "PERIOD", "NUM_PERIOD");
+  add_sendkeys_key("DIVIDE", '\uE029', "DIV", "NUM_DIVISION");
 
   add_sendkeys_key("F1", '\uE031');  // function keys
   add_sendkeys_key("F2", '\uE032');

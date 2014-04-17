@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.base.Optional;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -42,6 +44,14 @@ import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
+
+  /**
+   * System property that defines the location of the webdriver.xpi browser extension to install
+   * in the browser. If not set, the prebuilt extension bundled with this class will be used
+   * instead.
+   */
+  public static final String FIREFOX_DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
+
   private final static int BUFFER_SIZE = 4096;
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
@@ -67,6 +77,8 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   }
 
   public void start() throws IOException {
+    addWebDriverExtensionIfNeeded();
+
     int port = 0;
 
     lock.lock(connectTimeout);
@@ -127,6 +139,26 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     } finally {
       lock.unlock();
     }
+  }
+
+  protected void addWebDriverExtensionIfNeeded() {
+    if (profile.containsWebDriverExtension()) {
+      return;
+    }
+    profile.addExtension("webdriver", loadCustomExtension().or(loadDefaultExtension()));
+  }
+
+  private static Optional<Extension> loadCustomExtension() {
+    if (System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY) != null) {
+      File xpi = new File(System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY));
+      return Optional.of((Extension) new FileExtension(xpi));
+    }
+    return Optional.absent();
+  }
+
+  private static Extension loadDefaultExtension() {
+    return new ClasspathExtension(FirefoxProfile.class,
+        "/" + FirefoxProfile.class.getPackage().getName().replace(".", "/") + "/webdriver.xpi");
   }
 
   public Response execute(Command command) throws IOException {

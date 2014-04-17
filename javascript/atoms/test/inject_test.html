@@ -59,9 +59,6 @@ limitations under the License.
 
       // Delete the cache in our test frame, if it was created.
       frameDoc[bot.inject.cache.CACHE_KEY_] = null;
-
-      // Remove any event listeners.
-      goog.events.removeAllNativeListeners();
     }
 
     function testAddWindowToCache() {
@@ -94,7 +91,7 @@ limitations under the License.
       var id = wrapped[bot.inject.WINDOW_KEY];
       var res = bot.inject.cache.getElement(id);
       assertEquals(frameWin, res);
-      assertEquals(frameWin, bot.inject.unwrapValue_(wrapped));
+      assertEquals(frameWin, bot.inject.unwrapValue(wrapped));
     }
 
 
@@ -127,7 +124,6 @@ limitations under the License.
 
     function testShouldThrowIfCachedElementIsNoLongerAttachedToTheDom() {
       if (goog.userAgent.IE) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // TODO: Don't skip this.
         return;
       }
@@ -199,7 +195,7 @@ limitations under the License.
     function testShouldBeAbleToUnWrapWrappedValues() {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -208,7 +204,7 @@ limitations under the License.
       var unwrapped = [123, 'abc', null, [document.body, null,
           [document.body]]];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -216,7 +212,7 @@ limitations under the License.
     function testShouldBeAbleToUnWrapNestedObjects() {
       var unwrapped = {'foo': {'bar': document.body}};
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
 
       assertTrue(goog.object.containsKey(roundTripped, 'foo'));
       var foo = roundTripped['foo'];
@@ -235,9 +231,9 @@ limitations under the License.
 
       // Should not be able to unwrap using our document since the element
       // was cached on its ownerDocument.
-      assertThrows(goog.partial(bot.inject.unwrapValue_, wrapped));
+      assertThrows(goog.partial(bot.inject.unwrapValue, wrapped));
 
-      var unwrapped = bot.inject.unwrapValue_(wrapped, frameDoc);
+      var unwrapped = bot.inject.unwrapValue(wrapped, frameDoc);
       assertEquals(frameDoc.body, unwrapped);
     }
 
@@ -423,7 +419,6 @@ limitations under the License.
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO: Don't skip this.
         return;
@@ -463,7 +458,6 @@ limitations under the License.
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO: Don't skip this.
         return;
@@ -521,7 +515,6 @@ limitations under the License.
 
     function testCorrectlyUnwrapsArgsForInjectedScripts() {
       if (goog.userAgent.IE) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // TODO: Don't skip this.
         return;
       }
@@ -547,7 +540,6 @@ limitations under the License.
 
     function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
       if (goog.userAgent.IE) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // TODO: Don't skip this.
         return;
       }
@@ -578,7 +570,6 @@ limitations under the License.
 
     function testExecuteScriptShouldBeAbleToRecurseOnItself() {
       if (goog.userAgent.IE) {
-        // skipping for now to enable the merge of OSS and google3 to proceed.
         // TODO: Don't skip this.
         return;
       }

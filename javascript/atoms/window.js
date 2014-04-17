@@ -25,6 +25,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.events');
 goog.require('bot.userAgent');
+goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
@@ -321,13 +322,54 @@ bot.window.getPosition = function(opt_win) {
 /**
  * Set the position of the window.
  *
- * @param {!goog.math.Coordinate} targetPosition The target position.
+ * @param {!goog.math.Coordinate} position The target position.
  * @param {!Window=} opt_win Window to set the position of. Defaults to
  *   bot.getWindow().
  */
-bot.window.setPosition = function(targetPosition, opt_win) {
+bot.window.setPosition = function(position, opt_win) {
   var win = opt_win || bot.getWindow();
-  win.moveTo(targetPosition.x, targetPosition.y);
+  win.moveTo(position.x, position.y);
+};
+
+
+/**
+ * Scrolls the given position into the viewport, using the minimal amount of
+ * scrolling necessary to being the coordinate into view.
+ *
+ * @param {!goog.math.Coordinate} position The position to scroll into view.
+ * @param {!Window=} opt_win Window to apply position to. Defaults to
+ *   bot.getWindow().
+ */
+bot.window.scrollIntoView = function(position, opt_win) {
+  var win = opt_win || bot.getWindow();
+  var viewport = goog.dom.getViewportSize(win);
+  var scroll = bot.window.getScroll(win);
+
+  // Scroll the minimal amount to bring the position into view.
+  var targetScroll = new goog.math.Coordinate(
+      newScrollDim(position.x, scroll.x, viewport.width),
+      newScrollDim(position.y, scroll.y, viewport.height));
+  if (!goog.math.Coordinate.equals(targetScroll, scroll)) {
+    bot.window.setScroll(targetScroll, win);
+  }
+
+  // It is difficult to determine the size of the web page in some browsers.
+  // We check if the scrolling we intended to do really happened. If not we
+  // assume that the target location is not on the web page.
+  if (!goog.math.Coordinate.equals(targetScroll, bot.window.getScroll(win))) {
+    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'The target scroll location ' + targetScroll + ' is not on the page.');
+  }
+
+  function newScrollDim(positionDim, scrollDim, viewportDim) {
+    if (positionDim < scrollDim) {
+      return positionDim;
+    } else if (positionDim >= scrollDim + viewportDim) {
+      return positionDim - viewportDim + 1;
+    } else {
+      return scrollDim;
+    }
+  }
 };
 
 

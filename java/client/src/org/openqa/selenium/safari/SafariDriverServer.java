@@ -46,8 +46,8 @@ class SafariDriverServer {
 
   private final int port;
 
-  private final BlockingQueue<SafariDriverConnection> connections =
-      new SynchronousQueue<SafariDriverConnection>();
+  private final BlockingQueue<WebSocketConnection> connections =
+      new SynchronousQueue<WebSocketConnection>();
 
   private ServerBootstrap bootstrap;
   private Channel serverChannel;
@@ -127,7 +127,7 @@ class SafariDriverServer {
    * @return The new connection.
    * @throws InterruptedException If the timeout expires.
    */
-  public SafariDriverConnection getConnection(long timeout, TimeUnit unit)
+  public WebSocketConnection getConnection(long timeout, TimeUnit unit)
       throws InterruptedException {
     return connections.poll(timeout, unit);
   }

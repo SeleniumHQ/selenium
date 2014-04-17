@@ -931,6 +931,7 @@ public class Dispatcher implements RequestDispatcher
         * @param status the status code
         * @param message the status message
         */
+        @Deprecated
         public void setStatus(int status, String message)
         {
             if (_request._filterType!=Dispatcher.__ERROR && !_include)

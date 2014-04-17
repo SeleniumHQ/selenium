@@ -1,4 +1,0 @@
-The CocoaAsyncSocket project is under Public Domain license.
-http://code.google.com/p/cocoaasyncsocket/
-
-The AsyncSocket project has been around since 2001 and is used in many applications and frameworks.

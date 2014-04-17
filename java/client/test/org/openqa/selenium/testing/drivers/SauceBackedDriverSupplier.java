@@ -50,6 +50,11 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
       } catch (UnreachableBrowserException ex) {
         System.out.println("Session is not started " + ex.getMessage());
         lastException = ex;
+        try {
+          System.out.println("Waiting 5 sec before the next attempt");
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
       }
     }
 

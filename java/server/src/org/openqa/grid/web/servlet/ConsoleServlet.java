@@ -123,7 +123,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append("<ul>");
     for (DesiredCapabilities req : getRegistry().getDesiredCapabilities()) {
-      builder.append("<li>").append(req.asMap()).append("</li>");
+      builder.append("<li>").append(req).append("</li>");
     }
     builder.append("</ul>");
 

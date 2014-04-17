@@ -35,6 +35,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -359,5 +360,49 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element4.getAttribute("required"));
     WebElement element5 = driver.findElement(By.id("unwrappable"));
     assertEquals("true", element5.getAttribute("nowrap"));
+  }
+
+  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Test
+  public void testMultipleAttributeShouldBeNullWhenNotSet() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
+    assertEquals(null, element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSet() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithMultipleEqualsMultiple"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithEmptyStringMultiple"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Ignore({HTMLUNIT})
+  @Test
+  public void testGetAttributeOfUserDefinedProperty() {
+    driver.get(pages.userDefinedProperty);
+    WebElement element = driver.findElement(By.id("d"));
+    assertEquals("sampleValue", element.getAttribute("dynamicProperty"));
   }
 }

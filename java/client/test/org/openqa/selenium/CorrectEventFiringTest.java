@@ -16,6 +16,28 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -26,29 +48,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToContain;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
@@ -170,7 +169,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseclick")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(result, "mouse click"));
+    wait.until(elementTextToEqual(result, "mouse click"));
     assertThat(result.getText(), equalTo("mouse click"));
   }
 
@@ -182,7 +181,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseup")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(result, "mouse up"));
+    wait.until(elementTextToEqual(result, "mouse up"));
     assertThat(result.getText(), equalTo("mouse up"));
   }
 
@@ -194,7 +193,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("child")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(result, "mouse down"));
+    wait.until(elementTextToEqual(result, "mouse down"));
     assertThat(result.getText(), equalTo("mouse down"));
   }
 
@@ -249,7 +248,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
     checkbox.click();
     WebElement result = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(result, "checkbox thing"));
+    wait.until(elementTextToEqual(result, "checkbox thing"));
   }
 
   @JavascriptEnabled
@@ -260,7 +259,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement clicker = driver.findElement(By.id("clickField"));
     clicker.click();
 
-    waitFor(elementValueToEqual(clicker, "Clicked"));
+    wait.until(elementValueToEqual(clicker, "Clicked"));
     assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
   }
 
@@ -273,7 +272,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertNotNull(waitFor(elementTextToContain(result, "labelclick chboxclick")));
+    assertNotNull(wait.until(elementTextToContain(result, "labelclick chboxclick")));
   }
 
   @Ignore(ANDROID)
@@ -401,7 +400,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   private String getTextFromElementOnceAvailable(String elementId) {
-    return waitFor(elementToExist(driver, elementId)).getText();
+    return wait.until(visibilityOfElementLocated(By.id(elementId))).getText();
   }
 
   @JavascriptEnabled
@@ -422,7 +421,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(clientX, not(equalTo("0")));
     assertThat(clientY, not(equalTo("0")));
   }
-  
+
   @JavascriptEnabled
   @Ignore(value = {ANDROID, IPHONE, MARIONETTE}, reason = "Not tested")
   @Test
@@ -440,7 +439,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   private void assertEventFired(String eventName) {
     WebElement result = driver.findElement(By.id("result"));
 
-    String text = waitFor(elementTextToContain(result, eventName));
+    String text = wait.until(elementTextToContain(result, eventName));
     boolean conditionMet = text.contains(eventName);
 
     assertTrue("No " + eventName + " fired: " + text, conditionMet);

@@ -31,7 +31,7 @@ public class EncodingServlet extends HttpServlet {
 
     response.setContentType("text/html");
     // Data should be transferred using UTF-8. Pick a different encoding
-    response.setCharacterEncoding("UTF-16");
+    response.setCharacterEncoding("UTF-16LE");
 
     StringBuilder text = new StringBuilder("<html><title>Character encoding (UTF 16)</title>")
         .append("<body><p id='text'>")

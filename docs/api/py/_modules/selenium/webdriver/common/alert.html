@@ -71,7 +71,28 @@
 
 <div class="viewcode-block" id="Alert"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert">[docs]</a><span class="k">class</span> <span class="nc">Alert</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Allows to work wit alerts.</span>
+<span class="sd">    Allows to work with alerts.</span>
+
+<span class="sd">    Use this class to interact with alert prompts.  It contains methods for dismissing, </span>
+<span class="sd">    accepting, inputting, and getting text from alert prompts.</span>
+
+<span class="sd">    Accepting / Dismissing alert prompts::</span>
+<span class="sd">    </span>
+<span class="sd">        Alert(driver).accept()</span>
+<span class="sd">        Alert(driver).dismiss()</span>
+
+<span class="sd">    Inputting a value into an alert prompt:</span>
+
+<span class="sd">        name_prompt = Alert(driver)</span>
+<span class="sd">        name_prompt.send_keys(&quot;Willian Shakesphere&quot;)</span>
+<span class="sd">        name_prompt.accept()</span>
+
+
+<span class="sd">    Reading a the text of a prompt for verification:</span>
+
+<span class="sd">        alert_text = Alert(driver).text</span>
+<span class="sd">        self.assertEqual(&quot;Do you wish to quit?&quot;, alert_text)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
@@ -99,6 +120,9 @@
 <div class="viewcode-block" id="Alert.accept"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.accept">[docs]</a>    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Accepts the alert available.</span>
+
+<span class="sd">        Usage::</span>
+<span class="sd">        Alert(driver).accept() # Confirm a alert dialog.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ACCEPT_ALERT</span><span class="p">)</span>
 </div>
@@ -108,6 +132,8 @@
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - keysToSend: The text to be sent to Alert.</span>
+
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_VALUE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">keysToSend</span><span class="p">})</span></div></div>
 </pre></div>

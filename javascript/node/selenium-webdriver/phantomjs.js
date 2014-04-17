@@ -152,7 +152,7 @@ function createDriver(opt_capabilities) {
   var driver = webdriver.WebDriver.createSession(executor, capabilities);
   var boundQuit = driver.quit.bind(driver);
   driver.quit = function() {
-    return boundQuit().addBoth(service.kill.bind(service));
+    return boundQuit().thenFinally(service.kill.bind(service));
   };
   return driver;
 }

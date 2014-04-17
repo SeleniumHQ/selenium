@@ -38,6 +38,7 @@ public class SessionContext implements HttpSessionContext
     /**
      * @deprecated From HttpSessionContext
      */
+    @Deprecated
     public Enumeration getIds()
     {
         return Collections.enumeration(Collections.EMPTY_LIST);
@@ -47,6 +48,7 @@ public class SessionContext implements HttpSessionContext
     /**
      * @deprecated From HttpSessionContext
      */
+    @Deprecated
     public HttpSession getSession(String id)
     {
         return null;

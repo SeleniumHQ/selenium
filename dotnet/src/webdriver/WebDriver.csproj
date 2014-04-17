@@ -66,7 +66,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\dotnet\json-net-4.5r11\Net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\third_party\dotnet\json-net-6.0r2\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -83,9 +83,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
     <Compile Include="DefaultFileDetector.cs" />
+    <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
+    <Compile Include="Firefox\FirefoxDriverServer.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="IHasTouchScreen.cs" />
@@ -105,6 +106,10 @@
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\ICommandServer.cs" />
+    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
     <Compile Include="Safari\SafariDriverExtension.cs" />
@@ -135,7 +140,6 @@
     <Compile Include="Firefox\FirefoxWebElement.cs" />
     <Compile Include="Firefox\IExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\Executable.cs" />
-    <Compile Include="Firefox\Internal\ExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\ILock.cs" />
     <Compile Include="Firefox\Internal\IniFileReader.cs" />
     <Compile Include="Firefox\Internal\SocketLock.cs" />
@@ -215,10 +219,6 @@
     <Compile Include="Remote\ErrorResponse.cs" />
     <Compile Include="Remote\HttpCommandExecutor.cs" />
     <Compile Include="Remote\ICommandExecutor.cs" />
-    <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\RemoteAlert.cs" />
     <Compile Include="Remote\RemoteCookieJar.cs" />
     <Compile Include="Remote\RemoteCoordinates.cs" />
@@ -337,6 +337,9 @@ if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
   echo WARN: No Firefox extension found at $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
 )
 
+echo Copying Firefox preferences file from $(SolutionDir)javascript\firefox-driver\webdriver.json
+copy /y $(SolutionDir)javascript\firefox-driver\webdriver.json $(TargetDir) &gt; NUL
+
 if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz (
   echo Copying Safari extension from $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz
   copy /y $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz $(TargetDir) &gt; NUL
@@ -344,6 +347,6 @@ if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextensi
   echo Copying Safari extension from prebuilt location $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz
   copy /y $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz $(TargetDir) &gt; NUL
 )
-)</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

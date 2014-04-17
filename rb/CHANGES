@@ -1,7 +1,58 @@
-2.36.0 (???)
-============
+2.41.0 (2014-03-28)
+===================
 
+* Removed dead browser visibility methods.
+* Firefox:
+  * Native events support for Firefox 28 (removed support for 26)
+
+2.40.0 (2014-02-19)
+===================
+
+* Fix bug where FileReaper would not reap files added in a child process
+* Document AbstractEventListener (#5994)
+* Safari:
+  * Add Safari::Options + clean up Safari extension handling (#6382)
+  * Add support for user extensions (#6815)
+* Firefox:
+  * Support native events for Firefox 27 + removed native event support for Firefox 25
+
+2.39.0 (2013-12-17)
+===================
+
+* Firefox: Native events support for Firefox 26.
+* Add deprecation warning to the Android driver.
+* Make sure selenium/client doesn't require Rake (#6709)
+
+2.38.0 (2013-12-05)
+===================
+
+* Enforce required Ruby version in gemspec, not just transitively through rubyzip.
+* Expose the logging API (beta API, subject to change) in the Ruby client: driver.manage.logs #=> Selenium::WebDriver::Logs
+* Update to support native events for Firefox 25
+
+
+2.37.0 (2013-10-18)
+===================
+
+* As of this version, selenium-webdriver no longer supports Ruby < 1.9.2
 * Depend on rubyzip ~> 1.0.0
+* Added SOCKS proxy support
+* Fixed support for SVG documents in the atoms.
+* Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
+* Added Capabilities.htmlunitwithjs
+
+Chrome:
+  * Pass through the prefs option as a Chrome capability (#5929).
+Firefox:
+  * Updated Firefox native event components to support Firefox 24.
+  * New elementScrollBehavior capability.
+  * Fixed getLocation to work on scrolled pages.
+  * Fixed autoscrolling for elements located in frames.
+  * Fixed drag-n-drop for elements in frames with native events
+IE:
+  * Use native events by default, also for remote IE (#4695)
+Safari:
+  * Enable screenshots and input devices in the client.
 
 2.35.1 (2013-08-26)
 ===================

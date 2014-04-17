@@ -6,15 +6,15 @@ module Selenium
     module Firefox
 
       describe Bridge do
-        let(:launcher) { mock(Launcher, :launch => nil, :url => "http://localhost:4444/wd/hub") }
+        let(:launcher) { double(Launcher, :launch => nil, :url => "http://localhost:4444/wd/hub") }
         let(:resp) { {"sessionId" => "foo", "value" => @default_capabilities }}
-        let(:http) { mock(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http) { double(Remote::Http::Default, :call => resp).as_null_object   }
         let(:caps) { {} }
 
         before do
           @default_capabilities = Remote::Capabilities.firefox.as_json
-          Remote::Capabilities.stub!(:firefox).and_return(caps)
-          Launcher.stub!(:new).and_return(launcher)
+          Remote::Capabilities.stub(:firefox).and_return(caps)
+          Launcher.stub(:new).and_return(launcher)
         end
 
         it "sets the proxy capability" do

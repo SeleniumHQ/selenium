@@ -525,6 +525,14 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
               end
 
+              if remote_url
+                ant.sysproperty :key => 'selenium.external.serverUrl', :value => remote_url
+                ant.sysproperty :key => 'selenium.browser.remote', :value => 'true'
+                if remote_browser
+                  ant.sysproperty :key => 'selenium.browser', :value => remote_browser
+                end
+              end
+
               if marionette?
                 ant.sysproperty :key => 'webdriver.firefox.marionette', :value => 'true'
               end
@@ -565,6 +573,10 @@ module CrazyFunJava
 
               if (args[:args])
                 ant.jvmarg(:line => args[:args])
+              end
+
+              if (jvm_args)
+                ant.jvmarg(:line => jvm_args)
               end
 
               logfile = "TEST-#{args[:name]}-#{name}"
@@ -610,6 +622,18 @@ module CrazyFunJava
 
     def firefox
       return ENV['firefox']
+    end
+
+    def remote_url
+      return ENV['remote_url']
+    end
+
+    def remote_browser
+      return ENV['remote_browser']
+    end
+
+    def jvm_args
+      return ENV['jvmargs']
     end
 
     def marionette?

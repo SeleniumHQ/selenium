@@ -266,6 +266,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScript()
         {
             driver.Url = slowLoadingAlertPage;
@@ -290,6 +291,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         public void ThrowsIfScriptTriggersAlertWhichTimesOut()
         {
             driver.Url = simpleTestPage;

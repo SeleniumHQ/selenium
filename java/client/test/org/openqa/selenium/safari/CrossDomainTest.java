@@ -21,24 +21,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Pages;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.WebbitAppServer;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.concurrent.Callable;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Pages;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.WebbitAppServer;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
 public class CrossDomainTest extends SafariTestBase {
@@ -117,7 +114,7 @@ public class CrossDomainTest extends SafariTestBase {
     assertTrue(isTop());
     driver.switchTo().frame(iframe);
     assertFalse(isTop());
-    waitFor(frameLocationToBe(otherPages.iframePage));
+    wait.until(frameLocationToBe(otherPages.iframePage));
   }
 
   private boolean isTop() {
@@ -128,10 +125,9 @@ public class CrossDomainTest extends SafariTestBase {
     return (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
   }
 
-  private Callable<Boolean> frameLocationToBe(final String url) {
-    return new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
+  private ExpectedCondition<Boolean> frameLocationToBe(final String url) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver ignored) {
         return url.equals(getPageUrl());
       }
     };

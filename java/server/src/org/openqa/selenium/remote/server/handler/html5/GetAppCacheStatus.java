@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -27,8 +26,9 @@ public class GetAppCacheStatus extends ResponseAwareWebDriverHandler {
     super(session);
   }
 
+  @Override
   public ResultType call() throws Exception {
-    response.setValue(((ApplicationCache) getUnwrappedDriver()).getStatus());
+    response.setValue(Utils.getApplicationCache(getUnwrappedDriver()).getStatus());
     return ResultType.SUCCESS;
   }
 

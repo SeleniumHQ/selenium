@@ -75,6 +75,7 @@ limitations under the License.
     <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
     <command id="cmd_add" oncommand="goDoCommand('cmd_add')"/>
+    <command id="cmd_new" oncommand="goDoCommand('cmd_new')"/>
     <command id="cmd_new_suite" oncommand="goDoCommand('cmd_new_suite')"/>
     <command id="cmd_save_suite" oncommand="goDoCommand('cmd_save_suite')"/>
     <command id="cmd_save_suite_as" oncommand="goDoCommand('cmd_save_suite_as')"/>
@@ -95,6 +96,11 @@ limitations under the License.
     <command id="cmd_selenium_speed_faster" oncommand="goDoCommand('cmd_selenium_speed_faster')"/>
     <command id="cmd_selenium_speed_slower" oncommand="goDoCommand('cmd_selenium_speed_slower')"/>
     <command id="cmd_selenium_speed_slowest" oncommand="goDoCommand('cmd_selenium_speed_slowest')"/>
+    <command id="cmd_selenium_clear_base_URL_history" oncommand="goDoCommand('cmd_selenium_clear_base_URL_history')"/>
+    <command id="cmd_selenium_clear_test_cases_history" oncommand="goDoCommand('cmd_selenium_clear_test_cases_history')"/>
+    <command id="cmd_selenium_clear_test_suites_history" oncommand="goDoCommand('cmd_selenium_clear_test_suites_history')"/>
+    <command id="cmd_delete_suite" oncommand="goDoCommand('cmd_delete_suite')"/>
+    <command id="cmd_play_suite_from_here" oncommand="goDoCommand('cmd_play_suite_from_here')"/>
   </commandset>
 <!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
   <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { window.editor.updateSeleniumCommands() }"/>
@@ -104,6 +110,7 @@ limitations under the License.
     <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
     <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
     <key id="add-key" modifiers="accel" key="D" command="cmd_add"/>
+    <key id="new-key" modifiers="accel" key="N" command="cmd_new"/>
     <key id="breakpoint-key" key="B" command="cmd_selenium_breakpoint"/>
     <key id="startpoint-key" key="S" command="cmd_selenium_startpoint"/>
     <key id="exec-key" key="X" command="cmd_selenium_exec_command"/>
@@ -126,22 +133,18 @@ limitations under the License.
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
     </menupopup>
-    <menupopup id="suiteContextMenu">
-      <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();"/>
+    <menupopup id="suiteContextMenu" onpopupshowing="if (window.editor) { window.editor.updateSeleniumCommands() }">
+      <menuitem label="&newTestCmd.label;" command="cmd_new" key="new-key"/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" />
-      <menuitem label="&contextMenu.delete.label;" command="cmd_delete" />
+      <menuitem label="&contextMenu.delete.label;" command="cmd_delete_suite" />
+      <menuitem label="Play test suite from here" command="cmd_play_suite_from_here"/>
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </menupopup>
-      <!-- Samit: Ref: Commented as could not find any usages
-    <menupopup id="popupSeleniumCommands">
-      <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
-    </menupopup>
-    -->
   </popupset>
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">
     <menupopup id="file-popup">
-      <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();" accesskey="N"/>
+      <menuitem label="&newTestCmd.label;" command="cmd_new" key="new-key" accesskey="N"/>
       <menuitem label="&openCmd.label;" command="cmd_open" key="open-key" accesskey="O"/>
       <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
       <menuitem label="&saveTestAsCmd.label;" oncommand="window.editor.saveNewTestCase();" accesskey="A"/>
@@ -214,6 +217,13 @@ limitations under the License.
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;" insertbefore="menu-reset-window">
         <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, 'switchClipboardFormat', window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
+        </menupopup>
+      </menu>
+      <menu id="clearHistoryMenu" label="Clear history">
+        <menupopup id="popup_clear_history">
+          <menuitem label="Clear base URL history" command="cmd_selenium_clear_base_URL_history"/>
+          <menuitem label="Clear recent test cases history" command="cmd_selenium_clear_test_cases_history"/>
+          <menuitem label="Clear recent test suites history" command="cmd_selenium_clear_test_suites_history"/>
         </menupopup>
       </menu>
       <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />

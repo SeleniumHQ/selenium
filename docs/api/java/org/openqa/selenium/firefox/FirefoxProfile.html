@@ -174,25 +174,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected void</code></td>
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.String, org.openqa.selenium.firefox.internal.Extension)">addExtension</a></strong>(java.lang.String&nbsp;key,
             <a href="../../../../org/openqa/selenium/firefox/internal/Extension.html" title="interface in org.openqa.selenium.firefox.internal">Extension</a>&nbsp;extension)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#addWebDriverExtensionIfNeeded()">addWebDriverExtensionIfNeeded</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled()">areNativeEventsEnabled</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#clean(java.io.File)">clean</a></strong>(java.io.File&nbsp;profileDir)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#cleanTemporaryModel()">cleanTemporaryModel</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#containsWebDriverExtension()">containsWebDriverExtension</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
@@ -277,25 +277,17 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setProxyPreferences(org.openqa.selenium.Proxy)">setProxyPreferences</a></strong>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>This is now handled by the driver itself.</i></div>
-</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()">shouldLoadNoFocusLib</a></strong>()</code>
 <div class="block">Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
  even if native events are disabled.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#toJson()">toJson</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#updateUserPrefs(java.io.File)">updateUserPrefs</a></strong>(java.io.File&nbsp;userPrefs)</code>&nbsp;</td>
 </tr>
@@ -392,13 +384,13 @@ protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</p
 <div class="block"><strong>Internal method. This is liable to change at a moment's notice.</strong></div>
 </li>
 </ul>
-<a name="addWebDriverExtensionIfNeeded()">
+<a name="containsWebDriverExtension()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addWebDriverExtensionIfNeeded</h4>
-<pre>protected&nbsp;void&nbsp;addWebDriverExtensionIfNeeded()</pre>
+<h4>containsWebDriverExtension</h4>
+<pre>public&nbsp;boolean&nbsp;containsWebDriverExtension()</pre>
 </li>
 </ul>
 <a name="addExtension(java.lang.Class, java.lang.String)">
@@ -434,7 +426,7 @@ protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</p
 <ul class="blockList">
 <li class="blockList">
 <h4>addExtension</h4>
-<pre>protected&nbsp;void&nbsp;addExtension(java.lang.String&nbsp;key,
+<pre>public&nbsp;void&nbsp;addExtension(java.lang.String&nbsp;key,
                 <a href="../../../../org/openqa/selenium/firefox/internal/Extension.html" title="interface in org.openqa.selenium.firefox.internal">Extension</a>&nbsp;extension)</pre>
 </li>
 </ul>
@@ -475,20 +467,6 @@ protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</p
                  int&nbsp;value)</pre>
 <div class="block">Set a preference for this particular profile.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>key</code> - The key</dd><dd><code>value</code> - The new value.</dd></dl>
-</li>
-</ul>
-<a name="setProxyPreferences(org.openqa.selenium.Proxy)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setProxyPreferences</h4>
-<pre>@Deprecated
-public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;setProxyPreferences(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>This is now handled by the driver itself.</i></div>
-<div class="block">Set proxy preferences for this profile.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>proxy</code> - The proxy preferences.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>The profile, for further settings.</dd></dl>
 </li>
 </ul>
 <a name="getAdditionalPreferences()">

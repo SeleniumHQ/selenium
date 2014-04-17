@@ -125,20 +125,6 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var doc = goog.dom.getOwnerDocument(element);
   bot.setWindow(goog.dom.getWindow(doc));
 
-  //var inViewAfterScroll = bot.action.scrollIntoView(
-  //    element,
-  //    new goog.math.Coordinate(xOffset, yOffset));
-  // Check to see if the given positions and offsets are outside of the window
-  // Are we about to be dragged out of the window?
-
-  //var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
-  //var isSVG = Utils.isSVG(element.ownerDocument);
-
-  //if (!isOption && !isSVG && !inViewAfterScroll) {
-  //  return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-  //      'Element cannot be scrolled into view:' + element);
-  //}
-
   var xCompensate = 0;
   var yCompensate = 0;
   if (this.isButtonPressed) {

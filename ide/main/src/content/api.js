@@ -1,5 +1,5 @@
 function API() {
-  this.version = 0.6;
+  this.version = 0.7;
   this.preferences = SeleniumIDE.Preferences;
   this.id = null;
   this.code = {
@@ -39,9 +39,10 @@ API.prototype.addPluginProvidedIdeExtension = function (url) {
  *
  * @param js_url - url to your bundled extension in the form of chrome://
  * @param xml_url - url to your bundled companion xml in the form of chrome://
+ * @param canHandleWebdriverPlayback - true/false if the extension can handle Webdriver playback. Default false.
  */
-API.prototype.addPluginProvidedUserExtension = function (js_url, xml_url) {
-  this.code.userExtensions.push(js_url + ';' + xml_url);
+API.prototype.addPluginProvidedUserExtension = function (js_url, xml_url, canHandleWebdriverPlayback) {
+  this.code.userExtensions.push(js_url + ';' + xml_url + ';' + (canHandleWebdriverPlayback ? "1" : "0"));
   this._save();
 };
 

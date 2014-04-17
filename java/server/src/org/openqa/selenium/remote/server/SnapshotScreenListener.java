@@ -21,9 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 

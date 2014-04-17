@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/client/client.iml" filepath="$PROJECT_DIR$/java/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide.iml" filepath="$PROJECT_DIR$/ide.iml" />
       <module fileurl="file://$PROJECT_DIR$/javascript/javascript.iml" filepath="$PROJECT_DIR$/javascript/javascript.iml" />

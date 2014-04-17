@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.Chrome
     /// }
     /// </code>
     /// </example>
-    public class ChromeDriver : RemoteWebDriver, ITakesScreenshot
+    public class ChromeDriver : RemoteWebDriver
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
@@ -153,21 +153,5 @@ namespace OpenQA.Selenium.Chrome
             get { return base.FileDetector; }
             set { }
         }
-
-        #region ITakesScreenshot Members
-        /// <summary>
-        /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
-        /// </summary>
-        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
-        {
-            // Get the screenshot as base64.
-            Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
-            string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
-            return new Screenshot(base64);
-        }
-        #endregion
     }
 }

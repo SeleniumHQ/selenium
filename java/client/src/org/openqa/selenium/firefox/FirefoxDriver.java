@@ -29,14 +29,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.MarionetteConnection;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -58,7 +55,6 @@ import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +70,7 @@ import java.util.concurrent.TimeUnit;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that
  * profile directly. This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, Killable {
+public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
@@ -241,7 +237,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   protected void startClient() {
     LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
     FirefoxProfile profileToUse = getProfile(exe.profile);
-    profileToUse.addWebDriverExtensionIfNeeded();
 
     // TODO(simon): Make this not sinfully ugly
     ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
@@ -315,7 +310,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     }));
 
     // Ensure that the proxy is in a state fit to be sent to the extension
-    Proxy proxy = Proxies.extractProxy(capabilities);
+    Proxy proxy = Proxy.extractFrom(capabilities);
     if (proxy != null) {
       caps.setCapability(PROXY, new BeanToJsonConverter().convert(proxy));
     }

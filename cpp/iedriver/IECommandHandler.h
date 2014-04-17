@@ -45,6 +45,9 @@
 #define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
 #define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
 #define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
+#define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
+
+using namespace std;
 
 namespace webdriver {
 

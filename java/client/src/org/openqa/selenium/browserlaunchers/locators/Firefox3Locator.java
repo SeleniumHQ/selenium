@@ -31,7 +31,10 @@ import java.io.FilenameFilter;
 /**
  * Discovers a valid Firefox 2.x or 3.x installation on local system. Preference is given to 2.x
  * installs.
+ *
+ * @deprecated Firefox 3 is a dead browser.
  */
+@Deprecated
 public class Firefox3Locator extends FirefoxLocator {
 
   private static final String UBUNTU_BASE_DIR = "/usr/lib";

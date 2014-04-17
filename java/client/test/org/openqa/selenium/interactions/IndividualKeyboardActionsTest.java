@@ -135,4 +135,16 @@ public class IndividualKeyboardActionsTest {
       assertTrue(e.getMessage().contains("modifier keys"));
     }
   }
+
+  @Test
+  public void testAllModifierKeysRegardedAsSuch() {
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.SHIFT);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_SHIFT);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.CONTROL);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_CONTROL);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.ALT);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_ALT);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.META);
+    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.COMMAND);
+  }
 }

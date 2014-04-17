@@ -17,14 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import org.junit.Test;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.util.URI;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -32,6 +24,14 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.util.URI;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 public class ProxyHandlerUnitTest {
 

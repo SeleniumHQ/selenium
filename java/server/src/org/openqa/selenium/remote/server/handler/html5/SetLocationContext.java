@@ -16,8 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.Location;
-import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
@@ -32,17 +32,37 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
     super(session);
   }
 
+  @Override
   public ResultType call() throws Exception {
-    ((LocationContext) getUnwrappedDriver()).setLocation(location);
+    Utils.getLocationContext(getUnwrappedDriver()).setLocation(location);
     return ResultType.SUCCESS;
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    Map<Object, Object> map = (Map<Object, Object>) allParameters.get("location");
+    @SuppressWarnings("unchecked")
+    Map<Object, Object> locationMap = (Map<Object, Object>) allParameters.get("location");
 
-    double latitude = (Double) map.get("latitude");
-    double longitude = (Double) map.get("longitude");
-    double altitude = (Double) map.get("altitude");
+    double latitude;
+    try {
+      latitude = ((Number) locationMap.get("latitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) latitude location passed: " + locationMap.get("latitude"), ex);
+    }
+
+    double longitude;
+    try {
+      longitude = ((Number) locationMap.get("longitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) longitude location passed: " + locationMap.get("longitude"), ex);
+    }
+
+    double altitude;
+    try {
+      altitude = ((Number) locationMap.get("altitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) altitude location passed: " + locationMap.get("altitude"), ex);
+    }
 
     location = new Location(latitude, longitude, altitude);
   }

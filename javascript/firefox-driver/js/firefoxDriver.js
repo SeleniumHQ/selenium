@@ -43,10 +43,11 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 
 
-FirefoxDriver = function(server, enableNativeEvents, win) {
+FirefoxDriver = function(server, enableNativeEvents, win, opt_pageLoadingStrategy) {
   this.server = server;
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
+  this.pageLoadingStrategy = opt_pageLoadingStrategy || 'normal';
 
   // Default to a two second timeout.
   this.alertTimeout = 2000;
@@ -110,20 +111,22 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   // Check to see if the given url is the same as the current one, but
   // with a different anchor tag.
   var current = respond.session.getWindow().location;
-  var loadEventExpected = fxdriver.io.isLoadExpected(current, url);
+  var loadEventExpected;
+  try {
+    loadEventExpected = fxdriver.io.isLoadExpected(current, url);
+  } catch (e) {
+    var converted = e.QueryInterface(Components.interfaces['nsIException']);
+    if ('NS_ERROR_MALFORMED_URI' == converted.name) {
+      fxdriver.logging.warning(converted.name);
+      respond.sendError(new WebDriverError(
+          bot.ErrorCode.UNKNOWN_ERROR,
+          'Target URL '+url+' is not well-formed.'));
+      return;
+    }
+  }
 
   if (loadEventExpected) {
-    new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
-      // Focus on the top window.
-      respond.session.setWindow(respond.session.getBrowser().contentWindow);
-      if (timedOut) {
-        respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
-            'Timed out waiting for page load.'));
-      } else {
-        respond.value = '';
-        respond.send();
-      }
-    }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
+    Utils.initWebLoadingListener(respond, respond.session.getWindow());
   }
 
   respond.session.getBrowser().loadURI(url);
@@ -293,7 +296,9 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     doc.addEventListener('webdriver-evaluate-response', handler, true);
 
     var event = doc.createEvent('Events');
-    event.initEvent('webdriver-evaluate', true, false);
+    var bubbles = false;
+    var cancelable = true;
+    event.initEvent('webdriver-evaluate', bubbles, cancelable);
     doc.dispatchEvent(event);
   };
 
@@ -621,6 +626,18 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 };
 
 
+/**
+ * Changes the command session's focus to the parent frame.
+ * @param {Response} respond Object to send the command response with.
+ */
+FirefoxDriver.prototype.switchToParentFrame = function(respond) {
+  var p = respond.session.getWindow().parent;
+  respond.session.setWindow(p);
+  respond.session.setFrame(p.frameElement);
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
   var id = Utils.addToKnownElements(element);
@@ -654,25 +671,17 @@ FirefoxDriver.prototype.goForward = function(respond) {
 
 FirefoxDriver.prototype.refresh = function(respond) {
   var browser = respond.session.getBrowser();
+  Utils.initWebLoadingListener(respond, browser.contentWindow);
   browser.contentWindow.location.reload(true);
-  // Wait for the reload to finish before sending the response.
-  new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
-    // Reset to the top window.
-    respond.session.setWindow(browser.contentWindow);
-    if (timedOut) {
-      respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
-          'Timed out waiting for page load.'));
-    } else {
-      respond.send();
-    }
-  }, respond.session.getPageLoadTimeout());
 };
 
 
 FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   var cookie = parameters.cookie;
+  var inSession = false;
 
   if (!cookie.expiry) {
+    inSession = true;
     var date = new Date();
     date.setYear(2030);
     cookie.expiry = date.getTime() / 1000;  // Stored in seconds.
@@ -706,16 +715,8 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   var cookieManager =
       fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager2');
 
-  // The signature for "add" is different in firefox 3 and 2. We should sniff
-  // the browser version and call the right version of the method, but for now
-  // we'll use brute-force.
-  try {
-    cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
-        cookie.secure, false, cookie.expiry);
-  } catch (e) {
-    cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
-        cookie.secure, false, false, cookie.expiry);
-  }
+  cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
+      cookie.secure, false, inSession, cookie.expiry);
 
   respond.send();
 };
@@ -890,13 +891,31 @@ FirefoxDriver.prototype.getAlert = function(respond) {
 
 
 FirefoxDriver.prototype.dismissAlert = function(respond) {
-  fxdriver.modals.dismissAlert(this);
-  respond.send();
+  var self = this;
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.dismissAlert(self);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 FirefoxDriver.prototype.acceptAlert = function(respond) {
-  fxdriver.modals.acceptAlert(this);
-  respond.send();
+  var self = this;
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.acceptAlert(self);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 
@@ -916,8 +935,16 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
 
 
 FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
-  fxdriver.modals.setValue(this, parameters['text']);
-  respond.send();
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.setValue(parameters['text']);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 
@@ -1048,7 +1075,7 @@ FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnVa
   }
 };
 
-FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
+FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
   // Coordinate spaces in use:
   //   * Owner document space: Coordinates are relative to the top-left of the
   //     top-level document contained by the window handle containing the
@@ -1063,17 +1090,35 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var coords = fxdriver.events.buildCoordinates(parameters, doc);
 
+  // Prepare to move the mouse.  If the move is relative to an element, make
+  // sure the specified region is in the current viewport so we can actually
+  // move the mouse.
+  if (coords.auxiliary) {
+    var offset = new goog.math.Coordinate(coords.x, coords.y);
+    var inViewAfterScroll = bot.action.scrollIntoView(coords.auxiliary, offset);
+    if (!inViewAfterScroll &&
+        !Utils.isSVG(coords.auxiliary.ownerDocument) &&
+        !bot.dom.isElement(coords.auxiliary, goog.dom.TagName.OPTION)) {
+      respond.sendError(new WebDriverError(
+          bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+          'Offset within element cannot be scrolled into view: ' +
+              offset + ': ' + coords.auxiliary));
+      return;
+    }
+  }
+
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = coords.auxiliary || doc;
     fxdriver.logging.info('Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
     var result = this.mouse.move(target, coords.x, coords.y);
     this.sendResponseFromSyntheticMouse_(result, respond);
-
     return;
   }
 
-  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
+  var nativeMouseMoveTo = function(coordinates, jsTimer) {
+    fxdriver.logging.info('Calling native move with: ' + coords.x + ', ' + coords.y);
+
     var elementForNode = null;
     var clickPoint_ownerDocumentPreScroll; //toX
 
@@ -1081,11 +1126,11 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       elementForNode = fxdriver.moz.unwrap(coordinates.auxiliary);
       clickPoint_ownerDocumentPreScroll = Utils.getLocationRelativeToWindowHandle(elementForNode);
     } else {
-      elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+      elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
       clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
     }
 
-    // The function bot.dom.getInViewLocation does not work coordinates that are
+    // The function getInViewLocation does not work on coordinates that are
     // not integers. The mouse positions can be doubles so we need to cut off
     // the decimals.
     clickPoint_ownerDocumentPreScroll.x = Math.floor(clickPoint_ownerDocumentPreScroll.x + coordinates.x);
@@ -1093,8 +1138,8 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     var clickPoint_ownerDocumentPostScroll; //to
     try {
-      clickPoint_ownerDocumentPostScroll = bot.dom.getInViewLocation(
-          clickPoint_ownerDocumentPreScroll, respond.session.getWindow());
+      clickPoint_ownerDocumentPostScroll = getInViewLocation(
+          clickPoint_ownerDocumentPreScroll, respond.session.getTopWindow());
     } catch (ex) {
       if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
         respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
@@ -1115,7 +1160,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var nativeMouse = Utils.getNativeMouse();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
-    if (nativeEventsEnabled && nativeMouse && node) {
+    if (nativeMouse && node) {
       var currentPosition = respond.session.getMousePosition();
       var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
       fxdriver.logging.info('Moving from (' + currentPosition.x + ', ' + currentPosition.y + ') to (' +
@@ -1135,17 +1180,25 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
         respond.session.setMouseViewportOffset(clickPoint_ownerDocumentPreScroll.x, clickPoint_ownerDocumentPreScroll.y);
       }
     } else {
-      throw generateErrorForNativeEvents(nativeEventsEnabled, nativeMouse, node);
+      throw generateErrorForNativeEvents(true, nativeMouse, node);
     }
 
   };
 
-  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
+  nativeMouseMoveTo(coords, this.jsTimer);
 
   respond.send();
+
+  function getInViewLocation(targetLocation, opt_currentWindow) {
+    var scrollOffset = bot.window.getScroll(opt_currentWindow);
+    var scrollLocation = goog.math.Coordinate.sum(scrollOffset, targetLocation);
+    bot.window.scrollIntoView(scrollLocation, opt_currentWindow);
+    var newScrollOffset = bot.window.getScroll(opt_currentWindow);
+    return goog.math.Coordinate.difference(scrollLocation, newScrollOffset);
+  }
 };
 
-FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
@@ -1157,12 +1210,12 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
     return;
   }
 
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
 
-  if (this.enableNativeEvents && nativeMouse && node) {
+  if (nativeMouse && node) {
     var currentPosition = respond.session.getMousePosition();
     var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 
@@ -1183,7 +1236,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   respond.send();
 };
 
-FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
@@ -1195,7 +1248,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     return;
   }
 
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);

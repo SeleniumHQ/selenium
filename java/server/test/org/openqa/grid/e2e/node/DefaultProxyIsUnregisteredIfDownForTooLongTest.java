@@ -17,6 +17,16 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -26,16 +36,10 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Iterator;
 import java.util.concurrent.Callable;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
@@ -75,7 +79,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     DefaultRemoteProxy p;
 
     // should be up
-    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    assertTrue(registry.getAllProxies().size() == 1);
     p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
     waitFor(isUp(p));
 
@@ -83,17 +87,17 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
     // first mark down - proxy is not down, proxy is not unregistered.
     Thread.sleep(1500);
-    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    assertTrue(registry.getAllProxies().size() == 1);
     p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
-    Assert.assertFalse(p.isDown());
+    assertFalse(p.isDown());
 
     // node is considered down - proxy is down, proxy is not unregistered.
     // sleep interval should be bigger than (STATUS_CHECK_TIMEOUT + NODE_POLLING) * DOWN_POLLING_LIMIT
     // but less than UNREGISTER_IF_STILL_DOWN_AFTER (with previous sleeps accounting).
     Thread.sleep(3500);
-    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    assertTrue(registry.getAllProxies().size() == 1);
     p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
-    Assert.assertTrue(p.isDown());
+    assertTrue(p.isDown());
 
     Thread.sleep(10000);
 
@@ -136,5 +140,19 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
   @AfterClass
   public static void tearDown() throws Exception {
     hub.stop();
+  }
+
+  private <V> void waitFor(final Callable<V> thing) {
+    new FluentWait<Object>("").withTimeout(30, SECONDS).until(new Function<Object, V>() {
+
+      @Override
+      public V apply(Object input) {
+        try {
+          return thing.call();
+        } catch (Exception e) {
+          throw Throwables.propagate(e);
+        }
+      }
+    });
   }
 }

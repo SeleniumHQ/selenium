@@ -30,6 +30,8 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +39,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -62,12 +63,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
-  private JavascriptExecutor executor;
-
   @Before
   public void setUp() throws Exception {
     assumeTrue(driver instanceof JavascriptExecutor);
-    executor = (JavascriptExecutor) driver;
   }
 
   private Object executeScript(String script, Object... args) {
@@ -573,6 +571,21 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       // This is expected
     } catch (Exception ex) {
       fail("Expected an StaleElementReferenceException exception, got " + ex);
+    }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  public void testShouldBeAbleToReturnADateObject() {
+    driver.get(pages.simpleTestPage);
+
+    String date = (String) executeScript("return new Date();");
+
+    try {
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+    } catch (ParseException e) {
+      assertTrue(false);
     }
   }
 

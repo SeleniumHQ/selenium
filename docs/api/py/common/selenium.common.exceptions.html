@@ -23,10 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
-    <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.common.action_chains" href="../webdriver/selenium.webdriver.common.action_chains.html" />
-    <link rel="prev" title="selenium.selenium" href="../selenium/selenium.selenium.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../webdriver/selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../selenium/selenium.selenium.html" title="selenium.selenium"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,13 +51,16 @@
 <dt id="selenium.common.exceptions.ElementNotSelectableException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotSelectableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when trying to select an unselectable element.</p>
+<p>For example, selecting a &#8216;script&#8217; element.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.ElementNotVisibleException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotVisibleException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotVisibleException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thrown when although an element is present on the DOM, 
+<dd><p>Thrown when an element is present on the DOM, but  
 it is not visible, and so is not able to be interacted with.</p>
+<p>Most commonly encountered when trying to click or read text 
+of an element that is hidden from view.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -130,18 +123,33 @@ method is invalid, i.e. out of document.</p>
 <dt id="selenium.common.exceptions.NoAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when switching to no presented alert.</p>
+<p>This can be caused by calling an operation on the Alert() class when an alert is 
+not yet on the screen.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchAttributeException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchAttributeException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchAttributeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when the attribute of element could not be found.</p>
+<p>You may want to check if the attribute exists in the particular browser you are 
+testing against.  Some browsers may have different property names for the same 
+property.  (IE8&#8217;s .innerText vs. Firefox .textContent)</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchElementException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchElementException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when element could not be found.</p>
+<dl class="docutils">
+<dt>If you encounter this exception, you may want to check the following:</dt>
+<dd><ul class="first simple">
+<li>Check your selector used in your find_by...</li>
+<li>Element may not yet be on the screen at the time of the find operation,</li>
+</ul>
+<p class="last">(webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() 
+for how to write a wait wrapper to wait for an element to appear.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="exception">
@@ -154,6 +162,11 @@ method is invalid, i.e. out of document.</p>
 <dt id="selenium.common.exceptions.NoSuchWindowException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchWindowException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchWindowException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when window target to be switched doesn&#8217;t exist.</p>
+<p>To find the current set of active window handles, you can get a list 
+of the active window handles in the following way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="exception">
@@ -166,6 +179,19 @@ method is invalid, i.e. out of document.</p>
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">StaleElementReferenceException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#StaleElementReferenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when a reference to an element is now &#8220;stale&#8221;.</p>
 <p>Stale means the element no longer appears on the DOM of the page.</p>
+<dl class="docutils">
+<dt>Possible causes of StaleElementReferenceException include, but not limited to:</dt>
+<dd><ul class="first simple">
+<li>You are no longer on the same page, or the page may have refreshed since the element</li>
+</ul>
+<p class="last">was located.
+* The element may have been removed and re-added to the screen, since it was located.
+Such as an element being relocated. 
+This can happen typically with a javascript framework when values are updated and the 
+node is rebuilt.
+* Element may have been inside an iframe or another context which was refreshed.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="exception">
@@ -184,6 +210,8 @@ method is invalid, i.e. out of document.</p>
 <dt id="selenium.common.exceptions.UnexpectedAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">UnexpectedAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when an unexpected alert is appeared.</p>
+<p>Usually raised when when an expected modal is blocking webdriver form executing any 
+more commands.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -206,12 +234,6 @@ method is invalid, i.e. out of document.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../selenium/selenium.selenium.html"
-                        title="previous chapter">selenium.selenium</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../webdriver/selenium.webdriver.common.action_chains.html"
-                        title="next chapter">selenium.webdriver.common.action_chains</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/common/selenium.common.exceptions.txt"
@@ -243,14 +265,7 @@ method is invalid, i.e. out of document.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../webdriver/selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../selenium/selenium.selenium.html" title="selenium.selenium"
-             >previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

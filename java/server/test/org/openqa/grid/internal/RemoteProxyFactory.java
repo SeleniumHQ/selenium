@@ -16,14 +16,12 @@ limitations under the License.
 */
 package org.openqa.grid.internal;
 
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONObject;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 @SuppressWarnings({"JavaDoc"})
 public class RemoteProxyFactory {

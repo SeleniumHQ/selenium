@@ -136,6 +136,9 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         private static List<By> CreateLocatorList(MemberInfo member)
         {
+            var useSequenceAttributes = Attribute.GetCustomAttributes(member, typeof(FindsBySequenceAttribute), true);
+            bool useSequence = useSequenceAttributes.Length > 0;
+
             List<By> bys = new List<By>();
             var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
             if (attributes.Length > 0)
@@ -150,6 +153,13 @@ namespace OpenQA.Selenium.Support.PageObjects
                     }
 
                     bys.Add(castedAttribute.Finder);
+                }
+
+                if (useSequence)
+                {
+                    ByChained chained = new ByChained(bys.ToArray());
+                    bys.Clear();
+                    bys.Add(chained);
                 }
             }
 

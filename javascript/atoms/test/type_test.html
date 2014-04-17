@@ -4,7 +4,7 @@
   <title>type_test</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot.Keyboard.Keys');
+    goog.require('bot.Keyboard');
     goog.require('bot.action');
     goog.require('bot.events');
     goog.require('bot.userAgent');
@@ -27,6 +27,20 @@
         !bot.userAgent.isEngineVersion(12);
 
     var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
+
+    // Keys that impact the cursor's position and require the selection API.
+    var SELECTION_KEYS = [
+      bot.Keyboard.Keys.BACKSPACE,
+      bot.Keyboard.Keys.DELETE,
+      bot.Keyboard.Keys.PAGE_UP,
+      bot.Keyboard.Keys.PAGE_DOWN,
+      bot.Keyboard.Keys.END,
+      bot.Keyboard.Keys.HOME,
+      bot.Keyboard.Keys.LEFT,
+      bot.Keyboard.Keys.UP,
+      bot.Keyboard.Keys.RIGHT,
+      bot.Keyboard.Keys.DOWN,
+    ];
 
     var ALT = bot.Keyboard.Keys.ALT;
     var BACKSPACE = bot.Keyboard.Keys.BACKSPACE;
@@ -78,12 +92,12 @@
       textInputCountBox.value = parseInt(textInputCountBox.value) + 1;
     }
 
-    /*
+    /**
      * Types a value into textbox, and makes sure that textbox and textbox_count
      * have the correct values afterwards.  textbox_count should display the
      * number of times textbox's oninput (non IE) or onpropertychange (IE) event
      * fired.
-     * @param {string|bot.Keyboard.Key|Array.<string, bot.Keyboard.Key>}
+     * @param {string|bot.Keyboard.Key|Array.<(string|bot.Keyboard.Key)>}
      *   input Value to type into textbox.
      * @param {string=} opt_finalValue The final value that should appear in
      *   the input.  Defaults to input.
@@ -111,8 +125,23 @@
           goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
       var initValue = opt_initValue || '';
 
+      // Determine if our test requires updating the cursor position, which is
+      // not supported in all scenarios.
+      var needsSelection = function(input) {
+        if (goog.isArray(input)) {
+          return goog.array.some(input, needsSelection);
+        }
+        return goog.array.contains(SELECTION_KEYS, input);
+      }
+      var requiresSelection = goog.array.some(input, needsSelection);
+
       for (var i = 0; i < inputIds.length; i++) {
         var inputBox = document.getElementById(inputIds[i]);
+        if (requiresSelection && !bot.Keyboard.supportsSelection(inputBox)) {
+          // Test requires selection, but the current element will throw when
+          // accessing those properties, so skip this case.
+          continue;
+        }
         inputBox.value = initValue;
         inputCountBox.value = '0';
         textInputCountBox.value = '0';
@@ -199,9 +228,9 @@
       // the text was not changed.
       var inputs = goog.userAgent.GECKO ? 5 : 4;
       runTypingTest(['ab', LEFT, BACKSPACE, BACKSPACE, 'c'], 'cb', inputs, 3);
-  }
+    }
 
-  function testShiftNavigation() {
+    function testShiftNavigation() {
       // This test will fail on GECKO <= 10 because of irregularities with
       // the KEYPRESS event. This needs to be investigated, and fixed in
       // the atoms.
@@ -302,7 +331,7 @@
        */
       function setupAllToggleListeners(listenerKeys) {
         var history = {alt: [], ctrl: [], meta: [], shift: []};
-        for (key in history) {
+        for (var key in history) {
           listenerKeys.push(setupSingleToggleListener(history, key));
         }
         return history;
@@ -370,22 +399,24 @@
       runTypingTest('b', 'ab', 1, 1, INPUT_IDS, 'a');
     }
 
-    function testCannotTypeInNotShownElement() {
-      for (var i = 0; i < INPUT_IDS.length; i++) {
-        var input = document.getElementById(INPUT_IDS[i]);
-        input.style['visibility'] = 'hidden';
-      }
-      continueAfterDelayInIE7('visibility = hidden', function() {
-        for (var i = 0; i < INPUT_IDS.length; i++) {
-          var input = document.getElementById(INPUT_IDS[i]);
-          assertThrows(goog.partial(bot.action.type, input, 'a'));
-          input.style['visibility'] = 'visible';
-        }
-        continueAfterDelayInIE7('visibility = visible');
-      });
+    function testCanTypeInHiddenElementWhenInFocus() {
+      var input = document.getElementById('hiddenInput');
+      input.focus();
+      assertFalse(bot.dom.isShown(input));
+      assertEquals(input, bot.dom.getActiveElement(input));
+      bot.action.type(input, 'a');
+      assertEquals('a', input.value);
     }
 
-    function testCannotTypeInNotDisabledElement() {
+    function testCannotTypeInHiddenElementWhenNotInFocus() {
+      document.getElementById('textbox').focus();
+      var input = document.getElementById('hiddenInput');
+      assertFalse(bot.dom.isShown(input));
+      assertNotEquals(input, bot.dom.getActiveElement(input));
+      assertThrows(goog.partial(bot.action.type, input, 'a'));
+    }
+
+    function testCannotTypeInDisabledElement() {
       for (var i = 0; i < INPUT_IDS.length; i++) {
         var input = document.getElementById(INPUT_IDS[i]);
         input.disabled = true;
@@ -473,47 +504,6 @@
       assertFalse(keyboard.isPressed(META));
       assertFalse(keyboard.isPressed(SHIFT));
     }
-
-    function browserImplementsDateInputWidget() {
-      // chrome and mobile safari
-      return goog.userAgent.WEBKIT && !(goog.userAgent.product.SAFARI && !goog.userAgent.MOBILE);
-    }
-
-    function testTypeDate() {
-      if (goog.userAgent.OPERA) {
-        return;
-      }
-
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-01-01");
-      assertEquals(dateInput.value, "2013-01-01");
-      dateInput.value = "";
-    }
-    function testTypeDateWithTimestamp() {
-      if (goog.userAgent.OPERA) {
-        return;
-      }
-
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
-      dateInput.value = "";
-    }
-    function testTypeInvalidDate() {
-      if (goog.userAgent.OPERA) {
-        return;
-      }
-
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-13-01");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
-      dateInput.value = "";
-      bot.action.type(dateInput, "February 28, 2013");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
-    }
   </script>
 </head>
 <body>
@@ -524,10 +514,12 @@
     <input type="password" id="password"/>
     <input type="email" id="email"/>
     <input type="search" id="search"/>
-    <input type="date" id="date"/>
     <textarea id="textarea"></textarea>
     <input type="text" id="inputCount"/>
     <input type="text" id="textInputCount"/>
+    <div style="width:0px;height:0px;overflow:hidden;">
+      <input type="text" id="hiddenInput"/>
+    </div>
   </form>
 </body>
 <script type="text/javascript">

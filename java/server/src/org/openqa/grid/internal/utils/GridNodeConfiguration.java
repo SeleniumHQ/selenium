@@ -18,10 +18,6 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +25,9 @@ import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import java.util.ArrayList;
 import java.util.HashMap;

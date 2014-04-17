@@ -14,13 +14,13 @@ module Selenium
         def path
           @path ||= (
             path = case Platform.os
-            when :windows
-              Platform.find_in_program_files("Safari\\Safari.exe")
-            when :macosx
-              "/Applications/Safari.app/Contents/MacOS/Safari"
-            else
-              Platform.find_binary("Safari")
-            end
+                   when :windows
+                     Platform.find_in_program_files("Safari\\Safari.exe")
+                   when :macosx
+                     "/Applications/Safari.app/Contents/MacOS/Safari"
+                   else
+                     Platform.find_binary("Safari")
+                   end
 
             unless File.file?(path) && File.executable?(path)
               raise Error::WebDriverError, "unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH."
@@ -41,6 +41,7 @@ end
 
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
-require 'selenium/webdriver/safari/extension'
+require 'selenium/webdriver/safari/extensions'
+require 'selenium/webdriver/safari/options'
 require 'selenium/webdriver/safari/bridge'
 

@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
-        <developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
-        <url>http://selenium.googlecode.com/svn</url>
+        <connection>scm:git:http://selenium.googlecode.com/git</connection> 
+        <developerConnection>scm:git:https://selenium.googlecode.com/git</developerConnection>
+        <url>http://selenium.googlecode.com/git</url>
     </scm>
 
     <developers>
@@ -117,13 +117,11 @@
     </profiles>
 
     <modules>
-        <module>android-driver</module>
         <module>api</module>
         <module>chrome-driver</module>
         <module>firefox-driver</module>
         <module>htmlunit-driver</module>
         <module>ie-driver</module>
-        <module>iphone-driver</module>
         <module>java</module>
         <module>remote-driver</module>
         <module>safari-driver</module>
@@ -141,7 +139,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>14.0</version>
+                <version>15.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -151,7 +149,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.6</version>
+                <version>1.8</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -174,19 +172,19 @@
                 <version>3.4.0</version>
             </dependency>
             <dependency>
-              <groupId>net.java.dev.jna</groupId>
-              <artifactId>platform</artifactId>
-              <version>3.4.0</version>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>platform</artifactId>
+                <version>3.4.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.2.1</version>
+                <version>4.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.2.1</version>
+                <version>4.3</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>

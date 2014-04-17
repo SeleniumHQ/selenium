@@ -16,30 +16,17 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TestWaiter;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
+import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -55,6 +42,30 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox35;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.awt.*;
+import java.util.Map;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -197,8 +208,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     Action dblClick = getBuilder(driver).doubleClick(toDoubleClick).build();
 
     dblClick.perform();
-    String testFieldContent = TestWaiter.waitFor(
-        elementValueToEqual(toDoubleClick, "DoubleClicked"), 5, TimeUnit.SECONDS);
+    String testFieldContent = shortWait.until(elementValueToEqual(toDoubleClick, "DoubleClicked"));
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
                  testFieldContent);
   }
@@ -230,7 +240,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     contextClick.perform();
 
-    waitFor(elementValueToEqual(toClick, "Clicked"));
+    wait.until(elementValueToEqual(toClick, "Clicked"));
 
     assertEquals("Value should change to Clicked.", "Clicked",
                  toClick.getAttribute("value"));
@@ -293,7 +303,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     // For this reason, this action will fail.
     new Actions(driver).moveToElement(linkElement, 500, 30).click().perform();
 
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
   }
 
   @SuppressWarnings("unchecked")
@@ -347,7 +357,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     new Actions(driver).moveByOffset(-50, verticalMove).perform();
 
     WebElement resultArea = driver.findElement(By.id("result"));
-    waitFor(elementTextToContain(resultArea, "parent matches"));
+    wait.until(elementTextToContain(resultArea, "parent matches"));
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, CHROME, OPERA, OPERA_MOBILE},
@@ -363,22 +373,22 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     WebElement resultArea = driver.findElement(By.id("result"));
     String expectedEvents = "First";
-    waitFor(elementTextToEqual(resultArea, expectedEvents));
+    wait.until(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r2', at (2500, 50) to (2580, 100)
     new Actions(driver).moveByOffset(2540 - 150, 75 - 125).click().perform();
     expectedEvents += " Second";
-    waitFor(elementTextToEqual(resultArea, expectedEvents));
+    wait.until(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r3' at (60, 1500) to (140, 1550)
     new Actions(driver).moveByOffset(100 - 2540, 1525 - 75).click().perform();
     expectedEvents += " Third";
-    waitFor(elementTextToEqual(resultArea, expectedEvents));
+    wait.until(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r4' at (220,180) to (320, 230)
     new Actions(driver).moveByOffset(270 - 100, 205 - 1525).click().perform();
     expectedEvents += " Fourth";
-    waitFor(elementTextToEqual(resultArea, expectedEvents));
+    wait.until(elementTextToEqual(resultArea, expectedEvents));
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
@@ -391,10 +401,245 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       new Actions(driver).moveToElement(element).click().perform();
       driver.switchTo().defaultContent()
           .switchTo().frame("target");
-      waitFor(elementTextToEqual(driver, By.id("span"), "An inline element"));
+      wait.until(elementTextToEqual(By.id("span"), "An inline element"));
     } finally {
       driver.switchTo().defaultContent();
     }
   }
 
+  @JavascriptEnabled
+  @Ignore(
+      value = {HTMLUNIT, IPHONE,  OPERA, SAFARI, MARIONETTE},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers.",
+      issues = {4136})
+  @Test
+  public void testShouldAllowUsersToHoverOverElements() {
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("menu1"));
+
+    final WebElement item = driver.findElement(By.id("item1"));
+    assertEquals("", item.getText());
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+    new Actions(driver).moveToElement(element).build().perform();
+
+    wait.until(not(elementTextToEqual(item, "")));
+    assertEquals("Item 1", item.getText());
+  }
+
+  @JavascriptEnabled
+  @Ignore(
+      value = {HTMLUNIT, IPHONE, OPERA, SAFARI, MARIONETTE},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers",
+      issues = {4136})
+  @Test
+  public void testHoverPersists() throws Exception {
+    // This test passes on IE. When running in Firefox on Windows, the test
+    // will fail if the mouse cursor is not in the window. Solution: Maximize.
+    if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
+        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
+      driver.manage().window().maximize();
+    }
+
+    driver.get(pages.javascriptPage);
+    // Move to a different element to make sure the mouse is not over the
+    // element with id 'item1' (from a previous test).
+    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
+
+    WebElement element = driver.findElement(By.id("menu1"));
+
+    final WebElement item = driver.findElement(By.id("item1"));
+    assertEquals("", item.getText());
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+    new Actions(driver).moveToElement(element).build().perform();
+
+    // Intentionally wait to make sure hover persists.
+    Thread.sleep(2000);
+
+    wait.until(not(elementTextToEqual(item, "")));
+
+    assertEquals("Item 1", item.getText());
+  }
+
+  @JavascriptEnabled
+  @Ignore(
+      value = {HTMLUNIT, IPHONE, OPERA, FIREFOX},
+      reason = "This is an IE only tests")
+  @NoDriverAfterTest
+  @NeedsLocalEnvironment
+  @Test
+  public void testPersistentHoverCanBeTurnedOff() throws Exception {
+    assumeTrue(TestUtilities.isInternetExplorer(driver));
+    // Destroy the previous driver to make sure the hovering thread is
+    // stopped.
+    driver.quit();
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(ENABLE_PERSISTENT_HOVERING, false);
+    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
+    driver = builder.get();
+
+    try {
+      driver.get(pages.javascriptPage);
+      // Move to a different element to make sure the mouse is not over the
+      // element with id 'item1' (from a previous test).
+      new Actions(driver).moveToElement(driver.findElement(By.id("keyUp"))).build().perform();
+      WebElement element = driver.findElement(By.id("menu1"));
+
+      final WebElement item = driver.findElement(By.id("item1"));
+      assertEquals("", item.getText());
+
+      ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+      new Actions(driver).moveToElement(element).build().perform();
+
+      // Move the mouse somewhere - to make sure that the thread firing the events making
+      // hover persistent is not active.
+      Robot robot = new Robot();
+      robot.mouseMove(50, 50);
+
+      // Intentionally wait to make sure hover DOES NOT persist.
+      Thread.sleep(1000);
+
+      wait.until(elementTextToEqual(item, ""));
+
+      assertEquals("", item.getText());
+
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @Test
+  public void testMovingMouseByRelativeOffset() {
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    new Actions(driver).moveToElement(trackerDiv).build().perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 50, 200));
+
+    new Actions(driver).moveByOffset(10, 20).build().perform();
+
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 60, 220));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @Test
+  public void testMovingMouseToRelativeElementOffset() {
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    new Actions(driver).moveToElement(trackerDiv, 95, 195).build()
+        .perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 95, 195));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @Test
+  public void testMovingMouseToRelativeZeroElementOffset() {
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    new Actions(driver).moveToElement(trackerDiv, 0, 0).build()
+        .perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
+  }
+
+  @JavascriptEnabled
+  @NeedsFreshDriver
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @Test
+  public void testMoveRelativeToBody() {
+    try {
+      driver.get(pages.mouseTrackerPage);
+
+      new Actions(driver).moveByOffset(50, 100).build().perform();
+
+      WebElement reporter = driver.findElement(By.id("status"));
+
+      wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
+    } finally {
+      new Actions(driver).moveByOffset(-50, -100).build().perform();
+    }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @NoDriverAfterTest
+  public void canMouseOverAndOutOfAnElement() {
+    driver.get(pages.mouseOverPage);
+
+    WebElement greenbox = driver.findElement(By.id("greenbox"));
+    WebElement redbox = driver.findElement(By.id("redbox"));
+    Dimension size = redbox.getSize();
+
+    new Actions(driver).moveToElement(greenbox, 1, 1).perform();
+
+    assertEquals(
+        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    new Actions(driver).moveToElement(redbox).perform();
+    assertEquals(
+        Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    // IE8 (and *only* IE8) requires a move of 2 pixels. All other browsers
+    // would be happy with 1.
+    new Actions(driver).moveToElement(redbox, size.getWidth() + 2, size.getHeight() + 2)
+        .perform();
+    assertEquals(
+        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+  }
+
+  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
+    String[] splitString = locationTouple.split(",");
+    int gotX = Integer.parseInt(splitString[0].trim());
+    int gotY = Integer.parseInt(splitString[1].trim());
+
+    // Everything within 5 pixels range is OK
+    final int ALLOWED_DEVIATION = 5;
+    return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION &&
+           Math.abs(expectedY - gotY) < ALLOWED_DEVIATION;
+
+  }
+
+  private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
+      final WebElement element, final int x, final int y) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver ignored) {
+        return fuzzyPositionMatching(x, y, element.getText());
+      }
+
+      @Override
+      public String toString() {
+        return "Coordinates: " + element.getText() + " but expected: " +
+               x + ", " + y;
+      }
+    };
+  }
 }

@@ -162,7 +162,8 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
   'locationContextEnabled': 'geo.enabled',
   'browserConnectionEnabled': 'dom.network.enabled',
   'acceptSslCerts': 'webdriver_accept_untrusted_certs',
-  'nativeEvents' : 'webdriver_enable_native_events'
+  'nativeEvents' : 'webdriver_enable_native_events',
+  'pageLoadingStrategy' : 'webdriver.load.strategy'
 };
 // TODO: Don't save firefox specific capability acceptSslCerts as preferences.
 
@@ -203,19 +204,20 @@ wdSessionStoreService.prototype.configure_ = function(response, desiredCaps,
  * @param {!FirefoxDriver} driver The driver instance.
  * @private
  */
-wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities, 
+wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities,
   driver) {
   var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
     'nsIPrefBranch');
   goog.object.forEach(capabilities, function(value, key) {
-    if (!goog.isBoolean(value)) {
-      return;
-    }
     if (key in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
       var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[key];
-      prefStore.setBoolPref(pref, value);
       fxdriver.logging.info('Setting capability ' +
-        key + ' (' + pref + ') to ' + value);
+                            key + ' (' + pref + ') to ' + value);
+      if (goog.isBoolean(value)) {
+        prefStore.setBoolPref(pref, value);
+      } else {
+        prefStore.setCharPref(pref, value);
+      }
       if (key == 'nativeEvents') {
         driver.enableNativeEvents = value;
       }

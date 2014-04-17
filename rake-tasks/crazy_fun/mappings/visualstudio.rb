@@ -125,23 +125,23 @@ module CrazyFunDotNet
       )
     end
 
-	def get_reference_assemblies_version_dir(version)
+    def get_reference_assemblies_version_dir(version)
       if version == "net35"
-        return File.join(get_reference_assemblies_dir(), "v3.5").to_s
+        return File.join(get_reference_assemblies_dir(), "v3.5")
       end
-      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v4.0").to_s
-	end
+      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v4.0")
+    end
 
     def resolve_framework_reference(ref, version)
-      if version == "net35"
-        assembly = File.join(get_reference_assemblies_version_dir(version), ref)
-        unless File.exists? assembly
+      assembly = File.join(get_reference_assemblies_version_dir(version), ref)
+      unless File.exists? assembly
+        if version == "net35"
           assembly = File.join(get_framework_dir(), "v2.0.50727", ref)
+        else
+          assembly = File.join(get_framework_dir(), "v4.0.30319", ref)
         end
-
-        return assembly.to_s
       end
-      return File.join(get_reference_assemblies_version_dir(version), ref).to_s
+      return assembly.to_s
     end
 
     def find_environment_variable(possible_vars, fallback)
@@ -293,7 +293,7 @@ module CrazyFunDotNet
 
       output_dir = File.join(base_dir, framework_ver)
       unmerged_dir = File.join(base_dir, "unmerged")
-	  unmerged_dir = File.join(unmerged_dir, framework_ver)
+      unmerged_dir = File.join(unmerged_dir, framework_ver)
       unmerged_path = File.join(unmerged_dir, args[:out])
       full_path = File.join(output_dir, args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
@@ -308,8 +308,11 @@ module CrazyFunDotNet
         if framework_ver == "net35"
           params << "/v2"
         else
-		  mscorlib_location = get_reference_assemblies_version_dir("net40").gsub('/', Platform.dir_separator)
-          params << "/targetplatform:v4,\"#{mscorlib_location}\""
+          mscorlib_location = get_reference_assemblies_version_dir("net40")
+          unless File.exists? mscorlib_location
+            mscorlib_location = File.join(get_framework_dir(), "v4.0.30319")
+          end
+          params << "/targetplatform:v4,\"#{mscorlib_location.to_s.gsub('/', Platform.dir_separator)}\""
         end
         params << "/keyfile:#{args[:keyfile]}" unless args[:keyfile].nil?
         params << "/out:#{full_path.gsub('/', Platform.dir_separator)}"
@@ -407,10 +410,6 @@ module CrazyFunDotNet
         puts "Generating help website: at #{web_documentation_path_desc}"
 
         doc_sources = resolve_doc_sources(dir, args[:srcs])
-
-        if ENV['DXROOT'].nil?
-          fail "Sandcastle documentation tools not found. Documentation will not be created."
-        end
 
         if ENV['SHFBROOT'].nil?
           fail "Sandcastle Help File Builder not found. Documentation will not be created."

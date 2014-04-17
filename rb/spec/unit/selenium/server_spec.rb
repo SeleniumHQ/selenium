@@ -2,8 +2,8 @@ require File.expand_path('../webdriver/spec_helper', __FILE__)
 require 'selenium/server'
 
 describe Selenium::Server do
-  let(:mock_process) { mock(ChildProcess).as_null_object }
-  let(:mock_poller)  { mock("SocketPoller", :connected? => true, :closed? => true)}
+  let(:mock_process) { double(ChildProcess).as_null_object }
+  let(:mock_poller)  { double("SocketPoller", :connected? => true, :closed? => true)}
 
   it "raises an error if the jar file does not exist" do
     lambda {
@@ -19,7 +19,7 @@ describe Selenium::Server do
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", :port => 1234, :background => true)
-    server.stub!(:socket).and_return(mock_poller)
+    server.stub(:socket).and_return(mock_poller)
 
     server.start
   end
@@ -32,7 +32,7 @@ describe Selenium::Server do
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar")
-    server.stub!(:socket).and_return(mock_poller)
+    server.stub(:socket).and_return(mock_poller)
 
     mock_process.should_receive(:wait)
     server.start
@@ -46,7 +46,7 @@ describe Selenium::Server do
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", :background => true)
-    server.stub!(:socket).and_return(mock_poller)
+    server.stub(:socket).and_return(mock_poller)
 
     server << ["foo", "bar"]
 
@@ -125,11 +125,11 @@ describe Selenium::Server do
   it "raises Selenium::Server::Error if the server is not launched within the timeout" do
     File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
-    poller = mock('SocketPoller')
+    poller = double('SocketPoller')
     poller.should_receive(:connected?).and_return(false)
 
     server = Selenium::Server.new("selenium-server-test.jar", :background => true)
-    server.stub!(:socket).and_return(poller)
+    server.stub(:socket).and_return(poller)
 
     lambda { server.start }.should raise_error(Selenium::Server::Error)
   end

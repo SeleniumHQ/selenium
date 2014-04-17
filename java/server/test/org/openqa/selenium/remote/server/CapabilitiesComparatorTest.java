@@ -19,14 +19,16 @@ package org.openqa.selenium.remote.server;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.number.OrderingComparison.greaterThan;
-import static org.hamcrest.number.OrderingComparison.lessThan;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMatch;
 
 import com.google.common.collect.Lists;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
@@ -35,6 +37,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.Comparator;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class CapabilitiesComparatorTest {
 
   private Comparator<Capabilities> comparator;

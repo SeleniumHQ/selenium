@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Tests the basic double tap operations.
@@ -44,14 +45,13 @@ public class TouchDoubleTapTest extends TouchTestBase {
     driver.get(pages.longContentPage);
 
     WebElement image = driver.findElement(By.id("imagestart"));
-    int y = image.getLocation().y;
+    int y = ((Locatable) image).getCoordinates().inViewPort().y;
     // The element is located at a certain point, after double tapping,
     // the y coordinate must change.
     assertTrue(y > 100);
 
     doubleTapOnElement("imagestart");
-
-    y = image.getLocation().y;
+    y = ((Locatable) image).getCoordinates().inViewPort().y;
     assertTrue(y < 50);
   }
 

@@ -569,9 +569,13 @@ goog.dom.getDocumentScrollElement = function() {
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
-  // Safari (2 and 3) needs body.scrollLeft in both quirks mode and strict mode.
-  return !goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc) ?
-      doc.documentElement : doc.body;
+  // WebKit needs body.scrollLeft in both quirks mode and strict mode. We also
+  // default to the documentElement if the document does not have a body (e.g.
+  // a SVG document).
+  if (!goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc)) {
+    return doc.documentElement;
+  }
+  return doc.body || doc.documentElement;
 };
 
 

@@ -17,13 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
-import java.lang.System;
 import java.util.Properties;
-
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 
 public class GridDocHelper {

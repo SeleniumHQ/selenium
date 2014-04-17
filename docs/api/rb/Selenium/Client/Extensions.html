@@ -6,13 +6,13 @@
 <title>
   Module: Selenium::Client::Extensions
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -805,7 +805,7 @@ browser).</p>
 the current DOM. Note that this method treats a single string as a special
 case.</p>
 
-<h4 id="label-Parameters">Parameters<span><a href="#label-Parameters">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Parameters">Parameters</h4>
 
 <p>wait_for_text accepts an optional hash of parameters:</p>
 <ul><li>
@@ -816,12 +816,12 @@ search scope.</p>
 out if text cannot be found.</p>
 </li></ul>
 
-<h4 id="label-Regular+Expressions">Regular Expressions<span><a href="#label-Regular+Expressions">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Regular+Expressions">Regular Expressions</h4>
 
 <p>In addition to plain strings, wait_for_text accepts regular expressions as
 the pattern specification.</p>
 
-<h4 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Examples">Examples</h4>
 
 <p>The following are equivalent, and will match “some text” anywhere within
 the document:</p>
@@ -831,14 +831,14 @@ the document:</p>
 
 <p>This will match “some text” anywhere within the specified element:</p>
 
-<pre class="ruby"><span class="ruby-identifier">wait_for_text</span> <span class="ruby-regexp">/some text/</span>, :<span class="ruby-identifier">element</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;container&quot;</span>
-</pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span>
+</code></pre>
 
 <p>This will match “some text” only if it exactly matches the complete
 innerHTML of the specified element:</p>
 
-<pre class="ruby"><span class="ruby-identifier">wait_for_text</span> <span class="ruby-string">&quot;some text&quot;</span>, :<span class="ruby-identifier">element</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;container&quot;</span>
-</pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span>
+</code></pre>
 
 
   </div>
@@ -919,9 +919,9 @@ innerHTML of the specified element:</p>
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:38:54 2013 by
+  Generated on Mon Feb 17 23:05:55 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

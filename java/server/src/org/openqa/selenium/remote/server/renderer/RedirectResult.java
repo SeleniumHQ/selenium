@@ -19,8 +19,8 @@ package org.openqa.selenium.remote.server.renderer;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 public class RedirectResult implements Renderer {
 

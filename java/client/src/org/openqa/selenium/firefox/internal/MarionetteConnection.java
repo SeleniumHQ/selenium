@@ -30,6 +30,7 @@ import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
@@ -93,10 +94,10 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   public void start() throws IOException {
-    int port = 2828;
+    int port = PortProber.findFreePort();
 
     profile.setPreference("marionette.defaultPrefs.enabled", true);
-    profile.setPreference("marionette.defaultPrefs.port", 2828);
+    profile.setPreference("marionette.defaultPrefs.port", port);
     profile.setPreference("browser.warnOnQuit", false);
 
     lock.lock(connectTimeout);

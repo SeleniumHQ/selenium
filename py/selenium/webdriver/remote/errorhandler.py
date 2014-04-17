@@ -44,31 +44,31 @@ class ErrorCode(object):
     """
     # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
     SUCCESS = 0
-    NO_SUCH_ELEMENT = 7
-    NO_SUCH_FRAME = 8
-    UNKNOWN_COMMAND = 9
-    STALE_ELEMENT_REFERENCE = 10
-    ELEMENT_NOT_VISIBLE = 11
-    INVALID_ELEMENT_STATE = 12
-    UNKNOWN_ERROR = 13
-    ELEMENT_IS_NOT_SELECTABLE = 15
-    JAVASCRIPT_ERROR = 17
-    XPATH_LOOKUP_ERROR = 19
-    TIMEOUT = 21
-    NO_SUCH_WINDOW = 23
-    INVALID_COOKIE_DOMAIN = 24
-    UNABLE_TO_SET_COOKIE = 25
-    UNEXPECTED_ALERT_OPEN = 26
-    NO_ALERT_OPEN = 27
-    SCRIPT_TIMEOUT = 28
-    INVALID_ELEMENT_COORDINATES = 29
-    IME_NOT_AVAILABLE = 30;
-    IME_ENGINE_ACTIVATION_FAILED = 31
-    INVALID_SELECTOR = 32
-    MOVE_TARGET_OUT_OF_BOUNDS = 34
-    INVALID_XPATH_SELECTOR = 51
-    INVALID_XPATH_SELECTOR_RETURN_TYPER = 52
-    METHOD_NOT_ALLOWED = 405
+    NO_SUCH_ELEMENT = [7, 'no such element']
+    NO_SUCH_FRAME = [8, 'no such frame']
+    UNKNOWN_COMMAND = [9, 'unknown command']
+    STALE_ELEMENT_REFERENCE = [10, 'stale element reference']
+    ELEMENT_NOT_VISIBLE = [11, 'element not visible']
+    INVALID_ELEMENT_STATE = [12, 'invalid element state']
+    UNKNOWN_ERROR = [13, 'unknown error']
+    ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
+    JAVASCRIPT_ERROR = [17, 'javascript error']
+    XPATH_LOOKUP_ERROR = [19, 'invalid selector']
+    TIMEOUT = [21, 'timeout']
+    NO_SUCH_WINDOW = [23, 'no such window']
+    INVALID_COOKIE_DOMAIN = [24, 'invalid cookie domain']
+    UNABLE_TO_SET_COOKIE = [25, 'unable to set cookie']
+    UNEXPECTED_ALERT_OPEN = [26, 'unexpected alert open']
+    NO_ALERT_OPEN = [27, 'no such alert']
+    SCRIPT_TIMEOUT = [28, 'script timeout']
+    INVALID_ELEMENT_COORDINATES = [29, 'invalid element coordinates']
+    IME_NOT_AVAILABLE = [30, 'ime not available']
+    IME_ENGINE_ACTIVATION_FAILED = [31, 'ime engine activation failed']
+    INVALID_SELECTOR = [32, 'invalid selector']
+    MOVE_TARGET_OUT_OF_BOUNDS = [34, 'move target out of bounds']
+    INVALID_XPATH_SELECTOR = [51, 'invalid selector']
+    INVALID_XPATH_SELECTOR_RETURN_TYPER = [52, 'invalid selector']
+    METHOD_NOT_ALLOWED = [405, 'unsupported operation']
 
 
 class ErrorHandler(object):
@@ -78,54 +78,54 @@ class ErrorHandler(object):
     def check_response(self, response):
         """
         Checks that a JSON response from the WebDriver does not have an error.
-        
+
         :Args:
          - response - The JSON response from the WebDriver server as a dictionary
            object.
-        
+
         :Raises: If the response contains an error message.
         """
         status = response['status']
         if status == ErrorCode.SUCCESS:
             return
         exception_class = ErrorInResponseException
-        if status == ErrorCode.NO_SUCH_ELEMENT:
+        if status in ErrorCode.NO_SUCH_ELEMENT:
             exception_class = NoSuchElementException
-        elif status == ErrorCode.NO_SUCH_FRAME:
+        elif status in ErrorCode.NO_SUCH_FRAME:
             exception_class = NoSuchFrameException
-        elif status == ErrorCode.NO_SUCH_WINDOW:
+        elif status in ErrorCode.NO_SUCH_WINDOW:
             exception_class = NoSuchWindowException
-        elif status == ErrorCode.STALE_ELEMENT_REFERENCE:
+        elif status in ErrorCode.STALE_ELEMENT_REFERENCE:
             exception_class = StaleElementReferenceException
-        elif status == ErrorCode.ELEMENT_NOT_VISIBLE:
+        elif status in ErrorCode.ELEMENT_NOT_VISIBLE:
             exception_class = ElementNotVisibleException
-        elif status == ErrorCode.INVALID_ELEMENT_STATE:
+        elif status in ErrorCode.INVALID_ELEMENT_STATE:
             exception_class = InvalidElementStateException
-        elif status == ErrorCode.INVALID_SELECTOR \
-                or status == ErrorCode.INVALID_XPATH_SELECTOR \
-                or status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
+        elif status in ErrorCode.INVALID_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR \
+                or status in ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
             exception_class = InvalidSelectorException
-        elif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
+        elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
-        elif status == ErrorCode.INVALID_COOKIE_DOMAIN:
+        elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
             exception_class = WebDriverException
-        elif status == ErrorCode.UNABLE_TO_SET_COOKIE:
+        elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
             exception_class = WebDriverException
-        elif status == ErrorCode.TIMEOUT:
+        elif status in ErrorCode.TIMEOUT:
             exception_class = TimeoutException
-        elif status == ErrorCode.SCRIPT_TIMEOUT:
+        elif status in ErrorCode.SCRIPT_TIMEOUT:
             exception_class = TimeoutException
-        elif status == ErrorCode.UNKNOWN_ERROR:
+        elif status in ErrorCode.UNKNOWN_ERROR:
             exception_class = WebDriverException
-        elif status == ErrorCode.UNEXPECTED_ALERT_OPEN:
+        elif status in ErrorCode.UNEXPECTED_ALERT_OPEN:
             exception_class = UnexpectedAlertPresentException
-        elif status == ErrorCode.NO_ALERT_OPEN:
+        elif status in ErrorCode.NO_ALERT_OPEN:
             exception_class = NoAlertPresentException
-        elif status == ErrorCode.IME_NOT_AVAILABLE:
+        elif status in ErrorCode.IME_NOT_AVAILABLE:
             exception_class = ImeNotAvailableException
-        elif status == ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
+        elif status in ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
             exception_class = ImeActivationFailedException
-        elif status == ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
+        elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
             exception_class = MoveTargetOutOfBoundsException
         else:
             exception_class = WebDriverException

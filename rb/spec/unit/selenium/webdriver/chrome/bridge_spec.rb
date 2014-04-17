@@ -7,15 +7,15 @@ module Selenium
 
       describe Bridge do
         let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities }}
-        let(:service) { mock(Service, :start => true, :uri => "http://example.com") }
+        let(:service) { double(Service, :start => true, :uri => "http://example.com") }
         let(:caps)    { {} }
-        let(:http)    { mock(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http)    { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         before do
           @default_capabilities = Remote::Capabilities.chrome.as_json
 
-          Remote::Capabilities.stub!(:chrome).and_return(caps)
-          Service.stub!(:default_service).and_return(service)
+          Remote::Capabilities.stub(:chrome).and_return(caps)
+          Service.stub(:default_service).and_return(service)
         end
 
         it "sets the nativeEvents capability" do
@@ -51,6 +51,13 @@ module Selenium
 
           caps['chromeOptions']['detach'].should be_true
           caps['chrome.detach'].should be_true
+        end
+
+        it "sets the prefs capability" do
+          Bridge.new(:http_client => http, :prefs => {:foo => "bar"})
+
+          caps['chromeOptions']['prefs'].should == {:foo => "bar"}
+          caps['chrome.prefs'].should == {:foo => "bar"}
         end
 
         it "lets the user override chrome.detach" do

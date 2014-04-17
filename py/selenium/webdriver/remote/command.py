@@ -26,7 +26,9 @@ class Command(object):
 
     # Keep in sync with org.openqa.selenium.remote.DriverCommand
 
+    STATUS = "status"
     NEW_SESSION = "newSession"
+    GET_ALL_SESSIONS = "getAllSessions"
     DELETE_SESSION = "deleteSession"
     CLOSE = "close"
     QUIT = "quit"
@@ -45,12 +47,10 @@ class Command(object):
     FIND_CHILD_ELEMENTS = "findChildElements"
     CLEAR_ELEMENT = "clearElement"
     CLICK_ELEMENT = "clickElement"
-    HOVER_OVER_ELEMENT = "hoverOverElement"
     SEND_KEYS_TO_ELEMENT = "sendKeysToElement"
     SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement"
     SUBMIT_ELEMENT = "submitElement"
     UPLOAD_FILE = "uploadFile"
-    TOGGLE_ELEMENT = "toggleElement"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
@@ -59,20 +59,16 @@ class Command(object):
     SET_WINDOW_POSITION = "setWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
+    SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
-    GET_SPEED = "getSpeed"
-    SET_SPEED = "setSpeed"
-    SET_BROWSER_VISIBLE = "setBrowserVisible"
-    IS_BROWSER_VISIBLE = "isBrowserVisible"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
     SET_ELEMENT_SELECTED = "setElementSelected"
-    DRAG_ELEMENT = "dragElement"
     IS_ELEMENT_SELECTED = "isElementSelected"
     IS_ELEMENT_ENABLED = "isElementEnabled"
     IS_ELEMENT_DISPLAYED = "isElementDisplayed"
@@ -98,25 +94,25 @@ class Command(object):
     GET_ALERT_TEXT = "getAlertText"
 
     # Advanced user interactions
-    CLICK = "mouseClick";
-    DOUBLE_CLICK = "mouseDoubleClick";
-    MOUSE_DOWN = "mouseButtonDown";
-    MOUSE_UP = "mouseButtonUp";
-    MOVE_TO = "mouseMoveTo";
+    CLICK = "mouseClick"
+    DOUBLE_CLICK = "mouseDoubleClick"
+    MOUSE_DOWN = "mouseButtonDown"
+    MOUSE_UP = "mouseButtonUp"
+    MOVE_TO = "mouseMoveTo"
 
     # Screen Orientation
     SET_SCREEN_ORIENTATION = "setScreenOrientation"
     GET_SCREEN_ORIENTATION = "getScreenOrientation"
 
     # Touch Actions
-    SINGLE_TAP = "touchSingleTap";
-    TOUCH_DOWN = "touchDown";
-    TOUCH_UP = "touchUp";
-    TOUCH_MOVE = "touchMove";
-    TOUCH_SCROLL = "touchScroll";
-    DOUBLE_TAP = "touchDoubleTap";
-    LONG_PRESS = "touchLongPress";
-    FLICK = "touchFlick";
+    SINGLE_TAP = "touchSingleTap"
+    TOUCH_DOWN = "touchDown"
+    TOUCH_UP = "touchUp"
+    TOUCH_MOVE = "touchMove"
+    TOUCH_SCROLL = "touchScroll"
+    DOUBLE_TAP = "touchDoubleTap"
+    LONG_PRESS = "touchLongPress"
+    FLICK = "touchFlick"
 
     #HTML 5
     EXECUTE_SQL = "executeSql"
@@ -138,7 +134,7 @@ class Command(object):
     CLEAR_LOCAL_STORAGE = "clearLocalStorage"
     GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize"
 
-    GET_SESSION_STORAGE_ITEM= "getSessionStorageItem"
+    GET_SESSION_STORAGE_ITEM = "getSessionStorageItem"
     REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem"
     GET_SESSION_STORAGE_KEYS = "getSessionStorageKeys"
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"

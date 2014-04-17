@@ -59,13 +59,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -106,6 +106,28 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#FIREFOX_DRIVER_XPI_PROPERTY">FIREFOX_DRIVER_XPI_PROPERTY</a></strong></code>
+<div class="block">System property that defines the location of the webdriver.xpi browser extension to install
+ in the browser.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -139,28 +161,32 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#addWebDriverExtensionIfNeeded()">addWebDriverExtensionIfNeeded</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>protected int</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#determineNextFreePort(int)">determineNextFreePort</a></strong>(int&nbsp;port)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#execute(org.openqa.selenium.remote.Command)">execute</a></strong>(<a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#isConnected()">isConnected</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#quit()">quit</a></strong>()</code>
 <div class="block">Terminates the connection.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</a></strong>(<a href="../../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#start()">start</a></strong>()</code>
 <div class="block">Establishes a connection to the extension.</div>
@@ -182,6 +208,27 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="FIREFOX_DRIVER_XPI_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>FIREFOX_DRIVER_XPI_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String FIREFOX_DRIVER_XPI_PROPERTY</pre>
+<div class="block">System property that defines the location of the webdriver.xpi browser extension to install
+ in the browser. If not set, the prebuilt extension bundled with this class will be used
+ instead.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../constant-values.html#org.openqa.selenium.firefox.internal.NewProfileExtensionConnection.FIREFOX_DRIVER_XPI_PROPERTY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -226,6 +273,15 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <dd><code><a href="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html#start()">start</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</a></code></dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If an I/O error occurs.</dd></dl>
+</li>
+</ul>
+<a name="addWebDriverExtensionIfNeeded()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addWebDriverExtensionIfNeeded</h4>
+<pre>protected&nbsp;void&nbsp;addWebDriverExtensionIfNeeded()</pre>
 </li>
 </ul>
 <a name="execute(org.openqa.selenium.remote.Command)">
@@ -344,13 +400,13 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>

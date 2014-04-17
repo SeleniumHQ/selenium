@@ -380,7 +380,19 @@ namespace OpenQA.Selenium
 
             try
             {
-                driver.FindElement(By.Id("checkbox"));
+                WaitFor(() =>
+                {
+                    IWebElement success = null;
+                    try
+                    {
+                        success = driver.FindElement(By.Id("success"));
+                    }
+                    catch (NoSuchElementException)
+                    {
+                    }
+
+                    return success != null;
+                });
             }
             catch (WebDriverException)
             {

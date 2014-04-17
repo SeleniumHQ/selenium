@@ -1,3 +1,56 @@
+## v2.41.0
+
+* FIXED: 7138: export logging API from webdriver module.
+* FIXED: 7105: beforeEach/it/afterEach properly bind `this` for Mocha tests.
+
+## v2.40.0
+
+* API documentation is now included in the docs directory.
+* Added utility functions for working with an array of promises:
+    `promise.all`, `promise.map`, and `promise.filter`
+* Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
+* Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
+    `Promise#addErrback()`, and `Promise#addBoth()`.
+* Removed deprecated function `webdriver.WebDriver#getCapability`.
+* FIXED: 6826: Added support for custom locators.
+
+## v2.39.0
+
+* Version bump to stay in sync with the Selenium project.
+
+## v2.38.1
+
+* FIXED: 6686: Changed `webdriver.promise.Deferred#cancel()` to silently no-op
+    if the deferred has already been resolved.
+
+## v2.38.0
+
+* When a promise is rejected, always annotate the stacktrace with the parent
+    flow state so users can identify the source of an error.
+* Updated tests to reflect features not working correctly in the SafariDriver
+    (cookie management and proxy support; see issues 5051, 5212, and 5503)
+* FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
+    specified as a function argument (instead of passing (0,0)).
+* FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
+* FIXED: 6612: On Unix, use the default IANA ephemeral port range if unable to
+    retrieve the current system's port range.
+* FIXED: 6617: Avoid triggering the node debugger when initializing the
+    stacktrace module.
+* FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
+
+## v2.37.0
+
+* FIXED: 6346: The remote.SeleniumServer class now accepts JVM arguments using
+    the `jvmArgs` option.
+
+## v2.36.0
+
+* _Release skipped to stay in sync with main Selenium project._
+
+## v2.35.2
+
+* FIXED: 6200: Pass arguments to the Selenium server instead of to the JVM.
+
 ## v2.35.1
 
 * FIXED: 6090: Changed example scripts to use chromedriver.

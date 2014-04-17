@@ -19,9 +19,9 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 /**
  * Handles the browser side of the delete. Removing from DriverSessions happens outside this class.

@@ -98,9 +98,15 @@ public class JsonToBeanConverter {
     }
 
     if (SessionId.class.equals(clazz)) {
-      JSONObject object = new JSONObject((String) text);
-      String value = object.getString("value");
-      return (T) new SessionId(value);
+      // Stupid heuristic to tell if we are dealing with a selenium 2 or 3 session id.
+      String coerced = String.valueOf(text);
+      if (!coerced.isEmpty() && coerced.charAt(0) == '{') {
+        JSONObject object = new JSONObject(coerced);
+        String value = object.getString("value");
+        return (T) new SessionId(value);
+      }
+
+      return (T) new SessionId(coerced);
     }
 
     if (Capabilities.class.equals(clazz)) {

@@ -61,6 +61,7 @@ module Selenium
           detach                      = opts.delete(:detach)
           proxy                       = opts.delete(:proxy)
           no_website_testing_defaults = opts.delete(:no_website_testing_defaults)
+          prefs                       = opts.delete(:prefs)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -89,13 +90,14 @@ module Selenium
           chrome_options['verbose']                  = true if verbose
           chrome_options['detach']                   = detach.nil? || !!detach
           chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
+          chrome_options['prefs']                    = prefs if prefs
 
           caps['chromeOptions'] = chrome_options
           caps['proxy'] = proxy if proxy
 
           # legacy options - for chromedriver < 17.0.963.0
           caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')
-          %w[binary detach extensions nativeEvents noWebsiteTestingDefaults profile verbose].each do |key|
+          %w[binary detach extensions nativeEvents noWebsiteTestingDefaults prefs profile verbose].each do |key|
             caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
           end
 

@@ -57,6 +57,7 @@ js_binary(name = "webdriver",
     "externs/deps.js",
   ],
   deps = [
+    ":asserts_lib",
     "//javascript/atoms:error_lib",
     "//javascript/atoms:json",
   ],

@@ -33,7 +33,7 @@ goog.require('webdriver.promise.Promise');
  * <pre><code>
  *   var testWindow = webdriver.testing.Window.create(driver);
  *   // Throw a custom error when the window fails to open.
- *   testWindow.addErrback(function(e) {
+ *   testWindow.thenCatch(function(e) {
  *     throw Error('Failed to open test window: ' + e);
  *   });
  * </code></pre>
@@ -137,7 +137,7 @@ webdriver.testing.Window.focusOnWindow = function(driver, opt_window) {
     win.name = name;
     ret = new webdriver.testing.Window(driver,
         driver.switchTo().window(name).
-            addCallback(driver.getWindowHandle, driver),
+            then(goog.bind(driver.getWindowHandle, driver)),
         win);
     if (win === window) {
       webdriver.testing.Window.currentWindow_ = ret;
@@ -176,13 +176,14 @@ webdriver.testing.Window.prototype.focus = function() {
  *     when this command has completed.
  */
 webdriver.testing.Window.prototype.close = function() {
-  return this.window_.addCallback(function(win) {
+  var self = this;
+  return this.window_.then(function(win) {
     if (win) {
       win.close();
     } else {
-      return this.focus().addCallback(this.driver_.close, this.driver_);
+      return self.focus().then(goog.bind(self.driver_.close, self.driver_));
     }
-  }, this);
+  });
 };
 
 

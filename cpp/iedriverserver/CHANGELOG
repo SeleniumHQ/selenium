@@ -9,6 +9,150 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.41.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.40.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to synchronize with release of Selenium project.
+
+v2.39.0.7
+=========
+ * Improved error message for findElements in the failure case.
+ * Added additional logging for failure of get_mimeType when setting cookies.
+ * Fixed edge case for finding elements by class name with invalid characters.
+   The fix should be isolated only to situations where the IE document mode
+   is 8 or less. In other words, it should fix the case for quirks mode for
+   IE9 or below, and for standards mode for IE8 or below.
+
+v2.39.0.6
+=========
+ * Reorganized wait algorithm in HtmlDialog. Now is more correctly aborting
+   the wait if a new (cascading) dialog is detected. Fixes issue #6744.
+
+v2.39.0.5
+=========
+ * Modified to use bot.dom.getOverflowState atom for element overflow. This
+   is a more reliable and fully tested method than previously used. There is
+   still a minor issue when the element point in question is exactly on the
+   overflow border, but this needs to be addressed in the atoms code, rather
+   than at the IE driver level. Fixes issue #6898.   
+
+v2.39.0.4
+=========
+ * Update call of isDisplayed atom in IE to not ignore opacity. Previously,
+   the driver explicitly ignored opacity for IE, but now takes it into account.
+   Fixes issue #6827.
+
+v2.39.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Attempted fix for finding multiple elements with invalid CSS selectors.
+
+v2.39.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * On behalf of Mark Watson: Added ability to attach to IE using the
+   ShellWindows API instead of the ActiveAccessibility API. This is useful
+   when the Windows global atoms table is exhausted. Fixes issue #5342.
+
+v2.39.0.1
+=========
+ * Improved error message for failed launch of IE using IELaunchURL API.
+   We now translate the HRESULT received from the API into a text error
+   message.
+
+v2.39.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.38.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to synchronize with release of Selenium project.
+
+v2.37.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed crash encountered when taking screenshot of non-HTML page. This does
+   not throw an error, but fails silently, with no screenshot being generated.
+   Fixes issue #6576.
+
+v2.37.0.3
+=========
+ * Refactored detection of single-text-node child elements in IE. In IE, a
+   containing text and no background color will not register as a hit target
+   unless the mouse cursor is directly over the text of the element. However,
+   in the case of block elements with children that include text nodes in
+   addition to other elements, if the first text node does not contain any
+   text, the correct behavior is to use the center of the block element for
+   mouse movements. This commit corrects that behavior.
+
+v2.37.0.2
+=========
+ * Refactored notification of new showModalDialog windows. Previously, the
+   code notifying the command executor of new HTML dialog windows (opened by
+   the showModalDialog function) would not always fire in the case where a
+   second modal was opened from a first. We now notify of the existence of
+   the new modal whenever a modal is found. This has the potential to cause
+   mild performance degredation in the modal dialog case, but this is a small
+   price to pay for the correctness of the driver. Fixes issue #6416.
+
+v2.37.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified detection of HTML page. The method for retrieving the expected
+   type description for HTML pages was far more complex than it needed to be.
+   We now use the AssocQueryString API instead of trying to read the registry. 
+
+v2.37.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.36.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.35.3.5
+=========
+ * Fixed bug in getting element location.
+
+v2.35.3.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Added padding for IE < 8 for getting invisible element location. Invisible
+   elements on IE 6 and 7 have a 2-pixel border that must be added.
+
+v2.35.3.3
+=========
+ * Fixed HTML dialog logic for self-closing documents. HTML dialog windows
+   opened using showModalDialog() have no way to properly notify of their
+   closing. The IE driver attempts to detect closing of these windows by
+   listening for user-initiated actions, either by calling the WebDriver close
+   method, or clicking on an element that causes the dialog to close. This
+   commit adds logic to the method used for getting all window handles to
+   validate the existence of any HTML dialog windows, properly notifying the
+   driver if the OS-level window handle is no longer valid. Fixes issue #6249.
+ * Fixed HTML dialog logic for redirected documents. Getting the parent window
+   of an HTML dialog's document can fail, especially if the document changed
+   out from under us before we could get the window reference. The canonical
+   case for this is a redirect using JavaScript. Now we will sleep for a short
+   time, then retry to obtain the reference to the window object. Fixes issue
+   #6224.
+
+v2.35.3.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Adding more accurate logging during waiting for browser navigation to
+   complete.
+
+v2.35.3.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed problem getting SVG elements in IE9 and above.
+
 v2.35.3.0
 =========
  * Version number change only for public release to downloads page.

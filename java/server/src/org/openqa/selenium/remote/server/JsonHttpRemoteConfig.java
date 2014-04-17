@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.server.HttpStatusCodes.INTERNAL_SERVER_ERROR;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
@@ -58,10 +61,11 @@ import org.openqa.selenium.remote.server.handler.GetElementSelected;
 import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
 import org.openqa.selenium.remote.server.handler.GetElementValue;
+import org.openqa.selenium.remote.server.handler.GetLogHandler;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
 import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
-import org.openqa.selenium.remote.server.handler.GetSessionLogsHandler;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
+import org.openqa.selenium.remote.server.handler.GetSessionLogsHandler;
 import org.openqa.selenium.remote.server.handler.GetTagName;
 import org.openqa.selenium.remote.server.handler.GetTitle;
 import org.openqa.selenium.remote.server.handler.GetWindowPosition;
@@ -74,7 +78,6 @@ import org.openqa.selenium.remote.server.handler.ImeGetActiveEngine;
 import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
 import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
-import org.openqa.selenium.remote.server.handler.GetLogHandler;
 import org.openqa.selenium.remote.server.handler.MaximizeWindow;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
@@ -87,6 +90,7 @@ import org.openqa.selenium.remote.server.handler.SetWindowSize;
 import org.openqa.selenium.remote.server.handler.Status;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
+import org.openqa.selenium.remote.server.handler.SwitchToParentFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
@@ -137,9 +141,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
 
 import java.util.EnumSet;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.server.HttpStatusCodes.INTERNAL_SERVER_ERROR;
-import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
 
 public class JsonHttpRemoteConfig {
   private static final String EXCEPTION = ":exception";
@@ -222,7 +223,6 @@ public class JsonHttpRemoteConfig {
 
     Result jsonErrorResult = new Result(MimeType.EMPTY,
                                         new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
     addGlobalHandler(ResultType.ERROR, jsonErrorResult);
 
     Result xdrpcResult = new Result(MimeType.CROSS_DOMAIN_RPC,
@@ -365,6 +365,8 @@ public class JsonHttpRemoteConfig {
         .on(ResultType.SUCCESS, emptyResponse);
 
     postMapper.bind("/session/:sessionId/frame", SwitchToFrame.class)
+        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/frame/parent", SwitchToParentFrame.class)
         .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/window", SwitchToWindow.class)
         .on(ResultType.SUCCESS, emptyResponse);

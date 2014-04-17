@@ -70,9 +70,35 @@
 
 <div class="viewcode-block" id="ActionChains"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains">[docs]</a><span class="k">class</span> <span class="nc">ActionChains</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ActionChains are a way to automate low level interactions such as </span>
+<span class="sd">    mouse movements, mouse button actions, key press, and context menu interactions.</span>
+<span class="sd">    This is useful for doing more complex actions like hover over and drag and drop. </span>
+
 <span class="sd">    Generate user actions.</span>
-<span class="sd">       All actions are stored in the ActionChains object. </span>
-<span class="sd">       Call perform() to fire stored actions.</span>
+<span class="sd">       When you call methods for actions on the ActionChains object, </span>
+<span class="sd">       the actions are stored in a queue in the ActionChains object. </span>
+<span class="sd">       When you call perform(), the events are fired in the order they </span>
+<span class="sd">       are queued up.</span>
+
+<span class="sd">    ActionChains can be used in a chain pattern::</span>
+
+<span class="sd">        menu = driver.find_element_by_css_selector(&quot;.nav&quot;)</span>
+<span class="sd">        hidden_submenu = driver.find_element_by_css_selector(&quot;.nav #submenu1&quot;)</span>
+
+<span class="sd">        ActionChains(driver).move_to_element(menu).click(hidden_submenu).perform()</span>
+
+<span class="sd">    Or actions can be queued up one by one, then performed.::</span>
+
+<span class="sd">        menu = driver.find_element_by_css_selector(&quot;.nav&quot;)</span>
+<span class="sd">        hidden_submenu = driver.find_element_by_css_selector(&quot;.nav #submenu1&quot;)</span>
+
+<span class="sd">        actions = ActionChains(driver)</span>
+<span class="sd">        actions.move_to_element(menu)</span>
+<span class="sd">        actions.click(hidden_submenu)</span>
+<span class="sd">        actions.perform()</span>
+
+<span class="sd">    Either way, the actions are performed in the order they are called, one after </span>
+<span class="sd">    another.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
@@ -169,7 +195,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">click_and_hold</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_by_offset</span><span class="p">(</span><span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.key_down"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -181,23 +207,16 @@
 <span class="sd">         - value: The modifier key to send. Values are defined in `Keys` class.</span>
 <span class="sd">         - element: The element to send keys.</span>
 <span class="sd">           If None, sends a key to current focused element.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
-                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
-                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="sd">        </span>
+<span class="sd">        Example, pressing ctrl+c::</span>
 
+<span class="sd">            ActionsChains(driver).key_down(Keys.CONTROL).send_keys(&#39;c&#39;).key_up(Keys.CONTROL).perform()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">element</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">typing</span> <span class="p">}))</span>
+                <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.key_up"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.key_up">[docs]</a>    <span class="k">def</span> <span class="nf">key_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -208,23 +227,16 @@
 <span class="sd">         - value: The modifier key to send. Values are defined in Keys class.</span>
 <span class="sd">         - element: The element to send keys.</span>
 <span class="sd">           If None, sends a key to current focused element.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
-                <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
-                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
-                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
+<span class="sd">        Example, pressing ctrl+c::</span>
+
+<span class="sd">            ActionsChains(driver).key_down(Keys.CONTROL).send_keys(&#39;c&#39;).key_up(Keys.CONTROL).perform()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">element</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">typing</span> <span class="p">}))</span>
+                <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.move_by_offset"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_by_offset">[docs]</a>    <span class="k">def</span> <span class="nf">move_by_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
@@ -232,13 +244,13 @@
 <span class="sd">        Moving the mouse to an offset from current mouse position.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - xoffset: X offset to move to.</span>
-<span class="sd">         - yoffset: Y offset to move to.</span>
+<span class="sd">         - xoffset: X offset to move to, as a positive or negative integer.</span>
+<span class="sd">         - yoffset: Y offset to move to, as a positive or negative integer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.move_to_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">):</span>
@@ -246,7 +258,7 @@
 <span class="sd">        Moving the mouse to the middle of an element.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - to_element: The element to move to.</span>
+<span class="sd">         - to_element: The WebElement to move to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="n">to_element</span><span class="o">.</span><span class="n">id</span><span class="p">}))</span>
@@ -254,19 +266,19 @@
 </div>
 <div class="viewcode-block" id="ActionChains.move_to_element_with_offset"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element_with_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Move the mouse by an offset of the specificed element.</span>
+<span class="sd">        Move the mouse by an offset of the specified element.</span>
 <span class="sd">           Offsets are relative to the top-left corner of the element.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - to_element: The element to move to.</span>
+<span class="sd">         - to_element: The WebElement to move to.</span>
 <span class="sd">         - xoffset: X offset to move to.</span>
 <span class="sd">         - yoffset: Y offset to move to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="n">to_element</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -287,10 +299,12 @@
 <span class="sd">        Sends keys to current focused element.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - keys_to_send: The keys to send.</span>
+<span class="sd">         - keys_to_send: The keys to send.  Modifier keys constants can be found in the </span>
+<span class="sd">         &#39;Keys&#39; class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">switch_to_active_element</span><span class="p">()</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys_to_send</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span><span class="p">,</span> 
+              <span class="p">{</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys_to_typing</span><span class="p">(</span><span class="n">keys_to_send</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.send_keys_to_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys_to_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="o">*</span><span class="n">keys_to_send</span><span class="p">):</span>
@@ -299,11 +313,33 @@
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - element: The element to send keys.</span>
-<span class="sd">         - keys_to_send: The keys to send.</span>
+<span class="sd">         - keys_to_send: The keys to send.  Modifier keys constants can be found in the </span>
+<span class="sd">         &#39;Keys&#39; class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="n">element</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys_to_send</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
+    <span class="k">def</span> <span class="nf">_keys_to_typing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
+                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
+                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">typing</span>
+
+    <span class="c"># Context manager so ActionChains can be used in a &#39;with .. as&#39; statements.</span>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="c"># Return created instance of self.</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">_value</span><span class="p">,</span> <span class="n">_traceback</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c"># Do nothing, does not require additional cleanup.</span></div>
 </pre></div>
 
           </div>

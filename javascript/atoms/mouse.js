@@ -46,7 +46,7 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
+bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
   goog.base(this, opt_modifiersState, opt_eventEmitter);
 
   /** @private {?bot.Mouse.Button} */
@@ -68,23 +68,28 @@ bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
   this.hasEverInteracted_ = false;
 
   if (opt_state) {
-    this.buttonPressed_ = opt_state.buttonPressed;
+    if (goog.isNumber(opt_state['buttonPressed'])) {
+      this.buttonPressed_ = opt_state['buttonPressed'];
+    }
 
     try {
-      if (bot.dom.isElement(opt_state.elementPressed)) {
-        this.elementPressed_ = opt_state.elementPressed;
+      if (bot.dom.isElement(opt_state['elementPressed'])) {
+        this.elementPressed_ = opt_state['elementPressed'];
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
     }
 
-    this.clientXY_ = opt_state.clientXY;
-    this.nextClickIsDoubleClick_ = opt_state.nextClickIsDoubleClick;
-    this.hasEverInteracted_ = opt_state.hasEverInteracted;
+    this.clientXY_ = new goog.math.Coordinate(
+      opt_state['clientXY']['x'],
+      opt_state['clientXY']['y']);
+
+    this.nextClickIsDoubleClick_ = !!opt_state['nextClickIsDoubleClick'];
+    this.hasEverInteracted_ = !!opt_state['hasEverInteracted'];
 
     try {
-      if (bot.dom.isElement(opt_state.element)) {
-        this.setElement(/** @type {!Element} */ (opt_state.element));
+      if (opt_state['element'] && bot.dom.isElement(opt_state['element'])) {
+        this.setElement(/** @type {!Element} */(opt_state['element']));
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
@@ -95,9 +100,12 @@ goog.inherits(bot.Mouse, bot.Device);
 
 
 /**
+  * Describes the state of the mouse. This type should be treated as a
+  * dictionary with all properties accessed using array notation to
+  * ensure properties are not renamed by the compiler.
   * @typedef {{buttonPressed: ?bot.Mouse.Button,
   *           elementPressed: Element,
-  *           clientXY: !goog.math.Coordinate,
+  *           clientXY: {x: number, y: number},
   *           nextClickIsDoubleClick: boolean,
   *           hasEverInteracted: boolean,
   *           element: Element}}
@@ -129,11 +137,13 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * Maps mouse events to an array of button argument value for each mouse button.
  * The array is indexed by the bot.Mouse.Button values. It encodes this table,
  * where each cell contains the (left/middle/right/none) button values.
+ * <pre>
  *               click/    mouseup/   mouseout/  mousemove  contextmenu
  *               dblclick  mousedown  mouseover
  * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
+ * </pre>
  * @private {!Object.<bot.events.EventType, !Array.<?number>>}
  * @const
  */
@@ -278,8 +288,11 @@ bot.Mouse.prototype.releaseButton = function() {
   // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
       this.getElement() == this.elementPressed_) {
-    this.clickElement(this.clientXY_,
-        this.getButtonValue_(bot.events.EventType.CLICK));
+    if (!(bot.userAgent.WINDOWS_PHONE &&
+        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION))) {
+      this.clickElement(this.clientXY_,
+          this.getButtonValue_(bot.events.EventType.CLICK));
+    }
     this.maybeDoubleClickElement_();
     if (bot.userAgent.IE_DOC_10 &&
         this.buttonPressed_ == bot.Mouse.Button.LEFT &&
@@ -469,12 +482,17 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
  * @return {!bot.Mouse.State} The current mouse state.
  */
 bot.Mouse.prototype.getState = function() {
-  var state = {};
-  state.buttonPressed = this.buttonPressed_;
-  state.elementPressed = this.elementPressed_;
-  state.clientXY = this.clientXY_;
-  state.nextClickIsDoubleClick = this.nextClickIsDoubleClick_;
-  state.hasEverInteracted = this.hasEverInteracted_;
-  state.element = this.getElement();
-  return state;
+  // Need to use quoted literals here, so the compiler will not rename the
+  // properties of the emitted object. When the object is created via the
+  // "constructor", we will look for these *specific* properties. Everywhere
+  // else internally, we use the dot-notation, so it's okay if the compiler
+  // renames the internal variable name.
+  return {
+    'buttonPressed': this.buttonPressed_,
+    'elementPressed': this.elementPressed_,
+    'clientXY': { 'x': this.clientXY_.x, 'y': this.clientXY_.y },
+    'nextClickIsDoubleClick': this.nextClickIsDoubleClick_,
+    'hasEverInteracted': this.hasEverInteracted_,
+    'element': this.getElement()
+  };
 };

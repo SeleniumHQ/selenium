@@ -86,7 +86,9 @@ class FindElementsCommandHandler : public IECommandHandler {
       if (status_code == WD_SUCCESS) {
         response->SetSuccessResponse(found_elements);
       } else {
-        response->SetErrorResponse(status_code, "Finding elements returned an unexpected error");
+        response->SetErrorResponse(status_code,
+            "Finding elements with " + mechanism + " == " + value +
+            "returned an unexpected error");
       }
     }
   }

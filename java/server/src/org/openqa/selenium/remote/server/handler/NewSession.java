@@ -26,9 +26,9 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.util.Map;
 
@@ -87,18 +87,6 @@ public class NewSession implements RestishHandler, JsonParametersAware {
 
   @Override
   public String toString() {
-    Map<String, String> capabilities = Maps.newHashMap();
-
-    if (desiredCapabilities != null) {
-      for (Map.Entry<String, ?> entry : desiredCapabilities.asMap().entrySet()) {
-        String value = String.valueOf(entry.getValue());
-        if (value.length() > 32) {
-          value = value.substring(0, 29) + "...";
-        }
-        capabilities.put(entry.getKey(), value);
-      }
-
-    }
-    return String.format("[new session: %s]", capabilities);
+    return String.format("[new session: %s]", desiredCapabilities);
   }
 }

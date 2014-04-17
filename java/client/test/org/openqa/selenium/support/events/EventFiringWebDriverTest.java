@@ -20,10 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -45,7 +42,6 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Michael Tamm
@@ -373,13 +369,13 @@ public class EventFiringWebDriverTest {
 
     final WebDriver stub = new MyStub();
     EventFiringWebDriver driver = new EventFiringWebDriver(stub);
-    MyStub wrapped = (MyStub) unwrapDriver(driver);
+    MyStub wrapped = (MyStub) driver.getWrappedDriver();
     assertEquals(stub, wrapped);
 
     class MyListener extends AbstractWebDriverEventListener {
       @Override
       public void beforeNavigateTo(String url, WebDriver driver) {
-        MyStub unwrapped = (MyStub) unwrapDriver(driver);
+        MyStub unwrapped = (MyStub) ((WrapsDriver) driver).getWrappedDriver();
 
         assertEquals(stub, unwrapped);
       }
@@ -435,13 +431,6 @@ public class EventFiringWebDriverTest {
     WebElement firingElement = firingDriver.findElement(By.id("ignored"));
 
     assertEquals(stubElement.toString(), firingElement.toString());
-  }
-
-  private WebDriver unwrapDriver(WebDriver driver) {
-    if (driver instanceof WrapsDriver) {
-      return unwrapDriver(((WrapsDriver) driver).getWrappedDriver());
-    }
-    return driver;
   }
 
   private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}

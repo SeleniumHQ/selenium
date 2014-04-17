@@ -90,7 +90,8 @@
 <hr>
 <br>
 <pre>public interface <span class="strong">Keyboard</span></pre>
-<div class="block">Interface representing basic keyboard operations.</div>
+<div class="block">Interface representing basic, low-level keyboard operations.  It offers a set of low-level “do as
+ I say” commands to allow precise emulation of user input.</div>
 </li>
 </ul>
 </div>
@@ -111,15 +112,21 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#pressKey(java.lang.CharSequence)">pressKey</a></strong>(java.lang.CharSequence&nbsp;keyToPress)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#pressKey(java.lang.CharSequence)">pressKey</a></strong>(java.lang.CharSequence&nbsp;keyToPress)</code>
+<div class="block">Press a key on the keyboard that isn't text.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#releaseKey(java.lang.CharSequence)">releaseKey</a></strong>(java.lang.CharSequence&nbsp;keyToRelease)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#releaseKey(java.lang.CharSequence)">releaseKey</a></strong>(java.lang.CharSequence&nbsp;keyToRelease)</code>
+<div class="block">Release a key on the keyboard that isn't text.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></strong>(java.lang.CharSequence...&nbsp;keysToSend)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></strong>(java.lang.CharSequence...&nbsp;keysToSend)</code>
+<div class="block">Sends keys to the keyboard representation in the browser.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -143,6 +150,15 @@
 <li class="blockList">
 <h4>sendKeys</h4>
 <pre>void&nbsp;sendKeys(java.lang.CharSequence...&nbsp;keysToSend)</pre>
+<div class="block">Sends keys to the keyboard representation in the browser.
+
+ Special keys that are not text, represented as <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><code>Keys</code></a> are recognized
+ both as part of sequences of characters, or individually.
+
+ Modifier keys are preserved throughout the lifetime of the send keys operation, and are
+ released upon this method returning.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keysToSend</code> - one or more sequences of characters or key representations to type on the
+                   keyboard</dd></dl>
 </li>
 </ul>
 <a name="pressKey(java.lang.CharSequence)">
@@ -152,6 +168,13 @@
 <li class="blockList">
 <h4>pressKey</h4>
 <pre>void&nbsp;pressKey(java.lang.CharSequence&nbsp;keyToPress)</pre>
+<div class="block">Press a key on the keyboard that isn't text.  Please see <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><code>Keys</code></a> for
+ an exhaustive list of recognized pressable keys.
+
+ If <code>keyToPress</code> is a sequence of characters, different driver implementations may
+ choose to throw an exception or to read only the first character in the sequence.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keyToPress</code> - the key to press, if a sequence only the first character will be read or an
+                   exception is thrown</dd></dl>
 </li>
 </ul>
 <a name="releaseKey(java.lang.CharSequence)">
@@ -161,6 +184,13 @@
 <li class="blockList">
 <h4>releaseKey</h4>
 <pre>void&nbsp;releaseKey(java.lang.CharSequence&nbsp;keyToRelease)</pre>
+<div class="block">Release a key on the keyboard that isn't text.  Please see <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><code>Keys</code></a> for
+ an exhaustive list of recognized pressable keys.
+
+ If <code>keyToRelease</code> is a sequence of characters, different driver implementations may
+ choose to throw an exception or to read only the first character in the sequence.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keyToRelease</code> - the key to press, if a sequence only the first character will be read or an
+                     exception is thrown</dd></dl>
 </li>
 </ul>
 </li>

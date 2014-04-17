@@ -140,7 +140,7 @@ test.suite(function(env) {
             assert(e.code).equalTo(ErrorCode.SCRIPT_TIMEOUT);
           });
     }).then(resetPageLoad, function(err) {
-      resetPageLoad().addBoth(function() {
+      resetPageLoad().thenFinally(function() {
         throw err;
       });
     });

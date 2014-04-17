@@ -17,9 +17,9 @@
  * {@link webdriver.CommandExecutor} implementations.
  */
 
-var webdriver = require('./index'),
-    HttpClient = require('./http').HttpClient,
-    HttpExecutor = require('./http').Executor;
+var HttpClient = require('./http').HttpClient,
+    HttpExecutor = require('./http').Executor,
+    promise = require('./_base').require('webdriver.promise');
 
 
 
@@ -52,7 +52,7 @@ var DeferredExecutor = function(delegate) {
  * @returns {!webdriver.CommandExecutor} The new command executor.
  */
 exports.createExecutor = function(url) {
-  return new DeferredExecutor(webdriver.promise.when(url, function(url) {
+  return new DeferredExecutor(promise.when(url, function(url) {
     var client = new HttpClient(url);
     return new HttpExecutor(client);
   }));

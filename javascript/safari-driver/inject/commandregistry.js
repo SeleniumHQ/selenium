@@ -217,8 +217,8 @@ safaridriver.inject.CommandRegistry.prototype.loadModule_ = function(moduleId) {
   }
 
   return safaridriver.inject.util.loadModule(moduleId, this.messageTarget_).
-      addCallback(function(src) {
+      then(goog.bind(function(src) {
         this.evalModuleFn_(src);
         this.loadedModules_[moduleId] = true;
-      }, this);
+      }, this));
 };

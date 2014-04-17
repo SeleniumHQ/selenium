@@ -135,11 +135,11 @@ class RubyMappings
       desc 'Generate Ruby API docs'
       task "//#{dir}:docs" do |t|
         raise "yard is not installed, unable to generate docs" unless have_yard?
-        task = YARD::Rake::YardocTask.new { |t|
-          t.files = Array(files).map { |glob| Dir[glob] }.flatten
-          t.options << "--verbose"
-          t.options << "--readme" << args[:readme] if args.has_key?(:readme)
-          t.options << "--output-dir" << output_dir
+        task = YARD::Rake::YardocTask.new { |yard|
+          yard.files = Array(files).map { |glob| Dir[glob] }.flatten
+          yard.options << "--verbose"
+          yard.options << "--readme" << args[:readme] if args.has_key?(:readme)
+          yard.options << "--output-dir" << output_dir
         }
 
         Rake::Task[task.name].invoke
@@ -234,14 +234,16 @@ class RubyMappings
 
     def gemspec(args)
       Gem::Specification.new do |s|
-        s.name        = args[:name]
-        s.version     = args[:version]
-        s.summary     = args[:summary]
-        s.description = args[:description]
-        s.authors     = args[:author]
-        s.email       = args[:email]
-        s.homepage    = args[:homepage]
-        s.files       = Dir[*args[:files]]
+        s.name                  = args[:name]
+        s.version               = args[:version]
+        s.summary               = args[:summary]
+        s.description           = args[:description]
+        s.authors               = args[:author]
+        s.email                 = args[:email]
+        s.homepage              = args[:homepage]
+        s.files                 = Dir[*args[:files]]
+        s.license               = args[:license]
+        s.required_ruby_version = args[:required_ruby_version]
 
         args[:gemdeps].each { |dep| s.add_dependency(*dep.shift) }
         args[:devdeps].each { |dep| s.add_development_dependency(*dep.shift) }

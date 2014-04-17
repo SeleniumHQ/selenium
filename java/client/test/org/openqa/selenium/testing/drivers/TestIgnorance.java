@@ -17,6 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.chrome;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+import static org.openqa.selenium.testing.drivers.Browser.opera;
+import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -31,32 +52,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import java.util.Arrays;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.drivers.Browser.android;
-import static org.openqa.selenium.testing.drivers.Browser.chrome;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
-import static org.openqa.selenium.testing.drivers.Browser.ie;
-import static org.openqa.selenium.testing.drivers.Browser.ipad;
-import static org.openqa.selenium.testing.drivers.Browser.iphone;
-import static org.openqa.selenium.testing.drivers.Browser.opera;
-import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
-
 /**
  * Class that decides whether a test class or method should be ignored.
  */
@@ -64,10 +59,11 @@ public class TestIgnorance {
 
   private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
   private Set<Browser> neverNativeEvents = ImmutableSet.of(
-      htmlunit, htmlunit_js, ipad, iphone, android, phantomjs);
+      htmlunit, htmlunit_js, phantomjs);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
+  private Set<String> ignoreMethods = Sets.newHashSet();
   private Browser browser;
 
   public TestIgnorance(Browser browser) {
@@ -81,6 +77,11 @@ public class TestIgnorance {
     String method = System.getProperty("method");
     if (method != null) {
       methods.addAll(Arrays.asList(method.split(",")));
+    }
+
+    String skip = System.getProperty("ignore_method");
+    if (skip != null) {
+      ignoreMethods.addAll(Arrays.asList(skip.split(",")));
     }
   }
 
@@ -147,7 +148,8 @@ public class TestIgnorance {
 
   private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {
     return (!only.isEmpty() && !only.contains(test.getClass().getSimpleName())) ||
-           (!methods.isEmpty() && !methods.contains(method.getName()));
+           (!methods.isEmpty() && !methods.contains(method.getName())) ||
+           ignoreMethods.contains(method.getName());
   }
 
   public void setBrowser(Browser browser) {
@@ -161,12 +163,6 @@ public class TestIgnorance {
     }
 
     switch (browser) {
-      case android:
-      case android_real_phone:
-        comparator.addDriver(ANDROID);
-        comparator.addDriver(REMOTE);
-        break;
-
       case chrome:
         comparator.addDriver(CHROME);
         break;
@@ -186,11 +182,6 @@ public class TestIgnorance {
 
       case ie:
         comparator.addDriver(IE);
-        break;
-
-      case ipad:
-      case iphone:
-        comparator.addDriver(IPHONE);
         break;
 
       case none:

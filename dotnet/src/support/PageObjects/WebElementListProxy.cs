@@ -35,13 +35,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         private List<IWebElement> collection = null;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="WebElementListProxy"/> class.
-        /// </summary>
-        private WebElementListProxy()
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WebElementListProxy"/> class.
         /// </summary>
         /// <param name="searchContext">The driver used to search for elements.</param>
@@ -52,6 +45,13 @@ namespace OpenQA.Selenium.Support.PageObjects
             this.searchContext = searchContext;
             this.bys = bys;
             this.cache = cache;
+        }
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="WebElementListProxy"/> class from being created.
+        /// </summary>
+        private WebElementListProxy()
+        {
         }
 
         /// <summary>
@@ -70,24 +70,6 @@ namespace OpenQA.Selenium.Support.PageObjects
             get { return true; }
         }
 
-        /// <summary>
-        /// Gets or sets the element at the specified index.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to get or set.</param>
-        /// <returns>The <see cref="IWebElement"/> at the specified index.</returns>
-        public IWebElement this[int index]
-        {
-            get
-            {
-                return this.ElementList[index];
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         private List<IWebElement> ElementList
         {
             get
@@ -103,6 +85,24 @@ namespace OpenQA.Selenium.Support.PageObjects
                 }
 
                 return this.collection;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns>The <see cref="IWebElement"/> at the specified index.</returns>
+        public IWebElement this[int index]
+        {
+            get
+            {
+                return this.ElementList[index];
+            }
+
+            set
+            {
+                throw new NotImplementedException();
             }
         }
 

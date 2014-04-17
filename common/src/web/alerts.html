@@ -1,4 +1,8 @@
 <html>
+<!-- Padding to account for small screens of mobile devices -->
+<style>
+    p {margin-top:48px;}
+</style>
 <head>
     <title>Testing Alerts</title>
 
@@ -14,7 +18,7 @@
         function displayPromptWithDefault() {
           setInnerText('text', prompt('Enter something', 'This is a default value'));
         }
-        
+
         function displayTwoPrompts() {
           setInnerText('text1', prompt('First'));
           setInnerText('text2', prompt('Second'));

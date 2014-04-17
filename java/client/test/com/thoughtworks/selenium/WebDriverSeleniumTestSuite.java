@@ -22,14 +22,17 @@ import org.junit.runners.Suite;
 import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
+import com.thoughtworks.selenium.corebased.TestAlerts;
 import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
 import com.thoughtworks.selenium.corebased.TestClickAt;
 import com.thoughtworks.selenium.corebased.TestClickJavascriptHref;
+import com.thoughtworks.selenium.corebased.TestClickJavascriptHrefChrome;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
+import com.thoughtworks.selenium.corebased.TestConfirmations;
 import com.thoughtworks.selenium.corebased.TestCssLocators;
 import com.thoughtworks.selenium.corebased.TestDojoDragAndDrop;
 import com.thoughtworks.selenium.corebased.TestEditable;
@@ -41,7 +44,9 @@ import com.thoughtworks.selenium.corebased.TestEval;
 import com.thoughtworks.selenium.corebased.TestEvilClosingWindow;
 import com.thoughtworks.selenium.corebased.TestFailingAssert;
 import com.thoughtworks.selenium.corebased.TestFailingVerifications;
+import com.thoughtworks.selenium.corebased.TestFocusOnBlur;
 import com.thoughtworks.selenium.corebased.TestFramesClick;
+import com.thoughtworks.selenium.corebased.TestFramesClickJavascriptHref;
 import com.thoughtworks.selenium.corebased.TestFramesOpen;
 import com.thoughtworks.selenium.corebased.TestFramesSpecialTargets;
 import com.thoughtworks.selenium.corebased.TestFunkEventHandling;
@@ -53,6 +58,7 @@ import com.thoughtworks.selenium.corebased.TestGoBack;
 import com.thoughtworks.selenium.corebased.TestHighlight;
 import com.thoughtworks.selenium.corebased.TestHtmlSource;
 import com.thoughtworks.selenium.corebased.TestImplicitLocators;
+import com.thoughtworks.selenium.corebased.TestJavaScriptAttributes;
 import com.thoughtworks.selenium.corebased.TestLocators;
 import com.thoughtworks.selenium.corebased.TestMultiSelect;
 import com.thoughtworks.selenium.corebased.TestOpen;
@@ -84,19 +90,19 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     SeleniumMouseTest.class,
     TestAddLocationStrategy.class,
     TestAddSelection.class,
-//    TestAlerts.class, // alerts
+    TestAlerts.class,
     TestBasicAuth.class,
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,
     TestClickAt.class,
 //    TestClickBlankTarget.class,
-    TestClickJavascriptHref.class, // fails in IE
-//    TestClickJavascriptHrefChrome.class, // alerts
+    TestClickJavascriptHref.class,
+    TestClickJavascriptHrefChrome.class, // alerts
 //    TestClickJavascriptHrefWithVoidChrome.class, // fails in IE
     TestCommandError.class,
     TestComments.class,
-//    TestConfirmations.class, // alerts
+    TestConfirmations.class, // fails in IE
 //    TestCookie.class,
     TestCssLocators.class,
 //    TestCursorPosition.class,
@@ -112,9 +118,9 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestEvilClosingWindow.class,
     TestFailingAssert.class,
     TestFailingVerifications.class,
-//    TestFocusOnBlur.class, // alerts
+    TestFocusOnBlur.class,
     TestFramesClick.class,
-//    TestFramesClickJavascriptHref.class, // alerts
+    TestFramesClickJavascriptHref.class,
 //    TestFramesNested.class,
     TestFramesOpen.class,
     TestFramesSpecialTargets.class,
@@ -127,7 +133,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestHighlight.class,
     TestHtmlSource.class,
     TestImplicitLocators.class,
-//    TestJavaScriptAttributes.class, // alerts
+    TestJavaScriptAttributes.class,
 //    TestJavascriptParameters.class,
     TestLocators.class,
     TestMultiSelect.class,
@@ -136,7 +142,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestOpenInTargetFrame.class,
     TestPatternMatching.class,
     TestPause.class,
-//    TestPrompt.class, // alerts
+//    TestPrompt.class,
     TestProxy.class,
     TestQuickOpen.class,
 //    TestRefresh.class,

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -175,9 +176,14 @@ namespace OpenQA.Selenium.Support.UI
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    lastException = this.PropagateExceptionIfNotIgnored(e);
+                    if (!this.IsIgnoredException(ex))
+                    {
+                        throw;
+                    }
+
+                    lastException = ex;
                 }
 
                 // Check the timeout after evaluating the function to ensure conditions
@@ -209,17 +215,9 @@ namespace OpenQA.Selenium.Support.UI
             throw new WebDriverTimeoutException(exceptionMessage, lastException);
         }
 
-        private Exception PropagateExceptionIfNotIgnored(Exception e)
+        private bool IsIgnoredException(Exception exception)
         {
-            foreach (Type exceptionType in this.ignoredExceptions)
-            {
-                if (exceptionType.IsAssignableFrom(e.GetType()))
-                {
-                    return e;
-                }
-            }
-
-            throw e;
+            return this.ignoredExceptions.Any(type => type.IsAssignableFrom(exception.GetType()));
         }
     }
 }

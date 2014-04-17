@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.IE
     public sealed class InternetExplorerDriverService : DriverService
     {
         private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
-        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://code.google.com/p/selenium/downloads/list");
+        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
         private string host = string.Empty;
@@ -41,10 +41,11 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the IEDriverServer executable.</param>
+        /// <param name="executablePath">The full path to the IEDriverServer executable.</param>
+        /// <param name="executableFileName">The file name of the IEDriverServer executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
-        private InternetExplorerDriverService(string executable, int port)
-            : base(executable, port, InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl)
+        private InternetExplorerDriverService(string executablePath, string executableFileName, int port)
+            : base(executablePath, port, executableFileName, InternetExplorerDriverDownloadUrl)
         {
         }
 
@@ -144,7 +145,18 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
-            return new InternetExplorerDriverService(driverPath, PortUtilities.FindFreePort());
+            return CreateDefaultService(driverPath, InternetExplorerDriverServiceFileName);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the InternetExplorerDriverService using a specified path to the IEDriverServer executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
+        /// <param name="driverExecutableFileName">The name of the IEDriverServer executable file.</param>
+        /// <returns>A InternetExplorerDriverService using a random port.</returns>
+        public static InternetExplorerDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        {
+            return new InternetExplorerDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
         }
     }
 }

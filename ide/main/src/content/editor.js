@@ -198,7 +198,7 @@ function Editor(window) {
 
   document.addEventListener("focus", Editor.checkTimestamp, false);
 
-  this.log.info("initialized");
+  this.log.debug("initialized");
 
   setTimeout("editor.showLoadErrors()", 500);
 
@@ -213,6 +213,8 @@ function Editor(window) {
     openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
+  this.log.info("Ready");
+  this.app.notify('initComplete');
 }
 
 Editor.prototype.saveTC = function () {
@@ -252,6 +254,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
@@ -269,6 +272,9 @@ Editor.controller = {
       case "cmd_selenium_speed_faster":
       case "cmd_selenium_speed_slower":
       case "cmd_selenium_speed_slowest":
+      case "cmd_selenium_clear_base_URL_history":
+      case "cmd_selenium_clear_test_cases_history":
+      case "cmd_selenium_clear_test_suites_history":
         return true;
       default:
         return false;
@@ -280,12 +286,16 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
       case "cmd_save_suite":
       case "cmd_save_suite_as":
       case "cmd_selenium_testcase_clear":
+      case "cmd_selenium_clear_base_URL_history":
+      case "cmd_selenium_clear_test_cases_history":
+      case "cmd_selenium_clear_test_suites_history":
         return true;
       case "cmd_selenium_play":
         return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
@@ -330,6 +340,9 @@ Editor.controller = {
         break;
       case "cmd_add":
         editor.app.addTestCase();
+        break;
+      case "cmd_new":
+        editor.app.newTestCase();
         break;
       case "cmd_open":
         editor.loadRecentTestCase();
@@ -400,6 +413,15 @@ Editor.controller = {
         break;
       case "cmd_selenium_speed_slowest":
         editor.updateInterval(1000);
+        break;
+      case "cmd_selenium_clear_base_URL_history":
+        editor.app.baseURLHistory.clear();
+        break;
+      case "cmd_selenium_clear_test_cases_history":
+        editor.app.recentTestCases.clear();
+        break;
+      case "cmd_selenium_clear_test_suites_history":
+        editor.app.recentTestSuites.clear();
         break;
       default:
     }
@@ -481,6 +503,7 @@ Editor.prototype.log = Editor.log = new Log("Editor");
 Editor.prototype.unload = function () {
   this.app.saveState();
 
+  this.selDebugger.unload();
   this.deregisterRecorder();
   top.controllers.removeController(Editor.controller);
 
@@ -500,7 +523,9 @@ Editor.prototype.updateSeleniumCommands = function () {
     "cmd_selenium_pause",
     "cmd_selenium_step",
     "cmd_selenium_rollup",
-    "cmd_selenium_reload"
+    "cmd_selenium_reload",
+    "cmd_delete_suite",
+    "cmd_play_suite_from_here"
   ].forEach(function (cmd) {
     goUpdateCommand(cmd);
   });
@@ -522,13 +547,11 @@ Editor.prototype.getOptions = function (options) {
 };
 
 Editor.prototype.updateTitle = function () {
-  var title;
   var testCase = this.getTestCase();
-  if (testCase && testCase.file) {
-    title = testCase.file.leafName + " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  } else {
-    title = Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
-  }
+  var title = testCase ? testCase.getTitle() : '';
+  var testSuite = this.app.getTestSuite();
+  title += " (" + (testSuite && testSuite.file ? testSuite.file.leafName : 'untitled suite') + ") ";
+  title += " - " + Editor.getString('selenium-ide.name') + " " + Editor.getString('selenium-ide.version');
   if (testCase && testCase.modified) {
     title += " *";
   }
@@ -820,12 +843,17 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
   var self = this;
+  self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
+  self.app.notify("testCasePlayStart", self.app.getTestCase());
   this.selDebugger.start(function (failed) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
       testCase.testResult = failed ? "failed" : "passed";
+      self.getUserLog().info("Test case " + testCase.testResult);
+      self.app.notify("testCasePlayDone", testCase);
     } else {
+      self.getUserLog().error("current test case not found");
       self.log.error("current test case not found");
     }
     self.suiteTreeView.currentRowUpdated();
@@ -836,8 +864,11 @@ Editor.prototype.playCurrentTestCase = function (next, index, total) {
   }, index > 0 /* reuse last window if index > 0 */);
 };
 
-Editor.prototype.playTestSuite = function () {
-  var index = -1;
+Editor.prototype.playTestSuite = function (startIndex) {
+  if (!startIndex) {
+    startIndex = 0;
+  }
+  var index = startIndex - 1;
   this.app.getTestSuite().tests.forEach(function (test) {
     if (test.testResult) {
       delete test.testResult;
@@ -846,12 +877,17 @@ Editor.prototype.playTestSuite = function () {
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
   var self = this;
-  var total = this.app.getTestSuite().tests.length;
+  self.app.notify("testSuitePlayStart");
+  var total = this.app.getTestSuite().tests.length - startIndex;
   (function () {
     if (++index < self.app.getTestSuite().tests.length) {
       self.suiteTreeView.scrollToRow(index);
       self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
       self.playCurrentTestCase(arguments.callee, index, total);
+    } else {
+      //Suite done
+      self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
+      self.app.notify("testSuitePlayDone", total, self.testSuiteProgress.runs, self.testSuiteProgress.failures);
     }
   })();
 };

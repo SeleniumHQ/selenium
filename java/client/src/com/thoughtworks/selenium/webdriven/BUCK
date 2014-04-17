@@ -1,0 +1,60 @@
+
+java_library(name = 'webdriven',
+  srcs = [
+    'CompoundMutator.java',
+    'ExplodingSupplier.java',
+    'FunctionDeclaration.java',
+    'SeleniumMutator.java',
+    'VariableDeclaration.java',
+    'WebDriverBackedSelenium.java',
+    'WebDriverCommandProcessor.java',
+  ],
+  resources = [
+    'htmlutils.js',
+    'injectableSelenium.js',
+    '//javascript/selenium-atoms:findElement',
+    '//javascript/selenium-atoms:findOption',
+    '//javascript/selenium-atoms:fireEvent',
+    '//javascript/selenium-atoms:fireEventAt',
+    '//javascript/selenium-atoms:getAttribute',
+    '//javascript/selenium-atoms:getText',
+    '//javascript/selenium-atoms:linkLocator',
+    '//javascript/selenium-atoms:isElementPresent',
+    '//javascript/selenium-atoms:isSomethingSelected',
+    '//javascript/selenium-atoms:isTextPresent',
+    '//javascript/selenium-atoms:isVisible',
+    '//javascript/selenium-atoms:type',
+    '//third_party/js/sizzle:sizzle',
+  ],
+  exported_deps = [
+    ':emulation-api',
+  ],
+  deps = [
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium/webdriven/commands:commands',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/...',
+  ],
+)
+
+java_library(name = 'emulation-api',
+  srcs = [
+    'ElementFinder.java',
+    'JavascriptLibrary.java',
+    'ScriptMutator.java',
+    'SeleneseCommand.java',
+    'Timer.java',
+    'Windows.java',
+  ],
+  deps = [
+    '//java/client/src/com/thoughtworks/selenium:api',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/...',
+  ],
+)

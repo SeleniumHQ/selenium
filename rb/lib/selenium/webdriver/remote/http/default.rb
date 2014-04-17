@@ -119,7 +119,7 @@ module Selenium
                 host == server_url.host || (
                   begin
                     IPAddr.new(host).include?(server_url.host)
-                  rescue ArgumentError
+                  rescue ArgumentError => ex
                     false
                   end
                 )

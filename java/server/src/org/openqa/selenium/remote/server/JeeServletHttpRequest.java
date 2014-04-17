@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebDriverException;
@@ -27,8 +29,6 @@ import java.io.Reader;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public class JeeServletHttpRequest implements HttpRequest {
   private final HttpServletRequest request;

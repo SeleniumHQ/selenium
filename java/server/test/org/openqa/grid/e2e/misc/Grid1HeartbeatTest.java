@@ -17,24 +17,23 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -68,8 +67,8 @@ public class Grid1HeartbeatTest {
       BufferedReader body =
           new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-      Assert.assertEquals(response.getStatusLine().getStatusCode(), 200);
-      Assert.assertEquals(body.readLine(), "Hub : Not Registered");
+      assertEquals(response.getStatusLine().getStatusCode(), 200);
+      assertEquals(body.readLine(), "Hub : Not Registered");
     } finally {
       httpClientFactory.close();
     }
@@ -104,8 +103,8 @@ public class Grid1HeartbeatTest {
       BufferedReader body =
           new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-      Assert.assertEquals(response.getStatusLine().getStatusCode(), 200);
-      Assert.assertEquals(body.readLine(), "Hub : OK");
+      assertEquals(response.getStatusLine().getStatusCode(), 200);
+      assertEquals(body.readLine(), "Hub : OK");
     } finally {
       httpClientFactory.close();
     }

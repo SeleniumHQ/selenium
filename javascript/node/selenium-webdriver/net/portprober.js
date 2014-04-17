@@ -23,7 +23,7 @@ var promise = require('../index').promise;
 
 
 /**
- * The IANA suggested epheremal port range.
+ * The IANA suggested ephemeral port range.
  * @type {{min: number, max: number}}
  * @const
  * @see http://en.wikipedia.org/wiki/Ephemeral_ports
@@ -51,7 +51,7 @@ function findSystemPortRange() {
   }
   var range = process.platform === 'win32' ?
       findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.addErrback(function() {
+  return systemRange = range.thenCatch(function() {
     return DEFAULT_IANA_RANGE;
   });
 }
@@ -95,6 +95,7 @@ function findUnixPortRange() {
   }
 
   return execute(cmd).then(function(stdout) {
+    if (!stdout || !stdout.length) return DEFAULT_IANA_RANGE;
     var range = stdout.trim().split(/\s+/).map(Number);
     if (range.some(isNaN)) return DEFAULT_IANA_RANGE;
     return {min: range[0], max: range[1]};
@@ -143,6 +144,8 @@ function findWindowsPortRange() {
 /**
  * Tests if a port is free.
  * @param {number} port The port to test.
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
  * @return {!webdriver.promise.Promise.<boolean>} A promise that will resolve
  *     with whether the port is free.
  */
@@ -170,6 +173,8 @@ function isFree(port, opt_host) {
 
 
 /**
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
  * @return {!webdriver.promise.Promise.<number>} A promise that will resolve
  *     to a free port. If a port cannot be found, the promise will be
  *     rejected.

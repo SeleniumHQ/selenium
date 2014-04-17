@@ -73,12 +73,30 @@ class GetElementLocationCommandHandler : public IECommandHandler {
 
         if (status_code == WD_SUCCESS) {
           script_wrapper.ConvertResultToJsonValue(executor, &location_array);
-
           Json::UInt index = 0;
-          Json::Value response_value;
-          response_value["x"] = location_array[index];
+          int x = location_array.get(index, 0).asInt();
           ++index;
-          response_value["y"] = location_array[index];
+          int y = location_array.get(index, 0).asInt();
+
+          CComPtr<IHTMLDocument2> doc;
+          browser_wrapper->GetDocument(&doc);
+          bool browser_appears_before_ie8 = executor.browser_version() < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
+          bool is_quirks_mode = !DocumentHost::IsStandardsMode(doc);
+          if (browser_appears_before_ie8 && !is_quirks_mode) {
+            // NOTE: For IE 6 and 7 in standards mode, elements with "display:none"
+            // in the CSS style should have a 2-pixel offset for their location.
+            std::string display_value = "";
+            element_wrapper->GetCssPropertyValue("display", &display_value);
+            if (display_value == "none") {
+              int offset = 2;
+              x += offset;
+              y += offset;
+            }
+          }
+
+          Json::Value response_value;
+          response_value["x"] = x;
+          response_value["y"] = y;
           response->SetSuccessResponse(response_value);
           return;
         } else {

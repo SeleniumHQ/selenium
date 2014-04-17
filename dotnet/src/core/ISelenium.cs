@@ -79,6 +79,7 @@ namespace Selenium
 		/// <summary>
 		/// Sets the extension Javascript for the session
 		/// </summary>
+        /// <param name="extensionJs">The extension JavaScript to use.</param>
 		void SetExtensionJs(string extensionJs);
 		
 		/// <summary>
@@ -1050,7 +1051,14 @@ namespace Selenium
 		Decimal GetXpathCount(String xpath);
 
 
-		/// <summary>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
+	    /// <summary>Returns the number of nodes that match the specified css, eg. "css=table" would give
+	    /// the number of tables.
+	    /// </summary>
+	    /// <param name="cssLocator">the css path expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</param>
+	    /// <returns>the number of nodes that match the specified css locator</returns>
+	    Decimal GetCSSCount(String cssLocator);
+
+        /// <summary>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
 		/// using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
 		/// reloaded.
 		/// </summary>

@@ -17,18 +17,21 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationRequestTest {
 
@@ -44,13 +47,13 @@ public class RegistrationRequestTest {
     req.setConfiguration(config);
 
     int c = req.getConfigAsInt(CLEAN_UP_CYCLE, -1);
-    Assert.assertTrue(c == 1);
+    assertTrue(c == 1);
 
     int e = req.getConfigAsInt("doesn't exist", 20);
-    Assert.assertTrue(e == 20);
+    assertTrue(e == 20);
 
     String url2 = req.getConfigAsString(REMOTE_HOST);
-    Assert.assertEquals(url2, url);
+    assertEquals(url2, url);
   }
 
   @Test
@@ -77,12 +80,12 @@ public class RegistrationRequestTest {
 
     RegistrationRequest req2 = RegistrationRequest.getNewInstance(json);
 
-    Assert.assertEquals(req2.getId(), req.getId());
-    Assert.assertEquals(req2.getName(), req.getName());
-    Assert.assertEquals(req2.getDescription(), req.getDescription());
+    assertEquals(req2.getId(), req.getId());
+    assertEquals(req2.getName(), req.getName());
+    assertEquals(req2.getDescription(), req.getDescription());
 
-    Assert.assertEquals(req2.getConfigAsString(name), req.getConfigAsString(name));
-    Assert.assertEquals(req2.getCapabilities().size(), req.getCapabilities().size());
+    assertEquals(req2.getConfigAsString(name), req.getConfigAsString(name));
+    assertEquals(req2.getCapabilities().size(), req.getCapabilities().size());
 
   }
 
@@ -92,23 +95,23 @@ public class RegistrationRequestTest {
         RegistrationRequest
             .getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
 
-    Assert.assertEquals(null, request.getId());
-    Assert.assertEquals(null, request.getName());
-    Assert.assertEquals(null, request.getDescription());
+    assertEquals(null, request.getId());
+    assertEquals(null, request.getName());
+    assertEquals(null, request.getDescription());
 
     // Verify the capabilities were set up properly.
-    Assert.assertEquals(1, request.getCapabilities().size());
+    assertEquals(1, request.getCapabilities().size());
     DesiredCapabilities caps = request.getCapabilities().get(0);
 
-    // Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
-    Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7",
-        caps.getCapability(CapabilityType.BROWSER_NAME));
+//    Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
+    assertEquals("Firefox: 4; MacOS X: 10.6.7",
+                 caps.getCapability(CapabilityType.BROWSER_NAME));
 
     // Verify the configuration was set up properly.
-   Assert.assertEquals("http://localhost:5000", request.getConfiguration()
-        .get(RegistrationRequest.REMOTE_HOST));
-    Assert.assertEquals(SeleniumProtocol.Selenium.toString(), request.getConfiguration()
-      .get(RegistrationRequest.SELENIUM_PROTOCOL));
+   assertEquals("http://localhost:5000", request.getConfiguration()
+       .get(RegistrationRequest.REMOTE_HOST));
+    assertEquals(SeleniumProtocol.Selenium.toString(), request.getConfiguration()
+        .get(RegistrationRequest.SELENIUM_PROTOCOL));
    
   }
 
@@ -120,9 +123,9 @@ public class RegistrationRequestTest {
     RegistrationRequest req =
         RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234","-host","localhost");
 
-    Assert.assertEquals(GridRole.NODE, req.getRole());
-    Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    Assert.assertEquals(1234, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertEquals(GridRole.NODE, req.getRole());
+    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
+    assertEquals(1234, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
 
   }
 
@@ -130,19 +133,19 @@ public class RegistrationRequestTest {
   public void commandLineParamDefault() {
     RegistrationRequest req = RegistrationRequest.build("-role", "rc");
     // the hub defaults to current IP.
-    Assert.assertNotNull(req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    Assert.assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertNotNull(req.getConfiguration().get(RegistrationRequest.HUB_HOST));
+    assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
     // the node defaults to current IP.
-    Assert.assertNotNull(req.getConfiguration().get(RegistrationRequest.HOST));
-    Assert.assertEquals(5555, req.getConfiguration().get(RegistrationRequest.PORT));
+    assertNotNull(req.getConfiguration().get(RegistrationRequest.HOST));
+    assertEquals(5555, req.getConfiguration().get(RegistrationRequest.PORT));
   }
 
   @Test
   public void commandLineParamDefaultCapabilities() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
     RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    Assert.assertNotSame(0, req.getCapabilities().size());
+    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
+    assertNotSame(0, req.getCapabilities().size());
 
   }
 
@@ -150,12 +153,12 @@ public class RegistrationRequestTest {
   public void registerParam() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
     RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    Assert.assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+    assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
     RegistrationRequest req2 =
         RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" +
             RegistrationRequest.AUTO_REGISTER, "false","-host","localhost");
-    Assert.assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+    assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
   }
 
@@ -164,9 +167,9 @@ public class RegistrationRequestTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "rc", "-host", "example.com", "-port", "5555");
 
     // This is the configuration value for >= v2.9 hubs.
-    Assert.assertEquals("http://example.com:5555", req.getConfigAsString(RegistrationRequest.REMOTE_HOST));
+    assertEquals("http://example.com:5555", req.getConfigAsString(RegistrationRequest.REMOTE_HOST));
 
     // This is the configuration value for < v2.9 hubs.
-    Assert.assertEquals("http://example.com:5555", req.getConfigAsString("url"));
+    assertEquals("http://example.com:5555", req.getConfigAsString("url"));
   }
 }

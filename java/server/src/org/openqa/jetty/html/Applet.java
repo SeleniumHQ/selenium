@@ -84,6 +84,7 @@ public class Applet extends Block
      * @param alt The alternate element to display
      * @deprecated use add
      */
+    @Deprecated
     public Applet setAlternate(Element alt)
     {
         add(alt);
@@ -95,6 +96,7 @@ public class Applet extends Block
      * @param alt The alternate element to display 
      * @deprecated use add
      */
+    @Deprecated
     public Applet setAlternate(String alt)
     {
         add(alt);

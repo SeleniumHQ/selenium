@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
@@ -73,8 +74,16 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
     }
 
     if (allParameters.containsKey(XOFFSET) && allParameters.containsKey(YOFFSET)) {
-      xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
-      yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
+      try {
+        xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) x offset value for mouse move passed: " + allParameters.get(XOFFSET), ex);
+      }
+      try {
+        yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) y offset value for mouse move passed: " + allParameters.get(YOFFSET), ex);
+      }
       offsetsProvided = true;
     } else {
       offsetsProvided = false;

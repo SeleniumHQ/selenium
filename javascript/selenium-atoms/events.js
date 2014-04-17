@@ -33,6 +33,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+goog.require('goog.userAgent.product.isVersion');
 
 
 core.events.controlKeyDown_ = false;
@@ -128,7 +129,9 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
   var coords = core.events.parseCoordinates_(opt_coordString || '0,0');
 
-  if (goog.userAgent.IE || goog.userAgent.product.CHROME) {
+  if (goog.userAgent.IE || goog.userAgent.product.CHROME ||
+      (goog.userAgent.product.FIREFOX &&
+          goog.userAgent.product.isVersion(27))) {
     var bounds = goog.style.getBounds(element);
     coords.x += bounds.left;
     coords.y += bounds.top;

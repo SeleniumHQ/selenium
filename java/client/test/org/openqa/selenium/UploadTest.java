@@ -17,6 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
@@ -28,17 +38,6 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -68,12 +67,12 @@ public class UploadTest extends JUnit4TestBase {
 
     // Uploading files across a network may take a while, even if they're really small
     WebElement label = driver.findElement(By.id("upload_label"));
-    waitFor(elementToBeHidden(label), 30, TimeUnit.SECONDS);
+    wait.until(not(visibilityOf(label)));
 
     driver.switchTo().frame("upload_target");
 
     WebElement body = driver.findElement(By.xpath("//body"));
-    waitFor(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+    wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
   }
 
   private File createTmpFile(String content) throws IOException {

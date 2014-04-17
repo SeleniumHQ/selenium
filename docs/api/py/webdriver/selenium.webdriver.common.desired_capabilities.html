@@ -23,10 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
-    <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.common.keys" href="selenium.webdriver.common.keys.html" />
-    <link rel="prev" title="selenium.webdriver.common.by" href="selenium.webdriver.common.by.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.keys.html" title="selenium.webdriver.common.keys"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.by.html" title="selenium.webdriver.common.by"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,7 +50,24 @@
 <dl class="class">
 <dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.desired_capabilities.</tt><tt class="descname">DesiredCapabilities</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/desired_capabilities.html#DesiredCapabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of supported desired capabilities.</p>
+<dd><p>Set of default supported desired capabilities.</p>
+<p>Use this as a starting point for creating a desired capabilities object for 
+requesting remote webdrivers for connecting to selenium server or selenium grid.</p>
+<p>Usage Example:</p>
+<blockquote>
+<div><p>from selenium import webdriver</p>
+<p>selenium_grid_url = &#8220;<a class="reference external" href="http://198.0.0.1:4444/wd/hub">http://198.0.0.1:4444/wd/hub</a>&#8220;</p>
+<p># Create a desired capabilities object as a starting point.
+capabilities = DesiredCapabilities.FIREFOX.copy()
+capabilities[&#8216;platform&#8217;] = &#8220;WINDOWS&#8221;
+capabilities[&#8216;version&#8217;] = &#8220;10&#8221;</p>
+<p># Instantiate an instance of Remote WebDriver with the desired capabilities.
+driver = webdriver.Remote(desired_capabilities=capabilities,</p>
+<blockquote>
+<div>command_executor=selenium_grid_url)</div></blockquote>
+</div></blockquote>
+<p>Note: Always use &#8216;.copy()&#8217; on the DesiredCapabilities object to avoid the side
+effects of altering the Global class instance.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.ANDROID">
 <tt class="descname">ANDROID</tt><em class="property"> = {'platform': 'ANDROID', 'browserName': 'android', 'version': '', 'javascriptEnabled': True}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.ANDROID" title="Permalink to this definition">¶</a></dt>
@@ -113,7 +120,7 @@
 
 <dl class="attribute">
 <dt id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI">
-<tt class="descname">SAFARI</tt><em class="property"> = {'platform': 'MAC', 'browserName': 'safari', 'version': '', 'javascriptEnabled': True}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">SAFARI</tt><em class="property"> = {'platform': 'ANY', 'browserName': 'safari', 'version': '', 'javascriptEnabled': True}</em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.SAFARI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -126,12 +133,6 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.by.html"
-                        title="previous chapter">selenium.webdriver.common.by</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.keys.html"
-                        title="next chapter">selenium.webdriver.common.keys</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/webdriver/selenium.webdriver.common.desired_capabilities.txt"
@@ -163,14 +164,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.keys.html" title="selenium.webdriver.common.keys"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.by.html" title="selenium.webdriver.common.by"
-             >previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

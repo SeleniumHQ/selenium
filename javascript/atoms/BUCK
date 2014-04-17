@@ -1,0 +1,192 @@
+
+js_library(name = 'action',
+  srcs = [
+    'action.js',
+  ],
+  deps = [
+    ':devices',
+    ':dom',
+    ':error-lib',
+    ':events',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'bot',
+  srcs = [
+    'bot.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'color',
+  srcs = [
+    'color.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)
+
+
+js_library(name = 'devices',
+  srcs = [
+    'device.js',
+    'keyboard.js',
+    'mouse.js',
+    'touchscreen.js',
+  ],
+  deps = [
+    ':dom',
+    ':error-lib',
+    ':events',
+    ':locators',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'dom',
+  srcs = [
+    "dom.js",
+  ],
+  deps = [
+    ':bot',
+    ':color',
+    ':json',
+    ':xpath',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'error-lib',
+  srcs = [
+    'error.js',
+    'response.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'events',
+  srcs = [
+    'events.js',
+  ],
+  deps = [
+    ':bot',
+    ':dom',
+    ':error-lib',
+    ':json',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'html5',
+  srcs = glob(['html5/*.js']),
+  deps = [
+    ':bot',
+    ':error-lib',
+    ':json',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'inject',
+  srcs = [
+    'inject.js',
+    'response.js',
+  ],
+  deps = [
+    ':bot',
+    ':error-lib',
+    ':json',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'json',
+  srcs = [
+    'json.js',
+    'userAgent.js'
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'locators',
+  srcs = glob(['locators/*.js'], excludes=['locators/xpath.js']),
+  deps = [
+    ':dom',
+    ':json',
+    ':xpath',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'window',
+  srcs = [
+    'frame.js',
+    'window.js',
+  ],
+  deps = [
+    ':bot',
+    ':error-lib',
+    ':events',
+    ':json',
+    ':locators',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'xpath',
+  srcs = [
+    'locators/xpath.js',
+  ],
+  deps = [
+    ':bot',
+    ':error-lib',
+    '//third_party/closure:closure',
+    '//third_party/js/wgxpath:wgxpath',
+  ],
+)

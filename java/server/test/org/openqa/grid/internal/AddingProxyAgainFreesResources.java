@@ -17,17 +17,18 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * registering an already existing node assumes the node has been restarted, and all the resources
@@ -66,7 +67,7 @@ public class AddingProxyAgainFreesResources {
     session = handler.getSession();
     
     // the test has been assigned.
-    Assert.assertNotNull(session);
+    assertNotNull(session);
 
     // add the request to the queue
 
@@ -77,7 +78,7 @@ public class AddingProxyAgainFreesResources {
       }
     }).start();
     // the 1 slot of the node is used.
-    Assert.assertEquals(1, p1.getTotalUsed());
+    assertEquals(1, p1.getTotalUsed());
    
     // registering the node again should discard the existing test. The node
     // will be fresh as far as the grid is concerned so the 2nd test that
@@ -89,7 +90,7 @@ public class AddingProxyAgainFreesResources {
   @Test(timeout = 1000)
   public void validateRequest2isNowRunningOnTheNode() throws InterruptedException {
     Thread.sleep(250);
-    Assert.assertNotNull(handler2.getSession());
+    assertNotNull(handler2.getSession());
   }
 
   @AfterClass

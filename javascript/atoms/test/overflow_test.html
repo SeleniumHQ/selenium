@@ -17,6 +17,10 @@
     var HIDDEN = bot.dom.OverflowState.HIDDEN;
     var SCROLL = bot.dom.OverflowState.SCROLL;
 
+    function tearDown() {
+      document.documentElement.style.position = '';
+    }
+
     function testElemHiddenByParent() {
       // Column 1: position style of the element
       // Column 2: position style of the element's parent
@@ -268,6 +272,10 @@
     }
 
     function testNegativePositionInOverflowVisibleParent() {
+      // IE 6 does not support fixed-position elements properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
       // Column 1: position style of the element
       // Column 2: position style of the element's parent
       // Column 3: expected overflow state of element
@@ -320,6 +328,10 @@
     }
 
     function testNegativePositionNotInOverflowVisibleParent() {
+      // IE 6 does not support fixed-position elements properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
       // Column 1: position style of the element
       // Column 2: position style of the element's parent
       // Column 3: expected overflow state
@@ -402,6 +414,10 @@
     }
 
     function testOverflowStateOfRelativeCoordinate() {
+      // IE 6 does not support overflow state properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
       var elem = document.getElementById('halfHidden');
       assertEquals(NONE, bot.dom.getOverflowState(elem,
           new goog.math.Coordinate(1, 1)));
@@ -409,17 +425,48 @@
           new goog.math.Coordinate(60, 60)));
     }
 
+    function testOverflowStateOfRelativeRectangle() {
+      // IE 6 does not support overflow state properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
+      var elem = document.getElementById('halfHidden');
+      assertEquals(NONE, bot.dom.getOverflowState(elem,
+          new goog.math.Rect(25, 25, 50, 50)));
+      assertEquals(HIDDEN, bot.dom.getOverflowState(elem,
+          new goog.math.Coordinate(60, 60, 50, 50)));
+    }
+
     function testFixedPositionOffscreenIsHidden() {
+      // IE 6 does not support fixed-position elements properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
       var fixedOffscreen = document.getElementById('fixed-offscreen');
       assertEquals(HIDDEN, bot.dom.getOverflowState(fixedOffscreen));
     }
 
     function testChildOfFixedTreatedAsFixed() {
+      // IE 6 does not support fixed-position elements properly.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
       var fixedParent = document.getElementById('fixed-parent');
       assertEquals(NONE, bot.dom.getOverflowState(fixedParent));
 
       var childOfFixed = document.getElementById('child-of-fixed');
       assertEquals(HIDDEN, bot.dom.getOverflowState(childOfFixed));
+    }
+
+    function testElementHiddenByZeroSizedContainer() {
+      var elem = document.getElementById('hasZeroSizedContainer');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
+    }
+
+    function testElementWithHtmlElementFixed() {
+      document.documentElement.style.position = 'fixed';
+      var elem = document.getElementById('line1');
+      assertEquals(NONE, bot.dom.getOverflowState(elem));
     }
   </script>
   <style>
@@ -515,6 +562,13 @@
 <div id="fixed-offscreen" style="position:fixed; left:10000px;top:0px">fixed offscreen</div>
 <div id="fixed-parent" style="position:fixed; left:10px;top:10px">
   <div id="child-of-fixed" style="position:absolute; left:10000px;top:0px">fixed offscreen</div>
+</div>
+
+<!-- div deliberately only has zero width but hidden in y dimension -->
+<div style="height:25px;width:0px;position:absolute;overflow-y:hidden;">
+  <div id="hasZeroSizedContainer" style="position:absolute;height:100px;width:100px;">
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  </div>
 </div>
 </body>
 </html>

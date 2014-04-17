@@ -17,19 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import com.google.common.base.Optional;
-
-import org.json.JSONException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -38,7 +33,7 @@ import java.io.IOException;
  *
  * This driver can be configured using the {@link SafariOptions} class.
  */
-public class SafariDriver extends RemoteWebDriver implements TakesScreenshot {
+public class SafariDriver extends RemoteWebDriver {
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.

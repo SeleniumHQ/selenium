@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -36,8 +34,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
-
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -92,24 +90,24 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
     runScenarioWithUnhandledAlert("This is a default value");
   }
-  
+
   @Test
   @Ignore(value = {IE}, reason = "IE: required capabilities not implemented")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
-    
+
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS);
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
         setRequiredCapabilities(requiredCaps);
-    driver2 = builder.get();        
-    
+    driver2 = builder.get();
+
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
-  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, 
+  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour,
       String expectedAlertText) {
     if (behaviour != null) {
       desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
@@ -117,7 +115,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
     runScenarioWithUnhandledAlert(expectedAlertText);
   }
-  
+
   private void runScenarioWithUnhandledAlert(String expectedAlertText) {
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
@@ -125,7 +123,8 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
       driver2.findElement(By.id("text")).getText();
     } catch (UnhandledAlertException expected) {
     }
-    waitFor(elementTextToEqual(driver2, By.id("text"), expectedAlertText));
+
+    new WebDriverWait(driver2, 30).until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 
 }

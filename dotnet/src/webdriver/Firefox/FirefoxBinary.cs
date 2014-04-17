@@ -45,7 +45,6 @@ namespace OpenQA.Selenium.Firefox
         private Executable executable;
         private Process process;
         private TimeSpan timeout = TimeSpan.FromSeconds(45);
-        private StreamReader stream; 
         #endregion
 
         #region Constructors
@@ -91,17 +90,10 @@ namespace OpenQA.Selenium.Firefox
         /// Gets all console output of the binary.
         /// </summary>
         /// <remarks>Output retrieval is non-destructive and non-blocking.</remarks>
+        [Obsolete("This property is largely unused, and will be removed in a future revision")]
         public string ConsoleOutput
         {
-            get
-            {
-                if (this.process == null)
-                {
-                    return null;
-                }
-
-                return this.stream.ReadToEnd();
-            }
+            get { return string.Empty; }
         } 
         #endregion
 
@@ -171,8 +163,6 @@ namespace OpenQA.Selenium.Firefox
             builder.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
             builder.StartInfo.Arguments = commandLineArgs.ToString();
             builder.StartInfo.UseShellExecute = false;
-            builder.StartInfo.RedirectStandardError = true;
-            builder.StartInfo.RedirectStandardOutput = true;
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
@@ -225,12 +215,7 @@ namespace OpenQA.Selenium.Firefox
             Process builder = new Process();
             builder.StartInfo.FileName = this.executable.ExecutablePath;
             builder.StartInfo.Arguments = "--verbose -CreateProfile " + profileName;
-            builder.StartInfo.RedirectStandardError = true;
             builder.StartInfo.EnvironmentVariables.Add("MOZ_NO_REMOTE", "1");
-            if (this.stream == null)
-            {
-                this.stream = builder.StandardOutput;
-            }
 
             this.StartFirefoxProcess(builder);
         }
@@ -316,10 +301,6 @@ namespace OpenQA.Selenium.Firefox
 
             this.process = builder;
             this.process.Start();
-            if (this.stream == null)
-            {
-                this.stream = builder.StandardOutput;
-            }
         }
 
         private static void Sleep(int timeInMilliseconds)
@@ -446,7 +427,6 @@ namespace OpenQA.Selenium.Firefox
                     }
 
                     StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
-                    message.Append(this.ConsoleOutput).Append("\n");
                     message.Append("Exit value: ").Append(this.process.ExitCode.ToString(CultureInfo.InvariantCulture)).Append("\n");
                     message.Append("Ran from: ").Append(builder.StartInfo.FileName).Append("\n");
                     throw new WebDriverException(message.ToString());

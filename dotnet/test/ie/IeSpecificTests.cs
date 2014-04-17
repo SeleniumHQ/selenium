@@ -1,8 +1,10 @@
 using NUnit.Framework;
 using System;
+using System.Linq;
 using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Interactions;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium.IE
 {
@@ -167,6 +169,77 @@ namespace OpenQA.Selenium.IE
             var scrollTop = GetScrollTop();
             driver.FindElement(By.Id("button2")).Click();
             Assert.AreEqual(scrollTop, GetScrollTop());
+        }
+
+        [Test]
+        public void ShouldBeAbleToHandleCascadingModalDialogs()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
+            string parentHandle = driver.CurrentWindowHandle;
+ 
+            // Launch first modal
+            driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            ReadOnlyCollection<string> windows = driver.WindowHandles;
+            string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
+            driver.SwitchTo().Window(firstWindowHandle);
+            Assert.AreEqual(2, windows.Count);
+
+            // Launch second modal
+            driver.FindElement(By.CssSelector("input[type='button'][value='btn2']")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
+            string secondWindowHandle = windows_1.Except(windows).First();
+            driver.SwitchTo().Window(secondWindowHandle);
+            Assert.AreEqual(3, windows_1.Count);
+
+            // Launch third modal
+            driver.FindElement(By.CssSelector("input[type='button'][value='btn3']")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
+            string finalWindowHandle = windows_2.Except(windows_1).First();
+            Assert.AreEqual(4, windows_2.Count);
+
+            driver.SwitchTo().Window(finalWindowHandle).Close();
+            driver.SwitchTo().Window(secondWindowHandle).Close();
+            driver.SwitchTo().Window(firstWindowHandle).Close();
+            driver.SwitchTo().Window(parentHandle);
+        }
+
+        [Test]
+        public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
+            string parentHandle = driver.CurrentWindowHandle;
+ 
+            // Launch first modal
+            driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            ReadOnlyCollection<string> windows = driver.WindowHandles;
+            string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
+            driver.SwitchTo().Window(firstWindowHandle);
+            Assert.AreEqual(2, windows.Count);
+
+            // Launch second modal
+            driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
+            System.Threading.Thread.Sleep(5000);
+            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
+            string secondWindowHandle = windows_1.Except(windows).First();
+            driver.SwitchTo().Window(secondWindowHandle);
+            Assert.AreEqual(3, windows_1.Count);
+
+            // Launch third modal
+            driver.FindElement(By.CssSelector("a[id='lnk3']")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
+            string finalWindowHandle = windows_2.Except(windows_1).First();
+            Assert.AreEqual(4, windows_2.Count);
+
+            driver.SwitchTo().Window(finalWindowHandle).Close();
+            driver.SwitchTo().Window(secondWindowHandle).Close();
+            driver.SwitchTo().Window(firstWindowHandle).Close();
+            driver.SwitchTo().Window(parentHandle);
         }
 
         private long GetScrollTop()

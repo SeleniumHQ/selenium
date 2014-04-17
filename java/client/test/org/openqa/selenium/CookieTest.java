@@ -16,13 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-
-import java.util.Date;
-
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Date;
 
 public class CookieTest {
 
@@ -33,8 +40,9 @@ public class CookieTest {
 
   @Test
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
+    Cookie cookie = new Cookie("hi;hi", "value", null, null, null, false);
     try {
-      new Cookie("hi;hi", "value", null, null, null, false);
+      cookie.validate();
       fail();
     } catch (IllegalArgumentException e) {
       // Expected
@@ -43,8 +51,9 @@ public class CookieTest {
 
   @Test
   public void testShouldThrowAnExceptionTheNameIsNull() {
+    Cookie cookie = new Cookie(null, "value", null, null, null, false);
     try {
-      new Cookie(null, "value", null, null, null, false);
+      cookie.validate();
       fail();
     } catch (IllegalArgumentException e) {
       // expected
@@ -61,5 +70,32 @@ public class CookieTest {
   public void testSecureDefaultsToFalse() {
     Cookie cookie = new Cookie("name", "value");
     assertFalse(cookie.isSecure());
+  }
+
+  @Test
+  public void testCookiesShouldAllowHttpOnlyToBeSet() {
+    Cookie cookie = new Cookie("name", "value", "", "/", new Date(), false, true);
+    assertTrue(cookie.isHttpOnly());
+  }
+
+  @Test
+  public void testHttpOnlyDefaultsToFalse() {
+    Cookie cookie = new Cookie("name", "value");
+    assertFalse(cookie.isHttpOnly());
+  }
+
+  @Test
+  public void testCookieSerializes() throws IOException, ClassNotFoundException {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+    Cookie cookieToSerialize = new Cookie("Fish", "cod", "", "", null, false);
+
+    objectOutputStream.writeObject(cookieToSerialize);
+    byte[] serializedCookie = byteArrayOutputStream.toByteArray();
+
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedCookie);
+    ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+    Cookie deserializedCookie = (Cookie) objectInputStream.readObject();
+    assertThat(cookieToSerialize, equalTo(deserializedCookie));
   }
 }

@@ -42,6 +42,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         public void ShouldBeAbleToSetTheSizeOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -74,12 +75,13 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
             Point position = window.Position;
-           
+
             Point targetPosition = new Point(position.X + 10, position.Y + 10);
             window.Position = targetPosition;
 
@@ -95,22 +97,82 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
-            Size targetSize = new Size(275, 275);
+            Size targetSize = new Size(450, 275);
+
+            ChangeSizeTo(targetSize);
+
+            Maximize();
+
             IWindow window = driver.Manage().Window;
- 
-            window.Size = targetSize;
-            WaitFor(WindowHeightToBeEqualTo(targetSize.Height));
-            WaitFor(WindowWidthToBeEqualTo(targetSize.Height));
-
-            window.Maximize();
-            WaitFor(WindowHeightToBeGreaterThan(targetSize.Height));
-            WaitFor(WindowWidthToBeGreaterThan(targetSize.Width));
-
             Assert.Greater(window.Size.Height, targetSize.Height);
             Assert.Greater(window.Size.Width, targetSize.Width);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
+        public void ShouldBeAbleToMaximizeTheWindowFromFrame()
+        {
+            driver.Url = framesetPage;
+            ChangeSizeTo(new Size(450, 275));
+
+            driver.SwitchTo().Frame("fourth");
+            try
+            {
+                Maximize();
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
+        public void ShouldBeAbleToMaximizeTheWindowFromIframe()
+        {
+            driver.Url = iframePage;
+            ChangeSizeTo(new Size(450, 275));
+
+            driver.SwitchTo().Frame("iframe1-name");
+            try
+            {
+                Maximize();
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        private void Maximize()
+        {
+            IWindow window = driver.Manage().Window;
+            Size currentSize = window.Size;
+            window.Maximize();
+            WaitFor(WindowHeightToBeGreaterThan(currentSize.Height));
+            WaitFor(WindowWidthToBeGreaterThan(currentSize.Width));
+        }
+
+        private void ChangeSizeTo(Size targetSize)
+        {
+            IWindow window = driver.Manage().Window;
+            window.Size = targetSize;
+            WaitFor(WindowHeightToBeEqualTo(targetSize.Height));
+            WaitFor(WindowWidthToBeEqualTo(targetSize.Width));
         }
 
         private Func<bool> WindowHeightToBeEqualTo(int height)

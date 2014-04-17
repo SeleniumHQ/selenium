@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -192,6 +193,134 @@ namespace OpenQA.Selenium.Interactions
             {
                 driver.SwitchTo().DefaultContent();
             }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void ShouldAllowUsersToHoverOverElements()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement element = driver.FindElement(By.Id("menu1"));
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
+            {
+                Assert.Ignore("Skipping test: Simulating hover needs native events");
+            }
+
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            if (inputDevicesDriver == null)
+            {
+                return;
+            }
+
+            IWebElement item = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual("", item.Text);
+
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+            //element.Hover();
+            Actions actionBuilder = new Actions(driver);
+            actionBuilder.MoveToElement(element).Perform();
+
+            item = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual("Item 1", item.Text);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void MovingMouseByRelativeOffset()
+        {
+            driver.Url = mouseTrackerPage;
+
+            IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
+            new Actions(driver).MoveToElement(trackerDiv).Build().Perform();
+
+            IWebElement reporter = driver.FindElement(By.Id("status"));
+
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200));
+
+            new Actions(driver).MoveByOffset(10, 20).Build().Perform();
+
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void MovingMouseToRelativeElementOffset()
+        {
+            driver.Url = mouseTrackerPage;
+
+            IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
+            new Actions(driver).MoveToElement(trackerDiv, 95, 195).Build().Perform();
+
+            IWebElement reporter = driver.FindElement(By.Id("status"));
+
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [NeedsFreshDriver(BeforeTest = true)]
+        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void MoveRelativeToBody()
+        {
+            driver.Url = mouseTrackerPage;
+
+            new Actions(driver).MoveByOffset(50, 100).Build().Perform();
+
+            IWebElement reporter = driver.FindElement(By.Id("status"));
+
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [NeedsFreshDriver(BeforeTest = true)]
+        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void CanMouseOverAndOutOfAnElement()
+        {
+            driver.Url = mouseOverPage;
+
+            IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
+            IWebElement redbox = driver.FindElement(By.Id("redbox"));
+            Size size = redbox.Size;
+
+            new Actions(driver).MoveToElement(greenbox, 1, 1).Perform();
+            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
+
+            new Actions(driver).MoveToElement(redbox).Perform();
+            Assert.AreEqual("rgba(255, 0, 0, 1)", redbox.GetCssValue("background-color"));
+
+            new Actions(driver).MoveToElement(redbox, size.Width + 2, size.Height + 2).Perform();
+            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
+        }
+
+        private Func<bool> FuzzyMatchingOfCoordinates(IWebElement element, int x, int y)
+        {
+            return () =>
+            {
+                return FuzzyPositionMatching(x, y, element.Text);
+            };
+        }
+
+        private bool FuzzyPositionMatching(int expectedX, int expectedY, String locationTuple)
+        {
+            string[] splitString = locationTuple.Split(',');
+            int gotX = int.Parse(splitString[0].Trim());
+            int gotY = int.Parse(splitString[1].Trim());
+
+            // Everything within 5 pixels range is OK
+            const int ALLOWED_DEVIATION = 5;
+            return Math.Abs(expectedX - gotX) < ALLOWED_DEVIATION && Math.Abs(expectedY - gotY) < ALLOWED_DEVIATION;
         }
 
         private void PerformDragAndDropWithMouse()

@@ -188,6 +188,16 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.util.List)">addEncodedExtensions</a></strong>(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</code>
+<div class="block">Adds a new Chrome extension to install on browser startup.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.lang.String...)">addEncodedExtensions</a></strong>(java.lang.String...&nbsp;encoded)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addExtensions(java.io.File...)">addExtensions</a></strong>(java.io.File...&nbsp;paths)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -201,29 +211,35 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#equals(java.lang.Object)">equals</a></strong>(java.lang.Object&nbsp;other)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.lang.Object</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#getExperimentalOption(java.lang.String)">getExperimentalOption</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block">Returns the value of an experimental option.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#hashCode()">hashCode</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary(java.io.File)">setBinary</a></strong>(java.io.File&nbsp;path)</code>
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary(java.lang.String)">setBinary</a></strong>(java.lang.String&nbsp;path)</code>
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOptions(java.lang.String, java.lang.Object)">setExperimentalOptions</a></strong>(java.lang.String&nbsp;name,
-                      java.lang.Object&nbsp;value)</code>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOption(java.lang.String, java.lang.Object)">setExperimentalOption</a></strong>(java.lang.String&nbsp;name,
+                     java.lang.Object&nbsp;value)</code>
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>org.json.JSONObject</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#toJson()">toJson</a></strong>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
@@ -367,18 +383,52 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>paths</code> - Paths to the extensions to install.</dd></dl>
 </li>
 </ul>
-<a name="setExperimentalOptions(java.lang.String, java.lang.Object)">
+<a name="addEncodedExtensions(java.lang.String...)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setExperimentalOptions</h4>
-<pre>public&nbsp;void&nbsp;setExperimentalOptions(java.lang.String&nbsp;name,
-                          java.lang.Object&nbsp;value)</pre>
+<h4>addEncodedExtensions</h4>
+<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.lang.String...&nbsp;encoded)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions(java.util.List)"><code>addEncodedExtensions(java.util.List)</code></a></dd></dl>
+</li>
+</ul>
+<a name="addEncodedExtensions(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addEncodedExtensions</h4>
+<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</pre>
+<div class="block">Adds a new Chrome extension to install on browser startup. Each string data should
+ specify a Base64 encoded string of packed Chrome extension (CRX file).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd></dl>
+</li>
+</ul>
+<a name="setExperimentalOption(java.lang.String, java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setExperimentalOption</h4>
+<pre>public&nbsp;void&nbsp;setExperimentalOption(java.lang.String&nbsp;name,
+                         java.lang.Object&nbsp;value)</pre>
 <div class="block">Sets an experimental option.  Useful for new ChromeDriver options not yet
  exposed through the <a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome"><code>ChromeOptions</code></a> API.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the experimental option.</dd><dd><code>value</code> - Value of the experimental option, which must be convertible
      to JSON.</dd></dl>
+</li>
+</ul>
+<a name="getExperimentalOption(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExperimentalOption</h4>
+<pre>public&nbsp;java.lang.Object&nbsp;getExperimentalOption(java.lang.String&nbsp;name)</pre>
+<div class="block">Returns the value of an experimental option.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The option name.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The option value, or <code>null</code> if not set.</dd></dl>
 </li>
 </ul>
 <a name="toJson()">

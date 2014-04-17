@@ -82,10 +82,10 @@ class Element {
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);
   bool IsInline(void);
-  static bool Element::RectHasNonZeroDimensions(IHTMLRect* rect);
+  static bool RectHasNonZeroDimensions(IHTMLRect* rect);
 
-  bool HasOnlySingleTextNodeChild(void);
-  bool Element::GetTextBoundaries(LocationInfo* text_info);
+  bool HasFirstChildTextNodeOfMultipleChildren(void);
+  bool GetTextBoundaries(LocationInfo* text_info);
 
   std::string element_id_;
   CComPtr<IHTMLElement> element_;

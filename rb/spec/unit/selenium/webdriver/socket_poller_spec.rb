@@ -4,7 +4,7 @@ module Selenium
   module WebDriver
     describe SocketPoller do
       let(:poller)         { Selenium::WebDriver::SocketPoller.new("localhost", 1234, 5, 0.05)  }
-      let(:socket)         { mock Socket, :close => true}
+      let(:socket)         { double Socket, :close => true}
 
       def setup_connect(*states)
         # TODO(jari): find a cleaner way to solve the platform-specific collaborators
@@ -17,7 +17,7 @@ module Selenium
             end
           }
         else
-          Socket.should_receive(:new).any_number_of_times.and_return socket
+          Socket.stub(:new).and_return socket
           states.each { |state|
             socket.should_receive(:connect_nonblock).
                    and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))

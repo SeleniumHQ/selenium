@@ -78,9 +78,7 @@ limitations under the License.
   }
 
   function testOneLineTable() {
-    var t = TABLE(TBODY(TR(TD('a'), TD('b'))));
-    var x = bot.dom.getVisibleText(t);
-    assertEquals(x, 'a b');
+    assertTextIs(TABLE(TBODY(TR(TD('a'), TD('b')))), 'a b');
   }
 
   function testSimpleTable() {

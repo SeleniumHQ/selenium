@@ -17,11 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.selenium;
 
-import org.openqa.selenium.remote.server.log.LoggingOptions;
-import org.openqa.selenium.remote.server.log.TerseFormatter;
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
-
 import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.common.GridRole;
@@ -30,6 +25,10 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,15 +61,16 @@ public class GridLauncher {
     }
     Logger.getLogger("").setLevel(logLevel);
 
-    for (Handler handler : Logger.getLogger("").getHandlers()) {
-      Logger.getLogger("").removeHandler(handler);
-    }
-
     String logFilename =
         helper.isParamPresent("-log")
         ? helper.getParamValue("-log")
         : LoggingOptions.getDefaultLogOutFile();
     if (logFilename != null) {
+      for (Handler handler : Logger.getLogger("").getHandlers()) {
+        if (handler instanceof ConsoleHandler) {
+          Logger.getLogger("").removeHandler(handler);
+        }
+      }
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
         logFile.setFormatter(new TerseFormatter(true));
@@ -80,9 +80,11 @@ public class GridLauncher {
         throw new RuntimeException(e);
       }
     } else {
-      Handler console = new ConsoleHandler();
-      console.setLevel(logLevel);
-      Logger.getLogger("").addHandler(console);
+      for (Handler handler : Logger.getLogger("").getHandlers()) {
+        if (handler instanceof ConsoleHandler) {
+          handler.setLevel(logLevel);
+        }
+      }
     }
 
     GridRole role = GridRole.find(args);

@@ -287,6 +287,7 @@ public class Table extends Block
      * threads factory.
      * @deprecated Use setNestingFactory or setThreadNestingFactory
      */
+    @Deprecated
     public static void setCellNestingFactory(CompositeFactory factory)
     {
         if (threadNestingMap==null)

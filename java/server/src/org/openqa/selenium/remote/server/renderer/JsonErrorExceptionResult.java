@@ -24,9 +24,10 @@ import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
+import org.openqa.selenium.remote.server.HttpStatusCodes;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
-public class JsonErrorExceptionResult extends ErrorJsonResult {
+public class JsonErrorExceptionResult extends JsonResult {
   private final ErrorCodes errorCodes;
   private final String exceptionName;
 
@@ -42,6 +43,8 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
     Response res = prepareResponseObject(request);
 
     request.setAttribute(propertyName, res);
+
+    response.setStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
 
     super.render(request, response, handler);
   }

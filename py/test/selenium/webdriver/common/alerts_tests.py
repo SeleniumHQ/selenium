@@ -33,7 +33,7 @@ class AlertsTest(unittest.TestCase):
         self.driver.find_element(by=By.ID, value="alert").click()
         try:
             self.assertEqual(self.driver.find_element_by_id('text').text, "cheese")
-        except Exception, e:
+        except Exception as e:
             # if we're here, likely the alert is displayed
             # not dismissing it will affect other tests
             try:
@@ -140,7 +140,7 @@ class AlertsTest(unittest.TestCase):
 
     def testShouldAllowUsersToAcceptAnAlertInAFrame(self):
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame("iframeWithAlert")
         self.driver.find_element_by_id("alertInFrame").click()
 
         alert = self._waitForAlert()
@@ -150,8 +150,8 @@ class AlertsTest(unittest.TestCase):
 
     def testShouldAllowUsersToAcceptAnAlertInANestedFrame(self):
         self._loadPage("alerts")
-        self.driver.switch_to_frame("iframeWithIframe")
-        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.switch_to.frame("iframeWithIframe")
+        self.driver.switch_to.frame("iframeWithAlert")
 
         self.driver.find_element_by_id("alertInFrame").click()
 
@@ -218,7 +218,7 @@ class AlertsTest(unittest.TestCase):
         return WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
@@ -226,7 +226,7 @@ class AlertsTest(unittest.TestCase):
     def _loadPage(self, name):
         try:
             # just in case a previous test left open an alert
-            self.driver.switch_to_alert().dismiss()
+            self.driver.switch_to.alert().dismiss()
         except:
             pass
         self.driver.get(self._pageURL(name))

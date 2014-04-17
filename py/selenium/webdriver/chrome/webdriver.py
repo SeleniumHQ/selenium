@@ -26,7 +26,7 @@ class WebDriver(RemoteWebDriver):
     Controls the ChromeDriver and allows you to drive the browser.
 
     You will need to download the ChromeDriver executable from
-    http://code.google.com/p/chromedriver/downloads/list
+    http://chromedriver.storage.googleapis.com/index.html
     """
 
     def __init__(self, executable_path="chromedriver", port=0,
@@ -61,7 +61,8 @@ class WebDriver(RemoteWebDriver):
         try:
             RemoteWebDriver.__init__(self,
                 command_executor=self.service.service_url,
-                desired_capabilities=desired_capabilities)
+                desired_capabilities=desired_capabilities,
+                keep_alive=True)
         except:
             self.quit()
             raise 

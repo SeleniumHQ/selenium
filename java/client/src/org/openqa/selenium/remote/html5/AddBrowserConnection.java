@@ -16,34 +16,39 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Throwables;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class AddBrowserConnection implements AugmenterProvider {
 
+  @Override
   public Class<?> getDescribedInterface() {
     return BrowserConnection.class;
   }
 
+  @Override
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
 
+      @Override
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
           Object... args) {
-        if ("setOnline".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.SET_BROWSER_ONLINE,
-              ImmutableMap.of("state", args[0]));
-        } else if ("isOnline".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.IS_BROWSER_ONLINE, null);
+        BrowserConnection connection = new RemoteBrowserConnection(executeMethod);
+        try {
+          return method.invoke(connection, args);
+        } catch (IllegalAccessException e) {
+          throw new WebDriverException(e);
+        } catch (InvocationTargetException e) {
+          throw Throwables.propagate(e.getCause());
         }
-        return null;
       }
     };
   }

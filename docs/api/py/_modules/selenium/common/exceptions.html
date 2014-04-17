@@ -112,18 +112,34 @@
 <div class="viewcode-block" id="NoSuchWindowException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchWindowException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when window target to be switched doesn&#39;t exist.</span>
+
+<span class="sd">    To find the current set of active window handles, you can get a list </span>
+<span class="sd">    of the active window handles in the following way::</span>
+
+<span class="sd">        print driver.window_handles</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="NoSuchElementException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchElementException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when element could not be found.</span>
+
+<span class="sd">    If you encounter this exception, you may want to check the following:</span>
+<span class="sd">        * Check your selector used in your find_by...</span>
+<span class="sd">        * Element may not yet be on the screen at the time of the find operation,</span>
+<span class="sd">        (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() </span>
+<span class="sd">        for how to write a wait wrapper to wait for an element to appear.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="NoSuchAttributeException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchAttributeException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchAttributeException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when the attribute of element could not be found.</span>
+
+<span class="sd">    You may want to check if the attribute exists in the particular browser you are </span>
+<span class="sd">    testing against.  Some browsers may have different property names for the same </span>
+<span class="sd">    property.  (IE8&#39;s .innerText vs. Firefox .textContent)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
@@ -132,6 +148,16 @@
 <span class="sd">    Thrown when a reference to an element is now &quot;stale&quot;.</span>
 
 <span class="sd">    Stale means the element no longer appears on the DOM of the page.</span>
+
+
+<span class="sd">    Possible causes of StaleElementReferenceException include, but not limited to:</span>
+<span class="sd">        * You are no longer on the same page, or the page may have refreshed since the element </span>
+<span class="sd">        was located.</span>
+<span class="sd">        * The element may have been removed and re-added to the screen, since it was located.</span>
+<span class="sd">        Such as an element being relocated. </span>
+<span class="sd">        This can happen typically with a javascript framework when values are updated and the </span>
+<span class="sd">        node is rebuilt.</span>
+<span class="sd">        * Element may have been inside an iframe or another context which was refreshed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
@@ -143,25 +169,36 @@
 <div class="viewcode-block" id="UnexpectedAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when an unexpected alert is appeared.</span>
+<span class="sd">    </span>
+<span class="sd">    Usually raised when when an expected modal is blocking webdriver form executing any </span>
+<span class="sd">    more commands.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="NoAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when switching to no presented alert.</span>
+
+<span class="sd">    This can be caused by calling an operation on the Alert() class when an alert is </span>
+<span class="sd">    not yet on the screen.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="ElementNotVisibleException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException">[docs]</a><span class="k">class</span> <span class="nc">ElementNotVisibleException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Thrown when although an element is present on the DOM, </span>
+<span class="sd">    Thrown when an element is present on the DOM, but  </span>
 <span class="sd">    it is not visible, and so is not able to be interacted with.</span>
+
+<span class="sd">    Most commonly encountered when trying to click or read text </span>
+<span class="sd">    of an element that is hidden from view.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="ElementNotSelectableException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException">[docs]</a><span class="k">class</span> <span class="nc">ElementNotSelectableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when trying to select an unselectable element.</span>
+<span class="sd">    </span>
+<span class="sd">    For example, selecting a &#39;script&#39; element.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </div>

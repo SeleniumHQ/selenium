@@ -8,6 +8,17 @@
     </content>
     <orderEntry type="jdk" jdkName="ruby-1.9" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="childprocess (v0.5.1, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ffi (v1.4.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="multi_json (v1.7.7, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="multipart-post (v1.2.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack (v1.5.2, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack-protection (v1.5.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v10.0.3, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.13.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rubyzip (v1.0.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v2.41.0, ruby-1.9) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="websocket (v1.0.7, ruby-1.9) [gem]" level="application" />
   </component>
 </module>
 

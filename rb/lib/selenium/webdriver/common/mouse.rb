@@ -47,15 +47,13 @@ module Selenium
       #
 
       def move_to(element, right_by = nil, down_by = nil)
-        unless element.kind_of? Element
-          raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
-        end
+        assert_element element
 
         @bridge.mouseMoveTo element.ref, right_by, down_by
       end
 
       def move_by(right_by, down_by)
-        @bridge.mouseMoveTo nil, right_by, down_by
+        @bridge.mouseMoveTo nil, Integer(right_by), Integer(down_by)
       end
 
       private
@@ -64,6 +62,11 @@ module Selenium
         move_to element if element
       end
 
+      def assert_element(element)
+        unless element.kind_of? Element
+          raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
+        end
+      end
     end # Mouse
   end # WebDriver
 end  # Selenium

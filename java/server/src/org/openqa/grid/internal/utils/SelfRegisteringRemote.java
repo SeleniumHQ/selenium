@@ -14,6 +14,8 @@
 
 package org.openqa.grid.internal.utils;
 
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,7 +28,6 @@ import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.HttpContext;
@@ -34,9 +35,10 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,8 +52,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
-
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 public class SelfRegisteringRemote {
 
@@ -249,7 +249,7 @@ public class SelfRegisteringRemote {
         BasicHttpEntityEnclosingRequest r =
             new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
         String json = nodeConfig.toJSON();
-        r.setEntity(new StringEntity(json));
+        r.setEntity(new StringEntity(json,"UTF-8"));
 
         HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
         HttpResponse response = client.execute(host, r);

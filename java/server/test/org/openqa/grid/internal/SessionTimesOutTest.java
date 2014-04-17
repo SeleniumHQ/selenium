@@ -17,24 +17,27 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionTimesOutTest {
 
@@ -93,8 +96,8 @@ public class SessionTimesOutTest {
       RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
       TestSession session2 = newSessionRequest2.getSession();
-      Assert.assertNotNull(session2);
-      Assert.assertNotSame(session, session2);
+      assertNotNull(session2);
+      assertNotSame(session, session2);
     } finally {
       registry.stop();
     }
@@ -137,20 +140,20 @@ public class SessionTimesOutTest {
 
       // wait to have the slow time out process finished
       int i = 0;
-      while (timeoutDone == false) {
+      while (!timeoutDone) {
         if (i >= 4) {
           throw new RuntimeException("should be true");
         }
         Thread.sleep(250);
       }
-      Assert.assertTrue(timeoutDone);
+      assertTrue(timeoutDone);
 
       RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
       TestSession session2 = newSessionRequest2.getSession();
-      Assert.assertNotNull(session2);
-      Assert.assertTrue(session.equals(session));
-      Assert.assertFalse(session2.equals(session));
+      assertNotNull(session2);
+      assertTrue(session.equals(session));
+      assertFalse(session2.equals(session));
 
     } finally {
       registry.stop();
@@ -194,7 +197,7 @@ public class SessionTimesOutTest {
       // wait for a timeout
       Thread.sleep(500);
       // the request has not been processed yet.
-      Assert.assertNull(newSessionRequest2.getServerSession());
+      assertNull(newSessionRequest2.getServerSession());
     } finally {
       registry.stop();
     }
@@ -252,11 +255,11 @@ public class SessionTimesOutTest {
         boolean shouldTimeout = timeout > 0 && cycle > 0;
 
         if (shouldTimeout) {
-          Assert.assertEquals(session.get("FLAG"), true);
-          Assert.assertNull(session.getSlot().getSession());
+          assertEquals(session.get("FLAG"), true);
+          assertNull(session.getSlot().getSession());
         } else {
-          Assert.assertNull(session.get("FLAG"));
-          Assert.assertNotNull(session.getSlot().getSession());
+          assertNull(session.get("FLAG"));
+          assertNotNull(session.getSlot().getSession());
         }
       }
     } finally {

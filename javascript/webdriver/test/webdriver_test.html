@@ -57,10 +57,10 @@ limitations under the License.
       callbackHelper = webdriver.test.testutil.callbackHelper,
       callbackPair = webdriver.test.testutil.callbackPair;
 
-  // By is exported by webdriver.Locator, but IDEs don't
-  // recognize goog.exportSymbol. Explicitly define it here to make
-  // the IDE stop complaining.
-  var By = webdriver.Locator.Strategy;
+  // By is exported by webdriver.By, but IDEs don't recognize
+  // goog.exportSymbol. Explicitly define it here to make the
+  // IDE stop complaining.
+  var By = webdriver.By;
 
   var clock;
   var driver;
@@ -86,8 +86,8 @@ limitations under the License.
 
   function expectedError(code, message) {
     return function(e) {
-      assertEquals('Wrong error code', code, e.code);
       assertEquals('Wrong error message', message, e.message);
+      assertEquals('Wrong error code', code, e.code);
     };
   }
 
@@ -606,7 +606,7 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.switchTo().window('foo').
-        addErrback(callback = callbackHelper(function(e) {
+        thenCatch(callback = callbackHelper(function(e) {
           assertEquals(ECode.NO_SUCH_WINDOW, e.code);
           assertEquals('window not found', e.message);
           return true;  // suppress expected failure
@@ -645,8 +645,8 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.switchTo().window('foo').
-        addErrback(function() { return STUB_ERROR; }).
-        addCallback(callback = callbackHelper(assertIsStubError));
+        thenCatch(function() { return STUB_ERROR; }).
+        then(callback = callbackHelper(assertIsStubError));
 
     testHelper.execute();
   }
@@ -660,7 +660,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.switchTo().window('foo').addErrback(throwStubError);
+    driver.switchTo().window('foo').thenCatch(throwStubError);
 
     testHelper.execute();
   }
@@ -714,8 +714,8 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.getCurrentUrl().addCallback(function() {
-      driver.get('http://www.google.com').addCallback(function() {
+    driver.getCurrentUrl().then(function() {
+      driver.get('http://www.google.com').then(function() {
         driver.close();
       });
     });
@@ -737,12 +737,12 @@ limitations under the License.
     var driver = testHelper.createDriver();
     driver.getTitle().
         // Everything in this callback...
-        addCallback(function() {
+        then(function() {
           driver.getCurrentUrl();
           driver.getWindowHandle();
         }).
         // ...should execute before everything in this callback.
-        addCallback(function() {
+        then(function() {
           driver.close();
         });
     // This should execute after everything above
@@ -762,7 +762,7 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.getTitle().
-        addCallback(function(){
+        then(function(){
           driver.switchTo().window('foo');
         });
 
@@ -780,9 +780,9 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.getTitle().
-        addCallback(function(){
+        then(function(){
           driver.switchTo().window('foo').
-            addErrback(goog.functions.TRUE);
+            thenCatch(goog.functions.TRUE);
         });
     driver.close();
     testHelper.execute();
@@ -802,10 +802,10 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.getTitle().
-        addCallback(function(){
+        then(function(){
           return driver.switchTo().window('foo');
         }).
-        addErrback(callback = callbackHelper(function(e) {
+        thenCatch(callback = callbackHelper(function(e) {
           assertEquals(ECode.NO_SUCH_WINDOW, e.code);
           assertEquals('window not found', e.message);
           return true;  // Suppress the error.
@@ -825,12 +825,12 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.getTitle().addCallback(function() {
+    driver.getTitle().then(function() {
       driver.getCurrentUrl().
-          addCallback(function() {
+          then(function() {
             return driver.switchTo().window('foo');
           }).
-          addErrback(goog.functions.TRUE);
+          thenCatch(goog.functions.TRUE);
       driver.close();
     });
 
@@ -848,10 +848,10 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.getTitle().
-        addCallback(function() {
+        then(function() {
           return driver.getCurrentUrl();
         }).
-        addCallback(function(value) {
+        then(function(value) {
           assertEquals('http://www.google.com', value);
         });
     testHelper.execute();
@@ -871,13 +871,13 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     driver.switchTo().window('foo').
-        addErrback(function(e) {
+        thenCatch(function(e) {
           assertEquals(ECode.NO_SUCH_WINDOW, e.code);
           assertEquals('window not found', e.message);
           count += 1;
           return driver.getCurrentUrl();
         }).
-        addCallback(function(url) {
+        then(function(url) {
           count += 1;
           assertEquals('http://www.google.com', url);
         });
@@ -893,7 +893,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.call(goog.functions.constant('abc123')).addCallback(function(value) {
+    driver.call(goog.functions.constant('abc123')).then(function(value) {
       called = true;
       assertEquals('abc123', value);
     });
@@ -912,10 +912,11 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
 
-    driver.getTitle().addCallback(msg.push, msg);
-    driver.call(goog.functions.constant('is ')).addCallback(msg.push, msg);
-    driver.getCurrentUrl().addCallback(msg.push, msg);
-    driver.call(goog.functions.constant('!')).addCallback(msg.push, msg);
+    var pushMsg = goog.bind(msg.push, msg);
+    driver.getTitle().then(pushMsg);
+    driver.call(goog.functions.constant('is ')).then(pushMsg);
+    driver.getCurrentUrl().then(pushMsg);
+    driver.call(goog.functions.constant('!')).then(pushMsg);
 
     testHelper.execute();
   }
@@ -929,7 +930,7 @@ limitations under the License.
     });
     var driver = testHelper.createDriver();
     driver.call(add, null, 1, 2).
-        addCallback(function(value) {
+        then(function(value) {
           assertEquals(3, value);
         });
     testHelper.execute();
@@ -945,7 +946,7 @@ limitations under the License.
     });
     var driver = testHelper.createDriver();
     driver.call(add, null, 1, promisedArg).
-        addCallback(function(value) {
+        then(function(value) {
           assertEquals(3, value);
         });
 
@@ -972,7 +973,7 @@ limitations under the License.
         }).
         replayAll();
     var driver = testHelper.createDriver();
-    driver.call(foo.getName, foo).addCallback(function(value) {
+    driver.call(foo.getName, foo).then(function(value) {
       assertEquals('foo', value);
       called = true;
     });
@@ -987,7 +988,7 @@ limitations under the License.
         }).
         replayAll();
     var driver = testHelper.createDriver();
-    driver.call(goog.functions.error('bam!')).addErrback(function(e) {
+    driver.call(goog.functions.error('bam!')).thenCatch(function(e) {
       assertTrue(e instanceof Error);
       assertEquals('bam!', e.message);
       called = true;
@@ -1031,7 +1032,7 @@ limitations under the License.
       return title;
     });
 
-    result.addCallback(function(title) {
+    result.then(function(title) {
       called = true;
       assertEquals('Google Search', title);
     });
@@ -1054,7 +1055,7 @@ limitations under the License.
       return driver.switchTo().window('foo');
     });
 
-    result.addErrback(function(e) {
+    result.thenCatch(function(e) {
       assertEquals(ECode.NO_SUCH_WINDOW, e.code);
       assertEquals('window not found', e.message);
       called = true;
@@ -1119,12 +1120,13 @@ limitations under the License.
         }).
         replayAll();
     var driver = testHelper.createDriver();
-    driver.call(goog.functions.constant('cheese ')).addCallback(msg.push, msg);
+    var pushMsg = goog.bind(msg.push, msg);
+    driver.call(goog.functions.constant('cheese ')).then(pushMsg);
     driver.call(function() {
-      driver.call(goog.functions.constant('is ')).addCallback(msg.push, msg);
-      driver.call(goog.functions.constant('tasty')).addCallback(msg.push, msg);
+      driver.call(goog.functions.constant('is ')).then(pushMsg);
+      driver.call(goog.functions.constant('tasty')).then(pushMsg);
     });
-    driver.call(goog.functions.constant('!')).addCallback(msg.push, msg);
+    driver.call(goog.functions.constant('!')).then(pushMsg);
     testHelper.execute();
   }
 
@@ -1141,7 +1143,7 @@ limitations under the License.
         return driver.call(goog.functions.constant('foobar'));
       });
     });
-    result.addCallback(function(value) {
+    result.then(function(value) {
       assertEquals('foobar', value);
       count += 1;
     });
@@ -1163,7 +1165,7 @@ limitations under the License.
         return driver.call(goog.functions.constant('foobar'));
       });
     });
-    driver.close().addCallback(function() {
+    driver.close().then(function() {
       msg.push('b');
     });
 
@@ -1210,7 +1212,7 @@ limitations under the License.
     var driver = testHelper.createDriver();
     driver.call(function() {
       return driver.getTitle();
-    }).addCallback(function(title) {
+    }).then(function(title) {
       assertEquals('Google', title);
     });
 
@@ -1532,6 +1534,24 @@ limitations under the License.
   }
 
 
+  function testFindElement_elementNotFoundInACallback() {
+    var testHelper = TestHelper.
+        expectingFailure(
+            expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element')).
+        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+        andReturnError(
+            ECode.NO_SUCH_ELEMENT, {'message':'Unable to find element'}).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    webdriver.promise.fulfilled().then(function() {
+      var element = driver.findElement(By.id('foo'));
+      return element.click();  // Should not execute.
+    });
+    testHelper.execute();
+  }
+
+
   function testFindElement_elementFound() {
     var testHelper = TestHelper.expectingSuccess().
         expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
@@ -1585,7 +1605,7 @@ limitations under the License.
         expectingFailure(function(e) {
           assertEquals(
               'Not the expected error message',
-              'JS locator script result was not a WebElement', e.message);
+              'Custom locator did not return a WebElement', e.message);
         }).
         expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
         andReturnSuccess(123).
@@ -1608,7 +1628,42 @@ limitations under the License.
         andReturnSuccess({'ELEMENT':'one'}).
         replayAll();
     var driver = testHelper.createDriver();
-    driver.findElement(By.js(script), 'div');
+    driver.findElement(By.js(script, 'div'));
+    testHelper.execute();
+  }
+
+
+  function testFindElement_customLocator() {
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.FIND_ELEMENTS, {'using':'tag name', 'value':'a'}).
+        andReturnSuccess([{'ELEMENT':'foo'}, {'ELEMENT':'bar'}]).
+        expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'foo'}}).
+        andReturnSuccess().
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    var element = driver.findElement(function(d) {
+      assertEquals(driver, d);
+      return d.findElements(By.tagName('a'));
+    });
+    element.click();
+    testHelper.execute();
+  }
+
+
+  function testFindElement_customLocatorThrowsIfResultIsNotAWebElement() {
+    var testHelper = TestHelper.
+        expectingFailure(function(e) {
+          assertEquals(
+              'Not the expected error message',
+              'Custom locator did not return a WebElement', e.message);
+        }).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    driver.findElement(function() {
+      return 1;
+    });
     testHelper.execute();
   }
 
@@ -1686,7 +1741,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.isElementPresent(By.js(script), 'div');
+    driver.isElementPresent(By.js(script, 'div'));
     testHelper.execute();
   }
 
@@ -1704,7 +1759,7 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     var callbacks = [];
-    driver.findElements(By.tagName('a')).addCallback(function(elements) {
+    driver.findElements(By.tagName('a')).then(function(elements) {
       assertEquals(3, elements.length);
 
       function assertTypeAndId(index) {
@@ -1746,7 +1801,7 @@ limitations under the License.
     var driver = testHelper.createDriver();
     var callbacks = [];
     driver.findElements(By.js('return document.getElementsByTagName("div");')).
-        addCallback(function(elements) {
+        then(function(elements) {
           assertEquals(3, elements.length);
 
           function assertTypeAndId(index) {
@@ -1792,7 +1847,7 @@ limitations under the License.
     var driver = testHelper.createDriver();
     var callbacks = [];
     driver.findElements(By.js('return document.getElementsByTagName("div");')).
-        addCallback(function(elements) {
+        then(function(elements) {
           assertEquals(3, elements.length);
 
           function assertTypeAndId(index, jsonIndex) {
@@ -1856,7 +1911,7 @@ limitations under the License.
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.findElements(By.js(script), 'div');
+    driver.findElements(By.js(script, 'div'));
     testHelper.execute();
   }
 

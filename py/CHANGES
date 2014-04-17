@@ -1,3 +1,71 @@
+Selenium 2.41
+* Support for Firefox 28
+* deprecating switch_to_* in favour of driver.switch_to.*
+
+Selenium 2.40
+* Support for Firefox 27
+* Fixes related to http connection
+* Fix for phantomjs running on windows #6736
+
+Selenium 2.39
+* Support for Firefox 26
+
+Selenium 2.38.4
+* keep-alive can't be used for phantomjs / IE, fix for that and tested for py3 :)
+
+Selenium 2.38.3
+* really supporting py3 :)
+
+Selenium 2.38.2
+* py3 support (once again)
+
+Selenium 2.38.1
+* fix packaging problem where firefox/webdriver_prefs.json was missing
+
+Selenium 2.38
+* Support for Firefox 25
+* FirefoxProfile now using common webdriver.json instead of having our own copy in py
+  - behavior change to the preferences is that they now should be treated
+    like raw types rather than strings and allow the json library to translate
+    the types appropriated (e.g. True => true)
+
+* Set proper 'Accept' request header so that Python bindings work with some old WebDriver implementations that reply 404 to requests with no 'Accept' set.
+* handle redirect response explicitly (since switching to using keep-alive)
+* phantomjs service needs to really kill the spawned process Issue #5921
+* removing old api endpoints from command listing
+* using keep-alive for remote connection
+* adjusting phantomjs subprocess.Popen
+* ActionsChains.send_keys should use <session>/keys endpoint Issue #6348
+* fix TypeError in chrome_options.extensions for Python3.x
+
+* Other Bugs Fixed: #6531, #6513, #4569, #6454
+
+
+Selenium 2.37.2
+* fix regression added with unicode fix
+* Bug fix #6360
+
+Selenium 2.37.1
+* fix find_elements on webelement using unicode locators and py 2.7
+
+Selenium 2.37
+* repackage with fix for Firefox native events on Linux
+* fix issue with unicode By locators w/ python 2.7 #6430
+
+Selenium 2.36
+* Added Safari WebDriver. Fixes issue 5352.
+* fix platform for safari caps
+* Convert all offsets/coordinates/speeds into integers
+* Fix drag and drop by offset behaviour
+* Fix initialization of Proxy by capabilities when proxyType is set
+* Enable SOCKS proxy support
+* Validation of passed locator for find_element(s) methods #5690
+* Adding support for /status, /sessions commands
+* Doc fixes
+* ability to set Chrome extensions by using base64 encoded strings #4013
+* fix logic regarding Select.select_by_visible_text #3910
+* Bugs fixed: #6165, #6231
+
 Selenium 2.35
 * Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
 * fixing UnicodeEncodeError on get attribute of webelement
@@ -38,7 +106,7 @@ Selenium 2.29
 
 Selenium 2.28
 * "null" can now be passed to executeScript
-* Add transparent and extended colour keywords to color support module. Fixes issue 4866 
+* Add transparent and extended colour keywords to color support module. Fixes issue 4866
 
 Selenium 2.27
 * Added support for phantomjs / ghostdriver
@@ -80,7 +148,7 @@ Selenium 2.21.1
 * focusmanager.testmode messes with native events, removing it.
 
 Selenium 2.21
-* Local File upload capabilities for non-remote browser 
+* Local File upload capabilities for non-remote browser
 * Adding maximize_window api call
 * Updating default firefox profile to set focusmanager.testmode to true
     see https://bugzilla.mozilla.org/show_bug.cgi?id=704583

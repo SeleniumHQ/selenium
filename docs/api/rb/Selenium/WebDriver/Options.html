@@ -6,13 +6,13 @@
 <title>
   Class: Selenium::WebDriver::Options
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -266,6 +266,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#logs-instance_method" title="#logs (instance method)">- (Object) <strong>logs</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#timeouts-instance_method" title="#timeouts (instance method)">- (Object) <strong>timeouts</strong> </a>
     
 
@@ -329,7 +351,7 @@
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>A new instance of Options</p>
+<p>Returns a new instance of Options</p>
 
 
   </div>
@@ -810,6 +832,45 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="logs-instance_method">
+  
+    - (<tt>Object</tt>) <strong>logs</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_logs'>logs</span>
+  <span class='ivar'>@logs</span> <span class='op'>||=</span> <span class='const'>Logs</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="timeouts-instance_method">
   
     - (<tt>Object</tt>) <strong>timeouts</strong> 
@@ -863,12 +924,12 @@
       <pre class="lines">
 
 
-97
-98
-99</pre>
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span>
   <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'>Window</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -883,9 +944,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:39:03 2013 by
+  Generated on Mon Feb 17 23:05:58 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

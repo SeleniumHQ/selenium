@@ -21,43 +21,19 @@ limitations under the License.
   <script>
     goog.require('goog.json');
     goog.require('goog.testing.jsunit');
+    goog.require('webdriver.By');
     goog.require('webdriver.Locator');
     goog.require('webdriver.Locator.Strategy');
     goog.require('webdriver.test.testutil');
   </script>
   <script>
 
-    // By is exported by webdriver.Locator, but IDEs don't
-    // recognize goog.exportSymbol. Explicitly define it here to make
-    // the IDE stop complaining.
-    var By = webdriver.Locator.Strategy;
+    // By is exported by webdriver.By, but IDEs don't recognize
+    // goog.exportSymbol. Explicitly define it here to make the
+    // IDE stop complaining.
+    var By = webdriver.By;
 
     var TARGET = 'some-value';
-
-    function testCreatingLocatorsFromHashObjects() {
-      function doTest(expectedLocator, locator) {
-        locator = webdriver.Locator.createFromObj(locator);
-        assertEquals('Wrong type', expectedLocator.using, locator.using);
-        assertEquals('Wrong target', expectedLocator.value, locator.value);
-      }
-
-      for (var prop in webdriver.Locator.Strategy) {
-        var obj = {};
-        obj[prop] = TARGET;
-        doTest(webdriver.Locator.Strategy[prop](TARGET), obj);
-      }
-
-      try {
-        webdriver.Locator.createFromObj({unknownLocator: TARGET});
-        fail('Should reject unmappable locator object');
-      } catch (expected) {}
-
-      try {
-        webdriver.Locator.createFromObj({});
-        fail('Should reject unmappable locator object');
-      } catch (expected) {}
-    }
-
 
     function testCheckLocator() {
       function assertLocatorTypeAndTarget(expectedLocator, locator) {
@@ -69,17 +45,24 @@ limitations under the License.
       for (var prop in webdriver.Locator.Strategy) {
         var obj = {};
         obj[prop] = TARGET;
-        assertLocatorTypeAndTarget(webdriver.Locator.Strategy[prop](TARGET),
+        assertLocatorTypeAndTarget(
+            webdriver.Locator.Strategy[prop](TARGET),
             webdriver.Locator.checkLocator(obj));
-        assertLocatorTypeAndTarget(webdriver.Locator.Strategy[prop](TARGET),
+        assertLocatorTypeAndTarget(
+            webdriver.Locator.Strategy[prop](TARGET),
             webdriver.Locator.checkLocator(By[prop](TARGET)));
       }
+
+      assertEquals(
+          'Should accept custom locator functions',
+          goog.nullFunction,
+          webdriver.Locator.checkLocator(goog.nullFunction));
     }
 
     function testToString() {
       assertEquals('By.id("foo")', By.id('foo').toString());
       assertEquals('By.className("foo")', By.className('foo').toString());
-      assertEquals('By.linkText("foo")', By['link text']('foo').toString());
+      assertEquals('By.linkText("foo")', By.linkText('foo').toString());
     }
   </script>
 </head>

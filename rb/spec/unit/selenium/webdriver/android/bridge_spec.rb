@@ -7,7 +7,7 @@ module Selenium
       describe Android do
         let(:default_url) { URI.parse(Android::Bridge::DEFAULT_URL) }
         let(:resp)        { {"sessionId" => "foo", "value" => Remote::Capabilities.android.as_json }}
-        let(:http)        { mock(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http)        { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         it "uses the default Android driver URL" do
           http.should_receive(:server_url=).with default_url

@@ -176,6 +176,9 @@
                 <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span>
  
         <span class="k">return</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 

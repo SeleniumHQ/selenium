@@ -314,10 +314,10 @@ safaridriver.extension.Server.prototype.execute = function(
   var flow = webdriver.promise.controlFlow();
   var result = flow.execute(fn, description).
       then(bot.response.createResponse, bot.response.createErrorResponse).
-      addBoth(function(response) {
+      thenFinally(goog.bind(function(response) {
         this.session_.setCurrentCommand(null);
         return response;
-      }, this);
+      }, this));
 
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.
@@ -434,10 +434,10 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   var command = message.getCommand();
 
   this.execute(command).
-      addErrback(bot.response.createErrorResponse).
-      addCallback(function(response) {
+      thenCatch(bot.response.createErrorResponse).
+      then(goog.bind(function(response) {
         this.send_(command, response);
-      }, this);
+      }, this));
 };
 
 

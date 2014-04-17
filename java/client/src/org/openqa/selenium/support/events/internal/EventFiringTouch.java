@@ -25,7 +25,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 /**
  * A touch screen that fires events.
  */
-public class EventFiringTouch implements org.openqa.selenium.interactions.TouchScreen {
+public class EventFiringTouch implements TouchScreen {
 
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;

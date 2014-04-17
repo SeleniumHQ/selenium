@@ -78,17 +78,19 @@ module Selenium
               end
             end
 
-            it "understands a comma separated list of domains in #{no_proxy_var}" do
-              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com,foo.com") do
-                http = client.send :http
-                http.should_not be_proxy
+              it "understands a comma separated list of domains in #{no_proxy_var}" do
+                with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com,foo.com") do
+                  http = client.send :http
+                  http.should_not be_proxy
+                end
               end
-            end
 
-            it "understands an asterisk in #{no_proxy_var}" do
-              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "*") do
-                http = client.send :http
-                http.should_not be_proxy
+            unless RUBY_VERSION > "2.0" # Ruby 2.0 does its own proxy handling in net/http, which breaks this behaviour
+              it "understands an asterisk in #{no_proxy_var}" do
+                with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "*") do
+                  http = client.send :http
+                  http.should_not be_proxy
+                end
               end
             end
 

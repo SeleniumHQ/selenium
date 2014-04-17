@@ -23,10 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
-    <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.common.by" href="selenium.webdriver.common.by.html" />
-    <link rel="prev" title="selenium.webdriver.common.action_chains" href="selenium.webdriver.common.action_chains.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.by.html" title="selenium.webdriver.common.by"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,7 +50,23 @@
 <dl class="class">
 <dt id="selenium.webdriver.common.alert.Alert">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.alert.</tt><tt class="descname">Alert</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allows to work wit alerts.</p>
+<dd><p>Allows to work with alerts.</p>
+<p>Use this class to interact with alert prompts.  It contains methods for dismissing, 
+accepting, inputting, and getting text from alert prompts.</p>
+<p>Accepting / Dismissing alert prompts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+<span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">dismiss</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Inputting a value into an alert prompt:</p>
+<blockquote>
+<div>name_prompt = Alert(driver)
+name_prompt.send_keys(&#8220;Willian Shakesphere&#8221;)
+name_prompt.accept()</div></blockquote>
+<p>Reading a the text of a prompt for verification:</p>
+<blockquote>
+<div>alert_text = Alert(driver).text
+self.assertEqual(&#8220;Do you wish to quit?&#8221;, alert_text)</div></blockquote>
 <p>Creates a new Alert.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -77,6 +83,8 @@
 <dt id="selenium.webdriver.common.alert.Alert.accept">
 <tt class="descname">accept</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.accept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.accept" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accepts the alert available.</p>
+<p>Usage::
+Alert(driver).accept() # Confirm a alert dialog.</p>
 </dd></dl>
 
 <dl class="method">
@@ -118,12 +126,6 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.action_chains.html"
-                        title="previous chapter">selenium.webdriver.common.action_chains</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.by.html"
-                        title="next chapter">selenium.webdriver.common.by</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/webdriver/selenium.webdriver.common.alert.txt"
@@ -155,14 +157,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.by.html" title="selenium.webdriver.common.by"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
-             >previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

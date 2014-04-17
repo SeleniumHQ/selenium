@@ -18,13 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class HtmlIdentifierTest {
 

@@ -17,7 +17,15 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static org.junit.Assert.assertEquals;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -28,13 +36,6 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,7 +74,7 @@ public class SmokeTest {
       DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
       driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
       driver.get(hub.getUrl() + "/grid/old/console");
-      Assert.assertEquals(driver.getTitle(), "Grid overview");
+      assertEquals(driver.getTitle(), "Grid overview");
     } finally {
       if (driver != null) {
         driver.quit();
@@ -88,11 +89,11 @@ public class SmokeTest {
     Selenium selenium = null;
     try {
       selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
-      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+      assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
       selenium.start();
-      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
+      assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
       selenium.open(hub.getUrl() + "/grid/console");
-      Assert.assertEquals(selenium.getTitle(), "Grid Console");
+      assertEquals(selenium.getTitle(), "Grid Console");
       
     } finally {
       if (selenium != null) {

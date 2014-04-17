@@ -18,7 +18,7 @@ package org.openqa.selenium.v1.internal.seleniumemulation;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.internal.seleniumemulation.VariableDeclaration;
+import com.thoughtworks.selenium.webdriven.VariableDeclaration;
 
 import static org.junit.Assert.assertEquals;
 

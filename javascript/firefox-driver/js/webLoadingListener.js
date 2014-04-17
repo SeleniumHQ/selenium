@@ -143,6 +143,8 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
   var readyState = this.win.document && this.win.document.readyState;
   var location = this.win.document.location;
 
+  fxdriver.logging.info('readyState is ' + readyState);
+
   if (('complete' == readyState || 'interactive' == readyState) &&
       (location != 'about:blank')) {
     this.active = false;
@@ -160,38 +162,76 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
 };
 
 
-var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces['nsIPrefBranch']);
+var prefs = Components.classes['@mozilla.org/preferences-service;1']
+    .getService(Components.interfaces['nsIPrefBranch']);
 
+/**
+ * Builds a nsIWebProgressListener for the given browser.
+ * @param {!nsIWebProgress} browser The browser window to listen to for load
+ *     events.
+ * @param {function(boolean)} toCall The function to call when listener detects
+ *     that the browser has finished loading.
+ * @param {Window=} opt_window The DOM window being watched.
+ * @return {!nsIWebProgressListener} The new listener.
+ */
 function buildHandler(browser, toCall, opt_window) {
-  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
-    if ('unstable' == prefs.getCharPref('webdriver.load.strategy')) {
-      return new ImpatientListener(browser, toCall, opt_window);
-    }
+  var strategy = Utils.getPageLoadingStrategy();
+  if ('normal' == strategy) {
+    return new PatientListener(browser, toCall, opt_window);
   }
+  if ('unstable' == strategy || 'eager' == strategy) {
+    return new ImpatientListener(browser, toCall, opt_window);
+  }
+
+  fxdriver.logging.warning('Unsupported page loading strategy: ' + strategy);
+  // Fall back to 'normal' strategy
   return new PatientListener(browser, toCall, opt_window);
 }
 
 var loadingListenerTimer;
 
+/**
+ * @param {!nsIWebProgress} browser The browser window to listen to for load
+ *     events.
+ * @param {function(boolean)} toCall The function to call when either the
+ *     timeout expires or the browser finishes loading.
+ * @param {number} timeout The timeout to use, in milliseconds.
+ * @param {Window=} opt_window The DOM window being watched.
+ * @constructor
+ */
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
+  var strategy = Utils.getPageLoadingStrategy();
+  if ('none' == strategy) {
+    toCall(false, true);
+    return;
+  }
+
   loadingListenerTimer = new fxdriver.Timer();
-  var func = function(timedOut) { loadingListenerTimer.cancel(); toCall(timedOut); };
+  var func = function(timedOut) {
+    loadingListenerTimer.cancel();
+    toCall(timedOut);
+  };
 
+  /** @type {!nsIWebProgressListener} */
   this.handler = buildHandler(browser, func, opt_window);
-  browser.addProgressListener(this.handler);
-  var handler = this.handler;
 
+  browser.addProgressListener(this.handler);
   if (timeout == -1) {
     timeout = 1000 * 60 * 30; // 30 minutes is a loooong time.
   }
 
+  var handler = this.handler;
   loadingListenerTimer.setTimeout(function() {
-      func(true);
-      WebLoadingListener.removeListener(browser, handler);
+    browser.removeProgressListener(handler);
+    func(true);
   }, timeout);
 };
 
-
+/**
+ * Removes a progress listener from the given browser.
+ * @param {!nsIWebProgress} browser The browser to remove a listener from.
+ * @param {!WebLoadingListener} listener The listener to remove.
+ */
 WebLoadingListener.removeListener = function(browser, listener) {
   browser.removeProgressListener(listener.handler);
 };

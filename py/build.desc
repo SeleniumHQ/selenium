@@ -12,6 +12,7 @@ py_test(
   ff_specific_tests = [ "test/selenium/webdriver/firefox/*_tests.py" ],
   deps = [ ":test_ff" ],
   resources = [
+    { "//javascript/firefox-driver:webdriver_prefs" : "selenium/webdriver/firefox/webdriver_prefs.json" },
     { "//javascript/firefox-driver:webdriver" : "selenium/webdriver/firefox/" }
   ],
   browsers = [ "ff" ])
@@ -46,6 +47,11 @@ py_test(
   deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])
 
+py_test(
+  name = "safari_test",
+  deps = [ ":test_safari" ],
+  browsers = [ "safari" ])
+
 py_env(
   name = "test_env",
   packages = [
@@ -66,7 +72,8 @@ py_test(
     "ie",
     "phantomjs",
     "remote_firefox",
-    "opera"
+    "opera",
+    "safari",
   ])
 
 py_docs(

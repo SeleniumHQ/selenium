@@ -22,8 +22,8 @@ import com.thoughtworks.selenium.SeleniumException;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
-import org.openqa.selenium.internal.seleniumemulation.Timer;
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+import com.thoughtworks.selenium.webdriven.Timer;
 
 import static org.junit.Assert.fail;
 

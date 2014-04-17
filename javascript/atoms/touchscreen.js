@@ -230,7 +230,10 @@ bot.Touchscreen.prototype.fireTouchReleaseEvents_ = function() {
     this.fireMouseEvent(bot.events.EventType.MOUSEUP, this.clientXY_, 0);
 
     // Special click logic to follow links and to perform form actions.
-    this.clickElement(this.clientXY_, /* button value */ 0);
+    if (!(bot.userAgent.WINDOWS_PHONE &&
+        bot.dom.isElement(this.getElement(), goog.dom.TagName.OPTION))) {
+       this.clickElement(this.clientXY_, /* button value */ 0);
+    }
   }
 };
 
@@ -314,7 +317,10 @@ bot.Touchscreen.fireSingleReleasePointer_ = function(ts, element, coords, id,
   // Fire a click.
   if (!ts.hasMovedAfterPress_) {
     ts.maybeToggleOption();
-    ts.clickElement(ts.clientXY_, 0, id);
+    if (!(bot.userAgent.WINDOWS_PHONE &&
+        bot.dom.isElement(element, goog.dom.TagName.OPTION))) {
+      ts.clickElement(ts.clientXY_, 0, id);
+    }
   }
 
   if (bot.dom.isSelectable(element)) {

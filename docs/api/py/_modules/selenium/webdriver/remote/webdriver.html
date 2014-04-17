@@ -75,10 +75,9 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="kn">import</span> <span class="n">ApplicationCache</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="nb">bytes</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span> <span class="c"># Python 2.x compatibility</span>
-    <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">str</span>
-    <span class="nb">str</span> <span class="o">=</span> <span class="nb">unicode</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="k">pass</span>
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -95,7 +94,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="s">&#39;http://127.0.0.1:4444/wd/hub&#39;</span><span class="p">,</span>
-        <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new driver that will issue commands using the wire protocol.</span>
 
@@ -112,7 +111,7 @@
             <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">command_executor</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bytes</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">RemoteConnection</span><span class="p">(</span><span class="n">command_executor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">RemoteConnection</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="p">{}</span>
@@ -422,7 +421,7 @@
 <span class="sd">         - css_selector: The css selector to use when finding elements.</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_css_selector(&#39;#foo&#39;)</span>
+<span class="sd">            driver.find_elements_by_css_selector(&#39;.foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
@@ -721,8 +720,10 @@
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            Use the corresponding find_element_by_* instead of this.</span>
+
+<span class="sd">        :rtype: WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">&quot;Invalid locator values passed in&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT</span><span class="p">,</span>
@@ -734,8 +735,10 @@
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            Use the corresponding find_elements_by_* instead of this.</span>
+
+<span class="sd">        :rtype: list of WebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">&quot;Invalid locator values passed in&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS</span><span class="p">,</span>

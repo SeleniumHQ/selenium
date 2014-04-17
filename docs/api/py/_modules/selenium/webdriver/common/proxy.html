@@ -62,7 +62,9 @@
 </div></div>
 <div class="viewcode-block" id="ProxyType"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyType">[docs]</a><span class="k">class</span> <span class="nc">ProxyType</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Set of possible types of proxy. Proxy type has 2 property -</span>
+<span class="sd">    Set of possible types of proxy.</span>
+
+<span class="sd">    Each proxy type has 2 properties:</span>
 <span class="sd">       &#39;ff_value&#39; is value of Firefox profile preference,</span>
 <span class="sd">       &#39;string&#39; is id of proxy type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -75,7 +77,18 @@
     <span class="n">SYSTEM</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;SYSTEM&#39;</span><span class="p">)</span>           <span class="c"># Use system settings (default on Linux).</span>
     <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">&#39;UNSPECIFIED&#39;</span><span class="p">)</span> <span class="c"># Not initialized (for internal use).</span>
 
-</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ProxyType.load"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyType.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;string&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="n">attr_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;string&#39;</span> <span class="ow">in</span> <span class="n">attr_value</span> <span class="ow">and</span> \
+                <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">attr_value</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No proxy type is found for </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</div></div>
 <div class="viewcode-block" id="Proxy"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy">[docs]</a><span class="k">class</span> <span class="nc">Proxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Proxy contains information about proxy type and necessary proxy settings.</span>
@@ -88,6 +101,9 @@
     <span class="n">noProxy</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
     <span class="n">proxyAutoconfigUrl</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
     <span class="n">sslProxy</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">socksProxy</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">socksUsername</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">socksPassword</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -98,7 +114,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="s">&#39;proxyType&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;proxyType&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">proxy_type</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;proxyType&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">proxy_type</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s">&#39;proxyType&#39;</span><span class="p">])</span>
             <span class="k">if</span> <span class="s">&#39;ftpProxy&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;ftpProxy&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ftp_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;ftpProxy&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="s">&#39;httpProxy&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;httpProxy&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -111,6 +127,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;sslProxy&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="s">&#39;autodetect&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;autodetect&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">auto_detect</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;autodetect&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;socksProxy&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksProxy&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksProxy&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;socksUsername&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksUsername&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksUsername&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;socksPassword&#39;</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksPassword&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s">&#39;socksPassword&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proxy_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -125,15 +147,15 @@
 <span class="sd">        Sets proxy type.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - value: Te proxy type.</span>
+<span class="sd">         - value: The proxy type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">value</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">auto_detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns autodect setting.</span>
+<span class="sd">        Returns autodetect setting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span>
 
@@ -147,7 +169,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
@@ -168,7 +190,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: The ftp proxy value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span> <span class="o">=</span> <span class="n">value</span>
 </div>
@@ -187,7 +209,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: The http proxy value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">httpProxy</span> <span class="o">=</span> <span class="n">value</span>
 </div>
@@ -206,7 +228,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: The noproxy value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span> <span class="o">=</span> <span class="n">value</span>
 </div>
@@ -225,7 +247,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: The proxy autoconfig url value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyAutoconfigUrl</span> <span class="o">=</span> <span class="n">value</span>
 </div>
@@ -244,11 +266,68 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: The https proxy value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span> <span class="o">=</span> <span class="n">value</span>
 </div>
-    <span class="k">def</span> <span class="nf">_verify_proxy_type_compatilibily</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compatibleProxy</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">socks_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns socks proxy setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span>
+
+    <span class="nd">@socks_proxy.setter</span>
+<div class="viewcode-block" id="Proxy.socks_proxy"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.socks_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">socks_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets socks proxy setting.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: The socks proxy value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">socks_username</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns socks proxy username setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span>
+
+    <span class="nd">@socks_username.setter</span>
+<div class="viewcode-block" id="Proxy.socks_username"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.socks_username">[docs]</a>    <span class="k">def</span> <span class="nf">socks_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets socks proxy username setting.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: The socks proxy username value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">socks_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns socks proxy password setting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span>
+
+    <span class="nd">@socks_password.setter</span>
+<div class="viewcode-block" id="Proxy.socks_password"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.socks_password">[docs]</a>    <span class="k">def</span> <span class="nf">socks_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets socks proxy password setting.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: The socks proxy password value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="k">def</span> <span class="nf">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compatibleProxy</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">!=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">UNSPECIFIED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">!=</span> <span class="n">compatibleProxy</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot; Specified proxy type (</span><span class="si">%s</span><span class="s">) not compatible with current setting (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> \
                                                 <span class="p">(</span><span class="n">compatibleProxy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">))</span>
@@ -256,7 +335,7 @@
 
 <div class="viewcode-block" id="Proxy.add_to_capabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.add_to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds proxy information as capability in specified capabilties.</span>
+<span class="sd">        Adds proxy information as capability in specified capabilities.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - capabilities: The capabilities to which proxy will be added.</span>
@@ -275,6 +354,12 @@
             <span class="n">proxy_caps</span><span class="p">[</span><span class="s">&#39;sslProxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span><span class="p">:</span>
             <span class="n">proxy_caps</span><span class="p">[</span><span class="s">&#39;noProxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noProxy</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span><span class="p">:</span>
+            <span class="n">proxy_caps</span><span class="p">[</span><span class="s">&#39;socksProxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksProxy</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span><span class="p">:</span>
+            <span class="n">proxy_caps</span><span class="p">[</span><span class="s">&#39;socksUsername&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksUsername</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span><span class="p">:</span>
+            <span class="n">proxy_caps</span><span class="p">[</span><span class="s">&#39;socksPassword&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socksPassword</span>
         <span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;proxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy_caps</span></div></div>
 </pre></div>
 

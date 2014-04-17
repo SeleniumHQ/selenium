@@ -17,7 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -26,9 +30,6 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -72,9 +73,9 @@ public class NodeRecoveryTest {
   @Test
   public void nodeServerCanStopAndRestart() throws Exception {
 
-    Assert.assertEquals(hub.getRegistry().getAllProxies().size(), 1);
+    assertEquals(hub.getRegistry().getAllProxies().size(), 1);
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
-      Assert.assertEquals(p.getTimeOut(), originalTimeout);
+      assertEquals(p.getTimeOut(), originalTimeout);
     }
 
     URL hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
@@ -96,14 +97,14 @@ public class NodeRecoveryTest {
     // wait for 5 sec : the timeout of the original node should be reached, and the session freed
     Thread.sleep(5000);
 
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
-    Assert.assertEquals(hub.getRegistry().getAllProxies().size(), 1);
+    assertEquals(hub.getRegistry().getAllProxies().size(), 1);
 
 
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
       System.out.println(p);
-      Assert.assertEquals(p.getTimeOut(), newtimeout);
+      assertEquals(p.getTimeOut(), newtimeout);
     }
 
   }

@@ -130,6 +130,9 @@ objectExtend(HtmlTestRunner.prototype, {
     },
 
     startTestSuite: function() {
+        storedVars = new Object();
+        storedVars.nbsp = String.fromCharCode(160);
+        storedVars.space = ' ';
         this.controlPanel.reset();
         this.metrics.resetMetrics();
         this.getTestSuite().reset();
@@ -150,9 +153,6 @@ objectExtend(HtmlTestRunner.prototype, {
         testFrame.scrollToTop();
         //todo: move testFailed and storedVars to TestCase
         this.testFailed = false;
-        storedVars = new Object();
-        storedVars.nbsp = String.fromCharCode(160);
-        storedVars.space = ' ';
         this.currentTest = new HtmlRunnerTestLoop(testFrame.getCurrentTestCase(), this.metrics, this.commandFactory);
         currentTest = this.currentTest;
         this.currentTest.start();

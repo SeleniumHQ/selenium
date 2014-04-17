@@ -100,6 +100,7 @@ namespace OpenQA.Selenium.IE
         private const string ForceCreateProcessApiCapability = "ie.forceCreateProcessApi";
         private const string UsePerProcessProxyCapability = "ie.usePerProcessProxy";
         private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
+        private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -107,6 +108,7 @@ namespace OpenQA.Selenium.IE
         private bool requireWindowFocus;
         private bool enablePersistentHover = true;
         private bool forceCreateProcessApi;
+        private bool forceShellWindowsApi;
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
@@ -220,6 +222,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to force the use of the Windows ShellWindows API
+        /// when attaching to Internet Explorer. The default value is <see langword="false"/>.
+        /// </summary>
+        public bool ForceShellWindowsApi
+        {
+            get { return this.forceShellWindowsApi; }
+            set { this.forceShellWindowsApi = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the command line arguments used in launching Internet Explorer when the 
         /// Windows CreateProcess API is used. This property only has an effect when the
         /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
@@ -292,6 +304,7 @@ namespace OpenQA.Selenium.IE
                 capabilityName == RequireWindowFocusCapability ||
                 capabilityName == BrowserAttachTimeoutCapability ||
                 capabilityName == ForceCreateProcessApiCapability ||
+                capabilityName == ForceShellWindowsApiCapability ||
                 capabilityName == BrowserCommandLineSwitchesCapability ||
                 capabilityName == CapabilityType.Proxy ||
                 capabilityName == UsePerProcessProxyCapability ||
@@ -375,6 +388,11 @@ namespace OpenQA.Selenium.IE
                 {
                     capabilities.SetCapability(BrowserCommandLineSwitchesCapability, this.browserCommandLineArguments);
                 }
+            }
+
+            if (this.forceShellWindowsApi)
+            {
+                capabilities.SetCapability(ForceShellWindowsApiCapability, true);
             }
 
             if (this.proxy != null)

@@ -22,6 +22,8 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -80,7 +82,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public String getBrowserName() {
-    return (String) capabilities.get(BROWSER_NAME);
+    Object browserName = capabilities.get(BROWSER_NAME);
+    return browserName == null ? "" : browserName.toString();
   }
 
   public void setBrowserName(String browserName) {
@@ -88,7 +91,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public String getVersion() {
-    return (String) capabilities.get(VERSION);
+    Object version = capabilities.get(VERSION);
+    return version == null ? "" : version.toString();
   }
 
   public void setVersion(String version) {
@@ -191,6 +195,13 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }
 
+  public static DesiredCapabilities htmlUnitWithJs() {
+    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.HTMLUNIT,
+                                                               "", Platform.ANY);
+    capabilities.setJavascriptEnabled(true);
+    return capabilities;
+  }
+
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);
@@ -220,7 +231,19 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   @Override
   public String toString() {
-    return String.format("Capabilities [%s]", capabilities);
+    Map<String, String> map = Maps.newHashMap();
+
+    for (Map.Entry<String, ?> entry : capabilities.entrySet()) {
+      String value = String.valueOf(entry.getValue());
+      if ("firefox_profile".equals(entry.getKey())) {
+        if (value.length() > 32) {
+          value = value.substring(0, 29) + "...";
+        }
+      }
+      map.put(entry.getKey(), value);
+    }
+
+    return String.format("Capabilities [%s]", map);
   }
 
   @Override

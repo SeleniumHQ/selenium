@@ -739,6 +739,11 @@ should switch to the page's default content.''').
       AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/frame/parent').
+          Post('''Change focus to the parent context. If the current context is the top level \
+browsing context, the context remains unchanged.'''))
+
+  resources.append(
       SessionResource('/session/:sessionId/window').
       Post('''Change focus to another window. The window to change focus to \
 may be specified by its
@@ -1624,6 +1629,7 @@ A JSON object describing a Cookie.
 || path || string || (Optional) The cookie path.^1^ ||
 || domain || string || (Optional) The domain the cookie is visible to.^1^ ||
 || secure || boolean || (Optional) Whether the cookie is a secure cookie.^1^ ||
+|| httpOnly || boolean || (Optional) Whether the cookie is an httpOnly cookie.^1^ ||
 || expiry || number || (Optional) When the cookie expires, specified in \
 seconds since midnight, January 1, 1970 UTC.^1^ ||
 
@@ -1681,16 +1687,22 @@ A JSON object describing a Proxy configuration.
 || proxyType || string || (Required) The type of proxy being used. Possible \
 values are: *direct* - A direct connection - no proxy in use, *manual* - \
 Manual proxy settings configured, e.g. setting a proxy for HTTP, a proxy for \
-FTP, etc, *pac* - Proxy autoconfiguration from a URL), autodetect (proxy \
+FTP, etc, *pac* - Proxy autoconfiguration from a URL, *autodetect* - Proxy \
 autodetection, probably with WPAD, *system* - Use system settings ||
-|| proxyAutoconfigUrl || string || (Required if proxyType == pac, Ignored \
+|| proxyAutoconfigUrl || string || (Required if proxyType == *pac*, Ignored \
 otherwise) Specifies the URL to be used for proxy autoconfiguration. \
 Expected format example: http://hostname.com:1234/pacfile ||
-|| ftpProxy, httpProxy, sslProxy || string || (Optional, Ignored if proxyType \
-!= manual) Specifies the proxies to be used for FTP, HTTP and HTTPS requests \
+|| ftpProxy, httpProxy, sslProxy, socksProxy || string || (Optional, Ignored if proxyType \
+!= *manual*) Specifies the proxies to be used for FTP, HTTP, HTTPS and SOCKS requests \
 respectively. Behaviour is undefined if a request is made, where the proxy \
-for the particular protocol is undefined, if proxyType is manual. Expected \
+for the particular protocol is undefined, if proxyType is *manual*. Expected \
 format example: hostname.com:1234 ||
+|| socksUsername || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy username. || 
+|| socksPassword || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy password. ||
+|| noProxy || string || (Optional, Ignored if proxyType != *manual*) \
+Specifies proxy bypass addresses. Format is driver specific. ||
 
 </dd>
 </dl>

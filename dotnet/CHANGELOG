@@ -1,5 +1,172 @@
+v2.41.0
+=======
+ * Supports native events for Firefox versions 28 (current), 27 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Removed deprecated AndroidDriver
+ * Added excludeSwitches to the list of known Chrome options
+ * Implemented ITakesScreenshot in RemoteWebDriver base class instead of
+   in browser-specific subclasses.
+ * Refactored usage of command executors. We now use the same algorithm for
+   creating and using a "command executor" for all current driver
+   implementations. This removes some of the differences between Firefox and
+   other implementations. It also prepares the way for unifying the
+   construction of drivers using a common base Options class.
+
+v2.40.0
+=======
+ * Supports native events for Firefox versions 27 (current), 26 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Issue #1175: Implemented ByIdOrName in .NET support package.
+ * Issue #3283: Escaping backslashes when writing Firefox preferences to
+   profile in .NET
+ * Issue #3719: No longer redirecting console output for Firefox. This
+   information was largely unused by anyone, and the implementation had a
+   chance to produce deadlocks when reading from the console output stream for
+   stdout and stderr.
+ * Issue #4248: Added exception handling in .NET WebDriverBackedSelenium.
+ * Issue #5692: Fixed when cookie expiration date received by .NET exceeds
+   maximum DateTime value. When receiving a cookie via the JSON wire protocol,
+   the expiration date is represented as the number of seconds after
+   12:00:00 AM January 1, 1970 GMT. When a number greater than or equal
+   253402300800, this is larger than the maximum value of .NET's DateTime
+   value. This change catches the ArgumentOutOfRangeException and forcibly sets
+   the expiration to DateTime.MaxValue (12:59:59 PM December 31, 9999 GMT).
+ * Issue #5755: Exposing property on .NET PhantomJSDriverService to specify IP
+   address on which to listen for connections. When specifying a port on which
+   PhantomJS should listen for WebDriver commands, the user has the option to
+   also specify an IP address to which to bind to listen. This commit exposes
+   that ability. It also exposes the ability to specify a Selenium Grid hub
+   with which this instance of PhantomJS should register as a node.
+ * Issue #6343: (on behalf of Ulrich Buchgraber) Make .NET DefaultWait stop
+   swallowing original exception stack trace.
+ * Issue #6699: Exposing process ID of service executable in .NET DriverService
+   class. This allows the user to attempt to add the process to a Windows job
+   object if they so desire, which will automatically kill child processes when
+   the parent process is exited. Note that job objects are subject to security
+   restrictions when used on Windows Vista or later.
+ * Issue #6860: Updating .NET SafariDriver browser launch code. The initial
+   start page from the temp directory that launches the WebSocket is loaded in
+   Safari via a command line parameter. If the path contains a space, the load
+   will fail. This is fixed by surrounding the temp file name with quotes.
+ * Issue #6870: Updated FirefoxDriver constructor for ICapabilities. This
+   allows the user to pass an ICapabilities object to the Firefox driver
+   constructor and have specific capabilities used in driver instantiation.
+ * Issue #6935: Changing .NET random temp file generation to be truly random. 
+   The .NET bindings now use GUIDs as part of the file names for files and
+   directories created in the temp directory. This is to work around potential
+   collisions in random number generation encountered when using the .NET
+   Random class, particularly in different processes. GUIDs are used as their
+   generation in the .NET Framework is optimized for performance.
+ * Issue #6966: Changed .NET WebDriverBackedSelenium OpenWindow to mimic Java.
+   The JavaScript evaluated by the .NET WebDriverBackedSelenium OpenWindow
+   command handler should return a null value from the eval() of the
+   JavaScript to open the window. This is what the Java implementation does,
+   and this commit brings the .NET implementation into line with that.
+ * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
+   context. This allows the user to execute PhantomJS-specific commands using
+   the PhantomJS JavaScript API.
+ * Updated .NET bindings to use webdriver.json for default Firefox profile.    
+   Other language bindings have been using a common JSON file containing the
+   default profile setting for the anonymous Firefox profile used by the
+   Firefox driver. The .NET bindings now do the same.
+ * Now provide an option to hide command prompt window for driver service
+   executables (IEDriverServer.exe, chromedriver.exe, etc.) in .NET bindings.
+ * Modified to allow user to specify name of driver service executable in .NET.
+   We now give an overload to CreateDefaultService for ChromeDriverService,
+   PhantomJSDriverService, and InternetExplorerDriverService to allow the
+   user to specify the name of the service exectuable. This is particularly
+   useful for non-Windows platforms where the executable does not end with
+   '.exe'. It also allows the user to rename the executable to a name of
+   their choosing and still be able to use it from the .NET bindings.
+ * Added a type safe option for IE to use ForceUseShellWindowsApi.
+ * Updated .NET ChromeOptions to include latest options for Chrome. Also fixed
+   the AddAdditionalCapability method to correctly add additional options to
+   the chromeOptions object passed to chromedriver.exe, instead of to the top-
+   level of the capabilities object. Adding new top-level capabilities is
+   handled by a new overload of AddAdditionalCapability that contains a boolean
+   argument to indicate that the capability should be added to the root of the
+   capabilities object. This handles the 80% case where new "experimental"
+   options are added by the chromedriver team.
+ * Implemented FindsBySequence attribute for .NET PageFactory. This new
+   attribute allows the user to mark a field or property in a page object such
+   that any FindsBy attributes set on the member are used in sequence, as
+   specified by the Priority property. Note that when not specifying a Priority
+   value, or specifying multiple FindsBy attributes with the same Priority
+   value, the behavior is undefined.
+ * Fixed cleaning up leftover temp directory when using SafariDriver.
+
+v2.39.0
+=======
+ * Supports native events for Firefox versions 26 (current), 25 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
+   is to use a third-party implementation for Android, such as Selendroid
+   (http://selendroid.io/) or Appium (http://appium.io/).
+ * Added experimental IWebDriver extension methods to .NET support classes.
+   This commit adds extension methods to IWebDriver, which can be used to
+   reduce the amount of type casting that must be done to access
+   functionality not provided by the base IWebDriver interface. The following
+   methods were added:
+    
+    * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
+      support for working directly with instances of RemoteWebDriver.
+    * ExecuteJavaScript<T>() - does not require a cast to
+      IJavaScriptExecutor, and will automatically cast the result to the type
+      specified by the generic type parameter (T).
+    
+   These extension methods should be considered experimental. To use them
+   requires a reference to WebDriver.Support.dll, and adding a using clause
+   for OpenQA.Selenium.Support.Extensions.
+
+v2.38.0
+=======
+ * Supports native events for Firefox versions 25 (current), 24 (immediately
+   previous and current ESR), and 17 (immediately previous ESR)
+ * Issue #6383: Adding method GetCSSCount to ISelenium.
+ * Issue #6418: Updated .NET path manipulation when launching Firefox process.
+ * Issue #6453: Adding type-safe properties for new command-line arguments of
+   chromedriver.exe
+ * Issue #6457: Disabled keep-alive header on .NET driver service startup/
+   shutdown requests.
+
+v2.37.0
+=======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
+ * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved
+   waiting for the driver service process to end to immediately after sending
+   the shutdown HTTP request. Waiting to catch the exception for a failed HTTP
+   request due to a closed socket is very expensive. This cuts shutdown time
+   for a driver service executable to about 33% of what it used to be for the
+   IE driver, with larger savings for Chrome and PhantomJS.
+
+v2.36.0
+=======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
+ * Added ability to set additional ChromeOptions in the .NET bindings. This
+   allows the ability to set user profile preferences and local state
+   preferences using the ChromeOptions class. The new AddUserProfilePreference
+   and AddLocalStatePreference methods correspond to the "prefs" and
+   "localState" capabilities documented in the chromedriver documentation. Note
+   that the values passed in to these methods must be JSON-serializable, and no
+   validation is done on these values at present. We now also allow setting the
+   "detach" capability, which allows the user to specify that Chrome remain
+   running after chromedriver.exe has quit.
+ * Removed support for the obsolete chrome.binary and chrome.switches
+   capabilities.
+ * Changed the command line arguments to chromedriver.exe to include two
+   hyphens, instead of one (e.g., "--silent" instead of "-silent").
+ * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
+ * Added ability to set Chrome extensions by using base64 encoded strings. 
+   Previously, you could only install extensions by using a path to a .crx
+   file. Now you can embed the extension as a base64-encoded string, without
+   having it persisted to the disk at all.
+
 v2.35.0
 =======
+ * Supports native events for Firefox versions 23 (current), 22 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
    in .NET to prevent double slashes in URL. This change is in the .NET
    WebDriverBackedSelenium API.
@@ -9,6 +176,8 @@ v2.35.0
 
 v2.34.0
 =======
+ * Supports native events for Firefox versions 22 (current), 21 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Added support for ie.ensureCleanSession capability to .NET bindings. The
    .NET bindings do this by means of the EnsureCleanSession property on the
    InternetExplorerOptions object. When set to true, this property instructs
@@ -36,6 +205,8 @@ v2.34.0
 
 v2.33.0
 =======
+ * Supports native events for Firefox versions 21 (current), 20 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
    Profile preferences Dictionary. Was previously using the .Add() method of
    the Dictionary, which would throw an exception if the key already existed.
@@ -48,6 +219,8 @@ v2.32.1
 
 v2.32.0
 =======
+ * Supports native events for Firefox versions 20 (current), 19 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #4629: Modified .NET Firefox driver to only look to connect to IPv4
    addresses. The ConnectToBrowser() method always created IPv4 addresses to
    initially addresses for connection, this would throw an exception.

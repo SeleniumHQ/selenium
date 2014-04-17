@@ -60,8 +60,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.TOUCH_DOWN, {
-                'x': xcoord,
-                'y': ycoord}))
+                'x': int(xcoord),
+                'y': int(ycoord)}))
         return self
 
     def move(self, xcoord, ycoord):
@@ -74,8 +74,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.TOUCH_MOVE, {
-                'x': xcoord,
-                'y': ycoord}))
+                'x': int(xcoord),
+                'y': int(ycoord)}))
         return self
 
     def release(self, xcoord, ycoord):
@@ -88,8 +88,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.TOUCH_UP, {
-                'x': xcoord,
-                'y': ycoord}))
+                'x': int(xcoord),
+                'y': int(ycoord)}))
         return self
 
     def scroll(self, xoffset, yoffset):
@@ -102,8 +102,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.TOUCH_SCROLL, {
-                'xoffset': xoffset,
-                'yoffset': yoffset}))
+                'xoffset': int(xoffset),
+                'yoffset': int(yoffset)}))
         return self
 
     def scroll_from_element(self, on_element, xoffset, yoffset):
@@ -118,8 +118,8 @@ class TouchActions(object):
         self._actions.append(lambda:
             self._driver.execute(Command.TOUCH_SCROLL, {
                 'element': on_element.id,
-                'xoffset': xoffset,
-                'yoffset': yoffset}))
+                'xoffset': int(xoffset),
+                'yoffset': int(yoffset)}))
         return self
 
     def long_press(self, on_element):
@@ -143,8 +143,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.FLICK, {
-                'xspeed': xspeed,
-                'yspeed': yspeed}))
+                'xspeed': int(xspeed),
+                'yspeed': int(yspeed)}))
         return self
 
     def flick_element(self, on_element, xoffset, yoffset, speed):
@@ -161,7 +161,14 @@ class TouchActions(object):
         self._actions.append(lambda:
             self._driver.execute(Command.FLICK, {
                 'element': on_element.id,
-                'xoffset': xoffset,
-                'yoffset': yoffset,
-                'speed': speed}))
+                'xoffset': int(xoffset),
+                'yoffset': int(yoffset),
+                'speed': int(speed)}))
         return self
+
+    # Context manager so TouchActions can be used in a 'with .. as' statements.
+    def __enter__(self):
+        return self # Return created instance of self.
+
+    def __exit__(self, _type, _value, _traceback):
+        pass # Do nothing, does not require additional cleanup.

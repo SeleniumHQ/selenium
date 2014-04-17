@@ -17,7 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.internal.configuration;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 
@@ -36,11 +37,11 @@ public class Grid1ConfigurationLoaderTest {
     // The values in the config file are in seconds, but we use milliseconds
     // internally, so make sure they get converted.
 
-    Assert.assertEquals(4444, config.getPort());
-    Assert.assertEquals(180000, config.getAllParams().get("nodePolling"));
-    Assert.assertEquals(300000, config.getTimeout());
-    Assert.assertEquals(180000, config.getCleanupCycle());
-    Assert.assertEquals("*firefox", config.getGrid1Mapping().get("Firefox on OS X"));
+    assertEquals(4444, config.getPort());
+    assertEquals(180000, config.getAllParams().get("nodePolling"));
+    assertEquals(300000, config.getTimeout());
+    assertEquals(180000, config.getCleanupCycle());
+    assertEquals("*firefox", config.getGrid1Mapping().get("Firefox on OS X"));
   }
 
   @Test
@@ -49,10 +50,10 @@ public class Grid1ConfigurationLoaderTest {
     config.loadFromGridYml(this.getClass().getPackage().getName().replace('.', '/') +
         "/grid_configuration_test2.yml");
 
-    Assert.assertEquals("*firefox", config.getGrid1Mapping().get("Firefox 4; MacOS X: 10.6.7"));
-    Assert.assertEquals("*iexplorecustom",
-        config.getGrid1Mapping().get("windows_internet_explorer_8"));
-    Assert.assertEquals("*firefox /opt/firefox/firefox-3.6/firefox-bin", config.getGrid1Mapping()
+    assertEquals("*firefox", config.getGrid1Mapping().get("Firefox 4; MacOS X: 10.6.7"));
+    assertEquals("*iexplorecustom",
+                 config.getGrid1Mapping().get("windows_internet_explorer_8"));
+    assertEquals("*firefox /opt/firefox/firefox-3.6/firefox-bin", config.getGrid1Mapping()
         .get("linux_firefox_3_6"));
   }
 }

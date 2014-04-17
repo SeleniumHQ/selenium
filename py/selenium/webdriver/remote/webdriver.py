@@ -1,4 +1,4 @@
-# Copyright 2008-2013 Software freedom conservancy
+# Copyright 2008-2014 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
 The WebDriver implementation.
 """
 import base64
+import warnings
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
+from .switch_to import SwitchTo
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
-    bytes
-except NameError: # Python 2.x compatibility
-    bytes = str
-    str = unicode
+    str = basestring
+except NameError:
+    pass
 
 class WebDriver(object):
     """
@@ -46,7 +46,7 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None, proxy=None):
+        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -63,13 +63,14 @@ class WebDriver(object):
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or type(self.command_executor) is str:
-            self.command_executor = RemoteConnection(command_executor)
+            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
+        self._switch_to = SwitchTo(self)
 
     @property
     def name(self):
@@ -373,7 +374,7 @@ class WebDriver(object):
          - css_selector: The css selector to use when finding elements.
 
         :Usage:
-            driver.find_element_by_css_selector('#foo')
+            driver.find_elements_by_css_selector('.foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -388,10 +389,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
@@ -407,10 +404,6 @@ class WebDriver(object):
         :Usage:
             driver.execute_async_script('document.title')
         """
-        if len(args) == 1:
-            converted_args = args[0]
-        else:
-            converted_args = list(args)
         converted_args = list(args)
         return self.execute(Command.EXECUTE_ASYNC_SCRIPT,
             {'script': script, 'args':converted_args})['value']
@@ -482,60 +475,40 @@ class WebDriver(object):
         """
         self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
 
+    @property
+    def switch_to(self):
+        return self._switch_to
+
     #Target Locators
     def switch_to_active_element(self):
+        """ Deprecated use driver.switch_to.active_element
         """
-        Returns the element with focus, or BODY if nothing has focus.
-
-        :Usage:
-            driver.switch_to_active_element()
-        """
-        return self.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        warnings.warn("use driver.switch_to.active_element instead", DeprecationWarning)
+        return self._switch_to.active_element
 
     def switch_to_window(self, window_name):
+        """ Deprecated use driver.switch_to.window
         """
-        Switches focus to the specified window.
-
-        :Args:
-         - window_name: The name or window handle of the window to switch to.
-
-        :Usage:
-            driver.switch_to_window('main')
-        """
-        self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
+        warnings.warn("use driver.switch_to.window instead", DeprecationWarning)
+        self._switch_to.window(window_name)
 
     def switch_to_frame(self, frame_reference):
+        """ Deprecated use driver.switch_to.frame
         """
-        Switches focus to the specified frame, by index, name, or webelement.
-
-        :Args:
-         - frame_reference: The name of the window to switch to, an integer representing the index,
-                            or a webelement that is an (i)frame to switch to.
-
-        :Usage:
-            driver.switch_to_frame('frame_name')
-            driver.switch_to_frame(1)
-            driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[0])
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
+        warnings.warn("use driver.switch_to.frame instead", DeprecationWarning)
+        self._switch_to.frame(frame_reference)
 
     def switch_to_default_content(self):
+        """ Deprecated use driver.switch_to.default_content
         """
-        Switch focus to the default frame.
-
-        :Usage:
-            driver.switch_to_default_content()
-        """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': None})
+        warnings.warn("use driver.switch_to.default_content instead", DeprecationWarning)
+        self._switch_to.default_content()
 
     def switch_to_alert(self):
+        """ Deprecated use driver.switch_to.alert
         """
-        Switches focus to an alert on the page.
-
-        :Usage:
-            driver.switch_to_alert()
-        """
-        return Alert(self)
+        warnings.warn("use driver.switch_to.alert instead", DeprecationWarning)
+        return self._switch_to.alert
 
     #Navigation
     def back(self):
@@ -672,8 +645,10 @@ class WebDriver(object):
 
         :Usage:
             Use the corresponding find_element_by_* instead of this.
+
+        :rtype: WebElement
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENT,
@@ -685,8 +660,10 @@ class WebDriver(object):
 
         :Usage:
             Use the corresponding find_elements_by_* instead of this.
+
+        :rtype: list of WebElement
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENTS,

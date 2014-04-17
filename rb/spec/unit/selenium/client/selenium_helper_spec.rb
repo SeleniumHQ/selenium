@@ -9,7 +9,7 @@ describe Selenium::Client::SeleniumHelper do
   let :object do
     @object ||= (
       o = SeleniumHelperClass.new
-      o.selenium = mock("selenium")
+      o.selenium = double("selenium")
 
       o
     )

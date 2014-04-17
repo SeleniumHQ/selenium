@@ -36,7 +36,7 @@ namespace Selenium.Tests
             Assert.IsTrue(Regex.IsMatch(selenium.GetAlert(), "^Store Below 429 degrees F!"));
             selenium.Click("alertAndLeave");
             selenium.WaitForPageToLoad("30000");
-            //Assert.AreEqual(selenium.GetAlert(), "I'm Melting! I'm Melting!");
+            Assert.AreEqual(selenium.GetAlert(), "I'm Melting! I'm Melting!");
             string alertText = string.Empty;
             selenium.Open("../tests/html/test_verify_alert.html");
             try 

@@ -1,4 +1,5 @@
 [java]
+  src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
 
 [project]
   ignore = \
@@ -12,5 +13,8 @@
 
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome
+  firefox  = //java/client/src/org/openqa/selenium/firefox:firefox
   htmlunit = //java/client/src/org/openqa/selenium/htmlunit:htmlunit
   remote   = //java/client/src/org/openqa/selenium/remote:remote
+
+  leg-rc   = //java/client/src/com/thoughtworks/selenium:legacy-selenium-client

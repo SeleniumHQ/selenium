@@ -20,11 +20,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Throwables;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Serves as a proxy to a {@link HttpServletRequest} for a WebDriver command

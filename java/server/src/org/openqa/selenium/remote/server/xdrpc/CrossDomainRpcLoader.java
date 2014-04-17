@@ -21,8 +21,9 @@ import com.google.common.io.CharStreams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Loads a {@link CrossDomainRpc} from a {@link HttpServletRequest}.

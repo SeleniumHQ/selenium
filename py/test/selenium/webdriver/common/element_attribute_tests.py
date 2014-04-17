@@ -162,7 +162,7 @@ class ElementAttributeTests(unittest.TestCase):
     # Disabled due to issues with Frames    
     #def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(self):
     #    self._loadPage("iframes")
-    #    self.driver.switch_to_frame("iframe1")
+    #    self.driver.switch_to.frame("iframe1")
     #
     #    wallace = self.driver.find_element_by_xpath("//div[@id='wallace']")
     #    classname = wallace.get_attribute("class")
@@ -174,6 +174,13 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadPage("formPage")
         value = self.driver.find_element_by_id("withText").get_attribute("value")
         self.assertEqual("Example text", value)
+        
+    def testShouldReturnTheContentsOfATextAreaAsItsValueWhenSetToNonNorminalTrue(self):
+        self._loadPage("formPage")
+        e = self.driver.find_element_by_id("withText")
+        self.driver.execute_script("arguments[0].value = 'tRuE'", e)
+        value = e.get_attribute("value")
+        self.assertEqual("tRuE", value)
         
     def testShouldTreatReadonlyAsAValue(self):    
         self._loadPage("formPage")
@@ -256,8 +263,8 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual('Hvad s\xf8ger du?', title)
         
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
- 
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

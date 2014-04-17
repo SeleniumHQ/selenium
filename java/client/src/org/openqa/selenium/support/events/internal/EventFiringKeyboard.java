@@ -26,7 +26,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 /**
  * A keyboard firing events.
  */
-public class EventFiringKeyboard implements org.openqa.selenium.interactions.Keyboard {
+public class EventFiringKeyboard implements Keyboard {
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;
   private final Keyboard keyboard;

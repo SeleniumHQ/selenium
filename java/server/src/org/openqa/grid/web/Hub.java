@@ -21,7 +21,6 @@ import com.google.common.collect.Maps;
 
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
@@ -31,11 +30,13 @@ import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.net.NetworkUtils;
 import org.seleniumhq.jetty7.server.Server;
 import org.seleniumhq.jetty7.server.bio.SocketConnector;
 import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.util.thread.QueuedThreadPool;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +55,8 @@ public class Hub {
 
   private final int port;
   private final String host;
+  private final int maxThread;
+  private final boolean isHostRestricted;
   private final Registry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
@@ -75,11 +78,15 @@ public class Hub {
   public Hub(GridHubConfiguration config) {
     registry = Registry.newInstance(this, config);
 
+    maxThread = config.getJettyMaxThreads();
+
     if (config.getHost() != null) {
       host = config.getHost();
+      isHostRestricted = true;
     } else {
       NetworkUtils utils = new NetworkUtils();
       host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+      isHostRestricted = false;
     }
     this.port = config.getPort();
 
@@ -101,7 +108,11 @@ public class Hub {
       server = new Server();
       SocketConnector socketListener = new SocketConnector();
       socketListener.setMaxIdleTime(60000);
+      if (isHostRestricted) {
+        socketListener.setHost(host);
+      }
       socketListener.setPort(port);
+      socketListener.setLowResourcesMaxIdleTime(6000);
       server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -154,6 +165,11 @@ public class Hub {
   public void start() throws Exception {
     initServer();
     server.start();
+    if (maxThread>0){
+      QueuedThreadPool pool = new QueuedThreadPool();
+      pool.setMaxThreads(maxThread);
+      server.setThreadPool(pool);
+    }
   }
 
   public void stop() throws Exception {

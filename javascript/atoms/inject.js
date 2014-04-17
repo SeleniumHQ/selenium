@@ -37,6 +37,27 @@ goog.require('bot.response.ResponseObject');
 goog.require('goog.array');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('goog.userAgent');
+
+
+/**
+ * Type definition for the WebDriver's JSON wire protocol representation
+ * of a DOM element.
+ * @typedef {{ELEMENT: string}}
+ * @see bot.inject.ELEMENT_KEY
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ */
+bot.inject.JsonElement;
+
+
+/**
+ * Type definition for a cached Window object that can be referenced in
+ * WebDriver's JSON wire protocol. Note, this is a non-standard
+ * representation.
+ * @typedef {{WINDOW: string}}
+ * @see bot.inject.WINDOW_KEY
+ */
+bot.inject.JsonWindow;
 
 
 /**
@@ -139,12 +160,11 @@ bot.inject.wrapValue = function(value) {
  * @param {Document=} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
  * @return {*} The unwrapped value.
- * @private
  */
-bot.inject.unwrapValue_ = function(value, opt_doc) {
+bot.inject.unwrapValue = function(value, opt_doc) {
   if (goog.isArray(value)) {
     return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
-        function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
+        function(v) { return bot.inject.unwrapValue(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {
       return value;
@@ -161,7 +181,7 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     }
 
     return goog.object.map(value, function(val) {
-      return bot.inject.unwrapValue_(val, opt_doc);
+      return bot.inject.unwrapValue(val, opt_doc);
     });
   }
   return value;
@@ -184,7 +204,17 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
  */
 bot.inject.recompileFunction_ = function(fn, theWindow) {
   if (goog.isString(fn)) {
-    return new theWindow['Function'](fn);
+    try {
+      return new theWindow['Function'](fn);
+    } catch (ex) {
+      // Try to recover if in IE5-quirks mode
+      // Need to initialize the script engine on the passed-in window
+      if (goog.userAgent.IE && theWindow.execScript) {
+        theWindow.execScript(';');
+        return new theWindow['Function'](fn);
+      }
+      throw ex;
+    }
   }
   return theWindow == window ? fn : new theWindow['Function'](
       'return (' + fn + ').apply(null,arguments);');
@@ -216,7 +246,8 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  * @param {!(Function|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed. This
  *     function should only contain references to symbols defined in the context
- *     of the current window.
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
@@ -232,7 +263,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
-    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue_(args,
+    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue(args,
         win.document));
     ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {
@@ -261,8 +292,11 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  * from an external source. It handles wrapping and unwrapping of input/output
  * values.
  *
- * @param {(function()|string)} fn Either the function to execute, or a string
- *     defining the body of an anonymous function that should be executed.
+ * @param {(!Function|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed. This
+ *     function should only contain references to symbols defined in the context
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
@@ -310,7 +344,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
-  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue_(args, win.document));
+  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue(args, win.document));
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   if (win.addEventListener) {

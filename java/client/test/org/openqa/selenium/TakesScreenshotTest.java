@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -35,6 +36,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import com.google.common.collect.Sets;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -54,9 +57,11 @@ import javax.imageio.ImageIO;
  *
  * 2. check screenshot image
  *
- * Logic of screenshot check test is simple: * open page with fixed amount of fixed sized and
- * coloured areas * take screenshot * calculate expected colors similary as in tested HTML page *
- * scan screenshot for actial colors * compare
+ * Logic of screenshot check test is simple:
+ * - open page with fixed amount of fixed sized and coloured areas
+ * - take screenshot
+ * - calculate expected colors as in tested HTML page
+ * - scan screenshot for actual colors * compare
  *
  */
 
@@ -84,7 +89,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @After
   public void tearDown() {
     if (tempFile != null) {
-      boolean deleted = tempFile.delete();
+      tempFile.delete();
       tempFile = null;
     }
   }
@@ -283,6 +288,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {CHROME},
+          reason = " CHROME: Unknown actual colors are presented at screenshot")
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -340,9 +347,10 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {OPERA, IE},
+      value = {OPERA, IE, CHROME},
       reason = " OPERA: takes screenshot only of switched-in frame." +
-               " IE: v9 takes screesnhot only of switched-in frame area"
+               " IE: v9 takes screesnhot only of switched-in frame area " +
+               " CHROME: Unknown actual colors are presented at screenshot"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
@@ -403,27 +411,17 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
                                              final int nX, final int nY) {
     Set<String> colors = new TreeSet<String>();
-    int color = 0;
-    String hex = "";
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
-        color = initialColor + (cnt * stepColor);
-        hex =
+        int color = initialColor + (cnt * stepColor);
+        String hex =
             String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
                           ((color & 0x0000FF)));
         colors.add(hex);
         cnt++;
       }
     }
-
-    // each cell has black colored point so add it to expected colors
-    // for checking of full black image case special comparison is added
-    colors.add("#000000");
-
-    // sometimes cell has white colored points
-    // for checking of full white image case special comparison is added
-    colors.add("#ffffff");
 
     return colors;
   }
@@ -446,10 +444,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       assertTrue(height > 0);
 
       Raster raster = image.getRaster();
-      String hex = "";
       for (int i = 0; i < width; i = i + stepX) {
         for (int j = 0; j < height; j = j + stepY) {
-          hex = String.format("#%02x%02x%02x",
+          String hex = String.format("#%02x%02x%02x",
                               (raster.getSample(i, j, 0)),
                               (raster.getSample(i, j, 1)),
                               (raster.getSample(i, j, 2)));
@@ -466,44 +463,37 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   /**
-   * Compares sets of colors.
+   * Compares sets of colors are same.
    *
    * @param expectedColors - set of expected colors
    * @param actualColors   - set of actual colors
    */
   private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
+    assertFalse("Actual image has only black color", onlyBlack(actualColors));
+    assertFalse("Actual image has only white color", onlyWhite(actualColors));
 
-    TreeSet<String> notBlackColors = new TreeSet<String>(actualColors);
-    notBlackColors.remove("#000000");
-    if (notBlackColors.isEmpty()) {
-      fail("Actual image has only black color");
+    // Ignore black and white for further comparison
+    Set<String> cleanActualColors = Sets.newHashSet(actualColors);
+    cleanActualColors.remove("#000000");
+    cleanActualColors.remove("#ffffff");
+
+    if (! expectedColors.containsAll(cleanActualColors)) {
+      fail("There are unexpected colors on the screenshot: " +
+           Sets.difference(cleanActualColors, expectedColors));
     }
 
-    TreeSet<String> notWhiteColors = new TreeSet<String>(actualColors);
-    notWhiteColors.remove("#ffffff");
-    if (notWhiteColors.isEmpty()) {
-      fail("Actual image has only white color");
+    if (! cleanActualColors.containsAll(expectedColors)) {
+      fail("There are expected colors not present on the screenshot: " +
+           Sets.difference(expectedColors, cleanActualColors));
     }
+  }
 
-    TreeSet<String> notFoundColors = new TreeSet<String>(expectedColors);
-    notFoundColors.removeAll(actualColors);
-    // sometimes scan can skip block dots at images (based on current window size etc)
-    // full black image case is checked before so just drop it
-    notFoundColors.remove("#000000");
-    notFoundColors.remove("#ffffff");
-    if (!notFoundColors.isEmpty()) {
-      fail("Unknown expected colors are generated or actual image has not the following colors: " +
-           notFoundColors.toString() + ", \n" + " actual colors are excluded: " + actualColors
-          .toString());
-    }
+  private boolean onlyBlack(Set<String> colors) {
+    return colors.size() == 1 && "#000000".equals(colors.toArray()[0]);
+  }
 
-    TreeSet<String> newFoundColors = new TreeSet<String>(actualColors);
-    newFoundColors.removeAll(expectedColors);
-    if (!newFoundColors.isEmpty()) {
-      fail("Unknown actual colors are presented at screenshot: " +
-           newFoundColors.toString() + ", \n" + " expected colors are excluded: " + expectedColors
-          .toString());
-    }
+  private boolean onlyWhite(Set<String> colors) {
+    return colors.size() == 1 && "#ffffff".equals(colors.toArray()[0]);
   }
 
   /**

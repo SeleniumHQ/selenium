@@ -18,6 +18,8 @@ package org.openqa.selenium.server;
  */
 
 
+import org.openqa.selenium.net.Urls;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +36,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-
-import org.openqa.selenium.net.Urls;
 
 
 /**
@@ -347,7 +347,7 @@ public class FrameGroupCommandQueueSet {
           // an exception then we should simply return the
           // command result
           uniqueId =
-              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000l));
+              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000L));
 
           // if (!result.equals("OK")) {
           // return result;
@@ -371,7 +371,7 @@ public class FrameGroupCommandQueueSet {
         try {
           result =
               waitForLoad(currentWindowName, waitingForThisFrameName,
-                  (int) (timeoutInMilliseconds / 1000l));
+                  (int) (timeoutInMilliseconds / 1000L));
         } catch (RemoteCommandException e) {
           return e.getMessage();
         }
@@ -530,7 +530,7 @@ public class FrameGroupCommandQueueSet {
   public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
     final String uniqueId;
 
-    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000l);
+    int timeoutInSeconds = (int) (timeoutInMilliseconds / 1000L);
     if (timeoutInSeconds == 0) {
       timeoutInSeconds = 1;
     }
@@ -652,7 +652,7 @@ public class FrameGroupCommandQueueSet {
     }
     boolean windowJustLoaded = justLoaded(uniqueId);
     FrameAddress frameAddress = queue.getFrameAddress();
-    if (!frameAddress.getLocalFrameAddress().equals(localFrame)) {
+    if (frameAddress == null || !frameAddress.getLocalFrameAddress().equals(localFrame)) {
       return false;
     }
     // DGF Windows that have just loaded may not know their true identity

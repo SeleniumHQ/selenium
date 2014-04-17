@@ -132,12 +132,19 @@ limitations under the License.
                       <label control="commandTarget" value="&target.label;"/>
                       <hbox flex="1">
                         <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
-                        <button label="&findTarget.label;"
+                        <button label="Select" disabled="true"
+                                oncommand="window.editor.selDebugger.selectElement()"
+                                id="selectElementButton" />
+                        <button label="&findTarget.label;" disabled="true"
                                 oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"
                                 id="findElementButton" />
                       </hbox>
                     </row>
-                    <row align="center">
+                    <row align="right" id="selectElementTip" style="display: none">
+                      <label></label>
+                      <description>Select an element by clicking on it in the browser or click Cancel to cancel.</description>
+                    </row>
+                     <row align="center">
                       <label control="commandValue" value="&value.label;"/>
                       <textbox disabled="true" id="commandValue" oninput="window.editor.treeView.updateCurrentCommand('value', window.editor.treeView.decodeText(this.value))"/>
                     </row>

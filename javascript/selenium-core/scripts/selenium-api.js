@@ -1912,7 +1912,9 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     {
         try {
             win = selenium.browserbot.openedWindows[windowName];
-            attributes.push(eval("win."+attributeName));
+            if (! selenium.browserbot._windowClosed(win)) {
+              attributes.push(eval("win."+attributeName));
+            }
         } catch (e) {} // DGF If we miss one... meh. It's probably closed or inaccessible anyway.
     }
     return attributes;
@@ -2998,12 +3000,28 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     // compute dimensions
     var window = this.browserbot.getCurrentWindow();
     var doc = window.document.documentElement;
+    var body = window.document.body;
     var box = {
         x: 0,
         y: 0,
-        width: doc.scrollWidth,
-        height: doc.scrollHeight
+        width: Math.max(doc.scrollWidth, body.scrollWidth),
+        height: Math.max(doc.scrollHeight, body.scrollHeight)
     };
+
+    // CanvasRenderingContext2D::DrawWindow limits width and height up to 65535
+    //  > 65535 leads to NS_ERROR_FAILURE
+    //
+    // HTMLCanvasElement::ToDataURLImpl limits width and height up to 32767
+    //  >= 32769 leads to NS_ERROR_FAILURE
+    //  >= 32767 leads to transparent image (moz issue?).
+    //
+    var limit = 32766;
+    if (box.width > limit) {
+      box.width = limit;
+    }
+    if (box.height > limit) {
+      box.height = limit;
+    }
     LOG.debug('computed dimensions');
     
     var originalBackground = doc.style.background;

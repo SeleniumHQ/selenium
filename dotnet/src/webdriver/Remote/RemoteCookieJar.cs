@@ -154,7 +154,14 @@ namespace OpenQA.Selenium.Remote
                                 long seconds = 0;
                                 if (long.TryParse(cookie["expiry"].ToString(), out seconds))
                                 {
-                                    expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                                    try
+                                    {
+                                        expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                                    }
+                                    catch (ArgumentOutOfRangeException)
+                                    {
+                                        expires = DateTime.MaxValue.ToLocalTime();
+                                    }
                                 }
                             }
 

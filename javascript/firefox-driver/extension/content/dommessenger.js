@@ -29,7 +29,7 @@ limitations under the License.
  * original {@code webdriverCommand} event. The DomMessenger will then dispatch
  * a {@code webdriverResponse} event on that node to notify the page that a
  * response is ready.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 
@@ -38,7 +38,7 @@ limitations under the License.
  * The DomMessenger is used to communicate with the current webpage through
  * custom events fired on the DOM.
  *
- * @param { {execute: function(string, function(string))} } commandProcessor The
+ * @param {{execute: function(string, function(string))}} commandProcessor The
  *     object to send commands to for execution. The object should have a single
  *     method, {@code execute}, that takes two arguments: the command to execute
  *     as a JSON string, and a callback for the command response (specified as a
@@ -49,7 +49,7 @@ var DomMessenger = function(commandProcessor) {
 
   /**
    * The object to use as a command processor.
-   * @private { {execute: function(string, function(string))} }
+   * @private {{execute: function(string, function(string))}}
    */
   this.commandProcessor_ = commandProcessor;
 
@@ -88,7 +88,6 @@ DomMessenger.EventType = {
 
 
 /**
- * Called when a page loads to 
  * Called when a page loads so an element can be injected for communicating with
  * the web page.
  */

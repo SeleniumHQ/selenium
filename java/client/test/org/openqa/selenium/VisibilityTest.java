@@ -17,21 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
-
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -41,6 +35,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.List;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -90,7 +91,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     element.click();
 
-    waitFor(elementNotToDisplayed(element));
+    wait.until(not(visibilityOf(element)));
 
     assertFalse(element.isDisplayed());
   }
@@ -147,15 +148,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertEquals("Should have 0 width", 0, size.width);
     assertEquals("Should have 0 height", 0, size.height);
     assertTrue(element.isDisplayed());
-  }
-
-  private Callable<Boolean> elementNotToDisplayed(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        return !element.isDisplayed();
-      }
-    };
   }
 
   @Test
@@ -289,6 +281,54 @@ public class VisibilityTest extends JUnit4TestBase {
 
     WebElement element = driver.findElement(By.id("child"));
     assertFalse(element.isDisplayed());
+  }
+
+  /**
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
+   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   */
+  @JavascriptEnabled
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
+    driver.get(pages.clickJacker);
+
+    WebElement element = driver.findElement(By.id("clickJacker"));
+    assertEquals("Precondition failed: clickJacker should be transparent",
+                 "0", element.getCssValue("opacity"));
+    element.click();
+    assertEquals("1", element.getCssValue("opacity"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
+    driver.get(pages.formPage);
+
+    WebElement select = driver.findElement(By.id("invisi_select"));
+
+    List<WebElement> options = select.findElements(By.tagName("option"));
+    WebElement apples = options.get(0);
+    WebElement oranges = options.get(1);
+
+    assertTrue("Apples should be selected", apples.isSelected());
+    assertFalse("Oranges should be selected", oranges.isSelected());
+
+    oranges.click();
+    assertFalse("Apples should not be selected", apples.isSelected());
+    assertTrue("Oranges should be selected", oranges.isSelected());
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testCorrectlyDetectMapElementsAreShown() {
+    driver.get(pages.mapVisibilityPage);
+
+    final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
+
+    boolean isShown = area.isDisplayed();
+    assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
 }

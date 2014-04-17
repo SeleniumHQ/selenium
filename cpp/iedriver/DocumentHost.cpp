@@ -292,66 +292,37 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering DocumentHost::IsHtmlPage";
 
   CComBSTR type;
-  if (!SUCCEEDED(doc->get_mimeType(&type))) {
-    LOG(WARN) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
+  HRESULT hr = doc->get_mimeType(&type);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
     return false;
   }
 
-  std::wstring document_type_key_name= L"";
-  if (RegistryUtilities::GetRegistryValue(HKEY_CURRENT_USER,
-                                          L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice",
-                                          L"Progid",
-                                          &document_type_key_name)) {
-    // Look for the user-customization under Vista/Windows 7 first. If it's
-    // IE, set the document friendly name lookup key to 'htmlfile'. If not,
-    // set it to blank so that we can look up the proper HTML type.
-    if (document_type_key_name == L"IE.HTTP") {
-      document_type_key_name = L"htmlfile";
-    } else {
-      LOG(DEBUG) << "Unable to support custom document type: " << LOGWSTRING(document_type_key_name);
-      document_type_key_name = L"";
-    }
-  } else {
-    LOG(DEBUG) << "Unable to read document type from registry";
+  // Call once to get the required buffer size, then again to fill
+  // the buffer.
+  DWORD mime_type_name_buffer_size = 0;
+  hr = ::AssocQueryString(0,
+                          ASSOCSTR_FRIENDLYDOCNAME,
+                          L".htm",
+                          NULL,
+                          NULL,
+                          &mime_type_name_buffer_size);
+
+  std::vector<wchar_t> mime_type_name_buffer(mime_type_name_buffer_size);
+  hr = ::AssocQueryString(0,
+                          ASSOCSTR_FRIENDLYDOCNAME,
+                          L".htm",
+                          NULL,
+                          &mime_type_name_buffer[0],
+                          &mime_type_name_buffer_size);
+
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to AssocQueryString failed in getting friendly name of .htm documents";
+    return false;
   }
 
-  if (document_type_key_name == L"") {
-    // To be technically correct, we should look up the extension specified
-    // for the text/html MIME type first (located in the "Extension" value
-    // of HKEY_CLASSES_ROOT\MIME\Database\Content Type\text/html), but that
-    // should always resolve to ".htm" anyway. From the extension, we can 
-    // find the browser-specific subkey of HKEY_CLASSES_ROOT, the default 
-    // value of which should contain the browser-specific friendly name of
-    // the MIME type for HTML documents, which is what 
-    // IHTMLDocument2::get_mimeType() returns.
-    if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
-                                             L".htm",
-                                             L"",
-                                             &document_type_key_name)) {
-      LOG(WARN) << "Unable to read document type from registry for '.htm'";
-      return false;
-    }
-  }
-
-  // First try the (default) value for the subkey. Some browsers (Opera)
-  // do not write this information in the (default) value, so if that fails,
-  // try the FriendlyTypeName value.
-  std::wstring mime_type_name;
-  if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
-                                           document_type_key_name,
-                                           L"",
-                                           &mime_type_name)) {
-    if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
-                                             document_type_key_name,
-                                             L"FriendlyTypeName",
-                                             &mime_type_name)) {
-      LOG(WARN) << "Unable to read mime type from registry for document type";
-      return false;
-    }
-  }
-
+  std::wstring mime_type_name = &mime_type_name_buffer[0];
   std::wstring type_string = type;
-
   if (type_string == mime_type_name) {
     return true;
   }
@@ -364,7 +335,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 
   if (L"Firefox HTML Document" == mime_type_name) {
     LOG(INFO) << "It looks like Firefox was once the default browser. " 
-        << "Guessing the page type from mime type alone";
+              << "Guessing the page type from mime type alone";
     return true;
   }
 
