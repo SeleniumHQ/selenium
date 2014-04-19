@@ -16,29 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.HttpSessionId;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.Responses;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -48,7 +39,6 @@ import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,129 +47,85 @@ import java.util.logging.Logger;
 
 public class ResultConfig {
 
-  private final String[] sections;
+  private final String commandName;
   private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
-  private final String url;
   private final Logger log;
 
-  private final ErrorCodes errorCodes = new ErrorCodes();
-
   public ResultConfig(
-      String url, Class<? extends RestishHandler<?>> handlerClazz,
+      String commandName, Class<? extends RestishHandler<?>> handlerClazz,
       DriverSessions sessions, Logger log) {
-    if (url == null || handlerClazz == null) {
-      throw new IllegalArgumentException("You must specify the handler and the url");
+    if (commandName == null || handlerClazz == null) {
+      throw new IllegalArgumentException("You must specify the handler and the command name");
     }
 
-    this.url = url;
+    this.commandName = commandName;
     this.log = log;
-    this.sections = url.split("/");
     this.sessions = sessions;
     this.handlerFactory = getHandlerFactory(handlerClazz);
   }
 
 
-  public RestishHandler getHandler(String url, SessionId sessionId) throws Exception {
-    if (!isFor(url)) {
-      return null;
-    }
-    return populate(handlerFactory.createHandler(sessionId), url);
-  }
-
-  public boolean isFor(String urlToMatch) {
-    if (urlToMatch == null) {
-      return sections.length == 0;
-    }
-
-    String[] allParts = urlToMatch.split("/");
-
-    if (sections.length != allParts.length) {
-      return false;
-    }
-
-    for (int i = 0; i < sections.length; i++) {
-      if (!(sections[i].startsWith(":") || sections[i].equals(allParts[i]))) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   interface HandlerFactory {
     RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
   }
 
-
-  protected RestishHandler populate(RestishHandler handler, String pathString) {
-    if (pathString == null) {
-      return handler;
-    }
-
-    String[] strings = pathString.split("/");
-
-    for (int i = 0; i < sections.length; i++) {
-      if (!sections[i].startsWith(":")) {
-        continue;
-      }
+  protected RestishHandler populate(RestishHandler handler, Command command) {
+    for (Map.Entry<String, ?> entry : command.getParameters().entrySet()) {
       try {
-        PropertyMunger.set(sections[i].substring(1), handler, strings[i]);
+        PropertyMunger.set(entry.getKey(), handler, entry.getValue());
       } catch (Exception e) {
         throw new WebDriverException(e);
       }
     }
-
     return handler;
   }
 
-  public void handle(String pathInfo, final HttpRequest request,
-      final HttpResponse response) throws Exception {
-    String sessionId = HttpSessionId.getSessionId(request.getUri());
-    
-    SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
+  public Response handle(Command command) throws Exception {
+    Response response = new Response();
+    SessionId sessionId = command.getSessionId();
+    if (sessionId != null) {
+      response.setSessionId(sessionId.toString());
+    }
 
-    Response result = new Response();
-    result.setSessionId(nullToEmpty(sessionId));
-    throwUpIfSessionTerminated(sessId);
-    final RestishHandler handler = getHandler(pathInfo, sessId);
+    throwUpIfSessionTerminated(sessionId);
+    final RestishHandler<?> handler = handlerFactory.createHandler(sessionId);
+    populate(handler, command);
 
     try {
       if (handler instanceof JsonParametersAware) {
-        setJsonParameters(request, handler);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> parameters = (Map<String, Object>) command.getParameters();
+        if (!parameters.isEmpty()) {
+          ((JsonParametersAware) handler).setJsonParameters(parameters);
+        }
       }
 
-      throwUpIfSessionTerminated(sessId);
+      throwUpIfSessionTerminated(sessionId);
 
-      if ("/status".equals(pathInfo)) {
-        log.fine(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      if (DriverCommand.STATUS.equals(command.getName())) {
+        log.fine(String.format("Executing: %s)", handler));
       } else {
-        log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+        log.info(String.format("Executing: %s)", handler));
       }
 
       Object value = handler.handle();
       if (value instanceof Response) {
-        result = (Response) value;
+        response = (Response) value;
       } else {
-        result.setValue(value);
-        result.setState(ErrorCodes.SUCCESS_STRING);
-        result.setStatus(ErrorCodes.SUCCESS);
+        response.setValue(value);
+        response.setState(ErrorCodes.SUCCESS_STRING);
+        response.setStatus(ErrorCodes.SUCCESS);
       }
 
-      if ("/status".equals(pathInfo)) {
-        log.fine("Done: " + pathInfo);
+      if (DriverCommand.STATUS.equals(command.getName())) {
+        log.fine("Done: " + handler);
       } else {
-        log.info("Done: " + pathInfo);
+        log.info("Done: " + handler);
       }
-    } catch (UnreachableBrowserException e){
-      throwUpIfSessionTerminated(sessId);
-      prepareErrorResponse(result, e, Optional.<String>absent());
-      render(result, response);
-      return;
-
-    } catch (SessionNotFoundException e) {
-      response.setStatus(404);
-      return;
+    } catch (UnreachableBrowserException e) {
+      throwUpIfSessionTerminated(sessionId);
+      return Responses.failure(sessionId, e);
 
     } catch (Exception e) {
       log.log(Level.WARNING, "Exception thrown", e);
@@ -191,68 +137,28 @@ public class ResultConfig {
       if (handler instanceof WebDriverHandler) {
         screenshot = Optional.fromNullable(((WebDriverHandler) handler).getScreenshot());
       }
-      prepareErrorResponse(result, toUse, screenshot);
+      response = Responses.failure(sessionId, toUse, screenshot);
     } catch (Error e) {
       log.info("Error: " + e.getMessage());
-      prepareErrorResponse(result, e, Optional.<String>absent());
+      response = Responses.failure(sessionId, e);
     }
-
-    render(result, response);
 
     if (handler instanceof DeleteSession) {
       // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
       final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-      logHandler.transferThreadTempLogsToSessionLogs(sessId);
-      logHandler.removeSessionLogs(sessId);
-      sessions.deleteSession(sessId);
+      logHandler.transferThreadTempLogsToSessionLogs(sessionId);
+      logHandler.removeSessionLogs(sessionId);
+      sessions.deleteSession(sessionId);
     }
+    return response;
   }
 
-  private void render(Response response, HttpResponse httpResponse) {
-    String json = new BeanToJsonConverter().convert(response);
-    byte[] data = json.getBytes(UTF_8);
-
-    httpResponse.setStatus(200);
-    if (response.getStatus() != ErrorCodes.SUCCESS) {
-      httpResponse.setStatus(500);
-    }
-
-    httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    httpResponse.setContent(data);
-  }
-
-  private void prepareErrorResponse(
-      Response response, Throwable error, Optional<String> base64Screenshot) throws Exception {
-    response.setStatus(errorCodes.toStatusCode(error));
-    response.setState(errorCodes.toState(response.getStatus()));
-
-    if (error != null) {
-      String raw = new BeanToJsonConverter().convert(error);
-      JSONObject jsonError = new JSONObject(raw);
-      jsonError.put("screen", base64Screenshot.orNull());
-      response.setValue(jsonError);
-    }
-  }
-
-  private void throwUpIfSessionTerminated(SessionId sessId) throws Exception {
+  private void throwUpIfSessionTerminated(SessionId sessId) throws SessionNotFoundException {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
     if (isTerminated){
       throw new SessionNotFoundException();
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private void setJsonParameters(HttpRequest request, RestishHandler handler) throws Exception {
-    byte[] data = request.getContent();
-    String raw = new String(data, UTF_8);
-    if (!raw.isEmpty()) {
-      Map<String, Object> parameters = (Map<String, Object>) new JsonToBeanConverter()
-          .convert(HashMap.class, raw);
-
-      ((JsonParametersAware) handler).setJsonParameters(parameters);
     }
   }
 
@@ -352,12 +258,11 @@ public class ResultConfig {
 
     ResultConfig that = (ResultConfig) o;
 
-    return url.equals(that.url);
-
+    return commandName.equals(that.commandName);
   }
 
   @Override
   public int hashCode() {
-    return url.hashCode();
+    return commandName.hashCode();
   }
 }

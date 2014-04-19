@@ -22,7 +22,6 @@ import org.junit.runners.Suite;
 import org.openqa.selenium.remote.server.handler.UploadFileTest;
 import org.openqa.selenium.remote.server.handler.html5.UtilsTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
-import org.openqa.selenium.remote.server.rest.UrlMapperTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
 
 @RunWith(Suite.class)
@@ -39,7 +38,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     SessionCleanerTest.class,
     SessionLogsTest.class,
     UploadFileTest.class,
-    UrlMapperTest.class,
     UtilsTest.class
 })
 public class ServerSpecificTests {

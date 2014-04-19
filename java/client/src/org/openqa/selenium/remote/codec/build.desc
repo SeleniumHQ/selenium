@@ -1,0 +1,13 @@
+java_library(
+    name = "codec",
+    srcs = [
+        "*.java",
+        "http/*.java",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:webdriver-api",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote:api",
+        "//java/client/src/org/openqa/selenium/remote:common",
+        "//third_party/java/guava-libraries",
+    ])

@@ -29,7 +29,9 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.remote.codec.http.HttpMethod;
+import org.openqa.selenium.remote.codec.http.HttpRequest;
+import org.openqa.selenium.remote.codec.http.HttpResponse;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
@@ -56,7 +58,7 @@ public class DriverServlet extends HttpServlet {
   private final Supplier<DriverSessions> sessionsSupplier;
 
   private SessionCleaner sessionCleaner;
-  private JsonHttpRemoteConfig mappings;
+  private JsonHttpCommandHandler commandHandler;
 
   public DriverServlet() {
     this.sessionsSupplier = new DriverSessionsSupplier();
@@ -75,7 +77,7 @@ public class DriverServlet extends HttpServlet {
     logger.addHandler(LoggingHandler.getInstance());
 
     DriverSessions driverSessions = sessionsSupplier.get();
-    mappings = new JsonHttpRemoteConfig(driverSessions, logger);
+    commandHandler = new JsonHttpCommandHandler(driverSessions, logger);
 
     long sessionTimeOutInMs = getValueToUseInMs("webdriver.server.session.timeout", 1800);
     long browserTimeoutInMs = getValueToUseInMs("webdriver.server.browser.timeout", 0);
@@ -102,7 +104,7 @@ public class DriverServlet extends HttpServlet {
     return TimeUnit.SECONDS.toMillis(time);
   }
 
-    @Override
+  @Override
   public void destroy() {
     getLogger().removeHandler(LoggingHandler.getInstance());
     if (sessionCleaner != null) {
@@ -181,13 +183,13 @@ public class DriverServlet extends HttpServlet {
       return;
     }
 
-    HttpRequest request = new HttpRequest(rpc.getMethod(), rpc.getPath());
+    HttpRequest request = new HttpRequest(
+        HttpMethod.valueOf(rpc.getMethod()),
+        rpc.getPath());
     request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
     request.setContent(rpc.getContent());
 
-    HttpResponse response = new HttpResponse();
-
-    handleRequest(request, response);
+    HttpResponse response = commandHandler.handleRequest(request);
     sendResponse(response, servletResponse);
   }
 
@@ -195,26 +197,15 @@ public class DriverServlet extends HttpServlet {
       HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
     HttpRequest request = createInternalRequest(servletRequest);
-    HttpResponse response = new HttpResponse();
-    handleRequest(request, response);
+    HttpResponse response = commandHandler.handleRequest(request);
     sendResponse(response, servletResponse);
-  }
-
-  private void handleRequest(HttpRequest request, HttpResponse response) throws ServletException {
-    try {
-      mappings.handleRequest(request, response);
-    } catch (SessionNotFoundException e){
-      response.setStatus(HttpStatusCodes.NOT_FOUND);
-    } catch (Exception e) {
-      log("Fatal, unhandled exception: " + request.getUri() + ": " + e);
-      throw new ServletException(e);
-    }
   }
 
   private static HttpRequest createInternalRequest(HttpServletRequest servletRequest)
       throws IOException {
     HttpRequest request = new HttpRequest(
-        servletRequest.getMethod(), servletRequest.getPathInfo());
+        HttpMethod.valueOf(servletRequest.getMethod().toUpperCase()),
+        servletRequest.getPathInfo());
 
     @SuppressWarnings("unchecked")
     Enumeration<String> headerNames = servletRequest.getHeaderNames();
@@ -243,11 +234,12 @@ public class DriverServlet extends HttpServlet {
     return request;
   }
 
-  private static void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
+  private void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
       throws IOException {
-    servletResponse.setStatus(response.getStatus());
     for (String name : response.getHeaderNames()) {
-      servletResponse.setHeader(name, response.getHeader(name));
+      for (String value : response.getHeaders(name)) {
+        servletResponse.addHeader(name, value);
+      }
     }
     OutputStream output = servletResponse.getOutputStream();
     output.write(response.getContent());

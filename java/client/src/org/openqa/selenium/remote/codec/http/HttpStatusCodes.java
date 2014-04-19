@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.codec.http;
 
-public interface HttpStatusCodes {
-  int OK = 200;
-  int NO_CONTENT = 204;
+public class HttpStatusCodes {
+  private HttpStatusCodes() {}
 
-  int SEE_OTHER = 303;
-
-  int NOT_FOUND = 404;
-
-  int INTERNAL_SERVER_ERROR = 500;
+  public static final int OK = 200;
+  public static final int NO_CONTENT = 204;
+  public static final int SEE_OTHER = 303;
+  public static final int BAD_REQUEST = 400;
+  public static final int NOT_FOUND = 404;
+  public static final int INTERNAL_SERVER_ERROR = 500;
 }

@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.codec.http;
 
-import java.util.HashMap;
-import java.util.Map;
+public class HttpResponse extends HttpMessage {
 
-public class HttpResponse {
-
-  private final Map<String, String> headers = new HashMap<String, String>();
   private int status = HttpStatusCodes.OK;
-  private byte[] data = new byte[0];
 
   public int getStatus() {
     return status;
@@ -32,25 +27,5 @@ public class HttpResponse {
 
   public void setStatus(int status) {
     this.status = status;
-  }
-
-  public void setHeader(String name, String value) {
-    headers.put(name, value);
-  }
-
-  public Iterable<String> getHeaderNames() {
-    return headers.keySet();
-  }
-
-  public String getHeader(String name) {
-    return headers.get(name);
-  }
-
-  public void setContent(byte[] data) {
-    this.data = data;
-  }
-
-  public byte[] getContent() {
-    return data;
   }
 }

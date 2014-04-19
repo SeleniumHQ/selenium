@@ -17,16 +17,17 @@ limitations under the License.
 package org.openqa.selenium.remote.server.rest;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.StubHandler;
 
@@ -38,15 +39,6 @@ import java.util.logging.Logger;
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
-
-  @Test
-  public void testShouldMatchBasicUrls() throws Exception {
-    ResultConfig config = new ResultConfig(
-        "/fish", StubHandler.class, null, logger);
-
-    assertThat(config.getHandler("/fish", dummySessionId), is(notNullValue()));
-    assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
-  }
 
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
@@ -69,20 +61,12 @@ public class ResultConfigTest {
   }
 
   @Test
-  public void testShouldMatchNamedParameters() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
-    );
-    RestishHandler handler = config.getHandler("/foo/fishy", dummySessionId);
-
-    assertThat(handler, is(notNullValue()));
-  }
-
-  @Test
   public void testShouldSetNamedParametersOnHandler() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
     );
-    NamedParameterHandler handler =
-        (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
+    Command command = new Command(dummySessionId, "foo", ImmutableMap.of("bar", "fishy"));
+    NamedParameterHandler handler = new NamedParameterHandler();
+    config.populate(handler, command);
 
     assertThat(handler.getBar(), is("fishy"));
   }

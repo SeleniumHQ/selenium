@@ -15,21 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.codec.http;
 
-import java.util.HashMap;
-import java.util.Map;
+public class HttpRequest extends HttpMessage {
 
-public class HttpRequest {
-
-  private final String method;
+  private final HttpMethod method;
   private final String uri;
 
-  private final Map<String, String> headers = new HashMap<String, String>();
-
-  private byte[] data = new byte[0];
-
-  public HttpRequest(String method, String uri) {
+  public HttpRequest(HttpMethod method, String uri) {
     this.method = method;
     this.uri = uri;
   }
@@ -38,23 +31,7 @@ public class HttpRequest {
     return uri;
   }
 
-  public String getMethod() {
+  public HttpMethod getMethod() {
     return method;
-  }
-
-  public String getHeader(String header) {
-    return headers.get(header);
-  }
-
-  public void setHeader(String name, String value) {
-    headers.put(name, value);
-  }
-
-  public byte[] getContent() {
-    return data;
-  }
-
-  public void setContent(byte[] data) {
-    this.data = data;
   }
 }
