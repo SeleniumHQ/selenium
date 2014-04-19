@@ -122,7 +122,7 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("alert"))).click();
 
     Alert alert =  wait.until(alertIsPresent());
-    alert.dismiss();
+    alert.accept();
 
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
@@ -209,7 +209,7 @@ public class AlertsTest extends JUnit4TestBase {
     driver.findElement(By.id("alert")).click();
 
     Alert alert = wait.until(alertIsPresent());
-    alert.dismiss();
+    alert.accept();
 
     try {
       alert.getText();
