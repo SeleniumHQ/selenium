@@ -33,14 +33,14 @@ import java.util.List;
  * though it is expected that that all subclasses rely on the basic finding mechanisms provided
  * through static methods of this class:
  * 
- * <code>
+ * <code><pre>
  * public WebElement findElement(WebDriver driver) {
  *     WebElement element = driver.findElement(By.id(getSelector()));
  *     if (element == null)
  *       element = driver.findElement(By.name(getSelector());
  *     return element;
  * }
- * </code>
+ * </pre></code>
  */
 public abstract class By {
   /**
@@ -204,22 +204,30 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsById)
         return ((FindsById) context).findElementsById(id);
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id
-          + "']");
+      return ((FindsByXPath) context).findElementsByXPath(getXPathSelector());
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsById)
         return ((FindsById) context).findElementById(id);
-      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id
-          + "']");
+      return ((FindsByXPath) context).findElementByXPath(getXPathSelector());
     }
 
     @Override
     public String toString() {
       return "By.id: " + id;
     }
+
+	@Override
+	public String getCssSelector() {
+		return "#" + id;
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//*[@id='" + id + "']";
+	}
   }
 
   public static class ByLinkText extends By implements Serializable {
@@ -246,6 +254,17 @@ public abstract class By {
     public String toString() {
       return "By.linkText: " + linkText;
     }
+
+	@Override
+	public String getCssSelector() {
+		throw new IllegalArgumentException(
+				"Selectors of type 'ByLinkText' are not supported by CSS");
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//*[.='" + linkText + "']";
+	}
   }
 
   public static class ByPartialLinkText extends By implements Serializable {
@@ -273,6 +292,17 @@ public abstract class By {
     public String toString() {
       return "By.partialLinkText: " + linkText;
     }
+
+	@Override
+	public String getCssSelector() {
+		throw new IllegalArgumentException(
+				"Selectors of type 'ByPartialLinkText' are not supported by CSS");
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//*[text()[contains(.,'" + linkText + "')]]";
+	}
   }
 
   public static class ByName extends By implements Serializable {
@@ -289,22 +319,30 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByName)
         return ((FindsByName) context).findElementsByName(name);
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '"
-          + name + "']");
+      return ((FindsByXPath) context).findElementsByXPath(getXPathSelector());
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByName)
         return ((FindsByName) context).findElementByName(name);
-      return ((FindsByXPath) context).findElementByXPath(".//*[@name = '"
-          + name + "']");
+      return ((FindsByXPath) context).findElementByXPath(getXPathSelector());
     }
 
     @Override
     public String toString() {
       return "By.name: " + name;
     }
+
+	@Override
+	public String getCssSelector() {
+		return "[name='" + name + "']";
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//*[@name='" + name + "']";
+	}
   }
 
   public static class ByTagName extends By implements Serializable {
@@ -321,20 +359,30 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByTagName)
         return ((FindsByTagName) context).findElementsByTagName(name);
-      return ((FindsByXPath) context).findElementsByXPath(".//" + name);
+      return ((FindsByXPath) context).findElementsByXPath(getXPathSelector());
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByTagName)
         return ((FindsByTagName) context).findElementByTagName(name);
-      return ((FindsByXPath) context).findElementByXPath(".//" + name);
+      return ((FindsByXPath) context).findElementByXPath(getXPathSelector());
     }
 
     @Override
     public String toString() {
       return "By.tagName: " + name;
     }
+
+	@Override
+	public String getCssSelector() {
+		return name;
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//" + name;
+	}
   }
 
   public static class ByXPath extends By implements Serializable {
@@ -361,6 +409,17 @@ public abstract class By {
     public String toString() {
       return "By.xpath: " + xpathExpression;
     }
+
+	@Override
+	public String getCssSelector() {
+		throw new IllegalArgumentException(
+				"Conversion of XPath selectors to CSS format is not supported");
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return xpathExpression;
+	}
   }
 
   public static class ByClassName extends By implements Serializable {
@@ -377,16 +436,14 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByClassName)
         return ((FindsByClassName) context).findElementsByClassName(className);
-      return ((FindsByXPath) context).findElementsByXPath(".//*["
-          + containingWord("class", className) + "]");
+      return ((FindsByXPath) context).findElementsByXPath(getXPathSelector());
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByClassName)
         return ((FindsByClassName) context).findElementByClassName(className);
-      return ((FindsByXPath) context).findElementByXPath(".//*["
-          + containingWord("class", className) + "]");
+      return ((FindsByXPath) context).findElementByXPath(getXPathSelector());
     }
 
     /**
@@ -407,6 +464,16 @@ public abstract class By {
     public String toString() {
       return "By.className: " + className;
     }
+
+	@Override
+	public String getCssSelector() {
+		return "." + className;
+	}
+
+	@Override
+	public String getXPathSelector() {
+		return ".//*[" + containingWord("class", className) + "]";
+	}
   }
 
   public static class ByCssSelector extends By implements Serializable {
@@ -445,5 +512,32 @@ public abstract class By {
     public String toString() {
       return "By.selector: " + selector;
     }
+
+	@Override
+	public String getCssSelector() {
+		return selector;
+	}
+
+	@Override
+	public String getXPathSelector() {
+		throw new IllegalArgumentException(
+				"Conversion of CSS selectors to XPath format is not supported");
+	}
+  }
+  
+  /**
+   * Get the CSS selector associated with this object.
+   * @return CSS selector string
+   */
+  public String getCssSelector() {
+	  throw new UnsupportedOperationException("Selectors of type '" + getClass().getSimpleName() + "' don't export CSS selector strings");
+  }
+  
+  /**
+   * Get the XPath selector associated with this object.
+   * @return XPath selector string
+   */
+  public String getXPathSelector() {
+	  throw new UnsupportedOperationException("Selectors of type '" + getClass().getSimpleName() + "' don't export XPath selector strings");
   }
 }
