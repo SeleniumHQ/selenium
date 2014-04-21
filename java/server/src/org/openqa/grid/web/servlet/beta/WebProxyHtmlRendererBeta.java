@@ -26,6 +26,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
@@ -152,25 +153,57 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   private String getSingleSlotHtml(TestSlot s, String icon) {
     StringBuilder builder = new StringBuilder();
     TestSession session = s.getSession();
+    String htmlClass = "";
+    String title = s.getCapabilities().toString();
+    String imgSrc = icon;
+    String browserName = s.getCapabilities().get(CapabilityType.BROWSER_NAME).toString().toLowerCase();
+
+    if (browserName.contains(BrowserType.GOOGLECHROME) || browserName.contains(BrowserType.CHROME))
+      if (!s.isGoogleChromeAvailable()) {
+        htmlClass += "browserNotAvailable ";
+        imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
+        title = "browser not available";
+      } else { htmlClass += "browserAvailable "; }
+    else if (browserName.contains(BrowserType.IE) || browserName.contains(BrowserType.IEXPLORE))
+      if (!s.isInternetExplorerAvailable()) {
+        htmlClass += "browserNotAvailable ";
+        imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
+        title = "browser not available";
+      } else { htmlClass += "browserAvailable "; }
+    else if (browserName.contains(BrowserType.FIREFOX)
+             || browserName.contains(BrowserType.FIREFOX_2)
+             || browserName.contains(BrowserType.FIREFOX_3))
+      if (!s.isFirefoxAvailable()) {
+        htmlClass += "browserNotAvailable ";
+        imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
+        title = "browser not available";
+      } else { htmlClass += "browserAvailable "; }
+    else if (browserName.contains(BrowserType.SAFARI))
+      if (!s.isSafariAvailable()) {
+        htmlClass += "browserNotAvailable ";
+        imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
+        title = "browser not available";
+      } else { htmlClass += "browserAvailable "; }
+
     if (icon != null) {
       builder.append("<img ");
-      builder.append("src='").append(icon).append("' width='16' height='16'");
+      builder.append("src='").append(imgSrc).append("' width='16' height='16'");
     } else {
       builder.append("<a href='#' ");
     }
 
     if (session != null) {
-      builder.append(" class='busy' ");
+      htmlClass += "busy ";
       builder.append(" title='").append(session.get("lastCommand")).append("' ");
     } else {
-      builder.append(" title='").append(s.getCapabilities()).append("'");
+      builder.append(" title='").append(title).append("'");
     }
 
     if (icon != null) {
-      builder.append(" />\n");
+      builder.append(" class='").append(htmlClass).append("' />\n");
     } else {
-      builder.append(">");
-      builder.append(s.getCapabilities().get(CapabilityType.BROWSER_NAME));
+      builder.append(" class='").append(htmlClass).append("'>");
+      builder.append(browserName);
       builder.append("</a>");
     }
     return builder.toString();

@@ -26,9 +26,10 @@ import java.io.File;
  */
 public class BrowserInstallation {
 
-  static CombinedFirefoxLocator      combinedFirefoxLocator;
+  static CombinedFirefoxLocator combinedFirefoxLocator;
   static GoogleChromeLocator googleChromeLocator;
-  static SafariLocator       safariLocator;
+  static SafariLocator safariLocator;
+  static InternetExplorerLocator internetExplorerLocator;
 
   private final String launcherFilePath;
   private final String libraryPath;
@@ -51,8 +52,14 @@ public class BrowserInstallation {
    * @return <code>true</code> if found.
    */
   public static boolean isFirefoxInstalled() {
-    combinedFirefoxLocator = new CombinedFirefoxLocator();
-    return new File(combinedFirefoxLocator.findBrowserLocationOrFail().launcherFilePath()).exists();
+    try {
+      combinedFirefoxLocator = new CombinedFirefoxLocator();
+
+      return new File(combinedFirefoxLocator.findBrowserLocation().launcherFilePath())
+          .exists();
+    } catch (Exception ex) {
+      return false;
+    }
   }
 
   /**
@@ -61,7 +68,7 @@ public class BrowserInstallation {
    */
   public static String getFirefoxInstallationBinary() {
     if (isFirefoxInstalled())
-      return combinedFirefoxLocator.findBrowserLocationOrFail().launcherFilePath();
+      return combinedFirefoxLocator.findBrowserLocation().launcherFilePath();
 
     return null;
   }
@@ -71,8 +78,12 @@ public class BrowserInstallation {
    * @return <code>true</code> if found.
    */
   public static boolean isGoogleChromeInstalled() {
-    googleChromeLocator = new GoogleChromeLocator();
-    return new File(googleChromeLocator.findBrowserLocationOrFail().launcherFilePath()).exists();
+    try {
+      googleChromeLocator = new GoogleChromeLocator();
+      return new File(googleChromeLocator.findBrowserLocation().launcherFilePath()).exists();
+    } catch (Exception ex) {
+      return false;
+    }
   }
 
   /**
@@ -81,7 +92,7 @@ public class BrowserInstallation {
    */
   public static String getGoogleChromeInstallationBinary() {
     if (isGoogleChromeInstalled())
-      return googleChromeLocator.findBrowserLocationOrFail().launcherFilePath();
+      return googleChromeLocator.findBrowserLocation().launcherFilePath();
 
     return null;
   }
@@ -91,8 +102,12 @@ public class BrowserInstallation {
    * @return <code>true</code> if found.
    */
   public static boolean isSafariInstalled() {
-    safariLocator = new SafariLocator();
-    return new File(safariLocator.findBrowserLocationOrFail().launcherFilePath()).exists();
+    try {
+      safariLocator = new SafariLocator();
+      return new File(safariLocator.findBrowserLocation().launcherFilePath()).exists();
+    } catch (Exception ex) {
+      return false;
+    }
   }
 
   /**
@@ -101,7 +116,32 @@ public class BrowserInstallation {
    */
   public static String getSafariInstallationBinary() {
     if (isSafariInstalled())
-      return safariLocator.findBrowserLocationOrFail().launcherFilePath();
+      return safariLocator.findBrowserLocation().launcherFilePath();
+
+    return null;
+  }
+
+  /**
+   * Checks to see if a Internet Explorer installation is found.
+   * @return <code>true</code> if found.
+   */
+  public static boolean isInternetExplorerInstalled() {
+    try {
+      internetExplorerLocator = new InternetExplorerLocator();
+      return new File(internetExplorerLocator.findBrowserLocation().launcherFilePath())
+          .exists();
+    } catch (Exception ex) {
+      return false;
+    }
+  }
+
+  /**
+   * Get the path where the Internet Explorer installation is found.
+   * @return <code>{@link String}</code> of the path.
+   */
+  public static String getInternetExplorerInstallationBinary() {
+    if (isInternetExplorerInstalled())
+      return internetExplorerLocator.findBrowserLocation().launcherFilePath();
 
     return null;
   }

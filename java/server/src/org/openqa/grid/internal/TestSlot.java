@@ -21,6 +21,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -243,5 +244,45 @@ public class TestSlot {
     } catch (MalformedURLException e) {
       throw new GridException("Configuration error for the node." + u + " isn't a valid URL");
     }
+  }
+
+  /**
+   * Whether or not Firefox is available on the machine to test.
+   * @return
+   */
+  public Boolean isFirefoxAvailable() {
+    if (proxy.getConfig().get("isFirefoxAvailable") != null)
+      return (Boolean) proxy.getConfig().get("isFirefoxAvailable");
+    return false;
+  }
+
+  /**
+   * Whether or not Google Chrome is available on the machine to test.
+   * @return
+   */
+  public Boolean isGoogleChromeAvailable() {
+    if (proxy.getConfig().get("isGoogleChromeAvailable") != null)
+      return (Boolean) proxy.getConfig().get("isGoogleChromeAvailable");
+    return false;
+  }
+
+  /**
+   * Whether or not Internet Explorer is available on the machine to test.
+   * @return
+   */
+  public Boolean isInternetExplorerAvailable() {
+    if (proxy.getConfig().get("isInternetExplorerAvailable") != null)
+      return (Boolean) proxy.getConfig().get("isInternetExplorerAvailable");
+    return false;
+  }
+
+  /**
+   * Whether or not Safari is available on the machine to test.
+   * @return
+   */
+  public Boolean isSafariAvailable() {
+    if (proxy.getConfig().get("isSafariAvailable") != null)
+      return (Boolean) proxy.getConfig().get("isSafariAvailable");
+    return false;
   }
 }

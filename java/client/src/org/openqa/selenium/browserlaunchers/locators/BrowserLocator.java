@@ -25,6 +25,8 @@ public interface BrowserLocator {
 
   BrowserInstallation findBrowserLocationOrFail();
 
+  BrowserInstallation findBrowserLocation();
+
   BrowserInstallation retrieveValidInstallationPath(String customLauncherPath);
 
 }
