@@ -162,13 +162,13 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
       if (!s.isGoogleChromeAvailable()) {
         htmlClass += "browserNotAvailable ";
         imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
-        title = "browser not available";
+        title = "browser not installed / found";
       } else { htmlClass += "browserAvailable "; }
     else if (browserName.contains(BrowserType.IE) || browserName.contains(BrowserType.IEXPLORE))
       if (!s.isInternetExplorerAvailable()) {
         htmlClass += "browserNotAvailable ";
         imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
-        title = "browser not available";
+        title = "browser not installed / found";
       } else { htmlClass += "browserAvailable "; }
     else if (browserName.contains(BrowserType.FIREFOX)
              || browserName.contains(BrowserType.FIREFOX_2)
@@ -176,13 +176,13 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
       if (!s.isFirefoxAvailable()) {
         htmlClass += "browserNotAvailable ";
         imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
-        title = "browser not available";
+        title = "browser not installed / found";
       } else { htmlClass += "browserAvailable "; }
     else if (browserName.contains(BrowserType.SAFARI))
       if (!s.isSafariAvailable()) {
         htmlClass += "browserNotAvailable ";
         imgSrc = imgSrc.split(".png")[0].concat("_unavailable.png");
-        title = "browser not available";
+        title = "browser not installed / found";
       } else { htmlClass += "browserAvailable "; }
 
     if (icon != null) {
