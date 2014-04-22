@@ -2349,10 +2349,10 @@ IEBrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads = function(wind
     var pageUnloadDetector = function() {
         self.pageUnloading = true;
     };
-    if (win.addEventListener) {
-      win.addEventListener('beforeunload', pageUnloadDetector, true);
+    if (windowObject.addEventListener) {
+      windowObject.addEventListener('beforeunload', pageUnloadDetector, true);
     } else {
-      win.attachEvent('onbeforeunload', pageUnloadDetector);
+      windowObject.attachEvent('onbeforeunload', pageUnloadDetector);
     }
     BrowserBot.prototype.modifySeparateTestWindowToDetectPageLoads.call(this, windowObject);
 };
