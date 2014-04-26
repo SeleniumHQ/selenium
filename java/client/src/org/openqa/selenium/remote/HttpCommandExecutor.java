@@ -38,12 +38,8 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -97,11 +93,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     commandCodec = new JsonHttpCommandCodec();
     responseCodec = new JsonHttpResponseCodec();
-
-    HttpParams params = new BasicHttpParams();
-    // Use the JRE default for the socket linger timeout.
-    params.setParameter(CoreConnectionPNames.SO_LINGER, -1);
-    HttpClientParams.setRedirecting(params, false);
 
     synchronized (HttpCommandExecutor.class) {
       if (httpClientFactory == null) {
