@@ -47,7 +47,7 @@ safaridriver.client.init = function() {
     var acknowledged = message.sendSync(window);
     if (acknowledged) {
       log.info('Connected to extension');
-      log.info('Waiting for extension to connect to client at ' + url);
+      log.info('Requesting extension connect to client at ' + url);
     } else if (numAttempts < 5) {
       var timeout = 250 * numAttempts;
       setTimeout(connect, timeout);
