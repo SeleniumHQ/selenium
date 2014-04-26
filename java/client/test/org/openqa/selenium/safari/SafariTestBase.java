@@ -3,6 +3,7 @@ package org.openqa.selenium.safari;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import org.junit.Before;
@@ -15,6 +16,8 @@ public class SafariTestBase extends JUnit4TestBase {
   @Override
   public void createDriver() {
     driver = actuallyCreateDriver(DesiredCapabilities.safari());
+    wait = new WebDriverWait(driver, 30);
+    shortWait = new WebDriverWait(driver, 5);
   }
 
   public static WebDriver actuallyCreateDriver(Capabilities capabilities) {
