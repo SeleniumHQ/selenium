@@ -1,7 +1,6 @@
 java_library(
   name = 'jna',
-  export_deps = True,
-  deps = [
+  exported_deps = [
     ':core',
     ':platform',
   ],
