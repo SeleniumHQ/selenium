@@ -18,9 +18,9 @@ import hashlib
 import os
 import zipfile
 try:
-    from StringIO import StringIO
+    from StringIO import StringIO as IOStream
 except ImportError:  # 3+
-    from io import StringIO
+    from io import BytesIO as IOStream
 import base64
 
 
@@ -387,13 +387,16 @@ class WebElement(object):
         return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
-        fp = StringIO()
+        fp = IOStream() #fp = StringIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
+        content = base64.encodestring(fp.getvalue())
+        if not isinstance(content, str):
+            content = content.decode('utf-8')
         try:
             return self._execute(Command.UPLOAD_FILE, 
-                            {'file': base64.encodestring(fp.getvalue())})['value']
+                            {'file': content})['value']
         except WebDriverException as e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename
