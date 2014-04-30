@@ -1232,7 +1232,7 @@ webdriver.promise.ControlFlow.prototype.execute = function(
   var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
   scheduleIn.addChild(task);
 
-  this.emit(webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK);
+  this.emit(webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK, opt_description);
 
   this.scheduleEventLoopStart_();
   return task.promise;
