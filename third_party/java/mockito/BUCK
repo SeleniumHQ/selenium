@@ -1,7 +1,6 @@
 java_library(
     name = 'mockito',
-    export_deps = True,
-    deps = [
+    exported_deps = [
       ':core',
       '//third_party/java/objenesis:objenesis',
     ],

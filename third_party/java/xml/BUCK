@@ -1,10 +1,9 @@
 java_library(name = 'xml',
-  deps = [
+  exported_deps = [
     ':xalan',
     ':xerces',
     ':apis',
   ],
-  export_deps = True,
   visibility = [
     '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
     '//third_party/java/...',

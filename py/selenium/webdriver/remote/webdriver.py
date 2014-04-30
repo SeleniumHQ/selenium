@@ -62,7 +62,7 @@ class WebDriver(object):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or type(self.command_executor) is str:
+        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None

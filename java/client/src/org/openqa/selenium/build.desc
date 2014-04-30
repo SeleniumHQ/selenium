@@ -89,6 +89,7 @@ java_library(name = "webdriver-api",
 java_library(name = "client-combined",
   deps = [
     "//java/client/src/com/thoughtworks/selenium:selenium",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/firefox",

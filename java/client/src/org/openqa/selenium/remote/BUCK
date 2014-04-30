@@ -1,6 +1,7 @@
 java_library(
   name = 'api',
   srcs = [
+    'Augmentable.java',
     'Command.java',
     'CommandExecutor.java',
     'Response.java',
