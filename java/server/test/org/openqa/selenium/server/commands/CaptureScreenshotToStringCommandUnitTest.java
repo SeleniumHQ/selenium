@@ -24,9 +24,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.internal.Base64Encoder;
 
 import java.io.ByteArrayInputStream;
 
@@ -70,7 +70,7 @@ public class CaptureScreenshotToStringCommandUnitTest {
     String image = returnValue.split(",")[1];
     assertEquals("OK", result);
     assertNotNull(ImageIO.read(new MemoryCacheImageInputStream(
-        new ByteArrayInputStream(Base64.decode(image)))));
+        new ByteArrayInputStream(new Base64Encoder().decode(image)))));
 
   }
 }
