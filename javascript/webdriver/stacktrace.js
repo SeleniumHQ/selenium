@@ -562,11 +562,14 @@ webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
  * V8 prepends the string representation of an error to its stack trace.
  * This function trims the string so that the stack trace can be parsed
  * consistently with the other JS engines.
- * @param {!(Error|goog.testing.JsUnitException)} error The error.
+ * @param {(Error|goog.testing.JsUnitException)} error The error.
  * @return {string} The stack trace string.
  * @private
  */
 webdriver.stacktrace.getStack_ = function(error) {
+  if (!error) {
+    return '';
+  }
   var stack = error.stack || error.stackTrace || '';
   var errorStr = error + '\n';
   if (goog.string.startsWith(stack, errorStr)) {
