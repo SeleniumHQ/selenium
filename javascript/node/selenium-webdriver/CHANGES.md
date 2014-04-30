@@ -1,3 +1,8 @@
+## v2.42.0-dev
+
+* Removed deprecated functions `Promise#addCallback()`,
+    `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
+
 ## v2.41.0
 
 * FIXED: 7138: export logging API from webdriver module.

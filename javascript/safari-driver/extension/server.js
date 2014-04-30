@@ -322,8 +322,9 @@ safaridriver.extension.Server.prototype.execute = function(
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.
   if (opt_callback) {
-    result.then(bot.response.checkResponse).
-        then(goog.partial(opt_callback, null), opt_callback);
+    result.then(bot.response.checkResponse).then(
+        goog.partial(opt_callback, null),
+        /** @type {function(*)} */ (opt_callback));
   }
 
   return result;
