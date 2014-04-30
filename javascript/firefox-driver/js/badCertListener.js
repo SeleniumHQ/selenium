@@ -69,7 +69,29 @@ WdCertOverrideService = function() {
     this.default_bits = 0;
   }
 
-  fxdriver.logging.info('Accept untrusted certificates: ' + shouldAcceptUntrustedCerts());
+  var acceptCerts = shouldAcceptUntrustedCerts();
+  fxdriver.logging.info('Accept untrusted certificates: ' + acceptCerts);
+
+  // If capabilities are configured to accept all SSL certs, we need to disable
+  // Firefox's HSTS (HTTP Strict Transport Security) or WebDriver will not be
+  // able to accept any self-signed certs for domains on the HSTS list (e.g.
+  // a test is intentionally using a man-in-the-middle proxy to access a site).
+  // Unfortunately, the only way to disable HSTS is to rely on an undocumented
+  // test preference:
+  // http://mxr.mozilla.org/mozilla-release/source/security/manager/boot/src/nsSiteSecurityService.cpp#423
+  //
+  // We set our offset to 19 weeks because Firefox has arbitrarily set its
+  // max timeout to 18 weeks:
+  // http://mxr.mozilla.org/mozilla-release/source/security/manager/tools/getHSTSPreloadList.js#36
+  //
+  // And their own unit tests use 19 weeks as an offset to trigger expiration:
+  // http://mxr.mozilla.org/mozilla-release/source/security/manager/ssl/tests/unit/test_sts_preloadlist_selfdestruct.js#13
+  if (acceptCerts) {
+    var offsetSeconds = 19 * 7 * 24 * 60 * 60;
+    CC['@mozilla.org/preferences-service;1'].
+        getService(CI['nsIPrefBranch']).
+        setIntPref('test.currentTimeOffsetSeconds', offsetSeconds);
+  }
 
   // UUID of the original implementor of this service.
   var ORIGINAL_OVERRIDE_SERVICE_ID = '{67ba681d-5485-4fff-952c-2ee337ffdcd6}';
