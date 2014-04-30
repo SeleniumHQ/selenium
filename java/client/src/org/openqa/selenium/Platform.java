@@ -71,6 +71,13 @@ public enum Platform {
     }
   },
 
+  WIN8_1("Windows 8.1", "win8.1") {
+    @Override
+    public boolean is(Platform compareWith) {
+      return compareWith == WINDOWS || compareWith == WIN8_1;
+    }
+  },
+
   MAC("mac", "darwin") {},
 
   /**
