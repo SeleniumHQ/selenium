@@ -71,7 +71,7 @@ public enum Platform {
     }
   },
 
-  WIN8_1("Windows 8.1", "win8.1") {
+  WIN8_1("windows 8.1", "win8.1") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == WIN8_1;
@@ -182,6 +182,10 @@ public enum Platform {
     // Windows 8 can't be detected by osName alone
     if (osVersion.equals("6.2") && osName.startsWith("windows nt")) {
         return WIN8;
+    }
+    // Windows 8 can't be detected by osName alone
+    if (osVersion.equals("6.3") && osName.startsWith("windows nt")) {
+        return WIN8_1;
     }
     Platform mostLikely = UNIX;
     String previousMatch = null;
