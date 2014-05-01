@@ -175,7 +175,6 @@ namespace OpenQA.Selenium
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
-        //[IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
             driver.Url = xhtmlTestPage;
@@ -199,10 +198,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE prompts with an alert when closing. Revisit when alert handling is done")]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
         {
+            bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
+            bool isIE6 = TestUtilities.IsIE6(driver);
+
             driver.Url = xhtmlTestPage;
 
             String currentHandle = driver.CurrentWindowHandle;
@@ -215,6 +216,11 @@ namespace OpenQA.Selenium
             {
                 IWebElement closeElement = WaitFor(() => { return driver.FindElement(By.Id("close")); });
                 closeElement.Click();
+                if (isIEDriver && !isIE6)
+                {
+                    IAlert alert = WaitFor<IAlert>(AlertToBePresent());
+                    alert.Accept();
+                }
                 // If we make it this far, we're all good.
             }
             finally
@@ -226,10 +232,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "IE prompts with an alert when closing. Revisit when alert handling is done")]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void CanCallGetWindowHandlesAfterClosingAWindow()
         {
+            bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
+            bool isIE6 = TestUtilities.IsIE6(driver);
+
             driver.Url = xhtmlTestPage;
 
             String currentHandle = driver.CurrentWindowHandle;
@@ -242,6 +250,11 @@ namespace OpenQA.Selenium
             {
                 IWebElement closeElement = WaitFor(() => { return driver.FindElement(By.Id("close")); });
                 closeElement.Click();
+                if (isIEDriver && !isIE6)
+                {
+                    IAlert alert = WaitFor<IAlert>(AlertToBePresent());
+                    alert.Accept();
+                }
                 ReadOnlyCollection<string> handles = driver.WindowHandles;
                 // If we make it this far, we're all good.
             }
@@ -411,6 +424,23 @@ namespace OpenQA.Selenium
                 }
 
                 return false;
+            };
+        }
+
+        private Func<IAlert> AlertToBePresent()
+        {
+            return () =>
+            {
+                IAlert alert = null;
+                try
+                {
+                    alert = driver.SwitchTo().Alert();
+                }
+                catch (NoAlertPresentException)
+                {
+                }
+
+                return alert;
             };
         }
     }
