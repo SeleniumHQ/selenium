@@ -113,12 +113,9 @@ webdriver.FirefoxDomExecutor.prototype.execute = function(command, callback) {
       command.getName() != webdriver.CommandName.SWITCH_TO_FRAME) {
     parameters['id'] = parameters['id']['ELEMENT'];
   }
-
   var json = goog.json.serialize({
     'name': command.getName(),
-    'sessionId': {
-      'value': parameters['sessionId']
-    },
+    'sessionId': parameters['sessionId'],
     'parameters': parameters
   });
   this.docElement_.setAttribute(

@@ -36,6 +36,7 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -101,7 +102,8 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   public static WebDriver actuallyCreateDriver() {
     WebDriver driver = storedDriver.get();
 
-    if (driver == null) {
+    if (driver == null ||
+        (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
       driver = new WebDriverBuilder().get();
       storedDriver.set(driver);
     }
