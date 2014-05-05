@@ -84,11 +84,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id(""));
-    assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -97,11 +96,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id("nonexistent button"));
-    assertThat(elements.size(), is(0));
   }
 
   // By.name positive
@@ -148,11 +146,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name(""));
-    assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -161,11 +158,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
-    assertThat(elements.size(), is(0));
   }
 
   // By.tagName positive
@@ -205,7 +201,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.tagName(""));
@@ -218,7 +214,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.tagName("nonexistent button"));
