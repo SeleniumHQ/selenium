@@ -21,6 +21,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.config.RequestConfig;
@@ -33,6 +36,7 @@ import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
@@ -51,13 +55,7 @@ public class HttpClientFactory {
       getClientConnectionManager();
 
   public HttpClientFactory() {
-    httpClient = HttpClientBuilder.create()
-        .setConnectionManager(getClientConnectionManager())
-        .setDefaultSocketConfig(createSocketConfig())
-        .setDefaultSocketConfig(createSocketConfig())
-        .setRoutePlanner(createRoutePlanner())
-        .setDefaultRequestConfig(createRequestConfig())
-        .build();
+    httpClient = createHttpClient(null);
   }
 
   private static HttpClientConnectionManager getClientConnectionManager() {
@@ -76,6 +74,23 @@ public class HttpClientFactory {
 
   public HttpClient getHttpClient() {
     return httpClient;
+  }
+
+  public CloseableHttpClient createHttpClient(Credentials credentials) {
+    HttpClientBuilder builder = HttpClientBuilder.create()
+        .setConnectionManager(getClientConnectionManager())
+        .setDefaultSocketConfig(createSocketConfig())
+        .setDefaultSocketConfig(createSocketConfig())
+        .setRoutePlanner(createRoutePlanner())
+        .setDefaultRequestConfig(createRequestConfig());
+
+    if (credentials != null) {
+      CredentialsProvider provider = new BasicCredentialsProvider();
+      provider.setCredentials(AuthScope.ANY, credentials);
+      builder.setDefaultCredentialsProvider(provider);
+    }
+
+    return builder.build();
   }
 
   public HttpClient getGridHttpClient(int connection_timeout, int socket_timeout) {

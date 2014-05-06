@@ -99,13 +99,14 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         httpClientFactory = new HttpClientFactory();
       }
     }
-    client = httpClientFactory.getHttpClient();
+
     if (addressOfRemoteServer != null && addressOfRemoteServer.getUserInfo() != null) {
       // Use HTTP Basic auth
       UsernamePasswordCredentials credentials = new
           UsernamePasswordCredentials(addressOfRemoteServer.getUserInfo());
-      ((DefaultHttpClient) client).getCredentialsProvider().
-          setCredentials(AuthScope.ANY, credentials);
+      client = httpClientFactory.createHttpClient(credentials);
+    } else {
+      client = httpClientFactory.getHttpClient();
     }
 
     // Some machines claim "localhost.localdomain" is the same as "localhost".
