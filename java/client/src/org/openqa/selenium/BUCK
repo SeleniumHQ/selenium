@@ -46,7 +46,10 @@ java_library(name = 'core',
     'internal/SocketLock.java',
     'internal/WrapsDriver.java',
     'internal/WrapsElement.java',
-  ] + glob(['internal/FindsBy*.java']),
+  ] + glob([
+     'html5/*.java',
+     'internal/FindsBy*.java'
+  ]),
   deps = [
     ':beta',
     ':exceptions',
