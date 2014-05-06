@@ -4,10 +4,10 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.openqa.selenium.remote.codec.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 /**
- * @deprecated Use {@link org.openqa.selenium.remote.codec.http.HttpMethod}.
+ * @deprecated Use {@link org.openqa.selenium.remote.http.HttpMethod}.
  */
 @Deprecated
 public enum HttpVerb {

@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonException;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.codec.ResponseCodec;
+import org.openqa.selenium.remote.ResponseCodec;
 
 /**
  * A response codec that adheres to the Selenium project's JSON/HTTP wire protocol.

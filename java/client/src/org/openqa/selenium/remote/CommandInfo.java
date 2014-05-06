@@ -1,6 +1,6 @@
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.remote.codec.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 public class CommandInfo {
 

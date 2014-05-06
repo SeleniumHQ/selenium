@@ -29,9 +29,9 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.codec.http.HttpMethod;
-import org.openqa.selenium.remote.codec.http.HttpRequest;
-import org.openqa.selenium.remote.codec.http.HttpResponse;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 

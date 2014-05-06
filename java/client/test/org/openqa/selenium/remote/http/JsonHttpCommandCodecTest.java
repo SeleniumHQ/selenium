@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_16;
 import static com.google.common.base.Charsets.UTF_8;
@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.remote.codec.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.codec.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.codec.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 

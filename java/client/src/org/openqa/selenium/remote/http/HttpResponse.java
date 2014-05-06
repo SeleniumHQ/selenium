@@ -15,23 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
-public class HttpRequest extends HttpMessage {
+public class HttpResponse extends HttpMessage {
 
-  private final HttpMethod method;
-  private final String uri;
+  private int status = HttpStatusCodes.OK;
 
-  public HttpRequest(HttpMethod method, String uri) {
-    this.method = method;
-    this.uri = uri;
+  public int getStatus() {
+    return status;
   }
 
-  public String getUri() {
-    return uri;
-  }
-
-  public HttpMethod getMethod() {
-    return method;
+  public void setStatus(int status) {
+    this.status = status;
   }
 }

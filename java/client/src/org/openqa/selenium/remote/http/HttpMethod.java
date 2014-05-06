@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
 public enum HttpMethod {
   DELETE,

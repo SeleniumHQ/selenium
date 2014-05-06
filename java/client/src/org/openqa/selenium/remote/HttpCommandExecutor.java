@@ -50,10 +50,10 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
-import org.openqa.selenium.remote.codec.http.HttpMethod;
-import org.openqa.selenium.remote.codec.http.HttpRequest;
-import org.openqa.selenium.remote.codec.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.codec.http.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
@@ -278,8 +278,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private Response createResponse(HttpResponse httpResponse, HttpContext context)
       throws IOException {
-    org.openqa.selenium.remote.codec.http.HttpResponse internalResponse =
-        new org.openqa.selenium.remote.codec.http.HttpResponse();
+    org.openqa.selenium.remote.http.HttpResponse internalResponse =
+        new org.openqa.selenium.remote.http.HttpResponse();
 
     internalResponse.setStatus(httpResponse.getStatusLine().getStatusCode());
     for (Header header : httpResponse.getAllHeaders()) {

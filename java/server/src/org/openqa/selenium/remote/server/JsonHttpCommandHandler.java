@@ -18,16 +18,16 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import static org.openqa.selenium.remote.DriverCommand.*;
-import static org.openqa.selenium.remote.codec.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.codec.http.HttpRequest;
-import org.openqa.selenium.remote.codec.http.HttpResponse;
-import org.openqa.selenium.remote.codec.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.codec.http.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;

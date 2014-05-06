@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote.codec;
+package org.openqa.selenium.remote;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
@@ -8,19 +8,23 @@ import org.openqa.selenium.remote.Command;
  *
  * @param <T> The type of an encoded command.
  */
-public interface CommandCodec<T> extends Codec<Command, T> {
+public interface CommandCodec<T> {
 
   /**
-   * @inheritDoc
+   * Encodes a command.
+   *
+   * @param command the command to encode.
+   * @return the encoded command.
    * @throws UnsupportedCommandException If the command is not supported by this codec.
    */
-  @Override
   T encode(Command command);
 
   /**
-   * @inheritDoc
+   * Decodes a command.
+   *
+   * @param encodedCommand the command to decode.
+   * @return the decoded command.
    * @throws UnsupportedCommandException If the command is not supported by this codec.
    */
-  @Override
   Command decode(T encodedCommand);
 }

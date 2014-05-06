@@ -1,4 +1,4 @@
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_16;
 import static com.google.common.base.Charsets.UTF_8;

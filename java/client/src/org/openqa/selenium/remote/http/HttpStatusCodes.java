@@ -15,17 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
-public class HttpResponse extends HttpMessage {
+public class HttpStatusCodes {
+  private HttpStatusCodes() {}
 
-  private int status = HttpStatusCodes.OK;
-
-  public int getStatus() {
-    return status;
-  }
-
-  public void setStatus(int status) {
-    this.status = status;
-  }
+  public static final int OK = 200;
+  public static final int NO_CONTENT = 204;
+  public static final int SEE_OTHER = 303;
+  public static final int BAD_REQUEST = 400;
+  public static final int NOT_FOUND = 404;
+  public static final int INTERNAL_SERVER_ERROR = 500;
 }

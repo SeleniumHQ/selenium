@@ -1,9 +1,8 @@
-package org.openqa.selenium.remote.codec.http;
+package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
@@ -25,7 +24,7 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.codec.CommandCodec;
+import org.openqa.selenium.remote.CommandCodec;
 
 import java.util.Comparator;
 import java.util.HashMap;
