@@ -34,13 +34,15 @@ public class RemoteNetworkConnection implements NetworkConnection {
 
   @Override
   public ConnectionType getNetworkConnection() {
-    return null;
+    return new ConnectionType(
+        (Integer) executeMethod.execute(DriverCommand.GET_NETWORK_CONNECTION, null));
   }
 
   @Override
   public ConnectionType setNetworkConnection(
       ConnectionType type) {
     Map<String, ConnectionType> mode = ImmutableMap.of("type", type);
-    return new ConnectionType((Integer)executeMethod.execute(DriverCommand.SET_NETWORK_CONNECTION, ImmutableMap.of("parameters", mode)));
+    return new ConnectionType((Integer) executeMethod
+        .execute(DriverCommand.SET_NETWORK_CONNECTION, ImmutableMap.of("parameters", mode)));
   }
 }
