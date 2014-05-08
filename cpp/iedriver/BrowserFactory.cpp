@@ -585,13 +585,7 @@ int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window)
 IWebBrowser2* BrowserFactory::CreateBrowser() {
   LOG(TRACE) << "Entering BrowserFactory::CreateBrowser";
 
-  // TODO: Error and exception handling and return value checking.
-  IWebBrowser2* browser;
-  if (this->windows_major_version_ >= 6) {
-    // Only Windows Vista and above have mandatory integrity levels.
-    this->SetThreadIntegrityLevel();
-  }
-
+  IWebBrowser2* browser = NULL;
   DWORD context = CLSCTX_LOCAL_SERVER;
   if (this->ie_major_version_ == 7 && this->windows_major_version_ >= 6) {
     // ONLY for IE 7 on Windows Vista. XP and below do not have Protected Mode;
@@ -599,17 +593,50 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
     context = context | CLSCTX_ENABLE_CLOAKING;
   }
 
-  ::CoCreateInstance(CLSID_InternetExplorer,
-                     NULL,
-                     context,
-                     IID_IWebBrowser2,
-                     reinterpret_cast<void**>(&browser));
+  HRESULT hr = ::CoCreateInstance(CLSID_InternetExplorer,
+                                  NULL,
+                                  context,
+                                  IID_IWebBrowser2,
+                                  reinterpret_cast<void**>(&browser));
+  // When IWebBrowser2::Quit() is called, the wrapper process doesn't
+  // exit right away. When that happens, CoCreateInstance can fail while
+  // the abandoned iexplore.exe instance is still valid. The "right" way
+  // to do this would be to call ::EnumProcesses before calling
+  // CoCreateInstance, finding all of the iexplore.exe processes, waiting
+  // for one to exit, and then proceed. However, there is no way to tell
+  // if a process ID belongs to an Internet Explorer instance, particularly
+  // when a 32-bit process tries to enumerate 64-bit processes on 64-bit
+  // Windows. So, we'll take the brute force way out, just retrying the call
+  // to CoCreateInstance until it succeeds (the old iexplore.exe process has
+  // exited), or we get a different error code. We'll also set a 45-second
+  // timeout, with 45 seconds being chosen because it's below the default
+  // 60 second HTTP request timeout of most language bindings.
+  if (FAILED(hr) && HRESULT_CODE(hr) == ERROR_SHUTDOWN_IS_SCHEDULED) {
+    LOG(DEBUG) << "CoCreateInstance for IWebBrowser2 failed due to a "
+                << "browser process that has not yet fully exited. Retrying "
+                << "until the browser process exits and a new instance can "
+                << "be successfully created.";
+  }
+  clock_t timeout = clock() + (45 * CLOCKS_PER_SEC);
+  while (FAILED(hr) && 
+         HRESULT_CODE(hr) == ERROR_SHUTDOWN_IS_SCHEDULED &&
+         clock() < timeout) {
+    ::Sleep(500);
+    hr = ::CoCreateInstance(CLSID_InternetExplorer,
+                            NULL,
+                            context,
+                            IID_IWebBrowser2,
+                            reinterpret_cast<void**>(&browser));
+  }
+  if (FAILED(hr) && HRESULT_CODE(hr) != ERROR_SHUTDOWN_IS_SCHEDULED) {
+    // If we hit this branch, the CoCreateInstance failed due to an unexpected
+    // error, either before we looped, or at some point during the loop. In
+    // in either case, there's not much else we can do except log the failure.
+    LOGHR(WARN, hr) << "CoCreateInstance for IWebBrowser2 failed.";
+  }
+
   if (browser != NULL) {
     browser->put_Visible(VARIANT_TRUE);
-  }
-  if (this->windows_major_version_ >= 6) {
-    // Only Windows Vista and above have mandatory integrity levels.
-    this->ResetThreadIntegrityLevel();
   }
 
   return browser;
@@ -664,41 +691,6 @@ bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
 
   ::CloseHandle(process_handle);
   return result == TRUE;
-}
-
-void BrowserFactory::SetThreadIntegrityLevel() {
-  LOG(TRACE) << "Entering BrowserFactory::SetThreadIntegrityLevel";
-
-  HANDLE process_token = NULL;
-  HANDLE thread_token = NULL;
-  PSID sid = NULL;
-  bool token_created = this->CreateLowIntegrityLevelToken(&process_token,
-                                                          &thread_token,
-                                                          &sid);
-  if (token_created) {
-    HANDLE thread_handle = ::GetCurrentThread();
-    BOOL result = ::SetThreadToken(&thread_handle, thread_token);
-    if (!result) {
-      // If we encounter an error, not bloody much we can do about it.
-      // Just log it and continue.
-      LOG(WARN) << "SetThreadToken returned FALSE";
-    }
-    result = ::ImpersonateLoggedOnUser(thread_token);
-    if (!result) {
-      // If we encounter an error, not bloody much we can do about it.
-      // Just log it and continue.
-      LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
-    }
-
-    ::CloseHandle(thread_token);
-    ::CloseHandle(process_token);
-    ::LocalFree(sid);
-  }
-}
-
-void BrowserFactory::ResetThreadIntegrityLevel() {
-  LOG(TRACE) << "Entering BrowserFactory::ResetThreadIntegrityLevel";
-  ::RevertToSelf();
 }
 
 void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {

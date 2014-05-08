@@ -52,14 +52,29 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   LOG(TRACE) << "Entering Browser::NewWindow3";
   // Handle the NewWindow3 event to allow us to immediately hook
   // the events of the new browser window opened by the user action.
+  // The three ways we can respond to this event are documented at
+  // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
+  // We potentially use two of those response methods.
   // This will not allow us to handle windows created by the JavaScript
   // showModalDialog function().
   IWebBrowser2* browser;
   LPSTREAM message_payload;
-  ::SendMessage(this->executor_handle(),
-                WD_BROWSER_NEW_WINDOW,
-                NULL,
-                reinterpret_cast<LPARAM>(&message_payload));
+  LRESULT create_result = ::SendMessage(this->executor_handle(),
+                                        WD_BROWSER_NEW_WINDOW,
+                                        NULL,
+                                        reinterpret_cast<LPARAM>(&message_payload));
+  if (create_result != 0) {
+    // The new, blank IWebBrowser2 object was not created,
+    // so we can't really do anything appropriate here.
+    // Note this is "response method 2" of the aforementioned
+    // documentation.
+    LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
+    *pbCancel = VARIANT_TRUE;
+    return;
+  }
+
+  // We received a valid IWebBrowser2 pointer, so deserialize it onto this
+  // thread, and pass the result back to the caller.
   HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                                 IID_IWebBrowser2,
                                                 reinterpret_cast<void**>(&browser));

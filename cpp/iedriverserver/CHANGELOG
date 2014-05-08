@@ -9,6 +9,24 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.41.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed crash when clicking on link that opens a new window.
+   When IWebBrowser2::Quit() is called, the wrapper process doesn't exit
+   right away. When that happens, CoCreateInstance can fail while the abandoned
+   iexplore.exe instance is still valid. The "right" way to do this would be to
+   call ::EnumProcesses before calling CoCreateInstance, finding all of the
+   iexplore.exe processes, waiting for one to exit, and then proceed. However,
+   there is no way to tell if a process ID belongs to an Internet Explorer
+   instance, particularly when a 32-bit process tries to enumerate 64-bit
+   processes on 64-bit Windows. So, we take the brute force way out, just
+   retrying the call to CoCreateInstance until it succeeds (the old
+   iexplore.exe process has exited), or we get a different error code. We also
+   set a 45-second timeout, with 45 seconds being chosen because it's below the
+   default 60 second HTTP request timeout of most language bindings. Fixes
+   issue #5848. Fixes issue #7021.
+
 v2.41.0.0
 =========
  * Release to synchronize with release of Selenium project.
