@@ -26,9 +26,9 @@ import java.io.File;
  */
 public class BrowserInstallation {
 
-  static CombinedFirefoxLocator      combinedFirefoxLocator;
+  static CombinedFirefoxLocator combinedFirefoxLocator;
   static GoogleChromeLocator googleChromeLocator;
-  static SafariLocator       safariLocator;
+  static SafariLocator safariLocator;
 
   private final String launcherFilePath;
   private final String libraryPath;
