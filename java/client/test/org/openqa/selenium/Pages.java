@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2010 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ public class Pages {
   public String framesetPage;
   public String grandchildPage;
   public String html5Page;
-  public String html5OfflinePage;
   public String iframePage;
   public String javascriptEnhancedForm;
   public String javascriptPage;
@@ -104,7 +103,6 @@ public class Pages {
     framesetPage = appServer.whereIs("frameset.html");
     grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
     html5Page = appServer.whereIs("html5Page.html");
-    html5OfflinePage = appServer.whereIs("html5/offline.html");
     iframePage = appServer.whereIs("iframes.html");
     javascriptEnhancedForm = appServer.whereIs("javascriptEnhancedForm.html");
     javascriptPage = appServer.whereIs("javascriptPage.html");

@@ -52,6 +52,11 @@ class Service(object):
             log_path = "ghostdriver.log"
         self._log = open(log_path, 'w')
 
+    def __del__(self):
+        # subprocess.Popen doesn't send signal on __del__;
+        # we have to try to stop the launched process.
+        self.stop()
+
     def start(self):
         """
         Starts PhantomJS with GhostDriver.

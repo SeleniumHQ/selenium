@@ -1,7 +1,5 @@
 /*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
+ Copyright 2007-2014 Software Freedom Conservancy
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,7 +20,6 @@ goog.require('Utils');
 goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.appcache');
-goog.require('bot.connection');
 goog.require('bot.dom');
 goog.require('bot.frame');
 goog.require('bot.locators');
@@ -1022,11 +1019,6 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
 };
 
 // HTML 5
-FirefoxDriver.prototype.isOnline = function(respond, parameters) {
-  respond.value = bot.connection.isOnline(respond.session.getBrowser().contentWindow);
-  respond.send();
-};
-
 FirefoxDriver.prototype.getAppCacheStatus = function(respond, parameters) {
   respond.value = bot.appcache.getStatus(respond.session.getBrowser().contentWindow);
   respond.send();

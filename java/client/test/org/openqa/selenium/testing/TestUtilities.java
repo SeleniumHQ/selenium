@@ -56,8 +56,9 @@ public class TestUtilities {
   }
 
   public static boolean isInternetExplorer(WebDriver driver) {
+    String userAgent = getUserAgent(driver);
     return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("MSIE");
+        && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
   }
 
   public static boolean isIe6(WebDriver driver) {

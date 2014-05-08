@@ -23,11 +23,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class FindChildElement extends WebElementHandler implements JsonParametersAware {
+public class FindChildElement extends WebElementHandler<Map<String, String>> implements JsonParametersAware {
   private volatile By by;
 
   public FindChildElement(Session session) {
@@ -39,13 +38,12 @@ public class FindChildElement extends WebElementHandler implements JsonParameter
     by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Map<String, String> call() throws Exception {
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 
-    response.setValue(ImmutableMap.of("ELEMENT", elementId));
-
-    return ResultType.SUCCESS;
+    return ImmutableMap.of("ELEMENT", elementId);
   }
 
   @Override

@@ -21,6 +21,7 @@ from .webelement import WebElement
 from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
 from .switch_to import SwitchTo
+from .mobile import Mobile
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
@@ -71,6 +72,11 @@ class WebDriver(object):
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
+        self._mobile = Mobile(self)
+
+    @property
+    def mobile(self):
+        return self._mobile
 
     @property
     def name(self):
@@ -788,7 +794,7 @@ class WebDriver(object):
         """
         allowed_values = ['LANDSCAPE', 'PORTRAIT']
         if value.upper() in allowed_values:
-            self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})['value']
+            self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})
         else:
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 

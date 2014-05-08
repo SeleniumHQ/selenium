@@ -1,6 +1,5 @@
 /*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +22,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AppCacheTest.class,
-    BrowserConnectionTest.class,
     Html5CapabilitiesTest.class,
     LocalStorageTest.class,
     LocationContextTest.class,

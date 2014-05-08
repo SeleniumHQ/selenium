@@ -17,18 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetWindowPosition extends ResponseAwareWebDriverHandler {
+public class GetWindowPosition extends WebDriverHandler<Point> {
 
   public GetWindowPosition(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getDriver().manage().window().getPosition());
-    return ResultType.SUCCESS;
+  @Override
+  public Point call() throws Exception {
+    return getDriver().manage().window().getPosition();
   }
 
   @Override

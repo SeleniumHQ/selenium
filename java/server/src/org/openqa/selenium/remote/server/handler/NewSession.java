@@ -28,29 +28,22 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class NewSession implements RestishHandler, JsonParametersAware {
+public class NewSession implements RestishHandler<Response>, JsonParametersAware {
   private volatile DriverSessions allSessions;
   private volatile Capabilities desiredCapabilities;
   private volatile SessionId sessionId;
-  private final Response response;
 
   public NewSession(DriverSessions allSession) {
     this.allSessions = allSession;
-    this.response = new Response();
   }
 
   public Capabilities getCapabilities() {
     return desiredCapabilities;
   }
   
-  public Response getResponse() {
-    return response;
-  }
-
   @SuppressWarnings({"unchecked"})
   public void setJsonParameters(Map<String, Object> allParameters)
       throws Exception {
@@ -58,7 +51,8 @@ public class NewSession implements RestishHandler, JsonParametersAware {
         (Map<String, Object>) allParameters.get("desiredCapabilities"));
   }
 
-  public ResultType handle() throws Exception {
+  @Override
+  public Response handle() throws Exception {
     // Handle the case where the client does not send any desired capabilities.
     sessionId = allSessions.newSession(desiredCapabilities != null
                                        ? desiredCapabilities : new DesiredCapabilities());
@@ -70,15 +64,16 @@ public class NewSession implements RestishHandler, JsonParametersAware {
     // to return this particular value
     capabilities.put("webdriver.remote.sessionid", sessionId.toString());
 
-    response.setSessionId(sessionId.toString());
-    response.setValue(capabilities);
-
     if (desiredCapabilities != null) {
       LoggingManager.perSessionLogHandler().configureLogging(
           (LoggingPreferences)desiredCapabilities.getCapability(CapabilityType.LOGGING_PREFS));
     }
     LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId);
-    return ResultType.SUCCESS;
+
+    Response response = new Response();
+    response.setSessionId(sessionId.toString());
+    response.setValue(capabilities);
+    return response;
   }
 
   public String getSessionId() {

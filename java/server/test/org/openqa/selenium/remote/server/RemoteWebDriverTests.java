@@ -23,7 +23,7 @@ import org.openqa.selenium.StandardSeleniumTests;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    ServerSpecificTests.class
+//    ServerSpecificTests.class
 })
 public class RemoteWebDriverTests {
 }

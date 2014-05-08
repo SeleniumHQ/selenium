@@ -16,7 +16,7 @@ goog.require('safaridriver.message.Connect');
  */
 safaridriver.client.init = function() {
   var h2 = document.createElement('h2');
-  h2.innerHTML = 'SafariDriver Client';
+  h2.innerHTML = 'SafariDriver Launcher';
   document.body.appendChild(h2);
 
   var div = document.createElement('div');
@@ -35,7 +35,9 @@ safaridriver.client.init = function() {
   }
   url = new goog.Uri(url);
 
-  log.info('Requesting connection at ' + url + '...');
+  log.info('Connecting to SafariDriver browser extension...');
+  log.info('Extension logs may be viewed by clicking the Selenium [\u2713] ' +
+           'button on the Safari toolbar');
   var numAttempts = 0;
   var message = new safaridriver.message.Connect(url.toString());
   connect();
@@ -44,12 +46,14 @@ safaridriver.client.init = function() {
     numAttempts += 1;
     var acknowledged = message.sendSync(window);
     if (acknowledged) {
-      log.info('Request acknowledged; connecting...');
+      log.info('Connected to extension');
+      log.info('Requesting extension connect to client at ' + url);
     } else if (numAttempts < 5) {
       var timeout = 250 * numAttempts;
       setTimeout(connect, timeout);
     } else {
-      log.severe('Unable to establish a connection with the SafariDriver');
+      log.severe(
+          'Unable to establish a connection with the SafariDriver extension');
     }
   }
 };

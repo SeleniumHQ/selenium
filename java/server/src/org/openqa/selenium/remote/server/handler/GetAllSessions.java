@@ -24,12 +24,12 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GetAllSessions implements RestishHandler {
+public class GetAllSessions implements RestishHandler<List<GetAllSessions.SessionInfo>> {
 
   private final Response response = new Response();
   private volatile DriverSessions allSessions;
@@ -38,11 +38,11 @@ public class GetAllSessions implements RestishHandler {
     this.allSessions = allSession;
   }
 
-  public ResultType handle() throws Exception {
+  @Override
+  public List<SessionInfo> handle() throws Exception {
     Set<SessionId> sessions = allSessions.getSessions();
     Iterable<SessionInfo> sessionInfo = Iterables.transform(sessions, toSessionInfo());
-    response.setValue(ImmutableList.copyOf(sessionInfo));
-    return ResultType.SUCCESS;
+    return ImmutableList.copyOf(sessionInfo);
   }
 
   public Response getResponse() {
@@ -58,12 +58,12 @@ public class GetAllSessions implements RestishHandler {
     };
   }
 
-  private static class SessionInfo {
+  public static class SessionInfo {
 
     private final SessionId id;
     private final Map<String, ?> capabilities;
 
-    public SessionInfo(SessionId id, Map<String, ?> capabilities) {
+    private SessionInfo(SessionId id, Map<String, ?> capabilities) {
       this.id = id;
       this.capabilities = capabilities;
     }

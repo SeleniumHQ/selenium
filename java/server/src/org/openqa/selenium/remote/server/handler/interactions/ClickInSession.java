@@ -21,18 +21,18 @@ import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class ClickInSession extends WebDriverHandler implements JsonParametersAware {
+public class ClickInSession extends WebDriverHandler<Void> implements JsonParametersAware {
   volatile boolean leftMouseButton = true;
 
   public ClickInSession(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
 
     if (leftMouseButton) {
@@ -40,7 +40,8 @@ public class ClickInSession extends WebDriverHandler implements JsonParametersAw
     } else {
       mouse.contextClick(null);
     }
-    return ResultType.SUCCESS;
+
+    return null;
   }
 
   @Override

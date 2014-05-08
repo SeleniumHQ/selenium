@@ -18,19 +18,17 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementDisplayed extends WebElementHandler {
+public class GetElementDisplayed extends WebElementHandler<Boolean> {
 
   public GetElementDisplayed(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Boolean call() throws Exception {
     WebElement element = getElement();
-    response.setValue(element.isDisplayed());
-
-    return ResultType.SUCCESS;
+    return element.isDisplayed();
   }
 
   @Override

@@ -18,17 +18,17 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class MaximizeWindow extends WebDriverHandler {
+public class MaximizeWindow extends WebDriverHandler<Void> {
 
   public MaximizeWindow(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().manage().window().maximize();
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

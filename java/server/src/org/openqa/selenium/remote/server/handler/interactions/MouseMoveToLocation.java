@@ -25,11 +25,10 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class MouseMoveToLocation extends WebDriverHandler implements JsonParametersAware {
+public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonParametersAware {
   private static final String XOFFSET = "xoffset";
   private static final String YOFFSET = "yoffset";
   private static final String ELEMENT = "element";
@@ -43,7 +42,8 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
 
     Coordinates elementLocation = null;
@@ -57,7 +57,7 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
     } else {
       mouse.mouseMove(elementLocation);
     }
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

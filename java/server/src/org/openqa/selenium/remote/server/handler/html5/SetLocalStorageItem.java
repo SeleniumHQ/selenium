@@ -19,11 +19,10 @@ package org.openqa.selenium.remote.server.handler.html5;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class SetLocalStorageItem extends WebDriverHandler implements JsonParametersAware {
+public class SetLocalStorageItem extends WebDriverHandler<Void> implements JsonParametersAware {
   private volatile String key;
   private volatile String value;
 
@@ -32,9 +31,9 @@ public class SetLocalStorageItem extends WebDriverHandler implements JsonParamet
   }
 
   @Override
-  public ResultType call() throws Exception {
+  public Void call() throws Exception {
     Utils.getWebStorage(getUnwrappedDriver()).getLocalStorage().setItem(key, value);
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

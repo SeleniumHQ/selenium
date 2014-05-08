@@ -62,6 +62,7 @@ setup_args = {
  	          'selenium.test.selenium.webdriver.ie',
  	          'selenium.test.selenium.webdriver.support',
               'selenium.webdriver',
+              'selenium.webdriver.android',
               'selenium.webdriver.chrome',
               'selenium.webdriver.common',
  	          'selenium.webdriver.common.html5',

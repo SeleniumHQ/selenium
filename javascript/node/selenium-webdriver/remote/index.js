@@ -30,6 +30,9 @@ var promise = require('../').promise,
 /**
  * Configuration options for a DriverService instance.
  * <ul>
+ * <li>
+ * <li>{@code loopback} - Whether the service should only be accessed on this
+ *     host's loopback address.
  * <li>{@code port} - The port to start the server on (must be > 0). If the
  *     port is provided as a promise, the service will wait for the promise to
  *     resolve before starting.
@@ -72,6 +75,9 @@ function DriverService(executable, options) {
 
   /** @private {string} */
   this.executable_ = executable;
+
+  /** @private {boolean} */
+  this.loopbackOnly_ = !!options.loopback;
 
   /** @private {(number|!webdriver.promise.Promise.<number>)} */
   this.port_ = options.port;
@@ -176,7 +182,8 @@ DriverService.prototype.start = function(opt_timeoutMs) {
 
       var serverUrl = url.format({
         protocol: 'http',
-        hostname: net.getAddress() || net.getLoopbackAddress(),
+        hostname: !self.loopbackOnly_ && net.getAddress() ||
+            net.getLoopbackAddress(),
         port: port,
         pathname: self.path_
       });

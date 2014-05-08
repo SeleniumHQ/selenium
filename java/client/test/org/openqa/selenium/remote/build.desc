@@ -6,6 +6,8 @@ java_test(name = "common-tests",
     "HttpRequest.java",
     "JsonToBeanConverterTest.java",
     "RemoteCommonTests.java",
+    "http/JsonHttpCommandCodecTest.java",
+    "http/JsonHttpResponseCodecTest.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/remote",

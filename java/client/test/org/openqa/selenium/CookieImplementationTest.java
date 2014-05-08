@@ -59,8 +59,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Before
   public void setUp() throws Exception {
     domainHelper = new DomainHelper(appServer);
-    cookiePage = domainHelper.getUrlForFirstValidHostname("/common/cookie");
     assumeTrue(domainHelper.checkIsOnValidHostname());
+    cookiePage = domainHelper.getUrlForFirstValidHostname("/common/cookie");
 
     deleteAllCookiesOnServerSide();
 

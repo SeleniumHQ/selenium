@@ -17,19 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.io.File;
 import java.util.Map;
 
-public class UploadFile extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class UploadFile extends WebDriverHandler<String> implements JsonParametersAware {
 
   private String file;
 
@@ -37,7 +34,8 @@ public class UploadFile extends ResponseAwareWebDriverHandler implements JsonPar
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public String call() throws Exception {
     TemporaryFilesystem tempfs = getSession().getTemporaryFileSystem();
     File tempDir = tempfs.createTempDir("upload", "file");
 
@@ -49,9 +47,7 @@ public class UploadFile extends ResponseAwareWebDriverHandler implements JsonPar
           allFiles.length);
     }
 
-    response.setValue(allFiles[0].getAbsolutePath());
-
-    return SUCCESS;
+    return allFiles[0].getAbsolutePath();
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {

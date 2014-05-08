@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -164,4 +164,9 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
+  String GET_SESSION_LOGS = "getSessionLogs";
+
+  // Mobile API
+  String GET_NETWORK_CONNECTION = "getNetworkConnection";
+  String SET_NETWORK_CONNECTION = "setNetworkConnection";
 }

@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
@@ -40,6 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -296,9 +298,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       executeScript(js);
       fail("Expected an exception");
     } catch (WebDriverException e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("errormessage"));
+      assertThat(e.getMessage(), containsString("errormessage"));
 
-      StackTraceElement [] st = e.getCause().getStackTrace();
+      Throwable rootCause = Throwables.getRootCause(e);
+      assertThat(rootCause.getMessage(), containsString("errormessage"));
+
+      StackTraceElement [] st = rootCause.getStackTrace();
       boolean seen = false;
       for (StackTraceElement s: st) {
         if (s.getMethodName().equals("functionB")) {

@@ -263,7 +263,8 @@ safaridriver.extension.onMessage_ = function(e) {
             });
           }, function(e) {
             safaridriver.extension.LOG_.severe(
-                'Failed to connect to client: ' + url, e);
+                'Failed to connect to client: ' + url,
+                /** @type {Error} */(e));
           });
       break;
 

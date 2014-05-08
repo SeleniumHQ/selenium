@@ -19,20 +19,18 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Set;
 
-public class GetAllCookies extends ResponseAwareWebDriverHandler {
+public class GetAllCookies extends WebDriverHandler<Set<Cookie>> {
 
   public GetAllCookies(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    Set<Cookie> cookies = getDriver().manage().getCookies();
-    response.setValue(cookies);
-    return ResultType.SUCCESS;
+  @Override
+  public Set<Cookie> call() throws Exception {
+    return getDriver().manage().getCookies();
   }
 
   @Override

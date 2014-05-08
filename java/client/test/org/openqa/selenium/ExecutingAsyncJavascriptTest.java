@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -48,6 +49,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import com.google.common.base.Throwables;
 
 @Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE, PHANTOMJS, MARIONETTE},
         reason = "Opera: not implemented yet")
@@ -259,9 +262,12 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
       executor.executeAsyncScript(js);
       fail("Expected an exception");
     } catch (WebDriverException e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("errormessage"));
+      assertThat(e.getMessage(), containsString("errormessage"));
 
-      StackTraceElement [] st = e.getCause().getStackTrace();
+      Throwable rootCause = Throwables.getRootCause(e);
+      assertThat(rootCause.getMessage(), containsString("errormessage"));
+
+      StackTraceElement [] st = rootCause.getStackTrace();
       boolean seen = false;
       for (StackTraceElement s: st) {
         if (s.getMethodName().equals("functionB")) {

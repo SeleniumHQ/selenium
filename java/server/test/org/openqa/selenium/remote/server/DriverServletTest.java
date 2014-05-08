@@ -104,7 +104,7 @@ public class DriverServletTest {
         String.format("/session/%s/url", sessionId),
         new JSONObject().put("url", "http://www.google.com"));
 
-    assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
+    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
     verify(driver).get("http://www.google.com");
   }
@@ -135,7 +135,7 @@ public class DriverServletTest {
 
     verify(driver).get("http://www.google.com");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals("application/json; charset=UTF-8",
+    assertEquals("application/json; charset=utf-8",
         response.getHeader("content-type"));
 
     JSONObject jsonResponse = new JSONObject(response.getBody());
@@ -158,7 +158,7 @@ public class DriverServletTest {
                     .put(CapabilityType.VERSION, true))));
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals("application/json; charset=UTF-8",
+    assertEquals("application/json; charset=utf-8",
         response.getHeader("content-type"));
 
     JSONObject jsonResponse = new JSONObject(response.getBody());

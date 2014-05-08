@@ -293,10 +293,10 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/application_cache/status'),
             Command.CLEAR_APP_CACHE:
                 ('DELETE', '/session/$sessionId/application_cache/clear'),
-            Command.IS_BROWSER_ONLINE:
-                ('GET', '/session/$sessionId/browser_connection'),
-            Command.SET_BROWSER_ONLINE:
-                ('POST', '/session/$sessionId/browser_connection'),
+            Command.GET_NETWORK_CONNECTION:
+                ('GET', '/session/$sessionId/network_connection'),
+            Command.SET_NETWORK_CONNECTION:
+                ('POST', '/session/$sessionId/network_connection'),
             Command.GET_LOCAL_STORAGE_ITEM:
                 ('GET', '/session/$sessionId/local_storage/key/$key'),
             Command.REMOVE_LOCAL_STORAGE_ITEM:

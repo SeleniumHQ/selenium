@@ -21,7 +21,7 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
 
-public abstract class WebElementHandler extends ResponseAwareWebDriverHandler {
+public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
   private volatile String elementId;
 
   protected WebElementHandler(Session session) {
@@ -34,6 +34,10 @@ public abstract class WebElementHandler extends ResponseAwareWebDriverHandler {
 
   protected WebElement getElement() {
     return getKnownElements().get(elementId);
+  }
+
+  protected String getElementId() {
+    return elementId;
   }
 
   protected String getElementAsString() {
