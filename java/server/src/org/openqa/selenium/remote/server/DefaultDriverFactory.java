@@ -30,8 +30,11 @@ public class DefaultDriverFactory implements DriverFactory {
       new ConcurrentHashMap<Capabilities, DriverProvider>();
 
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    capabilitiesToDriverProvider.put(capabilities,
-                                     new DefaultDriverProvider(capabilities, implementation));
+    registerDriverProvider(capabilities, new DefaultDriverProvider(capabilities, implementation));
+  }
+
+  public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
+    capabilitiesToDriverProvider.put(capabilities, implementation);
   }
 
   protected Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
