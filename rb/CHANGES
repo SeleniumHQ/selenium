@@ -1,3 +1,9 @@
+2.42.0 (???)
+============
+
+Firefox:
+  * Fix for extensions whose install.rdf uses an attribute for em:id (#5978)
+
 2.41.0 (2014-03-28)
 ===================
 
