@@ -7,6 +7,8 @@ import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.HttpHeaders.EXPIRES;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -36,8 +38,8 @@ public class JsonHttpResponseCodec implements ResponseCodec<HttpResponse> {
   @Override
   public HttpResponse encode(Response response) {
     int status = response.getStatus() == ErrorCodes.SUCCESS
-                 ? HttpStatusCodes.OK
-                 : HttpStatusCodes.INTERNAL_SERVER_ERROR;
+                 ? HTTP_OK
+                 : HTTP_INTERNAL_ERROR;
 
     byte[] data = beanToJsonConverter.convert(response).getBytes(UTF_8);
 

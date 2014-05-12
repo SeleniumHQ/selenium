@@ -4,6 +4,10 @@ import static com.google.common.base.Charsets.UTF_16;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,7 +39,7 @@ public class JsonHttpResponseCodecTest {
     response.setValue(ImmutableMap.of("color", "red"));
 
     HttpResponse converted = codec.encode(response);
-    assertThat(converted.getStatus(), is(HttpStatusCodes.OK));
+    assertThat(converted.getStatus(), is(HTTP_OK));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
     Response rebuilt = new JsonToBeanConverter().convert(
@@ -54,7 +58,7 @@ public class JsonHttpResponseCodecTest {
     response.setValue(ImmutableMap.of("color", "red"));
 
     HttpResponse converted = codec.encode(response);
-    assertThat(converted.getStatus(), is(HttpStatusCodes.INTERNAL_SERVER_ERROR));
+    assertThat(converted.getStatus(), is(HTTP_INTERNAL_ERROR));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
     Response rebuilt = new JsonToBeanConverter().convert(
@@ -83,7 +87,7 @@ public class JsonHttpResponseCodecTest {
   @Test
   public void decodeNonJsonResponse_200() throws JSONException {
     HttpResponse response = new HttpResponse();
-    response.setStatus(HttpStatusCodes.OK);
+    response.setStatus(HTTP_OK);
     response.setContent("foobar".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
@@ -94,7 +98,7 @@ public class JsonHttpResponseCodecTest {
   @Test
   public void decodeNonJsonResponse_204() throws JSONException {
     HttpResponse response = new HttpResponse();
-    response.setStatus(HttpStatusCodes.NO_CONTENT);
+    response.setStatus(HTTP_NO_CONTENT);
 
     Response decoded = codec.decode(response);
     assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
@@ -104,7 +108,7 @@ public class JsonHttpResponseCodecTest {
   @Test
   public void decodeNonJsonResponse_4xx() throws JSONException {
     HttpResponse response = new HttpResponse();
-    response.setStatus(HttpStatusCodes.BAD_REQUEST);
+    response.setStatus(HTTP_BAD_REQUEST);
     response.setContent("foobar".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
@@ -115,7 +119,7 @@ public class JsonHttpResponseCodecTest {
   @Test
   public void decodeNonJsonResponse_5xx() throws JSONException {
     HttpResponse response = new HttpResponse();
-    response.setStatus(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    response.setStatus(HTTP_INTERNAL_ERROR);
     response.setContent("foobar".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
@@ -130,7 +134,7 @@ public class JsonHttpResponseCodecTest {
     response.setValue(ImmutableMap.of("color", "red"));
 
     HttpResponse httpResponse = new HttpResponse();
-    httpResponse.setStatus(HttpStatusCodes.OK);
+    httpResponse.setStatus(HTTP_OK);
     httpResponse.setContent(
         new BeanToJsonConverter().convert(response).getBytes(UTF_8));
 

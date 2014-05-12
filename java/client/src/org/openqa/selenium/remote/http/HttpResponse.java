@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.http;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 public class HttpResponse extends HttpMessage {
 
-  private int status = HttpStatusCodes.OK;
+  private int status = HTTP_OK;
 
   public int getStatus() {
     return status;
