@@ -190,6 +190,14 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.ImplicitlyWait, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts/implicit_wait"));
             this.commandDictionary.Add(DriverCommand.SetAsyncScriptTimeout, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts/async_script"));
 
+            // HTML5 Local Storage
+            this.commandDictionary.Add(DriverCommand.LocalStorageGetKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
+            this.commandDictionary.Add(DriverCommand.LocalStorageGetItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"));
+            this.commandDictionary.Add(DriverCommand.LocalStorageSetItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
+            this.commandDictionary.Add(DriverCommand.LocalStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"));
+            this.commandDictionary.Add(DriverCommand.LocalStorageDeleteItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key]}"));
+            this.commandDictionary.Add(DriverCommand.LocalStorageClear, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
+
             // Advanced interactions commands
             this.commandDictionary.Add(DriverCommand.MouseClick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/click"));
             this.commandDictionary.Add(DriverCommand.MouseDoubleClick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/doubleclick"));
