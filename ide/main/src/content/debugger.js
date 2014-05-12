@@ -39,7 +39,6 @@ function Debugger(editor) {
     };
     this.editor.app.addObserver({
       testCaseChanged:function (testCase) {
-        self.runner.LOG.info("Changed test case");
         self.runner.testCase = testCase;
       }
     });

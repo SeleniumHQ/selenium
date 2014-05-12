@@ -102,12 +102,12 @@ var Pages = (function() {
 
 
 var Path = {
-  BASIC_AUTH: path.join(WEB_ROOT, 'basicAuth'),
-  MANIFEST: path.join(WEB_ROOT, 'manifest'),
-  REDIRECT: path.join(WEB_ROOT, 'redirect'),
-  PAGE: path.join(WEB_ROOT, 'page'),
-  SLEEP: path.join(WEB_ROOT, 'sleep'),
-  UPLOAD: path.join(WEB_ROOT, 'upload')
+  BASIC_AUTH: WEB_ROOT + '/basicAuth',
+  MANIFEST: WEB_ROOT + '/manifest',
+  REDIRECT: WEB_ROOT + '/redirect',
+  PAGE: WEB_ROOT + '/page',
+  SLEEP: WEB_ROOT + '/sleep',
+  UPLOAD: WEB_ROOT + '/upload'
 };
 
 
@@ -451,7 +451,11 @@ exports.url = server.url.bind(server);
  * @throws {Error} If the server is not running.
  */
 exports.whereIs = function(filePath) {
-  return server.url(path.join(WEB_ROOT, filePath));
+  filePath = filePath.replace(/\\/g, '/');
+  if (!string.startsWith(filePath, '/')) {
+    filePath = '/' + filePath;
+  }
+  return server.url(WEB_ROOT + filePath);
 };
 
 

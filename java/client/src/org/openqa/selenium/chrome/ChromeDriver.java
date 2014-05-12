@@ -19,12 +19,17 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.html5.RemoteLocationContext;
+import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
@@ -39,17 +44,14 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * 
  * import static org.junit.Assert.assertEquals;
  * 
- * import org.junit.After;
- * import org.junit.AfterClass;
- * import org.junit.Before;
- * import org.junit.BeforeClass;
+ * import org.junit.*;
  * import org.junit.runner.RunWith;
- * import org.junit.runners.BlockJUnit4ClassRunner
+ * import org.junit.runners.JUnit4;
  * import org.openqa.selenium.chrome.ChromeDriverService;
  * import org.openqa.selenium.remote.DesiredCapabilities;
  * import org.openqa.selenium.remote.RemoteWebDriver;
  * 
- * {@literal @RunWith(BlockJUnit4ClassRunner.class)}
+ * {@literal @RunWith(JUnit4.class)}
  * public class ChromeTest extends TestCase {
  * 
  *   private static ChromeDriverService service;
@@ -89,12 +91,21 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *     assertEquals("webdriver - Google Search", driver.getTitle());
  *   }
  * }
- * 
  * </pre></code>
- * 
+ *
+ * Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
+ * role interfaces such as {@link LocationContext} and {@link WebStorage}.
+ * Therefore, to access that functionality, it needs to be
+ * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
+ * to the appropriate interface.
+ *
  * @see ChromeDriverService#createDefaultService
  */
-public class ChromeDriver extends RemoteWebDriver {
+public class ChromeDriver extends RemoteWebDriver
+    implements LocationContext, WebStorage {
+
+  private RemoteLocationContext locationContext;
+  private RemoteWebStorage webStorage;
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -158,6 +169,8 @@ public class ChromeDriver extends RemoteWebDriver {
    */
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new DriverCommandExecutor(service), capabilities);
+    locationContext = new RemoteLocationContext(getExecuteMethod());
+    webStorage = new  RemoteWebStorage(getExecuteMethod());
   }
 
   @Override
@@ -167,26 +180,23 @@ public class ChromeDriver extends RemoteWebDriver {
         "via RemoteWebDriver");
   }
 
-  public <X> X getScreenshotAs(OutputType<X> target) {
-    // Get the screenshot as base64.
-    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
-    // ... and convert it.
-    return target.convertFromBase64Png(base64);
+  @Override
+  public LocalStorage getLocalStorage() {
+    return webStorage.getLocalStorage();
   }
 
   @Override
-  protected void startSession(Capabilities desiredCapabilities,
-                              Capabilities requiredCapabilities) {
-    try {
-      super.startSession(desiredCapabilities, requiredCapabilities);
-    } catch (WebDriverException e) {
-      try {
-        quit();
-      } catch (Throwable t) {
-         // Ignoring to report the exception thrown earlier.
-      }
+  public SessionStorage getSessionStorage() {
+    return webStorage.getSessionStorage();
+  }
 
-      throw e;
-    }
+  @Override
+  public Location location() {
+    return locationContext.location();
+  }
+
+  @Override
+  public void setLocation(Location location) {
+    locationContext.setLocation(location);
   }
 }

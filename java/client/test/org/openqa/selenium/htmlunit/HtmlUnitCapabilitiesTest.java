@@ -34,17 +34,11 @@ import static org.junit.Assert.assertTrue;
 public class HtmlUnitCapabilitiesTest {
   @Test
   public void configurationViaDirectCapabilities() {
-    DesiredCapabilities ie7Capabilities =
-        new DesiredCapabilities(BrowserType.IE, "7", Platform.ANY);
-
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
-        BrowserVersion.INTERNET_EXPLORER_7);
-
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
-        BrowserVersion.INTERNET_EXPLORER_8);
+        BrowserVersion.INTERNET_EXPLORER_11);
 
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
@@ -68,13 +62,13 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
+        BrowserVersion.INTERNET_EXPLORER_11);
+
+    DesiredCapabilities ie8Capabilities =
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer-8", Platform.ANY);
+
+    assertEquals(HtmlUnitDriver.determineBrowserVersion(ie8Capabilities),
         BrowserVersion.INTERNET_EXPLORER_8);
-
-    DesiredCapabilities ie7Capabilities =
-        new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer-7", Platform.ANY);
-
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
-        BrowserVersion.INTERNET_EXPLORER_7);
   }
 
   @Test

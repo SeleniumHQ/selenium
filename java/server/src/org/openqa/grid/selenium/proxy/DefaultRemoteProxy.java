@@ -78,10 +78,9 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   public void beforeRelease(TestSession session) {
-    // release the resources remotely.
+    // release the resources remotely if the remote started a browser.
     if (session.getExternalKey() == null) {
-      throw new IllegalStateException(
-          "cannot release the resources, they haven't been reserved properly.");
+      return;
     }
     boolean ok = session.sendDeleteSessionRequest();
     if (!ok) {

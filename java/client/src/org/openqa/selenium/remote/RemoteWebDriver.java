@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2012 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -50,12 +50,12 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.security.Credentials;
@@ -71,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
@@ -109,8 +110,30 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
     }
-    startClient();
-    startSession(desiredCapabilities, requiredCapabilities);
+
+    try {
+      startClient();
+    } catch (RuntimeException e) {
+      try {
+        stopClient();
+      } catch (Exception ignored) {
+        // Ignore the clean-up exception. We'll propagate the original failure.
+      }
+
+      throw e;
+    }
+
+    try {
+      startSession(desiredCapabilities, requiredCapabilities);
+    } catch (RuntimeException e) {
+      try {
+        quit();
+      } catch (Exception ignored) {
+        // Ignore the clean-up exception. We'll propagate the original failure.
+      }
+
+      throw e;
+    }
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
@@ -844,6 +867,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public WebDriver frame(WebElement frameElement) {
       Object elementAsJson = new WebElementToJsonConverter().apply(frameElement);
       execute(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of("id", elementAsJson));
+      return RemoteWebDriver.this;
+    }
+
+    public WebDriver parentFrame() {
+      execute(DriverCommand.SWITCH_TO_PARENT_FRAME);
       return RemoteWebDriver.this;
     }
 

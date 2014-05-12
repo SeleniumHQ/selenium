@@ -1,5 +1,5 @@
 rubygem(
-  version = "2.40.0.rc1",
+  version = "2.42.0.dev",
   name = "selenium-webdriver",
   dir = "build/rb",
   deps = [
@@ -19,7 +19,7 @@ rubygem(
   gemdeps = [
     { "multi_json"   : "~> 1.0"   },
     { "rubyzip"      : "~> 1.0"   },
-    { "childprocess" : ">= 0.2.5" },
+    { "childprocess" : ">= 0.5.0" },
     { "websocket"    : "~> 1.0.4" }
   ],
   devdeps = [
@@ -298,6 +298,7 @@ ruby_test(name = "unit",
     ":iphone",
     ":opera",
     ":remote",
+    ":safari",
     ":phantomjs",
     ":support",
   ]

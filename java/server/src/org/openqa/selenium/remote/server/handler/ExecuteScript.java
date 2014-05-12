@@ -24,13 +24,12 @@ import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ExecuteScript extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class ExecuteScript extends WebDriverHandler<Object> implements JsonParametersAware {
   private volatile String script;
   private volatile List<Object> args = new ArrayList<Object>();
 
@@ -47,7 +46,8 @@ public class ExecuteScript extends ResponseAwareWebDriverHandler implements Json
         new ArgumentConverter(getKnownElements())));
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Object call() throws Exception {
     Object value;
     if (args.size() > 0) {
       value = ((JavascriptExecutor) getDriver()).executeScript(script, args.toArray());
@@ -55,10 +55,7 @@ public class ExecuteScript extends ResponseAwareWebDriverHandler implements Json
       value = ((JavascriptExecutor) getDriver()).executeScript(script);
     }
 
-    Object result = new ResultConverter(getKnownElements()).apply(value);
-    response.setValue(result);
-
-    return ResultType.SUCCESS;
+    return new ResultConverter(getKnownElements()).apply(value);
   }
 
   @Override

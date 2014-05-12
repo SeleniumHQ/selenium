@@ -18,6 +18,12 @@ package org.openqa.selenium;
 
 /**
  * Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.
+ *
+ * <p>
+ * Because of cross domain policies browsers enforce your script execution may fail unexpectedly
+ * and without adequate error messaging. This is particularly pertinent when creating your own
+ * XHR request or when trying to access another frame. Most times when troubleshooting failure it's
+ * best to view the browser's console after executing the WebDriver request.
  */
 public interface JavascriptExecutor {
   /**
@@ -76,6 +82,13 @@ public interface JavascriptExecutor {
    * support nested lists.</li>
    * <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ul>
+   *
+   * <p>
+   * The default timeout for a script to be executed is 0ms. In most cases, including the examples
+   * below, one must set the script timeout
+   * {@link WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)}  beforehand
+   * to a value sufficiently large enough.
+   *
    * 
    * <p>
    * Example #1: Performing a sleep in the browser under test. <code><pre>
@@ -119,9 +132,11 @@ public interface JavascriptExecutor {
    * criteria. The arguments will be made available to the JavaScript via the "arguments"
    * variable.
    *
+   *
    * @param script The JavaScript to execute.
    * @param args The arguments to the script. May be empty.
    * @return One of Boolean, Long, String, List, WebElement, or null.
+   * @see WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)
    */
   Object executeAsyncScript(String script, Object... args);
 }

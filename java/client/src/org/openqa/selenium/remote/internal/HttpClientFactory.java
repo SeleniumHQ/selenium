@@ -1,31 +1,3 @@
-package org.openqa.selenium.remote.internal;
-
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.RedirectStrategy;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnConnectionPNames;
-import org.apache.http.conn.routing.HttpRoutePlanner;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
-
-import java.net.ProxySelector;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 /*
 Copyright 2007-2011 Selenium committers
 
@@ -41,24 +13,60 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+package org.openqa.selenium.remote.internal;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectStrategy;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoutePlanner;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultSchemePortResolver;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
+import org.apache.http.protocol.HttpContext;
+
+import java.io.IOException;
+import java.net.ProxySelector;
+
 public class HttpClientFactory {
 
-  private final DefaultHttpClient httpClient;
-  private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis( 60 * 60 * 3);
-  private final ClientConnectionManager gridClientConnectionManager = getClientConnectionManager();
+  private final CloseableHttpClient httpClient;
+  private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis(60 * 60 * 3);
+  private final HttpClientConnectionManager gridClientConnectionManager =
+      getClientConnectionManager();
 
   public HttpClientFactory() {
-    httpClient = new DefaultHttpClient(getClientConnectionManager());
-    httpClient.setParams(getHttpParams());
-    httpClient.setRoutePlanner(
-        getRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry()));
+    httpClient = createHttpClient(null);
   }
 
-  private static ClientConnectionManager getClientConnectionManager() {
-    SchemeRegistry registry = new SchemeRegistry();
-    registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-    registry.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
-    ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(registry);
+  private static HttpClientConnectionManager getClientConnectionManager() {
+    Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+        .<ConnectionSocketFactory>create()
+        .register("http", PlainConnectionSocketFactory.getSocketFactory())
+        .register("https", SSLConnectionSocketFactory.getSocketFactory())
+        .build();
+
+    PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
+        socketFactoryRegistry);
     cm.setMaxTotal(2000);
     cm.setDefaultMaxPerRoute(2000);
     return cm;
@@ -68,40 +76,68 @@ public class HttpClientFactory {
     return httpClient;
   }
 
+  public CloseableHttpClient createHttpClient(Credentials credentials) {
+    HttpClientBuilder builder = HttpClientBuilder.create()
+        .setConnectionManager(getClientConnectionManager())
+        .setDefaultSocketConfig(createSocketConfig())
+        .setDefaultSocketConfig(createSocketConfig())
+        .setRoutePlanner(createRoutePlanner())
+        .setDefaultRequestConfig(createRequestConfig());
+
+    if (credentials != null) {
+      CredentialsProvider provider = new BasicCredentialsProvider();
+      provider.setCredentials(AuthScope.ANY, credentials);
+      builder.setDefaultCredentialsProvider(provider);
+    }
+
+    return builder.build();
+  }
+
   public HttpClient getGridHttpClient(int connection_timeout, int socket_timeout) {
-    DefaultHttpClient gridClient = new DefaultHttpClient(gridClientConnectionManager);
-    gridClient.setRedirectStrategy(new MyRedirectHandler());
-    gridClient.setParams(getGridHttpParams(connection_timeout, socket_timeout));
-    gridClient.setRoutePlanner(
-        getRoutePlanner(gridClient.getConnectionManager().getSchemeRegistry()));
-    gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
+    gridClientConnectionManager.closeIdleConnections(100, MILLISECONDS);
 
-    return gridClient;
+    SocketConfig socketConfig = SocketConfig.copy(createSocketConfig())
+        .setSoTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
+        .build();
+
+    RequestConfig requestConfig = RequestConfig.copy(createRequestConfig())
+        .setConnectTimeout(connection_timeout > 0 ? connection_timeout : 120 * 1000)
+        .build();
+
+    return HttpClientBuilder.create()
+        .setConnectionManager(gridClientConnectionManager)
+        .setRedirectStrategy(new MyRedirectHandler())
+        .setDefaultSocketConfig(socketConfig)
+        .setDefaultRequestConfig(requestConfig)
+        .setRoutePlanner(createRoutePlanner())
+        .build();
   }
 
-  public HttpParams getHttpParams() {
-    HttpParams params = new BasicHttpParams();
-    HttpConnectionParams.setSoReuseaddr(params, true);
-    HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
-    HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
-    params.setIntParameter(ConnConnectionPNames.MAX_STATUS_LINE_GARBAGE, 0);
-    HttpConnectionParams.setStaleCheckingEnabled(params, true);
-    return params;
+  private SocketConfig createSocketConfig() {
+    return SocketConfig.custom()
+        .setSoReuseAddress(true)
+        .setSoTimeout(TIMEOUT_THREE_HOURS)
+        .build();
   }
 
-  public HttpRoutePlanner getRoutePlanner(SchemeRegistry registry) {
-    return new ProxySelectorRoutePlanner(registry, ProxySelector.getDefault());
+  private RequestConfig createRequestConfig() {
+    return RequestConfig.custom()
+        .setStaleConnectionCheckEnabled(true)
+        .setConnectTimeout(120 * 1000)
+        .build();
   }
 
-  public HttpParams getGridHttpParams(int connection_timeout, int socket_timeout){
-    final HttpParams params = getHttpParams();
-    HttpConnectionParams.setSoTimeout(params, socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS);
-    HttpConnectionParams.setConnectionTimeout(params, connection_timeout > 0 ? connection_timeout : 120 * 1000);
-    return params;
+  private HttpRoutePlanner createRoutePlanner() {
+    return new SystemDefaultRoutePlanner(
+        new DefaultSchemePortResolver(), ProxySelector.getDefault());
   }
 
   public void close() {
-    httpClient.getConnectionManager().shutdown();
+    try {
+      httpClient.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     gridClientConnectionManager.shutdown();
   }
 

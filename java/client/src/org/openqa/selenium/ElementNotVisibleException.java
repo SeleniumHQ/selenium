@@ -20,7 +20,7 @@ package org.openqa.selenium;
  * Thrown to indicate that although an element is present on the DOM, it is not visible, and so is
  * not able to be interacted with.
  */
-public class ElementNotVisibleException extends WebDriverException {
+public class ElementNotVisibleException extends InvalidElementStateException {
   public ElementNotVisibleException(String message) {
     super(message);
   }

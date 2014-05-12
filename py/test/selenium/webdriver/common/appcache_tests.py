@@ -15,23 +15,25 @@
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 import unittest
+import pytest
 
 class AppCacheTests(unittest.TestCase):
 
+    @pytest.mark.ignore_firefox
     def testWeCanGetTheStatusOfTheAppCache(self):
         self._loadPage('html5Page')
         self.driver.implicitly_wait(2)
         app_cache = self.driver.application_cache
 
-        status = app_cache.status 
+        status = app_cache.status
         while status == ApplicationCache.DOWNLOADING:
             status = app_cache.status
 
         self.assertEquals(ApplicationCache.UNCACHED, app_cache.status)
-        
+
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

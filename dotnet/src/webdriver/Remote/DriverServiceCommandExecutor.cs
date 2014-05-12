@@ -30,9 +30,10 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Provides a mechanism to execute commands on the browser
     /// </summary>
-    internal class DriverServiceCommandExecutor : HttpCommandExecutor
+    internal class DriverServiceCommandExecutor : ICommandExecutor
     {
         private DriverService service;
+        private HttpCommandExecutor internalExecutor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
@@ -52,17 +53,12 @@ namespace OpenQA.Selenium.Remote
         /// <param name="enableKeepAlive"><see langword="true"/> if the KeepAlive header should be sent
         /// with HTTP requests; otherwise, <see langword="false"/>.</param>
         public DriverServiceCommandExecutor(DriverService driverService, TimeSpan commandTimeout, bool enableKeepAlive)
-            : base(GetDriverServiceUrl(driverService), commandTimeout, enableKeepAlive)
         {
             this.service = driverService;
+            this.internalExecutor = new HttpCommandExecutor(driverService.ServiceUrl, commandTimeout, enableKeepAlive);
         }
 
-        /// <summary>
-        /// Executes a command with the Driver.
-        /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A response from the browser</returns>
-        public override Response Execute(Command commandToExecute)
+        public Response Execute(Command commandToExecute)
         {
             Response toReturn = null;
             if (commandToExecute.Name == DriverCommand.NewSession)
@@ -74,7 +70,7 @@ namespace OpenQA.Selenium.Remote
             // command, so that we can get the finally block.
             try
             {
-                toReturn = base.Execute(commandToExecute);
+                toReturn = this.internalExecutor.Execute(commandToExecute);
             }
             finally
             {
@@ -85,17 +81,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             return toReturn;
-        }
-
-        private static Uri GetDriverServiceUrl(DriverService driverService)
-        {
-            Uri driverUrl = null;
-            if (driverService != null)
-            {
-                driverUrl = driverService.ServiceUrl;
-            }
-
-            return driverUrl;
         }
     }
 }

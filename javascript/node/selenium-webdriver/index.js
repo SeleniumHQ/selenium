@@ -110,6 +110,12 @@ exports.WebElement = base.require('webdriver.WebElement');
 }));
 
 
+/** @type {webdriver.logging.} */
+(exports.__defineGetter__('logging', function() {
+  return base.exportPublicApi('webdriver.logging');
+}));
+
+
 /** @type {webdriver.promise.} */
 (exports.__defineGetter__('promise', function() {
   return base.exportPublicApi('webdriver.promise');

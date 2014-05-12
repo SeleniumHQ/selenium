@@ -22,19 +22,19 @@ import com.google.common.collect.Sets;
 
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetAvailableLogTypesHandler extends ResponseAwareWebDriverHandler {
+import java.util.Set;
+
+public class GetAvailableLogTypesHandler extends WebDriverHandler<Set<String>> {
 
   public GetAvailableLogTypesHandler(Session session) {
 	super(session);
   }
 
   @Override
-  public ResultType call() throws Exception {
-    response.setValue(Sets.union(getDriver().manage().logs().getAvailableLogTypes(),
-    		 ImmutableSet.of(LogType.SERVER)));
-    return ResultType.SUCCESS;
+  public Set<String> call() throws Exception {
+    return Sets.union(
+        getDriver().manage().logs().getAvailableLogTypes(), ImmutableSet.of(LogType.SERVER));
   }
 
   @Override

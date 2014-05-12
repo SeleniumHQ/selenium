@@ -230,7 +230,7 @@ wdSession.prototype.getWindow = function() {
 };
 
 
-/** @return @return {?nsIDOMWindow} This session's top window. */
+/** @return {?nsIDOMWindow} This session's top window. */
 wdSession.prototype.getTopWindow = function() {
   return this.getWindow().top;
 };

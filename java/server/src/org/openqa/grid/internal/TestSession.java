@@ -226,57 +226,62 @@ public class TestSession {
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
       lastActivity = timeSource.currentTimeInMillis();
-
-      final int statusCode = proxyResponse.getStatusLine().getStatusCode();
-      response.setStatus(statusCode);
-      processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
-
-      byte[] consumedNewWebDriverSessionBody = null;
-      if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
-          statusCode != HttpServletResponse.SC_NOT_FOUND) {
-        consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
-      }
-      if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
-        removeIncompleteNewSessionRequest();
-      }
-      if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
-        removeSessionBrowserTimeout();
-      }
-
       HttpEntity responseBody = proxyResponse.getEntity();
-      byte[] contentBeingForwarded = null;
-      if (responseBody != null) {
-        try {
-          InputStream in;
-          if (consumedNewWebDriverSessionBody == null) {
-            in = responseBody.getContent();
-            if (request.getRequestType() == RequestType.START_SESSION
-                && request instanceof LegacySeleniumRequest) {
-              res = getResponseUtf8Content(in);
+      try {
+        final int statusCode = proxyResponse.getStatusLine().getStatusCode();
+        response.setStatus(statusCode);
+        processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
-              updateHubNewSeleniumSession(res);
-
-              in = new ByteArrayInputStream(res.getBytes("UTF-8"));
-            }
-          } else {
-            in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
-          }
-
-          final byte[] bytes = drainInputStream(in);
-          writeRawBody(response, bytes);
-
-        } finally {
-          EntityUtils.consume(responseBody);
+        byte[] consumedNewWebDriverSessionBody = null;
+        if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
+            statusCode != HttpServletResponse.SC_NOT_FOUND) {
+          consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
+        }
+        if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+          removeIncompleteNewSessionRequest();
+        }
+        if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
+          removeSessionBrowserTimeout();
         }
 
-      }
+        byte[] contentBeingForwarded = null;
+        if (responseBody != null) {
+          try {
+            InputStream in;
+            if (consumedNewWebDriverSessionBody == null) {
+              in = responseBody.getContent();
+              if (request.getRequestType() == RequestType.START_SESSION
+                  && request instanceof LegacySeleniumRequest) {
+                res = getResponseUtf8Content(in);
 
-      if (slot.getProxy() instanceof CommandListener) {
-        SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
-        wrappedResponse.setForwardedContent(contentBeingForwarded);
-        ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+                updateHubNewSeleniumSession(res);
+
+                in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+              }
+            } else {
+              in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
+            }
+
+            final byte[] bytes = drainInputStream(in);
+            writeRawBody(response, bytes);
+
+          } finally {
+            EntityUtils.consume(responseBody);
+          }
+
+        }
+
+        if (slot.getProxy() instanceof CommandListener) {
+          SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
+          wrappedResponse.setForwardedContent(contentBeingForwarded);
+          ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+        }
+        response.flushBuffer();
+      } finally {
+        EntityUtils.consume(responseBody);
       }
       response.flushBuffer();
+
       return res;
     } finally {
       forwardingRequest = false;
@@ -544,17 +549,24 @@ public class TestSession {
     }
 
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
-
+    HttpEntity responseBody = null;
     boolean ok;
     try {
       HttpClient client = getClient();
       HttpResponse response = client.execute(host, request);
+      responseBody = response.getEntity();
       int code = response.getStatusLine().getStatusCode();
       ok = (code >= 200) && (code <= 299);
     } catch (Throwable e) {
       ok = false;
       // corrupted or the something else already sent the DELETE.
       log.severe("Error releasing. Server corrupted ?");
+    }finally{
+        try {
+            EntityUtils.consume(responseBody);
+         } catch (IOException e) {
+          log.warning("Consuming the response body when DELETE to the node" + e.getMessage());
+        }
     }
     return ok;
   }

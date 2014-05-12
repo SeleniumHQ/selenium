@@ -192,8 +192,8 @@ class WebDriverWaitTest(unittest.TestCase):
         self.driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
         WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
         self.assertEqual('Example Expected text', self.driver.find_element_by_id('inputRequired').get_attribute('value'))
-    
-    def testExpectedConditionFrameToBeAvailableAndSwitchTo(self):
+
+    def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(self):
         self._loadPage("blank")
         try:
             WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
@@ -204,7 +204,18 @@ class WebDriverWaitTest(unittest.TestCase):
         WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
         self.assertEqual('click me', self.driver.find_element_by_id('alertInFrame').text)
 
-    
+    def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(self):
+        self._loadPage("blank")
+        try:
+            WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException as e:
+            pass
+        self.driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '"+self._pageURL('iframeWithAlert')+"'; document.body.appendChild(f)}, 200)")
+        WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
+        self.assertEqual('click me', self.driver.find_element_by_id('alertInFrame').text)
+
+
     def testExpectedConditionInvisiblityOfElementLocated(self):
         self._loadPage("javascriptPage")
         self.driver.execute_script("delayedShowHide(0, true)")
@@ -310,12 +321,12 @@ class WebDriverWaitTest(unittest.TestCase):
             pass
         self.driver.execute_script("setTimeout(function(){alert('alerty')}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())
-        alert = self.driver.switch_to_alert()
+        alert = self.driver.switch_to.alert
         self.assertEqual('alerty', alert.text)
         alert.dismiss()
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')
 
     def _loadSimplePage(self):
         self._loadPage("simpleTest")

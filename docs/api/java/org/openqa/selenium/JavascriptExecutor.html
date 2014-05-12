@@ -85,12 +85,18 @@
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../org/openqa/selenium/android/AndroidDriver.html" title="class in org.openqa.selenium.android">AndroidDriver</a>, <a href="../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</a>, <a href="../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome">ChromeDriver</a>, <a href="../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a>, <a href="../../../org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a>, <a href="../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a>, <a href="../../../org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a>, <a href="../../../org/openqa/selenium/iphone/IPhoneDriver.html" title="class in org.openqa.selenium.iphone">IPhoneDriver</a>, <a href="../../../org/openqa/selenium/iphone/IPhoneSimulatorDriver.html" title="class in org.openqa.selenium.iphone">IPhoneSimulatorDriver</a>, <a href="../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>, <a href="../../../org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></dd>
+<dd><a href="../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome">ChromeDriver</a>, <a href="../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a>, <a href="../../../org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a>, <a href="../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a>, <a href="../../../org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a>, <a href="../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>, <a href="../../../org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public interface <span class="strong">JavascriptExecutor</span></pre>
-<div class="block">Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.</div>
+<div class="block">Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.
+
+ <p>
+ Because of cross domain policies browsers enforce your script execution may fail unexpectedly
+ and without adequate error messaging. This is particularly pertinent when creating your own
+ XHR request or when trying to access another frame. Most times when troubleshooting failure it's
+ best to view the browser's console after executing the WebDriver request.</div>
 </li>
 </ul>
 </div>
@@ -206,6 +212,13 @@
  support nested lists.</li>
  <li>Unless the value is null or there is no return value, in which null is returned</li>
  </ul>
+
+ <p>
+ The default timeout for a script to be executed is 0ms. In most cases, including the examples
+ below, one must set the script timeout
+ <a href="../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a>  beforehand
+ to a value sufficiently large enough.
+
  
  <p>
  Example #1: Performing a sleep in the browser under test. <code><pre>
@@ -249,7 +262,7 @@
  criteria. The arguments will be made available to the JavaScript via the "arguments"
  variable.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - The JavaScript to execute.</dd><dd><code>args</code> - The arguments to the script. May be empty.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd></dl>
+<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a></dd></dl>
 </li>
 </ul>
 </li>

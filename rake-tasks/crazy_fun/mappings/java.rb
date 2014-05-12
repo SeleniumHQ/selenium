@@ -55,7 +55,7 @@ module CrazyFunJava
 
   def self.ant
     @ant ||= (
-      require 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
+      require 'third_party/java/eclipse_compiler/ecj-4.3.2.jar'
       require 'third_party/java/junit/junit-dep-4.11.jar'
 
       Ant.load_bundled
@@ -525,6 +525,14 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
               end
 
+              if remote_url
+                ant.sysproperty :key => 'selenium.external.serverUrl', :value => remote_url
+                ant.sysproperty :key => 'selenium.browser.remote', :value => 'true'
+                if remote_browser
+                  ant.sysproperty :key => 'selenium.browser', :value => remote_browser
+                end
+              end
+
               if marionette?
                 ant.sysproperty :key => 'webdriver.firefox.marionette', :value => 'true'
               end
@@ -614,6 +622,14 @@ module CrazyFunJava
 
     def firefox
       return ENV['firefox']
+    end
+
+    def remote_url
+      return ENV['remote_url']
+    end
+
+    def remote_browser
+      return ENV['remote_browser']
     end
 
     def jvm_args

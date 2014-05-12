@@ -63,7 +63,7 @@ public class Proxies {
     DoNotUseProxyPac pac =
         newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
-    Proxy proxy = extractProxy(capabilities);
+    Proxy proxy = Proxy.extractFrom(capabilities);
     if (proxy != null && proxy.getHttpProxy() != null) {
       pac.defaults().toProxy(proxy.getHttpProxy());
     }
@@ -79,6 +79,10 @@ public class Proxies {
     }
   }
 
+  /**
+   * @deprecated Use Proxy.extractFrom(Capabilities)
+   */
+  @Deprecated
   @SuppressWarnings({"unchecked"})
   public static Proxy extractProxy(Capabilities capabilities) {
     Object rawProxy = capabilities.getCapability(PROXY);
@@ -101,7 +105,7 @@ public class Proxies {
 
     Object tempProxy = capabilities.getCapability(CapabilityType.PROXY);
     if (tempProxy != null) {
-      Proxy proxy = extractProxy(capabilities);
+      Proxy proxy = Proxy.extractFrom(capabilities);
       if (proxy.getHttpProxy() != null) {
         pac.defaults().toProxy(proxy.getHttpProxy());
       } else if (proxy.getProxyAutoconfigUrl() != null) {

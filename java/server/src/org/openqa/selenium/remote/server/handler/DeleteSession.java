@@ -21,22 +21,22 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 /**
  * Handles the browser side of the delete. Removing from DriverSessions happens outside this class.
  */
-public class DeleteSession extends WebDriverHandler {
+public class DeleteSession extends WebDriverHandler<Void> {
 
   public DeleteSession(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
 
     WebDriver driver = getDriver();
     if (driver == null) {
-      return ResultType.SUCCESS;
+      return null;
     }
 
     try {
@@ -60,7 +60,7 @@ public class DeleteSession extends WebDriverHandler {
           the incorrect order. But that should only happen on create/delete, right ?
        */
     logHandler.transferThreadTempLogsToSessionLogs(getSessionId());
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

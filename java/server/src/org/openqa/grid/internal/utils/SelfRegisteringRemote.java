@@ -249,7 +249,7 @@ public class SelfRegisteringRemote {
         BasicHttpEntityEnclosingRequest r =
             new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
         String json = nodeConfig.toJSON();
-        r.setEntity(new StringEntity(json));
+        r.setEntity(new StringEntity(json,"UTF-8"));
 
         HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
         HttpResponse response = client.execute(host, r);

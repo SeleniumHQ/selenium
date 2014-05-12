@@ -162,7 +162,7 @@ class ElementAttributeTests(unittest.TestCase):
     # Disabled due to issues with Frames    
     #def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(self):
     #    self._loadPage("iframes")
-    #    self.driver.switch_to_frame("iframe1")
+    #    self.driver.switch_to.frame("iframe1")
     #
     #    wallace = self.driver.find_element_by_xpath("//div[@id='wallace']")
     #    classname = wallace.get_attribute("class")
@@ -263,8 +263,8 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual('Hvad s\xf8ger du?', title)
         
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
- 
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

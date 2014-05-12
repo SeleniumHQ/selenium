@@ -95,7 +95,6 @@ Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_DIVIDE;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_END;
-Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_EQUALS;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_ESCAPE;
 Components.interfaces.nsIDOMKeyEvent.DOM_VK_F1;

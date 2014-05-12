@@ -20,18 +20,18 @@ import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class DoubleClickInSession extends WebDriverHandler {
+public class DoubleClickInSession extends WebDriverHandler<Void> {
 
   public DoubleClickInSession(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
     mouse.doubleClick(null);
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

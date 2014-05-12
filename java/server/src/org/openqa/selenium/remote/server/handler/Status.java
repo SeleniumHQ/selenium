@@ -21,24 +21,15 @@ import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 /**
  * RestishHandler that returns general status information about the server.
  */
-public class Status implements RestishHandler {
+public class Status implements RestishHandler<Response> {
 
-  private final Response response;
-
-  public Status() {
-    response = new Response();
-  }
-
-  public Response getResponse() {
-    return response;
-  }
-
-  public ResultType handle() throws Exception {
+  @Override
+  public Response handle() throws Exception {
+    Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setState(ErrorCodes.SUCCESS_STRING);
 
@@ -57,7 +48,6 @@ public class Status implements RestishHandler {
             .put("version", System.getProperty("java.version")));
 
     response.setValue(info);
-
-    return ResultType.SUCCESS;
+    return response;
   }
 }

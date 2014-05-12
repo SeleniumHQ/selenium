@@ -739,6 +739,11 @@ should switch to the page's default content.''').
       AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/frame/parent').
+          Post('''Change focus to the parent context. If the current context is the top level \
+browsing context, the context remains unchanged.'''))
+
+  resources.append(
       SessionResource('/session/:sessionId/window').
       Post('''Change focus to another window. The window to change focus to \
 may be specified by its
@@ -1624,6 +1629,7 @@ A JSON object describing a Cookie.
 || path || string || (Optional) The cookie path.^1^ ||
 || domain || string || (Optional) The domain the cookie is visible to.^1^ ||
 || secure || boolean || (Optional) Whether the cookie is a secure cookie.^1^ ||
+|| httpOnly || boolean || (Optional) Whether the cookie is an httpOnly cookie.^1^ ||
 || expiry || number || (Optional) When the cookie expires, specified in \
 seconds since midnight, January 1, 1970 UTC.^1^ ||
 

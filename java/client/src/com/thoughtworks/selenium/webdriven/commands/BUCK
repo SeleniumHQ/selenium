@@ -1,19 +1,6 @@
 
-java_library(name = 'timer',
-  srcs = [ 'Timer.java' ],
-  deps = [
-    '//java/client/src/com/thoughtworks/selenium:api',
-    '//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-  ],
-)
-
-
 java_library(name = 'commands',
-  srcs = glob(['*.java'], excludes = ['Timer.java']),
-  exported_deps = [
-    ':timer',
-  ],
+  srcs = glob(['*.java']),
   deps = [
     '//java/client/src/com/thoughtworks/selenium:api',
     '//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api',

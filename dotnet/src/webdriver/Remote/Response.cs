@@ -96,7 +96,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A JSON-encoded string representing this <see cref="Response"/> object.</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, new CookieJsonConverter());
+            return JsonConvert.SerializeObject(this);
         }
 
         /// <summary>

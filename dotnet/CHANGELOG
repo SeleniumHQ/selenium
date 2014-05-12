@@ -1,5 +1,21 @@
+v2.41.0
+=======
+ * Supports native events for Firefox versions 28 (current), 27 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Removed deprecated AndroidDriver
+ * Added excludeSwitches to the list of known Chrome options
+ * Implemented ITakesScreenshot in RemoteWebDriver base class instead of
+   in browser-specific subclasses.
+ * Refactored usage of command executors. We now use the same algorithm for
+   creating and using a "command executor" for all current driver
+   implementations. This removes some of the differences between Firefox and
+   other implementations. It also prepares the way for unifying the
+   construction of drivers using a common base Options class.
+
 v2.40.0
 =======
+ * Supports native events for Firefox versions 27 (current), 26 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
  * Issue #1175: Implemented ByIdOrName in .NET support package.
  * Issue #3283: Escaping backslashes when writing Firefox preferences to
    profile in .NET
@@ -21,6 +37,8 @@ v2.40.0
    also specify an IP address to which to bind to listen. This commit exposes
    that ability. It also exposes the ability to specify a Selenium Grid hub
    with which this instance of PhantomJS should register as a node.
+ * Issue #6343: (on behalf of Ulrich Buchgraber) Make .NET DefaultWait stop
+   swallowing original exception stack trace.
  * Issue #6699: Exposing process ID of service executable in .NET DriverService
    class. This allows the user to attempt to add the process to a Windows job
    object if they so desire, which will automatically kill child processes when
@@ -39,6 +57,11 @@ v2.40.0
    collisions in random number generation encountered when using the .NET
    Random class, particularly in different processes. GUIDs are used as their
    generation in the .NET Framework is optimized for performance.
+ * Issue #6966: Changed .NET WebDriverBackedSelenium OpenWindow to mimic Java.
+   The JavaScript evaluated by the .NET WebDriverBackedSelenium OpenWindow
+   command handler should return a null value from the eval() of the
+   JavaScript to open the window. This is what the Java implementation does,
+   and this commit brings the .NET implementation into line with that.
  * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
    context. This allows the user to execute PhantomJS-specific commands using
    the PhantomJS JavaScript API.
@@ -74,6 +97,8 @@ v2.40.0
 
 v2.39.0
 =======
+ * Supports native events for Firefox versions 26 (current), 25 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
  * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
    is to use a third-party implementation for Android, such as Selendroid
    (http://selendroid.io/) or Appium (http://appium.io/).
@@ -95,6 +120,8 @@ v2.39.0
 
 v2.38.0
 =======
+ * Supports native events for Firefox versions 25 (current), 24 (immediately
+   previous and current ESR), and 17 (immediately previous ESR)
  * Issue #6383: Adding method GetCSSCount to ISelenium.
  * Issue #6418: Updated .NET path manipulation when launching Firefox process.
  * Issue #6453: Adding type-safe properties for new command-line arguments of
@@ -104,6 +131,8 @@ v2.38.0
 
 v2.37.0
 =======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
  * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved
    waiting for the driver service process to end to immediately after sending
    the shutdown HTTP request. Waiting to catch the exception for a failed HTTP
@@ -113,6 +142,8 @@ v2.37.0
 
 v2.36.0
 =======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
  * Added ability to set additional ChromeOptions in the .NET bindings. This
    allows the ability to set user profile preferences and local state
    preferences using the ChromeOptions class. The new AddUserProfilePreference
@@ -134,6 +165,8 @@ v2.36.0
 
 v2.35.0
 =======
+ * Supports native events for Firefox versions 23 (current), 22 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
    in .NET to prevent double slashes in URL. This change is in the .NET
    WebDriverBackedSelenium API.
@@ -143,6 +176,8 @@ v2.35.0
 
 v2.34.0
 =======
+ * Supports native events for Firefox versions 22 (current), 21 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Added support for ie.ensureCleanSession capability to .NET bindings. The
    .NET bindings do this by means of the EnsureCleanSession property on the
    InternetExplorerOptions object. When set to true, this property instructs
@@ -170,6 +205,8 @@ v2.34.0
 
 v2.33.0
 =======
+ * Supports native events for Firefox versions 21 (current), 20 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
    Profile preferences Dictionary. Was previously using the .Add() method of
    the Dictionary, which would throw an exception if the key already existed.
@@ -182,6 +219,8 @@ v2.32.1
 
 v2.32.0
 =======
+ * Supports native events for Firefox versions 20 (current), 19 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
  * Issue #4629: Modified .NET Firefox driver to only look to connect to IPv4
    addresses. The ConnectToBrowser() method always created IPv4 addresses to
    initially addresses for connection, this would throw an exception.

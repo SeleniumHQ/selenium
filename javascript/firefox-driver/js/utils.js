@@ -371,7 +371,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     } else if (c == '\uE006') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE007') {
-      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE008') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       shiftKey = !shiftKey;

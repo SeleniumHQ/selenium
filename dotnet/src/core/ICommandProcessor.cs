@@ -34,6 +34,7 @@ namespace Selenium
         /// <summary>
         /// Sets the extension Javascript to be used in the created session
         /// </summary>
+        /// <param name="extensionJs">The extension JavaScript to use.</param>
         void SetExtensionJs(string extensionJs) ;
 		/// <summary>
 		/// Starts a new Selenium testing session

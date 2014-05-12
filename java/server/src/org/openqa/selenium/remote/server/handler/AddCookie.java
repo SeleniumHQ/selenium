@@ -22,13 +22,12 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class AddCookie extends WebDriverHandler implements JsonParametersAware {
+public class AddCookie extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private volatile Map<String, Object> rawCookie;
 
@@ -36,12 +35,13 @@ public class AddCookie extends WebDriverHandler implements JsonParametersAware {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     Cookie cookie = createCookie();
 
     getDriver().manage().addCookie(cookie);
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @SuppressWarnings({"unchecked"})

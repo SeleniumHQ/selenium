@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -59,8 +59,13 @@ public interface DriverCommand {
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
 
+  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
+  String GET_CONTEXT_HANDLES = "getContextHandles";
+
   String SWITCH_TO_WINDOW = "switchToWindow";
+  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";
@@ -69,9 +74,6 @@ public interface DriverCommand {
 
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
-
-  String SET_BROWSER_VISIBLE = "setBrowserVisible";
-  String IS_BROWSER_VISIBLE = "isBrowserVisible";
 
   String GET_ELEMENT_TEXT = "getElementText";
   String GET_ELEMENT_VALUE = "getElementValue";
@@ -162,4 +164,9 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
+  String GET_SESSION_LOGS = "getSessionLogs";
+
+  // Mobile API
+  String GET_NETWORK_CONNECTION = "getNetworkConnection";
+  String SET_NETWORK_CONNECTION = "setNetworkConnection";
 }

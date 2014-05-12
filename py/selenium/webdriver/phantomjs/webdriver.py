@@ -71,9 +71,3 @@ class WebDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
-
-    def __del__(self):
-        try:
-            self.service.stop()
-        except:
-            pass

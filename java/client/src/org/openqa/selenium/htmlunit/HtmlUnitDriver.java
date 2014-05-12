@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.TopLevelWindow;
 import com.gargoylesoftware.htmlunit.UnexpectedPage;
+import com.gargoylesoftware.htmlunit.Version;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
@@ -86,7 +87,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
@@ -205,7 +205,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
-    setProxySettings(Proxies.extractProxy(capabilities));
+    setProxySettings(Proxy.extractFrom(capabilities));
   }
 
   // Package visibility for testing
@@ -243,19 +243,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         int version = Integer.parseInt(browserVersion);
         switch (version) {
-          case 6:
-            return BrowserVersion.INTERNET_EXPLORER_6;
-          case 7:
-            return BrowserVersion.INTERNET_EXPLORER_7;
           case 8:
             return BrowserVersion.INTERNET_EXPLORER_8;
           case 9:
             return BrowserVersion.INTERNET_EXPLORER_9;
           default:
-            return BrowserVersion.INTERNET_EXPLORER_8;
+            return BrowserVersion.INTERNET_EXPLORER_11;
         }
       } catch (NumberFormatException e) {
-        return BrowserVersion.INTERNET_EXPLORER_8;
+        return BrowserVersion.INTERNET_EXPLORER_11;
       }
     }
 
@@ -444,6 +440,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     capabilities.setPlatform(Platform.getCurrent());
     capabilities.setJavascriptEnabled(isJavascriptEnabled());
+    capabilities.setVersion(Version.getProductVersion());
     capabilities.setCapability(SUPPORTS_FINDING_BY_CSS, true);
 
     return capabilities;
@@ -1173,6 +1170,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return HtmlUnitDriver.this;
     }
 
+    public WebDriver parentFrame() {
+      currentWindow = currentWindow.getParentWindow();
+      return HtmlUnitDriver.this;
+    }
+
     public WebDriver window(String windowId) {
       try {
         WebWindow window = getWebClient().getWebWindowByName(windowId);
@@ -1222,6 +1224,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public Alert alert() {
       throw new UnsupportedOperationException("alert()");
+    }
+
+    public WebDriver context(String name) {
+      throw new UnsupportedOperationException("context(String)");
     }
   }
 
@@ -1398,7 +1404,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void deleteCookie(Cookie cookie) {
-      deleteCookieNamed(cookie.getName());
+      getWebClient().getCookieManager().removeCookie(convertSeleniumCookieToHtmlUnit(cookie));
     }
 
     public void deleteAllCookies() {
@@ -1419,6 +1425,18 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return ImmutableSet.copyOf(Collections2.transform(
           getWebClient().getCookieManager().getCookies(url),
           htmlUnitCookieToSeleniumCookieTransformer));
+    }
+
+    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(Cookie cookie) {
+      return new com.gargoylesoftware.htmlunit.util.Cookie(
+          cookie.getDomain(),
+          cookie.getName(),
+          cookie.getValue(),
+          cookie.getPath(),
+          cookie.getExpiry(),
+          cookie.isSecure(),
+          cookie.isHttpOnly()
+      );
     }
 
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =

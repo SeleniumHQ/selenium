@@ -58,6 +58,13 @@ public class ChromeDriverService extends DriverService {
       "webdriver.chrome.verboseLogging";
 
   /**
+   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * in silent mode.
+   */
+  public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
+      "webdriver.chrome.silentOutput";
+
+  /**
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
@@ -96,7 +103,7 @@ public class ChromeDriverService extends DriverService {
     String chromeLogFile = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
     private File logFile = chromeLogFile == null ? null : new File(chromeLogFile);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
-    private boolean silent;
+    private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
 
     /**
      * Sets which driver executable the builder will use.

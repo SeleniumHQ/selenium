@@ -20,12 +20,11 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class ConfigureTimeout extends WebDriverHandler implements JsonParametersAware {
+public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private volatile String type;
   private volatile long millis;
@@ -43,7 +42,8 @@ public class ConfigureTimeout extends WebDriverHandler implements JsonParameters
     }
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     if ("implicit".equals(type)) {
       getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
     } else if ("page load".equals(type)) {
@@ -53,7 +53,7 @@ public class ConfigureTimeout extends WebDriverHandler implements JsonParameters
     } else {
       throw new WebDriverException("Unknown wait type: " + type);
     }
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

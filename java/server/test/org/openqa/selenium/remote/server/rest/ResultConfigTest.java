@@ -17,20 +17,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.rest;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.StubHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,14 +39,6 @@ import java.util.logging.Logger;
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
-
-  @Test
-  public void testShouldMatchBasicUrls() throws Exception {
-    ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
-
-    assertThat(config.getHandler("/fish", dummySessionId), is(notNullValue()));
-    assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
-  }
 
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
@@ -71,18 +61,12 @@ public class ResultConfigTest {
   }
 
   @Test
-  public void testShouldMatchNamedParameters() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    RestishHandler handler = config.getHandler("/foo/fishy", dummySessionId);
-
-    assertThat(handler, is(notNullValue()));
-  }
-
-  @Test
   public void testShouldSetNamedParametersOnHandler() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    NamedParameterHandler handler =
-        (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
+    );
+    Command command = new Command(dummySessionId, "foo", ImmutableMap.of("bar", "fishy"));
+    NamedParameterHandler handler = new NamedParameterHandler();
+    config.populate(handler, command);
 
     assertThat(handler.getBar(), is("fishy"));
   }
@@ -90,7 +74,8 @@ public class ResultConfigTest {
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   public void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     assertNull(config.getRootExceptionCause(null));
   }
 
@@ -105,7 +90,8 @@ public class ResultConfigTest {
     ExecutionException execution = new ExecutionException("General WebDriver error",
         webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
   }
@@ -118,87 +104,16 @@ public class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    );
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
-  }
-
-  @Test
-  public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    try {
-      config.getRenderer(ResultType.ERROR, mockRequest);
-      fail("Should have thrown a NPE");
-    } catch (NullPointerException expected) {
-    }
-  }
-
-  @Test
-  public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypeMatches() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1, "text/plain")
-        .on(ResultType.SUCCESS, mockRenderer2, "text/html");
-
-    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testSelectsRenderWithMimeTypeMatch() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1)
-        .on(ResultType.SUCCESS, mockRenderer2, "application/json");
-
-    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1, "text/html")
-        .on(ResultType.SUCCESS, mockRenderer2);
-
-    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
-  }
-
-  @Test
-  public void testSkipsRenderersThatRequireASpecificTypeOfMimeType() {
-    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = mock(HttpRequest.class);
-
-    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
-
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, new Result("text/html", mockRenderer1, true))
-        .on(ResultType.SUCCESS, mockRenderer2);
-
-    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
   private void exceptionWasExpected() {
   }
 
-  public static class NamedParameterHandler implements RestishHandler {
+  public static class NamedParameterHandler implements RestishHandler<Void> {
 
     private String bar;
 
@@ -211,8 +126,9 @@ public class ResultConfigTest {
       this.bar = bar;
     }
 
-    public ResultType handle() {
-      return ResultType.SUCCESS;
+    @Override
+    public Void handle() {
+      return null;
     }
   }
 

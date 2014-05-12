@@ -244,6 +244,11 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
   LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
 
   IWebBrowser2* browser = this->factory_->CreateBrowser();
+  if (browser == NULL) {
+    // No browser was created, so we have to bail early.
+    // Check the log for the HRESULT why.
+    return 1;
+  }
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
   // TODO: This is a big assumption that this will work. We need a test case
   // to validate that it will or won't.

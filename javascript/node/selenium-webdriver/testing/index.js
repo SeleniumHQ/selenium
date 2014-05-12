@@ -120,7 +120,13 @@ function wrapped(globalFn) {
   function asyncTestFn(fn) {
     return function(done) {
       this.timeout(0);
-      flow.execute(fn).then(seal(done), done);
+      var timeout = this.timeout;
+      this.timeout = undefined;  // Do not let tests change the timeout.
+      try {
+        flow.execute(fn.bind(this)).then(seal(done), done);
+      } finally {
+        this.timeout = timeout;
+      }
     };
   }
 }

@@ -11,7 +11,7 @@ module Selenium
             new(binary)
           else
             raise Error::WebDriverError,
-              "Unable to find standalone executable. Please download the IEDriverServer from http://code.google.com/p/selenium/downloads/list and place the executable on your PATH."
+              "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
           end
         end
 

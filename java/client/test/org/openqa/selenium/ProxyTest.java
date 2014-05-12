@@ -20,6 +20,9 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -307,4 +310,19 @@ public class ProxyTest {
     assertNull(proxy.getProxyAutoconfigUrl());
   }
 
+  @Test
+  public void constructingWithNullKeysWorksAsExpected() {
+    Map<String, String> rawProxy = new HashMap<String, String>();
+    rawProxy.put("ftpProxy", null);
+    rawProxy.put("httpProxy", "http://www.example.com");
+    rawProxy.put("autodetect", null);
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.PROXY, rawProxy);
+
+    Proxy proxy = Proxy.extractFrom(caps);
+
+    assertNull(proxy.getFtpProxy());
+    assertFalse(proxy.isAutodetect());
+    assertEquals("http://www.example.com", proxy.getHttpProxy());
+  }
 }

@@ -21,11 +21,10 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class SetWindowSize extends WebDriverHandler implements JsonParametersAware {
+public class SetWindowSize extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private Dimension size;
 
@@ -49,9 +48,10 @@ public class SetWindowSize extends WebDriverHandler implements JsonParametersAwa
     size = new Dimension(width, height);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().manage().window().setSize(size);
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

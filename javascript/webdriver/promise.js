@@ -70,6 +70,7 @@ goog.require('webdriver.stacktrace.Snapshot');
  * functions are provided for API compatibility with Dojo Deferred objects.
  *
  * @constructor
+ * @template T
  * @see http://wiki.commonjs.org/wiki/Promises/A
  */
 webdriver.promise.Promise = function() {
@@ -98,14 +99,15 @@ webdriver.promise.Promise.prototype.isPending = function() {
  * Registers listeners for when this instance is resolved. This function most
  * overridden by subtypes.
  *
- * @param {Function=} opt_callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {Function=} opt_errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
+ * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback The
+ *     function to call if this promise is successfully resolved. The function
+ *     should expect a single argument: the promise's resolved value.
+ * @param {?(function(*): (R|webdriver.promise.Promise.<R>))=} opt_errback The
+ *     function to call if this promise is rejected. The function should expect
+ *     a single argument: the rejection reason.
+ * @return {!webdriver.promise.Promise.<R>} A new promise which will be
+ *     resolved with the result of the invoked callback.
+ * @template R
  */
 webdriver.promise.Promise.prototype.then = function(
     opt_callback, opt_errback) {
@@ -130,11 +132,12 @@ webdriver.promise.Promise.prototype.then = function(
  *   });
  * </code></pre>
  *
- * @param {!Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
+ * @param {function(*): (R|webdriver.promise.Promise.<R>)} errback The function
+ *     to call if this promise is rejected. The function should expect a single
+ *     argument: the rejection reason.
+ * @return {!webdriver.promise.Promise.<R>} A new promise which will be
+ *     resolved with the result of the invoked callback.
+ * @template R
  */
 webdriver.promise.Promise.prototype.thenCatch = function(errback) {
   return this.then(null, errback);
@@ -174,92 +177,14 @@ webdriver.promise.Promise.prototype.thenCatch = function(errback) {
  * </code></pre>
  *
  *
- * @param callback
- * @returns {!webdriver.promise.Promise}
+ * @param {function(): (R|webdriver.promise.Promise.<R>)} callback The function
+ *     to call when this promise is resolved.
+ * @return {!webdriver.promise.Promise.<R>} A promise that will be fulfilled
+ *     with the callback result.
+ * @template R
  */
 webdriver.promise.Promise.prototype.thenFinally = function(callback) {
   return this.then(callback, callback);
-};
-
-
-/**
- * Registers a function to be invoked when this promise is successfully
- * resolved. This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #then()} instead.
- */
-webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
-  return this.then(goog.bind(callback, opt_self));
-};
-
-
-/**
- * Registers a function to be invoked when this promise is rejected.
- * This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #thenCatch()} instead.
- */
-webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
-  return this.thenCatch(goog.bind(errback, opt_self));
-};
-
-
-/**
- * Registers a function to be invoked when this promise is either rejected or
- * resolved. This function is provided for backwards compatibility with the
- * Dojo Deferred API.
- *
- * @param {Function} callback The function to call when this promise is
- *     either resolved or rejected. The function should expect a single
- *     argument: the resolved value or rejection error.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #thenFinally()} instead.
- */
-webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
-  return this.thenFinally(goog.bind(callback, opt_self));
-};
-
-
-/**
- * An alias for {@code webdriver.promise.Promise.prototype.then} that permits
- * the scope of the invoked function to be specified. This function is provided
- * for backwards compatibility with the Dojo Deferred API.
- *
- * @param {Function} callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the rejection
- *     reason.
- * @param {!Object=} opt_self The object which |this| should refer to when the
- *     function is invoked.
- * @return {!webdriver.promise.Promise} A new promise which will be resolved
- *     with the result of the invoked callback.
- * @deprecated Use {@link #then()} instead.
- */
-webdriver.promise.Promise.prototype.addCallbacks = function(
-    callback, errback, opt_self) {
-  return this.then(goog.bind(callback, opt_self),
-      goog.bind(errback, opt_self));
 };
 
 
@@ -285,7 +210,8 @@ webdriver.promise.Promise.prototype.addCallbacks = function(
  *     this instance was created under. This should only be provided during
  *     unit tests.
  * @constructor
- * @extends {webdriver.promise.Promise}
+ * @extends {webdriver.promise.Promise.<T>}
+ * @template T
  */
 webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   /* NOTE: This class's implementation diverges from the prototypical style
@@ -437,16 +363,18 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   /**
    * The consumer promise for this instance. Provides protected access to the
    * callback registering functions.
-   * @type {!webdriver.promise.Promise}
+   * @type {!webdriver.promise.Promise.<T>}
    */
   var promise = new webdriver.promise.Promise();
 
   /**
    * Registers a callback on this Deferred.
-   * @param {Function=} opt_callback The callback.
-   * @param {Function=} opt_errback The errback.
-   * @return {!webdriver.promise.Promise} A new promise representing the result
-   *     of the callback.
+   *
+   * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback .
+   * @param {?(function(*): (R|webdriver.promise.Promise.<R>))=} opt_errback .
+   * @return {!webdriver.promise.Promise.<R>} A new promise representing the
+   *     result of the callback.
+   * @template R
    * @see webdriver.promise.Promise#then
    */
   function then(opt_callback, opt_errback) {
@@ -487,7 +415,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    * Resolves this promise with the given value. If the value is itself a
    * promise and not a reference to this deferred, this instance will wait for
    * it before resolving.
-   * @param {*=} opt_value The resolved value.
+   * @param {T=} opt_value The fulfilled value.
    */
   function fulfill(opt_value) {
     resolve(webdriver.promise.Deferred.State_.RESOLVED, opt_value);
@@ -624,7 +552,8 @@ webdriver.promise.delayed = function(ms) {
  * Creates a new deferred object.
  * @param {Function=} opt_canceller Function to call when cancelling the
  *     computation of this instance's value.
- * @return {!webdriver.promise.Deferred} The new deferred object.
+ * @return {!webdriver.promise.Deferred.<T>} The new deferred object.
+ * @template T
  */
 webdriver.promise.defer = function(opt_canceller) {
   return new webdriver.promise.Deferred(opt_canceller);
@@ -633,8 +562,9 @@ webdriver.promise.defer = function(opt_canceller) {
 
 /**
  * Creates a promise that has been resolved with the given value.
- * @param {*=} opt_value The resolved value.
- * @return {!webdriver.promise.Promise} The resolved promise.
+ * @param {T=} opt_value The resolved value.
+ * @return {!webdriver.promise.Promise.<T>} The resolved promise.
+ * @template T
  */
 webdriver.promise.fulfilled = function(opt_value) {
   if (opt_value instanceof webdriver.promise.Promise) {
@@ -650,7 +580,8 @@ webdriver.promise.fulfilled = function(opt_value) {
  * Creates a promise that has been rejected with the given reason.
  * @param {*=} opt_reason The rejection reason; may be any value, but is
  *     usually an Error or a string.
- * @return {!webdriver.promise.Promise} The rejected promise.
+ * @return {!webdriver.promise.Promise.<T>} The rejected promise.
+ * @template T
  */
 webdriver.promise.rejected = function(opt_reason) {
   var deferred = new webdriver.promise.Deferred();
@@ -1276,12 +1207,14 @@ webdriver.promise.ControlFlow.prototype.getSchedule = function() {
  * Schedules a task for execution. If there is nothing currently in the
  * queue, the task will be executed in the next turn of the event loop.
  *
- * @param {!Function} fn The function to call to start the task. If the
- *     function returns a {@link webdriver.promise.Promise}, this instance
- *     will wait for it to be resolved before starting the next task.
+ * @param {function(): (T|webdriver.promise.Promise.<T>)} fn The function to
+ *     call to start the task. If the function returns a
+ *     {@link webdriver.promise.Promise}, this instance will wait for it to be
+ *     resolved before starting the next task.
  * @param {string=} opt_description A description of the task.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the result of the action.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be resolved
+ *     with the result of the action.
+ * @template T
  */
 webdriver.promise.ControlFlow.prototype.execute = function(
     fn, opt_description) {
@@ -1299,7 +1232,7 @@ webdriver.promise.ControlFlow.prototype.execute = function(
   var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
   scheduleIn.addChild(task);
 
-  this.emit(webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK);
+  this.emit(webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK, opt_description);
 
   this.scheduleEventLoopStart_();
   return task.promise;

@@ -102,12 +102,12 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        // TODO(dawagner): Maybe retry the method which failed
         try {
           statement.evaluate();
         } catch (Throwable t) {
           dealWithSauceFailureIfNecessary(t);
-          throw Throwables.propagate(t);
+          // retry if we got a 'sauce' failure
+          statement.evaluate();
         }
       }
     };
@@ -122,6 +122,8 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
       } catch (Exception e) {
         throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
       }
+    } else {
+      throw Throwables.propagate(t);
     }
   }
 

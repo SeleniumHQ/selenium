@@ -60,13 +60,13 @@
 <li>Summary:&nbsp;</li>
 <li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
 </div>
@@ -154,6 +154,40 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
  the <a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</a></strong></code>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
+ in silent mode.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_VERBOSE_LOG_PROPERTY">CHROME_DRIVER_VERBOSE_LOG_PROPERTY</a></strong></code>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
+ with verbose logging.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#ChromeDriverService(java.io.File, int, com.google.common.collect.ImmutableList, com.google.common.collect.ImmutableMap)">ChromeDriverService</a></strong>(java.io.File&nbsp;executable,
+                   int&nbsp;port,
+                   com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;args,
+                   com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -219,13 +253,61 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <a name="CHROME_DRIVER_LOG_PROPERTY">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>CHROME_DRIVER_LOG_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_LOG_PROPERTY</pre>
 <div class="block">System property that defines the location of the log that will be written by
  the <a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CHROME_DRIVER_VERBOSE_LOG_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CHROME_DRIVER_VERBOSE_LOG_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String CHROME_DRIVER_VERBOSE_LOG_PROPERTY</pre>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
+ with verbose logging.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_VERBOSE_LOG_PROPERTY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</pre>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
+ in silent mode.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="ChromeDriverService(java.io.File, int, com.google.common.collect.ImmutableList, com.google.common.collect.ImmutableMap)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ChromeDriverService</h4>
+<pre>public&nbsp;ChromeDriverService(java.io.File&nbsp;executable,
+                   int&nbsp;port,
+                   com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;args,
+                   com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)
+                    throws java.io.IOException</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>executable</code> - The chromedriver executable.</dd><dd><code>port</code> - Which port to start the chromedriver on.</dd><dd><code>args</code> - The arguments to the launched server.</dd><dd><code>environment</code> - The environment for the launched server.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - If an I/O error occurs.</dd></dl>
 </li>
 </ul>
 </li>
@@ -302,13 +384,13 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <li>Summary:&nbsp;</li>
 <li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
 </div>

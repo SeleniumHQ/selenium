@@ -18,9 +18,8 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetCssProperty extends WebElementHandler {
+public class GetCssProperty extends WebElementHandler<String> {
   private volatile String propertyName;
 
   public GetCssProperty(Session session) {
@@ -31,11 +30,10 @@ public class GetCssProperty extends WebElementHandler {
     this.propertyName = propertyName;
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public String call() throws Exception {
     WebElement element = getElement();
-    response.setValue(element.getCssValue(propertyName));
-
-    return ResultType.SUCCESS;
+    return element.getCssValue(propertyName);
   }
 
   @Override

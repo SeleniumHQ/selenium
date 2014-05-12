@@ -44,11 +44,18 @@ class Service(object):
             self.port = utils.free_port()
         if self.service_args is None:
             self.service_args = []
+        else:
+            self.service_args=service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         if not log_path:
             log_path = "ghostdriver.log"
         self._log = open(log_path, 'w')
+
+    def __del__(self):
+        # subprocess.Popen doesn't send signal on __del__;
+        # we have to try to stop the launched process.
+        self.stop()
 
     def start(self):
         """

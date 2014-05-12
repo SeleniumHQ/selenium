@@ -41,7 +41,8 @@ namespace OpenQA.Selenium
 
         public static bool IsInternetExplorer(IWebDriver driver)
         {
-            return GetUserAgent(driver).Contains("MSIE");
+            string userAgent = GetUserAgent(driver);
+            return userAgent.Contains("MSIE") || userAgent.Contains("Trident");
         }
 
         public static bool IsIE6(IWebDriver driver)

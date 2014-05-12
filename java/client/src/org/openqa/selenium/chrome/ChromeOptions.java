@@ -171,14 +171,6 @@ public class ChromeOptions {
   }
 
   /**
-   * @deprecated Use {@link #setExperimentalOption(String, Object)}.
-   */
-  @Deprecated
-  public void setExperimentalOptions(String name, Object value) {
-    setExperimentalOption(name, value);
-  }
-
-  /**
    * Sets an experimental option.  Useful for new ChromeDriver options not yet
    * exposed through the {@link ChromeOptions} API.
    *

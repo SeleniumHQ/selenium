@@ -4,18 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Documentation by YARD 0.8.5.2</title>
+	<title>Documentation by YARD 0.8.7.3</title>
 </head>
 <script type="text/javascript" charset="utf-8">
 window.onload = function() {
-  var match = window.location.hash.match(/^#!(.+)/);
-  var name = 'index.html';
-  if (match) {
-    name = unescape(match[1]);
-  }
+  var match = unescape(window.location.hash).match(/^#!(.+)/);
+  var name = match ? match[1] : 'index.html';
+  name = name.replace(/^(\w+):\/\//, '').replace(/^\/\//, '');
   document.writeln('<frameset cols="20%,*">' +
     '<frame name="list" src="class_list.html" />' +
-    '<frame name="main" src="' + name + '" />' +
+    '<frame name="main" src="' + escape(name) + '" />' +
     '</frameset>');
 }
 </script>

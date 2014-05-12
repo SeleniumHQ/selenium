@@ -46,8 +46,7 @@ module Selenium
 
         def app_server
           @app_server ||= (
-            path = File.join(root, "common/src/web")
-            s = RackServer.new(path)
+            s = RackServer.new(root.join("common/src/web").to_s)
             s.start
 
             s
@@ -66,7 +65,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= File.join(root, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
+          @remote_server_jar ||= root.join("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar").to_s
         end
 
         def quit
@@ -97,7 +96,7 @@ module Selenium
         end
 
         def root
-          @root ||= File.expand_path("../../../../../../../", __FILE__)
+          @root ||= Pathname.new("../../../../../../../").expand_path(__FILE__)
         end
 
         private

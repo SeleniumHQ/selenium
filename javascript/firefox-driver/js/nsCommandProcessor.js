@@ -421,7 +421,6 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  sessionId = sessionId.value;
   try {
     response.session = Components.
       classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].

@@ -1,3 +1,27 @@
+2.42.0 (???)
+============
+
+Firefox:
+  * Fix for extensions whose install.rdf uses an attribute for em:id (#5978)
+
+2.41.0 (2014-03-28)
+===================
+
+* Removed dead browser visibility methods.
+* Firefox:
+  * Native events support for Firefox 28 (removed support for 26)
+
+2.40.0 (2014-02-19)
+===================
+
+* Fix bug where FileReaper would not reap files added in a child process
+* Document AbstractEventListener (#5994)
+* Safari:
+  * Add Safari::Options + clean up Safari extension handling (#6382)
+  * Add support for user extensions (#6815)
+* Firefox:
+  * Support native events for Firefox 27 + removed native event support for Firefox 25
+
 2.39.0 (2013-12-17)
 ===================
 

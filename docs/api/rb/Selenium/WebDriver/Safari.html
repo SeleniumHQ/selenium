@@ -6,13 +6,13 @@
 <title>
   Module: Selenium::WebDriver::Safari
   
-    &mdash; Documentation by YARD 0.8.5.2
+    &mdash; Documentation by YARD 0.8.7.3
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   hasFrames = window.top.frames.main ? true : false;
@@ -79,8 +79,8 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver/safari.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/safari/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/safari/extension.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb</span>
+    <dd class="r1 last">rb/lib/selenium/webdriver/safari/bridge.rb<span class="defines">,<br />
+  rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/safari/extensions.rb,<br /> rb/lib/selenium/webdriver/safari/options.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb,<br /> rb/lib/selenium/webdriver/safari.rb</span>
 </dd>
   
 </dl>
@@ -92,7 +92,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Browser.html" title="Selenium::WebDriver::Safari::Browser (class)">Browser</a></span>, <span class='object_link'><a href="Safari/Extension.html" title="Selenium::WebDriver::Safari::Extension (class)">Extension</a></span>, <span class='object_link'><a href="Safari/Server.html" title="Selenium::WebDriver::Safari::Server (class)">Server</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Browser.html" title="Selenium::WebDriver::Safari::Browser (class)">Browser</a></span>, <span class='object_link'><a href="Safari/Extensions.html" title="Selenium::WebDriver::Safari::Extensions (class)">Extensions</a></span>, <span class='object_link'><a href="Safari/Options.html" title="Selenium::WebDriver::Safari::Options (class)">Options</a></span>, <span class='object_link'><a href="Safari/Server.html" title="Selenium::WebDriver::Safari::Server (class)">Server</a></span>
     
   
 </p>
@@ -226,13 +226,13 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
     <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
-    <span class='kw'>when</span> <span class='symbol'>:windows</span>
-      <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_in_program_files'>find_in_program_files</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari\\Safari.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-    <span class='kw'>when</span> <span class='symbol'>:macosx</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Safari.app/Contents/MacOS/Safari</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>else</span>
-      <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
+           <span class='kw'>when</span> <span class='symbol'>:windows</span>
+             <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_in_program_files'>find_in_program_files</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari\\Safari.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+           <span class='kw'>when</span> <span class='symbol'>:macosx</span>
+             <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Safari.app/Contents/MacOS/Safari</span><span class='tstring_end'>&quot;</span></span>
+           <span class='kw'>else</span>
+             <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+           <span class='kw'>end</span>
 
     <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_executable?'>executable?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH.</span><span class='tstring_end'>&quot;</span></span>
@@ -313,9 +313,9 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Apr  9 23:38:57 2013 by
+  Generated on Mon Feb 17 23:05:57 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.5.2 (ruby-2.0.0).
+  0.8.7.3 (ruby-2.1.0).
 </div>
 
   </body>

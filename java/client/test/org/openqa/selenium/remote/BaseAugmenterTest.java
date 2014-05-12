@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -326,9 +325,7 @@ public abstract class BaseAugmenterTest {
 
     @Override
     public Capabilities getCapabilities() {
-      DesiredCapabilities caps = DesiredCapabilities.firefox();
-      caps.setCapability(SUPPORTS_BROWSER_CONNECTION, true);
-      return caps;
+      return DesiredCapabilities.firefox();
     }
 
     @Override

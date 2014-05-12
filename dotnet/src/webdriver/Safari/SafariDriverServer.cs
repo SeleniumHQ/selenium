@@ -26,50 +26,54 @@ using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Safari.Internal;
+using System.Diagnostics;
+using System.IO;
+using System.Security.Permissions;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
 {
     /// <summary>
     /// Provides the WebSockets server for communicating with the Safari extension.
     /// </summary>
-    public class SafariDriverServer : IDisposable
+    public class SafariDriverServer : ICommandServer
     {
-        private WebSocketServer server;
+        private WebSocketServer webSocketServer;
         private Queue<SafariDriverConnection> connections = new Queue<SafariDriverConnection>();
         private Uri serverUri;
+        private string temporaryDirectoryPath;
+        private string safariExecutableLocation;
+        private Process safariProcess;
+        private SafariDriverConnection connection;
+        private SafariDriverExtension extension;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafariDriverServer"/> class.
+        /// Initializes a new instance of the <see cref="SafariDriverServer"/> class using the specified options.
         /// </summary>
-        public SafariDriverServer()
-            : this(0)
+        /// <param name="options">The <see cref="SafariOptions"/> defining the browser settings.</param>
+        public SafariDriverServer(SafariOptions options)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SafariDriverServer"/> class using a specific port for communication.
-        /// </summary>
-        /// <param name="port">The port to use to communicate.</param>
-        public SafariDriverServer(int port)
-        {
-            if (port == 0)
+            int webSocketPort = options.Port;
+            if (webSocketPort == 0)
             {
-                port = PortUtilities.FindFreePort();
+                webSocketPort = PortUtilities.FindFreePort();
             }
 
-            this.server = new WebSocketServer(port, "ws://localhost/wd");
-            this.server.Opened += new EventHandler<ConnectionEventArgs>(this.ServerOpenedEventHandler);
-            this.server.Closed += new EventHandler<ConnectionEventArgs>(this.ServerClosedEventHandler);
-            this.server.StandardHttpRequestReceived += new EventHandler<StandardHttpRequestReceivedEventArgs>(this.ServerStandardHttpRequestReceivedEventHandler);
-            this.serverUri = new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/", port.ToString(CultureInfo.InvariantCulture)));
-        }
+            this.webSocketServer = new WebSocketServer(webSocketPort, "ws://localhost/wd");
+            this.webSocketServer.Opened += new EventHandler<ConnectionEventArgs>(this.ServerOpenedEventHandler);
+            this.webSocketServer.Closed += new EventHandler<ConnectionEventArgs>(this.ServerClosedEventHandler);
+            this.webSocketServer.StandardHttpRequestReceived += new EventHandler<StandardHttpRequestReceivedEventArgs>(this.ServerStandardHttpRequestReceivedEventHandler);
+            this.serverUri = new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}/", webSocketPort.ToString(CultureInfo.InvariantCulture)));
+            if (string.IsNullOrEmpty(options.SafariLocation))
+            {
+                this.safariExecutableLocation = GetDefaultSafariLocation();
+            }
+            else
+            {
+                this.safariExecutableLocation = options.SafariLocation;
+            }
 
-        /// <summary>
-        /// Gets the URI of the server.
-        /// </summary>
-        public Uri ServerUri
-        {
-            get { return this.serverUri; }
+            this.extension = new SafariDriverExtension(options.CustomExtensionPath, options.SkipExtensionInstallation);
         }
         
         /// <summary>
@@ -77,15 +81,26 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         public void Start()
         {
-            this.server.Start();
+            this.webSocketServer.Start();
+            this.extension.Install();
+            string connectFileName = this.PrepareConnectFile();
+            this.LaunchSafariProcess(connectFileName);
+            this.connection = this.WaitForConnection(TimeSpan.FromSeconds(45));
+            this.DeleteConnectFile();
+            if (this.connection == null)
+            {
+                throw new WebDriverException("Did not receive a connection from the Safari extension. Please verify that it is properly installed and is the proper version.");
+            }
         }
 
         /// <summary>
-        /// Stops the server.
+        /// Sends a command to the server.
         /// </summary>
-        public void Stop()
+        /// <param name="commandToSend">The <see cref="Command"/> to send.</param>
+        /// <returns>The command <see cref="Response"/>.</returns>
+        public Response SendCommand(Command commandToSend)
         {
-            this.Dispose();
+            return this.connection.Send(commandToSend);
         }
 
         /// <summary>
@@ -95,7 +110,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>A <see cref="SafariDriverConnection"/> representing the connection to the browser.</returns>
         public SafariDriverConnection WaitForConnection(TimeSpan timeout)
         {
-            SafariDriverConnection connection = null;
+            SafariDriverConnection foundConnection = null;
             DateTime end = DateTime.Now.Add(timeout);
             while (this.connections.Count == 0 && DateTime.Now < end)
             {
@@ -104,10 +119,10 @@ namespace OpenQA.Selenium.Safari
 
             if (this.connections.Count > 0)
             {
-                connection = this.connections.Dequeue();
+                foundConnection = this.connections.Dequeue();
             }
 
-            return connection;
+            return foundConnection;
         }
 
         /// <summary>
@@ -120,7 +135,7 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SocketWrapper"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="SafariDriverServer"/> and optionally 
         /// releases the managed resources.
         /// </summary>
         /// <param name="disposing"><see langword="true"/> to release managed and resources; 
@@ -129,8 +144,80 @@ namespace OpenQA.Selenium.Safari
         {
             if (disposing)
             {
-                this.server.Dispose();
+                this.webSocketServer.Dispose();
+                if (this.safariProcess != null)
+                {
+                    this.CloseSafariProcess();
+                    this.extension.Uninstall();
+                    this.safariProcess.Dispose();
+                }
             }
+        }
+
+        private static string GetDefaultSafariLocation()
+        {
+            string safariPath = string.Empty;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                // Safari remains a 32-bit application. Use a hack to look for it
+                // in the 32-bit program files directory. If a 64-bit version of
+                // Safari for Windows is released, this needs to be revisited.
+                string programFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                if (Directory.Exists(programFilesDirectory + " (x86)"))
+                {
+                    programFilesDirectory += " (x86)";
+                }
+
+                safariPath = Path.Combine(programFilesDirectory, Path.Combine("Safari", "safari.exe"));
+            }
+            else
+            {
+                safariPath = "/Applications/Safari.app/Contents/MacOS/Safari";
+            }
+
+            return safariPath;
+        }
+
+        [SecurityPermission(SecurityAction.Demand)]
+        private void LaunchSafariProcess(string initialPage)
+        {
+            this.safariProcess = new Process();
+            this.safariProcess.StartInfo.FileName = this.safariExecutableLocation;
+            this.safariProcess.StartInfo.Arguments = string.Format(CultureInfo.InvariantCulture, "\"{0}\"", initialPage);
+            this.safariProcess.Start();
+        }
+
+        [SecurityPermission(SecurityAction.Demand)]
+        private void CloseSafariProcess()
+        {
+            if (this.safariProcess != null && !this.safariProcess.HasExited)
+            {
+                this.safariProcess.Kill();
+                while (!this.safariProcess.HasExited)
+                {
+                    Thread.Sleep(250);
+                }
+            }
+        }
+
+        private string PrepareConnectFile()
+        {
+            string directoryName = FileUtilities.GenerateRandomTempDirectoryName("SafariDriverConnect.{0}");
+            this.temporaryDirectoryPath = Path.Combine(Path.GetTempPath(), directoryName);
+            string tempFileName = Path.Combine(this.temporaryDirectoryPath, "connect.html");
+            string contents = string.Format(CultureInfo.InvariantCulture, "<!DOCTYPE html><script>window.location = '{0}';</script>", this.serverUri.ToString());
+            Directory.CreateDirectory(this.temporaryDirectoryPath);
+            using (FileStream stream = File.Create(tempFileName))
+            {
+                stream.Write(Encoding.UTF8.GetBytes(contents), 0, Encoding.UTF8.GetByteCount(contents));
+            }
+
+            return tempFileName;
+        }
+
+        private void DeleteConnectFile()
+        {
+            Directory.Delete(this.temporaryDirectoryPath, true);
         }
 
         private void ServerOpenedEventHandler(object sender, ConnectionEventArgs e)
@@ -155,7 +242,7 @@ namespace OpenQA.Selenium.Safari
     }};
   </script>";
 
-            string redirectPage = string.Format(CultureInfo.InvariantCulture, PageSource, this.server.Port.ToString(CultureInfo.InvariantCulture));
+            string redirectPage = string.Format(CultureInfo.InvariantCulture, PageSource, this.webSocketServer.Port.ToString(CultureInfo.InvariantCulture));
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("HTTP/1.1 200");
             builder.AppendLine("Content-Length: " + redirectPage.Length.ToString(CultureInfo.InvariantCulture));

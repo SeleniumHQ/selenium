@@ -86,6 +86,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     VisibilityTest.class,
     WebElementTest.class,
     WindowSwitchingTest.class,
+    ContextSwitchingTest.class,
     WindowTest.class,
 
     Html5Tests.class,

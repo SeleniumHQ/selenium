@@ -1,4 +1,16 @@
-## v2.40.0-dev
+## v2.42.0-dev
+
+* Removed deprecated functions `Promise#addCallback()`,
+    `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
+* FIXED: 7300: Connect to ChromeDriver using the loopback address since
+    ChromeDriver 2.10.267517 binds to localhost by default.
+
+## v2.41.0
+
+* FIXED: 7138: export logging API from webdriver module.
+* FIXED: 7105: beforeEach/it/afterEach properly bind `this` for Mocha tests.
+
+## v2.40.0
 
 * API documentation is now included in the docs directory.
 * Added utility functions for working with an array of promises:

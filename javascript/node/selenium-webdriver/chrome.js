@@ -175,6 +175,7 @@ ServiceBuilder.prototype.build = function() {
   var args = this.args_.concat();  // Defensive copy.
 
   return new remote.DriverService(this.exe_, {
+    loopback: true,
     port: port,
     args: webdriver.promise.when(port, function(port) {
       return args.concat('--port=' + port);

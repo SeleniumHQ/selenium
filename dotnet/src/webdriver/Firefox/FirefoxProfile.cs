@@ -94,6 +94,7 @@ namespace OpenQA.Selenium.Firefox
             this.deleteSource = deleteSourceOnClean;
             this.ReadDefaultPreferences();
             this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
+            this.AddWebDriverExtension();
         } 
         #endregion
 

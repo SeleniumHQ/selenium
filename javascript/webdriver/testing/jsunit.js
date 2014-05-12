@@ -267,6 +267,35 @@ webdriver.testing.jsunit.TestRunner.prototype.takeScreenshot = function(
 };
 
 
+/**
+ * Sends a base64 encoded PNG image to the server to be saved in the test
+ * outputs.
+ * @param {string} data The base64 encoded PNG image to be sent to the server.
+ * @param {string=} opt_label An optional debug label to identify the
+ *     screenshot with.
+ */
+webdriver.testing.jsunit.TestRunner.prototype.saveImage = function(
+    data, opt_label) {
+  if (!this.isInitialized()) {
+    throw Error(
+        'The test runner must be initialized before it may be used to' +
+        ' save images');
+  }
+
+  this.client_.sendScreenshotEvent(data, opt_label);
+
+  var img = document.createElement('img');
+  img.src = 'data:image/png;base64,' + data;
+  img.style.border = '1px solid black';
+  img.style.maxWidth = '500px';
+  this.screenshotCacheEl_.appendChild(img);
+
+  if (this.testCase) {
+    this.testCase.saveMessage('[SCREENSHOT] ' + (opt_label || '<Not Labeled>'));
+  }
+};
+
+
 (function() {
   var client = new webdriver.testing.Client();
   var tr = new webdriver.testing.jsunit.TestRunner(client);

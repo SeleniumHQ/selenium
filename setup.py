@@ -28,7 +28,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass':{'install': install},
     'name':'selenium',
-    'version':"2.39.0",
+    'version':"2.41.0",
     'description':'Python bindings for Selenium',
     'long_description':open(join(abspath(dirname(__file__)), "py", "README")).read(),
     'url':'http://code.google.com/p/selenium/',
@@ -62,6 +62,7 @@ setup_args = {
  	          'selenium.test.selenium.webdriver.ie',
  	          'selenium.test.selenium.webdriver.support',
               'selenium.webdriver',
+              'selenium.webdriver.android',
               'selenium.webdriver.chrome',
               'selenium.webdriver.common',
  	          'selenium.webdriver.common.html5',

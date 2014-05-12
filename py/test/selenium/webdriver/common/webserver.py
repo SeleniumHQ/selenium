@@ -43,6 +43,7 @@ if not os.path.isdir(HTML_ROOT):
     LOGGER.error(message)
     assert 0, message
 
+DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8000
 
 
@@ -67,13 +68,15 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
 class SimpleWebServer(object):
     """A very basic web server."""
-    def __init__(self, port=DEFAULT_PORT):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.stop_serving = False
+        host = host
         port = port
         while True:
             try:
                 self.server = HTTPServer(
-                    ('', port), HtmlOnlyHandler)
+                    (host, port), HtmlOnlyHandler)
+                self.host = host
                 self.port = port
                 break
             except socket.error:
@@ -99,11 +102,14 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib_request.URLopener().open("http://localhost:%d" % self.port)
+            urllib_request.URLopener().open("http://%s:%d" % (self.host,self.port))
         except IOError:
             pass
         LOGGER.info("Shutting down the webserver")
         self.thread.join()
+
+    def where_is(self, path):
+        return "http://%s:%d/%s" % (self.host, self.port, path)
 
 def main(argv=None):
     from optparse import OptionParser

@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
@@ -246,8 +246,8 @@ public class DefaultSession implements Session {
       if (instance instanceof ApplicationCache) {
         caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
       }
-      if (instance instanceof BrowserConnection) {
-        caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+      if (instance instanceof NetworkConnection) {
+        caps.setCapability(CapabilityType.SUPPORTS_NETWORK_CONNECTION, true);
       }
       if (instance instanceof WebStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);

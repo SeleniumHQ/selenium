@@ -19,12 +19,11 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class ImplicitlyWait extends WebDriverHandler implements JsonParametersAware {
+public class ImplicitlyWait extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private volatile long millis;
 
@@ -40,10 +39,11 @@ public class ImplicitlyWait extends WebDriverHandler implements JsonParametersAw
     }
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

@@ -23,7 +23,8 @@ function output (text) {
 
 window.onload = function () {
   // Super dumb browser detection
-  var isIE = window.navigator.userAgent.search('MSIE') != -1;
+  var isIE = window.navigator.userAgent.search('MSIE') != -1
+    || window.navigator.userAgent.search('Trident') != -1;
 
   var editFrame = document.getElementById('editFrame').contentWindow;
   setKeypressHandler(editFrame.document, printEventData);

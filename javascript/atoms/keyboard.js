@@ -810,10 +810,10 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
  *     element.
  * @see https://code.google.com/p/chromium/issues/detail?id=330456
  * @private
+ * @suppress {uselessCode}
  */
 bot.Keyboard.checkCanUpdateSelection_ = function(element) {
   try {
-    /** @suppress {suspiciousCode} */
     element.selectionStart;
   } catch (ex) {
     // The native error message is actually pretty informative, just add a

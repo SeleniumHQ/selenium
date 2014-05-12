@@ -1,5 +1,5 @@
 /*
-Copyright 2011 Selenium committers
+Copyright 2011-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,27 +41,11 @@ public class AppCacheTest extends JUnit4TestBase {
       status = ((ApplicationCache) driver).getStatus();
     }
     assertEquals(AppCacheStatus.UNCACHED, status);
-    // Check if resources are retrieved from browser's cache.
-    ((BrowserConnection) driver).setOnline(false);
-    driver.get(pages.html5OfflinePage);
-    AppCacheStatus new_status = ((ApplicationCache) driver).getStatus();
-    String new_title = driver.getTitle();
-    ((BrowserConnection) driver).setOnline(true);
-    
-    assertEquals("The offline page should report uncached status.",
-        AppCacheStatus.UNCACHED, new_status);
-    assertEquals("Should be directed to the offline page", "Offline", new_title);
   }
 
   @Test
   public void testBrowserLoadsFromCacheWhenOffline() {
     driver.get(pages.html5Page);
     driver.get(pages.formPage);
-
-    ((BrowserConnection) driver).setOnline(false);
-    driver.get(pages.html5Page);
-    String title = driver.getTitle();
-    ((BrowserConnection) driver).setOnline(true);
-    assertEquals("HTML5", title);
   }
 }
