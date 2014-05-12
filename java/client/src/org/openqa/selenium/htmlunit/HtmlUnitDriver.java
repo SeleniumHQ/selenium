@@ -243,19 +243,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         int version = Integer.parseInt(browserVersion);
         switch (version) {
-          case 6:
-            return BrowserVersion.INTERNET_EXPLORER_6;
-          case 7:
-            return BrowserVersion.INTERNET_EXPLORER_7;
           case 8:
             return BrowserVersion.INTERNET_EXPLORER_8;
           case 9:
             return BrowserVersion.INTERNET_EXPLORER_9;
           default:
-            return BrowserVersion.INTERNET_EXPLORER_8;
+            return BrowserVersion.INTERNET_EXPLORER_11;
         }
       } catch (NumberFormatException e) {
-        return BrowserVersion.INTERNET_EXPLORER_8;
+        return BrowserVersion.INTERNET_EXPLORER_11;
       }
     }
 

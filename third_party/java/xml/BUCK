@@ -12,12 +12,15 @@ java_library(name = 'xml',
 
 prebuilt_jar(name = 'xalan',
   binary_jar = 'xalan-2.7.1.jar',
+  source_jar = 'xalan-2.7.1-sources.jar',
 )
 
 prebuilt_jar(name = 'xerces',
-  binary_jar = 'xercesImpl-2.10.0.jar',
+  binary_jar = 'xercesImpl-2.11.0.jar',
+  source_jar = 'xercesImpl-2.11.0-sources.jar',
 )
 
 prebuilt_jar(name = 'apis',
   binary_jar = 'xml-apis-1.4.01.jar',
+  source_jar = 'xml-apis-1.4.01-sources.jar',
 )

@@ -1,5 +1,6 @@
 prebuilt_jar(name = 'commons-lang',
-  binary_jar = 'commons-lang3-3.1.jar',
+  binary_jar = 'commons-lang3-3.2.1.jar',
+  source_jar = 'commons-lang3-3.2.1-sources.jar',
   visibility = [
     '//third_party/java/...',
   ],

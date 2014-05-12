@@ -31,7 +31,6 @@ import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 
 public class HttpRequest {
@@ -98,11 +97,7 @@ public class HttpRequest {
 
         if (payload != null) {
           String content = new BeanToJsonConverter().convert(payload);
-          try {
-            post.setEntity(new StringEntity(content, "UTF-8"));
-          } catch (UnsupportedEncodingException e) {
-            throw Throwables.propagate(e);
-          }
+          post.setEntity(new StringEntity(content, "UTF-8"));
         }
         return post;
       }
