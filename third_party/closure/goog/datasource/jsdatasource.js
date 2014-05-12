@@ -55,7 +55,7 @@ goog.ds.JsDataSource = function(root, dataName, opt_parent) {
  * The root JS object. Can be null.
  * @type {*}
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  */
 goog.ds.JsDataSource.prototype.root_;
 
@@ -410,6 +410,7 @@ goog.ds.JsDataSource.prototype.isList = function() {
  *
  * @constructor
  * @extends {goog.ds.BaseDataNode}
+ * @final
  */
 goog.ds.JsPropertyDataSource = function(parent, dataName, opt_parentDataNode) {
   goog.ds.BaseDataNode.call(this);

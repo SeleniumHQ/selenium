@@ -18,6 +18,7 @@
 
 goog.provide('goog.dom.vendor');
 
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 
@@ -59,4 +60,37 @@ goog.dom.vendor.getVendorPrefix = function() {
   }
 
   return null;
+};
+
+
+/**
+ * @param {string} propertyName A property name.
+ * @param {!Object=} opt_object If provided, we verify if the property exists in
+ *     the object.
+ * @return {?string} A vendor prefixed property name, or null if it does not
+ *     exist.
+ */
+goog.dom.vendor.getPrefixedPropertyName = function(propertyName, opt_object) {
+  // We first check for a non-prefixed property, if available.
+  if (opt_object && propertyName in opt_object) {
+    return propertyName;
+  }
+  var prefix = goog.dom.vendor.getVendorJsPrefix();
+  if (prefix) {
+    prefix = prefix.toLowerCase();
+    var prefixedPropertyName = prefix + goog.string.toTitleCase(propertyName);
+    return (!goog.isDef(opt_object) || prefixedPropertyName in opt_object) ?
+        prefixedPropertyName : null;
+  }
+  return null;
+};
+
+
+/**
+ * @param {string} eventType An event type.
+ * @return {string} A lower-cased vendor prefixed event type.
+ */
+goog.dom.vendor.getPrefixedEventType = function(eventType) {
+  var prefix = goog.dom.vendor.getVendorJsPrefix() || '';
+  return (prefix + eventType).toLowerCase();
 };

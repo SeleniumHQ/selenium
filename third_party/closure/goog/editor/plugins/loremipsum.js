@@ -35,6 +35,7 @@ goog.require('goog.functions');
  * @param {string} message The lorem ipsum message.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.LoremIpsum = function(message) {
   goog.editor.Plugin.call(this);

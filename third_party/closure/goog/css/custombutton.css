@@ -41,9 +41,6 @@
 }
 
 .goog-custom-button-inner-box {
-  /* By default in FF2, block elements inside a moz-inline-box are stacked
-   * horizontally next to each other.  This stops that weird behavior. */
-  -moz-box-orient: vertical;
   margin: 0 -1px;
   border-width: 0 1px;
   padding: 3px 4px;

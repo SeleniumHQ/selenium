@@ -32,6 +32,7 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 
 
+
 /**
  * Data source whose backing is an xml node
  *
@@ -299,6 +300,7 @@ goog.ds.XmlDataSource.createChildlessDocument_ = function() {
  * implements goog.ds.XmlHttpDataSource.
  * @constructor
  * @extends {goog.ds.XmlDataSource}
+ * @final
  */
 goog.ds.XmlHttpDataSource = function(uri, name) {
   goog.ds.XmlDataSource.call(this, null, null, name);
@@ -325,7 +327,7 @@ goog.ds.XmlHttpDataSource.prototype.loadState_ = goog.ds.LoadState.NOT_LOADED;
  */
 goog.ds.XmlHttpDataSource.prototype.load = function() {
   if (this.uri_) {
-    goog.ds.logger.info('Sending XML request for DataSource ' +
+    goog.log.info(goog.ds.logger, 'Sending XML request for DataSource ' +
         this.getDataName() + ' to ' + this.uri_);
     this.loadState_ = goog.ds.LoadState.LOADING;
 
@@ -371,7 +373,8 @@ goog.ds.XmlHttpDataSource.prototype.complete_ = function(e) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
-  goog.ds.logger.info('Got data for DataSource ' + this.getDataName());
+  goog.log.info(goog.ds.logger,
+      'Got data for DataSource ' + this.getDataName());
   var xml = xhr.getResponseXml();
 
   // Fix for case where IE returns valid XML as text but
@@ -401,7 +404,7 @@ goog.ds.XmlHttpDataSource.prototype.success_ = function(xhr) {
  * @private
  */
 goog.ds.XmlHttpDataSource.prototype.failure_ = function() {
-  goog.ds.logger.info('Data retrieve failed for DataSource ' +
+  goog.log.info(goog.ds.logger, 'Data retrieve failed for DataSource ' +
       this.getDataName());
 
   this.loadState_ = goog.ds.LoadState.FAILED;

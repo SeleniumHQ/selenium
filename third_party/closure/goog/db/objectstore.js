@@ -45,6 +45,7 @@ goog.require('goog.events');
  * TODO(user): revisit msg in exception and errors in this class. In newer
  *     Chrome (v22+) the error/request come with a DOM error string that is
  *     already very descriptive.
+ * @final
  */
 goog.db.ObjectStore = function(store) {
   /**
@@ -322,7 +323,7 @@ goog.db.ObjectStore.prototype.clear = function() {
  *     available option is unique, which defaults to false. If unique is true,
  *     the index will enforce that there is only ever one object in the object
  *     store for each unique value it indexes on.
- * @return {goog.db.Index} The newly created, wrapped index.
+ * @return {!goog.db.Index} The newly created, wrapped index.
  * @throws {goog.db.Error} In case of an error creating the index.
  */
 goog.db.ObjectStore.prototype.createIndex = function(
@@ -341,7 +342,7 @@ goog.db.ObjectStore.prototype.createIndex = function(
  * Gets an index.
  *
  * @param {string} name Name of the index to fetch.
- * @return {goog.db.Index} The requested wrapped index.
+ * @return {!goog.db.Index} The requested wrapped index.
  * @throws {goog.db.Error} In case of an error getting the index.
  */
 goog.db.ObjectStore.prototype.getIndex = function(name) {

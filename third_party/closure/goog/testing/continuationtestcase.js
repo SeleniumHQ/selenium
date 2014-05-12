@@ -98,13 +98,14 @@ goog.require('goog.testing.asserts');
  * @param {string=} opt_name Optional name for the test case.
  * @constructor
  * @extends {goog.testing.TestCase}
+ * @final
  */
 goog.testing.ContinuationTestCase = function(opt_name) {
   goog.testing.TestCase.call(this, opt_name);
 
   /**
    * An event handler for waiting on Closure or browser events during tests.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.testing.ContinuationTestCase>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -362,7 +363,7 @@ goog.testing.ContinuationTestCase.prototype.waitForCondition = function(
  * Creates a new asynchronous test step which will be added to the current test
  * phase.
  * @param {Function} func The test function that will be executed for this step.
- * @return {goog.testing.ContinuationTestCase.Step} A new test step.
+ * @return {!goog.testing.ContinuationTestCase.Step} A new test step.
  * @private
  */
 goog.testing.ContinuationTestCase.prototype.addStep_ = function(func) {
@@ -474,6 +475,7 @@ goog.testing.ContinuationTestCase.prototype.testCondition_ = function(
  *     after the test method completes or fails.
  * @constructor
  * @extends {goog.testing.TestCase.Test}
+ * @final
  */
 goog.testing.ContinuationTestCase.Test = function(setUp, test, tearDown) {
   // This test container has a name, but no evaluation function or scope.
@@ -615,6 +617,7 @@ goog.testing.ContinuationTestCase.Test.prototype.cancelPhase_ =
  * @param {Object=} opt_scope The object context to run the test in.
  * @constructor
  * @extends {goog.testing.TestCase.Test}
+ * @final
  */
 goog.testing.ContinuationTestCase.Step = function(name, ref, opt_scope) {
   goog.testing.TestCase.Test.call(this, name, ref, opt_scope);

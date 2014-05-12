@@ -267,7 +267,7 @@ goog.ui.Container.prototype.setKeyEventTarget = function(element) {
  * first time this method is called.  The keyboard event handler listens for
  * keyboard events on the container's key event target, as determined by its
  * renderer.
- * @return {goog.events.KeyHandler} Keyboard event handler for this container.
+ * @return {!goog.events.KeyHandler} Keyboard event handler for this container.
  */
 goog.ui.Container.prototype.getKeyHandler = function() {
   return this.keyHandler_ ||
@@ -927,6 +927,7 @@ goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
     if (index != -1) {
       if (index == this.highlightedIndex_) {
         control.setHighlighted(false);
+        this.highlightedIndex_ = -1;
       } else if (index < this.highlightedIndex_) {
         this.highlightedIndex_--;
       }

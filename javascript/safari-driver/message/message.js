@@ -23,7 +23,7 @@ goog.provide('safaridriver.message.Message');
 
 goog.require('bot.json');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.dom');
 
 
@@ -43,11 +43,10 @@ safaridriver.message.ORIGIN = 'webdriver';
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.message.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.message');
+safaridriver.message.LOG_ = goog.log.getLogger('safaridriver.message');
 
 
 /**
@@ -111,7 +110,7 @@ safaridriver.message.fromEvent = function(event) {
   var type = data[safaridriver.message.Message.Field.TYPE];
   var factory = safaridriver.message.factoryRegistry_[type];
   if (!factory) {
-    safaridriver.message.LOG_.fine(
+    goog.log.fine(safaridriver.message.LOG_,
         'Unknown message type; falling back to the default factory: ' +
         bot.json.stringify(data));
     factory = safaridriver.message.Message.fromData_;

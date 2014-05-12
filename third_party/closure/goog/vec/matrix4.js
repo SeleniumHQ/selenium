@@ -1376,7 +1376,7 @@ goog.vec.Matrix4.applyRotate = function(mat, angle, x, y, z) {
 
 
 /**
- * @type {Array.<goog.vec.Vec3.Type>}
+ * @type {!Array.<!goog.vec.Vec3.Type>}
  * @private
  */
 goog.vec.Matrix4.tmpVec3_ = [
@@ -1386,7 +1386,7 @@ goog.vec.Matrix4.tmpVec3_ = [
 
 
 /**
- * @type {Array.<goog.vec.Vec4.Type>}
+ * @type {!Array.<!goog.vec.Vec4.Type>}
  * @private
  */
 goog.vec.Matrix4.tmpVec4_ = [

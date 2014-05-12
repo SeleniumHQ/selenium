@@ -39,6 +39,7 @@ goog.provide('goog.ui.emoji.SpriteInfo');
  *     within the sprite.
  * @param {boolean=} opt_animated Whether the sprite is animated.
  * @constructor
+ * @final
  */
 goog.ui.emoji.SpriteInfo = function(cssClass, opt_url, opt_width, opt_height,
                                     opt_xOffset, opt_yOffset, opt_animated) {

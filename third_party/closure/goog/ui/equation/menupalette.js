@@ -16,7 +16,7 @@ goog.provide('goog.ui.equation.MenuPalette');
 goog.provide('goog.ui.equation.MenuPaletteRenderer');
 
 goog.require('goog.math.Size');
-goog.require('goog.style');
+goog.require('goog.ui.PaletteRenderer');
 goog.require('goog.ui.equation.Palette');
 goog.require('goog.ui.equation.PaletteRenderer');
 
@@ -28,6 +28,7 @@ goog.require('goog.ui.equation.PaletteRenderer');
  *     manager of the palette.
  * @extends {goog.ui.equation.Palette}
  * @constructor
+ * @final
  */
 goog.ui.equation.MenuPalette = function(paletteManager) {
   goog.ui.equation.Palette.call(this, paletteManager,
@@ -61,7 +62,7 @@ goog.ui.equation.MenuPalette.CSS_CLASS = 'ee-menu-palette';
  */
 goog.ui.equation.MenuPalette.prototype.setVisible = function(
     visible, opt_force) {
-  return goog.base(this, 'setVisible', true, opt_force);
+  return goog.ui.equation.MenuPalette.base(this, 'setVisible', true, opt_force);
 };
 
 
@@ -70,6 +71,7 @@ goog.ui.equation.MenuPalette.prototype.setVisible = function(
  * The renderer for menu palette.
  * @extends {goog.ui.equation.PaletteRenderer}
  * @constructor
+ * @final
  */
 goog.ui.equation.MenuPaletteRenderer = function() {
   goog.ui.PaletteRenderer.call(this);

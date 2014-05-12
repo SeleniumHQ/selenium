@@ -41,6 +41,7 @@ goog.require('goog.userAgent');
  * use one of the goog.dom.Range.createFrom* methods instead.
  * @constructor
  * @extends {goog.dom.AbstractRange}
+ * @final
  */
 goog.dom.TextRange = function() {
 };
@@ -53,7 +54,7 @@ goog.inherits(goog.dom.TextRange, goog.dom.AbstractRange);
  * @param {Range|TextRange} range The browser range object.
  * @param {boolean=} opt_isReversed Whether the focus node is before the anchor
  *     node.
- * @return {goog.dom.TextRange} A range wrapper object.
+ * @return {!goog.dom.TextRange} A range wrapper object.
  */
 goog.dom.TextRange.createFromBrowserRange = function(range, opt_isReversed) {
   return goog.dom.TextRange.createFromBrowserRangeWrapper_(
@@ -67,7 +68,7 @@ goog.dom.TextRange.createFromBrowserRange = function(range, opt_isReversed) {
  *     wrapper.
  * @param {boolean=} opt_isReversed Whether the focus node is before the anchor
  *     node.
- * @return {goog.dom.TextRange} A range wrapper object.
+ * @return {!goog.dom.TextRange} A range wrapper object.
  * @private
  */
 goog.dom.TextRange.createFromBrowserRangeWrapper_ = function(browserRange,
@@ -88,7 +89,7 @@ goog.dom.TextRange.createFromBrowserRangeWrapper_ = function(browserRange,
  * @param {Node} node The node to select.
  * @param {boolean=} opt_isReversed Whether the focus node is before the anchor
  *     node.
- * @return {goog.dom.TextRange} A range wrapper object.
+ * @return {!goog.dom.TextRange} A range wrapper object.
  */
 goog.dom.TextRange.createFromNodeContents = function(node, opt_isReversed) {
   return goog.dom.TextRange.createFromBrowserRangeWrapper_(
@@ -105,7 +106,7 @@ goog.dom.TextRange.createFromNodeContents = function(node, opt_isReversed) {
  * @param {number} anchorOffset The offset within the node to start.
  * @param {Node} focusNode The node to end with.
  * @param {number} focusOffset The offset within the node to end.
- * @return {goog.dom.TextRange} A range wrapper object.
+ * @return {!goog.dom.TextRange} A range wrapper object.
  */
 goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
     focusNode, focusOffset) {
@@ -206,7 +207,7 @@ goog.dom.TextRange.prototype.isReversed_ = false;
 
 
 /**
- * @return {goog.dom.TextRange} A clone of this range.
+ * @return {!goog.dom.TextRange} A clone of this range.
  * @override
  */
 goog.dom.TextRange.prototype.clone = function() {
@@ -270,7 +271,7 @@ goog.dom.TextRange.prototype.getTextRange = function(i) {
 
 
 /**
- * @return {goog.dom.browserrange.AbstractRange} The range wrapper object.
+ * @return {!goog.dom.browserrange.AbstractRange} The range wrapper object.
  * @private
  */
 goog.dom.TextRange.prototype.getBrowserRangeWrapper_ = function() {
@@ -478,7 +479,7 @@ goog.dom.TextRange.prototype.getPastableHtml = function() {
  * Returns a TextRangeIterator over the contents of the range.  Regardless of
  * the direction of the range, the iterator will move in document order.
  * @param {boolean=} opt_keys Unused for this iterator.
- * @return {goog.dom.TextRangeIterator} An iterator over tags in the range.
+ * @return {!goog.dom.TextRangeIterator} An iterator over tags in the range.
  * @override
  */
 goog.dom.TextRange.prototype.__iterator__ = function(opt_keys) {
@@ -612,7 +613,7 @@ goog.inherits(goog.dom.DomSavedTextRange_, goog.dom.SavedRange);
 
 
 /**
- * @return {goog.dom.AbstractRange} The restored range.
+ * @return {!goog.dom.AbstractRange} The restored range.
  * @override
  */
 goog.dom.DomSavedTextRange_.prototype.restoreInternal = function() {

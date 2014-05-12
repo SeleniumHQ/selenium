@@ -112,6 +112,7 @@ goog.require('goog.ui.ControlRenderer');
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Control}
+ * @final
  */
 goog.ui.media.Media = function(dataModel, opt_renderer, opt_domHelper) {
   goog.ui.Control.call(this, null, opt_renderer, opt_domHelper);
@@ -194,7 +195,7 @@ goog.inherits(goog.ui.media.MediaRenderer, goog.ui.ControlRenderer);
  * specific renderers can hide/show the caption as desired.
  *
  * @param {goog.ui.Control} control The control instance.
- * @return {Element} The DOM structure that represents control.
+ * @return {!Element} The DOM structure that represents control.
  * @override
  */
 goog.ui.media.MediaRenderer.prototype.createDom = function(control) {

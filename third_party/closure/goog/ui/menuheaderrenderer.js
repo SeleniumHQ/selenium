@@ -19,8 +19,6 @@
 
 goog.provide('goog.ui.MenuHeaderRenderer');
 
-goog.require('goog.dom');
-goog.require('goog.dom.classes');
 goog.require('goog.ui.ControlRenderer');
 
 

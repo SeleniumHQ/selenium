@@ -25,8 +25,9 @@
 goog.provide('goog.debug.DevCss');
 goog.provide('goog.debug.DevCss.UserAgent');
 
+goog.require('goog.asserts');
 goog.require('goog.cssom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.string');
@@ -42,6 +43,7 @@ goog.require('goog.userAgent');
  *     If not passed in, will be determined using goog.userAgent.
  * @throws {Error} When userAgent detection fails.
  * @constructor
+ * @final
  */
 goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
   if (!opt_userAgent) {
@@ -77,6 +79,12 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
    * @private
    */
   this.userAgent_ = opt_userAgent;
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.userAgentTokens_ = {};
 
   /**
    * @type {number|string}
@@ -136,13 +144,6 @@ goog.debug.DevCss.prototype.activateBrowserSpecificCssRules = function(
         this.addIe6CombinedClassNames_, this));
   }
 };
-
-
-/**
- * @type {Object}
- * @private
- */
-goog.debug.DevCss.prototype.userAgentTokens_ = {};
 
 
 /**
@@ -227,8 +228,8 @@ goog.debug.DevCss.prototype.getVersionNumberFromSelectorText_ = function(
  * value needed to determine if we have a match or not.
  * @param {CSSRule} cssRule The rule to test against.
  * @param {string} token The match token to test against the rule.
- * @return {Array|undefined} A tuple with the result of the compareVersions call
- *     and the matched ruleVersion.
+ * @return {!Array|undefined} A tuple with the result of the compareVersions
+ *     call and the matched ruleVersion.
  * @private
  */
 goog.debug.DevCss.prototype.getRuleVersionAndCompare_ = function(cssRule,
@@ -424,7 +425,7 @@ goog.debug.DevCss.prototype.addIe6CombinedClassNames_ = function() {
       var classNamesLength = classNameEntry.classNames.length;
       for (var k = 0, className; className = classNameEntry.classNames[k];
           k++) {
-        if (!goog.dom.classes.has(el, className)) {
+        if (!goog.dom.classlist.contains(goog.asserts.assert(el), className)) {
           break;
         }
         if (k == classNamesLength - 1) {
@@ -435,8 +436,10 @@ goog.debug.DevCss.prototype.addIe6CombinedClassNames_ = function() {
     // Walks over our matching nodes and fixes them.
     if (classNameEntry.els.length) {
       for (var j = 0, el; el = classNameEntry.els[j]; j++) {
-        if (!goog.dom.classes.has(el, classNameEntry.combinedClassName)) {
-          goog.dom.classes.add(el, classNameEntry.combinedClassName);
+        goog.asserts.assert(el);
+        if (!goog.dom.classlist.contains(el,
+            classNameEntry.combinedClassName)) {
+          goog.dom.classlist.add(el, classNameEntry.combinedClassName);
         }
       }
     }

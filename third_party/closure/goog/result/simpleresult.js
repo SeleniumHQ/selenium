@@ -20,6 +20,8 @@
 goog.provide('goog.result.SimpleResult');
 goog.provide('goog.result.SimpleResult.StateError');
 
+goog.require('goog.Promise');
+goog.require('goog.Thenable');
 goog.require('goog.debug.Error');
 goog.require('goog.result.Result');
 
@@ -34,6 +36,7 @@ goog.require('goog.result.Result');
  *
  * @constructor
  * @implements {goog.result.Result}
+ * @deprecated Use {@link goog.Promise} instead - http://go/promisemigration
  */
 goog.result.SimpleResult = function() {
   /**
@@ -68,6 +71,7 @@ goog.result.SimpleResult = function() {
    */
   this.error_ = undefined;
 };
+goog.Thenable.addImplementation(goog.result.SimpleResult);
 
 
 /**
@@ -88,9 +92,12 @@ goog.result.SimpleResult.HandlerEntry_;
  *
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
+ * @deprecated Use {@link goog.Promise} instead - http://go/promisemigration
  */
 goog.result.SimpleResult.StateError = function() {
-  goog.base(this, 'Multiple attempts to set the state of this Result');
+  goog.result.SimpleResult.StateError.base(this, 'constructor',
+      'Multiple attempts to set the state of this Result');
 };
 goog.inherits(goog.result.SimpleResult.StateError, goog.debug.Error);
 
@@ -214,4 +221,40 @@ goog.result.SimpleResult.prototype.cancel = function() {
 goog.result.SimpleResult.prototype.isCanceled = function() {
   return this.state_ == goog.result.Result.State.ERROR &&
          this.error_ instanceof goog.result.Result.CancelError;
+};
+
+
+/** @override */
+goog.result.SimpleResult.prototype.then = function(
+    opt_onFulfilled, opt_onRejected, opt_context) {
+  var resolve, reject;
+  // Copy the resolvers to outer scope, so that they are available
+  // when the callback to wait() fires (which may be synchronous).
+  var promise = new goog.Promise(function(res, rej) {
+    resolve = res;
+    reject = rej;
+  });
+  this.wait(function(result) {
+    if (result.isCanceled()) {
+      promise.cancel();
+    } else if (result.getState() == goog.result.Result.State.SUCCESS) {
+      resolve(result.getValue());
+    } else if (result.getState() == goog.result.Result.State.ERROR) {
+      reject(result.getError());
+    }
+  });
+  return promise.then(opt_onFulfilled, opt_onRejected, opt_context);
+};
+
+
+/**
+ * Creates a SimpleResult that fires when the given promise resolves.
+ * Use only during migration to Promises.
+ * @param {!goog.Promise.<?>} promise
+ * @return {!goog.result.Result}
+ */
+goog.result.SimpleResult.fromPromise = function(promise) {
+  var result = new goog.result.SimpleResult();
+  promise.then(result.setValue, result.setError, result);
+  return result;
 };

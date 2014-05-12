@@ -139,7 +139,7 @@ goog.dom.iframe.writeContent = function(iframe, content) {
  * @param {string=} opt_styles CSS styles for the iframe itself, before adding
  *     to the parent element.
  * @param {boolean=} opt_quirks Whether to use quirks mode (false by default).
- * @return {HTMLIFrameElement} An iframe that has the specified contents.
+ * @return {!HTMLIFrameElement} An iframe that has the specified contents.
  */
 goog.dom.iframe.createWithContent = function(
     parentElement, opt_headContents, opt_bodyContents, opt_styles, opt_quirks) {

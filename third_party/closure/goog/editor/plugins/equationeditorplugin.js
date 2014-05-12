@@ -14,7 +14,6 @@
 
 goog.provide('goog.editor.plugins.EquationEditorPlugin');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.plugins.AbstractDialogPlugin');
@@ -22,6 +21,7 @@ goog.require('goog.editor.range');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('goog.log');
 goog.require('goog.ui.editor.AbstractDialog');
 goog.require('goog.ui.editor.EquationEditorDialog');
 goog.require('goog.ui.equation.ImageRenderer');
@@ -34,6 +34,7 @@ goog.require('goog.ui.equation.PaletteManager');
  * @param {string=} opt_helpUrl A URL pointing to help documentation.
  * @constructor
  * @extends {goog.editor.plugins.AbstractDialogPlugin}
+ * @final
  */
 goog.editor.plugins.EquationEditorPlugin = function(opt_helpUrl) {
   /**
@@ -67,11 +68,11 @@ goog.inherits(goog.editor.plugins.EquationEditorPlugin,
 
 /**
  * The logger for the EquationEditorPlugin.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.editor.plugins.EquationEditorPlugin.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.editor.plugins.EquationEditorPlugin');
+    goog.log.getLogger('goog.editor.plugins.EquationEditorPlugin');
 
 
 /** @override */
@@ -104,7 +105,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.createDialog =
  * Populates the context that this plugin runs in.
  * @param {!goog.dom.DomHelper} domHelper The dom helper to be used for the
  *     palette manager.
- * @return {Object} The context that this plugin runs in.
+ * @return {!Object} The context that this plugin runs in.
  * @private
  */
 goog.editor.plugins.EquationEditorPlugin.prototype.populateContext_ =
@@ -140,7 +141,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.getEquationFromSelection_ =
 /** @override */
 goog.editor.plugins.EquationEditorPlugin.prototype.enable =
     function(fieldObject) {
-  goog.base(this, 'enable', fieldObject);
+  goog.editor.plugins.EquationEditorPlugin.base(this, 'enable', fieldObject);
   if (this.isEnabled(fieldObject)) {
     this.dblClickKey_ = goog.events.listen(fieldObject.getElement(),
         goog.events.EventType.DBLCLICK,
@@ -152,7 +153,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.enable =
 /** @override */
 goog.editor.plugins.EquationEditorPlugin.prototype.disable =
     function(fieldObject) {
-  goog.base(this, 'disable', fieldObject);
+  goog.editor.plugins.EquationEditorPlugin.base(this, 'disable', fieldObject);
   if (!this.isEnabled(fieldObject)) {
     goog.events.unlistenByKey(this.dblClickKey_);
   }

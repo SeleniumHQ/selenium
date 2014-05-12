@@ -64,7 +64,6 @@ goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
-goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
 
 
@@ -88,6 +87,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.Vimeo = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -116,7 +116,7 @@ goog.ui.media.Vimeo.CSS_CLASS = goog.getCssName('goog-ui-media-vimeo');
  * @param {goog.ui.media.VimeoModel} dataModel A vimeo video URL.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.media.Media} A Control binded to the Vimeo renderer.
+ * @return {!goog.ui.media.Media} A Control binded to the Vimeo renderer.
  */
 goog.ui.media.Vimeo.newControl = function(dataModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
@@ -134,7 +134,7 @@ goog.ui.media.Vimeo.newControl = function(dataModel, opt_domHelper) {
  * the flash object pointing to a vimeo video player.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {Element} The DOM structure that represents this control.
+ * @return {!Element} The DOM structure that represents this control.
  * @override
  */
 goog.ui.media.Vimeo.prototype.createDom = function(c) {
@@ -176,6 +176,7 @@ goog.ui.media.Vimeo.prototype.getCssClass = function() {
  * @param {boolean=} opt_autoplay Whether to autoplay video.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
+ * @final
  */
 goog.ui.media.VimeoModel = function(videoId, opt_caption, opt_description,
                                     opt_autoplay) {
@@ -221,7 +222,7 @@ goog.ui.media.VimeoModel.MATCHER_ =
  * @param {string=} opt_caption An optional caption of the vimeo video.
  * @param {string=} opt_description An optional description of the vimeo video.
  * @param {boolean=} opt_autoplay Whether to autoplay video.
- * @return {goog.ui.media.VimeoModel} The vimeo data model that represents this
+ * @return {!goog.ui.media.VimeoModel} The vimeo data model that represents this
  *     URL.
  * @throws exception in case the parsing fails
  */

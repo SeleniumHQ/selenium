@@ -29,6 +29,7 @@ goog.require('goog.math.interpolator.Interpolator1');
  * A one dimensional linear interpolator.
  * @implements {goog.math.interpolator.Interpolator1}
  * @constructor
+ * @final
  */
 goog.math.interpolator.Linear1 = function() {
   /**

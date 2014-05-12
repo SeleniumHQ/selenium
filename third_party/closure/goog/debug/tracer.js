@@ -21,8 +21,8 @@
 goog.provide('goog.debug.Trace');
 
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
 goog.require('goog.iter');
+goog.require('goog.log');
 goog.require('goog.structs.Map');
 goog.require('goog.structs.SimplePool');
 
@@ -31,7 +31,7 @@ goog.require('goog.structs.SimplePool');
 /**
  * Class used for singleton goog.debug.Trace.  Used for timing slow points in
  * the code. Based on the java Tracer class but optimized for javascript.
- * See com.google.common.base.Tracer.
+ * See com.google.common.tracing.Tracer.
  * @constructor
  * @private
  */
@@ -153,11 +153,11 @@ goog.debug.Trace_ = function() {
 
 /**
  * Logger for the tracer
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.debug.Trace_.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.debug.Trace');
+    goog.log.getLogger('goog.debug.Trace');
 
 
 /**
@@ -394,8 +394,8 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
   var varAlloc = this.getTotalVarAlloc();
   var outstandingEventCount = this.outstandingEvents_.getCount();
   if (this.events_.length + outstandingEventCount > this.MAX_TRACE_SIZE) {
-    this.logger_.warning('Giant thread trace. Clearing to ' +
-                         'avoid memory leak.');
+    goog.log.warning(this.logger_,
+        'Giant thread trace. Clearing to avoid memory leak.');
     // This is the more likely case. This usually means that we
     // either forgot to clear the trace or else we are performing a
     // very large number of events

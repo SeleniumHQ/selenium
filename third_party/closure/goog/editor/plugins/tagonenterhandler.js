@@ -291,7 +291,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.
 /**
  * If The cursor is in an empty LI then break out of the list like in IE
  * @param {Node} li LI to break out of.
- * @return {Element} Element to put the cursor after.
+ * @return {!Element} Element to put the cursor after.
  * @private
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.breakOutOfEmptyListItemGecko_ =
@@ -347,7 +347,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.breakOutOfEmptyListItemGecko_ =
  * @param {Object} position The W3C cursor position object
  *     (from getCursorPositionW3c).
  * @param {Node} container The field containing position.
- * @return {Element} The container element that holds the contents from
+ * @return {!Element} The container element that holds the contents from
  *     position.
  * @private
  */
@@ -584,7 +584,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.scrollCursorIntoViewGecko_ =
  *     ending up in the second half.  positionOffset must be 0 in this case.
  * @param {Node=} opt_root Node at which to stop splitting the dom (the root
  *     is also split).
- * @return {Node} The node containing the second half of the tree.
+ * @return {!Node} The node containing the second half of the tree.
  * @private
  */
 goog.editor.plugins.TagOnEnterHandler.splitDom_ = function(
@@ -659,7 +659,7 @@ goog.editor.plugins.TagOnEnterHandler.splitDom_ = function(
  *     empty element, the dom will be split at that element, with positionNode
  *     ending up in the second half.  positionOffset must be 0 in this case.
  * @param {Node} node Node to split.
- * @return {Node} The node containing the second half of the tree.
+ * @return {!Node} The node containing the second half of the tree.
  * @private
  */
 goog.editor.plugins.TagOnEnterHandler.splitDomAndAppend_ = function(

@@ -24,8 +24,9 @@ goog.provide('goog.ui.GraphicsRoundedPanel');
 goog.provide('goog.ui.RoundedPanel');
 goog.provide('goog.ui.RoundedPanel.Corner');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.graphics');
 goog.require('goog.graphics.Path');
 goog.require('goog.graphics.SolidFill');
@@ -48,7 +49,7 @@ goog.require('goog.userAgent');
  *     to all square corners if not specified.
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
- * @return {goog.ui.BaseRoundedPanel} An instance of a
+ * @return {!goog.ui.BaseRoundedPanel} An instance of a
  *     goog.ui.BaseRoundedPanel subclass.
  */
 goog.ui.RoundedPanel.create = function(radius,
@@ -209,7 +210,8 @@ goog.ui.BaseRoundedPanel.prototype.contentElement_;
  */
 goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
   goog.ui.BaseRoundedPanel.superClass_.decorateInternal.call(this, element);
-  goog.dom.classes.add(this.getElement(), goog.ui.RoundedPanel.Classes_.PANEL);
+  goog.dom.classlist.add(goog.asserts.assert(this.getElement()),
+      goog.ui.RoundedPanel.Classes_.PANEL);
 
   // Create backgroundElement_, and add it to the DOM.
   this.backgroundElement_ = this.getDomHelper().createElement('div');
@@ -265,6 +267,7 @@ goog.ui.BaseRoundedPanel.prototype.getContentElement = function() {
  *     document we want to render in.
  * @extends {goog.ui.BaseRoundedPanel}
  * @constructor
+ * @final
  */
 goog.ui.CssRoundedPanel = function(radius,
                                    borderWidth,
@@ -390,6 +393,7 @@ goog.ui.CssRoundedPanel.prototype.getStyle_ = function(corner) {
  *     document we want to render in.
  * @extends {goog.ui.BaseRoundedPanel}
  * @constructor
+ * @final
  */
 goog.ui.GraphicsRoundedPanel = function(radius,
                                         borderWidth,

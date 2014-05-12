@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview  Class for making an element detach and float to remain
- * visible when otherwise it would have scrolled up out of view.
+ * @fileoverview  Class for making an element detach and float to remain visible
+ * even when the viewport has been scrolled.
  * <p>
  * The element remains at its normal position in the layout until scrolling
  * would cause its top edge to scroll off the top of the viewport; at that
@@ -38,8 +38,9 @@ goog.provide('goog.ui.ScrollFloater');
 goog.provide('goog.ui.ScrollFloater.EventType');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -65,7 +66,7 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
   var domHelper = opt_parentElement ?
       goog.dom.getDomHelper(opt_parentElement) : opt_domHelper;
 
-  goog.base(this, domHelper);
+  goog.ui.ScrollFloater.base(this, 'constructor', domHelper);
 
   /**
    * The element to which the scroll-floated element will be attached
@@ -114,6 +115,13 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
    * @private
    */
   this.originalBounds_ = null;
+
+  /**
+   * Element's top offset when it's not floated or pinned.
+   * @type {number}
+   * @private
+   */
+  this.originalTopOffset_ = 0;
 
   /**
    * The placeholder element dropped in to hold the layout for
@@ -175,6 +183,17 @@ goog.ui.ScrollFloater.EventType = {
 
 
 /**
+ * The element can float at different positions on the page.
+ * @enum {number}
+ * @private
+ */
+goog.ui.ScrollFloater.FloatMode_ = {
+  TOP: 0,
+  BOTTOM: 1
+};
+
+
+/**
  * The style properties which are stored when we float an element, so they
  * can be restored when it 'docks' again.
  * @type {Array.<string>}
@@ -208,7 +227,7 @@ goog.ui.ScrollFloater.CSS_CLASS_ = goog.getCssName('goog-scrollfloater');
  * @override
  */
 goog.ui.ScrollFloater.prototype.createDom = function() {
-  goog.base(this, 'createDom');
+  goog.ui.ScrollFloater.base(this, 'createDom');
 
   this.decorateInternal(this.getElement());
 };
@@ -220,15 +239,15 @@ goog.ui.ScrollFloater.prototype.createDom = function() {
  * @override
  */
 goog.ui.ScrollFloater.prototype.decorateInternal = function(element) {
-  goog.base(this, 'decorateInternal', element);
-
-  goog.dom.classes.add(element, goog.ui.ScrollFloater.CSS_CLASS_);
+  goog.ui.ScrollFloater.base(this, 'decorateInternal', element);
+  goog.asserts.assert(element);
+  goog.dom.classlist.add(element, goog.ui.ScrollFloater.CSS_CLASS_);
 };
 
 
 /** @override */
 goog.ui.ScrollFloater.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.ScrollFloater.base(this, 'enterDocument');
 
   if (!this.placeholder_) {
     this.placeholder_ =
@@ -262,13 +281,14 @@ goog.ui.ScrollFloater.prototype.update = function() {
     this.containerBounds_ = goog.style.getBounds(this.containerElement_);
   }
   this.originalBounds_ = goog.style.getBounds(this.getElement());
+  this.originalTopOffset_ = goog.style.getPageOffset(this.getElement()).y;
   this.handleScroll_();
 };
 
 
 /** @override */
 goog.ui.ScrollFloater.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.ui.ScrollFloater.base(this, 'disposeInternal');
 
   this.placeholder_ = null;
 };
@@ -357,12 +377,13 @@ goog.ui.ScrollFloater.prototype.handleScroll_ = function(opt_e) {
       return;
     }
 
+    var effectiveElementHeight = this.originalBounds_.height +
+        this.viewportTopOffset_;
+
     // If the element extends past the container, we need to pin it instead.
     if (this.containerElement_) {
       var containerBottom = this.containerBounds_.top +
           this.containerBounds_.height;
-      var effectiveElementHeight = this.originalBounds_.height +
-          this.viewportTopOffset_;
 
       if (scrollTop > containerBottom - effectiveElementHeight) {
         this.pin_();
@@ -370,7 +391,26 @@ goog.ui.ScrollFloater.prototype.handleScroll_ = function(opt_e) {
       }
     }
 
-    this.float_();
+    var windowHeight = this.getDomHelper().getViewportSize().height;
+
+    // If the element is shorter than the window or the user uses IE < 7,
+    // float it at the top.
+    if (this.needsIePositionHack_() || effectiveElementHeight < windowHeight) {
+      this.float_(goog.ui.ScrollFloater.FloatMode_.TOP);
+      return;
+    }
+
+    // If the element is taller than the window and is extending past the
+    // bottom, allow it scroll with the page until the bottom of the element is
+    // fully visible.
+    if (this.originalBounds_.height + this.originalTopOffset_ >
+        windowHeight + scrollTop) {
+      this.dock_();
+    } else {
+      // Pin the element to the bottom of the page since the user has scrolled
+      // past it.
+      this.float_(goog.ui.ScrollFloater.FloatMode_.BOTTOM);
+    }
   }
 };
 
@@ -406,10 +446,14 @@ goog.ui.ScrollFloater.prototype.pin_ = function() {
 /**
  * Begins floating behavior, making the element position:fixed (or IE hacked
  * equivalent) and inserting a placeholder where it used to be to keep the
- * layout from shifting around.
+ * layout from shifting around. For IE < 7 users, we only support floating at
+ * the top.
+ * @param {goog.ui.ScrollFloater.FloatMode_} floatMode The position at which we
+ *     should float.
  * @private
  */
-goog.ui.ScrollFloater.prototype.float_ = function() {
+goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
+  var isTop = floatMode == goog.ui.ScrollFloater.FloatMode_.TOP;
   if (this.pinned_ && !this.dock_()) {
     return;
   }
@@ -449,7 +493,8 @@ goog.ui.ScrollFloater.prototype.float_ = function() {
 
   // Versions of IE below 7-in-standards-mode don't handle 'position: fixed',
   // so we must emulate it using an IE-specific idiom for JS-based calculated
-  // style values.
+  // style values. These users will only ever float at the top (bottom floating
+  // not supported.) Also checked in handleScroll_.
   if (this.needsIePositionHack_()) {
     elem.style.position = 'absolute';
     elem.style.setExpression('top',
@@ -457,7 +502,13 @@ goog.ui.ScrollFloater.prototype.float_ = function() {
         'documentElement.scrollTop:document.body.scrollTop');
   } else {
     elem.style.position = 'fixed';
-    elem.style.top = this.viewportTopOffset_ + 'px';
+    if (isTop) {
+      elem.style.top = this.viewportTopOffset_ + 'px';
+      elem.style.bottom = 'auto';
+    } else {
+      elem.style.top = 'auto';
+      elem.style.bottom = 0;
+    }
   }
 
   this.floating_ = true;

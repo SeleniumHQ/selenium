@@ -19,12 +19,10 @@
 goog.provide('goog.demos.SampleComponent');
 
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
-goog.require('goog.events.EventHandler');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.ui.Component');
 
 
@@ -40,9 +38,10 @@ goog.require('goog.ui.Component');
  *
  * @extends {goog.ui.Component}
  * @constructor
+ * @final
  */
 goog.demos.SampleComponent = function(opt_label, opt_domHelper) {
-  goog.ui.Component.call(this, opt_domHelper);
+  goog.base(this, opt_domHelper);
 
   /**
    * The label to display.
@@ -57,13 +56,6 @@ goog.demos.SampleComponent = function(opt_label, opt_domHelper) {
    * @private
    */
   this.color_ = 'red';
-
-  /**
-   * Event handler for this object.
-   * @type {goog.events.EventHandler}
-   * @private
-   */
-  this.eh_ = new goog.events.EventHandler(this);
 
   /**
    * Keyboard handler for this object. This object is created once the
@@ -95,6 +87,7 @@ goog.demos.SampleComponent.prototype.changeColor_ = function() {
 
 /**
  * Creates an initial DOM representation for the component.
+ * @override
  */
 goog.demos.SampleComponent.prototype.createDom = function() {
   this.decorateInternal(this.dom_.createElement('div'));
@@ -106,27 +99,28 @@ goog.demos.SampleComponent.prototype.createDom = function() {
  *
  * @param {Element} element The DIV element to decorate. The element's
  *    text, if any will be used as the component's label.
+ * @override
  */
 goog.demos.SampleComponent.prototype.decorateInternal = function(element) {
-  goog.demos.SampleComponent.superClass_.decorateInternal.call(this, element);
+  goog.base(this, 'decorateInternal', element);
   if (!this.getLabelText()) {
     this.setLabelText(this.initialLabel_);
   }
 
   var elem = this.getElement();
-  goog.dom.classes.add(elem, goog.getCssName('goog-sample-component'));
+  goog.dom.classlist.add(elem, goog.getCssName('goog-sample-component'));
   elem.style.backgroundColor = this.color_;
   elem.tabIndex = 0;
 
   this.kh_ = new goog.events.KeyHandler(elem);
-  this.eh_.listen(this.kh_, goog.events.KeyHandler.EventType.KEY, this.onKey_);
+  this.getHandler().listen(this.kh_, goog.events.KeyHandler.EventType.KEY,
+      this.onKey_);
 };
 
 
 /** @override */
 goog.demos.SampleComponent.prototype.disposeInternal = function() {
-  goog.demos.SampleComponent.superClass_.disposeInternal.call(this);
-  this.eh_.dispose();
+  goog.base(this, 'disposeInternal');
   if (this.kh_) {
     this.kh_.dispose();
   }
@@ -135,10 +129,11 @@ goog.demos.SampleComponent.prototype.disposeInternal = function() {
 
 /**
  * Called when component's element is known to be in the document.
+ * @override
  */
 goog.demos.SampleComponent.prototype.enterDocument = function() {
-  goog.demos.SampleComponent.superClass_.enterDocument.call(this);
-  this.eh_.listen(this.getElement(), goog.events.EventType.CLICK,
+  goog.base(this, 'enterDocument');
+  this.getHandler().listen(this.getElement(), goog.events.EventType.CLICK,
       this.onDivClicked_);
 };
 
@@ -146,11 +141,10 @@ goog.demos.SampleComponent.prototype.enterDocument = function() {
 /**
  * Called when component's element is known to have been removed from the
  * document.
+ * @override
  */
 goog.demos.SampleComponent.prototype.exitDocument = function() {
-  goog.demos.SampleComponent.superClass_.exitDocument.call(this);
-  this.eh_.unlisten(this.getElement(), goog.events.EventType.CLICK,
-      this.onDivClicked_);
+  goog.base(this, 'exitDocument');
 };
 
 

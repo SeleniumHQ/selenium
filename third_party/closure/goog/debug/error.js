@@ -33,11 +33,14 @@ goog.provide('goog.debug.Error');
  */
 goog.debug.Error = function(opt_msg) {
 
-  // Ensure there is a stack trace.
+  // Attempt to ensure there is a stack trace.
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, goog.debug.Error);
   } else {
-    this.stack = new Error().stack || '';
+    var stack = new Error().stack;
+    if (stack) {
+      this.stack = stack;
+    }
   }
 
   if (opt_msg) {

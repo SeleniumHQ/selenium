@@ -27,6 +27,7 @@ goog.require('goog.Disposable');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.events');
 goog.require('goog.testing.events.Event');
+goog.require('goog.testing.watchers');
 
 
 
@@ -52,6 +53,7 @@ goog.require('goog.testing.events.Event');
  * @param {boolean=} opt_autoInstall Install the MockClock at construction time.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.testing.MockClock = function(opt_autoInstall) {
   goog.Disposable.call(this);
@@ -209,6 +211,8 @@ goog.testing.MockClock.prototype.uninstall = function() {
     this.replacer_ = null;
     goog.now = this.oldGoogNow_;
   }
+
+  this.fireResetEvent();
 };
 
 
@@ -231,6 +235,17 @@ goog.testing.MockClock.prototype.reset = function() {
   this.nowMillis_ = 0;
   this.timeoutsMade_ = 0;
   this.timeoutDelay_ = 0;
+
+  this.fireResetEvent();
+};
+
+
+/**
+ * Signals that the mock clock has been reset, allowing objects that
+ * maintain their own internal state to reset.
+ */
+goog.testing.MockClock.prototype.fireResetEvent = function() {
+  goog.testing.watchers.signalClockReset();
 };
 
 
@@ -313,7 +328,7 @@ goog.testing.MockClock.prototype.runFunctionsWithinRange_ = function(
   var adjustedEndTime = endTime - this.timeoutDelay_;
 
   // Repeatedly pop off the last item since the queue is always sorted.
-  while (this.queue_.length &&
+  while (this.queue_ && this.queue_.length &&
       this.queue_[this.queue_.length - 1].runAtMillis <= adjustedEndTime) {
     var timeout = this.queue_.pop();
 

@@ -25,6 +25,7 @@ goog.require('goog.ui.editor.AbstractDialog');
  *     editable field.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.editor.EquationEditorOkEvent = function(equationHtml) {
   this.equationHtml = equationHtml;

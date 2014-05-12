@@ -44,6 +44,7 @@ goog.require('goog.array');
  * @see goog.events.listen
  * @see goog.events.EventHandler
  * @constructor
+ * @final
  */
 goog.testing.events.EventObserver = function() {
 

@@ -108,7 +108,7 @@ goog.debug.logRecordSerializer.reconstitute_ = function(o) {
 /**
  * @param {string} name The name of the log level to return.
  * @param {number} value The numeric value of the log level to return.
- * @return {goog.debug.Logger.Level} Returns a goog.debug.Logger.Level with
+ * @return {!goog.debug.Logger.Level} Returns a goog.debug.Logger.Level with
  *     the specified name and value.  If the name and value match a predefined
  *     log level, that instance will be returned, otherwise a new one will be
  *     created.

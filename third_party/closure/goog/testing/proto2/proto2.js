@@ -20,6 +20,7 @@
 goog.provide('goog.testing.proto2');
 
 goog.require('goog.proto2.Message');
+goog.require('goog.proto2.ObjectSerializer');
 goog.require('goog.testing.asserts');
 
 
@@ -124,4 +125,21 @@ goog.testing.proto2.assertEquals = function(expected, actual,
   if (diff) {
     goog.testing.asserts.raiseException(failureSummary, diff);
   }
+};
+
+
+/**
+ * Helper function to quickly build protocol buffer messages from JSON objects.
+ * @param {function(new:MessageType)} messageCtor A constructor that
+ *     creates a {@code goog.proto2.Message} subclass instance.
+ * @param {!Object} json JSON object which uses field names as keys.
+ * @return {!MessageType} The deserialized protocol buffer.
+ * @template MessageType
+ */
+goog.testing.proto2.fromObject = function(messageCtor, json) {
+  var serializer = new goog.proto2.ObjectSerializer(
+      goog.proto2.ObjectSerializer.KeyOption.NAME);
+  var message = new messageCtor;
+  serializer.deserializeTo(message, json);
+  return message;
 };

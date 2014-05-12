@@ -67,7 +67,7 @@ goog.vec.mat3d.create = function() {
  * @param {number} v02 The values at (0, 2).
  * @param {number} v12 The values at (1, 2).
  * @param {number} v22 The values at (2, 2).
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setFromValues = function(
@@ -174,7 +174,7 @@ goog.vec.mat3d.getElement = function(mat, row, column) {
  * @param {number} row The row index.
  * @param {number} column The column index.
  * @param {number} value The value to set at the requested row, column.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setElement = function(mat, row, column, value) {
@@ -190,7 +190,7 @@ goog.vec.mat3d.setElement = function(mat, row, column, value) {
  * @param {number} v00 The values for (0, 0).
  * @param {number} v11 The values for (1, 1).
  * @param {number} v22 The values for (2, 2).
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setDiagonalValues = function(mat, v00, v11, v22) {
@@ -206,7 +206,7 @@ goog.vec.mat3d.setDiagonalValues = function(mat, v00, v11, v22) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix to receive the values.
  * @param {goog.vec.vec3d.Type} vec The vector containing the values.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setDiagonal = function(mat, vec) {
@@ -225,7 +225,7 @@ goog.vec.mat3d.setDiagonal = function(mat, vec) {
  * @param {number} v0 The value for row 0.
  * @param {number} v1 The value for row 1.
  * @param {number} v2 The value for row 2.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setColumnValues = function(mat, column, v0, v1, v2) {
@@ -243,7 +243,7 @@ goog.vec.mat3d.setColumnValues = function(mat, column, v0, v1, v2) {
  * @param {goog.vec.mat3d.Type} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {goog.vec.vec3d.Type} vec The vector elements for the column.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setColumn = function(mat, column, vec) {
@@ -263,7 +263,7 @@ goog.vec.mat3d.setColumn = function(mat, column, vec) {
  * @param {number} column The column to get the values from.
  * @param {goog.vec.vec3d.Type} vec The vector elements to receive the
  *     column.
- * @return {goog.vec.vec3d.Type} return vec so that operations can be
+ * @return {!goog.vec.vec3d.Type} return vec so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.getColumn = function(mat, column, vec) {
@@ -282,14 +282,14 @@ goog.vec.mat3d.getColumn = function(mat, column, vec) {
  * @param {goog.vec.vec3d.Type} vec0 The values for column 0.
  * @param {goog.vec.vec3d.Type} vec1 The values for column 1.
  * @param {goog.vec.vec3d.Type} vec2 The values for column 2.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setColumns = function(mat, vec0, vec1, vec2) {
   goog.vec.mat3d.setColumn(mat, 0, vec0);
   goog.vec.mat3d.setColumn(mat, 1, vec1);
   goog.vec.mat3d.setColumn(mat, 2, vec2);
-  return mat;
+  return /** @type {!goog.vec.mat3d.Type} */(mat);
 };
 
 
@@ -317,7 +317,7 @@ goog.vec.mat3d.getColumns = function(mat, vec0, vec1, vec2) {
  * @param {number} v0 The value for column 0.
  * @param {number} v1 The value for column 1.
  * @param {number} v2 The value for column 2.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setRowValues = function(mat, row, v0, v1, v2) {
@@ -334,7 +334,7 @@ goog.vec.mat3d.setRowValues = function(mat, row, v0, v1, v2) {
  * @param {goog.vec.mat3d.Type} mat The matrix to receive the row values.
  * @param {number} row The index of the row.
  * @param {goog.vec.vec3d.Type} vec The vector containing the values.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setRow = function(mat, row, vec) {
@@ -351,7 +351,7 @@ goog.vec.mat3d.setRow = function(mat, row, vec) {
  * @param {goog.vec.mat3d.Type} mat The matrix supplying the values.
  * @param {number} row The index of the row supplying the values.
  * @param {goog.vec.vec3d.Type} vec The vector to receive the row.
- * @return {goog.vec.vec3d.Type} return vec so that operations can be
+ * @return {!goog.vec.vec3d.Type} return vec so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.getRow = function(mat, row, vec) {
@@ -369,14 +369,14 @@ goog.vec.mat3d.getRow = function(mat, row, vec) {
  * @param {goog.vec.vec3d.Type} vec0 The values for row 0.
  * @param {goog.vec.vec3d.Type} vec1 The values for row 1.
  * @param {goog.vec.vec3d.Type} vec2 The values for row 2.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.setRows = function(mat, vec0, vec1, vec2) {
   goog.vec.mat3d.setRow(mat, 0, vec0);
   goog.vec.mat3d.setRow(mat, 1, vec1);
   goog.vec.mat3d.setRow(mat, 2, vec2);
-  return mat;
+  return /** @type {!goog.vec.mat3d.Type} */(mat);
 };
 
 
@@ -399,7 +399,7 @@ goog.vec.mat3d.getRows = function(mat, vec0, vec1, vec2) {
  * Makes the given 3x3 matrix the zero matrix.
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
- * @return {goog.vec.mat3d.Type} return mat so operations can be chained.
+ * @return {!goog.vec.mat3d.Type} return mat so operations can be chained.
  */
 goog.vec.mat3d.makeZero = function(mat) {
   mat[0] = 0;
@@ -419,7 +419,7 @@ goog.vec.mat3d.makeZero = function(mat) {
  * Makes the given 3x3 matrix the identity matrix.
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
- * @return {goog.vec.mat3d.Type} return mat so operations can be chained.
+ * @return {!goog.vec.mat3d.Type} return mat so operations can be chained.
  */
 goog.vec.mat3d.makeIdentity = function(mat) {
   mat[0] = 1;
@@ -443,7 +443,7 @@ goog.vec.mat3d.makeIdentity = function(mat) {
  * @param {goog.vec.mat3d.Type} mat1 The second addend.
  * @param {goog.vec.mat3d.Type} resultMat The matrix to
  *     receive the results (may be either mat0 or mat1).
- * @return {goog.vec.mat3d.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.addMat = function(mat0, mat1, resultMat) {
@@ -468,7 +468,7 @@ goog.vec.mat3d.addMat = function(mat0, mat1, resultMat) {
  * @param {goog.vec.mat3d.Type} mat1 The subtrahend.
  * @param {goog.vec.mat3d.Type} resultMat The matrix to receive
  *     the results (may be either mat0 or mat1).
- * @return {goog.vec.mat3d.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.subMat = function(mat0, mat1, resultMat) {
@@ -493,7 +493,7 @@ goog.vec.mat3d.subMat = function(mat0, mat1, resultMat) {
  * @param {number} scalar The scalar value to multiple to each element of mat.
  * @param {goog.vec.mat3d.Type} resultMat The matrix to receive
  *     the results (may be mat).
- * @return {goog.vec.mat3d.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.multScalar = function(mat, scalar, resultMat) {
@@ -518,7 +518,7 @@ goog.vec.mat3d.multScalar = function(mat, scalar, resultMat) {
  * @param {goog.vec.mat3d.Type} mat1 The second (right hand) matrix.
  * @param {goog.vec.mat3d.Type} resultMat The matrix to receive
  *     the results (may be either mat0 or mat1).
- * @return {goog.vec.mat3d.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.multMat = function(mat0, mat1, resultMat) {
@@ -549,7 +549,7 @@ goog.vec.mat3d.multMat = function(mat0, mat1, resultMat) {
  * @param {goog.vec.mat3d.Type} mat The matrix to transpose.
  * @param {goog.vec.mat3d.Type} resultMat The matrix to receive
  *     the results (may be mat).
- * @return {goog.vec.mat3d.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.transpose = function(mat, resultMat) {
@@ -638,7 +638,7 @@ goog.vec.mat3d.equals = function(mat0, mat1) {
  * @param {goog.vec.vec3d.Type} vec The vector to transform.
  * @param {goog.vec.vec3d.Type} resultVec The vector to
  *     receive the results (may be vec).
- * @return {goog.vec.vec3d.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec3d.Type} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.multVec3 = function(mat, vec, resultVec) {
@@ -657,7 +657,7 @@ goog.vec.mat3d.multVec3 = function(mat, vec, resultVec) {
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} x The translation along the x axis.
  * @param {number} y The translation along the y axis.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeTranslate = function(mat, x, y) {
@@ -682,7 +682,7 @@ goog.vec.mat3d.makeTranslate = function(mat, x, y) {
  * @param {number} x The scale along the x axis.
  * @param {number} y The scale along the y axis.
  * @param {number} z The scale along the z axis.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeScale = function(mat, x, y, z) {
@@ -708,7 +708,7 @@ goog.vec.mat3d.makeScale = function(mat, x, y, z) {
  * @param {number} ax The x component of the rotation axis.
  * @param {number} ay The y component of the rotation axis.
  * @param {number} az The z component of the rotation axis.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeRotate = function(mat, angle, ax, ay, az) {
@@ -736,7 +736,7 @@ goog.vec.mat3d.makeRotate = function(mat, angle, ax, ay, az) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeRotateX = function(mat, angle) {
@@ -763,7 +763,7 @@ goog.vec.mat3d.makeRotateX = function(mat, angle) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeRotateY = function(mat, angle) {
@@ -790,7 +790,7 @@ goog.vec.mat3d.makeRotateY = function(mat, angle) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeRotateZ = function(mat, angle) {
@@ -823,7 +823,7 @@ goog.vec.mat3d.makeRotateZ = function(mat, angle) {
  * @param {number} x The x component of the rotation axis.
  * @param {number} y The y component of the rotation axis.
  * @param {number} z The z component of the rotation axis.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.rotate = function(mat, angle, x, y, z) {
@@ -869,7 +869,7 @@ goog.vec.mat3d.rotate = function(mat, angle, x, y, z) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.rotateX = function(mat, angle) {
@@ -899,7 +899,7 @@ goog.vec.mat3d.rotateX = function(mat, angle) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.rotateY = function(mat, angle) {
@@ -929,7 +929,7 @@ goog.vec.mat3d.rotateY = function(mat, angle) {
  *
  * @param {goog.vec.mat3d.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.rotateZ = function(mat, angle) {
@@ -962,7 +962,7 @@ goog.vec.mat3d.rotateZ = function(mat, angle) {
  * @param {number} theta1 The angle of rotation around the Z axis in radians.
  * @param {number} theta2 The angle of rotation around the X axis in radians.
  * @param {number} theta3 The angle of rotation around the Z axis in radians.
- * @return {goog.vec.mat3d.Type} return mat so that operations can be
+ * @return {!goog.vec.mat3d.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat3d.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
@@ -1002,7 +1002,7 @@ goog.vec.mat3d.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
  *     radians as [theta1, theta2, theta3].
  * @param {boolean=} opt_theta2IsNegative Whether theta2 is in [-pi, 0] instead
  *     of the default [0, pi].
- * @return {goog.vec.vec3d.Type} return euler so that operations can be
+ * @return {!goog.vec.vec3d.Type} return euler so that operations can be
  *     chained together.
  */
 goog.vec.mat3d.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {

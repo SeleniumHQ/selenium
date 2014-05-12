@@ -21,7 +21,6 @@
 
 goog.provide('goog.ui.ToolbarSelect');
 
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Select');
 goog.require('goog.ui.ToolbarMenuButtonRenderer');
 goog.require('goog.ui.registry');

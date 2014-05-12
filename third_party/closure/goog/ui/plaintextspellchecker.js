@@ -47,6 +47,7 @@ goog.require('goog.userAgent');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.AbstractSpellChecker}
+ * @final
  */
 goog.ui.PlainTextSpellChecker = function(handler, opt_domHelper) {
   goog.ui.AbstractSpellChecker.call(this, handler, opt_domHelper);
@@ -442,7 +443,7 @@ goog.ui.PlainTextSpellChecker.prototype.resume = function() {
  * Returns desired element properties for the specified status.
  *
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @return {Object} Properties to apply to word element.
+ * @return {!Object} Properties to apply to word element.
  * @override
  */
 goog.ui.PlainTextSpellChecker.prototype.getElementProperties =

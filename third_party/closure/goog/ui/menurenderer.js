@@ -34,11 +34,13 @@ goog.require('goog.ui.Separator');
 /**
  * Default renderer for {@link goog.ui.Menu}s, based on {@link
  * goog.ui.ContainerRenderer}.
+ * @param {string=} opt_ariaRole Optional ARIA role used for the element.
  * @constructor
  * @extends {goog.ui.ContainerRenderer}
  */
-goog.ui.MenuRenderer = function() {
-  goog.ui.ContainerRenderer.call(this);
+goog.ui.MenuRenderer = function(opt_ariaRole) {
+  goog.ui.ContainerRenderer.call(this,
+      opt_ariaRole || goog.a11y.aria.Role.MENU);
 };
 goog.inherits(goog.ui.MenuRenderer, goog.ui.ContainerRenderer);
 goog.addSingletonGetter(goog.ui.MenuRenderer);
@@ -50,16 +52,6 @@ goog.addSingletonGetter(goog.ui.MenuRenderer);
  * @type {string}
  */
 goog.ui.MenuRenderer.CSS_CLASS = goog.getCssName('goog-menu');
-
-
-/**
- * Returns the ARIA role to be applied to menus.
- * @return {string} ARIA role.
- * @override
- */
-goog.ui.MenuRenderer.prototype.getAriaRole = function() {
-  return goog.a11y.aria.Role.MENU;
-};
 
 
 /**

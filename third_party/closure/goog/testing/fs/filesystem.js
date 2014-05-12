@@ -30,6 +30,7 @@ goog.require('goog.testing.fs.DirectoryEntry');
  * @param {string=} opt_name The name of the filesystem.
  * @constructor
  * @implements {goog.fs.FileSystem}
+ * @final
  */
 goog.testing.fs.FileSystem = function(opt_name) {
   /**

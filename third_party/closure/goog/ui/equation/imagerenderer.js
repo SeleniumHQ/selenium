@@ -19,8 +19,9 @@
 
 goog.provide('goog.ui.equation.ImageRenderer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
 
@@ -146,14 +147,15 @@ goog.ui.equation.ImageRenderer.getEquationFromImage = function(equationNode) {
 
 /**
  * Checks whether given node is an equation element.
- * @param {Node} node The node to check.
+ * @param {Node} node The node to check, must be an Element.
  * @return {boolean} Whether given node is an equation element.
  */
 goog.ui.equation.ImageRenderer.isEquationElement = function(node) {
-  return node.nodeName == goog.dom.TagName.IMG &&
-      (node.getAttribute(
+  var elem = goog.asserts.assertElement(node);
+  return elem.nodeName == goog.dom.TagName.IMG &&
+      (!!elem.getAttribute(
       goog.ui.equation.ImageRenderer.EE_IMG_ATTR) ||
-          goog.dom.classes.has(node,
+          goog.dom.classlist.contains(elem,
               goog.ui.equation.ImageRenderer.EE_IMG_CLASS));
 };
 

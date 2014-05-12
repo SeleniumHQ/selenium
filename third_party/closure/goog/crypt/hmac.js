@@ -24,7 +24,6 @@
 
 goog.provide('goog.crypt.Hmac');
 
-goog.require('goog.asserts');
 goog.require('goog.crypt.Hash');
 
 
@@ -36,11 +35,14 @@ goog.require('goog.crypt.Hash');
  *     Should be an array of not more than {@code blockSize} integers in
        {0, 255}.
  * @param {number=} opt_blockSize Optional. The block size {@code hasher} uses.
- *     If not specified, 16.
+ *     If not specified, uses the block size from the hasher, or 16 if it is
+ *     not specified.
  * @extends {goog.crypt.Hash}
+ * @final
+ * @struct
  */
 goog.crypt.Hmac = function(hasher, key, opt_blockSize) {
-  goog.base(this);
+  goog.crypt.Hmac.base(this, 'constructor');
 
   /**
    * The underlying hasher to calculate hash.
@@ -50,13 +52,7 @@ goog.crypt.Hmac = function(hasher, key, opt_blockSize) {
    */
   this.hasher_ = hasher;
 
-  /**
-   * The block size.
-   *
-   * @type {number}
-   * @private
-   */
-  this.blockSize_ = opt_blockSize || 16;
+  this.blockSize = opt_blockSize || hasher.blockSize || 16;
 
   /**
    * The outer padding array of hmac
@@ -64,7 +60,7 @@ goog.crypt.Hmac = function(hasher, key, opt_blockSize) {
    * @type {!Array.<number>}
    * @private
    */
-  this.keyO_ = new Array(this.blockSize_);
+  this.keyO_ = new Array(this.blockSize);
 
   /**
    * The inner padding array of hmac
@@ -72,7 +68,7 @@ goog.crypt.Hmac = function(hasher, key, opt_blockSize) {
    * @type {!Array.<number>}
    * @private
    */
-  this.keyI_ = new Array(this.blockSize_);
+  this.keyI_ = new Array(this.blockSize);
 
   this.initialize_(key);
 };
@@ -106,13 +102,14 @@ goog.crypt.Hmac.IPAD_ = 0x36;
  * @private
  */
 goog.crypt.Hmac.prototype.initialize_ = function(key) {
-  if (key.length > this.blockSize_) {
+  if (key.length > this.blockSize) {
     this.hasher_.update(key);
     key = this.hasher_.digest();
+    this.hasher_.reset();
   }
   // Precalculate padded and xor'd keys.
   var keyByte;
-  for (var i = 0; i < this.blockSize_; i++) {
+  for (var i = 0; i < this.blockSize; i++) {
     if (i < key.length) {
       keyByte = key[i];
     } else {

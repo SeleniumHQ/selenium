@@ -25,7 +25,7 @@ goog.provide('goog.messaging.PortOperator');
 
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.messaging.PortChannel');
 goog.require('goog.messaging.PortNetwork'); // interface
 goog.require('goog.object');
@@ -39,9 +39,10 @@ goog.require('goog.object');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.PortNetwork}
+ * @final
  */
 goog.messaging.PortOperator = function(name) {
-  goog.base(this);
+  goog.messaging.PortOperator.base(this, 'constructor');
 
   /**
    * The collection of channels for communicating with other contexts in the
@@ -78,11 +79,11 @@ goog.inherits(goog.messaging.PortOperator, goog.Disposable);
 
 /**
  * The logger for PortOperator.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.messaging.PortOperator.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.messaging.PortOperator');
+    goog.log.getLogger('goog.messaging.PortOperator');
 
 
 /** @override */
@@ -135,7 +136,7 @@ goog.messaging.PortOperator.prototype.requestConnection_ = function(
   if (!requestedChannel) {
     var err = 'Port "' + sourceName + '" requested a connection to port "' +
         requestedName + '", which doesn\'t exist';
-    this.logger_.warning(err);
+    goog.log.warning(this.logger_, err);
     sourceChannel.send(goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
                        {'success': false, 'message': err});
     return;
@@ -193,5 +194,5 @@ goog.messaging.PortOperator.prototype.disposeInternal = function() {
   goog.object.forEach(this.connections_, goog.dispose);
   delete this.switchboard_;
   delete this.connections_;
-  goog.base(this, 'disposeInternal');
+  goog.messaging.PortOperator.base(this, 'disposeInternal');
 };

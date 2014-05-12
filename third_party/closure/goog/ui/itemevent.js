@@ -34,6 +34,7 @@ goog.require('goog.events.Event');
  * @param {Object} target Reference to the object that is the target
  *                        of this event.
  * @param {Object} item The item that was clicked.
+ * @final
  */
 goog.ui.ItemEvent = function(type, target, item) {
   goog.events.Event.call(this, type, target);

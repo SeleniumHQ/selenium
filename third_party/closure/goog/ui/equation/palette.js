@@ -170,7 +170,7 @@ goog.ui.equation.Palette.prototype.getAction = function(index) {
  * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseUp = function(e) {
-  goog.base(this, 'handleMouseUp', e);
+  goog.ui.equation.Palette.base(this, 'handleMouseUp', e);
 
   this.paletteManager_.dispatchEvent(
       new goog.ui.equation.PaletteEvent(
@@ -185,7 +185,7 @@ goog.ui.equation.Palette.prototype.handleMouseUp = function(e) {
  * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseOut = function(e) {
-  goog.base(this, 'handleMouseOut', e);
+  goog.ui.equation.Palette.base(this, 'handleMouseOut', e);
 
   // Ignore mouse moves between descendants.
   if (e.relatedTarget &&
@@ -204,7 +204,7 @@ goog.ui.equation.Palette.prototype.handleMouseOut = function(e) {
  * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseOver = function(e) {
-  goog.base(this, 'handleMouseOver', e);
+  goog.ui.equation.Palette.base(this, 'handleMouseOver', e);
 
   // Ignore mouse moves between descendants.
   if (e.relatedTarget &&
@@ -225,6 +225,7 @@ goog.ui.equation.Palette.prototype.handleMouseOver = function(e) {
  * @param {Element=} opt_target The optional target of the event.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.equation.PaletteEvent = function(type, palette, opt_target) {
   goog.events.Event.call(this, type, opt_target);

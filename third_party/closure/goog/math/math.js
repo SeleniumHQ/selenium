@@ -93,7 +93,7 @@ goog.math.lerp = function(a, b, x) {
 
 /**
  * Tests whether the two values are equal to each other, within a certain
- * tolerance to adjust for floating pount errors.
+ * tolerance to adjust for floating point errors.
  * @param {number} a A number.
  * @param {number} b A number.
  * @param {number=} opt_tolerance Optional tolerance range. Defaults
@@ -105,14 +105,27 @@ goog.math.nearlyEquals = function(a, b, opt_tolerance) {
 };
 
 
+// TODO(user): Rename to normalizeAngle, retaining old name as deprecated
+// alias.
 /**
- * Standardizes an angle to be in range [0-360). Negative angles become
- * positive, and values greater than 360 are returned modulo 360.
+ * Normalizes an angle to be in range [0-360). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
  * @param {number} angle Angle in degrees.
  * @return {number} Standardized angle.
  */
 goog.math.standardAngle = function(angle) {
   return goog.math.modulo(angle, 360);
+};
+
+
+/**
+ * Normalizes an angle to be in range [0-2*PI). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
+ * @param {number} angle Angle in radians.
+ * @return {number} Standardized angle.
+ */
+goog.math.standardAngleInRadians = function(angle) {
+  return goog.math.modulo(angle, 2 * Math.PI);
 };
 
 
@@ -226,7 +239,7 @@ goog.math.sign = function(x) {
  *     as a result subsequence. It accepts 2 arguments: index of common element
  *     in the first array and index in the second. The default function returns
  *     element from the first array.
- * @return {Array.<Object>} A list of objects that are common to both arrays
+ * @return {!Array.<Object>} A list of objects that are common to both arrays
  *     such that there is no common subsequence with size greater than the
  *     length of the list.
  */
@@ -311,15 +324,14 @@ goog.math.average = function(var_args) {
 
 
 /**
- * Returns the sample standard deviation of the arguments.  For a definition of
- * sample standard deviation, see e.g.
- * http://en.wikipedia.org/wiki/Standard_deviation
+ * Returns the unbiased sample variance of the arguments. For a definition,
+ * see e.g. http://en.wikipedia.org/wiki/Variance
  * @param {...number} var_args Number samples to analyze.
- * @return {number} The sample standard deviation of the arguments (0 if fewer
+ * @return {number} The unbiased sample variance of the arguments (0 if fewer
  *     than two samples were provided, or {@code NaN} if any of the samples is
  *     not a valid number).
  */
-goog.math.standardDeviation = function(var_args) {
+goog.math.sampleVariance = function(var_args) {
   var sampleSize = arguments.length;
   if (sampleSize < 2) {
     return 0;
@@ -331,7 +343,21 @@ goog.math.standardDeviation = function(var_args) {
         return Math.pow(val - mean, 2);
       })) / (sampleSize - 1);
 
-  return Math.sqrt(variance);
+  return variance;
+};
+
+
+/**
+ * Returns the sample standard deviation of the arguments.  For a definition of
+ * sample standard deviation, see e.g.
+ * http://en.wikipedia.org/wiki/Standard_deviation
+ * @param {...number} var_args Number samples to analyze.
+ * @return {number} The sample standard deviation of the arguments (0 if fewer
+ *     than two samples were provided, or {@code NaN} if any of the samples is
+ *     not a valid number).
+ */
+goog.math.standardDeviation = function(var_args) {
+  return Math.sqrt(goog.math.sampleVariance.apply(null, arguments));
 };
 
 
@@ -353,6 +379,28 @@ goog.math.isInt = function(num) {
  */
 goog.math.isFiniteNumber = function(num) {
   return isFinite(num) && !isNaN(num);
+};
+
+
+/**
+ * Returns the precise value of floor(log10(num)).
+ * Simpler implementations didn't work because of floating point rounding
+ * errors. For example
+ * <ul>
+ * <li>Math.floor(Math.log(num) / Math.LN10) is off by one for num == 1e+3.
+ * <li>Math.floor(Math.log(num) * Math.LOG10E) is off by one for num == 1e+15.
+ * <li>Math.floor(Math.log10(num)) is off by one for num == 1e+15 - 1.
+ * </ul>
+ * @param {number} num A floating point number.
+ * @return {number} Its logarithm to base 10 rounded down to the nearest
+ *     integer if num > 0. -Infinity if num == 0. NaN if num < 0.
+ */
+goog.math.log10Floor = function(num) {
+  if (num > 0) {
+    var x = Math.round(Math.log(num) * Math.LOG10E);
+    return x - (parseFloat('1e' + x) > num);
+  }
+  return num == 0 ? -Infinity : NaN;
 };
 
 

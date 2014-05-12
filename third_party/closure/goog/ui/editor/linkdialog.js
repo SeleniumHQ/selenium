@@ -52,14 +52,15 @@ goog.require('goog.window');
  * @param {goog.editor.Link} link The target link.
  * @constructor
  * @extends {goog.ui.editor.AbstractDialog}
+ * @final
  */
 goog.ui.editor.LinkDialog = function(domHelper, link) {
-  goog.base(this, domHelper);
+  goog.ui.editor.LinkDialog.base(this, 'constructor', domHelper);
   this.targetLink_ = link;
 
   /**
    * The event handler for this dialog.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.editor.LinkDialog>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -87,10 +88,12 @@ goog.ui.editor.LinkDialog.EventType = {
  *     attribute.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.editor.LinkDialog.OkEvent = function(
     linkText, linkUrl, openInNewWindow, noFollow) {
-  goog.base(this, goog.ui.editor.AbstractDialog.EventType.OK);
+  goog.ui.editor.LinkDialog.OkEvent.base(this, 'constructor',
+      goog.ui.editor.AbstractDialog.EventType.OK);
 
   /**
    * The text of the link edited in the dialog.
@@ -126,9 +129,11 @@ goog.inherits(goog.ui.editor.LinkDialog.OkEvent, goog.events.Event);
  * @param {string} url Url of the link being tested.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.editor.LinkDialog.BeforeTestLinkEvent = function(url) {
-  goog.base(this, goog.ui.editor.LinkDialog.EventType.BEFORE_TEST_LINK);
+  goog.ui.editor.LinkDialog.BeforeTestLinkEvent.base(this, 'constructor',
+      goog.ui.editor.LinkDialog.EventType.BEFORE_TEST_LINK);
 
   /**
    * The url of the link being tested.
@@ -212,7 +217,7 @@ goog.ui.editor.LinkDialog.prototype.showRelNoFollow = function() {
 
 /** @override */
 goog.ui.editor.LinkDialog.prototype.show = function() {
-  goog.base(this, 'show');
+  goog.ui.editor.LinkDialog.base(this, 'show');
 
 
   this.selectAppropriateTab_(this.textToDisplayInput_.value,
@@ -238,7 +243,7 @@ goog.ui.editor.LinkDialog.prototype.show = function() {
 /** @override */
 goog.ui.editor.LinkDialog.prototype.hide = function() {
   this.disableAutogenFlag_(false);
-  goog.base(this, 'hide');
+  goog.ui.editor.LinkDialog.base(this, 'hide');
 };
 
 
@@ -317,7 +322,7 @@ goog.ui.editor.LinkDialog.prototype.createDialogControl = function() {
  * Creates and returns the event object to be used when dispatching the OK
  * event to listeners based on which tab is currently selected and the contents
  * of the input fields of that tab.
- * @return {goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
+ * @return {!goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
  *     dispatching the OK event to listeners.
  * @protected
  * @override
@@ -345,7 +350,7 @@ goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
   this.emailInputHandler_.dispose();
   this.emailInputHandler_ = null;
 
-  goog.base(this, 'disposeInternal');
+  goog.ui.editor.LinkDialog.base(this, 'disposeInternal');
 };
 
 
@@ -471,7 +476,7 @@ goog.ui.editor.LinkDialog.prototype.stopReferrerLeaks_ = false;
 
 /**
  * Creates contents of this dialog.
- * @return {Element} Contents of the dialog as a DOM element.
+ * @return {!Element} Contents of the dialog as a DOM element.
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.createDialogContent_ = function() {
@@ -510,7 +515,7 @@ goog.ui.editor.LinkDialog.prototype.createDialogContent_ = function() {
 
 /**
  * Builds and returns the text to display section of the edit link dialog.
- * @return {Element} A div element to be appended into the dialog div.
+ * @return {!Element} A div element to be appended into the dialog div.
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
@@ -546,7 +551,7 @@ goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
 /**
  * Builds and returns the "checkbox to open the link in a new window" section of
  * the edit link dialog.
- * @return {Element} A div element to be appended into the dialog div.
+ * @return {!Element} A div element to be appended into the dialog div.
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
@@ -561,7 +566,7 @@ goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
 
 /**
  * Creates a DIV with a checkbox for {@code rel=nofollow} option.
- * @return {Element} Newly created DIV element.
+ * @return {!Element} Newly created DIV element.
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildRelNoFollowDiv_ = function() {
@@ -585,7 +590,7 @@ goog.ui.editor.LinkDialog.prototype.buildRelNoFollowDiv_ = function() {
 
 /**
 * Builds and returns the div containing the tab "On the web".
-* @return {Element} The div element containing the tab.
+* @return {!Element} The div element containing the tab.
 * @private
 */
 goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
@@ -642,7 +647,7 @@ goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
 
 /**
  * Builds and returns the div containing the tab "Email address".
- * @return {Element} the div element containing the tab.
+ * @return {!Element} the div element containing the tab.
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildTabEmailAddress_ = function() {
@@ -819,7 +824,7 @@ goog.ui.editor.LinkDialog.prototype.onTextToDisplayEdit_ = function() {
 
 /**
  * The function called when hitting OK with the "On the web" tab current.
- * @return {goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
+ * @return {!goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
  *     dispatching the OK event to listeners.
  * @private
  */
@@ -843,7 +848,7 @@ goog.ui.editor.LinkDialog.prototype.createOkEventFromWebTab_ = function() {
 /**
  * The function called when hitting OK with the "email address" tab current.
  * @param {string=} opt_inputId Id of an alternate input to check.
- * @return {goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
+ * @return {!goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
  *     dispatching the OK event to listeners.
  * @private
  */
@@ -970,7 +975,7 @@ goog.ui.editor.LinkDialog.prototype.disableAutogenFlag_ = function(autogen) {
 /**
  * Creates an OK event from the text to display input and the specified link.
  * If text to display input is empty, then generate the auto value for it.
- * @return {goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
+ * @return {!goog.ui.editor.LinkDialog.OkEvent} The event object to be used when
  *     dispatching the OK event to listeners.
  * @param {string} url Url the target element should point to.
  * @private
