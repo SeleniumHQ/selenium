@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.fx.DragListGroup</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.fx.DragListDirection');
+    goog.require('goog.fx.DragListGroup');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    body {
+      font-family: verdana, sans-serif;
+    }
+
+    .hr_clear {
+      float: none;
+      clear: both;
+      height: 0px;
+      padding: 10px 0px 0px 0px;
+      border: 0px;
+      margin: 0px;
+      visibility: hidden;
+    }
+
+    .bug {
+      color: red;
+      font-style: italic;
+    }
+
+    .horiz1_class,
+    .horiz3_class,
+    .horiz5_class {
+      padding: 8px 12px;
+      /* box_height + 2 * (padding + border + margin) =
+         50 + 2 * (5 + 2 + 4) = 72px */
+      height: 72px;
+      border: 2px solid #000000;
+    }
+    .horiz1_class { float: left; }
+    .horiz3_class { float: left; }
+    .horiz5_class { float: left; }
+
+    .horiz1_class div { float: left; }
+    .horiz3_class div { float: right; }
+    .horiz5_class div { float: left; }
+
+    .horiz5_class {
+      width: 288px;
+      height: 216px;
+    }
+
+    .vert_table td {
+      vertical-align: top;
+      padding: 0px 20px;
+    }
+
+    .vert1_class,
+    .vert2_class {
+      padding: 12px 8px;
+      /* box_width + 2 * (padding + border + margin) =
+         50 + 2 * (5 + 2 + 2) = 68px */
+      width: 68px;
+      border: 2px solid #000000;
+    }
+
+    div.red_box,
+    div.yellow_box,
+    div.blue_box,
+    div.purple_box {
+      width: 50px;
+      height: 50px;
+      padding: 5px;
+      margin: 4px 2px;
+      font-family: verdana, sans-serif;
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+    }
+    div.red_box {
+      border: 2px solid #CC0000;
+      color: #CC0000;
+    }
+    div.yellow_box {
+      border: 2px solid #CCCC00;
+      color: #CCCC00;
+    }
+    div.blue_box {
+      border: 2px solid #0000CC;
+      color: #0000CC;
+    }
+    div.purple_box {
+      border: 2px solid #993399;
+      color: #993399;
+    }
+
+    #test {
+      background-color: #CCFFCC;
+      width: 100px;
+      height: 100px;
+      padding: 13px;
+      border: 11px solid #339933;
+      margin: 15px;
+    }
+
+    /* The following styles are used in the JS. */
+
+    .cursor_pointer {
+      cursor: pointer;
+    }
+
+    .cursor_move {
+      cursor: move;
+      -moz-user-select: none;
+    }
+
+    .opacity_40 {
+      opacity: 0.4;
+      -moz-opacity: 0.4;
+      filter: alpha(opacity=40);
+    }
+
+    .drag_hover_class {
+      border-color: #009900;
+      background-color: #CCFFCC;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>goog.fx.DragListGroup</h1>
+  <h2>You can drag any squares into any of the first 4 lists.</h2>
+  <hr class="hr_clear">
+
+  <h4>Horizontal list 1 (grows right):</h4>
+  <div id="horiz1_div" class="horiz1_class">
+    <div class="red_box">1</div>
+    <div class="red_box">2</div>
+    <div class="red_box">3</div>
+    <div class="red_box">4</div>
+  </div>
+  <hr class="hr_clear">
+
+  <table class="vert_table">
+  <tr>
+
+  <td>
+  <h4>Vertical list 1:</h4>
+  <div id="vert1_div" class="vert1_class">
+    <div class="blue_box">1</div>
+    <div class="blue_box">2</div>
+    <div class="blue_box">3</div>
+    <div class="blue_box">4</div>
+  </div>
+  </td>
+
+  <td>
+  <h4>Vertical list 2 (style changes on drag hover):</h4>
+  <div id="vert2_div" class="vert2_class">
+    <div class="purple_box">1</div>
+    <div class="purple_box">2</div>
+    <div class="purple_box">3</div>
+    <div class="purple_box">4</div>
+  </div>
+  </td>
+
+  </tr>
+  </table>
+  <hr class="hr_clear">
+  <h4>Horizontal list 3 (grows left):</h4>
+  <p class="bug">Bug: drop position is off by one.</p>
+  <div id="horiz3_div" class="horiz3_class">
+    <div class="yellow_box">1</div>
+    <div class="yellow_box">2</div>
+    <div class="yellow_box">3</div>
+    <div class="yellow_box">4</div>
+  </div>
+  <hr class="hr_clear">
+
+  <h4>Horizontal list 5 (grows right, has multiple rows, hysteresis is enabled):</h4>
+  <p class="bug">Bug: can't drop into the last row.</p>
+  <div id="horiz5_div" class="horiz5_class">
+    <div class="blue_box">11</div>
+    <div class="blue_box">22</div>
+    <div class="blue_box">33</div>
+    <div class="blue_box">44</div>
+    <div class="blue_box">55</div>
+    <div class="blue_box">66</div>
+    <div class="blue_box">77</div>
+    <div class="blue_box">88</div>
+    <div class="blue_box">99</div>
+  </div>
+  <hr class="hr_clear">
+
+  <h4>The items in this list can be moved around with shift-dragging:</h4>
+  <div id="horiz6_div" class="horiz1_class">
+    <div class="red_box">1</div>
+    <div class="red_box">2</div>
+    <div class="red_box">3</div>
+    <div class="red_box">4</div>
+  </div>
+  <hr class="hr_clear">
+
+  <h4>The items have different width:</h4>
+  <p class="bug">
+    Bug: the drop positions are off.
+    For example try moving box 1 a bit to the left.
+  </p>
+  <div id="horiz7_div" class="horiz1_class">
+    <div class="red_box" style="width: 200px">1</div>
+    <div class="red_box">2</div>
+    <div class="red_box" style="width: 200px">3</div>
+    <div class="red_box">4</div>
+  </div>
+  <hr class="hr_clear">
+  <script>
+
+  var dlg = new goog.fx.DragListGroup();
+  dlg.setDragItemHoverClass('cursor_move');
+  dlg.setDraggerElClass('cursor_move opacity_40');
+
+  dlg.addDragList(goog.dom.getElement('horiz1_div'),
+      goog.fx.DragListDirection.RIGHT);
+  dlg.addDragList(goog.dom.getElement('horiz3_div'),
+      goog.fx.DragListDirection.LEFT);
+  dlg.addDragList(goog.dom.getElement('vert1_div'),
+      goog.fx.DragListDirection.DOWN);
+  dlg.addDragList(goog.dom.getElement('vert2_div'),
+      goog.fx.DragListDirection.DOWN, true, 'drag_hover_class');
+
+  dlg.init();
+
+  var dlg2 = new goog.fx.DragListGroup();
+  dlg2.setDragItemHoverClass('cursor_move');
+  dlg2.setDraggerElClass('cursor_move opacity_40');
+  dlg2.setCurrDragItemClass('opacity_40');
+  dlg2.setIsCurrDragItemAlwaysDisplayed();
+  dlg2.addDragList(goog.dom.getElement('horiz5_div'),
+      goog.fx.DragListDirection.RIGHT_2D);
+  dlg2.setHysteresis(5);
+  dlg2.init();
+
+  var dlg3 = new goog.fx.DragListGroup();
+  dlg3.setDragItemHoverClass('cursor_move');
+  dlg3.setDraggerElClass('cursor_move opacity_40');
+  dlg3.addDragList(goog.dom.getElement('horiz6_div'),
+      goog.fx.DragListDirection.RIGHT);
+  goog.events.listen(dlg3, goog.fx.DragListGroup.EventType.BEFOREDRAGSTART,
+      function(e) {
+        if (!e.event.shiftKey) {
+          e.preventDefault();
+        }
+      });
+  dlg3.init();
+
+  var dlg4 = new goog.fx.DragListGroup();
+  dlg4.setDragItemHoverClass('cursor_move');
+  dlg4.setDraggerElClass('cursor_move opacity_40');
+  dlg4.setIsCurrDragItemAlwaysDisplayed();
+  dlg4.addDragList(goog.dom.getElement('horiz7_div'),
+      goog.fx.DragListDirection.RIGHT);
+  dlg4.init();
+  </script>
+</body>
+</html>

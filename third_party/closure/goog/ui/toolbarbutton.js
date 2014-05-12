@@ -22,6 +22,7 @@
 goog.provide('goog.ui.ToolbarButton');
 
 goog.require('goog.ui.Button');
+goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ToolbarButtonRenderer');
 goog.require('goog.ui.registry');
 

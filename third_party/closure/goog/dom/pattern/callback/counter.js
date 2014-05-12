@@ -25,7 +25,6 @@ goog.provide('goog.dom.pattern.callback.Counter');
 /**
  * Callback class for counting matches.
  * @constructor
- * @final
  */
 goog.dom.pattern.callback.Counter = function() {
 };
@@ -52,7 +51,7 @@ goog.dom.pattern.callback.Counter.prototype.callback_ = null;
  * Get a bound callback function that is suitable as a callback for
  * {@link goog.dom.pattern.Matcher}.
  *
- * @return {!Function} A callback function.
+ * @return {Function} A callback function.
  */
 goog.dom.pattern.callback.Counter.prototype.getCallback = function() {
   if (!this.callback_) {

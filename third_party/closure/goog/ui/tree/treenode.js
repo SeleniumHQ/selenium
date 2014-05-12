@@ -31,7 +31,7 @@ goog.require('goog.ui.tree.BaseNode');
 
 /**
  * A single node in the tree.
- * @param {string|!goog.html.SafeHtml} html The html content of the node label.
+ * @param {string} html The html content of the node label.
  * @param {Object=} opt_config The configuration for the tree. See
  *    goog.ui.tree.TreeControl.defaultConfig. If not specified, a default config
  *    will be used.
@@ -46,13 +46,21 @@ goog.inherits(goog.ui.tree.TreeNode, goog.ui.tree.BaseNode);
 
 
 /**
+ * The tree the item is in. Cached on demand from the parent.
+ * @type {goog.ui.tree.TreeControl?}
+ * @private
+ */
+goog.ui.tree.TreeNode.prototype.tree_ = null;
+
+
+/**
  * Returns the tree.
- * @return {?goog.ui.tree.TreeControl} The tree.
+ * @return {goog.ui.tree.TreeControl?} The tree.
  * @override
  */
 goog.ui.tree.TreeNode.prototype.getTree = function() {
-  if (this.tree) {
-    return this.tree;
+  if (this.tree_) {
+    return this.tree_;
   }
   var parent = this.getParent();
   if (parent) {
@@ -73,13 +81,11 @@ goog.ui.tree.TreeNode.prototype.getTree = function() {
  */
 goog.ui.tree.TreeNode.prototype.getCalculatedIconClass = function() {
   var expanded = this.getExpanded();
-  var expandedIconClass = this.getExpandedIconClass();
-  if (expanded && expandedIconClass) {
-    return expandedIconClass;
+  if (expanded && this.expandedIconClass_) {
+    return this.expandedIconClass_;
   }
-  var iconClass = this.getIconClass();
-  if (!expanded && iconClass) {
-    return iconClass;
+  if (!expanded && this.iconClass_) {
+    return this.iconClass_;
   }
 
   // fall back on default icons

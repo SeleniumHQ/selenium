@@ -101,7 +101,7 @@ goog.style.getVendorJsStyleName_ = function(element, style) {
 
   if (element.style[camelStyle] === undefined) {
     var prefixedStyle = goog.dom.vendor.getVendorJsPrefix() +
-        goog.string.toTitleCase(camelStyle);
+        goog.string.toTitleCase(style);
 
     if (element.style[prefixedStyle] !== undefined) {
       return prefixedStyle;
@@ -126,7 +126,7 @@ goog.style.getVendorStyleName_ = function(element, style) {
 
   if (element.style[camelStyle] === undefined) {
     var prefixedStyle = goog.dom.vendor.getVendorJsPrefix() +
-        goog.string.toTitleCase(camelStyle);
+        goog.string.toTitleCase(style);
 
     if (element.style[prefixedStyle] !== undefined) {
       return goog.dom.vendor.getVendorPrefix() + '-' + style;
@@ -224,20 +224,6 @@ goog.style.getStyle_ = function(element, style) {
 
 
 /**
- * Retrieves the computed value of the box-sizing CSS attribute.
- * Browser support: http://caniuse.com/css3-boxsizing.
- * @param {!Element} element The element whose box-sizing to get.
- * @return {?string} 'content-box', 'border-box' or 'padding-box'. null if
- *     box-sizing is not supported (IE7 and below).
- */
-goog.style.getComputedBoxSizing = function(element) {
-  return goog.style.getStyle_(element, 'boxSizing') ||
-      goog.style.getStyle_(element, 'MozBoxSizing') ||
-      goog.style.getStyle_(element, 'WebkitBoxSizing') || null;
-};
-
-
-/**
  * Retrieves the computed value of the position CSS attribute.
  * @param {Element} element The element to get the position of.
  * @return {string} Position value.
@@ -317,18 +303,6 @@ goog.style.getComputedTextAlign = function(element) {
  */
 goog.style.getComputedCursor = function(element) {
   return goog.style.getStyle_(element, 'cursor');
-};
-
-
-/**
- * Retrieves the computed value of the CSS transform attribute.
- * @param {Element} element The element to get the transform of.
- * @return {string} The computed string representation of the transform matrix.
- */
-goog.style.getComputedTransform = function(element) {
-  var property = goog.style.getVendorStyleName_(element, 'transform');
-  return goog.style.getStyle_(element, property) ||
-      goog.style.getStyle_(element, 'transform');
 };
 
 
@@ -911,13 +885,12 @@ goog.style.getClientPosition = function(el) {
         /** @type {!Element} */ (el));
   } else {
     var isAbstractedEvent = goog.isFunction(el.getBrowserEvent);
-    var be = /** @type {!goog.events.BrowserEvent} */ (el);
     var targetEvent = el;
 
     if (el.targetTouches) {
       targetEvent = el.targetTouches[0];
-    } else if (isAbstractedEvent && be.getBrowserEvent().targetTouches) {
-      targetEvent = be.getBrowserEvent().targetTouches[0];
+    } else if (isAbstractedEvent && el.getBrowserEvent().targetTouches) {
+      targetEvent = el.getBrowserEvent().targetTouches[0];
     }
 
     return new goog.math.Coordinate(
@@ -1030,36 +1003,14 @@ goog.style.setWidth = function(element, width) {
 
 /**
  * Gets the height and width of an element, even if its display is none.
- *
  * Specifically, this returns the height and width of the border box,
  * irrespective of the box model in effect.
- *
- * Note that this function does not take CSS transforms into account. Please see
- * {@code goog.style.getTransformedSize}.
  * @param {Element} element Element to get size of.
  * @return {!goog.math.Size} Object with width/height properties.
  */
 goog.style.getSize = function(element) {
-  return goog.style.evaluateWithTemporaryDisplay_(
-      goog.style.getSizeWithDisplay_, /** @type {!Element} */ (element));
-};
-
-
-/**
- * Call {@code fn} on {@code element} such that {@code element}'s dimensions are
- * accurate when it's passed to {@code fn}.
- * @param {function(!Element): T} fn Function to call with {@code element} as
- *     an argument after temporarily changing {@code element}'s display such
- *     that its dimensions are accurate.
- * @param {!Element} element Element (which may have display none) to use as
- *     argument to {@code fn}.
- * @return {T} Value returned by calling {@code fn} with {@code element}.
- * @template T
- * @private
- */
-goog.style.evaluateWithTemporaryDisplay_ = function(fn, element) {
   if (goog.style.getStyle_(element, 'display') != 'none') {
-    return fn(element);
+    return goog.style.getSizeWithDisplay_(element);
   }
 
   var style = element.style;
@@ -1071,18 +1022,18 @@ goog.style.evaluateWithTemporaryDisplay_ = function(fn, element) {
   style.position = 'absolute';
   style.display = 'inline';
 
-  var retVal = fn(element);
+  var size = goog.style.getSizeWithDisplay_(element);
 
   style.display = originalDisplay;
   style.position = originalPosition;
   style.visibility = originalVisibility;
 
-  return retVal;
+  return size;
 };
 
 
 /**
- * Gets the height and width of an element when the display is not none.
+ * Gets the height and with of an element when the display is not none.
  * @param {Element} element Element to get size of.
  * @return {!goog.math.Size} Object with width/height properties.
  * @private
@@ -1104,33 +1055,6 @@ goog.style.getSizeWithDisplay_ = function(element) {
         clientRect.bottom - clientRect.top);
   }
   return new goog.math.Size(offsetWidth, offsetHeight);
-};
-
-
-/**
- * Gets the height and width of an element, post transform, even if its display
- * is none.
- *
- * This is like {@code goog.style.getSize}, except:
- * <ol>
- * <li>Takes webkitTransforms such as rotate and scale into account.
- * <li>Will return null if {@code element} doesn't respond to
- *     {@code getBoundingClientRect}.
- * <li>Currently doesn't make sense on non-WebKit browsers which don't support
- *    webkitTransforms.
- * </ol>
- * @param {!Element} element Element to get size of.
- * @return {goog.math.Size} Object with width/height properties.
- */
-goog.style.getTransformedSize = function(element) {
-  if (!element.getBoundingClientRect) {
-    return null;
-  }
-
-  var clientRect = goog.style.evaluateWithTemporaryDisplay_(
-      goog.style.getBoundingClientRect_, element);
-  return new goog.math.Size(clientRect.right - clientRect.left,
-      clientRect.bottom - clientRect.top);
 };
 
 
@@ -1344,11 +1268,8 @@ goog.style.installStyles = function(stylesString, opt_node) {
   var dh = goog.dom.getDomHelper(opt_node);
   var styleSheet = null;
 
-  // IE < 11 requires createStyleSheet. Note that doc.createStyleSheet will be
-  // undefined as of IE 11.
-  var doc = dh.getDocument();
-  if (goog.userAgent.IE && doc.createStyleSheet) {
-    styleSheet = doc.createStyleSheet();
+  if (goog.userAgent.IE) {
+    styleSheet = dh.getDocument().createStyleSheet();
     goog.style.setStyles(styleSheet, stylesString);
   } else {
     var head = dh.getElementsByTagNameAndClass('head')[0];
@@ -1393,12 +1314,10 @@ goog.style.uninstallStyles = function(styleSheet) {
  * @param {string} stylesString The new content of the stylesheet.
  */
 goog.style.setStyles = function(element, stylesString) {
-  if (goog.userAgent.IE && goog.isDef(element.cssText)) {
+  if (goog.userAgent.IE) {
     // Adding the selectors individually caused the browser to hang if the
     // selector was invalid or there were CSS comments.  Setting the cssText of
-    // the style node works fine and ignores CSS that IE doesn't understand.
-    // However IE >= 11 doesn't support cssText any more, so we make sure that
-    // cssText is a defined property and otherwise fall back to innerHTML.
+    // the style node works fine and ignores CSS that IE doesn't understand
     element.cssText = stylesString;
   } else {
     element.innerHTML = stylesString;
@@ -1843,9 +1762,7 @@ goog.style.getBorderBox = function(element) {
 goog.style.getFontFamily = function(el) {
   var doc = goog.dom.getOwnerDocument(el);
   var font = '';
-  // The moveToElementText method from the TextRange only works if the element
-  // is attached to the owner document.
-  if (doc.body.createTextRange && goog.dom.contains(doc, el)) {
+  if (doc.body.createTextRange) {
     var range = doc.body.createTextRange();
     range.moveToElementText(el);
     /** @preserveTry */
@@ -2092,7 +2009,23 @@ goog.style.MATRIX_TRANSLATION_REGEX_ =
  * @return {!goog.math.Coordinate} The CSS translation of the element in px.
  */
 goog.style.getCssTranslation = function(element) {
-  var transform = goog.style.getComputedTransform(element);
+  var property;
+  if (goog.userAgent.IE) {
+    property = '-ms-transform';
+  } else if (goog.userAgent.WEBKIT) {
+    property = '-webkit-transform';
+  } else if (goog.userAgent.OPERA) {
+    property = '-o-transform';
+  } else if (goog.userAgent.GECKO) {
+    property = '-moz-transform';
+  }
+  var transform;
+  if (property) {
+    transform = goog.style.getStyle_(element, property);
+  }
+  if (!transform) {
+    transform = goog.style.getStyle_(element, 'transform');
+  }
   if (!transform) {
     return new goog.math.Coordinate(0, 0);
   }

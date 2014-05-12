@@ -23,11 +23,9 @@
 
 goog.provide('goog.net.xpc.FrameElementMethodTransport');
 
-goog.require('goog.log');
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
-goog.require('goog.net.xpc.TransportTypes');
 
 
 
@@ -44,11 +42,9 @@ goog.require('goog.net.xpc.TransportTypes');
  *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
- * @final
  */
 goog.net.xpc.FrameElementMethodTransport = function(channel, opt_domHelper) {
-  goog.net.xpc.FrameElementMethodTransport.base(
-      this, 'constructor', opt_domHelper);
+  goog.base(this, opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -167,7 +163,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetup_ = function() {
     }
   }
   catch (e) {
-    goog.log.error(goog.net.xpc.logger,
+    goog.net.xpc.logger.severe(
         'exception caught while attempting setup: ' + e);
   }
   // retry necessary?

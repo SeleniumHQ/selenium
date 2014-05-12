@@ -59,10 +59,9 @@ goog.require('goog.userAgent');
  * First Strong plugin.
  * @constructor
  * @extends {goog.editor.Plugin}
- * @final
  */
 goog.editor.plugins.FirstStrong = function() {
-  goog.editor.plugins.FirstStrong.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * Indicates whether or not the cursor is in a paragraph we have not yet

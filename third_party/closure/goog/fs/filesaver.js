@@ -22,6 +22,7 @@ goog.provide('goog.fs.FileSaver.EventType');
 goog.provide('goog.fs.FileSaver.ProgressEvent');
 goog.provide('goog.fs.FileSaver.ReadyState');
 
+goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.ProgressEvent');
@@ -41,7 +42,7 @@ goog.require('goog.fs.ProgressEvent');
  * @extends {goog.events.EventTarget}
  */
 goog.fs.FileSaver = function(fileSaver) {
-  goog.fs.FileSaver.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The underlying FileSaver object.
@@ -127,7 +128,7 @@ goog.fs.FileSaver.prototype.abort = function() {
   try {
     this.saver_.abort();
   } catch (e) {
-    throw new goog.fs.Error(e, 'aborting save');
+    throw new goog.fs.Error(e.code, 'aborting save');
   }
 };
 
@@ -145,7 +146,7 @@ goog.fs.FileSaver.prototype.getReadyState = function() {
  */
 goog.fs.FileSaver.prototype.getError = function() {
   return this.saver_.error &&
-      new goog.fs.Error(this.saver_.error, 'saving file');
+      new goog.fs.Error(this.saver_.error.code, 'saving file');
 };
 
 
@@ -163,7 +164,7 @@ goog.fs.FileSaver.prototype.dispatchProgressEvent_ = function(event) {
 /** @override */
 goog.fs.FileSaver.prototype.disposeInternal = function() {
   delete this.saver_;
-  goog.fs.FileSaver.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };
 
 
@@ -171,6 +172,5 @@ goog.fs.FileSaver.prototype.disposeInternal = function() {
  * A wrapper for the progress events emitted by the FileSaver.
  *
  * @deprecated Use {goog.fs.ProgressEvent}.
- * @final
  */
 goog.fs.FileSaver.ProgressEvent = goog.fs.ProgressEvent;

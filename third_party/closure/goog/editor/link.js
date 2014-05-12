@@ -24,7 +24,6 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.Range');
-goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.node');
@@ -41,7 +40,6 @@ goog.require('goog.uri.utils.ComponentIndex');
  * @param {HTMLAnchorElement} anchor The anchor element.
  * @param {boolean} isNew Whether this is a new link.
  * @constructor
- * @final
  */
 goog.editor.Link = function(anchor, isNew) {
   /**
@@ -91,14 +89,7 @@ goog.editor.Link.prototype.getExtraAnchors = function() {
  */
 goog.editor.Link.prototype.getCurrentText = function() {
   if (!this.currentText_) {
-    var anchor = this.getAnchor();
-
-    var leaf = goog.editor.node.getLeftMostLeaf(anchor);
-    if (leaf.tagName && leaf.tagName == goog.dom.TagName.IMG) {
-      this.currentText_ = leaf.getAttribute('alt');
-    } else {
-      this.currentText_ = goog.dom.getRawTextContent(this.getAnchor());
-    }
+    this.currentText_ = goog.dom.getRawTextContent(this.getAnchor());
   }
   return this.currentText_;
 };
@@ -150,22 +141,18 @@ goog.editor.Link.prototype.setTextAndUrl = function(newText, newUrl) {
   var currentText = this.getCurrentText();
   if (newText != currentText) {
     var leaf = goog.editor.node.getLeftMostLeaf(anchor);
-
-    if (leaf.tagName && leaf.tagName == goog.dom.TagName.IMG) {
-      leaf.setAttribute('alt', newText ? newText : '');
-    } else {
-      if (leaf.nodeType == goog.dom.NodeType.TEXT) {
-        leaf = leaf.parentNode;
-      }
-
-      if (goog.dom.getRawTextContent(leaf) != currentText) {
-        leaf = anchor;
-      }
-
-      goog.dom.removeChildren(leaf);
-      var domHelper = goog.dom.getDomHelper(leaf);
-      goog.dom.appendChild(leaf, domHelper.createTextNode(newText));
+    if (leaf.nodeType == goog.dom.NodeType.TEXT) {
+      leaf = leaf.parentNode;
     }
+
+    if (goog.dom.getRawTextContent(leaf) != currentText) {
+      leaf = anchor;
+    }
+
+    goog.dom.removeChildren(leaf);
+
+    var domHelper = goog.dom.getDomHelper(leaf);
+    goog.dom.appendChild(leaf, domHelper.createTextNode(newText));
 
     // The text changed, so force getCurrentText to recompute.
     this.currentText_ = null;
@@ -267,7 +254,7 @@ goog.editor.Link.prototype.finishLinkCreation = function(field) {
  * @param {string=} opt_target The target.
  * @param {Array.<HTMLAnchorElement>=} opt_extraAnchors Extra anchors created
  *     by the browser when parsing a selection.
- * @return {!goog.editor.Link} The link.
+ * @return {goog.editor.Link} The link.
  */
 goog.editor.Link.createNewLink = function(anchor, url, opt_target,
     opt_extraAnchors) {

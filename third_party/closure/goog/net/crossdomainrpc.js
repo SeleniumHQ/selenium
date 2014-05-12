@@ -67,12 +67,12 @@
 goog.provide('goog.net.CrossDomainRpc');
 
 goog.require('goog.Uri');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
-goog.require('goog.log');
 goog.require('goog.net.EventType');
 goog.require('goog.net.HttpStatus');
 goog.require('goog.string');
@@ -84,7 +84,6 @@ goog.require('goog.userAgent');
  * Creates a new instance of cross domain RPC
  * @extends {goog.events.EventTarget}
  * @constructor
- * @final
  */
 goog.net.CrossDomainRpc = function() {
   goog.events.EventTarget.call(this);
@@ -200,11 +199,11 @@ goog.net.CrossDomainRpc.setDebugMode = function(flag) {
 
 /**
  * Logger for goog.net.CrossDomainRpc
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.net.CrossDomainRpc.logger_ =
-    goog.log.getLogger('goog.net.CrossDomainRpc');
+    goog.debug.Logger.getLogger('goog.net.CrossDomainRpc');
 
 
 /**
@@ -394,8 +393,8 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
 
   // add dummy resource uri
   var dummyUri = goog.net.CrossDomainRpc.getDummyResourceUri_();
-  goog.log.fine(goog.net.CrossDomainRpc.logger_,
-      'dummyUri: ' + dummyUri);
+  goog.net.CrossDomainRpc.logger_.log(
+      goog.debug.Logger.Level.FINE, 'dummyUri: ' + dummyUri);
   inputs.push(goog.net.CrossDomainRpc.createInputHtml_(
       goog.net.CrossDomainRpc.PARAM_ECHO_DUMMY_URI, dummyUri));
 
@@ -430,7 +429,8 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
 
   this.loadListenerKey_ = goog.events.listen(
       requestFrame, goog.events.EventType.LOAD, function() {
-        goog.log.fine(goog.net.CrossDomainRpc.logger_, 'response ready');
+        goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
+            'response ready');
         this.responseReady_ = true;
       }, false, this);
 
@@ -480,7 +480,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
   if (grandChildrenLength > 0 &&
       goog.net.CrossDomainRpc.isResponseInfoFrame_(responseInfoFrame =
       requestFrameWindow.frames[grandChildrenLength - 1])) {
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
+    goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
         'xd response ready');
 
     var responseInfoPayload = goog.net.CrossDomainRpc.getFramePayload_(
@@ -489,7 +489,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
 
     var chunks = [];
     var numChunks = Number(params.get('n'));
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
+    goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
         'xd response number of chunks: ' + numChunks);
     for (var i = 0; i < numChunks; i++) {
       var responseFrame = requestFrameWindow.frames[i];
@@ -497,7 +497,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
           !responseFrame.location.href) {
         // On Safari 3.0, it is sometimes the case that the
         // iframe exists but doesn't have a same domain href yet.
-        goog.log.fine(goog.net.CrossDomainRpc.logger_,
+        goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
             'xd response iframe not ready');
         return;
       }
@@ -536,7 +536,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
           goog.net.CrossDomainRpc.RESPONSE_POLLING_PERIOD_;
       if (this.timeWaitedAfterResponseReady_ >
           goog.net.CrossDomainRpc.SEND_RESPONSE_TIME_OUT_) {
-        goog.log.fine(goog.net.CrossDomainRpc.logger_,
+        goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
             'xd response timed out');
         window.clearInterval(responseDetectorHandle);
 
@@ -623,7 +623,7 @@ goog.net.CrossDomainRpc.prototype.isSuccess = function() {
  */
 goog.net.CrossDomainRpc.prototype.reset = function() {
   if (!goog.net.CrossDomainRpc.debugMode_) {
-    goog.log.fine(goog.net.CrossDomainRpc.logger_,
+    goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
         'request frame removed: ' + this.requestFrame_.id);
     goog.events.unlistenByKey(this.loadListenerKey_);
     this.requestFrame_.parentNode.removeChild(this.requestFrame_);

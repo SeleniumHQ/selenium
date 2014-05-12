@@ -36,7 +36,6 @@ goog.testing.ui.rendererasserts.assertNoGetCssClassCallsInConstructor =
   /**
    * @constructor
    * @extends {goog.ui.ControlRenderer}
-   * @final
    */
   function TestControlRenderer() {
     rendererClassUnderTest.call(this);

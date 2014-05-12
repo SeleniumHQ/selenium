@@ -35,7 +35,7 @@ goog.require('goog.storage.mechanism.Mechanism');
  * @extends {goog.storage.mechanism.Mechanism}
  */
 goog.storage.mechanism.IterableMechanism = function() {
-  goog.storage.mechanism.IterableMechanism.base(this, 'constructor');
+  goog.base(this);
 };
 goog.inherits(goog.storage.mechanism.IterableMechanism,
               goog.storage.mechanism.Mechanism);

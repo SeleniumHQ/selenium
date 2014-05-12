@@ -34,9 +34,9 @@ goog.provide('goog.i18n.uChar.RemoteNameFetcher');
 
 goog.require('goog.Disposable');
 goog.require('goog.Uri');
+goog.require('goog.debug.Logger');
 goog.require('goog.i18n.uChar');
 goog.require('goog.i18n.uChar.NameFetcher');
-goog.require('goog.log');
 goog.require('goog.net.XhrIo');
 goog.require('goog.structs.Map');
 
@@ -50,10 +50,9 @@ goog.require('goog.structs.Map');
  * @constructor
  * @implements {goog.i18n.uChar.NameFetcher}
  * @extends {goog.Disposable}
- * @final
  */
 goog.i18n.uChar.RemoteNameFetcher = function(dataSourceUri) {
-  goog.i18n.uChar.RemoteNameFetcher.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * XHRIo object for prefetch() asynchronous calls.
@@ -111,18 +110,18 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getNameLastListenerKey_;
 /**
  * A reference to the RemoteNameFetcher logger.
  *
- * @type {goog.log.Logger}
+ * @type {!goog.debug.Logger}
  * @private
  */
 goog.i18n.uChar.RemoteNameFetcher.logger_ =
-    goog.log.getLogger('goog.i18n.uChar.RemoteNameFetcher');
+    goog.debug.Logger.getLogger('goog.i18n.uChar.RemoteNameFetcher');
 
 
 
 
 /** @override */
 goog.i18n.uChar.RemoteNameFetcher.prototype.disposeInternal = function() {
-  goog.i18n.uChar.RemoteNameFetcher.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.prefetchXhrIo_.dispose();
   this.getNameXhrIo_.dispose();
 };
@@ -218,7 +217,7 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getNameCallback_ = function(
  */
 goog.i18n.uChar.RemoteNameFetcher.prototype.processResponse_ = function(xhrIo) {
   if (!xhrIo.isSuccess()) {
-    goog.log.error(goog.i18n.uChar.RemoteNameFetcher.logger_,
+    goog.i18n.uChar.RemoteNameFetcher.logger_.severe(
         'Problem with data source: ' + xhrIo.getLastError());
     return;
   }
@@ -269,7 +268,7 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.fetch_ = function(requestType,
   var url = new goog.Uri(this.dataSourceUri_);
   url.setParameterValue(requestType, requestInput);
   url.setParameterValue('p', 'name');
-  goog.log.info(goog.i18n.uChar.RemoteNameFetcher.logger_, 'Request: ' +
+  goog.i18n.uChar.RemoteNameFetcher.logger_.info('Request: ' +
       url.toString());
   xhrIo.send(url);
 };

@@ -20,9 +20,9 @@
 
 goog.provide('goog.net.BulkLoader');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
-goog.require('goog.log');
 goog.require('goog.net.BulkLoaderHelper');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
@@ -34,7 +34,6 @@ goog.require('goog.net.XhrIo');
  * @param {Array.<string|goog.Uri>} uris The URIs to load.
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.net.BulkLoader = function(uris) {
   goog.events.EventTarget.call(this);
@@ -48,7 +47,7 @@ goog.net.BulkLoader = function(uris) {
 
   /**
    * The handler for managing events.
-   * @type {goog.events.EventHandler.<!goog.net.BulkLoader>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -58,11 +57,11 @@ goog.inherits(goog.net.BulkLoader, goog.events.EventTarget);
 
 /**
  * A logger.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.net.BulkLoader.prototype.logger_ =
-    goog.log.getLogger('goog.net.BulkLoader');
+    goog.debug.Logger.getLogger('goog.net.BulkLoader');
 
 
 /**
@@ -89,8 +88,7 @@ goog.net.BulkLoader.prototype.getRequestUris = function() {
 goog.net.BulkLoader.prototype.load = function() {
   var eventHandler = this.eventHandler_;
   var uris = this.helper_.getUris();
-  goog.log.info(this.logger_,
-      'Starting load of code with ' + uris.length + ' uris.');
+  this.logger_.info('Starting load of code with ' + uris.length + ' uris.');
 
   for (var i = 0; i < uris.length; i++) {
     var xhrIo = new goog.net.XhrIo();
@@ -110,7 +108,7 @@ goog.net.BulkLoader.prototype.load = function() {
  * @private
  */
 goog.net.BulkLoader.prototype.handleEvent_ = function(id, e) {
-  goog.log.info(this.logger_, 'Received event "' + e.type + '" for id ' + id +
+  this.logger_.info('Received event "' + e.type + '" for id ' + id +
       ' with uri ' + this.helper_.getUri(id));
   var xhrIo = /** @type {goog.net.XhrIo} */ (e.target);
   if (xhrIo.isSuccess()) {
@@ -163,7 +161,7 @@ goog.net.BulkLoader.prototype.handleError_ = function(
  * @private
  */
 goog.net.BulkLoader.prototype.finishLoad_ = function() {
-  goog.log.info(this.logger_, 'All uris loaded.');
+  this.logger_.info('All uris loaded.');
 
   // Dispatch the SUCCESS event.
   this.dispatchEvent(goog.net.EventType.SUCCESS);

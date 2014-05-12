@@ -18,9 +18,10 @@
 
 goog.provide('goog.proto2.Serializer');
 
-goog.require('goog.asserts');
+goog.require('goog.proto2.Descriptor');
 goog.require('goog.proto2.FieldDescriptor');
 goog.require('goog.proto2.Message');
+goog.require('goog.proto2.Util');
 
 
 
@@ -80,12 +81,12 @@ goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
  *     to be created.
  * @param {*} data The data of the message.
  *
- * @return {!goog.proto2.Message} The message created.
+ * @return {goog.proto2.Message} The message created.
  */
 goog.proto2.Serializer.prototype.deserialize = function(descriptor, data) {
   var message = descriptor.createMessageInstance();
   this.deserializeTo(message, data);
-  goog.asserts.assert(message instanceof goog.proto2.Message);
+  goog.proto2.Util.assert(message instanceof goog.proto2.Message);
   return message;
 };
 

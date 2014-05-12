@@ -21,11 +21,8 @@
 
 goog.provide('goog.ui.AdvancedTooltip');
 
-goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
-goog.require('goog.style');
 goog.require('goog.ui.Tooltip');
 goog.require('goog.userAgent');
 
@@ -172,7 +169,7 @@ goog.ui.AdvancedTooltip.prototype.getCursorTrackingHideDelayMs = function() {
 /**
  * Called after the popup is shown.
  * @protected
- * @suppress {underscore|visibility}
+ * @suppress {underscore}
  * @override
  */
 goog.ui.AdvancedTooltip.prototype.onShow_ = function() {
@@ -193,7 +190,7 @@ goog.ui.AdvancedTooltip.prototype.onShow_ = function() {
 /**
  * Called after the popup is hidden.
  * @protected
- * @suppress {underscore|visibility}
+ * @suppress {underscore}
  * @override
  */
 goog.ui.AdvancedTooltip.prototype.onHide_ = function() {
@@ -354,7 +351,7 @@ goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
  */
 goog.ui.AdvancedTooltip.prototype.getHideDelayMs = function() {
   return this.tracking_ ? this.cursorTrackingHideDelayMs_ :
-      goog.ui.AdvancedTooltip.base(this, 'getHideDelayMs');
+      goog.base(this, 'getHideDelayMs');
 };
 
 

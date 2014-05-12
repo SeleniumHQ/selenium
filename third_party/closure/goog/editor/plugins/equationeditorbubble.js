@@ -29,10 +29,9 @@ goog.require('goog.ui.equation.ImageRenderer');
  *
  * @constructor
  * @extends {goog.editor.plugins.AbstractBubblePlugin}
- * @final
  */
 goog.editor.plugins.equation.EquationBubble = function() {
-  goog.editor.plugins.equation.EquationBubble.base(this, 'constructor');
+  goog.base(this);
 };
 goog.inherits(goog.editor.plugins.equation.EquationBubble,
     goog.editor.plugins.AbstractBubblePlugin);

@@ -21,12 +21,13 @@ goog.require('goog.dom.selection');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
+goog.require('goog.string');
 goog.require('goog.style');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.equation.ChangeEvent');
 goog.require('goog.ui.equation.EditorPane');
 goog.require('goog.ui.equation.ImageRenderer');
-goog.require('goog.ui.equation.Palette');
-goog.require('goog.ui.equation.PaletteEvent');
+goog.require('goog.ui.equation.PaletteManager');
 
 
 
@@ -37,7 +38,6 @@ goog.require('goog.ui.equation.PaletteEvent');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.equation.EditorPane}
- * @final
  */
 goog.ui.equation.TexPane = function(
     context, helpUrl, opt_domHelper) {
@@ -248,13 +248,13 @@ goog.ui.equation.TexPane.prototype.enterDocument = function() {
   // Listen to the action event on the active palette.
   this.getHandler().listen(this.paletteManager_,
       goog.ui.equation.PaletteEvent.Type.ACTION,
-      this.handlePaletteAction_);
+      this.handlePaletteAction_, false, this);
 };
 
 
 /** @override */
 goog.ui.equation.TexPane.prototype.setVisible = function(visible) {
-  goog.ui.equation.TexPane.base(this, 'setVisible', visible);
+  goog.base(this, 'setVisible', visible);
   if (visible) {
     goog.Timer.callOnce(this.focusTexEdit_, 0, this);
   }
@@ -441,5 +441,5 @@ goog.ui.equation.TexPane.prototype.setEquation =
 goog.ui.equation.TexPane.prototype.disposeInternal = function() {
   this.texInputHandler_.dispose();
   this.paletteManager_ = null;
-  goog.ui.equation.TexPane.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

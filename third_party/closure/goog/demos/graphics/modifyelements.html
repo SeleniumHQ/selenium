@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Modifing Graphic Elements Demo</title>
+  <script type="text/javascript" src="../../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.dom');
+    goog.require('goog.graphics');
+  </script>
+  <script type="text/javascript">
+    /**
+     * A rectangle, returned from graphics.drawRect.
+     * @type goog.graphics.RectElement.
+     */
+    var rectElement;
+
+    /**
+     * An ellipse, returned from graphics.drawEllipse.
+     * @type goog.graphics.EllipseElement.
+     */
+    var ellipseElement;
+
+    /**
+     * A path element, returned from graphics.drawPath.
+     * @type goog.graphics.PathElement.
+     */
+    var pathElement;
+
+    /**
+     * A text element, returned from graphics.drawText
+     * @type goog.graphics.PathElement.
+     */
+    var textElement;
+
+    var graphics, fill, stroke, font;
+
+    var rectColor = [];
+
+    var pathData1, pathData2;
+
+    function setupElements() {
+      graphics = goog.graphics.createGraphics(600, 200);
+
+      fill = new goog.graphics.SolidFill('yellow');
+      stroke = new goog.graphics.Stroke(2, 'green');
+      font = new goog.graphics.Font(26, 'Arial');
+
+      rectColor.push({s: stroke, f: fill});
+      rectColor.push({s: new goog.graphics.Stroke(4, 'blue'),
+          f: new goog.graphics.SolidFill('red')});
+      rectColor.push({s: null, f: new goog.graphics.SolidFill('#c0c0c0')});
+      rectColor.push({s: new goog.graphics.Stroke(0.5, 'red'), f: null});
+      var gradient = new goog.graphics.LinearGradient(0, 0, 0, 300, '#8080ff',
+          '#000080');
+      rectColor.push({s: new goog.graphics.Stroke(1, 'black'), f: gradient});
+
+      drawElements();
+
+      graphics.render(document.getElementById('shapes'));
+    }
+
+    function drawElements() {
+      rectElement = graphics.drawRect(30, 10, 100, 80, stroke, fill);
+      ellipseElement = graphics.drawEllipse(400, 150, 100, 40, stroke, fill);
+
+      pathData1 = graphics.createPath()
+          .moveTo(200, 180)
+          .lineTo(230, 100)
+          .lineTo(280, 30)
+          .lineTo(280, 80)
+          .lineTo(200, 90);
+      pathData2 = graphics.createPath()
+          .moveTo(200, 180)
+          .curveTo(220, 50, 260, 180, 280, 30);
+      pathElement = graphics.drawPath(pathData1, stroke, null);
+
+      textElement = graphics.drawTextOnLine(
+          document.getElementById('text').value,
+          0, 20, 590, 20, 'right', font, stroke, fill);
+    }
+
+    function setRectColors(index) {
+      var c = rectColor[index];
+      rectElement.setFill(c.f);
+      rectElement.setStroke(c.s);
+      ellipseElement.setFill(c.f);
+      ellipseElement.setStroke(c.s);
+      pathElement.setStroke(c.s);
+      textElement.setStroke(c.s);
+      textElement.setFill(c.f);
+    }
+    function setRectPosition(x, y) {
+      rectElement.setPosition(x, y);
+    }
+    function setRectSize(width, height) {
+      rectElement.setSize(width, height);
+    }
+    function setEllipseCenter(cx, cy) {
+      ellipseElement.setCenter(cx, cy);
+    }
+    function setEllipseRadius(rx, ry) {
+      ellipseElement.setRadius(rx, ry);
+    }
+    function setPath(i) {
+      pathElement.setPath(i == 1 ? pathData1 : pathData2);
+    }
+    function setText() {
+      textElement.setText(document.getElementById('text').value);
+    }
+  </script>
+
+</head>
+
+<body onload="setupElements()">
+  <div id="shapes"
+       style="border:1px solid black; width:600px; height:200px;"></div>
+  <table>
+    <tr valign="top">
+      <td>Colors (stroke/fill):</td>
+      <td>
+        <input type="button" value="Green(2):yellow" onclick="setRectColors(0)">
+        <input type="button" value="Blue(4):red" onclick="setRectColors(1)">
+        <input type="button" value="null:#c0c0c0" onclick="setRectColors(2)">
+        <input type="button" value="Red(0.5):null" onclick="setRectColors(3)">
+        <input type="button" value="Gradient" onclick="setRectColors(4)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Rectangle position:</td>
+      <td>
+        <input type="button" value="30,30" onclick="setRectPosition(30, 10)">
+        <input type="button" value="200,20" onclick="setRectPosition(200, 20)">
+        <input type="button" value="0,60" onclick="setRectPosition(0, 60)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Rectangle size:</td>
+      <td>
+        <input type="button" value="100,80" onclick="setRectSize(100, 80)">
+        <input type="button" value="120,120" onclick="setRectSize(120, 120)">
+        <input type="button" value="40,60" onclick="setRectSize(40, 60)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Ellipse center:</td>
+      <td>
+        <input type="button" value="400,150"
+               onclick="setEllipseCenter(400, 150)">
+        <input type="button" value="200,80"
+               onclick="setEllipseCenter(200, 80)">
+        <input type="button" value="350,200"
+               onclick="setEllipseCenter(350, 200)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Ellipse radius:</td>
+      <td>
+        <input type="button" value="100,40" onclick="setEllipseRadius(100, 40)">
+        <input type="button" value="80,80" onclick="setEllipseRadius(80, 80)">
+        <input type="button" value="40,60" onclick="setEllipseRadius(40, 60)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Path:</td>
+      <td>
+        <input type="button" value="Line" onclick="setPath(1)">
+        <input type="button" value="Curve" onclick="setPath(2)">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>Text:</td>
+      <td>
+        <input type="text" id="text" value="Text Sample" onkeyup="setText()"
+               onchange="setText()" size="20">
+      </td>
+    </tr>
+    <tr valign="top">
+      <td colspan="2">
+        <input type="button" value="Clear Surface" onclick="graphics.clear()">
+        <input type="button" value="Redraw Elements"
+               onclick="graphics.clear(); drawElements()">
+      </td>
+    </tr>
+  </table>
+
+</body>
+
+</html>

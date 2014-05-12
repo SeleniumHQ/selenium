@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.ProgressBar</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    .progress-bar-vertical,
+    .progress-bar-horizontal {
+      position: relative;
+      border: 1px solid #949dad;
+      background: white;
+      padding: 1px;
+      overflow: hidden;
+      margin: 2px;
+    }
+
+    .progress-bar-horizontal {
+      width: 80%;
+      height: 14px;
+    }
+
+    .progress-bar-vertical {
+      width: 14px;
+      height: 200px;
+    }
+
+    .progress-bar-thumb {
+      position: relative;
+      background: #d4e4ff;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    #pb2 {
+      height: 1.3em;
+    }
+  </style>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.Component');
+    goog.require('goog.ui.ProgressBar');
+    goog.require('goog.dom');
+    goog.require('goog.Timer');
+  </script>
+</head>
+<body>
+  <h1>goog.ui.ProgressBar</h1>
+  <div id=out></div>
+  <div id=d></div>
+
+  <div id=pb2>
+    <div class="progress-bar-thumb"></div>
+    <div style='position:absolute;top:0;text-align:center;width:100%;
+                font:statusbar;padding:2px'>
+      Decorated element
+    </div>
+  </div>
+
+  <script>
+
+  var $ = goog.dom.getElement;
+
+  var pb = new goog.ui.ProgressBar;
+  pb.setOrientation(goog.ui.ProgressBar.Orientation.VERTICAL);
+  pb.render($('d'));
+
+  var pb2 = new goog.ui.ProgressBar;
+  pb2.decorate($('pb2'));
+
+  var last = 0;
+  var delta = 1;
+  var t = new goog.Timer(20);
+  t.addEventListener('tick', function(e) {
+    if (last > 100 || last < 0) {
+      delta = -delta;
+    }
+    last += delta;
+    pb.setValue(last);
+    pb2.setValue(last);
+  });
+  t.start();
+
+  pb.addEventListener(goog.ui.Component.EventType.CHANGE, function() {
+    goog.dom.setTextContent($('out'), this.getValue() + '%');
+  });
+
+
+  </script>
+</body>
+</html>

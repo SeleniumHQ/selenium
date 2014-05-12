@@ -41,7 +41,6 @@ goog.require('goog.dom.pattern.Tag');
  *     parameter and returns true if this pattern should match it.
  * @constructor
  * @extends {goog.dom.pattern.StartTag}
- * @final
  */
 goog.dom.pattern.FullTag = function(tag, opt_attrs, opt_styles, opt_test) {
   goog.dom.pattern.StartTag.call(

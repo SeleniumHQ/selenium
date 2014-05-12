@@ -23,9 +23,9 @@
 
 goog.provide('goog.proto2.LazyDeserializer');
 
-goog.require('goog.asserts');
 goog.require('goog.proto2.Message');
 goog.require('goog.proto2.Serializer');
+goog.require('goog.proto2.Util');
 
 
 
@@ -44,7 +44,7 @@ goog.proto2.LazyDeserializer.prototype.deserialize =
     function(descriptor, data) {
   var message = descriptor.createMessageInstance();
   message.initializeForLazyDeserializer(this, data);
-  goog.asserts.assert(message instanceof goog.proto2.Message);
+  goog.proto2.Util.assert(message instanceof goog.proto2.Message);
   return message;
 };
 

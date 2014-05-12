@@ -20,8 +20,8 @@
 goog.provide('goog.stats.BasicStat');
 
 goog.require('goog.array');
+goog.require('goog.debug.Logger');
 goog.require('goog.iter');
-goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string.format');
 goog.require('goog.structs.CircularBuffer');
@@ -41,7 +41,6 @@ goog.require('goog.structs.CircularBuffer');
  *
  * @param {number} interval The stat interval, in milliseconds.
  * @constructor
- * @final
  */
 goog.stats.BasicStat = function(interval) {
   goog.asserts.assert(interval > 50);
@@ -81,11 +80,11 @@ goog.stats.BasicStat.NUM_SLOTS_ = 50;
 
 
 /**
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.stats.BasicStat.prototype.logger_ =
-    goog.log.getLogger('goog.stats.BasicStat');
+    goog.debug.Logger.getLogger('goog.stats.BasicStat');
 
 
 /**
@@ -216,7 +215,7 @@ goog.stats.BasicStat.prototype.checkForTimeTravel_ = function(now) {
   if (slot) {
     var slotStart = slot.end - this.slotInterval_;
     if (now < slotStart) {
-      goog.log.warning(this.logger_, goog.string.format(
+      this.logger_.warning(goog.string.format(
           'Went backwards in time: now=%d, slotStart=%d.  Resetting state.',
           now, slotStart));
       this.reset_();

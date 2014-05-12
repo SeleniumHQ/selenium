@@ -26,10 +26,11 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
-goog.require('goog.html.SafeHtml');
-goog.require('goog.html.legacyconversions');
-goog.require('goog.ui.Component');
+goog.require('goog.ui.Component.Error');
 goog.require('goog.ui.Dialog');
+goog.require('goog.ui.Dialog.ButtonSet');
+goog.require('goog.ui.Dialog.DefaultButtonKeys');
+goog.require('goog.ui.Dialog.EventType');
 goog.require('goog.userAgent');
 
 
@@ -41,8 +42,7 @@ goog.require('goog.userAgent');
  * "Content area" and has the default class-name 'modal-dialog-userInput'
  *
  * @param {string} promptTitle The title of the prompt.
- * @param {string|!goog.html.SafeHtml} promptHtml The HTML body of the prompt.
- *     The variable is trusted and it should be already properly escaped.
+ * @param {string} promptText The text of the prompt.
  * @param {Function} callback The function to call when the user selects Ok or
  *     Cancel. The function should expect a single argument which represents
  *     what the user entered into the prompt. If the user presses cancel, the
@@ -57,10 +57,9 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {goog.ui.Dialog}
  */
-goog.ui.Prompt = function(promptTitle, promptHtml, callback, opt_defaultValue,
+goog.ui.Prompt = function(promptTitle, promptText, callback, opt_defaultValue,
     opt_class, opt_useIframeForIE, opt_domHelper) {
-  goog.ui.Prompt.base(this, 'constructor',
-      opt_class, opt_useIframeForIE, opt_domHelper);
+  goog.base(this, opt_class, opt_useIframeForIE, opt_domHelper);
 
   /**
    * The id of the input element.
@@ -70,13 +69,8 @@ goog.ui.Prompt = function(promptTitle, promptHtml, callback, opt_defaultValue,
   this.inputElementId_ = this.makeId('ie');
 
   this.setTitle(promptTitle);
-
-  var label = goog.html.SafeHtml.create('label', {'for': this.inputElementId_},
-      promptHtml instanceof goog.html.SafeHtml ? promptHtml :
-          goog.html.legacyconversions.safeHtmlFromString(promptHtml));
-  var br = goog.html.SafeHtml.create('br');
-  this.setSafeHtmlContent(goog.html.SafeHtml.concat(label, br, br));
-
+  this.setContent('<label for="' + this.inputElementId_ + '">' + promptText +
+      '</label><br><br>');
   this.callback_ = callback;
   this.defaultValue_ = goog.isDef(opt_defaultValue) ? opt_defaultValue : '';
 
@@ -302,6 +296,11 @@ goog.ui.Prompt.prototype.createDom = function() {
   var contentEl = this.getContentElement();
   contentEl.appendChild(this.getDomHelper().createDom(
       'div', {'style': 'overflow: auto'}, this.userInputEl_));
+
+  if (this.rows_ > 1) {
+    // Set default button to null so <enter> will work properly in the textarea
+    this.getButtonSet().setDefault(null);
+  }
 };
 
 
@@ -334,7 +333,7 @@ goog.ui.Prompt.prototype.updateOkButtonState_ = function() {
  * @override
  */
 goog.ui.Prompt.prototype.setVisible = function(visible) {
-  goog.ui.Prompt.base(this, 'setVisible', visible);
+  goog.base(this, 'setVisible', visible);
 
   if (visible) {
     this.isClosing_ = false;
@@ -350,7 +349,7 @@ goog.ui.Prompt.prototype.setVisible = function(visible) {
  * @override
  */
 goog.ui.Prompt.prototype.focus = function() {
-  goog.ui.Prompt.base(this, 'focus');
+  goog.base(this, 'focus');
 
   if (goog.userAgent.OPERA) {
     // select() doesn't focus <input> elements in Opera.

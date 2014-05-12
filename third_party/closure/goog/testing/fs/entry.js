@@ -207,10 +207,7 @@ goog.testing.fs.Entry.prototype.checkNotDeleted = function(action) {
   var d = new goog.async.Deferred(undefined, this);
   goog.Timer.callOnce(function() {
     if (this.deleted) {
-      var err = new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}),
-          action);
-      d.errback(err);
+      d.errback(new goog.fs.Error(goog.fs.Error.ErrorCode.NOT_FOUND, action));
     } else {
       d.callback();
     }
@@ -233,11 +230,9 @@ goog.testing.fs.Entry.prototype.checkNotDeleted = function(action) {
  * @constructor
  * @extends {goog.testing.fs.Entry}
  * @implements {goog.fs.DirectoryEntry}
- * @final
  */
 goog.testing.fs.DirectoryEntry = function(fs, parent, name, children) {
-  goog.testing.fs.DirectoryEntry.base(
-      this, 'constructor', fs, parent || this, name);
+  goog.base(this, fs, parent || this, name);
 
   /**
    * The map of child names to entry objects.
@@ -309,15 +304,12 @@ goog.testing.fs.DirectoryEntry.prototype.remove = function() {
     var d = new goog.async.Deferred();
     goog.Timer.callOnce(function() {
       d.errback(new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'InvalidModificationError'}),
+          goog.fs.Error.ErrorCode.INVALID_MODIFICATION,
           'removing ' + this.getFullPath()));
     }, 0, this);
     return d;
-  } else if (this != this.getFileSystem().getRoot()) {
-    return goog.testing.fs.DirectoryEntry.base(this, 'remove');
   } else {
-    // Root directory, do nothing.
-    return goog.async.Deferred.succeed();
+    return goog.base(this, 'remove');
   }
 };
 
@@ -359,19 +351,16 @@ goog.testing.fs.DirectoryEntry.prototype.getDirectory = function(
  * @param {string} path The path to the file, relative to this directory.
  * @param {goog.fs.DirectoryEntry.Behavior=} opt_behavior The behavior for
  *     loading the file.
- * @param {string=} opt_data The string data encapsulated by the blob.
- * @param {string=} opt_type The mime type of the blob.
  * @return {!goog.testing.fs.FileEntry} The loaded file.
  */
 goog.testing.fs.DirectoryEntry.prototype.getFileSync = function(
-    path, opt_behavior, opt_data, opt_type) {
+    path, opt_behavior) {
   opt_behavior = opt_behavior || goog.fs.DirectoryEntry.Behavior.DEFAULT;
   return (/** @type {!goog.testing.fs.FileEntry} */ (this.getEntry_(
       path, opt_behavior, true /* isFile */,
       goog.bind(function(parent, name) {
         return new goog.testing.fs.FileEntry(
-            this.getFileSystem(), parent, name,
-            goog.isDef(opt_data) ? opt_data : '', opt_type);
+            this.getFileSystem(), parent, name, '');
       }, this))));
 };
 
@@ -448,7 +437,7 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     var subdir = dir.children[p];
     if (!subdir) {
       throw new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}),
+          goog.fs.Error.ErrorCode.NOT_FOUND,
           'loading ' + path + ' from ' + this.getFullPath() + ' (directory ' +
           dir.getFullPath() + '/' + p + ')');
     }
@@ -461,7 +450,7 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
   if (!entry) {
     if (behavior == goog.fs.DirectoryEntry.Behavior.DEFAULT) {
       throw new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}),
+          goog.fs.Error.ErrorCode.NOT_FOUND,
           'loading ' + path + ' from ' + this.getFullPath());
     } else {
       goog.asserts.assert(
@@ -474,11 +463,11 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     }
   } else if (behavior == goog.fs.DirectoryEntry.Behavior.CREATE_EXCLUSIVE) {
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidModificationError'}),
+        goog.fs.Error.ErrorCode.PATH_EXISTS,
         'loading ' + path + ' from ' + this.getFullPath());
   } else if (entry.isFile() != isFile) {
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'TypeMismatchError'}),
+        goog.fs.Error.ErrorCode.TYPE_MISMATCH,
         'loading ' + path + ' from ' + this.getFullPath());
   } else {
     if (behavior == goog.fs.DirectoryEntry.Behavior.CREATE) {
@@ -539,22 +528,19 @@ goog.testing.fs.DirectoryEntry.prototype.createPath =
  *     containing this entry.
  * @param {string} name The name of this entry.
  * @param {string} data The data initially contained in the file.
- * @param {string=} opt_type The mime type of the blob.
  * @constructor
  * @extends {goog.testing.fs.Entry}
  * @implements {goog.fs.FileEntry}
- * @final
  */
-goog.testing.fs.FileEntry = function(fs, parent, name, data, opt_type) {
-  goog.testing.fs.FileEntry.base(this, 'constructor', fs, parent, name);
+goog.testing.fs.FileEntry = function(fs, parent, name, data) {
+  goog.base(this, fs, parent, name);
 
   /**
    * The internal file blob referenced by this file entry.
    * @type {!goog.testing.fs.File}
    * @private
    */
-  this.file_ =
-      new goog.testing.fs.File(name, new Date(goog.now()), data, opt_type);
+  this.file_ = new goog.testing.fs.File(name, new Date(goog.now()), data);
 
   /**
    * The metadata for file.

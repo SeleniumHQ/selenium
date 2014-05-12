@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.PopupMenu</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug.reflect');
+    goog.require('goog.positioning.Corner');
+    goog.require('goog.object');
+    goog.require('goog.ui.MenuItem');
+    goog.require('goog.ui.PopupMenu');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/menuitem.css">
+  <link rel="stylesheet" href="../css/menuseparator.css">
+  <style>
+    .event-log {
+      border: 1px solid #CCC;
+      height: 300px;
+      position: absolute;
+      right: 20px;
+      width: 400px;
+    }
+
+    .event-log-content {
+      height: 280px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.PopupMenu</h1>
+  <div>
+    This shows a 2 popup menus, each menu has been attached to two targets.
+    <br><br>
+  </div>
+
+  <fieldset class="event-log">
+    <legend>Event log</legend>
+    <div id="event-log" class="event-log-content"></div>
+  </fieldset>
+  <div id="foo" style="width: 600px; height: 300px; background-color: #EEE">
+    <div>
+      <span>Hello there <i>I'm italic!</i></span>
+    </div>
+    <div><button id="bar">Decorated Popup attached to a Button</button></div>
+  </div>
+
+  <button id="bar2" style="position:absolute;left: 600px;top:330px;">Button</button>
+
+  <button id="dButton">Decorated Popup</button>
+  <div id="dMenu" for="dButton" class="goog-menu" style="display:none">
+    <div class="goog-menuitem">A a</div>
+    <div class="goog-menuitem">B b</div>
+    <div class="goog-menuitem">C c</div>
+    <div class="goog-menuitem">D d</div>
+    <div class="goog-menuitem">E e</div>
+    <div class="goog-menuitem">F f</div>
+  </div>
+
+  <script>
+    var pm = new goog.ui.PopupMenu();
+    pm.addItem(new goog.ui.MenuItem('One'));
+    pm.addItem(new goog.ui.MenuItem('Two'));
+    pm.addItem(new goog.ui.MenuItem('Three'));
+    pm.addItem(new goog.ui.MenuItem('Four'));
+    pm.addItem(new goog.ui.MenuItem('Five'));
+    pm.addItem(new goog.ui.MenuItem('Six'));
+    pm.addItem(new goog.ui.MenuItem('Seven'));
+    pm.render(document.body);
+
+    //pm.attach(document.getElementById('foo'), null, null);
+
+    pm.attach(
+        document.getElementById('bar2'),
+        goog.positioning.Corner.TOP_LEFT,
+        goog.positioning.Corner.BOTTOM_LEFT);
+
+    pm.attach(document.getElementById('foo'));
+
+
+    var pm2 = new goog.ui.PopupMenu();
+    pm2.setToggleMode(true);
+    pm2.decorate(document.getElementById('dMenu'));
+
+    pm2.attach(
+        document.getElementById('bar'),
+        goog.positioning.Corner.BOTTOM_LEFT,
+        goog.positioning.Corner.TOP_LEFT);
+
+    function logEvent(e) {
+      var entry = goog.dom.createDom('div', null,
+          'type: ' + e.type +
+          ', target: ' + goog.debug.reflect.typeOf(e.target) +
+          (e.target.getCaption ? ', caption: ' + e.target.getCaption() : ''));
+      var eventLog = goog.dom.getElement('event-log');
+      eventLog.appendChild(entry);
+      // Scroll to the bottom.
+      eventLog.scrollTop = eventLog.scrollHeight;
+    }
+
+    goog.object.forEach(goog.ui.Component.EventType, function(type) {
+      goog.events.listen(pm, type, logEvent);
+      goog.events.listen(pm2, type, logEvent);
+    });
+
+  </script>
+</body>
+</html>

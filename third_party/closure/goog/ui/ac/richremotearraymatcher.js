@@ -22,7 +22,6 @@
 
 goog.provide('goog.ui.ac.RichRemoteArrayMatcher');
 
-goog.require('goog.json');
 goog.require('goog.ui.ac.RemoteArrayMatcher');
 
 

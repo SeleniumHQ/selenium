@@ -46,7 +46,7 @@ goog.provide('goog.net.xpc.TransportNames');
 goog.provide('goog.net.xpc.TransportTypes');
 goog.provide('goog.net.xpc.UriCfgFields');
 
-goog.require('goog.log');
+goog.require('goog.debug.Logger');
 
 
 /**
@@ -59,8 +59,7 @@ goog.net.xpc.TransportTypes = {
   IFRAME_RELAY: 3,
   IFRAME_POLLING: 4,
   FLASH: 5,
-  NIX: 6,
-  DIRECT: 7
+  NIX: 6
 };
 
 
@@ -75,8 +74,7 @@ goog.net.xpc.TransportNames = {
   '3': 'IframeRelayTransport',
   '4': 'IframePollingTransport',
   '5': 'FlashTransport',
-  '6': 'NixTransport',
-  '7': 'DirectTransport'
+  '6': 'NixTransport'
 };
 
 
@@ -188,14 +186,7 @@ goog.net.xpc.CfgFields = {
    * starts out with V2 at both ends, and one of the ends reconnects as a V1.
    * All other initial startup and reconnection scenarios are supported.
    */
-  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion',
-  /**
-   * Whether the direct transport runs in synchronous mode. The default is to
-   * emulate the other transports and run asyncronously but there are some
-   * circumstances where syncronous calls are required. If this property is
-   * set to true, the transport will send the messages synchronously.
-   */
-  DIRECT_TRANSPORT_SYNC_MODE: 'directSyncMode'
+  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion'
 };
 
 
@@ -225,7 +216,7 @@ goog.net.xpc.ChannelStates = {
 /**
  * The name of the transport service (used for internal signalling).
  * @type {string}
- * @suppress {underscore|visibility}
+ * @suppress {underscore}
  */
 goog.net.xpc.TRANSPORT_SERVICE_ = 'tp';
 
@@ -247,7 +238,7 @@ goog.net.xpc.SETUP_NTPV2 = 'SETUP_NTPV2';
 /**
  * Transport signaling message: setup acknowledgement.
  * @type {string}
- * @suppress {underscore|visibility}
+ * @suppress {underscore}
  */
 goog.net.xpc.SETUP_ACK_ = 'SETUP_ACK';
 
@@ -296,6 +287,6 @@ goog.net.xpc.randomStringCharacters_ =
 
 /**
  * The logger.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  */
-goog.net.xpc.logger = goog.log.getLogger('goog.net.xpc');
+goog.net.xpc.logger = goog.debug.Logger.getLogger('goog.net.xpc');

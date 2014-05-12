@@ -37,7 +37,6 @@ goog.require('goog.userAgent');
  * @param {!goog.tweak.Registry} registry The registry to render.
  * @param {goog.dom.DomHelper=} opt_domHelper The DomHelper to render with.
  * @constructor
- * @final
  */
 goog.tweak.TweakUi = function(registry, opt_domHelper) {
   /**
@@ -137,7 +136,7 @@ goog.tweak.TweakUi.CSS_STYLES_ = (function() {
 /**
  * Creates a TweakUi if tweaks are enabled.
  * @param {goog.dom.DomHelper=} opt_domHelper The DomHelper to render with.
- * @return {!Element|undefined} The root UI element or undefined if tweaks are
+ * @return {Element|undefined} The root UI element or undefined if tweaks are
  *     not enabled.
  */
 goog.tweak.TweakUi.create = function(opt_domHelper) {
@@ -153,7 +152,7 @@ goog.tweak.TweakUi.create = function(opt_domHelper) {
 /**
  * Creates a TweakUi inside of a show/hide link.
  * @param {goog.dom.DomHelper=} opt_domHelper The DomHelper to render with.
- * @return {!Element|undefined} The root UI element or undefined if tweaks are
+ * @return {Element|undefined} The root UI element or undefined if tweaks are
  *     not enabled.
  */
 goog.tweak.TweakUi.createCollapsible = function(opt_domHelper) {
@@ -376,7 +375,6 @@ goog.tweak.TweakUi.prototype.insertEntry_ = function(entry) {
  *     panel.
  * @param {goog.dom.DomHelper=} opt_domHelper The DomHelper to render with.
  * @constructor
- * @final
  */
 goog.tweak.EntriesPanel = function(entries, opt_domHelper) {
   /**

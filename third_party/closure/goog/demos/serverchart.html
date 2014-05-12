@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.ServerChart</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.ServerChart');
+    goog.require('goog.dom');
+  </script>
+  <script>
+
+  var $ = goog.dom.getElement;
+
+  function load() {
+    // Line Chart
+    chart = new goog.ui.ServerChart(goog.ui.ServerChart.ChartType.LINE);
+    chart.addDataSet([5,15,10,25,20,49,10,25,34,25,39,44,49,59,44], 'ff0000');
+    chart.addDataSet([90,92,98,90,52,54,54,43,72,48,51,72,48,51], '0000ff');
+    chart.setXLabels(['Jan','Feb','Mar','Jun','Jul','Aug']);
+    chart.setLeftLabels([0,25,50,75,100]);
+    chart.setRightLabels([0,50,100]);
+    chart.setMinValue(-50);
+    chart.decorate($('line_chart'));
+
+    // Finance Chart
+    finance = new goog.ui.ServerChart(goog.ui.ServerChart.ChartType.FINANCE);
+    finance.setRightLabels(['-0.25%', '0.00%', '+0.25%', '+0.50%']);
+    finance.setMiscParameter(2);
+    finance.setMaxValue(100);
+    finance.setMinValue(0);
+    finance.addDataSet([43,44,48,49,52,49,48,44,43,52,49,44,43],'da3b15');
+    finance.addDataSet([72,66,62,49,48,43,44,49,61,67,70,62,64,70], 'f7a10a');
+    finance.render($('test2'));
+
+    // Pie Chart
+    pie = new goog.ui.ServerChart(goog.ui.ServerChart.ChartType.PIE, 350, 140);
+    pie.setMinValue(0);
+    pie.setMaxValue(100);
+    pie.addDataSet([7,50,3,30,3,8], 'ff9900');
+    pie.setXLabels(['Internet Explorer 7',
+                    'Internet Explorer 6',
+                    'Internet Explorer 5',
+                    'Firefox',
+                    'Mozilla',
+                    'Other']);
+    pie.render($('test3'));
+
+    // Filled Line Chart
+    filledLine = new goog.ui.ServerChart(
+        goog.ui.ServerChart.ChartType.FILLEDLINE, 180, 104);
+    filledLine.addDataSet([11,49,61,61,66,44,61,43], 'FF0000');
+    filledLine.setLeftLabels(['20K','','60K','','100K']);
+    filledLine.setXLabels(['M','J','J','A','S','O','N','D','J','F','M','A']);
+    filledLine.setMaxValue(100);
+    filledLine.render($('test4'));
+
+    // Bar Chart
+    bar = new goog.ui.ServerChart(goog.ui.ServerChart.ChartType.BAR, 180, 104);
+    bar.addDataSet([8,23,7], '008000');
+    bar.addDataSet([31,11,7], 'ffcc33');
+    bar.addDataSet([2,43,70,3,43,74], '3072f3');
+    bar.setLeftLabels(['','20K','','60K','','100K']);
+    bar.setXLabels(['O','N','D']);
+    bar.setMaxValue(100);
+    bar.render($('test5'));
+
+    // Venn Diagram
+    var venn = new goog.ui.ServerChart(
+        goog.ui.ServerChart.ChartType.VENN, 300, 200);
+    venn.setTitle('Google Employees');
+    var weights = [80,  // Size of circle A
+                   60,  // Size of circle B
+                   40,  // Size of circle C
+                   20,  // Overlap of A and B
+                   20,  // Overlap of A and C
+                   20,  // Overlap of B and C
+                   5];  // Overlap of A, B and C
+    var labels = [
+        'C Hackers',      // Label for A
+        'LISP Gurus',     // Label for B
+        'Java Jockeys'];  // Label for C
+    venn.setVennSeries(weights, labels);
+    venn.render($('test6'));
+  }
+
+  function updateFinanceChart() {
+    finance.addDataSet([25,28,31,30,25,21,26,39,36,28,23,26,31,38,39,28,26],'4582e7');
+    finance.updateChart();
+  }
+
+  </script>
+</head>
+<body onload="load()">
+  <h1>goog.ui.ServerChart</h1>
+  <div id="test1">
+    <p>Line Chart:</p>
+    <img id="line_chart"></div>
+    <div id="test2">
+      <p>Finance Chart: <a href="javascript:updateFinanceChart()">Add a Line</a>
+      </p>
+    </div>
+    <div id="test3">
+      <p>Pie Chart:</p>
+    </div>
+    <div id="test4">
+      <p>Filled Line Chart:</p>
+    </div>
+    <div id="test5">
+      <p>Bar Chart:</p>
+    </div>
+    <div id="test6">
+      <p>Venn Diagram:</p>
+    </div>
+  </body>
+</html>

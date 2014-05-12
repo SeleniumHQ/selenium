@@ -22,7 +22,9 @@ goog.provide('goog.testing.fs.FileReader');
 goog.require('goog.Timer');
 goog.require('goog.events.EventTarget');
 goog.require('goog.fs.Error');
-goog.require('goog.fs.FileReader');
+goog.require('goog.fs.FileReader.EventType');
+goog.require('goog.fs.FileReader.ReadyState');
+goog.require('goog.testing.fs.File');
 goog.require('goog.testing.fs.ProgressEvent');
 
 
@@ -35,7 +37,7 @@ goog.require('goog.testing.fs.ProgressEvent');
  * @extends {goog.events.EventTarget}
  */
 goog.testing.fs.FileReader = function() {
-  goog.testing.fs.FileReader.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The current state of the reader.
@@ -130,9 +132,7 @@ goog.testing.fs.FileReader.prototype.getError = function() {
 goog.testing.fs.FileReader.prototype.abort = function() {
   if (this.readyState_ != goog.fs.FileReader.ReadyState.LOADING) {
     var msg = 'aborting read';
-    throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidStateError'}),
-        msg);
+    throw new goog.fs.Error(goog.fs.Error.ErrorCode.INVALID_STATE, msg);
   }
 
   this.aborted_ = true;
@@ -176,9 +176,7 @@ goog.testing.fs.FileReader.prototype.read_ = function(blob) {
   this.blob_ = blob;
   if (this.readyState_ == goog.fs.FileReader.ReadyState.LOADING) {
     var msg = 'reading file';
-    throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidStateError'}),
-        msg);
+    throw new goog.fs.Error(goog.fs.Error.ErrorCode.INVALID_STATE, msg);
   }
 
   this.readyState_ = goog.fs.FileReader.ReadyState.LOADING;
@@ -251,8 +249,7 @@ goog.testing.fs.FileReader.prototype.readAsDataUrl = function(blob) {
  */
 goog.testing.fs.FileReader.prototype.abort_ = function(total) {
   this.error_ = new goog.fs.Error(
-      /** @type {!FileError} */ ({'name': 'AbortError'}),
-      'reading file');
+      goog.fs.Error.ErrorCode.ABORT, 'reading file');
   this.progressEvent_(goog.fs.FileReader.EventType.ERROR, 0, total);
   this.progressEvent_(goog.fs.FileReader.EventType.ABORT, 0, total);
   this.readyState_ = goog.fs.FileReader.ReadyState.DONE;

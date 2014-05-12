@@ -26,10 +26,11 @@
 
 goog.provide('goog.ui.emoji.EmojiPicker');
 
-goog.require('goog.log');
-goog.require('goog.style');
+goog.require('goog.debug.Logger');
+goog.require('goog.dom');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.TabPane');
+goog.require('goog.ui.TabPane.TabPage');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.EmojiPalette');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
@@ -408,11 +409,11 @@ goog.ui.emoji.EmojiPicker.prototype.setProgressiveRender =
 /**
  * Logger for the emoji picker.
  *
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.ui.emoji.EmojiPicker.prototype.logger_ =
-    goog.log.getLogger('goog.ui.emoji.EmojiPicker');
+    goog.debug.Logger.getLogger('goog.ui.emoji.EmojiPicker');
 
 
 /**
@@ -544,7 +545,7 @@ goog.ui.emoji.EmojiPicker.prototype.createEmojiPage_ = function(emoji, index) {
  * default img URL. Used for delayed loading.
  *
  * @param {Array.<Array.<string>>} emoji Original emoji array.
- * @return {!Array.<!Array.<string>>} emoji array with all emoji pointing to the
+ * @return {Array.<Array.<string>>} emoji array with all emoji pointing to the
  *     default img.
  * @private
  */
@@ -565,7 +566,7 @@ goog.ui.emoji.EmojiPicker.prototype.getPlaceholderEmoji_ = function(emoji) {
  *
  * @param {Array.<Array.<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
- * @return {!goog.ui.emoji.EmojiPalette} the emoji page.
+ * @return {goog.ui.emoji.EmojiPalette} the emoji page.
  * @private
  */
 goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =

@@ -32,6 +32,7 @@ goog.provide('goog.net.XhrManager');
 goog.provide('goog.net.XhrManager.Event');
 goog.provide('goog.net.XhrManager.Request');
 
+goog.require('goog.Disposable');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
@@ -40,6 +41,7 @@ goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIoPool');
+goog.require('goog.structs');
 goog.require('goog.structs.Map');
 
 // TODO(user): Add some time in between retries.
@@ -64,7 +66,7 @@ goog.net.XhrManager = function(
     opt_minCount,
     opt_maxCount,
     opt_timeoutInterval) {
-  goog.net.XhrManager.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * Maximum number of retries for a given request
@@ -91,14 +93,14 @@ goog.net.XhrManager = function(
 
   /**
    * Map of ID's to requests.
-   * @type {goog.structs.Map.<string, !goog.net.XhrManager.Request>}
+   * @type {goog.structs.Map}
    * @private
    */
   this.requests_ = new goog.structs.Map();
 
   /**
    * The event handler.
-   * @type {goog.events.EventHandler.<!goog.net.XhrManager>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -170,19 +172,18 @@ goog.net.XhrManager.prototype.getOutstandingRequestIds = function() {
  * @param {string} id The id of the request.
  * @param {string} url Uri to make the request too.
  * @param {string=} opt_method Send method, default: GET.
- * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
- *     opt_content Post data.
+ * @param {ArrayBuffer|Blob|Document|FormData|string=} opt_content Post data.
  * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
- * @param {number=} opt_priority The priority of the request. A smaller value
- *     means a higher priority.
+ * @param {*=} opt_priority The priority of the request. A smaller value means a
+ *     higher priority.
  * @param {Function=} opt_callback Callback function for when request is
  *     complete. The only param is the event object from the COMPLETE event.
  * @param {number=} opt_maxRetries The maximum number of times the request
  *     should be retried.
  * @param {goog.net.XhrIo.ResponseType=} opt_responseType The response type of
  *     this request; defaults to goog.net.XhrIo.ResponseType.DEFAULT.
- * @return {!goog.net.XhrManager.Request} The queued request object.
+ * @return {goog.net.XhrManager.Request} The queued request object.
  */
 goog.net.XhrManager.prototype.send = function(
     id,
@@ -486,7 +487,12 @@ goog.net.XhrManager.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
 
-  this.requests_.clear();
+  // Call dispose on each request.
+  var requests = this.requests_;
+  goog.structs.forEach(requests, function(value, key) {
+    value.dispose();
+  });
+  requests.clear();
   this.requests_ = null;
 };
 
@@ -502,7 +508,6 @@ goog.net.XhrManager.prototype.disposeInternal = function() {
  * @param {goog.net.XhrIo} xhrIo The XhrIo object of the request.
  * @constructor
  * @extends {goog.events.Event}
- * @final
  */
 goog.net.XhrManager.Event = function(type, target, id, xhrIo) {
   goog.events.Event.call(this, type, target);
@@ -531,8 +536,7 @@ goog.inherits(goog.net.XhrManager.Event, goog.events.Event);
  * @param {Function} xhrEventCallback Callback attached to the events of the
  *     XhrIo object of the request.
  * @param {string=} opt_method Send method, default: GET.
- * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
- *     opt_content Post data.
+ * @param {ArrayBuffer|Blob|Document|FormData|string=} opt_content Post data.
  * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
  * @param {Function=} opt_callback Callback function for when request is
@@ -543,10 +547,12 @@ goog.inherits(goog.net.XhrManager.Event, goog.events.Event);
  *     this request; defaults to goog.net.XhrIo.ResponseType.DEFAULT.
  *
  * @constructor
- * @final
+ * @extends {goog.Disposable}
  */
 goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
     opt_content, opt_headers, opt_callback, opt_maxRetries, opt_responseType) {
+  goog.Disposable.call(this);
+
   /**
    * Uri to make the request too.
    * @type {string}
@@ -563,7 +569,7 @@ goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
 
   /**
    * Post data.
-   * @type {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string|undefined}
+   * @type {ArrayBuffer|Blob|Document|FormData|string|undefined}
    * @private
    */
   this.content_ = opt_content;
@@ -605,7 +611,7 @@ goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
 
   /**
    * Callback attached to the events of the XhrIo object.
-   * @type {Function}
+   * @type {Function|undefined}
    * @private
    */
   this.xhrEventCallback_ = xhrEventCallback;
@@ -631,6 +637,7 @@ goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
   this.xhrIo = null;
 
 };
+goog.inherits(goog.net.XhrManager.Request, goog.Disposable);
 
 
 /**
@@ -653,7 +660,7 @@ goog.net.XhrManager.Request.prototype.getMethod = function() {
 
 /**
  * Gets the post data.
- * @return {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string|undefined}
+ * @return {ArrayBuffer|Blob|Document|FormData|string|undefined}
  *     The post data.
  */
 goog.net.XhrManager.Request.prototype.getContent = function() {
@@ -744,7 +751,7 @@ goog.net.XhrManager.Request.prototype.getAborted = function() {
 
 /**
  * Gets the callback attached to the events of the XhrIo object.
- * @return {Function} The callback attached to the events of the
+ * @return {Function|undefined} The callback attached to the events of the
  *     XhrIo object.
  */
 goog.net.XhrManager.Request.prototype.getXhrEventCallback = function() {
@@ -769,4 +776,12 @@ goog.net.XhrManager.Request.prototype.getCompleteCallback = function() {
  */
 goog.net.XhrManager.Request.prototype.getResponseType = function() {
   return this.responseType_;
+};
+
+
+/** @override */
+goog.net.XhrManager.Request.prototype.disposeInternal = function() {
+  goog.net.XhrManager.Request.superClass_.disposeInternal.call(this);
+  delete this.xhrEventCallback_;
+  delete this.completeCallback_;
 };

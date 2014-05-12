@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Dialog</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.ui.Dialog');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/dialog.css">
+  <style>
+  .modal-dialog {
+    width: 430px;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>goog.ui.Dialog</h1>
+  <div><input id="openOnKeyDown" type="checkbox">
+  <label>Enable open on keydown</label>
+  <span>(use "Space" to open dialog with no Iframe, "Enter" to open with Iframe
+  mask</span>
+  </div>
+  <div><input id="swapModalOnShift" type="checkbox">
+  <label>Enable modal change with shift when the dialog is open</label>
+  </div>
+  <button onclick="showDialog(dialog1);">
+    Open Dialog (no Iframe)</button>
+  <br>
+  <button onclick="showDialog(dialog2);">
+    Open Dialog (w/ Iframe mask)
+  </button>
+
+
+  <fieldset style="margin-top: 2em;">
+    <legend>A sample web page</legend>
+    <h2>
+      A World Beyond AJAX: Accessing Google's APIs from Flash and
+      Non-JavaScript Environments
+    </h2>
+    <cite>Vadim Spivak (Google)</cite>
+
+    <p>
+      AJAX isn't the only way to access Google APIs. Learn how to use Google's
+      services from Flash and other non-JavaScript programming environments.
+      We'll show you how easy it is to augment your site with dynamic search
+      and feed data from non-JavaScript environments.
+    </p>
+
+    <p>
+      Participants should be familiar with general web application
+      development.
+    </p>
+
+    <p>Select Element:
+      <select>
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+      </select>
+    </p>
+
+    <p>
+      <object width="425" height="344">
+        <param name="movie"
+          value="http://www.youtube.com/v/7fbz8WOec1g&hl=en&fs=1&"></param>
+        <param name="allowFullScreen" value="true"></param>
+        <param name="allowscriptaccess" value="always"></param>
+        <embed
+          src="http://www.youtube.com/v/7fbz8WOec1g&hl=en&fs=1&"
+          type="application/x-shockwave-flash" allowscriptaccess="always"
+          allowfullscreen="true" width="425" height="344"></embed>
+      </object>
+    </p>
+  </fieldset>
+  <script>
+    goog.events.listen(document, goog.events.EventType.KEYDOWN, function(e) {
+      var code = e.keyCode;
+      if (goog.dom.getElement('openOnKeyDown').checked) {
+        switch (code) {
+          case goog.events.KeyCodes.MAC_ENTER:
+          case goog.events.KeyCodes.ENTER:
+            showDialog(dialog1);
+            break;
+          case goog.events.KeyCodes.SPACE:
+            showDialog(dialog2);
+            break;
+          default:
+            // no-op
+        }
+      }
+      if (goog.dom.getElement('swapModalOnShift').checked) {
+        switch (code) {
+          case goog.events.KeyCodes.SHIFT:
+            if (currDialog && currDialog.isVisible()) {
+              currDialog.setModal(!currDialog.getModal());
+            }
+            break;
+          default:
+            // no-op
+        }
+      }
+    });
+
+    var dialog1 = new goog.ui.Dialog();
+    dialog1.setContent('<img src="http://images.icanhascheezburger.com/' +
+        'completestore/2009/3/25/128825075025577352.jpg" ' +
+        'width="400" height="255"><br>' +
+        'Lorem ipsum dolor sit amet, consectetuer' +
+        'adipiscing elit. Aenean sollicitudin ultrices urna. Proin vehicula ' +
+        'mauris ac est. Ut scelerisque, risus ut facilisis dictum, est massa ' +
+        'lacinia lorem, in fermentum purus ligula quis nunc. Duis porttitor ' +
+        'euismod risus. Nam hendrerit lacus vehicula augue. Duis ante.');
+    dialog1.setTitle('My favorite LOLCat');
+
+    dialog1.setButtonSet(goog.ui.Dialog.ButtonSet.CONTINUE_SAVE_CANCEL);
+
+    goog.events.listen(dialog1, goog.ui.Dialog.EventType.SELECT, function(e) {
+      alert('You chose: ' + e.key);
+    });
+
+
+    var dialog2 = new goog.ui.Dialog(null, true);
+    dialog2.setContent('Some windowed elements leak through standard divs so ' +
+        'we add an iframe to mask the nasties.');
+    dialog2.setTitle('I have an Iframe mask :)');
+
+    dialog2.setButtonSet(goog.ui.Dialog.ButtonSet.YES_NO_CANCEL);
+
+    goog.events.listen(dialog2, goog.ui.Dialog.EventType.SELECT, function(e) {
+      alert('You chose: ' + e.key);
+    });
+
+    goog.events.listen(window, 'unload', function() {
+      goog.events.removeAllNativeListeners();
+    });
+
+    var currDialog;
+
+    function showDialog(dialog) {
+      currDialog = dialog;
+      dialog.setVisible(true);
+    }
+
+  </script>
+</body>
+</html>

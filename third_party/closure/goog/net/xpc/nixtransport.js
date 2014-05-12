@@ -33,12 +33,9 @@
 
 goog.provide('goog.net.xpc.NixTransport');
 
-goog.require('goog.log');
 goog.require('goog.net.xpc');
-goog.require('goog.net.xpc.CfgFields');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
-goog.require('goog.net.xpc.TransportTypes');
 goog.require('goog.reflect');
 
 
@@ -54,10 +51,9 @@ goog.require('goog.reflect');
  *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
- * @final
  */
 goog.net.xpc.NixTransport = function(channel, opt_domHelper) {
-  goog.net.xpc.NixTransport.base(this, 'constructor', opt_domHelper);
+  goog.base(this, opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -259,7 +255,7 @@ goog.net.xpc.NixTransport.conductGlobalSetup_ = function(listenWindow) {
     listenWindow['nix_setup_complete'] = true;
   }
   catch (e) {
-    goog.log.error(goog.net.xpc.logger,
+    goog.net.xpc.logger.severe(
         'exception caught while attempting global setup: ' + e);
   }
 };
@@ -338,7 +334,7 @@ goog.net.xpc.NixTransport.prototype.attemptOuterSetup_ = function() {
     this.localSetupCompleted_ = true;
   }
   catch (e) {
-    goog.log.error(goog.net.xpc.logger,
+    goog.net.xpc.logger.severe(
         'exception caught while attempting setup: ' + e);
   }
 
@@ -378,8 +374,7 @@ goog.net.xpc.NixTransport.prototype.attemptInnerSetup_ = function() {
       var remoteAuthToken = this.nixChannel_['GetAuthToken']();
 
       if (remoteAuthToken != this.remoteAuthToken_) {
-        goog.log.error(goog.net.xpc.logger,
-            'Invalid auth token from other party');
+        goog.net.xpc.logger.severe('Invalid auth token from other party');
         return;
       }
 
@@ -396,7 +391,7 @@ goog.net.xpc.NixTransport.prototype.attemptInnerSetup_ = function() {
     }
   }
   catch (e) {
-    goog.log.error(goog.net.xpc.logger,
+    goog.net.xpc.logger.severe(
         'exception caught while attempting setup: ' + e);
     return;
   }
@@ -420,8 +415,7 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
   // Verify that the channel is in fact a NIX wrapper.
   if (typeof channel != 'unknown' ||
       !(goog.net.xpc.NixTransport.NIX_ID_FIELD in channel)) {
-    goog.log.error(goog.net.xpc.logger,
-        'Invalid NIX channel given to createChannel_');
+    goog.net.xpc.logger.severe('Invalid NIX channel given to createChannel_');
   }
 
   this.nixChannel_ = channel;
@@ -430,7 +424,7 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
   var remoteAuthToken = this.nixChannel_['GetAuthToken']();
 
   if (remoteAuthToken != this.remoteAuthToken_) {
-    goog.log.error(goog.net.xpc.logger, 'Invalid auth token from other party');
+    goog.net.xpc.logger.severe('Invalid auth token from other party');
     return;
   }
 
@@ -468,7 +462,7 @@ goog.net.xpc.NixTransport.prototype.handleMessage_ =
 goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
   // Verify that the NIX channel we have is valid.
   if (typeof(this.nixChannel_) !== 'unknown') {
-    goog.log.error(goog.net.xpc.logger, 'NIX channel not connected');
+    goog.net.xpc.logger.severe('NIX channel not connected');
   }
 
   // Send the message via the NIX wrapper object.
@@ -478,6 +472,6 @@ goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
 
 /** @override */
 goog.net.xpc.NixTransport.prototype.disposeInternal = function() {
-  goog.net.xpc.NixTransport.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.nixChannel_ = null;
 };

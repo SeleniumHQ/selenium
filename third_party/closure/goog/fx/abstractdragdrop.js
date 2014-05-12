@@ -26,15 +26,15 @@ goog.provide('goog.fx.AbstractDragDrop.EventType');
 goog.provide('goog.fx.DragDropEvent');
 goog.provide('goog.fx.DragDropItem');
 
-goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
+goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
+goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
@@ -58,13 +58,13 @@ goog.require('goog.style');
  * @constructor
  */
 goog.fx.AbstractDragDrop = function() {
-  goog.fx.AbstractDragDrop.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * List of items that makes up the drag source or drop target.
    * @type {Array.<goog.fx.DragDropItem>}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.items_ = [];
 
@@ -114,7 +114,7 @@ goog.fx.AbstractDragDrop.prototype.isTarget_ = false;
 
 /**
  * Subtargeting function accepting args:
- * (goog.fx.DragDropItem, goog.math.Box, number, number)
+ * (Element, goog.math.Box, number, number)
  * @type {Function}
  * @private
  */
@@ -202,8 +202,7 @@ goog.fx.AbstractDragDrop.initDragDistanceThreshold = 5;
 /**
  * Set class to add to source elements being dragged.
  *
- * @param {string} className Class to be added.  Must be a single, valid
- *     classname.
+ * @param {string} className Class to be added.
  */
 goog.fx.AbstractDragDrop.prototype.setDragClass = function(className) {
   this.dragClass_ = className;
@@ -213,8 +212,7 @@ goog.fx.AbstractDragDrop.prototype.setDragClass = function(className) {
 /**
  * Set class to add to source elements.
  *
- * @param {string} className Class to be added.  Must be a single, valid
- *     classname.
+ * @param {string} className Class to be added.
  */
 goog.fx.AbstractDragDrop.prototype.setSourceClass = function(className) {
   this.sourceClass_ = className;
@@ -224,8 +222,7 @@ goog.fx.AbstractDragDrop.prototype.setSourceClass = function(className) {
 /**
  * Set class to add to target elements.
  *
- * @param {string} className Class to be added.  Must be a single, valid
- *     classname.
+ * @param {string} className Class to be added.
  */
 goog.fx.AbstractDragDrop.prototype.setTargetClass = function(className) {
   this.targetClass_ = className;
@@ -302,14 +299,12 @@ goog.fx.AbstractDragDrop.prototype.initItem = function(item) {
     goog.events.listen(item.element, goog.events.EventType.MOUSEDOWN,
                        item.mouseDown_, false, item);
     if (this.sourceClass_) {
-      goog.dom.classlist.add(
-          goog.asserts.assert(item.element), this.sourceClass_);
+      goog.dom.classes.add(item.element, this.sourceClass_);
     }
   }
 
   if (this.isTarget_ && this.targetClass_) {
-    goog.dom.classlist.add(
-        goog.asserts.assert(item.element), this.targetClass_);
+    goog.dom.classes.add(item.element, this.targetClass_);
   }
 };
 
@@ -325,13 +320,11 @@ goog.fx.AbstractDragDrop.prototype.disposeItem = function(item) {
     goog.events.unlisten(item.element, goog.events.EventType.MOUSEDOWN,
                          item.mouseDown_, false, item);
     if (this.sourceClass_) {
-      goog.dom.classlist.remove(
-          goog.asserts.assert(item.element), this.sourceClass_);
+      goog.dom.classes.remove(item.element, this.sourceClass_);
     }
   }
   if (this.isTarget_ && this.targetClass_) {
-    goog.dom.classlist.remove(
-        goog.asserts.assert(item.element), this.targetClass_);
+    goog.dom.classes.remove(item.element, this.targetClass_);
   }
   item.dispose();
 };
@@ -472,7 +465,7 @@ goog.fx.AbstractDragDrop.prototype.recalculateScrollableContainers =
  * @param {Element} sourceEl Drag source element.
  * @param {Element} el the element created by createDragElement().
  * @param {goog.events.BrowserEvent} event Mouse down event for start of drag.
- * @return {!goog.fx.Dragger} The new Dragger.
+ * @return {goog.fx.Dragger} The new Dragger.
  * @protected
  */
 goog.fx.AbstractDragDrop.prototype.createDraggerFor =
@@ -788,10 +781,9 @@ goog.fx.AbstractDragDrop.prototype.setSubtargetFunction = function(f) {
  * @return {Element} The new drag element.
  */
 goog.fx.AbstractDragDrop.prototype.createDragElement = function(sourceEl) {
-  var dragEl = this.createDragElementInternal(sourceEl);
-  goog.asserts.assert(dragEl);
+  var dragEl = this.cloneNode_(sourceEl);
   if (this.dragClass_) {
-    goog.dom.classlist.add(dragEl, this.dragClass_);
+    goog.dom.classes.add(dragEl, this.dragClass_);
   }
 
   return dragEl;
@@ -804,7 +796,7 @@ goog.fx.AbstractDragDrop.prototype.createDragElement = function(sourceEl) {
  * @param {Element} el Drag source element.
  * @param {Element} dragEl The dragged element created by createDragElement().
  * @param {goog.events.BrowserEvent} event Mouse down event for start of drag.
- * @return {!goog.math.Coordinate} The position for the drag element.
+ * @return {goog.math.Coordinate} The position for the drag element.
  */
 goog.fx.AbstractDragDrop.prototype.getDragElementPosition =
     function(el, dragEl, event) {
@@ -835,29 +827,23 @@ goog.fx.AbstractDragDrop.prototype.getDragger = function() {
  * Creates copy of node being dragged.
  *
  * @param {Element} sourceEl Element to copy.
- * @return {!Element} The clone of {@code sourceEl}.
- * @deprecated Use goog.fx.Dragger.cloneNode().
+ * @return {Element} The clone of {@code sourceEl}.
  * @private
  */
 goog.fx.AbstractDragDrop.prototype.cloneNode_ = function(sourceEl) {
-  return goog.fx.Dragger.cloneNode(sourceEl);
-};
-
-
-/**
- * Generates an element to follow the cursor during dragging, given a drag
- * source element.  The default behavior is simply to clone the source element,
- * but this may be overridden in subclasses.  This method is called by
- * {@code createDragElement()} before the drag class is added.
- *
- * @param {Element} sourceEl Drag source element.
- * @return {Element} The new drag element.
- * @protected
- * @suppress {deprecated}
- */
-goog.fx.AbstractDragDrop.prototype.createDragElementInternal =
-    function(sourceEl) {
-  return this.cloneNode_(sourceEl);
+  var clonedEl = /** @type {Element} */ (sourceEl.cloneNode(true));
+  switch (sourceEl.tagName.toLowerCase()) {
+    case 'tr':
+      return goog.dom.createDom(
+          'table', null, goog.dom.createDom('tbody', null, clonedEl));
+    case 'td':
+    case 'th':
+      return goog.dom.createDom(
+          'table', null, goog.dom.createDom('tbody', null, goog.dom.createDom(
+          'tr', null, clonedEl)));
+    default:
+      return clonedEl;
+  }
 };
 
 
@@ -877,31 +863,17 @@ goog.fx.AbstractDragDrop.prototype.addDragTarget_ = function(target, item) {
     var draggableElement = draggableElements[i];
 
     // Determine target position and dimension
-    var box = this.getElementBox(item, draggableElement);
+    var pos = goog.style.getPageOffset(draggableElement);
+    var size = goog.style.getSize(draggableElement);
+
+    var box = new goog.math.Box(pos.y, pos.x + size.width,
+                                pos.y + size.height, pos.x);
 
     targetList.push(
         new goog.fx.ActiveDropTarget_(box, target, item, draggableElement));
 
     this.calculateTargetBox_(box);
   }
-};
-
-
-/**
- * Calculates the position and dimension of a draggable element.
- *
- * @param {goog.fx.DragDropItem} item Item that's being dragged.
- * @param {Element} element The element to calculate the box.
- *
- * @return {!goog.math.Box} Box describing the position and dimension
- *     of element.
- * @protected
- */
-goog.fx.AbstractDragDrop.prototype.getElementBox = function(item, element) {
-  var pos = goog.style.getPageOffset(element);
-  var size = goog.style.getSize(element);
-  return new goog.math.Box(pos.y, pos.x + size.width, pos.y + size.height,
-      pos.x);
 };
 
 
@@ -1124,7 +1096,7 @@ goog.fx.AbstractDragDrop.prototype.isInside = function(x, y, box) {
 /**
  * Gets the scroll distance as a coordinate object, using
  * the window of the current drag element's dom.
- * @return {!goog.math.Coordinate} Object with scroll offsets 'x' and 'y'.
+ * @return {goog.math.Coordinate} Object with scroll offsets 'x' and 'y'.
  * @protected
  */
 goog.fx.AbstractDragDrop.prototype.getScrollPos = function() {
@@ -1135,7 +1107,7 @@ goog.fx.AbstractDragDrop.prototype.getScrollPos = function() {
 /**
  * Get the position of a drag event.
  * @param {goog.fx.DragEvent} event Drag event.
- * @return {!goog.math.Coordinate} Position of the event.
+ * @return {goog.math.Coordinate} Position of the event.
  * @protected
  */
 goog.fx.AbstractDragDrop.prototype.getEventPosition = function(event) {
@@ -1147,7 +1119,7 @@ goog.fx.AbstractDragDrop.prototype.getEventPosition = function(event) {
 
 /** @override */
 goog.fx.AbstractDragDrop.prototype.disposeInternal = function() {
-  goog.fx.AbstractDragDrop.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.removeItems();
 };
 
@@ -1176,7 +1148,7 @@ goog.fx.DragDropEvent = function(type, source, sourceItem,
                                  opt_subtarget) {
   // TODO(eae): Get rid of all the optional parameters and have the caller set
   // the fields directly instead.
-  goog.fx.DragDropEvent.base(this, 'constructor', type);
+  goog.base(this, type);
 
   /**
    * Reference to the source goog.fx.AbstractDragDrop object.
@@ -1259,7 +1231,7 @@ goog.fx.DragDropEvent.prototype.disposeInternal = function() {
  * @constructor
  */
 goog.fx.DragDropItem = function(element, opt_data) {
-  goog.fx.DragDropItem.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * Reference to drag source/target element
@@ -1282,7 +1254,7 @@ goog.fx.DragDropItem = function(element, opt_data) {
 
   /**
    * Event handler for listeners on events that can initiate a drag.
-   * @type {!goog.events.EventHandler.<!goog.fx.DragDropItem>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -1341,7 +1313,7 @@ goog.fx.DragDropItem.prototype.getCurrentDragElement = function() {
 /**
  * Gets all the elements of this item that are potentially draggable/
  *
- * @return {!Array.<Element>} The draggable elements.
+ * @return {Array.<Element>} The draggable elements.
  */
 goog.fx.DragDropItem.prototype.getDraggableElements = function() {
   return [this.element];

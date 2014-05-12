@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Popup</title>
+  <script src="../base.js"></script>
+  <script>
+    if (typeof goog == 'undefined') {
+      alert('Closure failed to load');
+    } else {
+      goog.require('goog.events');
+      goog.require('goog.events.EventType');
+      goog.require('goog.positioning.ClientPosition');
+      goog.require('goog.positioning.Corner');
+      goog.require('goog.positioning.AnchoredViewportPosition');
+      goog.require('goog.ui.Popup');
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+  .popup {
+    position:absolute;
+    background-color:#e0ecff;
+    color:black;
+    visibility:hidden;
+    width:100px;
+    height:100px;
+    font-size: 80%;
+    border:solid red 1px;
+    -moz-outline:0;
+    outline:0;
+  }
+  button {
+    border: solid black 1px;
+    margin-left: 50%;
+  }
+  label {
+    display: block;
+    width: 15em;
+  }
+  #abs-box {
+    border: solid black 2px;
+    height: 200px;
+    width: 200px;
+  }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.Popup</h1>
+  <div id='popup' class='popup' tabindex="0"></div>
+
+  <p>Positioning relative to an anchor element</p>
+  <form>
+    <strong>Button Corner</strong>
+    <label for="button_corner_tl">
+      <input type="radio" id="button_corner_tl" name="button_corner" value="tl">Top Left
+    </label>
+    <label for="button_corner_tr">
+      <input type="radio" id="button_corner_tr" name="button_corner" value="tr">Top Right
+    </label>
+    <label for="button_corner_bl">
+      <input type="radio" id="button_corner_bl" name="button_corner" value="bl" checked="checked">Bottom Left
+    </label>
+    <label for="button_corner_br">
+      <input type="radio" id="button_corner_br" name="button_corner" value="br">Bottom Right
+    </label>
+    <br>
+    <strong>Popup Corner</strong>
+    <label for="menu_corner_tl">
+      <input type="radio" id="menu_corner_tl" name="menu_corner" value="tl" checked/>Top Left
+    </label>
+    <label for="menu_corner_tr">
+      <input type="radio" id="menu_corner_tr" name="menu_corner" value="tr">Top Right
+    </label>
+    <label for="menu_corner_bl">
+      <input type="radio" id="menu_corner_bl" name="menu_corner" value="bl">Bottom Left
+    </label>
+    <label for="menu_corner_br">
+      <input type="radio" id="menu_corner_br" name="menu_corner" value="br">Bottom Right
+    </label>
+
+    <br>
+    <strong>Margin</strong>
+    Top: <input id="margin_top" size=2 value="0">
+    Right: <input id="margin_right" size=2 value="0">
+    Bottom: <input id="margin_bottom" size=2 value="0">
+    Left: <input id="margin_left" size=2 value="0">
+
+
+    <br>
+    <br>
+    <br>
+  </form>
+
+  <button id="btn" onclick="showPopup()">
+    Press me!
+  </button>
+
+  <br>
+  <br>
+
+  <h3>Iframe to test cross frame dismissal</h3>
+  <iframe src="about:blank"></iframe>
+
+  <br>
+  <br>
+
+  <hr>
+  <h3>Positioning at coordinates</h3>
+  <div id="abs-box"></div>
+
+  <script>
+    var popupElt = document.getElementById('popup');
+    var popup = new goog.ui.Popup(popupElt);
+    popup.setHideOnEscape(true);
+    popup.setAutoHide(true);
+    var showingBecauseOfBox = false;
+
+    goog.events.listen(window, goog.events.EventType.RESIZE, onResize);
+    goog.events.listen(document, goog.events.EventType.MOUSEMOVE, onMouseMove);
+    // goog.events.listen(absBox, goog.events.EventType.MOUSEOUT,
+    // onAbsBoxMouseOut);
+
+    function showPopup() {
+      var btn = document.getElementById('btn');
+      var buttonCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['button_corner']));
+      var menuCorner = toCorner(
+          getCheckedValue(document.forms[0].elements['menu_corner']));
+
+      var t = parseInt(document.getElementById('margin_top').value);
+      var r = parseInt(document.getElementById('margin_right').value);
+      var b = parseInt(document.getElementById('margin_bottom').value);
+      var l = parseInt(document.getElementById('margin_left').value);
+      var margin = new goog.math.Box(t, r, b, l);
+
+      popup.setVisible(false);
+      popup.setPinnedCorner(menuCorner);
+      popup.setMargin(margin);
+      popup.setPosition(new goog.positioning.AnchoredViewportPosition(btn,
+          buttonCorner));
+      popup.setVisible(true);
+    }
+
+    function onResize(e) {
+      if (popup && popup.isVisible()) {
+        popup.reposition();
+      }
+    }
+
+    function onMouseMove(e) {
+      var absBox = document.getElementById('abs-box');
+
+      var offset = goog.style.getViewportPageOffset(
+          goog.dom.getOwnerDocument(absBox));
+      var size = goog.style.getSize(absBox);
+
+      var boxPagePosition = goog.style.getPageOffset(absBox);
+      var boxClientPosition = new goog.math.Coordinate(
+          boxPagePosition.x - offset.x,
+          boxPagePosition.y - offset.y);
+
+      if (e.clientX >= boxClientPosition.x &&
+          e.clientX < (boxClientPosition.x + size.width) &&
+          e.clientY >= boxClientPosition.y &&
+          e.clientY < (boxClientPosition.y + size.height)) {
+        popup.setPinnedCorner(goog.positioning.Corner.TOP_LEFT);
+        popup.setPosition(new goog.positioning.ClientPosition(
+            e.clientX, e.clientY));
+        popup.setVisible(true);
+        showingBecauseOfBox = true;
+      } else if (showingBecauseOfBox) {
+        popup.setVisible(false);
+        showingBecauseOfBox = false;
+      }
+    }
+
+    function getCheckedValue(radioObj) {
+      for (var i = 0; i < radioObj.length; i++) {
+        if (radioObj[i].checked) {
+          return radioObj[i].value;
+        }
+      }
+    }
+
+    function toCorner(val) {
+      switch (val) {
+        case "tl":
+          return goog.positioning.Corner.TOP_LEFT;
+        case "tr":
+          return goog.positioning.Corner.TOP_RIGHT;
+        case "bl":
+          return goog.positioning.Corner.BOTTOM_LEFT;
+        case "br":
+          return goog.positioning.Corner.BOTTOM_RIGHT;
+      }
+    }
+  </script>
+</body>
+</html>

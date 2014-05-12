@@ -40,7 +40,7 @@ goog.locale.setLocale = function(localeName) {
 
 
 /**
- * Retrieve the current locale
+ * Retrieve the currnet locale
  * @return {string} Current locale name string.
  * @deprecated Use goog.LOCALE and goog.i18n instead.
  */

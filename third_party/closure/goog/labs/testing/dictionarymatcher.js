@@ -38,9 +38,7 @@ goog.require('goog.string');
  * @param {!Object} entries The entries to check in the object.
  *
  * @constructor
- * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.HasEntriesMatcher = function(entries) {
   /**
@@ -93,9 +91,7 @@ goog.labs.testing.HasEntriesMatcher.prototype.describe =
  * @param {*} value The value for the key.
  *
  * @constructor
- * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.HasEntryMatcher = function(key, value) {
   /**
@@ -147,9 +143,7 @@ goog.labs.testing.HasEntryMatcher.prototype.describe =
  * @param {string} key The key to check in the object.
  *
  * @constructor
- * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.HasKeyMatcher = function(key) {
   /**
@@ -189,9 +183,7 @@ goog.labs.testing.HasKeyMatcher.prototype.describe =
  * @param {*} value The value to check in the object.
  *
  * @constructor
- * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.HasValueMatcher = function(value) {
   /**

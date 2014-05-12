@@ -19,7 +19,6 @@
 
 goog.provide('goog.ui.emoji.ProgressiveEmojiPaletteRenderer');
 
-goog.require('goog.style');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
 
 
@@ -35,7 +34,6 @@ goog.require('goog.ui.emoji.EmojiPaletteRenderer');
  *     to the emoji cell size. A good image is a transparent dot.
  * @constructor
  * @extends {goog.ui.emoji.EmojiPaletteRenderer}
- * @final
  */
 goog.ui.emoji.ProgressiveEmojiPaletteRenderer = function(defaultImgUrl) {
   goog.ui.emoji.EmojiPaletteRenderer.call(this, defaultImgUrl);

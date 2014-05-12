@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2008 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>QuadTree Demo</title>
+<script src="../base.js"></script>
+<script>
+  goog.require('goog.structs');
+  goog.require('goog.events');
+  goog.require('goog.structs.QuadTree');
+</script>
+<style>
+  .region {
+    position: absolute;
+    -moz-outline: 1px solid #CCC;
+    outline: 1px solid #CCC;
+    z-index: 500;
+  }
+  .point {
+    position: absolute;
+    background-color: red;
+    width: 4px;
+    height: 4px;
+    z-index: 1000;
+  }
+  #el {
+    width: 500px;
+    height: 500px;
+    background-color: #FCFCFC;
+  }
+  #values {
+    font-size: small;
+  }
+  #info {
+    position: absolute;
+    top: 5px;
+    left: 505px;
+    width: 200px;
+    font: normal 11px verdana;
+  }
+</style>
+</head>
+<body>
+<div id="el"></div>
+<div id="info">
+  <p>Click on the area to the left to add a point to the quadtree, clicking on
+  a point will remove it from the tree.</p>
+  <pre id="values"></pre>
+</div>
+<script>
+
+function visualize(node) {
+  var div = document.createElement('div');
+  div.className = 'region';
+  div.style.top = node.y + 'px';  
+  div.style.left = node.x + 'px';  
+  div.style.width = node.w+ 'px';  
+  div.style.height = node.h + 'px';
+  if (node.nodeType == goog.structs.QuadTree.NodeType.POINTER) {
+    visualize(node.nw, div);
+    visualize(node.ne, div);
+    visualize(node.sw, div);
+    visualize(node.se, div);
+  } else if (node.nodeType == goog.structs.QuadTree.NodeType.LEAF) {
+    var point = document.createElement('div');
+    point.className = 'point';
+    point.style.top = (node.point.y - 2) + 'px';
+    point.style.left = (node.point.x - 2) + 'px'
+    point.text = node.point.value;
+    point.point = node.point;
+    document.getElementById('el').appendChild(point);
+  }
+  document.getElementById('el').appendChild(div);
+  
+  var values = ['Values:'];
+  qt.forEach(function(value, coord) {
+    values.push(coord + ' ' + value);
+  });
+  document.getElementById('values').innerHTML = values.join('\n');
+}
+
+var maxW = 500, maxH = 500;
+
+var qt = new goog.structs.QuadTree(0, 0, maxW, maxH);
+visualize(qt.getRootNode());
+
+goog.events.listen(document.body, 'click', function(e) {
+  if (e.target.className == 'point') {
+    qt.remove(e.target.point.x, e.target.point.y);
+  } else {
+    var x = e.clientX;
+    var y = e.clientY;
+    if (x < maxW && y < maxH) qt.set(x, y, new Date().toLocaleString());
+  }
+  var el = document.getElementById('el');
+  el.innerHTML = '';
+  visualize(qt.getRootNode());
+});
+
+</script>
+</body>
+</html>

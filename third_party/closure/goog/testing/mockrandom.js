@@ -32,7 +32,6 @@ goog.require('goog.Disposable');
  *     construction time.
  * @extends {goog.Disposable}
  * @constructor
- * @final
  */
 goog.testing.MockRandom = function(sequence, opt_install) {
   goog.Disposable.call(this);
@@ -50,14 +49,6 @@ goog.testing.MockRandom = function(sequence, opt_install) {
    * @private
    */
   this.mathRandom_ = Math.random;
-
-  /**
-   * Whether to throw an exception when Math.random() is called when there is
-   * nothing left in the sequence.
-   * @type {boolean}
-   * @private
-   */
-  this.strictlyFromSequence_ = false;
 
   if (opt_install) {
     this.install();
@@ -87,18 +78,10 @@ goog.testing.MockRandom.prototype.install = function() {
 
 /**
  * @return {number} The next number in the sequence. If there are no more values
- *     left, this will return a random number, unless
- *     {@code this.strictlyFromSequence_} is true, in which case an error will
- *     be thrown.
+ *     left, this will return a random number.
  */
 goog.testing.MockRandom.prototype.random = function() {
-  if (this.hasMoreValues()) {
-    return this.sequence_.shift();
-  }
-  if (this.strictlyFromSequence_) {
-    throw new Error('No numbers left in sequence.');
-  }
-  return this.mathRandom_();
+  return this.hasMoreValues() ? this.sequence_.shift() : this.mathRandom_();
 };
 
 
@@ -140,14 +123,4 @@ goog.testing.MockRandom.prototype.disposeInternal = function() {
   delete this.sequence_;
   delete this.mathRandom_;
   goog.testing.MockRandom.superClass_.disposeInternal.call(this);
-};
-
-
-/**
- * @param {boolean} strictlyFromSequence Whether to throw an exception when
- *     Math.random() is called when there is nothing left in the sequence.
- */
-goog.testing.MockRandom.prototype.setStrictlyFromSequence =
-    function(strictlyFromSequence) {
-  this.strictlyFromSequence_ = strictlyFromSequence;
 };

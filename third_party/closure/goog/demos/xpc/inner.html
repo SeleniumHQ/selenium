@@ -1,0 +1,58 @@
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+
+<script src="../../base.js"></script>
+<script src="xpcdemo.js"></script>
+<script>
+  initInner();
+
+  var code = '';
+  function evalPrompt() {
+    code = prompt('eval:', code);
+    eval(code);
+  };
+</script>
+
+<style type="text/css">
+body {
+  background-color: #ffeac0;
+  font-family: arial,verdana,sans-serif;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+<p>this page: <b><script type="text/javascript">document.write(location.href)</script></b></p>
+
+
+<input type="button" value="ping" onclick="xpcdemo.ping();"/><br/>
+<input type="button" value="send n msgs" onclick="numMsgs = parseInt(document.getElementById('num').value); xpcdemo.sendN(isNaN(numMsgs) ? 10 : numMsgs);"/>
+(n = <input type="text" size=3 value=10 id="num" />)<br/>
+
+mousemove-forwarding:
+<input type="button" onclick="xpcdemo.startMousemoveForwarding();" value="start"/>
+<input type="button" onclick="xpcdemo.stopMousemoveForwarding();" value="stop"/>
+<div id="clickfwd" style="padding:5px; width:200px; cursor:pointer; border: 1px #000000 solid;">Click me!</div>
+<br/>
+
+<input id="msgtext" type="text" value="Hello from inner frame." style="width:200px"/>
+<input type="button" value="Send" onclick="xpcdemo.channel.send('log', document.getElementById('msgtext').value);"/>
+<br/>
+<br/>
+<input type="button" value="eval" text="eval()" onclick="evalPrompt();"/>
+
+
+
+<br/><br/>
+Out [<a href="#" onclick="document.getElementById('console').innerHTML = ''; return false;">clear</a>]: <br/>
+<div id="console" style="border:1px #000000 solid;"></div>
+
+
+</body>
+</html>

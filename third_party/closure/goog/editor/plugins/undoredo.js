@@ -21,6 +21,7 @@
 
 goog.provide('goog.editor.plugins.UndoRedo');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeOffset');
 goog.require('goog.dom.Range');
@@ -33,7 +34,6 @@ goog.require('goog.editor.plugins.UndoRedoManager');
 goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
-goog.require('goog.log');
 
 
 
@@ -79,12 +79,12 @@ goog.inherits(goog.editor.plugins.UndoRedo, goog.editor.Plugin);
 
 /**
  * The logger for this class.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @protected
  * @override
  */
 goog.editor.plugins.UndoRedo.prototype.logger =
-    goog.log.getLogger('goog.editor.plugins.UndoRedo');
+    goog.debug.Logger.getLogger('goog.editor.plugins.UndoRedo');
 
 
 /**
@@ -433,7 +433,7 @@ goog.editor.plugins.UndoRedo.prototype.restoreState = function(
     this.currentStates_[state.fieldHashCode].setUndoState(
         content, cursorPosition);
   } catch (e) {
-    goog.log.error(this.logger, 'Error while restoring undo state', e);
+    this.logger.severe('Error while restoring undo state', e);
   } finally {
     // Clear the delayed change event, set flag so we know not to act on it.
     this.inProgressUndo_ = state;

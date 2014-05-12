@@ -22,12 +22,11 @@ goog.provide('goog.editor.plugins.LinkBubble.Action');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
+goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Link');
 goog.require('goog.editor.plugins.AbstractBubblePlugin');
 goog.require('goog.editor.range');
-goog.require('goog.functions');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.editor.messages');
@@ -44,7 +43,7 @@ goog.require('goog.window');
  * @extends {goog.editor.plugins.AbstractBubblePlugin}
  */
 goog.editor.plugins.LinkBubble = function(var_args) {
-  goog.editor.plugins.LinkBubble.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * List of extra actions supported by the bubble.
@@ -315,16 +314,6 @@ goog.editor.plugins.LinkBubble.prototype.getBubbleTitle = function() {
 };
 
 
-/**
- * Returns the message to display for testing a link.
- * @return {string} The message for testing a link.
- * @protected
- */
-goog.editor.plugins.LinkBubble.prototype.getTestLinkMessage = function() {
-  return MSG_LINK_BUBBLE_TEST_LINK;
-};
-
-
 /** @override */
 goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
     bubbleContainer) {
@@ -347,7 +336,7 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
   } else {
     var testMsgSpan = this.dom_.createDom(goog.dom.TagName.SPAN,
         {id: goog.editor.plugins.LinkBubble.TEST_LINK_SPAN_ID_},
-        this.getTestLinkMessage());
+        MSG_LINK_BUBBLE_TEST_LINK);
     linkTextSpan = this.dom_.createDom(goog.dom.TagName.SPAN,
         {
           id: goog.editor.plugins.LinkBubble.LINK_TEXT_ID_,
@@ -426,7 +415,7 @@ goog.editor.plugins.LinkBubble.prototype.isInvalidUrl = goog.functions.FALSE;
 
 /**
  * Gets the text to display for a link, based on the type of link
- * @return {!Object} Returns an object of the form:
+ * @return {Object} Returns an object of the form:
  *     {linkText: displayTextForLinkTarget, valid: ifTheLinkIsValid}.
  * @private
  */
@@ -562,7 +551,6 @@ goog.editor.plugins.LinkBubble.prototype.isSafeSchemeToOpen_ =
  * @param {function(string):void} actionFn Action function to run when the
  *     action is clicked.  Takes the current target URL as a parameter.
  * @constructor
- * @final
  */
 goog.editor.plugins.LinkBubble.Action = function(spanId, linkId, message,
     toShowFn, actionFn) {

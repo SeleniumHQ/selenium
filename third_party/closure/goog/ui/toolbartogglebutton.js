@@ -21,6 +21,7 @@
 
 goog.provide('goog.ui.ToolbarToggleButton');
 
+goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ToggleButton');
 goog.require('goog.ui.ToolbarButtonRenderer');
 goog.require('goog.ui.registry');

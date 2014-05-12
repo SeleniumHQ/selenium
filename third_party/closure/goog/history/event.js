@@ -35,7 +35,6 @@ goog.require('goog.history.EventType');
  *     {@code replaceToken} call.
  * @constructor
  * @extends {goog.events.Event}
- * @final
  */
 goog.history.Event = function(token, isNavigation) {
   goog.events.Event.call(this, goog.history.EventType.NAVIGATE);

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Container</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.object');
+    goog.require('goog.style');
+    goog.require('goog.ui.Container');
+    goog.require('goog.ui.ContainerScroller');
+    goog.require('goog.ui.Control');
+    goog.require('goog.ui.CustomButton');
+    goog.require('goog.ui.Menu');
+    goog.require('goog.ui.MenuButton');
+    goog.require('goog.ui.Option');
+    goog.require('goog.ui.Select');
+    goog.require('goog.ui.Separator');
+    goog.require('goog.ui.ToggleButton');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/button.css">
+  <link rel="stylesheet" href="../css/menubutton.css">
+  <style>
+    /* Demo styles for goog.ui.Control. */
+    .goog-control {
+      position: relative;
+      margin: 2px;
+      border: 2px solid #036;
+      padding: 2px;
+      font: normal 9pt "Trebuchet MS", Tahoma, Arial, sans-serif;
+      color: #036;
+      background-color:#69c;
+      cursor: pointer;
+      outline: none !important;
+    }
+
+    .goog-control-disabled {
+      border-color: #888;
+      color: #888;
+      background-color: #ccc;
+    }
+
+    .goog-control-hover {
+      border-color: #369;
+      color: #369;
+      background-color: #9cf;
+    }
+
+    .goog-control-active,
+    .goog-control-selected,
+    .goog-control-checked {
+      border-color: #9cf;
+      color: #9cf;
+      background-color: #369;
+    }
+
+    .goog-control-focused {
+      border-color: orange;
+    }
+
+    /* Demo styles for goog.ui.Container */
+    .goog-container {
+      position: relative;
+      margin: 0;
+      border: 0;
+      padding: 0;
+      background-color: #eee;
+      outline: none !important;
+      zoom: 1; /* The container element must have layout on IE. */
+    }
+
+    .goog-container-vertical {
+      width: 25ex;
+      border: 1px solid #888;
+    }
+
+    .goog-container-horizontal {
+      border-bottom: 1px solid #d5d5d5;
+      background: #fafafa url(../images/toolbar-bg.png) repeat-x bottom left;
+    }
+
+    /* Additional demo styles. */
+
+    .goog-month .goog-menu-button-caption {
+      width: 18ex;
+    }
+
+    .goog-year .goog-menu-button-caption {
+      width: 6ex;
+    }
+
+    .goog-edit-font .goog-menu-button-caption {
+      width: 15ex;
+    }
+
+    .goog-edit-font-size .goog-menu-button-caption {
+      width: 5ex;
+    }
+
+    .goog-edit-bold {
+      width: 14px;
+      background: url(../images/toolbar_icons.gif) no-repeat -1px;
+    }
+
+    .goog-edit-italic {
+      width: 14px;
+      background: url(../images/toolbar_icons.gif) no-repeat -17px;
+    }
+
+    .goog-edit-underline {
+      width: 14px;
+      background: url(../images/toolbar_icons.gif) no-repeat -33px;
+    }
+
+    #tb4_highlight_links span {
+      border: 1px solid #888;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>goog.ui.Container</h2>
+  <p><b>goog.ui.Container</b> is a base class for menus and toolbars.</p>
+  <fieldset>
+    <legend>These containers were created programmatically:</legend>
+    <table border="0" cellpadding="8" cellspacing="0" width="100%">
+      <tbody>
+        <tr valign="top">
+          <td width="50%" id="vc">
+            Vertical container example:
+          </td>
+          <td width="50%" id="hc">
+            Horizontal container example:
+          </td>
+        </tr>
+        <tr valign="top">
+          <td>
+            <label>
+              Show vertical container:
+              <input type="checkbox" id="show_vc" checked>
+            </label>
+            &nbsp;
+            <label>
+              Enable vertical container:
+              <input type="checkbox" id="enable_vc" checked>
+            </label>
+            <br>
+            <label>
+              Show Porthos:
+              <input type="checkbox" id="show_porthos" checked>
+            </label>
+            &nbsp;
+            <label>
+              Enable Porthos:
+              <input type="checkbox" id="enable_porthos">
+            </label>
+            <br>
+            <label>
+              Enable transition events:
+              <input type="checkbox" id="enable_vc_events" checked>
+            </label>
+          </td>
+          <td>
+            <label>
+              Show horizontal container:
+              <input type="checkbox" id="show_hc" checked>
+            </label>
+            &nbsp;
+            <label>
+              Enable horizontal container:
+              <input type="checkbox" id="enable_hc" checked>
+            </label>
+            <br>
+            <label>
+              Show Doc:
+              <input type="checkbox" id="show_doc" checked>
+            </label>
+            &nbsp;
+            <label>
+              Enable Doc:
+              <input type="checkbox" id="enable_doc">
+            </label>
+            <br>
+            <label>
+              Enable transition events:
+              <input type="checkbox" id="enable_hc_events" checked>
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <span class="hint">Try enabling and disabling containers with &amp; without
+      state transition events, and compare performance!</span>
+  </fieldset>
+  <br>
+  <br>
+  <fieldset>
+    <legend>Non-focusable container with focusable controls:</legend>
+    In this case, the container itself isn't focusable, but each control is:<br>
+    <div id="nfc"></div>
+  </fieldset>
+  <br>
+  <br>
+  <fieldset>
+    <legend>Another horizontal container:</legend>
+    <label>
+      This is starting to look useful...  Enable toolbar:
+      <input type="checkbox" id="enable_tb" checked>
+    </label>
+    <div id="tb"></div>
+  </fieldset>
+  <br>
+  <br>
+  <fieldset>
+    <legend>A decorated container:</legend>
+    <label>
+      It's much easier to decorate than to create programmatically...
+      Enable decorated toolbar:
+      <input type="checkbox" id="enable_tb2">
+    </label>
+    <div id="tb2" class="goog-container-horizontal goog-container-disabled">
+      <div id="month" class="goog-month goog-select">
+        Select month
+        <div class="goog-menu">
+          <div class="goog-option">January</div>
+          <div class="goog-option">February</div>
+          <div class="goog-option">March</div>
+          <div class="goog-option">April</div>
+          <div class="goog-option">May</div>
+          <div class="goog-option">June</div>
+          <div class="goog-option">July</div>
+          <div class="goog-option">August</div>
+          <div class="goog-option">September</div>
+          <div class="goog-option">October</div>
+          <div class="goog-option">November</div>
+          <div class="goog-option">December</div>
+        </div>
+      </div>
+      <div id="year" class="goog-year goog-select">
+        Year
+        <div class="goog-menu">
+          <div class="goog-option">2001</div>
+          <div class="goog-option">2002</div>
+          <div class="goog-option">2003</div>
+          <div class="goog-option">2004</div>
+          <div class="goog-option">2005</div>
+          <div class="goog-option">2006</div>
+          <div class="goog-option">2007</div>
+          <div class="goog-option">2008</div>
+          <div class="goog-option">2009</div>
+          <div class="goog-option">2010</div>
+        </div>
+      </div>
+      <div id="foo" class="goog-toggle-button">
+        Toggle Button
+      </div>
+      <div id="bar" class="goog-toggle-button">
+        <div><b><i>Fancy</i></b> Toggle Button</div>
+      </div>
+      <div id="fee" class="goog-toggle-button">
+        Another Button
+      </div>
+    </div>
+  </fieldset>
+  <br>
+  <br>
+  <fieldset>
+    <legend>The same container, right-to-left:</legend>
+    <label>
+      Show right-to-left toolbar:
+      <input type="checkbox" id="show_tb3" checked>
+    </label>
+    <label>
+      Enable right-to-left toolbar:
+      <input type="checkbox" id="enable_tb3">
+    </label>
+    <div id="tb3" class="goog-container-horizontal goog-container-disabled"
+        dir="rtl">
+      <div class="goog-month goog-select">
+        Select month
+        <div class="goog-menu" dir="rtl">
+          <div class="goog-option">January</div>
+          <div class="goog-option">February</div>
+          <div class="goog-option">March</div>
+          <div class="goog-option">April</div>
+          <div class="goog-option">May</div>
+          <div class="goog-option">June</div>
+          <div class="goog-option">July</div>
+          <div class="goog-option">August</div>
+          <div class="goog-option">September</div>
+          <div class="goog-option">October</div>
+          <div class="goog-option">November</div>
+          <div class="goog-option">December</div>
+        </div>
+      </div>
+      <div class="goog-year goog-select" dir="rtl">
+        Year
+        <div class="goog-menu">
+          <div class="goog-option">2001</div>
+          <div class="goog-option">2002</div>
+          <div class="goog-option">2003</div>
+          <div class="goog-option">2004</div>
+          <div class="goog-option">2005</div>
+          <div class="goog-option">2006</div>
+          <div class="goog-option">2007</div>
+          <div class="goog-option">2008</div>
+          <div class="goog-option">2009</div>
+          <div class="goog-option">2010</div>
+        </div>
+      </div>
+      <div class="goog-toggle-button">
+        Toggle Button
+      </div>
+      <div class="goog-toggle-button">
+        <div><b><i>Fancy</i></b> Toggle Button</div>
+      </div>
+      <div class="goog-toggle-button">
+        Another Button
+      </div>
+    </div>
+  </fieldset>
+  <br>
+  <br>
+  <fieldset>
+    <legend>A scrolling container:</legend>
+    <label>
+      This container scrolls so that the highlighted item is visible.
+      Here's a mix of block items and inline block items, which both work.
+    </label>
+    <p>
+      Put focus in the text box and use the arrow keys:
+      <input id="tb4_key_target">
+    </p>
+    <p>
+      Or quick jump to item:
+      <span id="tb4_highlight_links">
+        <span>0</span> <span>1</span> <span>2</span> <span>3</span>
+        <span>4</span> <span>5</span> <span>6</span> <span>7</span>
+        <span>8</span> <span>9</span> <span>10</span> <span>11</span>
+        <span>12</span> <span>13</span> <span>14</span> <span>15</span>
+      </span>
+    </p>
+    <div id="tb4" class="goog-container-vertical"
+        style="height: 100px; overflow-y: scroll">
+      <div class="goog-month goog-menuitem">menuitem 0</div>
+      <div class="goog-month goog-menuitem">menuitem 1</div>
+      <div class="goog-month goog-menuitem">menuitem 2</div>
+      <div class="goog-month goog-menuitem">menuitem 3</div>
+      <div class="goog-month goog-toggle-button">tog 4</div>
+      <div class="goog-month goog-toggle-button">tog 5</div>
+      <div class="goog-month goog-toggle-button">tog 6</div>
+      <div class="goog-month goog-toggle-button">toggley 7</div>
+      <div class="goog-month goog-toggle-button">toggley 8</div>
+      <div class="goog-month goog-toggle-button">toggley 9</div>
+      <div class="goog-month goog-toggle-button">toggley 10</div>
+      <div class="goog-month goog-toggle-button">toggley 11</div>
+      <div class="goog-month goog-toggle-button">toggley 12</div>
+      <div class="goog-month goog-toggle-button">toggley 13</div>
+      <div class="goog-month goog-menuitem">menuitem 14</div>
+      <div class="goog-month goog-menuitem">menuitem 15</div>
+    </div>
+  </fieldset>
+  <br>
+  <br>
+  <!-- Event log. -->
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+  <div id="perf"></div>
+  <script>
+    var timer = goog.now();
+
+    // Set up a logger.
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logger = goog.debug.Logger.getLogger('demo');
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+
+    var EVENTS = goog.object.getValues(goog.ui.Component.EventType);
+    logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+    function logEvent(e) {
+      var source =
+          typeof e.target.getCaption == 'function' && e.target.getCaption() ||
+          e.target.getId();
+      logger.info('"' + source + '" dispatched: ' + e.type);
+    }
+
+    // Programmatically create a vertical container.
+    var vc = new goog.ui.Container();
+    vc.setId('Vertical Container');
+    goog.array.forEach(
+        ['Athos', 'Porthos', 'Aramis', 'd\'Artagnan'],
+        function(item) {
+          var c = new goog.ui.Control(item);
+          c.setId(item);
+          // For demo purposes, have controls dispatch transition events.
+          c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+          vc.addChild(c, true);
+        });
+    vc.addChildAt(new goog.ui.Separator(), 3, true);
+    vc.getChild('Porthos').setEnabled(false);
+    vc.render(goog.dom.getElement('vc'));
+    goog.events.listen(vc, EVENTS, logEvent);
+
+    // Hook up checkboxes.
+    goog.events.listen(goog.dom.getElement('show_vc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          vc.setVisible(e.target.checked);
+          logger.info((e.target.checked ? 'Showed' : 'Hid') +
+              ' vertical container in ' + (goog.now() - t) + 'ms');
+        });
+    goog.events.listen(goog.dom.getElement('enable_vc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          vc.setEnabled(e.target.checked);
+          // If the container as a whole is disabled, you can't enable/disable
+          // child controls.
+          goog.dom.getElement('enable_porthos').disabled = !vc.isEnabled();
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' vertical container in ' + (goog.now() - t) + 'ms');
+        });
+    goog.events.listen(goog.dom.getElement('show_porthos'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          vc.getChild('Porthos').setVisible(e.target.checked);
+        });
+    goog.events.listen(goog.dom.getElement('enable_porthos'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          vc.getChild('Porthos').setEnabled(e.target.checked);
+        });
+    goog.events.listen(goog.dom.getElement('enable_vc_events'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          vc.forEachChild(function(c) {
+            if (e.target.checked) {
+              // Enable all transition events.
+              c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+            } else {
+              // Disable all transition events (except for HOVER, which is used
+              // by containers internally).
+              c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, false);
+              c.setDispatchTransitionEvents(goog.ui.Component.State.HOVER,
+                  true);
+            }
+          });
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' state transition events for this container\'s children');
+        });
+
+    // Programmatically create a horizontal container.
+    var hc = new goog.ui.Container(goog.ui.Container.Orientation.HORIZONTAL);
+    hc.setId('Horizontal Container');
+
+    // Pre-render the container, just to do something different.
+    hc.render(goog.dom.getElement('hc'));
+    goog.array.forEach(
+        ['Happy', 'Sleepy', 'Doc', 'Bashful', 'Sneezy', 'Grumpy', 'Dopey'],
+        function(item) {
+          var c = new goog.ui.Control(item);
+          c.addClassName('goog-inline-block');
+          c.setId(item);
+          // For demo purposes, have controls dispatch transition events.
+          c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+          hc.addChild(c, true);
+        });
+    hc.getChild('Doc').setEnabled(false);
+    goog.events.listen(hc, EVENTS, logEvent);
+
+    // Hook up checkboxes.
+    goog.events.listen(goog.dom.getElement('show_hc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          hc.setVisible(e.target.checked);
+          logger.info((e.target.checked ? 'Showed' : 'Hid') +
+              ' horizontal container in ' + (goog.now() - t) + 'ms');
+        });
+    goog.events.listen(goog.dom.getElement('enable_hc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          hc.setEnabled(e.target.checked);
+          // If the container as a whole is disabled, you can't enable/disable
+          // child controls.
+          goog.dom.getElement('enable_doc').disabled = !hc.isEnabled();
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' horizontal container in ' + (goog.now() - t) + 'ms');
+        });
+    goog.events.listen(goog.dom.getElement('show_doc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          hc.getChild('Doc').setVisible(e.target.checked);
+        });
+    goog.events.listen(goog.dom.getElement('enable_doc'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          hc.getChild('Doc').setEnabled(e.target.checked);
+        });
+    goog.events.listen(goog.dom.getElement('enable_hc_events'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          hc.forEachChild(function(c) {
+            if (e.target.checked) {
+              // Enable all transition events.
+              c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+            } else {
+              // Disable all transition events (except for HOVER, which is used
+              // by containers internally).
+              c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, false);
+              c.setDispatchTransitionEvents(goog.ui.Component.State.HOVER,
+                  true);
+            }
+          });
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' state transition events for this container\'s children');
+        });
+
+    // Programmatically create a non-focusable container.
+    var nfc = new goog.ui.Container(goog.ui.Container.Orientation.HORIZONTAL);
+    nfc.setId('NonFocusableContainer');
+    nfc.setFocusable(false);
+    goog.array.forEach(['Vicky', 'Cristina', 'Barcelona'], function(item) {
+      var c = new goog.ui.Control(item);
+      c.setId(item);
+      c.addClassName('goog-inline-block');
+      // For demo purposes, have controls dispatch transition events.
+      c.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+      nfc.addChild(c, /* opt_render */ true);
+      // Since the container itself is non-focusable, we need to make each
+      // child individually focusable; this has to happen *after* addChild().
+      // See e.g. bug http://b/1359754.
+      c.setSupportedState(goog.ui.Component.State.FOCUSED, true);
+    });
+    nfc.render(goog.dom.getElement('nfc'));
+    goog.events.listen(nfc, EVENTS, logEvent);
+
+    // Programmatically create a toolbar.
+    var tb = new goog.ui.Container(goog.ui.Container.Orientation.HORIZONTAL);
+    tb.setId('Toolbar');
+
+    // Programmatically create & add toolbar items.
+    var fontMenu = new goog.ui.Select('Select font');
+    fontMenu.setId('Font Menu');
+    fontMenu.setTooltip('Font');
+    fontMenu.addItem(new goog.ui.Option('Arial', 'Arial, sans-serif'));
+    fontMenu.addItem(new goog.ui.Option('Courier', 'Courier, monospace'));
+    fontMenu.addItem(new goog.ui.Option('Times', 'Times, serif'));
+    fontMenu.addClassName('goog-edit-font');
+    tb.addChild(fontMenu, true);
+
+    var sizeMenu = new goog.ui.Select(null);
+    sizeMenu.setId('Font Size Menu');
+    sizeMenu.setTooltip('Font Size');
+    sizeMenu.addItem(new goog.ui.Option('8pt'));
+    sizeMenu.addItem(new goog.ui.Option('10pt'));
+    sizeMenu.addItem(new goog.ui.Option('12pt'));
+    sizeMenu.addItem(new goog.ui.Option('16pt'));
+    sizeMenu.setSelectedIndex(1);
+    sizeMenu.addClassName('goog-edit-font-size');
+    tb.addChild(sizeMenu, true);
+
+    var boldButton = new goog.ui.ToggleButton(goog.dom.createDom('div',
+        'goog-edit-bold', '\u00A0'));
+    boldButton.setId('Bold Button');
+    boldButton.setTooltip('Bold');
+    tb.addChild(boldButton, true);
+
+    var italicButton = new goog.ui.ToggleButton(goog.dom.createDom('div',
+        'goog-edit-italic', '\u00A0'));
+    italicButton.setId('Italic Button');
+    italicButton.setTooltip('Italic');
+    tb.addChild(italicButton, true);
+
+    var underlineButton = new goog.ui.ToggleButton(goog.dom.createDom('div',
+        'goog-edit-underline', '\u00A0'));
+    underlineButton.setId('Underline Button');
+    underlineButton.setTooltip('Underline');
+    tb.addChild(underlineButton, true);
+
+    tb.render(goog.dom.getElement('tb'));
+    goog.events.listen(tb, EVENTS, logEvent);
+
+    // Hook up checkbox.
+    goog.events.listen(goog.dom.getElement('enable_tb'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          tb.setEnabled(e.target.checked);
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' toolbar in ' + (goog.now() - t) + 'ms');
+        });
+
+    var tb2 = new goog.ui.Container();
+    tb2.decorate(goog.dom.getElement('tb2'));
+    goog.events.listen(tb2, EVENTS, logEvent);
+
+    // Hook up checkbox.
+    goog.events.listen(goog.dom.getElement('enable_tb2'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          tb2.setEnabled(e.target.checked);
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' toolbar in ' + (goog.now() - t) + 'ms');
+        });
+
+    // BiDi container example:
+    var tb3 = new goog.ui.Container();
+    tb3.decorate(goog.dom.getElement('tb3'));
+    goog.events.listen(tb3, EVENTS, logEvent);
+
+    // Hook up checkboxes.
+    goog.events.listen(goog.dom.getElement('enable_tb3'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          tb3.setEnabled(e.target.checked);
+          logger.info((e.target.checked ? 'Enabled' : 'Disabled') +
+              ' toolbar in ' + (goog.now() - t) + 'ms');
+        });
+    goog.events.listen(goog.dom.getElement('show_tb3'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var t = goog.now();
+          tb3.setVisible(e.target.checked);
+          logger.info((e.target.checked ? 'Showed' : 'Hid') +
+              ' content element in ' + (goog.now() - t) + 'ms');
+        });
+
+    // Scrolling container.
+    var tb4 = new goog.ui.Container();
+    tb4.decorate(goog.dom.getElement('tb4'));
+    tb4.setKeyEventTarget(goog.dom.getElement('tb4_key_target'));
+    tb4.setFocusable(true);
+    new goog.ui.ContainerScroller(tb4);
+
+    goog.events.listen(goog.dom.getElement('tb4_highlight_links'),
+        goog.events.EventType.CLICK,
+        function(event) {
+          var index = parseInt(event.target.innerHTML, 10);
+          if (!isNaN(index)) {
+            tb4.getChildAt(index).setHighlighted(true);
+          }
+        });
+
+    goog.dom.setTextContent(goog.dom.getElement('perf'),
+        (goog.now() - timer) + 'ms');
+  </script>
+</body>
+</html>

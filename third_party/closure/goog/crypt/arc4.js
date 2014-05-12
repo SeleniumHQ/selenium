@@ -39,8 +39,6 @@ goog.require('goog.asserts');
 /**
  * ARC4 streamcipher implementation.
  * @constructor
- * @final
- * @struct
  */
 goog.crypt.Arc4 = function() {
   /**

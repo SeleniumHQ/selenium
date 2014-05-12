@@ -27,15 +27,8 @@ goog.provide('goog.crypt.Hash');
  * Create a cryptographic hash instance.
  *
  * @constructor
- * @struct
  */
-goog.crypt.Hash = function() {
-  /**
-   * The block size for the hasher.
-   * @type {number}
-   */
-  this.blockSize = -1;
-};
+goog.crypt.Hash = function() {};
 
 
 /**

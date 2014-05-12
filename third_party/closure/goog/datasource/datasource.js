@@ -32,7 +32,7 @@ goog.provide('goog.ds.Util');
 goog.provide('goog.ds.logger');
 
 goog.require('goog.array');
-goog.require('goog.log');
+goog.require('goog.debug.Logger');
 
 
 
@@ -68,7 +68,7 @@ goog.ds.DataNode.prototype.set = goog.abstractMethod;
  * Gets all of the child nodes of the current node.
  * Should return an empty DataNode list if no child nodes.
  * @param {string=} opt_selector String selector to choose child nodes.
- * @return {!goog.ds.DataNodeList} The child nodes.
+ * @return {goog.ds.DataNodeList} The child nodes.
  */
 goog.ds.DataNode.prototype.getChildNodes = goog.abstractMethod;
 
@@ -179,7 +179,7 @@ goog.ds.BaseDataNode.prototype.set = goog.abstractMethod;
  * Gets all of the child nodes of the current node.
  * Should return an empty DataNode list if no child nodes.
  * @param {string=} opt_selector String selector to choose child nodes.
- * @return {!goog.ds.DataNodeList} The child nodes.
+ * @return {goog.ds.DataNodeList} The child nodes.
  */
 goog.ds.BaseDataNode.prototype.getChildNodes = function(opt_selector) {
   return new goog.ds.EmptyNodeList();
@@ -460,7 +460,6 @@ goog.ds.BasicNodeList.prototype.indexOf = function(name) {
  * Immulatable empty node list
  * @extends {goog.ds.BasicNodeList}
  * @constructor
- * @final
  */
 
 goog.ds.EmptyNodeList = function() {
@@ -628,9 +627,9 @@ goog.ds.STR_ARRAY_START = '[';
 
 /**
  * Shared logger instance for data package
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  */
-goog.ds.logger = goog.log.getLogger('goog.ds');
+goog.ds.logger = goog.debug.Logger.getLogger('goog.ds');
 
 
 /**
@@ -646,7 +645,6 @@ goog.ds.Util.makeReferenceNode = function(node, name) {
   /**
    * @constructor
    * @extends {goog.ds.DataNode}
-   * @final
    */
   var nodeCreator = function() {};
   nodeCreator.prototype = node;

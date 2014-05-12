@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.HoverCard</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.positioning.AnchoredPosition');
+    goog.require('goog.positioning.Corner');
+    goog.require('goog.ui.Component.EventType');
+    goog.require('goog.ui.HoverCard');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/hovercard.css">
+  <style>
+    #personEmail {
+      font-style: italic;
+    }
+    .anchor {
+      font: bold;
+      color: white;
+      background-color: gray;
+      padding: 20px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.HoverCard</h1>
+  <p>
+    Show by mouse position:<br><br><br>
+    <span class="anchor" email="tom@gmail.com">Tom Smith</span>
+    <span class="anchor" email="dick@gmail.com">Dick Jones</span>
+    <span class="anchor" email="harry@gmail.com">Harry Brown</span>
+
+    <br><br><br>Show hovercard to the right:<br><br><br>
+    <span class="anchor" config="right" email="tom@gmail.com">Tom Smith</span>
+    <span class="anchor" config="right" email="dick@gmail.com">Dick Jones</span>
+    <span class="anchor" config="right"
+          email="harry@gmail.com">Harry Brown</span>
+
+    <br><br><br>Show hovercard below:<br><br><br>
+    <span class="anchor" config="down" email="tom@gmail.com">Tom Smith</span>
+    <span class="anchor" config="down" email="dick@gmail.com">Dick Jones</span>
+    <span class="anchor" config="down"
+          email="harry@gmail.com">Harry Brown</span>
+
+    <br><br><br>
+
+  </p>
+
+  <div id='profileCard' style="display:none;position:absolute">
+    <div style="position:relative;left:2px;z-index:100">
+     <table class="goog-hovercard-icons">
+       <tr>
+         <td>Email</td>
+         <td>Chat</td>
+         <td>More</td>
+       </tr>
+     </table>
+     <table class="goog-hovercard-content">
+        <tr>
+           <td valign="top">
+                <span id='personName'>&nbsp;</span><br />
+                <span id='personEmail'>&nbsp;</span>
+           </td>
+        </tr>
+      </table>
+    </div>
+
+    <script>
+      function writeDiv(top, left) {
+        var width = 300 + 10;
+        var height = 115 + 10;
+        document.write(
+            '<div class="goog-shadow" style="position:absolute;left:' +
+            left + 'px;top:' + top + 'px;width:' +
+            width + 'px;height:' + height + 'px;z-index:10" ></div>\n');
+      }
+
+      var y = 0;
+      var left = 0;
+      var size = 6;
+      for (var i = 0; i < size; ++i) {
+        for (var j = 0; j < size; ++j) {
+          writeDiv(y + i, left + j);
+        }
+      }
+    </script>
+  </div>
+
+  <!-- Event log. -->
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+  <br>
+  <div id="perf"></div>
+
+    <script>
+      var timer = goog.now();
+
+      // Set up a logger.
+      goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+      var logger = goog.debug.Logger.getLogger('demo');
+      var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+      logconsole.setCapturing(true);
+
+      var EVENTS = goog.object.getValues(goog.ui.HoverCard.EventType);
+      logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+      function logEvent(e) {
+        logger.info('HoverCard dispatched: ' + e.type);
+      }
+
+      // Initialize hovercard object.
+      var hc;
+      hc = new goog.ui.HoverCard({SPAN: 'email'});
+      hc.setElement(goog.dom.getElement('profileCard'));
+      goog.events.listen(hc, goog.ui.HoverCard.EventType.TRIGGER,
+                         onTrigger);
+      goog.events.listen(hc, goog.ui.HoverCard.EventType.BEFORE_SHOW,
+                         onBeforeShow);
+
+      hc.className = 'goog-hovercard';
+
+      var config = {
+        'right': goog.positioning.Corner.TOP_RIGHT,
+        'down': goog.positioning.Corner.BOTTOM_LEFT
+      }
+
+      function onTrigger(event) {
+        // Usually, you will only need to respond to the TRIGGER event if
+        // you want hovercard triggers to have different behaviors.
+        var trigger = event.anchor;
+        var conf = trigger.getAttribute("config");
+        var pos = null;
+        if (conf) {
+          pos = new goog.positioning.AnchoredPosition(trigger, config[conf]);
+        }
+        hc.setPosition(pos);
+
+        return true;
+      }
+
+      function onBeforeShow() {
+        // This is where you typically set the contents of your hovercard,
+        // based on the triggering element.
+        var trigger = hc.getAnchorElement();
+        var email = trigger.getAttribute("email");
+        var name = trigger.innerHTML;
+        var emailEl = goog.dom.getElement('personEmail');
+        emailEl.innerHTML = email;
+        var nameEl = goog.dom.getElement('personName');
+        nameEl.innerHTML = name;
+
+        return true;
+      }
+
+      goog.events.listen(hc, EVENTS, logEvent);
+
+      goog.dom.setTextContent(goog.dom.getElement('perf'),
+          (goog.now() - timer) + 'ms');
+
+  </script>
+
+
+</body>
+</html>

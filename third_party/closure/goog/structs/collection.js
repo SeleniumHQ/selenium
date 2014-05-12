@@ -25,25 +25,24 @@ goog.provide('goog.structs.Collection');
 /**
  * An interface for a collection of values.
  * @interface
- * @template T
  */
 goog.structs.Collection = function() {};
 
 
 /**
- * @param {T} value Value to add to the collection.
+ * @param {*} value Value to add to the collection.
  */
 goog.structs.Collection.prototype.add;
 
 
 /**
- * @param {T} value Value to remove from the collection.
+ * @param {*} value Value to remove from the collection.
  */
 goog.structs.Collection.prototype.remove;
 
 
 /**
- * @param {T} value Value to find in the collection.
+ * @param {*} value Value to find in the tree.
  * @return {boolean} Whether the collection contains the specified value.
  */
 goog.structs.Collection.prototype.contains;

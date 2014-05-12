@@ -31,7 +31,6 @@ goog.require('goog.debug.errorHandlerWeakDep');
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
  * @constructor
- * @final
  */
 goog.module.ModuleLoadCallback = function(fn, opt_handler) {
   /**

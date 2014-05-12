@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.ac</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.ac');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/autocomplete.css">
+  <style>
+    small {
+      color: #999;
+      font-size: x-small;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.ac</h1>
+  <p>
+    Tom Cruise Film Finder:<br>
+    <input id="txtInput1" style="width:500px" /> <button>Go</button>
+  </p>
+  <p>
+    Multi-Tom Cruise Film Finder:<br>
+    <textarea id="txtInput2" style="width:500px"></textarea>
+    <button>Go</button><br>
+    <small>Data from Google Sets! Not my personal DVD collection!!!</small>
+  </p>
+  <script type="text/javascript">
+    var tcMovies = [
+        "Mission Impossible", "Top Gun","Jerry McGuire","Rain Man",
+        "Days of Thunder", "Risky Business","Interview With The Vampire",
+        "Eyes Wide Shut","Far And Away", "Jerry Maguire","The Firm","Cocktail",
+        "A Few Good Men","Legend","Taps", "The Outsiders","Losin' It",
+        "Endless Love","The Color Of Money", "All The Right Moves",
+        "Minority Report","Magnolia","Mission Impossible 2",
+        "Mission Impossible 3","Vanilla Sky","Ghost Soldiers","Few Good Men A",
+        "Color of Money The","Firm The","Mission Impossible II","Outsiders The",
+        "Young Guns","Top Gun DVD","Days of Thunder DVD","Coctail",
+        "Mission Impossible DVD","Fallen Angels Vol 1","Don't Look at Me",
+        "Young Guns uncredited"];
+
+    var ac1 = goog.ui.ac.createSimpleAutoComplete(
+        tcMovies, document.getElementById('txtInput1'), false);
+    var ac2 = goog.ui.ac.createSimpleAutoComplete(
+        tcMovies, document.getElementById('txtInput2'), true);
+  </script>
+</body>
+</html>

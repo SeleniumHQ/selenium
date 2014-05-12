@@ -19,15 +19,11 @@
 
 goog.provide('goog.events.actionEventWrapper');
 
-goog.require('goog.a11y.aria');
-goog.require('goog.a11y.aria.Role');
 goog.require('goog.events');
-/** @suppress {extraRequire} */
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.EventWrapper');
 goog.require('goog.events.KeyCodes');
-goog.require('goog.userAgent');
 
 
 
@@ -59,8 +55,8 @@ goog.events.actionEventWrapper = new goog.events.ActionEventWrapper_();
 goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
   goog.events.EventType.CLICK,
   goog.userAgent.GECKO ?
-      goog.events.EventType.KEYPRESS : goog.events.EventType.KEYDOWN,
-  goog.events.EventType.KEYUP
+      goog.events.EventType.KEYPRESS :
+      goog.events.EventType.KEYDOWN
 ];
 
 
@@ -70,8 +66,8 @@ goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
  * once to an object.
  *
  * @param {goog.events.ListenableType} target The target to listen to events on.
- * @param {function(?):?|{handleEvent:function(?):?}|null} listener Callback
- *     method, or an object with a handleEvent function.
+ * @param {Function|Object} listener Callback method, or an object with a
+ *     handleEvent function.
  * @param {boolean=} opt_capt Whether to fire in capture phase (defaults to
  *     false).
  * @param {Object=} opt_scope Element in whose scope to call the listener.
@@ -82,21 +78,13 @@ goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
 goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {
   var callback = function(e) {
-    var listenerFn = goog.events.wrapListener(listener);
     if (e.type == goog.events.EventType.CLICK && e.isMouseActionButton()) {
-      listenerFn.call(opt_scope, e);
-    } else if ((e.keyCode == goog.events.KeyCodes.ENTER ||
-        e.keyCode == goog.events.KeyCodes.MAC_ENTER) &&
-        e.type != goog.events.EventType.KEYUP) {
+      listener.call(opt_scope, e);
+    } else if (e.keyCode == goog.events.KeyCodes.ENTER ||
+        e.keyCode == goog.events.KeyCodes.MAC_ENTER) {
       // convert keydown to keypress for backward compatibility.
       e.type = goog.events.EventType.KEYPRESS;
-      listenerFn.call(opt_scope, e);
-    } else if (e.keyCode == goog.events.KeyCodes.SPACE &&
-        e.type == goog.events.EventType.KEYUP &&
-        goog.a11y.aria.getRole(/** @type {!Element} */ (e.target)) ==
-            goog.a11y.aria.Role.BUTTON) {
-      listenerFn.call(opt_scope, e);
-      e.preventDefault();
+      listener.call(opt_scope, e);
     }
   };
   callback.listener_ = listener;
@@ -118,8 +106,8 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
  * Removes an event listener added using goog.events.EventWrapper.listen.
  *
  * @param {goog.events.ListenableType} target The node to remove listener from.
- * @param {function(?):?|{handleEvent:function(?):?}|null} listener Callback
- *     method, or an object with a handleEvent function.
+ * @param {Function|Object} listener Callback method, or an object with a
+ *     handleEvent function.
  * @param {boolean=} opt_capt Whether to fire in capture phase (defaults to
  *     false).
  * @param {Object=} opt_scope Element in whose scope to call the listener.

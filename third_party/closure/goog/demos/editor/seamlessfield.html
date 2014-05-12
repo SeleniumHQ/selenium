@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>goog.editor.SeamlessField</title>
+  <script src="../../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.editor.SeamlessField');
+  </script>
+  <link rel="stylesheet" href="../css/demo.css">
+  <style>
+    #editMe {
+      border: 1px solid grey;
+      width: 600px;
+    }
+ 
+    #wrapper {
+      background-color: #87CEFA;
+    }
+
+    h1 {
+      font-family: courier;
+      color: red;
+    }
+
+    p {
+      margin: 0;
+      background-color: lightgrey;
+    }
+
+    li {
+      list-style-type: lower-greek;
+    }
+
+    table p {
+      margin: 3px;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.editor.SeamlessField</h1>
+  <p>This is a very basic demonstration of how to make a region editable, that
+     blends in with the surrounding page, even if the editable content is inside
+     an iframe.</p>
+  <input type="button" value="Make Editable" onclick="makeFieldEditable();" />
+  <input type="button" value="Make Uneditable"
+      onclick="makeFieldUneditable();" />
+  <br>
+  <div id="wrapper">
+    <br><br>
+    <div id="editMe">I am a regular div.
+      Click <b>"Make Editable"</b> above to transform me into an editable region.
+      I'll grow and shrink with my content!
+      And I'll inherit styles from the parent document.
+
+      <h1>Heading styled by outer document.</h1>
+      <ol>
+        <li>And lists too! One!</li>
+        <li>Two!</li>
+      </ol>
+      <p>Paragraph 1</p>
+      <table><tr><td>
+        <p>Inherited CSS works!</p>
+      </td></tr></table>
+    </div>
+    <br><br>
+  </div>
+  <hr>
+  <p><b>Current field contents</b>
+  (updates as contents of the editable field above change):<br>
+  <textarea id="fieldContents" style="height:100px;width:400px;"></textarea><br>
+  <input type="button" value="Set Field Contents"
+      onclick="myField.setHtml(false, goog.dom.getElement('fieldContents').value);" />
+  (Use to set contents of the editable field to the contents of this textarea)
+  </p>
+
+  <script>
+  var myField = new goog.editor.SeamlessField('editMe');
+
+  function makeFieldEditable() {
+    goog.events.listen(myField, goog.editor.Field.EventType.DELAYEDCHANGE,
+        updateFieldContents);
+
+    myField.makeEditable();
+    updateFieldContents();
+  }
+
+  function makeFieldUneditable() {
+    myField.makeUneditable();
+  }
+
+  function updateFieldContents() {
+    goog.dom.getElement('fieldContents').value = myField.getCleanContents();
+  }
+
+  </script>
+</body>
+</html>

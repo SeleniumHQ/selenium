@@ -26,6 +26,7 @@
 
 goog.provide('goog.ui.emoji.EmojiPalette');
 
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.net.ImageLoader');
 goog.require('goog.ui.Palette');
@@ -44,7 +45,6 @@ goog.require('goog.ui.emoji.EmojiPaletteRenderer');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @extends {goog.ui.Palette}
  * @constructor
- * @final
  */
 goog.ui.emoji.EmojiPalette = function(emoji,
                                       opt_urlPrefix,
@@ -135,7 +135,7 @@ goog.ui.emoji.EmojiPalette.prototype.imageLoader_;
  * centering the inner div).
  *
  * @param {Object} emojiGroup The group of emoji for this page.
- * @return {!Array.<!HTMLDivElement>} The emoji items.
+ * @return {Array.<HTMLDivElement>} The emoji items.
  * @private
  */
 goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ =

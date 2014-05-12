@@ -17,23 +17,17 @@
  * range by dragging a thumb. The selected value is exposed through getValue().
  *
  * To decorate, the slider should be bound to an element with the class name
- * 'goog-slider' containing a child with the class name 'goog-slider-thumb',
- * whose position is set to relative.
- * Note that you won't be able to see these elements unless they are styled.
- *
- * Slider orientation is horizontal by default.
- * Use setOrientation(goog.ui.Slider.Orientation.VERTICAL) for a vertical
- * slider.
+ * 'goog-slider-[vertical / horizontal]' containing a child with the classname
+ * 'goog-slider-thumb'.
  *
  * Decorate Example:
- * <div id="slider" class="goog-slider">
- *   <div class="goog-slider-thumb"></div>
+ * <div id="slider" class="goog-slider-horizontal">
+ *   <div class="goog-twothumbslider-thumb">
  * </div>
- *
  * <script>
+ *
  * var slider = new goog.ui.Slider;
  * slider.decorate(document.getElementById('slider'));
- * </script>
  *
  * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/slider.html
@@ -50,19 +44,18 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
 goog.require('goog.ui.SliderBase');
+goog.require('goog.ui.SliderBase.Orientation');
 
 
 
 /**
  * This creates a slider object.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
- * @param {(function(number):?string)=} opt_labelFn An optional function mapping
- *     slider values to a description of the value.
  * @constructor
  * @extends {goog.ui.SliderBase}
  */
-goog.ui.Slider = function(opt_domHelper, opt_labelFn) {
-  goog.ui.SliderBase.call(this, opt_domHelper, opt_labelFn);
+goog.ui.Slider = function(opt_domHelper) {
+  goog.ui.SliderBase.call(this, opt_domHelper);
   this.rangeModel.setExtent(0);
 };
 goog.inherits(goog.ui.Slider, goog.ui.SliderBase);

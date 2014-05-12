@@ -42,7 +42,6 @@ goog.require('goog.ui.AbstractSpellChecker');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.AbstractSpellChecker}
- * @final
  */
 goog.ui.RichTextSpellChecker = function(handler, opt_domHelper) {
   goog.ui.AbstractSpellChecker.call(this, handler, opt_domHelper);
@@ -474,7 +473,7 @@ goog.ui.RichTextSpellChecker.prototype.processRange = function(node, text) {
 goog.ui.RichTextSpellChecker.prototype.createWordElement = function(
     word, status) {
   var parameters = this.getElementProperties(status);
-  var el = /** @type {!HTMLSpanElement} */ (this.editorDom_.createDom('span',
+  var el = /** @type {HTMLSpanElement} */ (this.editorDom_.createDom('span',
       parameters, word));
   this.registerWordElement(word, el);
   return el;
@@ -585,7 +584,7 @@ goog.ui.RichTextSpellChecker.prototype.restoreNode_ = function(node) {
  * Returns desired element properties for the specified status.
  *
  * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
- * @return {!Object} Properties to apply to word element.
+ * @return {Object} Properties to apply to word element.
  * @protected
  * @override
  */

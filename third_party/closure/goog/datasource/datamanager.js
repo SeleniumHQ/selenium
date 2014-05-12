@@ -30,7 +30,6 @@ goog.provide('goog.ds.DataManager');
 goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataNode');
 goog.require('goog.ds.Expr');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
@@ -41,7 +40,6 @@ goog.require('goog.structs.Map');
  * Create a DataManger
  * @extends {goog.ds.DataNode}
  * @constructor
- * @final
  */
 goog.ds.DataManager = function() {
   this.dataSources_ = new goog.ds.BasicNodeList();
@@ -64,7 +62,7 @@ goog.inherits(goog.ds.DataManager, goog.ds.DataNode);
 
 /**
  * Get the global instance
- * @return {!goog.ds.DataManager} The data manager singleton.
+ * @return {goog.ds.DataManager} The data manager singleton.
  */
 goog.ds.DataManager.getInstance = function() {
   if (!goog.ds.DataManager.instance_) {
@@ -169,7 +167,7 @@ goog.ds.DataManager.prototype.getDataSource = function(name) {
 
 /**
  * Get the value of the node
- * @return {!Object} The value of the node.
+ * @return {Object} The value of the node, or null if no value.
  * @override
  */
 goog.ds.DataManager.prototype.get = function() {
@@ -478,7 +476,7 @@ goog.ds.DataManager.prototype.removeListenersByFunction_ = function(
  */
 goog.ds.DataManager.prototype.getListenerCount = function() {
   var count = 0;
-  goog.object.forEach(this.listenerMap_, function(matchingListeners) {
+  goog.structs.forEach(this.listenerMap_, function(matchingListeners) {
     count += goog.structs.getCount(matchingListeners);
   });
   return count;

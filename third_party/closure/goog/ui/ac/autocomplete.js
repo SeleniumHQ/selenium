@@ -21,11 +21,9 @@
 goog.provide('goog.ui.ac.AutoComplete');
 goog.provide('goog.ui.ac.AutoComplete.EventType');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
-goog.require('goog.object');
 
 
 
@@ -33,7 +31,8 @@ goog.require('goog.object');
  * This is the central manager class for an AutoComplete instance. The matcher
  * can specify disabled rows that should not be hilited or selected by
  * implementing <code>isRowDisabled(row):boolean</code> for each autocomplete
- * row. No row will be considered disabled if this method is not implemented.
+ * row. No row will not be considered disabled if this method is not
+ * implemented.
  *
  * @param {Object} matcher A data source and row matcher, implements
  *        <code>requestMatchingRows(token, maxMatches, matchCallback)</code>.
@@ -60,11 +59,11 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
   /**
    * A data-source which provides autocomplete suggestions.
    *
-   * TODO(user): Tighten the type to !goog.ui.ac.AutoComplete.Matcher.
+   * TODO(user): Tighten the type to !Object.
    *
    * @type {Object}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.matcher_ = matcher;
 
@@ -76,7 +75,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    *
    * @type {Object}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.selectionHandler_ = selectionHandler;
 
@@ -84,7 +83,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    * A renderer to render/show/highlight/hide the autocomplete menu.
    * @type {goog.events.EventTarget}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.renderer_ = renderer;
   goog.events.listen(
@@ -101,7 +100,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    * Currently typed token which will be used for completion.
    * @type {?string}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.token_ = null;
 
@@ -109,7 +108,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    * Autocomplete suggestion items.
    * @type {Array}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.rows_ = [];
 
@@ -117,7 +116,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    * Id of the currently highlighted row.
    * @type {number}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.hiliteId_ = -1;
 
@@ -130,7 +129,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    *
    * @type {number}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.firstRowId_ = 0;
 
@@ -138,7 +137,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
    * The target HTML node for displaying.
    * @type {Element}
    * @protected
-   * @suppress {underscore|visibility}
+   * @suppress {underscore}
    */
   this.target_ = null;
 
@@ -246,15 +245,6 @@ goog.ui.ac.AutoComplete.EventType = {
 
 
 /**
- * @typedef {{
- *   requestMatchingRows:(!Function|undefined),
- *   isRowDisabled:(!Function|undefined)
- * }}
- */
-goog.ui.ac.AutoComplete.Matcher;
-
-
-/**
  * @return {!Object} The data source providing the `autocomplete
  *     suggestions.
  */
@@ -318,7 +308,6 @@ goog.ui.ac.AutoComplete.prototype.setRenderer = function(renderer) {
 goog.ui.ac.AutoComplete.prototype.getToken = function() {
   return this.token_;
 };
-
 
 /**
  * Sets the current token (without changing the rendered autocompletion).
@@ -388,8 +377,6 @@ goog.ui.ac.AutoComplete.prototype.setHighlightedIdInternal = function(id) {
  * @param {goog.events.Event} e Event Object.
  */
 goog.ui.ac.AutoComplete.prototype.handleEvent = function(e) {
-  var matcher = /** @type {?goog.ui.ac.AutoComplete.Matcher} */ (this.matcher_);
-
   if (e.target == this.renderer_) {
     switch (e.type) {
       case goog.ui.ac.AutoComplete.EventType.HILITE:
@@ -397,21 +384,17 @@ goog.ui.ac.AutoComplete.prototype.handleEvent = function(e) {
         break;
 
       case goog.ui.ac.AutoComplete.EventType.SELECT:
-        var rowDisabled = false;
+        // e.row can be either a valid row number or empty.
+        var rowId = /** @type {number} */ (e.row);
+        var index = this.getIndexOfId(rowId);
+        var row = this.rows_[index];
 
-        // e.row can be either a valid row id or empty.
-        if (goog.isNumber(e.row)) {
-          var rowId = e.row;
-          var index = this.getIndexOfId(rowId);
-          var row = this.rows_[index];
-
-          // Make sure the row selected is not a disabled row.
-          rowDisabled = !!row && matcher.isRowDisabled &&
-              matcher.isRowDisabled(row);
-          if (row && !rowDisabled && this.hiliteId_ != rowId) {
-            // Event target row not currently highlighted - fix the mismatch.
-            this.hiliteId(rowId);
-          }
+        // Make sure the row selected is not a disabled row.
+        var rowDisabled = !!row && this.matcher_.isRowDisabled &&
+            this.matcher_.isRowDisabled(row);
+        if (rowId && row && !rowDisabled && this.hiliteId_ != rowId) {
+          // Event target row not currently highlighted - fix the mismatch.
+          this.hiliteId(rowId);
         }
         if (!rowDisabled) {
           // Note that rowDisabled can be false even if e.row does not
@@ -662,8 +645,7 @@ goog.ui.ac.AutoComplete.prototype.selectHilited = function() {
     if (!suppressUpdate) {
       this.dispatchEvent({
         type: goog.ui.ac.AutoComplete.EventType.UPDATE,
-        row: selectedRow,
-        index: index
+        row: selectedRow
       });
       if (this.triggerSuggestionsOnUpdate_) {
         this.selectionHandler_.update(true);
@@ -675,8 +657,7 @@ goog.ui.ac.AutoComplete.prototype.selectHilited = function() {
     this.dispatchEvent(
         {
           type: goog.ui.ac.AutoComplete.EventType.UPDATE,
-          row: null,
-          index: null
+          row: null
         });
     return false;
   }

@@ -257,6 +257,15 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
       goog.dom.getWindow(goog.dom.getOwnerDocument(opt_input)) : window;
 
   /**
+   * The initial page location with an empty hash component. If the page uses
+   * a BASE element, setting location.hash directly will navigate away from the
+   * current document. To prevent this, the full path is always specified.
+   * @type {string}
+   * @private
+   */
+  this.baseUrl_ = this.window_.location.href.split('#')[0];
+
+  /**
    * The base URL for the hidden iframe. Must refer to a document in the
    * same domain as the main page.
    * @type {string|undefined}
@@ -287,7 +296,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
 
   /**
    * An object to keep track of the history event listeners.
-   * @type {goog.events.EventHandler.<!goog.History>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -693,12 +702,8 @@ goog.History.prototype.setHistoryState_ = function(token, replace, opt_title) {
  * @private
  */
 goog.History.prototype.setHash_ = function(token, opt_replace) {
-  // If the page uses a BASE element, setting location.hash directly will
-  // navigate away from the current document. Also, the original URL path may
-  // possibly change from HTML5 history pushState. To account for these, the
-  // full path is always specified.
   var loc = this.window_.location;
-  var url = loc.href.split('#')[0];
+  var url = this.baseUrl_;
 
   // If a hash has already been set, then removing it programmatically will
   // reload the page. Once there is a hash, we won't remove it.
@@ -994,6 +999,5 @@ goog.History.EventType = goog.history.EventType;
  * @extends {goog.events.Event}
  * @constructor
  * @deprecated Use goog.history.Event.
- * @final
  */
 goog.History.Event = goog.history.Event;

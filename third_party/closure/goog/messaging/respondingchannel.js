@@ -22,7 +22,7 @@
 goog.provide('goog.messaging.RespondingChannel');
 
 goog.require('goog.Disposable');
-goog.require('goog.log');
+goog.require('goog.debug.Logger');
 goog.require('goog.messaging.MessageChannel'); // interface
 goog.require('goog.messaging.MultiChannel');
 goog.require('goog.messaging.MultiChannel.VirtualChannel');
@@ -40,7 +40,7 @@ goog.require('goog.messaging.MultiChannel.VirtualChannel');
  * @extends {goog.Disposable}
  */
 goog.messaging.RespondingChannel = function(messageChannel) {
-  goog.messaging.RespondingChannel.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The message channel wrapped in a MultiChannel so we can send private and
@@ -120,11 +120,11 @@ goog.messaging.RespondingChannel.prototype.nextSignatureIndex_ = 0;
 
 /**
  * Logger object for goog.messaging.RespondingChannel.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.messaging.RespondingChannel.prototype.logger_ =
-    goog.log.getLogger('goog.messaging.RespondingChannel');
+    goog.debug.Logger.getLogger('goog.messaging.RespondingChannel');
 
 
 /**
@@ -191,7 +191,7 @@ goog.messaging.RespondingChannel.prototype.callbackServiceHandler_ = function(
     callback(result);
     delete this.sigCallbackMap_[signature];
   } else {
-    goog.log.warning(this.logger_, 'Received signature is invalid');
+    this.logger_.warning('Received signature is invalid');
   }
 };
 
