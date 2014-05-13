@@ -4,6 +4,8 @@
     `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
 * FIXED: 7300: Connect to ChromeDriver using the loopback address since
     ChromeDriver 2.10.267517 binds to localhost by default.
+* FIXED: 7339: Preserve wrapped test function's string representation for
+    Mocha's BDD interface.
 
 ## v2.41.0
 
