@@ -45,6 +45,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -216,6 +217,36 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .perform();
 
     wait.until(titleIs("XHTML Test Page"));
+  }
+
+  @Ignore(
+      value = {HTMLUNIT, IPHONE},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @Test
+  public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+
+    driver.get(pages.clickEventPage);
+
+    WebElement element = driver.findElement(By.id("eventish"));
+    Point location = element.getLocation();
+
+    new Actions(driver)
+        .moveToElement(element, 10, 20)
+        .click()
+        .perform();
+
+    int x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
+    int y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
+
+    assertTrue(fuzzyPositionMatching(location.getX() + 10, location.getY() + 20, x, y));
+  }
+
+  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
+    // Everything within 5 pixels range is OK
+    final int ALLOWED_DEVIATION = 5;
+    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&
+           Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
