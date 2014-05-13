@@ -888,7 +888,7 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Gets an object allowing the user to manipulate cookies on the page.
+            /// Gets an object allowing the user to manipulate local web storage on the page.
             /// </summary>
             public ILocalStorage LocalStorage
             {
