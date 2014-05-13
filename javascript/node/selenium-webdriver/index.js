@@ -63,6 +63,8 @@ exports.WebDriver = base.require('webdriver.WebDriver');
 /** @type {function(new: webdriver.WebElement)} */
 exports.WebElement = base.require('webdriver.WebElement');
 
+/** @type {function(new: webdriver.FileDetector)} */
+exports.FileDetector = base.require('webdriver.FileDetector');
 
 // Export the remainder of our API through getters to keep things cleaner
 // when this module is used in a REPL environment.
@@ -126,3 +128,5 @@ exports.WebElement = base.require('webdriver.WebElement');
 (exports.__defineGetter__('stacktrace', function() {
   return base.exportPublicApi('webdriver.stacktrace');
 }));
+
+
