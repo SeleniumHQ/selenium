@@ -154,11 +154,15 @@ public class SessionCleanerTest {
   }
 
   class MyDriverFactory implements DriverFactory {
+    @Override
     public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-
-
     }
 
+    @Override
+    public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
+    }
+
+    @Override
     public WebDriver newInstance(Capabilities capabilities) {
       return new StubDriver() {
         @Override
@@ -167,6 +171,7 @@ public class SessionCleanerTest {
       };
     }
 
+    @Override
     public boolean hasMappingFor(Capabilities capabilities) {
       return true;
     }
