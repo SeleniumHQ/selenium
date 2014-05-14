@@ -252,7 +252,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI}, issues = {3771},
+  @Ignore(value = {IPHONE, SAFARI, HTMLUNIT}, issues = {3771},
           reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @JavascriptEnabled
   @NeedsFreshDriver
