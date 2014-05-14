@@ -239,7 +239,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     int x;
     int y;
-    if (isInternetExplorer(driver) && getIEVersion(driver) < 9) {
+    if (isInternetExplorer(driver) && getIEVersion(driver) < 10) {
       x = Integer.parseInt(driver.findElement(By.id("clientX")).getText());
       y = Integer.parseInt(driver.findElement(By.id("clientY")).getText());
     } else {
