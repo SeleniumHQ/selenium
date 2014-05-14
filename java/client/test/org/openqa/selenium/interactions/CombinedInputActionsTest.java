@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
@@ -236,8 +237,15 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     wait.until(presenceOfElementLocated(By.id("pageX")));
 
-    int x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
-    int y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
+    int x;
+    int y;
+    if (isInternetExplorer(driver) && getIEVersion(driver) < 9) {
+      x = Integer.parseInt(driver.findElement(By.id("clientX")).getText());
+      y = Integer.parseInt(driver.findElement(By.id("clientY")).getText());
+    } else {
+      x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
+      y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
+    }
 
     assertTrue(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y));
   }
