@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import com.google.common.base.Throwables;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -136,6 +138,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     try {
       verifyCanInteractWithElement();
     } catch (InvalidElementStateException e) {
+      Throwables.propagateIfInstanceOf(e, ElementNotVisibleException.class);
       // Swallow disabled element case
       // Clicking disabled elements should still be passed through,
       // we just don't expect any state change
