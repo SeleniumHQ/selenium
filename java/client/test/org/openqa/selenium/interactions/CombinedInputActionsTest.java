@@ -220,19 +220,17 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(
-      value = {HTMLUNIT, IPHONE, CHROME, IE, OPERA, SAFARI},
+      value = {HTMLUNIT, IPHONE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
-    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
-
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
     Point location = element.getLocation();
 
     new Actions(driver)
-        .moveToElement(element, 10, 20)
+        .moveToElement(element, 20, 10)
         .click()
         .perform();
 
@@ -241,7 +239,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     int x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
     int y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
 
-    assertTrue(fuzzyPositionMatching(location.getX() + 10, location.getY() + 20, x, y));
+    assertTrue(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
