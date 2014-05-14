@@ -63,6 +63,7 @@
                                     <fileset dir="../../java/client/src">
                                         <include name="org/openqa/selenium/browserlaunchers/**/*.java" />
                                         <include name="org/openqa/selenium/io/**/*.java" />
+                                        <include name="org/openqa/selenium/mobile/**/*.java" />
                                         <include name="org/openqa/selenium/os/**/*.java" />
                                         <include name="org/openqa/selenium/net/**/*.java" />
                                         <include name="org/openqa/selenium/profiler/**/*.java" />
