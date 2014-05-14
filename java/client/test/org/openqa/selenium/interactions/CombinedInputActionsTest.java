@@ -39,6 +39,7 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -48,7 +49,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -185,7 +185,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   private void navigateToClicksPageAndClickLink() {
     driver.get(pages.clicksPage);
 
-    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
+    wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
@@ -208,7 +208,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
-    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
+    wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
@@ -220,7 +220,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(
-      value = {HTMLUNIT, IPHONE},
+      value = {HTMLUNIT, IPHONE, CHROME, IE, OPERA, SAFARI},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
@@ -235,6 +235,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .moveToElement(element, 10, 20)
         .click()
         .perform();
+
+    wait.until(presenceOfElementLocated(By.id("pageX")));
 
     int x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
     int y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
@@ -347,7 +349,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     new Actions(driver).keyDown(Keys.SHIFT).click(toClick).keyUp(Keys.SHIFT).perform();
 
     WebElement shiftInfo =
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("shiftKey")));
+        wait.until(presenceOfElementLocated(By.id("shiftKey")));
     assertThat(shiftInfo.getText(), equalTo("true"));
   }
 
