@@ -168,7 +168,7 @@ goog.ui.editor.ToolbarFactory.getLegacySizeFromPx = function(px) {
 
 /**
  * Map of legacy font sizes (0-7) to equivalent pixel sizes.
- * @type {Array.<number>}
+ * @type {!Array.<number>}
  * @private
  */
 goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =

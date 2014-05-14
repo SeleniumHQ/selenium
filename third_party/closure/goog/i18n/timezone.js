@@ -40,6 +40,7 @@ goog.require('goog.string');
  * Olson time zone data base (through pytz), and will be updated timely.
  *
  * @constructor
+ * @final
  */
 goog.i18n.TimeZone = function() {
   /**

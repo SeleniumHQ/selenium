@@ -119,7 +119,7 @@ goog.graphics.Element.prototype.setTransformation = function(x, y, rotate,
 
 
 /**
- * @return {goog.graphics.AffineTransform} The transformation applied to
+ * @return {!goog.graphics.AffineTransform} The transformation applied to
  *     this element.
  */
 goog.graphics.Element.prototype.getTransform = function() {

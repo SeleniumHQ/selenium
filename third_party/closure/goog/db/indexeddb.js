@@ -22,10 +22,8 @@ goog.provide('goog.db.IndexedDb');
 
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Error');
-goog.require('goog.db.Error.VersionChangeBlockedError');
 goog.require('goog.db.ObjectStore');
 goog.require('goog.db.Transaction');
-goog.require('goog.db.Transaction.TransactionMode');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -41,9 +39,10 @@ goog.require('goog.events.EventTarget');
  * @param {!IDBDatabase} db Underlying IndexedDB database object.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.db.IndexedDb = function(db) {
-  goog.base(this);
+  goog.db.IndexedDb.base(this, 'constructor');
 
   /**
    * Underlying IndexedDB database object.
@@ -55,7 +54,7 @@ goog.db.IndexedDb = function(db) {
 
   /**
    * Internal event handler that listens to IDBDatabase events.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.db.IndexedDb>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -75,6 +74,13 @@ goog.db.IndexedDb = function(db) {
       this.db_,
       goog.db.IndexedDb.EventType.VERSION_CHANGE,
       this.dispatchVersionChange_);
+  this.eventHandler_.listen(
+      this.db_,
+      goog.db.IndexedDb.EventType.CLOSE,
+      goog.bind(
+          this.dispatchEvent,
+          this,
+          goog.db.IndexedDb.EventType.CLOSE));
 };
 goog.inherits(goog.db.IndexedDb, goog.events.EventTarget);
 
@@ -172,7 +178,7 @@ goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
  *     whether the object store should automatically generate keys for stored
  *     objects. If keyPath is not provided and autoIncrement is false, then all
  *     insert operations must provide a key as a parameter.
- * @return {goog.db.ObjectStore} The newly created object store.
+ * @return {!goog.db.ObjectStore} The newly created object store.
  * @throws {goog.db.Error} If there's a problem creating the object store.
  */
 goog.db.IndexedDb.prototype.createObjectStore = function(name, opt_params) {
@@ -274,7 +280,7 @@ goog.db.IndexedDb.prototype.createTransaction = function(storeNames, opt_mode) {
 
 /** @override */
 goog.db.IndexedDb.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.db.IndexedDb.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
 };
 
@@ -290,6 +296,14 @@ goog.db.IndexedDb.EventType = {
    * Fired when a transaction is aborted and the event bubbles to its database.
    */
   ABORT: 'abort',
+
+  /**
+   * Fired when the database connection is forcibly closed by the browser,
+   * without an explicit call to IDBDatabase#close. This behavior is not in the
+   * spec yet but will be added since it is necessary, see
+   * https://www.w3.org/Bugs/Public/show_bug.cgi?id=22540.
+   */
+  CLOSE: 'close',
 
   /**
    * Fired when a transaction has an error.
@@ -318,9 +332,11 @@ goog.db.IndexedDb.EventType = {
  *     updated to.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.db.IndexedDb.VersionChangeEvent = function(oldVersion, newVersion) {
-  goog.base(this, goog.db.IndexedDb.EventType.VERSION_CHANGE);
+  goog.db.IndexedDb.VersionChangeEvent.base(
+      this, 'constructor', goog.db.IndexedDb.EventType.VERSION_CHANGE);
 
   /**
    * The previous version of the database.

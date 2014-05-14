@@ -20,17 +20,33 @@
  */
 
 goog.provide('goog.async.nextTick');
+goog.provide('goog.async.throwException');
 
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.functions');
 
 
 /**
+ * Throw an item without interrupting the current execution context.  For
+ * example, if processing a group of items in a loop, sometimes it is useful
+ * to report an error while still allowing the rest of the batch to be
+ * processed.
+ * @param {*} exception
+ */
+goog.async.throwException = function(exception) {
+  // Each throw needs to be in its own context.
+  goog.global.setTimeout(function() { throw exception; }, 0);
+};
+
+
+/**
  * Fires the provided callbacks as soon as possible after the current JS
  * execution context. setTimeout(…, 0) always takes at least 5ms for legacy
  * reasons.
- * @param {function()} callback Callback function to fire as soon as possible.
- * @param {Object=} opt_context Object in whose scope to call the listener.
+ * @param {function(this:SCOPE)} callback Callback function to fire as soon as
+ *     possible.
+ * @param {SCOPE=} opt_context Object in whose scope to call the listener.
+ * @template SCOPE
  */
 goog.async.nextTick = function(callback, opt_context) {
   var cb = callback;
@@ -67,6 +83,24 @@ goog.async.nextTick.setImmediate_;
  * @private
  */
 goog.async.nextTick.getSetImmediateEmulator_ = function() {
+  // If native Promises are available in the browser, just schedule the callback
+  // on a fulfilled promise, which is specified to be async, but as fast as
+  // possible.
+  if (goog.global.Promise && goog.global.Promise.resolve) {
+    var promise = goog.global.Promise.resolve();
+    return function(cb) {
+      promise.then(function() {
+        try {
+          cb();
+        } catch (e) {
+          // If there is an error in the callback, make sure it is reported,
+          // since there is no chance to attach an error-handler to the
+          // promise used here.
+          goog.async.throwException(e);
+        }
+      });
+    };
+  }
   // Create a private message channel and use it to postMessage empty messages
   // to ourselves.
   var Channel = goog.global['MessageChannel'];
@@ -82,7 +116,7 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       var iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = '';
-      document.body.appendChild(iframe);
+      document.documentElement.appendChild(iframe);
       var win = iframe.contentWindow;
       var doc = win.document;
       doc.open();

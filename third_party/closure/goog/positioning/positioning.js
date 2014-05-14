@@ -308,7 +308,7 @@ goog.positioning.getOffsetParentPageOffset = function(movableElement) {
  * goog.style.getVisibleRectForElement for it.
  *
  * @param {Element} el The target element.
- * @return {goog.math.Rect} Intersection of getVisibleRectForElement
+ * @return {!goog.math.Rect} Intersection of getVisibleRectForElement
  *     and the current bounding rectangle of the element.  If the
  *     intersection is empty, returns the bounding rectangle.
  * @private

@@ -39,9 +39,10 @@ goog.require('goog.events.EventTarget');
  * @param {!goog.db.IndexedDb} db The database that this transaction modifies.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.db.Transaction = function(tx, db) {
-  goog.base(this);
+  goog.db.Transaction.base(this, 'constructor');
 
   /**
    * Underlying IndexedDB transaction object.
@@ -62,7 +63,7 @@ goog.db.Transaction = function(tx, db) {
   /**
    * Event handler for this transaction.
    *
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.db.Transaction>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -200,7 +201,7 @@ goog.db.Transaction.prototype.abort = function() {
 
 /** @override */
 goog.db.Transaction.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.db.Transaction.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
 };
 

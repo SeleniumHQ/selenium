@@ -24,7 +24,7 @@
 goog.provide('goog.tweak.Registry');
 
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.tweak.BaseEntry');
@@ -39,6 +39,7 @@ goog.require('goog.uri.utils');
  * @param {!Object.<string|number|boolean>} compilerOverrides Default value
  *     overrides set by the compiler.
  * @constructor
+ * @final
  */
 goog.tweak.Registry = function(queryParams, compilerOverrides) {
   /**
@@ -82,11 +83,11 @@ goog.tweak.Registry = function(queryParams, compilerOverrides) {
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.tweak.Registry.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.tweak.Registry');
+    goog.log.getLogger('goog.tweak.Registry');
 
 
 /**
@@ -119,7 +120,7 @@ goog.tweak.Registry.prototype.register = function(entry) {
   var oldBaseEntry = this.entryMap_[id];
   if (oldBaseEntry) {
     if (oldBaseEntry == entry) {
-      this.logger_.warning('Tweak entry registered twice: ' + id);
+      goog.log.warning(this.logger_, 'Tweak entry registered twice: ' + id);
       return;
     }
     goog.asserts.fail(

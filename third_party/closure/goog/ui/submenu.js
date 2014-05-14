@@ -23,16 +23,14 @@
 goog.provide('goog.ui.SubMenu');
 
 goog.require('goog.Timer');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.positioning.AnchoredViewportPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.SubMenuRenderer');
@@ -85,11 +83,11 @@ goog.ui.SubMenu.prototype.showTimer_ = null;
 
 
 /**
- * Flag used to determine if the submenu has control of the keyevents.
+ * Whether the submenu believes the menu is visible.
  * @type {boolean}
  * @private
  */
-goog.ui.SubMenu.prototype.hasKeyboardControl_ = false;
+goog.ui.SubMenu.prototype.menuIsVisible_ = false;
 
 
 /**
@@ -289,7 +287,7 @@ goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
   var closeKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.RIGHT :
       goog.events.KeyCodes.LEFT;
 
-  if (!this.hasKeyboardControl_) {
+  if (!this.menuIsVisible_) {
     // Menu item doesn't have keyboard control and the right key was pressed.
     // So open take keyboard control and open the sub menu.
     if (this.isEnabled() &&
@@ -406,6 +404,11 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
   this.dispatchEvent(goog.ui.Component.getStateTransitionEvent(
       goog.ui.Component.State.OPENED, visible));
   var subMenu = this.getMenu();
+  if (visible != this.menuIsVisible_) {
+    goog.dom.classlist.enable(
+        goog.asserts.assert(this.getElement()),
+        goog.getCssName('goog-submenu-open'), visible);
+  }
   if (visible != subMenu.isVisible()) {
     if (visible) {
       // Lazy-render menu when first shown, if needed.
@@ -414,9 +417,6 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
       }
       subMenu.setHighlightedIndex(-1);
     }
-    this.hasKeyboardControl_ = visible;
-    goog.dom.classes.enable(this.getElement(),
-        goog.getCssName('goog-submenu-open'), visible);
     subMenu.setVisible(visible);
     // We must position after the menu is visible, otherwise positioning logic
     // breaks in RTL.
@@ -424,6 +424,7 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
       this.positionSubMenu();
     }
   }
+  this.menuIsVisible_ = visible;
 };
 
 
@@ -573,7 +574,7 @@ goog.ui.SubMenu.prototype.getItemCount = function() {
 
 /**
  * Returns the menu items contained in the sub menu.
- * @return {Array.<goog.ui.MenuItem>} An array of menu items.
+ * @return {!Array.<!goog.ui.MenuItem>} An array of menu items.
  * @deprecated Use getItemAt/getItemCount instead.
  */
 goog.ui.SubMenu.prototype.getItems = function() {
@@ -583,7 +584,7 @@ goog.ui.SubMenu.prototype.getItems = function() {
 
 /**
  * Gets a reference to the submenu's actual menu.
- * @return {goog.ui.Menu} Reference to the object representing the sub menu.
+ * @return {!goog.ui.Menu} Reference to the object representing the sub menu.
  */
 goog.ui.SubMenu.prototype.getMenu = function() {
   if (!this.subMenu_) {

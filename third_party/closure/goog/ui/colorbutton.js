@@ -42,6 +42,7 @@ goog.require('goog.ui.registry');
  *    document interaction.
  * @constructor
  * @extends {goog.ui.Button}
+ * @final
  */
 goog.ui.ColorButton = function(content, opt_renderer, opt_domHelper) {
   goog.ui.Button.call(this, content, opt_renderer ||

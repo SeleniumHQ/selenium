@@ -46,6 +46,7 @@ goog.require('goog.userAgent');
  *     size changes.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.dom.FontSizeMonitor = function(opt_domHelper) {
   goog.events.EventTarget.call(this);

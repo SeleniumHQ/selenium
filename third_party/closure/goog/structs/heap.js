@@ -47,6 +47,7 @@ goog.require('goog.structs.Node');
  * @param {goog.structs.Heap|Object=} opt_heap Optional goog.structs.Heap or
  *     Object to initialize heap with.
  * @constructor
+ * @template K, V
  */
 goog.structs.Heap = function(opt_heap) {
   /**
@@ -64,8 +65,8 @@ goog.structs.Heap = function(opt_heap) {
 
 /**
  * Insert the given value into the heap with the given key.
- * @param {*} key The key.
- * @param {*} value The value.
+ * @param {K} key The key.
+ * @param {V} value The value.
  */
 goog.structs.Heap.prototype.insert = function(key, value) {
   var node = new goog.structs.Node(key, value);
@@ -85,7 +86,7 @@ goog.structs.Heap.prototype.insertAll = function(heap) {
     keys = heap.getKeys();
     values = heap.getValues();
 
-    // If it is a heap and the current heap is empty, I can realy on the fact
+    // If it is a heap and the current heap is empty, I can rely on the fact
     // that the keys/values are in the correct order to put in the underlying
     // structure.
     if (heap.getCount() <= 0) {
@@ -108,7 +109,7 @@ goog.structs.Heap.prototype.insertAll = function(heap) {
 
 /**
  * Retrieves and removes the root value of this heap.
- * @return {*} The value removed from the root of the heap.  Returns
+ * @return {V} The value removed from the root of the heap.  Returns
  *     undefined if the heap is empty.
  */
 goog.structs.Heap.prototype.remove = function() {
@@ -129,7 +130,7 @@ goog.structs.Heap.prototype.remove = function() {
 
 /**
  * Retrieves but does not remove the root value of this heap.
- * @return {*} The value at the root of the heap. Returns
+ * @return {V} The value at the root of the heap. Returns
  *     undefined if the heap is empty.
  */
 goog.structs.Heap.prototype.peek = function() {
@@ -143,7 +144,7 @@ goog.structs.Heap.prototype.peek = function() {
 
 /**
  * Retrieves but does not remove the key of the root node of this heap.
- * @return {*} The key at the root of the heap. Returns undefined if the
+ * @return {V} The key at the root of the heap. Returns undefined if the
  *     heap is empty.
  */
 goog.structs.Heap.prototype.peekKey = function() {
@@ -245,7 +246,7 @@ goog.structs.Heap.prototype.getParentIndex_ = function(index) {
 
 /**
  * Gets the values of the heap.
- * @return {Array} The values in the heap.
+ * @return {!Array.<V>} The values in the heap.
  */
 goog.structs.Heap.prototype.getValues = function() {
   var nodes = this.nodes_;
@@ -260,7 +261,7 @@ goog.structs.Heap.prototype.getValues = function() {
 
 /**
  * Gets the keys of the heap.
- * @return {Array} The keys in the heap.
+ * @return {!Array.<K>} The keys in the heap.
  */
 goog.structs.Heap.prototype.getKeys = function() {
   var nodes = this.nodes_;
@@ -275,7 +276,7 @@ goog.structs.Heap.prototype.getKeys = function() {
 
 /**
  * Whether the heap contains the given value.
- * @param {Object} val The value to check for.
+ * @param {V} val The value to check for.
  * @return {boolean} Whether the heap contains the value.
  */
 goog.structs.Heap.prototype.containsValue = function(val) {
@@ -287,7 +288,7 @@ goog.structs.Heap.prototype.containsValue = function(val) {
 
 /**
  * Whether the heap contains the given key.
- * @param {Object} key The key to check for.
+ * @param {K} key The key to check for.
  * @return {boolean} Whether the heap contains the key.
  */
 goog.structs.Heap.prototype.containsKey = function(key) {
@@ -299,7 +300,7 @@ goog.structs.Heap.prototype.containsKey = function(key) {
 
 /**
  * Clones a heap and returns a new heap
- * @return {goog.structs.Heap} A new goog.structs.Heap with the same key-value
+ * @return {!goog.structs.Heap} A new goog.structs.Heap with the same key-value
  *     pairs.
  */
 goog.structs.Heap.prototype.clone = function() {

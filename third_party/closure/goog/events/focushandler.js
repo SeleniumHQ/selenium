@@ -38,6 +38,7 @@ goog.require('goog.userAgent');
  * @param {Element|Document} element  The node to listen on.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.events.FocusHandler = function(element) {
   goog.events.EventTarget.call(this);

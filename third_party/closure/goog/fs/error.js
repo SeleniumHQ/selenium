@@ -21,6 +21,7 @@ goog.provide('goog.fs.Error');
 goog.provide('goog.fs.Error.ErrorCode');
 
 goog.require('goog.debug.Error');
+goog.require('goog.object');
 goog.require('goog.string');
 
 
@@ -30,17 +31,61 @@ goog.require('goog.string');
  * are less useful for identifying where errors come from, so this includes a
  * large amount of metadata in the message.
  *
- * @param {number} code The error code for the error.
+ * @param {!DOMError} error
  * @param {string} action The action being undertaken when the error was raised.
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
  */
-goog.fs.Error = function(code, action) {
-  goog.base(this, goog.string.subs('Error %s: %s', action,
-                                   goog.fs.Error.getDebugMessage(code)));
-  this.code = /** @type {goog.fs.Error.ErrorCode} */ (code);
+goog.fs.Error = function(error, action) {
+  /** @type {string} */
+  this.name;
+
+  /**
+   * @type {goog.fs.Error.ErrorCode}
+   * @deprecated Use the 'name' or 'message' field instead.
+   */
+  this.code;
+
+  if (goog.isDef(error.name)) {
+    this.name = error.name;
+    // TODO(user): Remove warning suppression after JSCompiler stops
+    // firing a spurious warning here.
+    /** @suppress {deprecated} */
+    this.code = goog.fs.Error.getCodeFromName_(error.name);
+  } else {
+    this.code = error.code;
+    this.name = goog.fs.Error.getNameFromCode_(error.code);
+  }
+  goog.fs.Error.base(this, 'constructor',
+      goog.string.subs('%s %s', this.name, action));
 };
 goog.inherits(goog.fs.Error, goog.debug.Error);
+
+
+/**
+ * Names of errors that may be thrown by the File API, the File System API, or
+ * the File Writer API.
+ *
+ * @see http://dev.w3.org/2006/webapi/FileAPI/#ErrorAndException
+ * @see http://www.w3.org/TR/file-system-api/#definitions
+ * @see http://dev.w3.org/2009/dap/file-system/file-writer.html#definitions
+ * @enum {string}
+ */
+goog.fs.Error.ErrorName = {
+  ABORT: 'AbortError',
+  ENCODING: 'EncodingError',
+  INVALID_MODIFICATION: 'InvalidModificationError',
+  INVALID_STATE: 'InvalidStateError',
+  NOT_FOUND: 'NotFoundError',
+  NOT_READABLE: 'NotReadableError',
+  NO_MODIFICATION_ALLOWED: 'NoModificationAllowedError',
+  PATH_EXISTS: 'PathExistsError',
+  QUOTA_EXCEEDED: 'QuotaExceededError',
+  SECURITY: 'SecurityError',
+  SYNTAX: 'SyntaxError',
+  TYPE_MISMATCH: 'TypeMismatchError'
+};
 
 
 /**
@@ -48,6 +93,7 @@ goog.inherits(goog.fs.Error, goog.debug.Error);
  * @see http://www.w3.org/TR/file-system-api/#idl-def-FileException
  *
  * @enum {number}
+ * @deprecated Use the 'name' or 'message' attribute instead.
  */
 goog.fs.Error.ErrorCode = {
   NOT_FOUND: 1,
@@ -66,37 +112,70 @@ goog.fs.Error.ErrorCode = {
 
 
 /**
- * @param {number} errorCode The error code for the error.
- * @return {string} A debug message for the given error code. These messages are
- *     for debugging only and are not localized.
+ * @param {goog.fs.Error.ErrorCode} code
+ * @return {string} name
+ * @private
  */
-goog.fs.Error.getDebugMessage = function(errorCode) {
-  switch (errorCode) {
-    case goog.fs.Error.ErrorCode.NOT_FOUND:
-      return 'File or directory not found';
-    case goog.fs.Error.ErrorCode.SECURITY:
-      return 'Insecure or disallowed operation';
-    case goog.fs.Error.ErrorCode.ABORT:
-      return 'Operation aborted';
-    case goog.fs.Error.ErrorCode.NOT_READABLE:
-      return 'File or directory not readable';
-    case goog.fs.Error.ErrorCode.ENCODING:
-      return 'Invalid encoding';
-    case goog.fs.Error.ErrorCode.NO_MODIFICATION_ALLOWED:
-      return 'Cannot modify file or directory';
-    case goog.fs.Error.ErrorCode.INVALID_STATE:
-      return 'Invalid state';
-    case goog.fs.Error.ErrorCode.SYNTAX:
-      return 'Invalid line-ending specifier';
-    case goog.fs.Error.ErrorCode.INVALID_MODIFICATION:
-      return 'Invalid modification';
-    case goog.fs.Error.ErrorCode.QUOTA_EXCEEDED:
-      return 'Quota exceeded';
-    case goog.fs.Error.ErrorCode.TYPE_MISMATCH:
-      return 'Invalid filetype';
-    case goog.fs.Error.ErrorCode.PATH_EXISTS:
-      return 'File or directory already exists at specified path';
-    default:
-      return 'Unrecognized error';
+goog.fs.Error.getNameFromCode_ = function(code) {
+  var name = goog.object.findKey(goog.fs.Error.NameToCodeMap_, function(c) {
+    return code == c;
+  });
+  if (!goog.isDef(name)) {
+    throw new Error('Invalid code: ' + code);
   }
+  return name;
 };
+
+
+/**
+ * Returns the code that corresponds to the given name.
+ * @param {string} name
+ * @return {goog.fs.Error.ErrorCode} code
+ * @private
+ */
+goog.fs.Error.getCodeFromName_ = function(name) {
+  return goog.fs.Error.NameToCodeMap_[name];
+};
+
+
+/**
+ * Mapping from error names to values from the ErrorCode enum.
+ * @see http://www.w3.org/TR/file-system-api/#definitions.
+ * @private {!Object.<string, goog.fs.Error.ErrorCode>}
+ */
+goog.fs.Error.NameToCodeMap_ = goog.object.create(
+    goog.fs.Error.ErrorName.ABORT,
+    goog.fs.Error.ErrorCode.ABORT,
+
+    goog.fs.Error.ErrorName.ENCODING,
+    goog.fs.Error.ErrorCode.ENCODING,
+
+    goog.fs.Error.ErrorName.INVALID_MODIFICATION,
+    goog.fs.Error.ErrorCode.INVALID_MODIFICATION,
+
+    goog.fs.Error.ErrorName.INVALID_STATE,
+    goog.fs.Error.ErrorCode.INVALID_STATE,
+
+    goog.fs.Error.ErrorName.NOT_FOUND,
+    goog.fs.Error.ErrorCode.NOT_FOUND,
+
+    goog.fs.Error.ErrorName.NOT_READABLE,
+    goog.fs.Error.ErrorCode.NOT_READABLE,
+
+    goog.fs.Error.ErrorName.NO_MODIFICATION_ALLOWED,
+    goog.fs.Error.ErrorCode.NO_MODIFICATION_ALLOWED,
+
+    goog.fs.Error.ErrorName.PATH_EXISTS,
+    goog.fs.Error.ErrorCode.PATH_EXISTS,
+
+    goog.fs.Error.ErrorName.QUOTA_EXCEEDED,
+    goog.fs.Error.ErrorCode.QUOTA_EXCEEDED,
+
+    goog.fs.Error.ErrorName.SECURITY,
+    goog.fs.Error.ErrorCode.SECURITY,
+
+    goog.fs.Error.ErrorName.SYNTAX,
+    goog.fs.Error.ErrorCode.SYNTAX,
+
+    goog.fs.Error.ErrorName.TYPE_MISMATCH,
+    goog.fs.Error.ErrorCode.TYPE_MISMATCH);

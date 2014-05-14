@@ -21,12 +21,12 @@
 
 goog.provide('goog.editor.Plugin');
 
-goog.require('goog.debug.Logger');
 // TODO(user): Remove the dependency on goog.editor.Command asap. Currently only
 // needed for execCommand issues with links.
 goog.require('goog.editor.Command');
 goog.require('goog.events.EventTarget');
 goog.require('goog.functions');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.reflect');
 
@@ -81,11 +81,11 @@ goog.editor.Plugin.prototype.autoDispose_ = true;
 
 /**
  * The logger for this plugin.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  */
 goog.editor.Plugin.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.Plugin');
+    goog.log.getLogger('goog.editor.Plugin');
 
 
 /**
@@ -141,7 +141,7 @@ goog.editor.Plugin.prototype.enable = function(fieldObject) {
   if (this.getFieldObject() == fieldObject) {
     this.enabled_ = true;
   } else {
-    this.logger.severe('Trying to enable an unregistered field with ' +
+    goog.log.error(this.logger, 'Trying to enable an unregistered field with ' +
         'this plugin.');
   }
 };
@@ -155,7 +155,7 @@ goog.editor.Plugin.prototype.disable = function(fieldObject) {
   if (this.getFieldObject() == fieldObject) {
     this.enabled_ = false;
   } else {
-    this.logger.severe('Trying to disable an unregistered field ' +
+    goog.log.error(this.logger, 'Trying to disable an unregistered field ' +
         'with this plugin.');
   }
 };

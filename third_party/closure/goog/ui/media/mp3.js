@@ -82,6 +82,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.Mp3 = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -149,7 +150,7 @@ goog.ui.media.Mp3.MATCHER =
  *     an mp3 url on {@code dataModel.getUrl}.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.media.Media} A goog.ui.Control subclass with the mp3
+ * @return {!goog.ui.media.Media} A goog.ui.Control subclass with the mp3
  *     renderer.
  */
 goog.ui.media.Mp3.newControl = function(dataModel, opt_domHelper) {
@@ -196,7 +197,7 @@ goog.ui.media.Mp3.buildFlashUrl = function(mp3Url) {
  * the flash object pointing to a flash mp3 player.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {Element} A DOM structure that represents the control.
+ * @return {!Element} A DOM structure that represents the control.
  * @override
  */
 goog.ui.media.Mp3.prototype.createDom = function(c) {

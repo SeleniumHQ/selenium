@@ -36,7 +36,7 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.Component');
 
@@ -65,6 +65,39 @@ goog.ui.Ratings = function(opt_ratings, opt_domHelper) {
    * @private
    */
   this.stars_ = [];
+
+
+  // Awkward name because the obvious name is taken by subclasses already.
+  /**
+   * Whether the control is enabled.
+   * @type {boolean}
+   * @private
+   */
+  this.isEnabled_ = true;
+
+
+  /**
+   * The last index to be highlighted
+   * @type {number}
+   * @private
+   */
+  this.highlightedIndex_ = -1;
+
+
+  /**
+   * The currently selected index
+   * @type {number}
+   * @private
+   */
+  this.selectedIndex_ = -1;
+
+
+  /**
+   * An attached form field to set the value to
+   * @type {HTMLInputElement|HTMLSelectElement|null}
+   * @private
+   */
+  this.attachedFormField_ = null;
 };
 goog.inherits(goog.ui.Ratings, goog.ui.Component);
 
@@ -75,30 +108,6 @@ goog.inherits(goog.ui.Ratings, goog.ui.Component);
  * @type {string}
  */
 goog.ui.Ratings.CSS_CLASS = goog.getCssName('goog-ratings');
-
-
-/**
- * The last index to be highlighted
- * @type {number}
- * @private
- */
-goog.ui.Ratings.prototype.highlightedIndex_ = -1;
-
-
-/**
- * The currently selected index
- * @type {number}
- * @private
- */
-goog.ui.Ratings.prototype.selectedIndex_ = -1;
-
-
-/**
- * An attached form field to set the value to
- * @type {HTMLInputElement|HTMLSelectElement|null}
- * @private
- */
-goog.ui.Ratings.prototype.attachedFormField_ = null;
 
 
 /**
@@ -158,7 +167,7 @@ goog.ui.Ratings.prototype.enterDocument = function() {
   var el = this.getElement();
   goog.asserts.assert(el, 'The DOM element for ratings cannot be null.');
   el.tabIndex = 0;
-  goog.dom.classes.add(el, this.getCssClass());
+  goog.dom.classlist.add(el, this.getCssClass());
   goog.a11y.aria.setRole(el, goog.a11y.aria.Role.SLIDER);
   goog.a11y.aria.setState(el, goog.a11y.aria.State.VALUEMIN, 0);
   var max = this.ratings_.length - 1;
@@ -322,11 +331,36 @@ goog.ui.Ratings.prototype.getAttachedFormField = function() {
 
 
 /**
+ * Enables or disables the ratings control.
+ * @param {boolean} enable Whether to enable or disable the control.
+ */
+goog.ui.Ratings.prototype.setEnabled = function(enable) {
+  this.isEnabled_ = enable;
+  if (!enable) {
+    // Undo any highlighting done during mouseover when disabling the control
+    // and highlight the last selected rating.
+    this.resetHighlights_();
+  }
+};
+
+
+/**
+ * @return {boolean} Whether the ratings control is enabled.
+ */
+goog.ui.Ratings.prototype.isEnabled = function() {
+  return this.isEnabled_;
+};
+
+
+/**
  * Handle the mouse moving over a star.
  * @param {goog.events.BrowserEvent} e The browser event.
  * @private
  */
 goog.ui.Ratings.prototype.onMouseOver_ = function(e) {
+  if (!this.isEnabled()) {
+    return;
+  }
   if (goog.isDef(e.target.index)) {
     var n = e.target.index;
     if (this.highlightedIndex_ != n) {
@@ -347,10 +381,7 @@ goog.ui.Ratings.prototype.onMouseOver_ = function(e) {
 goog.ui.Ratings.prototype.onMouseOut_ = function(e) {
   // Only remove the highlight if the mouse is not moving to another star
   if (e.relatedTarget && !goog.isDef(e.relatedTarget.index)) {
-    this.highlightIndex_(this.selectedIndex_);
-    this.highlightedIndex_ = -1;
-    this.dispatchEvent(goog.ui.Ratings.EventType.HIGHLIGHT_CHANGE);
-    this.dispatchEvent(goog.ui.Ratings.EventType.UNHIGHLIGHT);
+    this.resetHighlights_();
   }
 };
 
@@ -361,6 +392,10 @@ goog.ui.Ratings.prototype.onMouseOut_ = function(e) {
  * @private
  */
 goog.ui.Ratings.prototype.onClick_ = function(e) {
+  if (!this.isEnabled()) {
+    return;
+  }
+
   if (goog.isDef(e.target.index)) {
     this.setSelectedIndex(e.target.index);
   }
@@ -373,6 +408,9 @@ goog.ui.Ratings.prototype.onClick_ = function(e) {
  * @private
  */
 goog.ui.Ratings.prototype.onKeyDown_ = function(e) {
+  if (!this.isEnabled()) {
+    return;
+  }
   switch (e.keyCode) {
     case 27: // esc
       this.setSelectedIndex(-1);
@@ -401,13 +439,26 @@ goog.ui.Ratings.prototype.onKeyDown_ = function(e) {
 
 
 /**
- * Highlights the ratings up to the selected index
+ * Resets the highlights to the selected rating to undo highlights due to hover
+ * effects.
+ * @private
+ */
+goog.ui.Ratings.prototype.resetHighlights_ = function() {
+  this.highlightIndex_(this.selectedIndex_);
+  this.highlightedIndex_ = -1;
+  this.dispatchEvent(goog.ui.Ratings.EventType.HIGHLIGHT_CHANGE);
+  this.dispatchEvent(goog.ui.Ratings.EventType.UNHIGHLIGHT);
+};
+
+
+/**
+ * Highlights the ratings up to a specific index
  * @param {number} n Index to highlight.
  * @private
  */
 goog.ui.Ratings.prototype.highlightIndex_ = function(n) {
   for (var i = 0, star; star = this.stars_[i]; i++) {
-    goog.dom.classes.set(star, this.getClassName_(i, i <= n));
+    goog.dom.classlist.set(star, this.getClassName_(i, i <= n));
   }
 };
 
@@ -429,6 +480,7 @@ goog.ui.Ratings.prototype.highlightIndex_ = function(n) {
  */
 goog.ui.Ratings.prototype.getClassName_ = function(i, on) {
   var className;
+  var enabledClassName;
   var baseClass = this.getCssClass();
 
   if (i === 0) {
@@ -445,7 +497,12 @@ goog.ui.Ratings.prototype.getClassName_ = function(i, on) {
     className = goog.getCssName(className, 'off');
   }
 
-  return goog.getCssName(baseClass, 'star') + ' ' + className;
+  if (this.isEnabled_) {
+    enabledClassName = goog.getCssName(baseClass, 'enabled');
+  } else {
+    enabledClassName = goog.getCssName(baseClass, 'disabled');
+  }
+
+  return goog.getCssName(baseClass, 'star') + ' ' + className +
+      ' ' + enabledClassName;
 };
-
-

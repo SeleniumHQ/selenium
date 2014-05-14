@@ -20,7 +20,8 @@
 
 goog.provide('goog.ui.ToolbarSeparatorRenderer');
 
-goog.require('goog.dom.classes');
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.MenuSeparatorRenderer');
 
@@ -52,7 +53,7 @@ goog.ui.ToolbarSeparatorRenderer.CSS_CLASS =
  * <div class="goog-toolbar-separator goog-inline-block">&nbsp;</div>
  * Overrides {@link goog.ui.MenuSeparatorRenderer#createDom}.
  * @param {goog.ui.Control} separator goog.ui.Separator to render.
- * @return {Element} Root element for the separator.
+ * @return {!Element} Root element for the separator.
  * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
@@ -68,14 +69,15 @@ goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
  * {@link goog.ui.MenuSeparatorRenderer#decorate}.
  * @param {goog.ui.Control} separator goog.ui.Separator to decorate the element.
  * @param {Element} element Element to decorate.
- * @return {Element} Decorated element.
+ * @return {!Element} Decorated element.
  * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.decorate = function(separator,
                                                                element) {
   element = goog.ui.ToolbarSeparatorRenderer.superClass_.decorate.call(this,
       separator, element);
-  goog.dom.classes.add(element, goog.ui.INLINE_BLOCK_CLASSNAME);
+  goog.asserts.assert(element);
+  goog.dom.classlist.add(element, goog.ui.INLINE_BLOCK_CLASSNAME);
   return element;
 };
 

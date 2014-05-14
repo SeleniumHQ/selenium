@@ -40,6 +40,7 @@ goog.require('goog.ui.Button');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
+goog.require('goog.ui.MenuRenderer');
 goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
@@ -50,18 +51,21 @@ goog.require('goog.userAgent.product');
  * A menu button control.  Extends {@link goog.ui.Button} by composing a button
  * with a dropdown arrow and a popup menu.
  *
- * @param {goog.ui.ControlContent} content Text caption or existing DOM
+ * @param {goog.ui.ControlContent=} opt_content Text caption or existing DOM
  *     structure to display as the button's caption (if any).
  * @param {goog.ui.Menu=} opt_menu Menu to render under the button when clicked.
  * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
  *     decorate the menu button; defaults to {@link goog.ui.MenuButtonRenderer}.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
+ * @param {!goog.ui.MenuRenderer=} opt_menuRenderer Renderer used to render or
+ *     decorate the menu; defaults to {@link goog.ui.MenuRenderer}.
  * @constructor
  * @extends {goog.ui.Button}
  */
-goog.ui.MenuButton = function(content, opt_menu, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
+goog.ui.MenuButton = function(opt_content, opt_menu, opt_renderer,
+    opt_domHelper, opt_menuRenderer) {
+  goog.ui.Button.call(this, opt_content, opt_renderer ||
       goog.ui.MenuButtonRenderer.getInstance(), opt_domHelper);
 
   // Menu buttons support the OPENED state.
@@ -90,6 +94,9 @@ goog.ui.MenuButton = function(content, opt_menu, opt_renderer, opt_domHelper) {
     // before the menu button click can be processed.
     this.setFocusablePopupMenu(true);
   }
+
+  /** @private {!goog.ui.MenuRenderer} */
+  this.menuRenderer_ = opt_menuRenderer || goog.ui.MenuRenderer.getInstance();
 };
 goog.inherits(goog.ui.MenuButton, goog.ui.Button);
 
@@ -179,6 +186,7 @@ goog.ui.MenuButton.prototype.renderMenuAsSibling_ = false;
  */
 goog.ui.MenuButton.prototype.enterDocument = function() {
   goog.ui.MenuButton.superClass_.enterDocument.call(this);
+  this.attachKeyDownEventListener_(true);
   if (this.menu_) {
     this.attachMenuEventListeners_(this.menu_, true);
   }
@@ -194,6 +202,7 @@ goog.ui.MenuButton.prototype.enterDocument = function() {
  */
 goog.ui.MenuButton.prototype.exitDocument = function() {
   goog.ui.MenuButton.superClass_.exitDocument.call(this);
+  this.attachKeyDownEventListener_(false);
   if (this.menu_) {
     this.setOpen(false);
     this.menu_.exitDocument();
@@ -332,7 +341,7 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
       e.keyCode == goog.events.KeyCodes.SPACE ||
       e.keyCode == goog.events.KeyCodes.ENTER) {
     // Menu is closed, and the user hit the down/up/space/enter key; open menu.
-    this.setOpen(true);
+    this.setOpen(true, e);
     return true;
   }
 
@@ -389,7 +398,7 @@ goog.ui.MenuButton.prototype.handleBlur = function(e) {
  */
 goog.ui.MenuButton.prototype.getMenu = function() {
   if (!this.menu_) {
-    this.setMenu(new goog.ui.Menu(this.getDomHelper()));
+    this.setMenu(new goog.ui.Menu(this.getDomHelper(), this.menuRenderer_));
   }
   return this.menu_ || null;
 };
@@ -695,8 +704,7 @@ goog.ui.MenuButton.prototype.hideMenu = function() {
 /**
  * Opens or closes the attached popup menu.
  * @param {boolean} open Whether to open or close the menu.
- * @param {goog.events.Event=} opt_e Mousedown event that caused the menu to
- *     be opened.
+ * @param {goog.events.Event=} opt_e Event that caused the menu to be opened.
  * @override
  */
 goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
@@ -705,8 +713,18 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
     if (open) {
       if (!this.menu_.isInDocument()) {
         if (this.renderMenuAsSibling_) {
-          this.menu_.render(/** @type {Element} */ (
-              this.getElement().parentNode));
+          // When we render the menu in the same parent as this button, we
+          // prefer to add it immediately after the button. This way, the screen
+          // readers will go to the menu on the very next element after the
+          // button is read.
+          var nextElementSibling =
+              goog.dom.getNextElementSibling(this.getElement());
+          if (nextElementSibling) {
+            this.menu_.renderBefore(nextElementSibling);
+          } else {
+            this.menu_.render(/** @type {Element} */ (
+                this.getElement().parentNode));
+          }
         } else {
           this.menu_.render();
         }
@@ -715,7 +733,13 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
           goog.style.getVisibleRectForElement(this.getElement());
       this.buttonRect_ = goog.style.getBounds(this.getElement());
       this.positionMenu();
-      this.menu_.setHighlightedIndex(-1);
+
+      // As per aria spec, highlight the first element in the menu when
+      // keyboarding up or down. Thus, the first menu item will be announced
+      // for screen reader users.
+      var focus = !!opt_e && (opt_e.keyCode == goog.events.KeyCodes.DOWN ||
+          opt_e.keyCode == goog.events.KeyCodes.UP);
+      this.menu_.setHighlightedIndex(focus ? 0 : -1);
     } else {
       this.setActive(false);
       this.menu_.setMouseButtonPressed(false);
@@ -725,6 +749,9 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       if (element) {
         goog.a11y.aria.setState(element,
             goog.a11y.aria.State.ACTIVEDESCENDANT,
+            '');
+        goog.a11y.aria.setState(element,
+            goog.a11y.aria.State.OWNS,
             '');
       }
 
@@ -834,6 +861,22 @@ goog.ui.MenuButton.prototype.attachMenuEventListeners_ = function(menu,
 
 
 /**
+ * Attaches or detaches a keydown event listener to/from the given element.
+ * Called each time the button enters or exits the document.
+ * @param {boolean} attach Whether to attach or detach the event listener.
+ * @private
+ */
+goog.ui.MenuButton.prototype.attachKeyDownEventListener_ = function(attach) {
+  var handler = this.getHandler();
+  var method = attach ? handler.listen : handler.unlisten;
+
+  // Handle keydown events dispatched by the button.
+  method.call(handler, this.getElement(), goog.events.EventType.KEYDOWN,
+      this.handleKeyDownEvent_);
+};
+
+
+/**
  * Handles {@code HIGHLIGHT} events dispatched by the attached menu.
  * @param {goog.events.Event} e Highlight event to handle.
  */
@@ -844,6 +887,24 @@ goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
     goog.a11y.aria.setState(element,
         goog.a11y.aria.State.ACTIVEDESCENDANT,
         e.target.getElement().id);
+    goog.a11y.aria.setState(element,
+        goog.a11y.aria.State.OWNS,
+        e.target.getElement().id);
+  }
+};
+
+
+/**
+ * Handles {@code KEYDOWN} events dispatched by the button element. When the
+ * button is focusable and the menu is present and visible, prevents the event
+ * from propagating since the desired behavior is only to close the menu.
+ * @param {goog.events.Event} e KeyDown event to handle.
+ * @private
+ */
+goog.ui.MenuButton.prototype.handleKeyDownEvent_ = function(e) {
+  if (this.isSupportedState(goog.ui.Component.State.FOCUSED) &&
+      this.getKeyEventTarget() && this.menu_ && this.menu_.isVisible()) {
+    e.stopPropagation();
   }
 };
 
@@ -857,8 +918,9 @@ goog.ui.MenuButton.prototype.handleUnHighlightItem = function(e) {
     var element = this.getElement();
     goog.asserts.assert(element, 'The menu button DOM element cannot be null.');
     goog.a11y.aria.setState(element,
-        goog.a11y.aria.State.ACTIVEDESCENDANT,
-        '');
+        goog.a11y.aria.State.ACTIVEDESCENDANT, '');
+    goog.a11y.aria.setState(element,
+        goog.a11y.aria.State.OWNS, '');
   }
 };
 

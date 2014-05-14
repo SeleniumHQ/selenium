@@ -194,10 +194,17 @@ goog.crypt.base64.decodeString = function(input, opt_webSafe) {
 /**
  * Base64-decode a string.
  *
- * @param {string} input to decode (length not required to be a multiple of 4).
- * @param {boolean=} opt_webSafe True if we should use the
- *     alternative alphabet.
- * @return {Array} bytes representing the decoded value.
+ * In base-64 decoding, groups of four characters are converted into three
+ * bytes.  If the encoder did not apply padding, the input length may not
+ * be a multiple of 4.
+ *
+ * In this case, the last group will have fewer than 4 characters, and
+ * padding will be inferred.  If the group has one or two characters, it decodes
+ * to one byte.  If the group has three characters, it decodes to two bytes.
+ *
+ * @param {string} input Input to decode.
+ * @param {boolean=} opt_webSafe True if we should use the web-safe alphabet.
+ * @return {!Array} bytes representing the decoded value.
  */
 goog.crypt.base64.decodeStringToByteArray = function(input, opt_webSafe) {
   goog.crypt.base64.init_();
@@ -216,11 +223,11 @@ goog.crypt.base64.decodeStringToByteArray = function(input, opt_webSafe) {
     ++i;
 
     var haveByte3 = i < input.length;
-    var byte3 = haveByte3 ? charToByteMap[input.charAt(i)] : 0;
+    var byte3 = haveByte3 ? charToByteMap[input.charAt(i)] : 64;
     ++i;
 
     var haveByte4 = i < input.length;
-    var byte4 = haveByte4 ? charToByteMap[input.charAt(i)] : 0;
+    var byte4 = haveByte4 ? charToByteMap[input.charAt(i)] : 64;
     ++i;
 
     if (byte1 == null || byte2 == null ||

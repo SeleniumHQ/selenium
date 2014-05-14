@@ -162,10 +162,10 @@ goog.userAgent.product.init_ = function() {
     goog.userAgent.product.detectedIphone_ = true;
   } else if (ua.indexOf('iPad') != -1) {
     goog.userAgent.product.detectedIpad_ = true;
-  } else if (ua.indexOf('Android') != -1) {
-    goog.userAgent.product.detectedAndroid_ = true;
   } else if (ua.indexOf('Chrome') != -1) {
     goog.userAgent.product.detectedChrome_ = true;
+  } else if (ua.indexOf('Android') != -1) {
+    goog.userAgent.product.detectedAndroid_ = true;
   } else if (ua.indexOf('Safari') != -1) {
     goog.userAgent.product.detectedSafari_ = true;
   }

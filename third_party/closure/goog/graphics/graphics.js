@@ -27,6 +27,7 @@
 
 goog.provide('goog.graphics');
 
+goog.require('goog.dom');
 goog.require('goog.graphics.CanvasGraphics');
 goog.require('goog.graphics.SvgGraphics');
 goog.require('goog.graphics.VmlGraphics');
@@ -46,7 +47,7 @@ goog.require('goog.userAgent');
  *     omitted or null, defaults to same as height.
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
- * @return {goog.graphics.AbstractGraphics} The created instance.
+ * @return {!goog.graphics.AbstractGraphics} The created instance.
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
@@ -54,7 +55,13 @@ goog.require('goog.userAgent');
 goog.graphics.createGraphics = function(width, height, opt_coordWidth,
     opt_coordHeight, opt_domHelper) {
   var graphics;
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')) {
+  // On IE9 and above, SVG is available, except in compatibility mode.
+  // We check createElementNS on document object that is not exist in
+  // compatibility mode.
+  if (goog.userAgent.IE &&
+      (!goog.userAgent.isVersionOrHigher('9') ||
+       !(opt_domHelper || goog.dom.getDomHelper()).
+           getDocument().createElementNS)) {
     graphics = new goog.graphics.VmlGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
   } else if (goog.userAgent.WEBKIT &&
@@ -88,7 +95,7 @@ goog.graphics.createGraphics = function(width, height, opt_coordWidth,
  *     same as height.
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
- * @return {goog.graphics.AbstractGraphics} The created instance.
+ * @return {!goog.graphics.AbstractGraphics} The created instance.
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.

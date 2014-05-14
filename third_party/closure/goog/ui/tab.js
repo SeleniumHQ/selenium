@@ -21,9 +21,8 @@
 
 goog.provide('goog.ui.Tab');
 
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.TabRenderer');
 goog.require('goog.ui.registry');
 

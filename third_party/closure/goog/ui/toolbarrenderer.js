@@ -21,7 +21,7 @@
 goog.provide('goog.ui.ToolbarRenderer');
 
 goog.require('goog.a11y.aria.Role');
-goog.require('goog.ui.Container.Orientation');
+goog.require('goog.ui.Container');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
 goog.require('goog.ui.ToolbarSeparatorRenderer');
@@ -35,7 +35,7 @@ goog.require('goog.ui.ToolbarSeparatorRenderer');
  * @extends {goog.ui.ContainerRenderer}
  */
 goog.ui.ToolbarRenderer = function() {
-  goog.ui.ContainerRenderer.call(this);
+  goog.ui.ContainerRenderer.call(this, goog.a11y.aria.Role.TOOLBAR);
 };
 goog.inherits(goog.ui.ToolbarRenderer, goog.ui.ContainerRenderer);
 goog.addSingletonGetter(goog.ui.ToolbarRenderer);
@@ -47,16 +47,6 @@ goog.addSingletonGetter(goog.ui.ToolbarRenderer);
  * @type {string}
  */
 goog.ui.ToolbarRenderer.CSS_CLASS = goog.getCssName('goog-toolbar');
-
-
-/**
- * Returns the ARIA role to be applied to toolbar/menubar.
- * @return {string} ARIA role.
- * @override
- */
-goog.ui.ToolbarRenderer.prototype.getAriaRole = function() {
-  return goog.a11y.aria.Role.TOOLBAR;
-};
 
 
 /**

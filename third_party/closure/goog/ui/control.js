@@ -27,13 +27,13 @@ goog.provide('goog.ui.Control');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
+/** @suppress {extraRequire} */
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ControlRenderer');
 goog.require('goog.ui.decorate');
@@ -63,8 +63,8 @@ goog.require('goog.userAgent');
  * hide, mouseover, mouseout, and user action, respectively.  Additional states
  * are also supported.  See closure/demos/control.html
  * for example usage.
- * @param {goog.ui.ControlContent} content Text caption or DOM structure
- *     to display as the content of the component (if any).
+ * @param {goog.ui.ControlContent=} opt_content Text caption or DOM structure
+ *     to display as the content of the control (if any).
  * @param {goog.ui.ControlRenderer=} opt_renderer Renderer used to render or
  *     decorate the component; defaults to {@link goog.ui.ControlRenderer}.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
@@ -72,11 +72,11 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {goog.ui.Component}
  */
-goog.ui.Control = function(content, opt_renderer, opt_domHelper) {
+goog.ui.Control = function(opt_content, opt_renderer, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
   this.renderer_ = opt_renderer ||
       goog.ui.registry.getDefaultRenderer(this.constructor);
-  this.setContentInternal(content);
+  this.setContentInternal(goog.isDef(opt_content) ? opt_content : null);
 };
 goog.inherits(goog.ui.Control, goog.ui.Component);
 
@@ -290,7 +290,7 @@ goog.ui.Control.prototype.getKeyEventTarget = function() {
  * Returns the keyboard event handler for this component, lazily created the
  * first time this method is called.  Considered protected; should only be
  * used within this package and by subclasses.
- * @return {goog.events.KeyHandler} Keyboard event handler for this component.
+ * @return {!goog.events.KeyHandler} Keyboard event handler for this component.
  * @protected
  */
 goog.ui.Control.prototype.getKeyHandler = function() {
@@ -1207,7 +1207,7 @@ goog.ui.Control.isMouseEventWithinElement_ = function(e, elem) {
  * Handles mousedown events.  If the component is enabled, highlights and
  * activates it.  If the component isn't configured for keyboard access,
  * prevents it from receiving keyboard focus.  Considered protected; should
- * only be used within this package andy by subclasses.
+ * only be used within this package and by subclasses.
  * @param {goog.events.Event} e Mouse event to handle.
  */
 goog.ui.Control.prototype.handleMouseDown = function(e) {

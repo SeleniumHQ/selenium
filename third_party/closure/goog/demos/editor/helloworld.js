@@ -33,6 +33,7 @@ goog.require('goog.editor.Plugin');
  * Plugin to insert 'Hello World!' into an editable field.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.demos.editor.HelloWorld = function() {
   goog.editor.Plugin.call(this);

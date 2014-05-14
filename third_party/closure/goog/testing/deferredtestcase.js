@@ -82,7 +82,7 @@ goog.inherits(goog.testing.DeferredTestCase, goog.testing.AsyncTestCase);
  * Preferred way of creating a DeferredTestCase. Creates one and initializes it
  * with the G_testRunner.
  * @param {string=} opt_name A descriptive name for the test case.
- * @return {goog.testing.DeferredTestCase} The created DeferredTestCase.
+ * @return {!goog.testing.DeferredTestCase} The created DeferredTestCase.
  */
 goog.testing.DeferredTestCase.createAndInstall = function(opt_name) {
   var deferredTestCase = new goog.testing.DeferredTestCase(opt_name);

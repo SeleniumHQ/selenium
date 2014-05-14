@@ -72,7 +72,7 @@ goog.i18n.CharPickerData.MSG_CP_BRAILLE = goog.getMsg('Braille');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_CONTROL_PICTURES =
-      goog.getMsg('Control Pictures');
+    goog.getMsg('Control Pictures');
 
 
 /**
@@ -84,6 +84,17 @@ goog.i18n.CharPickerData.MSG_CP_CONTROL_PICTURES =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_CURRENCY = goog.getMsg('Currency');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_EMOTICONS = goog.getMsg('Emoticons');
 
 
 /**
@@ -106,7 +117,7 @@ goog.i18n.CharPickerData.MSG_CP_GAME_PIECES = goog.getMsg('Game Pieces');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_GENDER_AND_GENEALOGICAL =
-      goog.getMsg('Gender and Genealogical');
+    goog.getMsg('Gender and Genealogical');
 
 
 /**
@@ -118,7 +129,7 @@ goog.i18n.CharPickerData.MSG_CP_GENDER_AND_GENEALOGICAL =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_GEOMETRIC_SHAPES =
-      goog.getMsg('Geometric Shapes');
+    goog.getMsg('Geometric Shapes');
 
 
 /**
@@ -130,7 +141,19 @@ goog.i18n.CharPickerData.MSG_CP_GEOMETRIC_SHAPES =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_KEYBOARD_AND_UI =
-      goog.getMsg('Keyboard and UI');
+    goog.getMsg('Keyboard and UI');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_LATIN_1_SUPPLEMENT =
+    goog.getMsg('Latin 1 Supplement');
 
 
 /**
@@ -142,6 +165,18 @@ goog.i18n.CharPickerData.MSG_CP_KEYBOARD_AND_UI =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_MATH = goog.getMsg('Math');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MATH_ALPHANUMERIC =
+    goog.getMsg('Math Alphanumeric');
 
 
 /**
@@ -175,7 +210,7 @@ goog.i18n.CharPickerData.MSG_CP_MUSICAL = goog.getMsg('Musical');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_STARS_ASTERISKS =
-      goog.getMsg('Stars/Asterisks');
+    goog.getMsg('Stars/Asterisks');
 
 
 /**
@@ -219,8 +254,20 @@ goog.i18n.CharPickerData.MSG_CP_TECHNICAL = goog.getMsg('Technical');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_TRANSPORT_AND_MAP =
+    goog.getMsg('Transport And Map');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_WEATHER_AND_ASTROLOGICAL =
-      goog.getMsg('Weather and Astrological');
+    goog.getMsg('Weather and Astrological');
 
 
 /**
@@ -232,7 +279,7 @@ goog.i18n.CharPickerData.MSG_CP_WEATHER_AND_ASTROLOGICAL =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_YIJING_TAI_XUAN_JING =
-      goog.getMsg('Yijing / Tai Xuan Jing');
+    goog.getMsg('Yijing / Tai Xuan Jing');
 
 
 /**
@@ -255,6 +302,121 @@ goog.i18n.CharPickerData.MSG_CP_HISTORIC = goog.getMsg('Historic');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY = goog.getMsg('Compatibility');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_EMOJI = goog.getMsg('Emoji');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_PEOPLE_AND_EMOTIONS =
+    goog.getMsg('People and Emotions');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_ANIMALS_PLANTS_AND_FOOD =
+    goog.getMsg('Animals, Plants and Food');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_OBJECTS = goog.getMsg('Objects');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_SPORTS_CELEBRATIONS_AND_ACTIVITIES =
+    goog.getMsg('Sports, Celebrations and Activities');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_TRANSPORT_MAPS_AND_SIGNAGE =
+    goog.getMsg('Transport, Maps and Signage');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_WEATHER_SCENES_AND_ZODIAC_SIGNS =
+    goog.getMsg('Weather, Scenes and Zodiac signs');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_ENCLOSED = goog.getMsg('Enclosed');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MARKS = goog.getMsg('Marks');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_SYMBOLS = goog.getMsg('Symbols');
 
 
 /**
@@ -343,7 +505,7 @@ goog.i18n.CharPickerData.MSG_CP_DECIMAL = goog.getMsg('Decimal');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_ENCLOSED_DOTTED =
-      goog.getMsg('Enclosed/Dotted');
+    goog.getMsg('Enclosed/Dotted');
 
 
 /**
@@ -355,7 +517,7 @@ goog.i18n.CharPickerData.MSG_CP_ENCLOSED_DOTTED =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_FRACTIONS_RELATED =
-      goog.getMsg('Fractions/Related');
+    goog.getMsg('Fractions/Related');
 
 
 /**
@@ -367,7 +529,7 @@ goog.i18n.CharPickerData.MSG_CP_FRACTIONS_RELATED =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_FORMAT_WHITESPACE =
-      goog.getMsg('Format & Whitespace');
+    goog.getMsg('Format & Whitespace');
 
 
 /**
@@ -390,7 +552,7 @@ goog.i18n.CharPickerData.MSG_CP_FORMAT = goog.getMsg('Format');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_VARIATION_SELECTOR =
-      goog.getMsg('Variation Selector');
+    goog.getMsg('Variation Selector');
 
 
 /**
@@ -478,19 +640,8 @@ goog.i18n.CharPickerData.MSG_CP_COMMON = goog.getMsg('Common');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
-goog.i18n.CharPickerData.MSG_CP_ENCLOSED = goog.getMsg('Enclosed');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
 goog.i18n.CharPickerData.MSG_CP_FLIPPED_MIRRORED =
-      goog.getMsg('Flipped/Mirrored');
+    goog.getMsg('Flipped/Mirrored');
 
 
 /**
@@ -513,7 +664,7 @@ goog.i18n.CharPickerData.MSG_CP_PHONETICS_IPA = goog.getMsg('Phonetics (IPA)');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_PHONETICS_X_IPA =
-      goog.getMsg('Phonetics (X-IPA)');
+    goog.getMsg('Phonetics (X-IPA)');
 
 
 /**
@@ -525,7 +676,7 @@ goog.i18n.CharPickerData.MSG_CP_PHONETICS_X_IPA =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_OTHER_EUROPEAN_SCRIPTS =
-      goog.getMsg('Other European Scripts');
+    goog.getMsg('Other European Scripts');
 
 
 /**
@@ -570,17 +721,6 @@ goog.i18n.CharPickerData.MSG_CP_GEORGIAN = goog.getMsg('Georgian');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_GREEK = goog.getMsg('Greek');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
-goog.i18n.CharPickerData.MSG_CP_COPTIC = goog.getMsg('Coptic');
 
 
 /**
@@ -680,7 +820,7 @@ goog.i18n.CharPickerData.MSG_CP_SHAVIAN = goog.getMsg('Shavian');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_AMERICAN_SCRIPTS =
-      goog.getMsg('American Scripts');
+    goog.getMsg('American Scripts');
 
 
 /**
@@ -692,7 +832,7 @@ goog.i18n.CharPickerData.MSG_CP_AMERICAN_SCRIPTS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_CANADIAN_ABORIGINAL =
-      goog.getMsg('Canadian Aboriginal');
+    goog.getMsg('Canadian Aboriginal');
 
 
 /**
@@ -726,7 +866,19 @@ goog.i18n.CharPickerData.MSG_CP_DESERET = goog.getMsg('Deseret');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_AFRICAN_SCRIPTS =
-      goog.getMsg('African Scripts');
+    goog.getMsg('African Scripts');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_EGYPTIAN_HIEROGLYPHS =
+    goog.getMsg('Egyptian Hieroglyphs');
 
 
 /**
@@ -738,6 +890,30 @@ goog.i18n.CharPickerData.MSG_CP_AFRICAN_SCRIPTS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_ETHIOPIC = goog.getMsg('Ethiopic');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MEROITIC_CURSIVE =
+    goog.getMsg('Meroitic Cursive');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MEROITIC_HIEROGLYPHS =
+    goog.getMsg('Meroitic Hieroglyphs');
 
 
 /**
@@ -781,6 +957,28 @@ goog.i18n.CharPickerData.MSG_CP_VAI = goog.getMsg('Vai');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_BAMUM = goog.getMsg('Bamum');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_COPTIC = goog.getMsg('Coptic');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_OSMANYA = goog.getMsg('Osmanya');
 
 
@@ -793,7 +991,7 @@ goog.i18n.CharPickerData.MSG_CP_OSMANYA = goog.getMsg('Osmanya');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_MIDDLE_EASTERN_SCRIPTS =
-      goog.getMsg('Middle Eastern Scripts');
+    goog.getMsg('Middle Eastern Scripts');
 
 
 /**
@@ -826,7 +1024,88 @@ goog.i18n.CharPickerData.MSG_CP_HEBREW = goog.getMsg('Hebrew');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
-goog.i18n.CharPickerData.MSG_CP_THAANA = goog.getMsg('Thaana');
+goog.i18n.CharPickerData.MSG_CP_IMPERIAL_ARAMAIC =
+    goog.getMsg('Imperial Aramaic');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_INSCRIPTIONAL_PAHLAVI =
+    goog.getMsg('Inscriptional Pahlavi');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_INSCRIPTIONAL_PARTHIAN =
+    goog.getMsg('Inscriptional Parthian');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MANDAIC = goog.getMsg('Mandaic');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_OLD_SOUTH_ARABIAN =
+    goog.getMsg('Old South Arabian');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_SAMARITAN = goog.getMsg('Samaritan');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_SYRIAC = goog.getMsg('Syriac');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_AVESTAN = goog.getMsg('Avestan');
 
 
 /**
@@ -903,17 +1182,6 @@ goog.i18n.CharPickerData.MSG_CP_PHOENICIAN = goog.getMsg('Phoenician');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
-goog.i18n.CharPickerData.MSG_CP_SYRIAC = goog.getMsg('Syriac');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
 goog.i18n.CharPickerData.MSG_CP_UGARITIC = goog.getMsg('Ugaritic');
 
 
@@ -926,7 +1194,7 @@ goog.i18n.CharPickerData.MSG_CP_UGARITIC = goog.getMsg('Ugaritic');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_SOUTH_ASIAN_SCRIPTS =
-      goog.getMsg('South Asian Scripts');
+    goog.getMsg('South Asian Scripts');
 
 
 /**
@@ -938,6 +1206,17 @@ goog.i18n.CharPickerData.MSG_CP_SOUTH_ASIAN_SCRIPTS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_BENGALI = goog.getMsg('Bengali');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_CHAKMA = goog.getMsg('Chakma');
 
 
 /**
@@ -1025,6 +1304,17 @@ goog.i18n.CharPickerData.MSG_CP_MALAYALAM = goog.getMsg('Malayalam');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_MEETEI_MAYEK = goog.getMsg('Meetei Mayek');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_OL_CHIKI = goog.getMsg('Ol Chiki');
 
 
@@ -1069,6 +1359,17 @@ goog.i18n.CharPickerData.MSG_CP_SINHALA = goog.getMsg('Sinhala');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_SORA_SOMPENG = goog.getMsg('Sora Sompeng');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_TAMIL = goog.getMsg('Tamil');
 
 
@@ -1091,7 +1392,40 @@ goog.i18n.CharPickerData.MSG_CP_TELUGU = goog.getMsg('Telugu');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_THAANA = goog.getMsg('Thaana');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_TIBETAN = goog.getMsg('Tibetan');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_BRAHMI = goog.getMsg('Brahmi');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_KAITHI = goog.getMsg('Kaithi');
 
 
 /**
@@ -1113,7 +1447,7 @@ goog.i18n.CharPickerData.MSG_CP_KHAROSHTHI = goog.getMsg('Kharoshthi');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
-goog.i18n.CharPickerData.MSG_CP_PHAGS_PA = goog.getMsg('Phags Pa');
+goog.i18n.CharPickerData.MSG_CP_SHARADA = goog.getMsg('Sharada');
 
 
 /**
@@ -1135,8 +1469,19 @@ goog.i18n.CharPickerData.MSG_CP_SYLOTI_NAGRI = goog.getMsg('Syloti Nagri');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_TAKRI = goog.getMsg('Takri');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_SOUTHEAST_ASIAN_SCRIPTS =
-      goog.getMsg('Southeast Asian Scripts');
+    goog.getMsg('Southeast Asian Scripts');
 
 
 /**
@@ -1158,7 +1503,29 @@ goog.i18n.CharPickerData.MSG_CP_BALINESE = goog.getMsg('Balinese');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_BATAK = goog.getMsg('Batak');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_CHAM = goog.getMsg('Cham');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_JAVANESE = goog.getMsg('Javanese');
 
 
 /**
@@ -1225,6 +1592,28 @@ goog.i18n.CharPickerData.MSG_CP_NEW_TAI_LUE = goog.getMsg('New Tai Lue');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_TAI_LE = goog.getMsg('Tai Le');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_TAI_THAM = goog.getMsg('Tai Tham');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_TAI_VIET = goog.getMsg('Tai Viet');
 
 
 /**
@@ -1335,7 +1724,7 @@ goog.i18n.CharPickerData.MSG_CP_HANGUL = goog.getMsg('Hangul');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_OTHER_EAST_ASIAN_SCRIPTS =
-      goog.getMsg('Other East Asian Scripts');
+    goog.getMsg('Other East Asian Scripts');
 
 
 /**
@@ -1379,7 +1768,51 @@ goog.i18n.CharPickerData.MSG_CP_KATAKANA = goog.getMsg('Katakana');
  *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
  * @type {string}
  */
+goog.i18n.CharPickerData.MSG_CP_LISU = goog.getMsg('Lisu');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_MIAO = goog.getMsg('Miao');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
 goog.i18n.CharPickerData.MSG_CP_MONGOLIAN = goog.getMsg('Mongolian');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_OLD_TURKIC = goog.getMsg('Old Turkic');
+
+
+/**
+ * @desc Name for a symbol or character category. Used in a pull-down list
+ *   shown to a  document editing user trying to insert a special character.
+ *   Newlines are not allowed; translation should be a noun and as consise as
+ *   possible. More details:
+ *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
+ * @type {string}
+ */
+goog.i18n.CharPickerData.MSG_CP_PHAGS_PA = goog.getMsg('Phags Pa');
 
 
 /**
@@ -1402,7 +1835,7 @@ goog.i18n.CharPickerData.MSG_CP_YI = goog.getMsg('Yi');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_1_STROKE_RADICALS =
-      goog.getMsg('Han 1-Stroke Radicals');
+    goog.getMsg('Han 1-Stroke Radicals');
 
 
 /**
@@ -1425,7 +1858,7 @@ goog.i18n.CharPickerData.MSG_CP_LESS_COMMON = goog.getMsg('Less Common');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_2_STROKE_RADICALS =
-      goog.getMsg('Han 2-Stroke Radicals');
+    goog.getMsg('Han 2-Stroke Radicals');
 
 
 /**
@@ -1437,7 +1870,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_2_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_3_STROKE_RADICALS =
-      goog.getMsg('Han 3-Stroke Radicals');
+    goog.getMsg('Han 3-Stroke Radicals');
 
 
 /**
@@ -1449,7 +1882,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_3_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_4_STROKE_RADICALS =
-      goog.getMsg('Han 4-Stroke Radicals');
+    goog.getMsg('Han 4-Stroke Radicals');
 
 
 /**
@@ -1461,7 +1894,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_4_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_5_STROKE_RADICALS =
-      goog.getMsg('Han 5-Stroke Radicals');
+    goog.getMsg('Han 5-Stroke Radicals');
 
 
 /**
@@ -1473,7 +1906,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_5_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_6_STROKE_RADICALS =
-      goog.getMsg('Han 6-Stroke Radicals');
+    goog.getMsg('Han 6-Stroke Radicals');
 
 
 /**
@@ -1485,7 +1918,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_6_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_7_STROKE_RADICALS =
-      goog.getMsg('Han 7-Stroke Radicals');
+    goog.getMsg('Han 7-Stroke Radicals');
 
 
 /**
@@ -1497,7 +1930,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_7_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_8_STROKE_RADICALS =
-      goog.getMsg('Han 8-Stroke Radicals');
+    goog.getMsg('Han 8-Stroke Radicals');
 
 
 /**
@@ -1509,7 +1942,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_8_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_9_STROKE_RADICALS =
-      goog.getMsg('Han 9-Stroke Radicals');
+    goog.getMsg('Han 9-Stroke Radicals');
 
 
 /**
@@ -1521,7 +1954,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_9_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_10_STROKE_RADICALS =
-      goog.getMsg('Han 10-Stroke Radicals');
+    goog.getMsg('Han 10-Stroke Radicals');
 
 
 /**
@@ -1533,7 +1966,7 @@ goog.i18n.CharPickerData.MSG_CP_HAN_10_STROKE_RADICALS =
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_HAN_11_17_STROKE_RADICALS =
-      goog.getMsg('Han 11~17-Stroke Radicals');
+    goog.getMsg('Han 11..17-Stroke Radicals');
 
 
 /**
@@ -1567,40 +2000,7 @@ goog.i18n.CharPickerData.MSG_CP_CJK_STROKES = goog.getMsg('CJK Strokes');
  * @type {string}
  */
 goog.i18n.CharPickerData.MSG_CP_IDEOGRAPHIC_DESCRIPTION =
-      goog.getMsg('Ideographic Description');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
-goog.i18n.CharPickerData.MSG_CP_NUMERICS = goog.getMsg('Numerics');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
-goog.i18n.CharPickerData.MSG_CP_PINYIN = goog.getMsg('Pinyin');
-
-
-/**
- * @desc Name for a symbol or character category. Used in a pull-down list
- *   shown to a  document editing user trying to insert a special character.
- *   Newlines are not allowed; translation should be a noun and as consise as
- *   possible. More details:
- *   docs/fileview?id=0B8NbxddKsFtwYjExMGJjNzgtYjkzOS00NjdiLTlmOGQtOGVhZDkyZDU5YjM4.
- * @type {string}
- */
-goog.i18n.CharPickerData.MSG_CP_ALL = goog.getMsg('All');
+    goog.getMsg('Ideographic Description');
 
 
 /**
@@ -1609,6 +2009,7 @@ goog.i18n.CharPickerData.MSG_CP_ALL = goog.getMsg('All');
  */
 goog.i18n.CharPickerData.prototype.categories = [
   goog.i18n.CharPickerData.MSG_CP_SYMBOL,
+  goog.i18n.CharPickerData.MSG_CP_EMOJI,
   goog.i18n.CharPickerData.MSG_CP_PUNCTUATION,
   goog.i18n.CharPickerData.MSG_CP_NUMBER,
   goog.i18n.CharPickerData.MSG_CP_FORMAT_WHITESPACE,
@@ -1633,8 +2034,7 @@ goog.i18n.CharPickerData.prototype.categories = [
   goog.i18n.CharPickerData.MSG_CP_HAN_9_STROKE_RADICALS,
   goog.i18n.CharPickerData.MSG_CP_HAN_10_STROKE_RADICALS,
   goog.i18n.CharPickerData.MSG_CP_HAN_11_17_STROKE_RADICALS,
-  goog.i18n.CharPickerData.MSG_CP_HAN_OTHER,
-  goog.i18n.CharPickerData.MSG_CP_MISCELLANEOUS
+  goog.i18n.CharPickerData.MSG_CP_HAN_OTHER
 ];
 
 
@@ -1649,17 +2049,21 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SYMBOL = [
   goog.i18n.CharPickerData.MSG_CP_BRAILLE,
   goog.i18n.CharPickerData.MSG_CP_CONTROL_PICTURES,
   goog.i18n.CharPickerData.MSG_CP_CURRENCY,
+  goog.i18n.CharPickerData.MSG_CP_EMOTICONS,
   goog.i18n.CharPickerData.MSG_CP_GAME_PIECES,
   goog.i18n.CharPickerData.MSG_CP_GENDER_AND_GENEALOGICAL,
   goog.i18n.CharPickerData.MSG_CP_GEOMETRIC_SHAPES,
   goog.i18n.CharPickerData.MSG_CP_KEYBOARD_AND_UI,
+  goog.i18n.CharPickerData.MSG_CP_LATIN_1_SUPPLEMENT,
   goog.i18n.CharPickerData.MSG_CP_MATH,
+  goog.i18n.CharPickerData.MSG_CP_MATH_ALPHANUMERIC,
   goog.i18n.CharPickerData.MSG_CP_MISCELLANEOUS,
   goog.i18n.CharPickerData.MSG_CP_MUSICAL,
   goog.i18n.CharPickerData.MSG_CP_STARS_ASTERISKS,
   goog.i18n.CharPickerData.MSG_CP_SUBSCRIPT,
   goog.i18n.CharPickerData.MSG_CP_SUPERSCRIPT,
   goog.i18n.CharPickerData.MSG_CP_TECHNICAL,
+  goog.i18n.CharPickerData.MSG_CP_TRANSPORT_AND_MAP,
   goog.i18n.CharPickerData.MSG_CP_WEATHER_AND_ASTROLOGICAL,
   goog.i18n.CharPickerData.MSG_CP_YIJING_TAI_XUAN_JING,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC,
@@ -1675,25 +2079,68 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SYMBOL = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_SYMBOL = [
-  '2>807A;f10O728F1f4V1PNF2Wd78?PZl1%2l2',
+  '2>807AnTMm6e6HDk%`O728F1f4V1PNF2WF1G}58?]514M]Ol1%2l2^3X1U:1Un2Mb>$0MD-(068k11I3706:%MwiZ06',
   ';oA0FN',
   '(j90d3',
-  'H3XBMgq30w<40F2Y:Z0;+M01E]J6O6',
-  'Q6A06f5#1H2,]4M9Psv+V1I.V1@3W}8',
+  'H3XBMQQ10HB(2106uPM]N:qol202S20V2I:Z0^xM0:91E]J6O6',
+  ';(i1-5W?',
+  'Q6A06f5#1H2,]4MeEY[W1@3W}891N1GF1GN18N1P%k',
   '2JA0sOc',
-  '2+90FN2U10t2H3kg3u0%E6OW6',
-  ';O906$UGv771.Uv46',
-  'w010EGX26G6D010f1E:2v2894WX3:2v+]lEQ?60f2E11OH1P1M]1U11U]571WO6WUv1u,8OUmO6G68E8cOF18H6Ue6WGGu:26G8:2NO$M:16H8%2V28H211cvg.]4s9AnU?8ON4PNdkX4-1Gc^RO1t78V686GG6GM8|88k8-58MGs8k8d28M8U8Ok8-UGdQGd4bZw0:;c8%Ef1Ev28v28]BmM',
-  '1F68W8e2>90c8GN3]3uV1[72$Ef1E.U8t18W728M8MG-1148MO!GkgOv0',
-  ';DA0k2mO1NM[d3Gl5O!f16ut2WN4',
-  'oUA0k873g510E',
-  'I)B0>E30N18U',
-  'XFX1x6e1oUg2701+6G|nE8I030QjW0',
-  'A-80PdsWF1GMG6$l7H1!%2N2G|mk]7?',
-  'Q4A0F1mv3}1v8,uU',
-  'YnK0#5A>E1-7',
-  'I{)0%4!P7|%4}3',
-  '(PD0MAbU1}2P1!'
+  'oG90nMcPTFNfFEQE10t2H3kQ7X1sj>$0OW6*F%E',
+  '(P90UGv771.Uv46%7Y^Y1F2mc]1M+<Z1',
+  '9FP1',
+  ':3f1En5894WX3:2v+]lEQ?60f2E11OH1P1M]1U11UfCf111MuUmH6Ue6WGGu:26G8:2NO$M:16H8%2V28H211cvg.]4s9AnU#5PNdkX4-1Gc24P1P2:2P2:2P2:2P2:2P2g>50M8V2868G8,8M88mW888E868G8888868GM8k8M8M88,8d1eE8U8d1%46bf$0:;c8%Ef1Ev2:28]BmMbp)02p8071WO6WUw+w0',
+  '9G6e:-EGX26G6(k70Ocm,]AWG,8OUmOO68E86uMeU^`Q1t78V686GG6GM8|88k8-58MGs8k8d28M8U8Ok8-UGF28F28#28F28#28F28#28F28#28F28sGd4rLS1H1',
+  '1FGW8Y040Mg%50EHB686WU8l1$Uv4?8En1E8|:29168U8718k8kG8M868688686e686888,148MO8|8E]7wV10k2tN1cYf806813692W]3%68X2f2|O6G86%1P5m6%5$6%468e[E8c11126v1MH2|%F9DuM8E86m8UTN%06',
+  ';DA0k2mO1NM[d3GV5eEms$6ut2WN493@5OA;80sD790UOc$sGk%2MfDE',
+  ';OA0v5-3g510E^jW1WV1:l',
+  'Qq80N1871QC30',
+  'XFu6e6^X80O?vE82+Y16T+g1Ug2709+H12F30QjW0PC6',
+  'gM90sW#1G6$l7H1!%2N2O?ml1]6?',
+  'g?i1N6',
+  'Q4A0F1mv3}1v8,uUe^zX171',
+  'w8A0sf7c2WA0#5A>E1-7',
+  'I{)0%4!P7|%4}3A,$0dA',
+  '(PD0M(ZU16H1-3e!u6'
+];
+
+
+/**
+ * Names of subcategories. Each message this array is the
+ * name for the corresponding subcategory specified in
+ * {@code goog.i18n.CharPickerData.subcategories}.
+ * @type {Array.<string>}
+ */
+goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_EMOJI = [
+  goog.i18n.CharPickerData.MSG_CP_PEOPLE_AND_EMOTIONS,
+  goog.i18n.CharPickerData.MSG_CP_ANIMALS_PLANTS_AND_FOOD,
+  goog.i18n.CharPickerData.MSG_CP_OBJECTS,
+  goog.i18n.CharPickerData.MSG_CP_SPORTS_CELEBRATIONS_AND_ACTIVITIES,
+  goog.i18n.CharPickerData.MSG_CP_TRANSPORT_MAPS_AND_SIGNAGE,
+  goog.i18n.CharPickerData.MSG_CP_WEATHER_SCENES_AND_ZODIAC_SIGNS,
+  goog.i18n.CharPickerData.MSG_CP_ENCLOSED,
+  goog.i18n.CharPickerData.MSG_CP_MARKS,
+  goog.i18n.CharPickerData.MSG_CP_SYMBOLS
+];
+
+
+/**
+ * List of characters in base88 encoding scheme. Each base88 encoded
+ * charater string represents corresponding subcategory specified in
+ * {@code goog.i18n.CharPickerData.subcategories}. Encoding
+ * scheme is described in {@code goog.i18n.CharListDecompressor}.
+ * @type {Array.<string>}
+ */
+goog.i18n.CharPickerData.CHARLIST_OF_EMOJI = [
+  '^6A0n2:IE]7Y>X18N1%1-28EOO8871G|%U-5W?',
+  'I6A0A_X1c8N6eXBt5',
+  ';O906PJG]m1C1Amew)X16:It1]2W68E8X168[8d68MP171P1!1372',
+  '2DA0s%76o]W1@3nAN1GF1GN18N1Xzd191N38U9I',
+  '(DA0v1O]2694t1m72$2>X1d1%DvXUvBN6',
+  'Q4A0F1mv4|HAUe98(rX1@2]k',
+  'Y#90;v308ICU1d2W-3H9EH1-3e!u6',
+  ';5A09M9188:48WE8n5EH2',
+  'Y%C0(wV1P7N3[EP1M'
 ];
 
 
@@ -1721,11 +2168,11 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_PUNCTUATION = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_PUNCTUATION = [
-  ']2E8EG886[6O6f2H6]1u',
-  '14f4gX808M%36%1gu30',
-  '(s70:<.MO$EGGG8OEms88Iu3068G6n1',
-  'n36f48v2894X1;P80sP26[6^>10F1H76:2,va@1%5M]26;7106G,Q)s06',
-  'gm808kIr3072v1U8A(t06',
+  ':2M8EG886[6O6f2H6eP16u',
+  '14f4gX80c%36%1gu30:26Q3t0XG',
+  '(s70:<.MOEmEGGG8OEms88Iu3068G6n1!',
+  'n36f48v2894X1;P80sP26[6]46P16nvMPF6f3c1^F1H76:2,va@1%5M]26;7106G,fh,Gs2Ms06nPcXF6f48v288686',
+  'gm808kQT30MnN72v1U8U(%t0Eb(t0',
   'Ig80e91E91686W8$EH1X36P162pw0,12-1G|8F18W86nDE8c8M[6O6X2E8f2886'
 ];
 
@@ -1754,12 +2201,12 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_NUMBER = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_NUMBER = [
-  'P4,At10,HC,1I,fb,%A,%A,%A,%A,%A,%A,%A,%A,XK,%A,X6,PP,X6,Q]10,f3,PR,vB?1F,m,nG,]K,m,Yca0,vz,f3,1I,%A,]a,',
-  'gs90V597@1Pvt2g+20,%2s8N1]2,n3N1',
+  'P4,]A6egh10,HC,1I,fb,%A,%A,%A,%A,%A,%A,%A,%A,XK,%A,X6,PP,X6,Q]10,f3,PR,vB,9F,m,nG,]K,m,A710Ocm,^SZ0,vz,f3,1I,%A,]a,AnQ0,vB,f5,9D,2Q10,5O60,',
+  'gs90#7%4@1Pvt2g+20,%2s8N1]2,n3N1',
   '9G6eGEoX80Ocm,1IV1%3',
-  'ot20cvjE9Ck]Lcvd,^910#1oF10,(V60P2!QZV0,9Ts8^aP0sHn6%JsH2s](#2^5q0l1',
+  'ot20cHYc]AE9Ck]Lcvd,^910#1oF10,vh2}1073GMQ:30P2!P1EHVMI2V0,9Ts8^aP0sHn6%JsH2s](#2fg#1wnp0l1;-70?',
   'o560EgM10,Yk10EGMo230w6u0}39175n1:aMv2$HCUXI,^E10cnQso,60@8',
-  'w.80-2o?30EHVM2Us0,w{#0?'
+  'w.80-2o?30EHVMoSU1?b}#0,'
 ];
 
 
@@ -1786,10 +2233,10 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_FORMAT_WHITESPACE = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_FORMAT_WHITESPACE = [
-  'vF;Z10Mwx406^H20UX2Uf4Ugn#0;`o0sbwt0vME',
-  ']=gg50E^$zA#LDF1AV1',
-  ':2;S60gC206',
-  'w-10f4^#206IV10(970',
+  'vF;Z10U92fHf4gh40;920UX2Uf4U8M2n#0;`o0sbwt0vME',
+  ']=oY506%7E^$zA#LDF1AV1',
+  'fEIH602920,H3P4wB40;#s0',
+  'w-10f4^#206IV10(970ols0',
   'fEAQ80?P3P4wB40^@s0'
 ];
 
@@ -1818,8 +2265,8 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_MODIFIER = [
  */
 goog.i18n.CharPickerData.CHARLIST_OF_MODIFIER = [
   '(y80M8E',
-  '%+#5GG,8t1(#60E8718kWfJ,P4v%71WO|oWQ1En1sGk%2MT_t0k',
-  'f!!^)30(C30f1H5E8?8l18d2X4N32D40XH',
+  '%+#5GG,8t1(#60E8718kWm:I,H46v%71WO|oWQ1En1sGk%2MT_t0k',
+  'f!!.M%3M91gz30(C30f1695E8?8l18d2X4N32D40XH',
   '%?71HP62x60M[F2926^Py0',
   'n<686'
 ];
@@ -1851,14 +2298,14 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_LATIN = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_LATIN = [
-  ':5N2mN2P6}18#28V1G,GcGcGcGMW68cGsO6GcGMGMG6GMGd1G$W$6m6H16X9M15O8%c86$N2G8d2G86W86956g<60cH2878Lf706Gf6',
-  '^x90}6^yX1#2G118GOOU$uP286G[MG',
-  ']r=i1jKjnjQq40L!401GCpwGi0Trh04pM83:liJK1qQMnmaJQE10jm10(;50Lj50wX50{W50A1i0TJd0bB506(T40v]a8zE50I0105010IUi0{Zh0:7=w*Uc:V%Dih:h`h9X%B41n1WSL1Qau9q`jh_Bnm4lPm*mHn6amfmSmH6;+80j630Lj50wX50{W50QW80P1T#806f=^Y40(d30gtZ0bUi06AL10D9102g70+M70(#80+q80P3*jA#80{z80',
-  ']N6[6m6m6m6m6Gn1O6m6W6W6G6W6v186GM8688sGcGUGGEGk]1F3OE8-2md4A570@3%5718}2H9lBm#1Xyf2o]20}1u62cW0F1v6N1O6zIi081s868EG68s8E8EGcu8E8UGEw^60-41293N3v!H1f1U9AO11G6e6O88m11X186IWZ072f9E',
-  '%8N2%96$uH4H3u:9M%CF28718M868UO?86G68E8868GHOeP1SPE8GW11OO6918Of26868886OV3WU%2Wg|70EO6',
+  ':5N2mN2P6}18#28V1Gl1GcG|W68cGs8|GMGMG6G}1GWG6OU8GEOG6H168E11M.s$$6f16%2Mv3P168688uW.128$IN706126H26W6:16m6$6P16Gc916[878QAa06zph0696U8EOP3o2706',
+  '^x90}6^yX1#28F5m-3:6N2',
+  'X4X1m6OEWku8WGc88M8H6%1nFmu11916X16H3H1%4P3[8EOmeWW.euWM918HMH6%512]I1Q^+20f+.%2X8]cfBg*10I710P1681H]E^BZ01BE',
+  ']N6v16m6P16Gv26W6W6G6H286O6G6m86OE86GUGGEGOEv2s8sG!OEOt2mV38?A570@3%5718}2H9|G@1G72GMG#1GcGsGF1G6m|GcHuO11G6e6O88mOuX18Eo]20}1u62cW0F1v6N1e68M91?H7zSi081s868EG?8E8EGcu8E8UGEw^60t5H193N3v!H1f171QmZ072f9E]96',
+  '%8N2%96$uH4H3u:9M%CF28718M868UO?86G68E8868GHOeP1I>70EO6LF80E8GW11OO6918Of26868886OV3WU%2W',
   '1uH1WGeE11G6GO8G868s',
-  'HZ6uP268691s15P361Jd1oQ7068H8cHw!Y?20kAZW0sH26P1l6:BU',
-  'HF8WWO8:A6116v5H6!P3E%KcA170!nR6vtM8E8?86GUGE8O8M8E86W8.U12-2Qd40HBMvE,et8:2Qtq0kg710N2mN2'
+  'HZ6uP268691s15P36Al7068H8cHw!Y?20UwdW0#58s:BUbvh0d1g{A06AZW0sH2697',
+  'XFX1:A6116v5H6!P3E(o706vtM8E8?86GUGE8O8M8E86W8.U12-2Qd40HBMvE,et8:2Qtq0kg710N2mN2bV)0mWOXnc'
 ];
 
 
@@ -1873,8 +2320,6 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_OTHER_EUROPEAN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_CYRILLIC,
   goog.i18n.CharPickerData.MSG_CP_GEORGIAN,
   goog.i18n.CharPickerData.MSG_CP_GREEK,
-  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
-      goog.i18n.CharPickerData.MSG_CP_COPTIC,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_CYPRIOT,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
@@ -1912,24 +2357,23 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_OTHER_EUROPEAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_OTHER_EUROPEAN_SCRIPTS = [
-  '(W10V3[V32Bg0l3zIg0k%36QEg0s',
-  '2510#B$7E4uHfWE',
-  'Id40@2mML230Y230',
+  '(W10V3Oc8V3G6W=4',
+  '2510-BuNEKuvfE',
+  '(e10o{20eG@2mMGEJ',
   ']]8E88#18@3P3$wC70@1GcGV3GcGs8888l1888888O#48U8eE8E88OEOUeE8k8eE8E88{l706W',
-  'Q210F12$A0NAuk',
   '^-+0cG8@386OG',
-  '^G106g^A0-2o,V0-2Gl1$d2',
-  ';Y40V3]3cW2a70V3',
+  '2{h0F4W[872{<g06g^A0-2;;V0M8,8:2',
+  ';Y40V3]3cW2a70V38e',
   '^tB0F48F4',
   '^l*0V2',
-  ']@MG6OEX7EO71f18GU8E;{(0#6YBt0N6',
+  ']@MG6OEX7EO71f18GU8E;{(0#6YBt0@5OJE',
   '(z)0|8N28t1868N1GF1937B',
   'o_50l2',
   'oh*0#28M',
   'g|50N7',
   'A;*0N4',
   'oe10g^$0U',
-  'XG%$e68%6Ef26OoN70888888n58Uu88EOu8EOu8E.886:Q'
+  'XG%$$%6Ef26OoN70888888n5G[8uuuuH189Rr:706we708E11EH1EH1EH16'
 ];
 
 
@@ -1955,7 +2399,7 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_AMERICAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_AMERICAN_SCRIPTS = [
-  'gP50NuGd1]oN6TR10Xu6',
+  'YP507w]oN6',
   'wG50t7',
   ';(*0F7'
 ];
@@ -1968,10 +2412,17 @@ goog.i18n.CharPickerData.CHARLIST_OF_AMERICAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_AFRICAN_SCRIPTS = [
+  goog.i18n.CharPickerData.MSG_CP_EGYPTIAN_HIEROGLYPHS,
   goog.i18n.CharPickerData.MSG_CP_ETHIOPIC,
+  goog.i18n.CharPickerData.MSG_CP_MEROITIC_CURSIVE,
+  goog.i18n.CharPickerData.MSG_CP_MEROITIC_HIEROGLYPHS,
   goog.i18n.CharPickerData.MSG_CP_NKO,
   goog.i18n.CharPickerData.MSG_CP_TIFINAGH,
   goog.i18n.CharPickerData.MSG_CP_VAI,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_BAMUM,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_COPTIC,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_NKO,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
@@ -1987,10 +2438,15 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_AFRICAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_AFRICAN_SCRIPTS = [
-  ';(40l68MGk88MGt38MG@28MGk88MGN18758MG}5X3V1w<60}1.k8k8k8k8k8k8k8kr070t2%1,',
-  'I520t2i3,13V1',
-  'o_B0-4.',
-  '^th0NOWV1[6*2Mf1,',
+  ';Y[0}}N9',
+  ';(40l68MGk88MGt38MG@28MGk88MGN18758MG}5el2ON2(;60}1.k8k8k8k8k8k8k8kI8X0cGcGc.k8kDDe0E',
+  '(L,072m6',
+  ';I,0-2',
+  'Q420l3P1MK1?W',
+  'o_B0}4$3X1',
+  '^th0NO8#2*2',
+  '(5i0F7GcY4p0tpzup06',
+  'Q210F12$A0}9O6eka1E',
   '^720E',
   'g?*0t2G,'
 ];
@@ -2005,9 +2461,17 @@ goog.i18n.CharPickerData.CHARLIST_OF_AFRICAN_SCRIPTS = [
 goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_MIDDLE_EASTERN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_ARABIC,
   goog.i18n.CharPickerData.MSG_CP_HEBREW,
-  goog.i18n.CharPickerData.MSG_CP_THAANA,
+  goog.i18n.CharPickerData.MSG_CP_IMPERIAL_ARAMAIC,
+  goog.i18n.CharPickerData.MSG_CP_INSCRIPTIONAL_PAHLAVI,
+  goog.i18n.CharPickerData.MSG_CP_INSCRIPTIONAL_PARTHIAN,
+  goog.i18n.CharPickerData.MSG_CP_MANDAIC,
+  goog.i18n.CharPickerData.MSG_CP_OLD_SOUTH_ARABIAN,
+  goog.i18n.CharPickerData.MSG_CP_SAMARITAN,
+  goog.i18n.CharPickerData.MSG_CP_SYRIAC,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_ARABIC,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_AVESTAN,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_CARIAN,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
@@ -2041,20 +2505,27 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_MIDDLE_EASTERN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_MIDDLE_EASTERN_SCRIPTS = [
-  'os10N2m,f3MW-18F68H26[EGP774g7g0N6oDN05!%0MGN1mG6]2[#18F1G19f2,O62t606IwZ0l1oUR0#25W40',
-  'Il10V2eE`5#1P46o:$0',
-  'g|10V311KcP1O:5,%S?',
-  'gr10c]2UH46%2f6k8V19D6',
+  'op10U8,11Gl2m,]1F1O68W-18V6H2l1P774XQ8?^F60g2#0#2YVx06r##0vAry%0U]3[-1f11vV2QG$0V1',
+  'oj108G91V2eUC6F1886A?$0',
+  '(>+0@18!',
+  'g!,0t1es',
+  'ox,0@1Gs',
+  '^F20F2eZE',
+  'Id,0-2',
+  'AA20@1X2N1Qt60{w6072',
+  'wq10P1O]2[?X2',
+  '^u10UH46%2H7[fD6=Wc1HkG,8M',
+  '(r,0-4Ok',
   ';Y*0V4',
   'gE=0-@HD@8H1M',
-  'gf10#2:1M;>$0!f3',
+  'Qk10^>$0!f35}$0#2:168',
   '^V*0l2',
   'AA,0N2e',
   'Aw*0F3WF1',
   'I7,0d2O',
-  'wq10P1O]2[?X21DF18V5GE',
+  ';;10F1868t2v2Eq5%2V2',
   'It*0t28',
-  'I!10MA($0-813@Wv1#5G-4v371fAE88FC',
+  'I!10MA^e1M8V2868G8,8M88mW888E868G8888868GM8k8M8M88,8d1eE8U8d1{W$0-813@Wv1#5G-4v371fAE88FC',
   '2a(08.F18U886868!'
 ];
 
@@ -2067,6 +2538,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_MIDDLE_EASTERN_SCRIPTS = [
  */
 goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SOUTH_ASIAN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_BENGALI,
+  goog.i18n.CharPickerData.MSG_CP_CHAKMA,
   goog.i18n.CharPickerData.MSG_CP_DEVANAGARI,
   goog.i18n.CharPickerData.MSG_CP_GUJARATI,
   goog.i18n.CharPickerData.MSG_CP_GURMUKHI,
@@ -2074,22 +2546,31 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SOUTH_ASIAN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_LEPCHA,
   goog.i18n.CharPickerData.MSG_CP_LIMBU,
   goog.i18n.CharPickerData.MSG_CP_MALAYALAM,
+  goog.i18n.CharPickerData.MSG_CP_MEETEI_MAYEK,
   goog.i18n.CharPickerData.MSG_CP_OL_CHIKI,
   goog.i18n.CharPickerData.MSG_CP_ORIYA,
   goog.i18n.CharPickerData.MSG_CP_SAURASHTRA,
   goog.i18n.CharPickerData.MSG_CP_SINHALA,
+  goog.i18n.CharPickerData.MSG_CP_SORA_SOMPENG,
   goog.i18n.CharPickerData.MSG_CP_TAMIL,
   goog.i18n.CharPickerData.MSG_CP_TELUGU,
+  goog.i18n.CharPickerData.MSG_CP_THAANA,
   goog.i18n.CharPickerData.MSG_CP_TIBETAN,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_BRAHMI,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_KAITHI,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_KANNADA,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_KHAROSHTHI,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
-      goog.i18n.CharPickerData.MSG_CP_PHAGS_PA,
+      goog.i18n.CharPickerData.MSG_CP_SHARADA,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_SYLOTI_NAGRI,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_TAKRI,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_BENGALI,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
@@ -2111,31 +2592,38 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SOUTH_ASIAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_SOUTH_ASIAN_SCRIPTS = [
-  'gj20sG6G@18k8OMOf1n16P16*C6f2E958kG6GE.[6G,G,:*6g4506',
-  '(X20-4Ov1X16f1mk(Eg0cODRg0M958d1GU91V1X]6g4506IGa0l1mE',
-  '(*20!8E8@18k868UOv1X16y8E958s8E8E:16G,8fk6g4506',
-  'Av20cW6G@18k8GG693]1EyO69EE958UW6GEO:1|O%v6g4506',
-  'QR30s8E8}18,8UO936q86958k8E8Mu6116G,86g4506',
-  'oZ70F3%3E=3#1ON1',
-  '(r60l2O|W|WO|',
-  '^c30s8E8}18V1O936H2cSB6P5k8E8M.[6GV1OI[406',
-  '(h70t2i3,%2s',
-  'Y[20sG6G@18k868UO13EX1yl6XbE958kG6GE$6[6G?]Y6g4506',
-  'oni0d4q46n4d1.|',
-  'oo30l1O728!8GkC66X6Wc88sv1E2+406',
-  ';3308cOE8MO6886O6OEO|1247X5UOE8M.P1-1',
-  'wF30s8E8}18,8UOX26m6y8EP5k8E8Mu6116G,$sPA6g4506',
-  '2{30%5E8M8M8M8M8M8|8Ef2MiC?8l4f468ek8c$E8M8M8M8M8M8|8E8N18k(i806e,Gs',
-  '(u70M8M5f30M',
+  'gg206:2sG6G@18k8OMOf1n16W@1:*64[E958kG6GE.[6',
+  'wH.0F3X1F146EP3F1',
+  '(X20-4Ov1X16G718c8k9[6gMf0,DRg0M]4E8l18k[6H1YEg0l1',
+  '(*20!8E8@18k868UOv1X16W|fk6*uE958s8E8E:16',
+  'gg206fEcW6G@18k8GG693.,GE:v6a*E958UW6GEO%26O',
+  'QR30s8E8}18,8UO936W,86CA6958k8E8Mu6116',
+  'oZ70F392N1OE=3#1',
+  '(r60l2H3O|K4|W|',
+  '^c30s8E8t3Gf1n16WV1Okw@4053506P5k8E8M.[6',
+  'wGj0?eEvI73$W,iOUOMfLs86',
+  ';g70l3m6pc',
+  'gg206%bsG6G@18k868UO13EWl1PY6CjE958kG6GE$6[6',
+  'oni0d4X2|486n4d1',
+  'oo30l1O728!8Gk94A+40j@406X6Wc88sv16',
+  '2D.0F2u,',
+  ';3308cOE8MO6886O6OEO|12]1-1=AX5UOE8M.',
+  'wF30s8E8}18,8UOX26m6W,$sPA6=LEP5k8E8Mu6116',
+  'wq10P1O:5,PPV311_?',
+  '2{30|8?GV2888MGE8M8M8M8M8M8|8EH2GUf4s8c8kW6Ii806e,GsL$806f288W6f468ek8E86ec8M8M8M8M8M8|8E.',
+  'YG40M2e30M8MO6',
+  'Y^-0#4X1kWt24AE:4N1',
+  '26.0}311k=5E94?',
   'YZ30',
-  'gU,0M86es8E8V2WEW!$!',
-  'wU6068AU606e,Gs2*V0}4w|M0M',
-  '(bi0@3',
+  'gU,0X1M8E8V291s$!=7E86eMv3EW',
+  'QT.0N4P1su,48EX4F1',
+  '(bi068E8M8}1eMy3OW92U',
+  'Yv:0-3]1,y271',
   'Yr2068',
   'Yf20s',
   'Qz20G93EG',
   'Q0306',
-  'A|30]4.WWW91.868$n1.WWW91YX#0M'
+  'A|30]4.WWW91we#0M5e#0868$n1.WWW91'
 ];
 
 
@@ -2147,13 +2635,17 @@ goog.i18n.CharPickerData.CHARLIST_OF_SOUTH_ASIAN_SCRIPTS = [
  */
 goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SOUTHEAST_ASIAN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_BALINESE,
+  goog.i18n.CharPickerData.MSG_CP_BATAK,
   goog.i18n.CharPickerData.MSG_CP_CHAM,
+  goog.i18n.CharPickerData.MSG_CP_JAVANESE,
   goog.i18n.CharPickerData.MSG_CP_KAYAH_LI,
   goog.i18n.CharPickerData.MSG_CP_KHMER,
   goog.i18n.CharPickerData.MSG_CP_LAO,
   goog.i18n.CharPickerData.MSG_CP_MYANMAR,
   goog.i18n.CharPickerData.MSG_CP_NEW_TAI_LUE,
   goog.i18n.CharPickerData.MSG_CP_TAI_LE,
+  goog.i18n.CharPickerData.MSG_CP_TAI_THAM,
+  goog.i18n.CharPickerData.MSG_CP_TAI_VIET,
   goog.i18n.CharPickerData.MSG_CP_THAI,
   goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_BUGINESE,
@@ -2182,22 +2674,26 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SOUTHEAST_ASIAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_SOUTHEAST_ASIAN_SCRIPTS = [
-  '(C70F4n1k*6UP4d111}3',
-  'Q`i0t392E8s43F191$6G,GM',
-  '^zi0d2S3,n2,',
-  ';I6073GE8?v3q3l28,W,m,Hi-2',
-  'g:3068G68GmM8k8E88G68M86.GU926`3Gc86.8cG,',
-  'QK40-3:1f1cWMOO6uEW7191(xe0V18cOD-e0#18V1mMWE8EGkOMH1|8d1wxe0mE8',
-  'Y%60@3]1k42d1u6m?O6',
+  '(C70F4n1kWV2.!KBUP4d1f3!',
+  '(T70V312MK2F1',
+  'Q`i0t392E8sW,GM=4F191$6',
+  '2:i0F4P171G,W6q8MP4F1P1',
+  '2zi0V3$6)s',
+  ';I6073GE8?]2E8UO,m,Hi-2Srl286O',
+  'g:3068G68GmM8k8E88G68M86.GU11,GMC4Gc86.8c',
+  'QK40-3:1}1WMOO6uEW71918,W6Iwe0V18,D-e0#192MWE8EGkOMH1|8[M;xe0[',
+  'Y%60@3]1k$?O6K4d1u6',
   '2z60t2GU',
-  ';z30N48691c*1Gk11@1',
-  '2>60d2G6',
+  '^@60#4]3,m,mk8c`7,8l2Gn3',
+  '^7j0N48O6GUG8H2686K48EG6e68f2',
+  ';z30N48691c.71*3Gk11!',
+  '2>60}1u6xU',
   '2C606.#1',
-  'AA60}1',
+  'AA60l1O6RE',
   'gM60v311',
-  'Y%i0F311',
-  '^N70-3O|',
-  'I760718k]26',
+  'Y%i0}1H2C271',
+  'IO70t2H1l1PNsyTE%271',
+  'I760718MH36K3E',
   '2C606%3718E86'
 ];
 
@@ -2238,7 +2734,7 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HANGUL = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HANGUL = [
-  'ozC0:42Pi0}1WV4Lbi0MO,8F1H1EmeEPqQ?r06',
+  'AzC0M88,8F1X1mWMPqYyh0}1WV42BA06Tis06',
   ';gj0}}-I',
   '(zk0Vr',
   '(+i0MAj20}}-I',
@@ -2269,14 +2765,22 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_OTHER_EAST_ASIAN_SCRIPTS = [
   goog.i18n.CharPickerData.MSG_CP_BOPOMOFO,
   goog.i18n.CharPickerData.MSG_CP_HIRAGANA,
   goog.i18n.CharPickerData.MSG_CP_KATAKANA,
+  goog.i18n.CharPickerData.MSG_CP_LISU,
+  goog.i18n.CharPickerData.MSG_CP_MIAO,
   goog.i18n.CharPickerData.MSG_CP_MONGOLIAN,
+  goog.i18n.CharPickerData.MSG_CP_OLD_TURKIC,
+  goog.i18n.CharPickerData.MSG_CP_PHAGS_PA,
   goog.i18n.CharPickerData.MSG_CP_YI,
+  goog.i18n.CharPickerData.MSG_CP_HISTORIC + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_PHAGS_PA,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_BOPOMOFO,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_HIRAGANA,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_KATAKANA,
+  goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
+      goog.i18n.CharPickerData.MSG_CP_PHAGS_PA,
   goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY + ' - ' +
       goog.i18n.CharPickerData.MSG_CP_YI
 ];
@@ -2290,14 +2794,20 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_OTHER_EAST_ASIAN_SCRIPTS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_OTHER_EAST_ASIAN_SCRIPTS = [
-  'ozC0:4HIt3XA72IQv0l2{z+06I]B0MO,8F1.MGmeE2#v0EjK306',
-  'ozC0:4W#7iDMOF2X1c8eE986G68H86XD6^Bs061R946',
-  'ozC0:49978PMV1SkMOF2X1c8eE986eH8MHD6^Bs061R946',
-  'YX60738t4$t38aFN18,%3H9',
-  'oRg0-18}}-FL.U06e,Gs^rT0IG10@4',
+  'AzC0M88,8F1X1mWM]Ht3XAV2I8s06+f(06^`B0M',
+  'AzC0M88F2X1mWM8#7.H8fD6QCD1T0l065is0U196G6f8wqs0946',
+  'AzC0M88F2X1mWM%8N8fD6n8V1I2D1L0l065is0U196:8Egqs0946',
+  'oph0l3m6pc',
+  '2591F611F4f1d1',
+  'gU60?O8,m738t4$t38aEE:4H9',
+  '2>,0l6',
+  'wU6068AU606e,Gs',
+  'AzC06e,Gs2qT0-18}}-FO@4DL10',
+  'ohi0}4',
   'Ql)0M',
-  '^%C0996G1MF1gas0U2E$0',
-  '^%C0996]8PDF1vRF48@7g`r0N18}3',
+  '^%C0f91MF1^oU1bE$0Ujys06',
+  '^%C0HIPDF1vRF48@7g`r0N18}3r%s06',
+  'Ql)0M',
   'Ql)0M'
 ];
 
@@ -2328,13 +2838,13 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_1_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_1_STROKE_RADICALS = [
-  'ItK071]BYL10TX10kOJE8F192426',
+  'ItK0l3]1f7YL10',
   ';wK0M8!',
-  'AyK0Ef1a1M8',
-  '^yK0,8E2y30{x30|',
-  'Q#K0U^iL0>iL0EG}2',
+  'AyK0k8[',
+  '^yK0,8N1^w30',
+  'Q#K0sG}2YfL0',
   'Q)K0k',
-  '(bC0c]R]q8O8f2Eoeq0]116$f7fG;(k1E',
+  '(bC0c]R]q8O8f2EgqB2E5Cl1]116$f7fG',
   'A(D0t3(rX1V288k8!8k8868|8l188U8718M8N48E88GE8#48MG@3oA20]G2P60;QB0]9^(20^7L0t2'
 ];
 
@@ -2385,30 +2895,30 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_2_STROKE_RADICALS = [
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_2_STROKE_RADICALS = [
   '^)K0M8N1',
   '(+K0N2',
-  'A.K0VA15`4@48l6AGL05GL0VT86GZG68d39141|8t1',
+  'A.K0lww)K0',
   '(gL0V3',
-  'IkL0MY870T8706',
-  '(kL0,gzK0bzK0U838c',
+  'IkL0cI870',
+  '(kL0}1QyK0',
   ';mL0#1Yw50',
   'woL0-1',
   'oqL0#4',
   'YvL0-1',
   'QxL0?',
-  'QyL0d98sWC1$M8F3',
+  'QyL0}D',
   'Y;L0V58@2',
   '^^L0d2',
   'g{L0U',
-  '^{L0l12KK0{JK0|',
+  '^{L0t2^IK0',
   'w0M0!',
-  'g1M0E8c838,(HK0zHK0U',
+  'g1M0E8}1QHK0',
   '^3M071',
   'A5M0F2',
-  'Y7M0t2;ZD0+ZD0MeZU8|',
+  'Y7M0t4;XD0',
   'ACM0l1',
   '(DM0V2IS10',
   'Y]a0tD',
-  'QcC0}1%P8]qG688P1W6G6mO8;fq0f1E9386H18e11Ee[n16[91e11.G$H1n18611$X2cX5kg(k1F28d292%B6f6%A15P1O',
-  ';+D0tN8l49H2i40kQRl0(Q+0uH3v1H788]9@18}2872Gk8E8|8s88E8G-18778@28lF8-6G,8@48#486GF28d28t18t48N3874868-78F58V18}28F48l48lG868d18N18#18!8FN8@98FP8s8}F8N28,8VG8F18tF8}2(s30%U;@101bI-50QE60^{40;X60IhB0}Oo_20d3'
+  'QcC0}1%P8]qG688P1W6G6mO8^pB2F28d292%B6f6%A15P1ODrl1f1E9386H18e11Ee[n16[91e11.G$H1n18611$X2cX5k',
+  ';+D0tN8l49H2i40kAsS1uH3v1H788]9@18}2872Gk8E8|8s88E8G-18778@28lF8-6G,8@48#486GF28d28t18t48N3874868-78F58V18}28F48l48lG868d18N18#18!8FN8@98FP8s8}F8N28,8VG8F18tF8}2(s30%U;@101bI-50QE60^{40;X60IhB0}Oo_20d3j%S1'
 ];
 
 
@@ -2468,44 +2978,44 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_3_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_3_STROKE_RADICALS = [
-  'IGM0@X8U8?8F1=2n1P1t18V4HCyGf4t8Gk%38y46ul28?888s12`1@18#2f3a3V38,$xkGBGs',
-  '^`M0c^MJ0>MJ0F4OJE8N1',
-  'g3N0EAHJ05HJ0VDH2C2728V28-3=3]3d38U8U_eel88F32(I0{%I0?;%I0+%I0!8!',
-  'QjN0!iXnXF1',
+  'IGM0dY8FM8tB',
+  '^`M0d6^GJ0',
+  'g3N0tZ8}48!Q#I0Ge',
+  'gCN0%W}1',
   'YlN0k',
-  'AmN0EJOU838',
+  '2mN0|',
   'AnN0l1',
-  '(oN0738|4191d2',
-  'wvN0N28t6y6%6#18}18Mi2n2738s$i1$s8V78#2:2y5:2#28d7n1i1d18M8MRWl1',
-  '2DO0@283871',
-  'YHO0t1;260+260#18MRW#3:1*1#1871',
-  'QSO0?OJE8s',
-  'YUO0k2?H0{>H0|',
+  '(oN0-6',
+  'wvN07D8}T',
+  '2DO0N4',
+  'YHO0-Aw]50',
+  'QSO0}1',
+  'YUO0t1^=H0',
   'AWO0@1',
   'AYO08t4',
   '2dO0E',
-  'QdO0D#30I#30V28}44595@B8t1y1%1V88kpu?86BGU838E',
+  'A$K0A#30-W',
   'I.O0c8E',
   'A:O0|',
   'I;O071',
-  'Y<O0t68kp$!838@1',
+  'Y<O0V78@2',
   '^{O0s',
   '2$K0oM40U',
-  'A}O0@1OJE8-3mZU86x$@2I8H0D8H0c',
+  'A}O0lAw7H0',
   '(9P0,',
   'wAP071',
   ';BP0s',
   'oCP0d5',
   'AIP0d1',
   'wJP0!8s',
-  'QLP0!Y0H06b0H0l1mhc8U8,<[7186BGF1',
-  '(gX071[<,8dB',
+  'QLP0F7^]G06',
+  '(gX0tD',
   'wud0t4',
   'obe0',
-  'wne0V386BG,',
+  'wne0l4',
   '(:e0V5',
-  'YeC0#2P=11Wm11686W(dq0G86:1mP26m6%1me%1E11X1OmEf1692Ge6H1%1Gm8GX3kX4[F1A,k1}18l58E8EGMP8:5]6]9',
-  'YAE0@G8V(I!20|I!10E:5fX18EA8k08QQ+0%1u8Gn3v11B1693P2uO91$8OH2H713vMXG%1%K:6]SG13%2H@vX93tU8F587w8}V8-68tA8dO8db8V38758V28t58F18k8#C8t!8V78V98tU8lT8de8}}V98lB8}B8#387987H8#38NJ8@78U8N18U8kgE10(L10v_X4ngA6109Nn2v2Ac101O1}HSQ*1094^.50N2:BP6Ay10Q<40]5;s20AE20V1H9^j20l1%g-3YY20YU10}zAv10@2;310F1]E72X3}1'
+  'YeC0#2P=11Wm11686W(uB2}18l58E8EGMP8:5]6]9Lvl1G86:1mP26m6%1me%1E11X1OmEf1692Ge6H1%1Gm8GX3kX4[F1',
+  'YAE0@G8V(I!20|I!10E:5fX18EwYR1%1u8Gn3v11B1693P2uO91$8OH2H713vMXG%1%K:6]SG13%2H@vX93tU8F587w8}V8-68tA8dO8db8V38758V28t58F18k8#C8t!8V78V98tU8lT8de8}}V98lB8}B8#387987H8#38NJ8@78U8N18U8kgE10(L10v_X4ngA6109Nn2v2Ac101O1}HSQ*1094^.50N2:BP6Ay10Q<40]5;s20AE20V1H9^j20l1%g-3YY20YU10}zAv10@2;310F1]E72X3}1DeT18'
 ];
 
 
@@ -2568,23 +3078,23 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_4_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_4_STROKE_RADICALS = [
-  'oSP0NW]5=5-58M8V2a2f2d48F2K2P2l4',
-  'Y]P072mhc8!838838',
+  'oSP0#q',
+  'Y]P074',
   'o{P0-1',
-  'g}P0E2LG0{KG08kpus871C1H1?8}34494NO8?_11k8#5]6=6-38F24C9Ck8E874G*7P3H468l411_?8t28|4191#2838l186BGk',
+  'g}P0F)2gF0',
   '((Q0U',
-  'I)Q0F2rI40wI40t2GB68@12dA0{cA0E',
-  '(;Q0(OF0zOF0N1',
+  '(oM0YG40d7(cA0',
+  '(;Q0V1YNF0',
   'I=Q071',
   'Y>Q0-1',
-  'Q@Q0F1OJE8-1',
+  'Q@Q0d3',
   ';^Q0U',
-  'Q_Q0NA(+60j_B0(D50t1XDSDN2H1C1718V523F0{2F0,GB68-1',
-  'oJR0!8rS50gS5086868k',
-  '(LR0V2;070+070U',
-  'wOR0@59242}187LAuE05uE0#H2R10{Q10F886uOK1Gk8E8l6uH6=6k8768Ev4P1`5l48F18NAW8hM88!8F1m=1P1c8t1',
-  '2TS0E838d5',
-  '2ZS0I:D0D:D0@1',
+  ';@L0Y350FOH1os602W80',
+  ';@L0wR5071868k',
+  '(LR0-2Y070',
+  'wOR0}}N4:+IBD0',
+  '2TS0@5',
+  '2ZS0}1I-D0',
   'AbS0F5',
   'YgS072',
   'oiS0!',
@@ -2592,23 +3102,23 @@ goog.i18n.CharPickerData.CHARLIST_OF_HAN_4_STROKE_RADICALS = [
   '2kS0t4',
   '(oS0U',
   'IpS0-2',
-  'AsS06WRM8VE8N28!K3P3F18s8t5i6$%5}58V1a1f1}78#1G98KA:168}7872v5v1S7l5G718E8|v3a6H1f1-28k8t38V1`5f4f1d48728Mn4`4Wd48EG*7n768d28@2`213758-1=1]1k',
-  'I$T0!%1y1t18tC8MRWl39444}38,838#291(350>450|8N1g^B0nI12DFC0t78Em<Oc8#1',
-  ';GU0,jW70oW706',
+  'AsS0dH8V[',
+  'I$T0le;@402[60nI12',
+  'A:M0wV70|',
   '^HU0U',
   'YIU0M',
   'IxK0gl90s',
   'gJU0l1',
   'ALU06',
-  'QLU0N3838#3',
-  'wSU0tA$6)sGF1un1K2k868chuk86<[74',
+  'QLU0N7',
+  'wSU0lJ',
   ';ba0U8?',
   '2Sb0V6',
   'I]b0#4',
   '2Fe0k',
-  'Aae0k838M',
-  '^SC0HE}2::MGEG.Ogeq0G$mEm6OGOEWE%1eE916Ou6m868W$6m6GU11OE8W91WEWGMmOG6eM$8e6W6mG611Of371136P2}18EH4M(!k1:8e#4G6G-28}2871]7$6',
-  '^aE0]uFq8#@^U20U%LEY`k06AW+0f7HLfkX2vCH4vM(a10gv10IO10Yg30Hz}}VE8to8-w8@J8-28tK8td8N48FC8E8l68cGNM8V#8#98lK8-A8-A8|8728E8l287N8}}#E8@N8V%8tC88V88-88lC8N18@48t38l`;Y20(>101dYk201)XQ6nUv^Xao940kAi10cv3QF40UHdXG|fe8o^40}}l3YD10c]Ak]7@19YcX4U'
+  'Aae071',
+  '^SC0HE}2::MGEG.OovB2:8e#4G6G-28}2871]7$65ml1G$mEm6OGOEWE%1eE916Ou6m868W$6m6GU11OE8W91WEWGMmOG6eM$8e6W6mG611Of371136P2}18EH4M',
+  '^aE0]uFq8#@^U20U%LEwSS1f7HLfkX2vCH4vM(a10gv10IO10Yg30Hz}}VE8to8-w8@J8-28tK8td8N48FC8E8l68cGNM8V#8#98lK8-A8-A8|8728E8l287N8}}#E8@N8V%8tC88V88-88lC8N18@48t38l`;Y20(>101dYk201)XQ6nUv^Xao940kAi10cv3QF40UHdXG|fe8o^40}}l3YD10c]Ak]7@19YcX4UjUT16'
 ];
 
 
@@ -2660,33 +3170,33 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_5_STROKE_RADICALS = [
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_5_STROKE_RADICALS = [
   'QmU0U',
-  '(mU0838N912`1M8d18,i2n2,8t2y2%2F78Wh8M8F186BG@4',
+  '(mU0#U',
   'o@U0,',
   'g[U0d4',
   '2{U0k',
   'w{U0!',
   'g|U0s',
-  'I}U0?838738k8mhcG!).V1',
+  'I}U0N48k8}2',
   'g7V0k',
-  'A8V0t2[<,8d8muK1c8k872[<,8}1838l1',
+  'A8V0tK',
   ';SV0k',
-  'gTV0|=Q]QN3',
-  '^XV0s^;A0>;A0!',
-  'gZV0N2GB68l1',
-  '(dV0t5v1q1l1G38V1IzA0DzA0N18|4191V98EJO',
+  'o3V0:PV4',
+  '^XV0d1A;A0',
+  'gZV0F4',
+  '(dV0dL(mA0',
   'QzV0k',
   '^zV0d1',
-  'g#V0N15]20A]20FB8t2%1i4%2t18!upk872Gu<68k8t7',
-  'I5W0-1IV40^-50DFA0}18!).!11^L40{M40?8-3Q6A0L6A0s',
+  'w-S0(@20tT',
+  'I5W0VBQH40P4;-506',
   'wGW0c((20',
-  'IHW0-5upk8}312`1-1Gs).t2GB6',
+  'IHW0dG',
   '(XW0-7',
-  'wfW0#1G?Qj70Lj70686BGs',
+  'wfW0#1G72Ai70',
   'YOd0@L',
   'Ald0',
-  ';-f0758MRW72',
+  ';-f0#7',
   'IIg0E',
-  'QkC0}1n.O86n1;eq0$f2u6[P1[68$$P1P16926u[[E91$6.u:2UH4|f6O|11X1[Ew`k1V18V3',
+  'QkC0}1n.O86n1^?B2V18V3{gl1$f2u6[P1[68$$P1P16926u[[E91$6.u:2UH4|f6O|11X1[E',
   'AoG0@:;12071n^kXD6I4R1:4WnB9d[15:49lHkX.1pP5Hw]nf]^H20()109d;u101@]2%KY!10:9f.;(307k8dL8}38@88-98?8V?WdA8}S87Q8748l!8-T8#d8d28lI8FK8#12@30nQI,10w^402B20F22,50-1AQ30}b(F10V49f}3]3'
 ];
 
@@ -2742,39 +3252,39 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_6_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_6_STROKE_RADICALS = [
-  ';jW0?8F5K5P5@5%5y5t58s8,<[d213OS3@28E8F5e6hUGl1838s',
-  'I[W0Mr990w990V2r?10w?10|eZU8l1[<,8}2eZU8s838U',
-  'Q4X0@88d2i2n2F3%4y4t48686BGNA8686Ze728.a3X28!8}3',
-  'guX0U838#1',
-  '^wX0t2OJE8}1',
-  'A$X0?8MLI20;H20W73',
-  '(*X0F5eZU8M',
+  ';jW0NY',
+  ';,N0YL70;<10}B',
+  'Q4X0Vc',
+  'guX0V2',
+  '^wX075',
+  'IlV0;G20l4',
+  '(*X076',
   '^;X0?',
   '^<X0c',
   'g=X0@2',
-  'g@X0}211_?8718UZe?',
+  'g@X0-6',
   'Y|X0,',
-  'Q}X0}8n2i2d28N7bN90gN90l68V486BG,',
+  ';^O0Y490tP8l5',
   '(UY0k',
   'YVY0!',
   'IWY0!',
-  '2XY0,86BGE',
+  '2XY0V1',
   'gYY0N1',
   ';ZY0M',
   'IaY077',
   'YhY0M',
   '(hY0c',
-  'QiY0EY$70T$70768V11AiBf1@58EJOk8U8N28#18d2a7e]6d58V1(a70bk70v9t9H4(L70Lb70HBE8#38t88@3838lH8E8o=605>60O8N3P7K7N28kpud286H1a1G7188|8cI(60+(60m-1',
-  'gjZ0EDPA0IPA06872',
-  'ImZ0l28}283873a6f6c8t2y2%273%1X2C4t18N28d48k%8a9ut39444t3H4C4M8!8#1H2C2?8|8@1X1S1N18?',
+  'QiY0ld8lC8taI!60H1u6.',
+  'gKP0^OA0U872',
+  'ImZ0lg',
   ';2a0|',
   '^3a0}1',
-  '26a06DVE0IVE0t6838#48t2y2%274838d1P1K1F18w^50r^50l2>YD0^YD06$xs',
+  '^!L0(K10IAD0tP2@50',
   '(Va071',
   '2Se0l4',
   'oBg06',
-  'YmC0l2IPr0MemO68691Em6e6.6GO6n1Oem6P268me$6n19112Eue86WWW:168:4?v6G?%2^,k1Wn56XC-28U86G68M8@4',
-  'o5E0oq10;%10VE8VH91l;P^(ok08wb+0Q0101Io3102E20XZoi10n>2;10XUPN18e]1;n30v6m6(L40vHvCX1:8;g10A{30HM}}N@X2#B8F68@D8VI8@(8NQG#L8#68t18tO8#v8Na8##8VC8#^8tt(j10wB30YE30E(870NF13#hfxd1'
+  'YmC0l2onC2Wn56XC-28U86G68M8@4jql1MemO68691Em6e6.6GO6n1Oem6P268me$6n19112Eue86WWW:168:4?v6G?%2',
+  'o5E0oq10;%10VE8VH91l;P^w0S1Q0101Io3102E20XZoi10n>2;10XUPN18e]1;n30v6m6(L40vHvCX1:8;g10A{30HM}}N@X2#B8F68@D8VI8@(8NQG#L8#68t18tO8#v8Na8##8VC8#^8tt(j10wB30YE30E(870NF13#hfxd1>RT18'
 ];
 
 
@@ -2821,29 +3331,29 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_7_STROKE_RADICALS = [
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_7_STROKE_RADICALS = [
   'w4M0(<J0',
-  '^Wa069141!868d3',
-  'Yda0,86BG@1QC50LC50?',
-  'oha0lC]1wp50rr50-18F5P1K1F18@88N12Y50bZ50X1}5',
+  '^Wa0?8#3',
+  'Yda074QB50',
+  'oha0#b^R50e',
   'A7b0N1',
   'g8b0N1',
-  ';9b0@283',
+  ';9b073',
   '2Db0N3',
   'YGb0}88V2',
   'gYb0|',
-  'oZb0cw-40r-40d5',
-  'wfb0!8}212C593@18#48M[S1W,8}3mn1C2c8d18d386B',
+  'oZb0}5A(40',
+  'wfb0dM',
   'I$b0#2',
-  '2)b0738V1Aa40rb40f1772V40{U40F2',
+  '2)b07EwQ4012',
   '2|b0-1',
   '^}b0U',
-  'Y0c0!TGD0YGD0}29141|8}B8OZ8E8U.)!OB68k',
-  'YKc0-5838-9838c',
+  '(.O0oFD0@J',
+  'YKc0tG',
   'Abc0NB',
   'gmc0c',
   '2nc0U',
   '(Ig0',
-  'oaC0XE#1X*en1Ydq086X1ev1[.mn1Gn18116P1[8m]111%1n1v1[G92G6P5kX7|v1o5l1n5F18E8!',
-  'QAE0gj40lFu-8etLO#D2.k06(T,0PL9,AY30v9]_A^60Yl10;N50Az10oi10(I80F`8M8V58Nh8lCu}}}hml3Glb8N@;820o{80|m-3n3V3u-712#9nwv3'
+  'oaC0XE#1X*en1;}B2n5F18E8!jul186X1ev1[.mn1Gn18116P1[8m]111%1n1v1[G92G6un4kX7|v1',
+  'QAE0gj40lFu-8etLO#D^DT1PL9,AY30v9]_A^60Yl10;N50Az10oi10(I80F`8M8V58Nh8lCu}}}hml3Glb8N@;820o{80|m-3n3V3u-712#9nwv3+zT16'
 ];
 
 
@@ -2878,19 +3388,19 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_8_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_8_STROKE_RADICALS = [
-  'gnc0@3zLA0(LA0-AX2Yf30+h30k8l18N94B9BV48t28QO30LR30%28t88@12E305G3012l4mh8M8F4y4%4@3v1q1l18l2',
+  'wVS0(HA0-!o_20GG',
   'Ykd0s',
-  'Ild0@48?_11N3',
-  'Yzd0l58N1S1X1-6',
+  'Ild0V9',
+  'Yzd0@D',
   'Y<d0E',
   'w<d0F4',
   '^@d0d9',
   'g1e071',
   'w2e0M',
-  '(Xf0@5871C1H1F2',
+  '(Xf0d9',
   ';Fg0F1',
-  ';qC0!:(Ihq094m.uu14:1]1EWH191$H1m92v1:6X8MYzk1vf7186',
-  'QTJ0l8H1F4OV68-5:ss2?j0E2W+0AQ50Q>U0#88@yP2dcf1798N#8FJQn30@1^;106;y30l8f4@1P1N61OV39B!'
+  ';qC0!:(IvB2vf71865vl194m.uu14:1]1EWH191$H1m92v1v195X8M',
+  'QTJ0l8H1F4OV68-5:ssQMR1AQ50Q>U0#88@yP2dcf1798N#8FJQn30@1^;106;y30l8f4@1P1N61OV39B!DzT1E'
 ];
 
 
@@ -2927,16 +3437,16 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_9_STROKE_RADICALS = [
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_9_STROKE_RADICALS = [
   '23e0k',
   'w3e0-8',
-  'oCe0V18MRWc',
+  'oCe0V2',
   'wFe0c',
-  'IGe0zy706wy7071',
-  'gHe0t1eZU8,Gkx6ud18|4191#3',
+  'ghW06oy70F1',
+  'gHe0dA',
   'wWe0V3',
   'Qbe0E',
-  'wbe0V28UZeN2OJE872838-3',
+  'wbe0@B',
   'Qse0E',
   'ose0t1',
-  'wrC0?f)2vq0f298Ef56n8MIGl1N1',
+  'wrC0?f)(AC2N1{gl1f298Ef56n8M',
   'ooH0g520-Q8!IHS1:_P32-30ARC0YA40](^b70gd807Y8lBelaW728NG91}Zv1t288-4Iz70d1mt1n1|el1H2N1'
 ];
 
@@ -2969,15 +3479,15 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_10_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_10_STROKE_RADICALS = [
-  'Que0V68V1a1f176ob10jb10-2(Y10zY10M',
+  'Que0VHQY106',
   'I@e0N4',
   'o_e0k',
-  'I`e0l211_?8d1WRM8k',
+  'I`e0N6',
   'o2f0,',
   'g3f0E',
   '(3f0,',
   'w4f0t2',
-  'wsC0s;Lr0:9nTgHl1U',
+  'wsC0s^?C2Ubvl1:9nT',
   '^_J077O#9wM(1gQ10#Y]3};gl60@192l2'
 ];
 
@@ -3024,8 +3534,8 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_11_17_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_11_17_STROKE_RADICALS = [
-  'Y7f0-2IB10DB10#2[<,8d1eZU8F2%3y3}2eZU88t2WRM8l31b`a#28EJOV1',
-  'Qhf0N38MRWt78]s=s#3838758MRWV18728EJO}2',
+  'Y7f0NQXWPh',
+  'Qhf0dB87B8l59c',
   'w@f0!',
   'o[f0V3',
   '2`f08d1',
@@ -3033,7 +3543,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_HAN_11_17_STROKE_RADICALS = [
   '2|f0s',
   '(|f0,',
   'w}f0M',
-  '20g06>mI0^mI0c8#2',
+  'IdN0(mI0s8#2',
   'w3g0M',
   '24g08|',
   'A4g091E',
@@ -3046,7 +3556,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_HAN_11_17_STROKE_RADICALS = [
   'AHg0E8s',
   'gIg0E',
   ';Ig0c',
-  'YtC0#1QIr0692H26ef66P5946H5nE.6Q,k1fYt1',
+  'YtC0#12hC2fYt1>yl1692H26ef66P5946H5nE.6',
   'IDK0t9$@9uNDGkoOR1fk^x102.20nDQf301=^N50;g202j30M^>90od80g320to12t!]1-H8F[GN6284075f3@394E8l2.G'
 ];
 
@@ -3058,14 +3568,11 @@ goog.i18n.CharPickerData.CHARLIST_OF_HAN_11_17_STROKE_RADICALS = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_OTHER = [
-  goog.i18n.CharPickerData.MSG_CP_NUMERICS,
-  goog.i18n.CharPickerData.MSG_CP_PUNCTUATION,
-  goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY,
-  goog.i18n.CharPickerData.MSG_CP_LESS_COMMON + ' - ' +
-      goog.i18n.CharPickerData.MSG_CP_NUMERICS,
-  goog.i18n.CharPickerData.MSG_CP_PINYIN,
+  goog.i18n.CharPickerData.MSG_CP_CJK_STROKES,
   goog.i18n.CharPickerData.MSG_CP_IDEOGRAPHIC_DESCRIPTION,
-  goog.i18n.CharPickerData.MSG_CP_CJK_STROKES
+  goog.i18n.CharPickerData.MSG_CP_OTHER,
+  goog.i18n.CharPickerData.MSG_CP_COMPATIBILITY,
+  goog.i18n.CharPickerData.MSG_CP_LESS_COMMON
 ];
 
 
@@ -3077,36 +3584,11 @@ goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_OTHER = [
  * @type {Array.<string>}
  */
 goog.i18n.CharPickerData.CHARLIST_OF_HAN_OTHER = [
-    'ItK0GO8n7H4u8v36%2$P3]8va]59388:DnS8Em:6v3MH6n%fmuX4oZ10]B691E8PEn.X417IH10Q710H.AI10n)Yv20%j1d^L20WPB2W20P3e]3XBT(d0112T808YG40', /* numerics */
-    'ozC0:4>nC0]l8w%70886G6%m^u30U8?8V2GmO8Ewgs06', /* punctuation */
-    'HF;S8091:IIk40F3PB|%CF2[U%8#2oyr06868EG8116Of28GX2MGMHB6O', /* compatibility */
-    'o(D0XB]`].o#V1]8XBv5^A2018$X1PUv1f2Qf60Qq10gt402ZA0', /* less common */
-    'PK6mE86W6e68Wn1uX113v2]88888888', /* pinyin */
-    'oxC0|', /* ideo desc */
-    'AQC0N28M8d7H%F3' /* strokes */
-];
-
-
-/**
- * Names of subcategories. Each message this array is the
- * name for the corresponding subcategory specified in
- * {@code goog.i18n.CharPickerData.subcategories}.
- * @type {Array.<string>}
- */
-goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_MISCELLANEOUS = [
-  goog.i18n.CharPickerData.MSG_CP_ALL
-];
-
-
-/**
- * List of characters in base88 encoding scheme. Each base88 encoded
- * charater string represents corresponding subcategory specified in
- * {@code goog.i18n.CharPickerData.subcategories}. Encoding
- * scheme is described in {@code goog.i18n.CharListDecompressor}.
- * @type {Array.<string>}
- */
-goog.i18n.CharPickerData.CHARLIST_OF_MISCELLANEOUS = [
-  'o070><40d1*16%12#g0q4M1u^vQ0K5EL[Q08LEc0!+:40N1Q#g0+;b0Mo;b06nnowQ065LR0cOMA0P09)c;d106{^Q06{Cc0ke6Y=b06o%P0Ae106{6%0o<b0fOL6h072G6YOh0V2$sS1s[;qQ073eZU8F1{2R0t588H26TOc0kf46i4-1%26*2?H1C1cm92`1EWEi1cP1[<!O6OJEZC1I<b0d3%1y16v1q1c8uhMOJ6h[g|P0l6*T-4**@1:)@1[t1ww90}}N9AVg0f6G686G6W918u]5W6$un2We8Eu]U6nQ6'
+  'AQC0N28M8d7H%F3',
+  'oxC0|',
+  'AzC0M8|8}1mmWM2iT0o|O065ms0P3MH1',
+  'gMD0F3PB|%CF2[U%8#2Q+r0M',
+  'Q=727K'
 ];
 
 
@@ -3118,6 +3600,7 @@ goog.i18n.CharPickerData.CHARLIST_OF_MISCELLANEOUS = [
  */
 goog.i18n.CharPickerData.prototype.subcategories = [
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_SYMBOL,
+  goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_EMOJI,
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_PUNCTUATION,
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_NUMBER,
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_FORMAT_WHITESPACE,
@@ -3142,8 +3625,7 @@ goog.i18n.CharPickerData.prototype.subcategories = [
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_9_STROKE_RADICALS,
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_10_STROKE_RADICALS,
   goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_11_17_STROKE_RADICALS,
-  goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_OTHER,
-  goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_MISCELLANEOUS
+  goog.i18n.CharPickerData.SUBCATEGORY_NAMES_OF_HAN_OTHER
 ];
 
 
@@ -3156,6 +3638,7 @@ goog.i18n.CharPickerData.prototype.subcategories = [
  */
 goog.i18n.CharPickerData.prototype.charList = [
   goog.i18n.CharPickerData.CHARLIST_OF_SYMBOL,
+  goog.i18n.CharPickerData.CHARLIST_OF_EMOJI,
   goog.i18n.CharPickerData.CHARLIST_OF_PUNCTUATION,
   goog.i18n.CharPickerData.CHARLIST_OF_NUMBER,
   goog.i18n.CharPickerData.CHARLIST_OF_FORMAT_WHITESPACE,
@@ -3180,6 +3663,5 @@ goog.i18n.CharPickerData.prototype.charList = [
   goog.i18n.CharPickerData.CHARLIST_OF_HAN_9_STROKE_RADICALS,
   goog.i18n.CharPickerData.CHARLIST_OF_HAN_10_STROKE_RADICALS,
   goog.i18n.CharPickerData.CHARLIST_OF_HAN_11_17_STROKE_RADICALS,
-  goog.i18n.CharPickerData.CHARLIST_OF_HAN_OTHER,
-  goog.i18n.CharPickerData.CHARLIST_OF_MISCELLANEOUS
+  goog.i18n.CharPickerData.CHARLIST_OF_HAN_OTHER
 ];

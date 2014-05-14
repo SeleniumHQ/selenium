@@ -34,6 +34,7 @@ goog.provide('goog.testing.stacktrace.Frame');
  * @param {string} path File path or URL including line number and optionally
  *     column number separated by colons.
  * @constructor
+ * @final
  */
 goog.testing.stacktrace.Frame = function(context, name, alias, args, path) {
   this.context_ = context;
@@ -284,6 +285,7 @@ goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp('^   at ' +
  * {@link goog.debug.getStacktrace}.
  * @return {!Array.<!goog.testing.stacktrace.Frame>} Stack frames.
  * @private
+ * @suppress {es5Strict}
  */
 goog.testing.stacktrace.followCallChain_ = function() {
   var frames = [];
@@ -530,11 +532,16 @@ goog.testing.stacktrace.canonicalize = function(stack) {
 
 
 /**
- * Gets the native stack trace if available otherwise follows the call chain.
- * @return {string} The stack trace in canonical format.
+ * Returns the native stack trace.
+ * @return {string|!Array.<!CallSite>}
+ * @private
  */
-goog.testing.stacktrace.get = function() {
-  var stack = '';
+goog.testing.stacktrace.getNativeStack_ = function() {
+  var tmpError = new Error();
+  if (tmpError.stack) {
+    return tmpError.stack;
+  }
+
   // IE10 will only create a stack trace when the Error is thrown.
   // We use null.x() to throw an exception because the closure compiler may
   // replace "throw" with a function call in an attempt to minimize the binary
@@ -542,12 +549,50 @@ goog.testing.stacktrace.get = function() {
   try {
     null.x();
   } catch (e) {
-    stack = e.stack;
+    return e.stack;
   }
+  return '';
+};
 
-  var frames = stack ? goog.testing.stacktrace.parse_(stack) :
-      goog.testing.stacktrace.followCallChain_();
+
+/**
+ * Gets the native stack trace if available otherwise follows the call chain.
+ * @return {string} The stack trace in canonical format.
+ */
+goog.testing.stacktrace.get = function() {
+  var stack = goog.testing.stacktrace.getNativeStack_();
+  var frames;
+  if (!stack) {
+    frames = goog.testing.stacktrace.followCallChain_();
+  } else if (goog.isArray(stack)) {
+    frames = goog.testing.stacktrace.callSitesToFrames_(stack);
+  } else {
+    frames = goog.testing.stacktrace.parse_(stack);
+  }
   return goog.testing.stacktrace.framesToString_(frames);
+};
+
+
+/**
+ * Converts an array of CallSite (elements of a stack trace in V8) to an array
+ * of Frames.
+ * @param {!Array.<!CallSite>} stack The stack as an array of CallSites.
+ * @return {!Array.<!goog.testing.stacktrace.Frame>} The stack as an array of
+ *     Frames.
+ * @private
+ */
+goog.testing.stacktrace.callSitesToFrames_ = function(stack) {
+  var frames = [];
+  for (var i = 0; i < stack.length; i++) {
+    var callSite = stack[i];
+    var functionName = callSite.getFunctionName() || 'unknown';
+    var fileName = callSite.getFileName();
+    var path = fileName ? fileName + ':' + callSite.getLineNumber() + ':' +
+        callSite.getColumnNumber() : 'unknown';
+    frames.push(
+        new goog.testing.stacktrace.Frame('', functionName, '', '', path));
+  }
+  return frames;
 };
 
 

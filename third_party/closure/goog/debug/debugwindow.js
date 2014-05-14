@@ -136,9 +136,8 @@ goog.debug.DebugWindow.prototype.enableOnSevere_ = false;
  * Reference to debug window
  * @type {Window}
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.win_ = null;
+goog.debug.DebugWindow.prototype.win = null;
 
 
 /**
@@ -303,7 +302,7 @@ goog.debug.DebugWindow.prototype.addSeparator = function() {
  * @return {boolean} Whether there is an active window.
  */
 goog.debug.DebugWindow.prototype.hasActiveWindow = function() {
-  return !!this.win_ && !this.win_.closed;
+  return !!this.win && !this.win.closed;
 };
 
 
@@ -381,15 +380,15 @@ goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
 goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
   this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
-    var body = this.win_.document.body;
+    var body = this.win.document.body;
     var scroll = body &&
         body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
 
-    this.win_.document.write(this.outputBuffer.join(''));
+    this.win.document.write(this.outputBuffer.join(''));
     this.outputBuffer.length = 0;
 
     if (scroll) {
-      this.win_.scrollTo(0, 1000000);
+      this.win.scrollTo(0, 1000000);
     }
   }
 };
@@ -423,12 +422,12 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
   var h = Number(winpos[3]);
 
   this.winOpening_ = true;
-  this.win_ = window.open('', this.getWindowName_(), 'width=' + w +
+  this.win = window.open('', this.getWindowName_(), 'width=' + w +
                           ',height=' + h + ',toolbar=no,resizable=yes,' +
                           'scrollbars=yes,left=' + x + ',top=' + y +
                           ',status=no,screenx=' + x + ',screeny=' + y);
 
-  if (!this.win_) {
+  if (!this.win) {
     if (!this.showedBlockedAlert_) {
       // only show this once
       alert('Logger popup was blocked');
@@ -438,7 +437,7 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
 
   this.winOpening_ = false;
 
-  if (this.win_) {
+  if (this.win) {
     this.writeInitialDocument();
   }
 };
@@ -480,7 +479,7 @@ goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
     return;
   }
 
-  this.win_.document.open();
+  this.win.document.open();
 
   var html = '<style>' + this.getStyleRules() + '</style>' +
              '<hr><div class="dbg-ev" style="text-align:center">' +
@@ -577,10 +576,10 @@ goog.debug.DebugWindow.prototype.saveWindowPositionSize_ = function() {
   if (!this.hasActiveWindow()) {
     return;
   }
-  var x = this.win_.screenX || this.win_.screenLeft || 0;
-  var y = this.win_.screenY || this.win_.screenTop || 0;
-  var w = this.win_.outerWidth || 800;
-  var h = this.win_.outerHeight || 500;
+  var x = this.win.screenX || this.win.screenLeft || 0;
+  var y = this.win.screenY || this.win.screenTop || 0;
+  var w = this.win.outerWidth || 800;
+  var h = this.win.outerHeight || 500;
   this.setCookie_('dbg', x + ',' + y + ',' + w + ',' + h);
 };
 

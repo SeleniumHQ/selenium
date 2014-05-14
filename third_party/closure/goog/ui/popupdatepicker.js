@@ -24,17 +24,18 @@ goog.provide('goog.ui.PopupDatePicker');
 goog.require('goog.events.EventType');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
+goog.require('goog.positioning.Overflow');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.DatePicker');
-goog.require('goog.ui.DatePicker.Events');
 goog.require('goog.ui.Popup');
-goog.require('goog.ui.PopupBase.EventType');
+goog.require('goog.ui.PopupBase');
 
 
 
 /**
- * Popup date picker widget.
+ * Popup date picker widget. Fires goog.ui.PopupBase.EventType.SHOW or HIDE
+ * events when its visibility changes.
  *
  * @param {goog.ui.DatePicker=} opt_datePicker Optional DatePicker.  This
  *     enables the use of a custom date-picker instance.
@@ -90,6 +91,15 @@ goog.ui.PopupDatePicker.prototype.createDom = function() {
   goog.ui.PopupDatePicker.superClass_.createDom.call(this);
   this.getElement().className = goog.getCssName('goog-popupdatepicker');
   this.popup_ = new goog.ui.Popup(this.getElement());
+  this.popup_.setParentEventTarget(this);
+};
+
+
+/**
+ * @return {boolean} Whether the date picker is visible.
+ */
+goog.ui.PopupDatePicker.prototype.isVisible = function() {
+  return this.popup_ ? this.popup_.isVisible() : false;
 };
 
 
@@ -217,7 +227,10 @@ goog.ui.PopupDatePicker.prototype.getAllowAutoFocus = function() {
 goog.ui.PopupDatePicker.prototype.showPopup = function(element) {
   this.lastTarget_ = element;
   this.popup_.setPosition(new goog.positioning.AnchoredPosition(
-      element, goog.positioning.Corner.BOTTOM_START));
+      element,
+      goog.positioning.Corner.BOTTOM_START,
+      (goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN |
+      goog.positioning.Overflow.ADJUST_Y_EXCEPT_OFFSCREEN)));
 
   // Don't listen to date changes while we're setting up the popup so we don't
   // have to worry about change events when we call setDate().

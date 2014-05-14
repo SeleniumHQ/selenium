@@ -39,7 +39,7 @@ goog.require('goog.storage.mechanism.Mechanism');
  * @extends {goog.storage.Storage}
  */
 goog.storage.RichStorage = function(mechanism) {
-  goog.base(this, mechanism);
+  goog.storage.RichStorage.base(this, 'constructor', mechanism);
 };
 goog.inherits(goog.storage.RichStorage, goog.storage.Storage);
 
@@ -61,6 +61,7 @@ goog.storage.RichStorage.DATA_KEY = 'data';
  *
  * @param {*} value The value to wrap.
  * @constructor
+ * @final
  */
 goog.storage.RichStorage.Wrapper = function(value) {
   this[goog.storage.RichStorage.DATA_KEY] = value;
@@ -116,7 +117,7 @@ goog.storage.RichStorage.Wrapper.unwrapIfPossible = function(wrapper) {
 
 /** @override */
 goog.storage.RichStorage.prototype.set = function(key, value) {
-  goog.base(this, 'set', key,
+  goog.storage.RichStorage.base(this, 'set', key,
       goog.storage.RichStorage.Wrapper.wrapIfNecessary(value));
 };
 

@@ -102,6 +102,7 @@ goog.testing.mockmatchers.ArgumentMatcher.prototype.matches =
  * @param {Function} ctor The class that will be used for verification.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.mockmatchers.InstanceOf = function(ctor) {
   goog.testing.mockmatchers.ArgumentMatcher.call(this,
@@ -123,6 +124,7 @@ goog.inherits(goog.testing.mockmatchers.InstanceOf,
  * @param {string} type The type that a given argument must have.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.mockmatchers.TypeOf = function(type) {
   goog.testing.mockmatchers.ArgumentMatcher.call(this,
@@ -140,6 +142,7 @@ goog.inherits(goog.testing.mockmatchers.TypeOf,
  * @param {RegExp} regexp The regular expression that the argument must match.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.mockmatchers.RegexpMatch = function(regexp) {
   goog.testing.mockmatchers.ArgumentMatcher.call(this,
@@ -158,6 +161,7 @@ goog.inherits(goog.testing.mockmatchers.RegexpMatch,
  * For example: mockFunction('username', 'password', IgnoreArgument);
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.mockmatchers.IgnoreArgument = function() {
   goog.testing.mockmatchers.ArgumentMatcher.call(this,
@@ -220,6 +224,7 @@ goog.testing.mockmatchers.ObjectEquals.prototype.matches =
  *      an error message for when a match fails.
  * @constructor
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
+ * @final
  */
 goog.testing.mockmatchers.SaveArgument = function(opt_matcher, opt_matchName) {
   goog.testing.mockmatchers.ArgumentMatcher.call(

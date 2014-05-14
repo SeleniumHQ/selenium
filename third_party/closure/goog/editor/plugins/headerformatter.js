@@ -29,6 +29,7 @@ goog.require('goog.userAgent');
  * Applies header styles to text.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.HeaderFormatter = function() {
   goog.editor.Plugin.call(this);

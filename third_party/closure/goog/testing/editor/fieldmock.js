@@ -41,6 +41,7 @@ goog.require('goog.testing.mockmatchers');
  * @constructor
  * @extends {goog.testing.LooseMock}
  * @suppress {missingProperties} Mocks do not fit in the type system well.
+ * @final
  */
 goog.testing.editor.FieldMock =
     function(opt_window, opt_appWindow, opt_range) {

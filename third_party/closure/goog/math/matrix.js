@@ -50,6 +50,7 @@ goog.require('goog.string');
  * @param {number=} opt_n Number of columns of the matrix (only applicable if
  *     the first argument is also numeric).
  * @constructor
+ * @final
  */
 goog.math.Matrix = function(m, opt_n) {
   if (m instanceof goog.math.Matrix) {

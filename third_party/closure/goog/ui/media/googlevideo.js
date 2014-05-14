@@ -63,7 +63,6 @@ goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
-goog.require('goog.ui.media.MediaModel.Player');
 goog.require('goog.ui.media.MediaRenderer');
 
 
@@ -87,6 +86,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.GoogleVideo = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -106,7 +106,7 @@ goog.addSingletonGetter(goog.ui.media.GoogleVideo);
  * @param {goog.ui.media.GoogleVideoModel} dataModel The GoogleVideo data model.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.media.Media} A Control binded to the GoogleVideo renderer.
+ * @return {!goog.ui.media.Media} A Control binded to the GoogleVideo renderer.
  */
 goog.ui.media.GoogleVideo.newControl = function(dataModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
@@ -135,12 +135,12 @@ goog.ui.media.GoogleVideo.CSS_CLASS =
  * basically a the flash object pointing to a GoogleVideo video player.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {Element} The DOM structure that represents this control.
+ * @return {!Element} The DOM structure that represents this control.
  * @override
  */
 goog.ui.media.GoogleVideo.prototype.createDom = function(c) {
   var control = /** @type {goog.ui.media.Media} */ (c);
-  var div = goog.base(this, 'createDom', control);
+  var div = goog.ui.media.GoogleVideo.base(this, 'createDom', control);
 
   var dataModel =
       /** @type {goog.ui.media.GoogleVideoModel} */ (control.getDataModel());
@@ -179,6 +179,7 @@ goog.ui.media.GoogleVideo.prototype.getCssClass = function() {
  * @param {boolean=} opt_autoplay Whether to autoplay video.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
+ * @final
  */
 goog.ui.media.GoogleVideoModel = function(videoId, opt_caption, opt_description,
                                           opt_autoplay) {
@@ -223,7 +224,7 @@ goog.ui.media.GoogleVideoModel.MATCHER_ =
  * @param {string=} opt_description An optional description of the GoogleVideo
  *     video.
  * @param {boolean=} opt_autoplay Whether to autoplay video.
- * @return {goog.ui.media.GoogleVideoModel} The data model that represents the
+ * @return {!goog.ui.media.GoogleVideoModel} The data model that represents the
  *     GoogleVideo URL.
  * @see goog.ui.media.GoogleVideoModel.getVideoId()
  * @throws Error in case the parsing fails.

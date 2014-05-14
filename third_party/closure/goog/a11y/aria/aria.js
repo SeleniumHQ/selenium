@@ -31,7 +31,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.object');
-goog.require('goog.string');
 
 
 /**
@@ -104,7 +103,7 @@ goog.a11y.aria.setRole = function(element, roleName) {
 /**
  * Gets role of an element.
  * @param {!Element} element DOM element to get role of.
- * @return {?goog.a11y.aria.Role} ARIA Role name.
+ * @return {!goog.a11y.aria.Role} ARIA Role name.
  */
 goog.a11y.aria.getRole = function(element) {
   var role = element.getAttribute(goog.a11y.aria.ROLE_ATTRIBUTE_);
@@ -267,38 +266,55 @@ goog.a11y.aria.assertRoleIsSetInternalUtil = function(element, allowedRoles) {
 
 /**
  * Gets the boolean value of an ARIA state/property.
- * Only to be used internally by the ARIA library in goog.a11y.aria.*.
  * @param {!Element} element The element to get the ARIA state for.
  * @param {!goog.a11y.aria.State|string} stateName the ARIA state name.
  * @return {?boolean} Boolean value for the ARIA state value or null if
- *     the state value is not 'true' or 'false'.
+ *     the state value is not 'true', not 'false', or not set.
  */
-goog.a11y.aria.getBooleanStateInternalUtil = function(element, stateName) {
-  var stringValue = goog.a11y.aria.getState(element, stateName);
-  if (stringValue == 'true') {
-    return true;
+goog.a11y.aria.getStateBoolean = function(element, stateName) {
+  var attr =
+      /** @type {string|boolean} */ (element.getAttribute(
+          goog.a11y.aria.getAriaAttributeName_(stateName)));
+  goog.asserts.assert(
+      goog.isBoolean(attr) || attr == null || attr == 'true' ||
+          attr == 'false');
+  if (attr == null) {
+    return attr;
   }
-  if (stringValue == 'false') {
-    return false;
-  }
-  return null;
+  return goog.isBoolean(attr) ? attr : attr == 'true';
 };
 
 
 /**
  * Gets the number value of an ARIA state/property.
- * Only to be used internally by the ARIA library in goog.a11y.aria.*.
  * @param {!Element} element The element to get the ARIA state for.
  * @param {!goog.a11y.aria.State|string} stateName the ARIA state name.
  * @return {?number} Number value for the ARIA state value or null if
- *     the state value is not a number.
+ *     the state value is not a number or not set.
  */
-goog.a11y.aria.getNumberStateInternalUtil = function(element, stateName) {
-  var stringValue = goog.a11y.aria.getState(element, stateName);
-  if (goog.string.isNumeric(stringValue)) {
-    return goog.string.toNumber(stringValue);
-  }
-  return null;
+goog.a11y.aria.getStateNumber = function(element, stateName) {
+  var attr =
+      /** @type {string|number} */ (element.getAttribute(
+          goog.a11y.aria.getAriaAttributeName_(stateName)));
+  goog.asserts.assert((attr == null || !isNaN(Number(attr))) &&
+      !goog.isBoolean(attr));
+  return attr == null ? null : Number(attr);
+};
+
+
+/**
+ * Gets the string value of an ARIA state/property.
+ * @param {!Element} element The element to get the ARIA state for.
+ * @param {!goog.a11y.aria.State|string} stateName the ARIA state name.
+ * @return {?string} String value for the ARIA state value or null if
+ *     the state value is empty string or not set.
+ */
+goog.a11y.aria.getStateString = function(element, stateName) {
+  var attr = element.getAttribute(
+      goog.a11y.aria.getAriaAttributeName_(stateName));
+  goog.asserts.assert((attr == null || goog.isString(attr)) &&
+      isNaN(Number(attr)) && attr != 'true' && attr != 'false');
+  return attr == null ? null : attr;
 };
 
 
@@ -315,20 +331,6 @@ goog.a11y.aria.getStringArrayStateInternalUtil = function(element, stateName) {
   var attrValue = element.getAttribute(
       goog.a11y.aria.getAriaAttributeName_(stateName));
   return goog.a11y.aria.splitStringOnWhitespace_(attrValue);
-};
-
-
-/**
- * Gets the string value of an ARIA state/property.
- * Only to be used internally by the ARIA library in goog.a11y.aria.*.
- * @param {!Element} element The element to get the ARIA state for.
- * @param {!goog.a11y.aria.State|string} stateName the ARIA state name.
- * @return {?string} String value for the ARIA state value or null if
- *     the state value is empty string.
- */
-goog.a11y.aria.getStringStateInternalUtil = function(element, stateName) {
-  var stringValue = goog.a11y.aria.getState(element, stateName);
-  return stringValue || null;
 };
 
 

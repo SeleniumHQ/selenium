@@ -32,6 +32,7 @@ goog.require('goog.editor.range');
  * Plugin to handle tab keys when not in lists to add 4 spaces.
  * @constructor
  * @extends {goog.editor.plugins.AbstractTabHandler}
+ * @final
  */
 goog.editor.plugins.SpacesTabHandler = function() {
   goog.editor.plugins.AbstractTabHandler.call(this);

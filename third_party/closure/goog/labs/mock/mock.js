@@ -27,12 +27,14 @@
 
 
 goog.provide('goog.labs.mock');
+goog.provide('goog.labs.mock.VerificationError');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.debug.Error');
 goog.require('goog.functions');
-goog.require('goog.json');
+goog.require('goog.object');
 
 
 /**
@@ -105,7 +107,7 @@ goog.labs.mock.verify = function(obj) {
 goog.labs.mock.getFunctionName_ = function(func) {
   var funcName = goog.debug.getFunctionName(func);
   if (funcName == '' || funcName == '[Anonymous]') {
-    funcName = '#anonymous' + goog.getUid(func);
+    funcName = '#anonymous' + goog.labs.mock.getUid(func);
   }
   return funcName;
 };
@@ -125,10 +127,108 @@ goog.labs.mock.formatMethodCall_ = function(methodName, opt_args) {
       var funcName = goog.labs.mock.getFunctionName_(arg);
       return '<function ' + funcName + '>';
     } else {
-      return goog.json.serialize(arg);
+      var isObjectWithClass = goog.isObject(arg) &&
+          !goog.isFunction(arg) && !goog.isArray(arg) &&
+          arg.constructor != Object;
+
+      if (isObjectWithClass) {
+        return arg.toString();
+      }
+
+      return goog.labs.mock.formatValue_(arg);
     }
   });
   return methodName + '(' + opt_args.join(', ') + ')';
+};
+
+
+/**
+ * An array to store objects for unique id generation.
+ * @private
+ * @type {!Array.<!Object>}
+ */
+goog.labs.mock.uid_ = [];
+
+
+/**
+ * A unique Id generator that does not modify the object.
+ * @param {Object!} obj The object whose unique ID we want to generate.
+ * @return {number} an unique id for the object.
+ */
+goog.labs.mock.getUid = function(obj) {
+  var index = goog.array.indexOf(goog.labs.mock.uid_, obj);
+  if (index == -1) {
+    index = goog.labs.mock.uid_.length;
+    goog.labs.mock.uid_.push(obj);
+  }
+  return index;
+};
+
+
+/**
+ * This is just another implementation of goog.debug.deepExpose with a more
+ * compact format.
+ * @private
+ * @param {*} obj The object whose string representation will be returned.
+ * @param {boolean=} opt_id Whether to include the id of objects or not.
+ *     Defaults to true.
+ * @return {string} The string representation of the object.
+ */
+goog.labs.mock.formatValue_ = function(obj, opt_id) {
+  var id = goog.isDef(opt_id) ? opt_id : true;
+  var previous = [];
+  var output = [];
+
+  var helper = function(obj) {
+    var indentMultiline = function(output) {
+      return output.replace(/\n/g, '\n');
+    };
+
+    /** @preserveTry */
+    try {
+      if (!goog.isDef(obj)) {
+        output.push('undefined');
+      } else if (goog.isNull(obj)) {
+        output.push('NULL');
+      } else if (goog.isString(obj)) {
+        output.push('"' + indentMultiline(obj) + '"');
+      } else if (goog.isFunction(obj)) {
+        var funcName = goog.labs.mock.getFunctionName_(obj);
+        output.push('<function ' + funcName + '>');
+      } else if (goog.isObject(obj)) {
+        if (goog.array.contains(previous, obj)) {
+          if (id) {
+            output.push('<recursive/dupe obj_' +
+                goog.labs.mock.getUid(obj) + '>');
+          } else {
+            output.push('<recursive/dupe>');
+          }
+        } else {
+          previous.push(obj);
+          output.push('{');
+          var inner_obj = [];
+          for (var x in obj) {
+            output.push(' ');
+            output.push('"' + x + '"' + ':');
+            helper(obj[x]);
+          }
+          if (id) {
+            output.push(' _id:' + goog.labs.mock.getUid(obj));
+          }
+          output.push('}');
+        }
+      } else {
+        output.push(obj);
+      }
+    } catch (e) {
+      output.push('*** ' + e + ' ***');
+    }
+  };
+
+  helper(obj);
+  return output.join('').replace(/"closure_uid_\d+"/g, '_id')
+      .replace(/{ /g, '{');
+
 };
 
 
@@ -142,11 +242,12 @@ goog.labs.mock.formatMethodCall_ = function(methodName, opt_args) {
  * @param {!Array} args The expected arguments.
  * @constructor
  * @extends {goog.debug.Error}
+ * @final
  */
 goog.labs.mock.VerificationError = function(recordedCalls, methodName, args) {
   var msg = goog.labs.mock.VerificationError.getVerificationErrorMsg_(
       recordedCalls, methodName, args);
-  goog.base(this, msg);
+  goog.labs.mock.VerificationError.base(this, 'constructor', msg);
 };
 goog.inherits(goog.labs.mock.VerificationError, goog.debug.Error);
 
@@ -213,6 +314,7 @@ goog.labs.mock.VerificationError.getVerificationErrorMsg_ =
  * other things.
  *
  * @constructor
+ * @struct
  * @private
  */
 goog.labs.mock.MockManager_ = function() {
@@ -368,7 +470,6 @@ goog.labs.mock.MockManager_.prototype.recordCall_ =
  *
  * @param {string} methodName The name of the method.
  * @param {...} var_args The arguments passed.
- * @return {!Function} The stub, if defined, or the spy method.
  * @protected
  */
 goog.labs.mock.MockManager_.prototype.verifyInvocation =
@@ -395,11 +496,12 @@ goog.labs.mock.MockManager_.prototype.verifyInvocation =
  *     for. A class is a constructor function.
  *
  * @constructor
+ * @struct
  * @extends {goog.labs.mock.MockManager_}
  * @private
  */
 goog.labs.mock.MockObjectManager_ = function(objOrClass) {
-  goog.base(this);
+  goog.labs.mock.MockObjectManager_.base(this, 'constructor');
 
   /**
    * Proxies the calls to establish the first step of the stub bindings (object
@@ -422,7 +524,10 @@ goog.labs.mock.MockObjectManager_ = function(objOrClass) {
   if (goog.isFunction(objOrClass)) {
     // Create a temporary subclass with a no-op constructor so that we can
     // create an instance and determine what methods it has.
-    /** @constructor */
+    /**
+ * @constructor
+ * @final
+ */
     var tempCtor = function() {};
     goog.inherits(tempCtor, objOrClass);
     obj = new tempCtor();
@@ -432,7 +537,10 @@ goog.labs.mock.MockObjectManager_ = function(objOrClass) {
 
   // Put the object being mocked in the prototype chain of the mock so that
   // it has all the correct properties and instanceof works.
-  /** @constructor */
+  /**
+ * @constructor
+ * @final
+ */
   var mockedItemCtor = function() {};
   mockedItemCtor.prototype = obj;
   this.mockedItem = new mockedItemCtor();
@@ -479,11 +587,12 @@ goog.inherits(goog.labs.mock.MockObjectManager_,
  * @param {!Object} obj The object to be spied on.
  *
  * @constructor
+ * @struct
  * @extends {goog.labs.mock.MockObjectManager_}
  * @private
  */
 goog.labs.mock.MockSpyManager_ = function(obj) {
-  goog.base(this, obj);
+  goog.labs.mock.MockSpyManager_.base(this, 'constructor', obj);
 };
 goog.inherits(goog.labs.mock.MockSpyManager_,
               goog.labs.mock.MockObjectManager_);
@@ -493,12 +602,13 @@ goog.inherits(goog.labs.mock.MockSpyManager_,
  * Return a stub, if defined, for the method and arguments passed in. If we lack
  * a stub, instead look for a call record that matches the method and arguments.
  *
- * @return {Function} The stub or the invocation logger, if defined.
+ * @return {!Function} The stub or the invocation logger, if defined.
  * @override
  */
 goog.labs.mock.MockSpyManager_.prototype.findBinding =
     function(methodName, args) {
-  var stub = goog.base(this, 'findBinding', methodName, args);
+  var stub = goog.labs.mock.MockSpyManager_.base(
+      this, 'findBinding', methodName, args);
 
   if (!stub) {
     stub = goog.bind(this.mockee[methodName], this.mockee);
@@ -517,11 +627,12 @@ goog.labs.mock.MockSpyManager_.prototype.findBinding =
  * @param {!Function} func The function to set up the mock for.
  *
  * @constructor
+ * @struct
  * @extends {goog.labs.mock.MockManager_}
  * @private
  */
 goog.labs.mock.MockFunctionManager_ = function(func) {
-  goog.base(this);
+  goog.labs.mock.MockFunctionManager_.base(this, 'constructor');
 
   this.func_ = func;
 
@@ -579,6 +690,7 @@ goog.labs.mock.MockFunctionManager_.prototype.useMockedFunctionName_ =
  * @param {!Array} args The other arguments to the method.
  *
  * @constructor
+ * @struct
  * @private
  */
 goog.labs.mock.StubBinder_ = function(mockManager, name, args) {
@@ -652,6 +764,7 @@ goog.labs.mock.when = function(mockObject) {
  * @param {!Array} args The arguments passed to the method.
  * @param {!Function} stub The stub function to be called for the given method.
  * @constructor
+ * @struct
  * @private
  */
 goog.labs.mock.MethodBinding_ = function(methodName, args, stub) {

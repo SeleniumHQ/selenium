@@ -43,9 +43,11 @@ goog.require('goog.structs.Map');
  * are two different objects.  WARNING: Any object that is added to a
  * goog.structs.Set will be modified!  Because goog.getUid() is used to
  * identify objects, every object in the set will be mutated.
- * @param {Array|Object=} opt_values Initial values to start with.
+ * @param {Array.<T>|Object.<?,T>=} opt_values Initial values to start with.
  * @constructor
- * @implements {goog.structs.Collection}
+ * @implements {goog.structs.Collection.<T>}
+ * @final
+ * @template T
  */
 goog.structs.Set = function(opt_values) {
   this.map_ = new goog.structs.Map;
@@ -84,7 +86,7 @@ goog.structs.Set.prototype.getCount = function() {
 
 /**
  * Add a primitive or an object to the set.
- * @param {*} element The primitive or object to add.
+ * @param {T} element The primitive or object to add.
  * @override
  */
 goog.structs.Set.prototype.add = function(element) {
@@ -94,7 +96,8 @@ goog.structs.Set.prototype.add = function(element) {
 
 /**
  * Adds all the values in the given collection to this set.
- * @param {Array|Object} col A collection containing the elements to add.
+ * @param {Array.<T>|goog.structs.Collection.<T>|Object.<?,T>} col A collection
+ *     containing the elements to add.
  */
 goog.structs.Set.prototype.addAll = function(col) {
   var values = goog.structs.getValues(col);
@@ -107,7 +110,8 @@ goog.structs.Set.prototype.addAll = function(col) {
 
 /**
  * Removes all values in the given collection from this set.
- * @param {Array|Object} col A collection containing the elements to remove.
+ * @param {Array.<T>|goog.structs.Collection.<T>|Object.<?,T>} col A collection
+ *     containing the elements to remove.
  */
 goog.structs.Set.prototype.removeAll = function(col) {
   var values = goog.structs.getValues(col);
@@ -120,7 +124,7 @@ goog.structs.Set.prototype.removeAll = function(col) {
 
 /**
  * Removes the given element from this set.
- * @param {*} element The primitive or object to remove.
+ * @param {T} element The primitive or object to remove.
  * @return {boolean} Whether the element was found and removed.
  * @override
  */
@@ -148,7 +152,7 @@ goog.structs.Set.prototype.isEmpty = function() {
 
 /**
  * Tests whether this set contains the given element.
- * @param {*} element The primitive or object to test for.
+ * @param {T} element The primitive or object to test for.
  * @return {boolean} True if this set contains the given element.
  * @override
  */
@@ -161,7 +165,7 @@ goog.structs.Set.prototype.contains = function(element) {
  * Tests whether this set contains all the values in a given collection.
  * Repeated elements in the collection are ignored, e.g.  (new
  * goog.structs.Set([1, 2])).containsAll([1, 1]) is True.
- * @param {Object} col A collection-like object.
+ * @param {goog.structs.Collection.<T>|Object} col A collection-like object.
  * @return {boolean} True if the set contains all elements.
  */
 goog.structs.Set.prototype.containsAll = function(col) {
@@ -171,9 +175,11 @@ goog.structs.Set.prototype.containsAll = function(col) {
 
 /**
  * Finds all values that are present in both this set and the given collection.
- * @param {Array|Object} col A collection.
- * @return {!goog.structs.Set} A new set containing all the values (primitives
- *     or objects) present in both this set and the given collection.
+ * @param {Array.<S>|Object.<?,S>} col A collection.
+ * @return {!goog.structs.Set.<T|S>} A new set containing all the values
+ *     (primitives or objects) present in both this set and the given
+ *     collection.
+ * @template S
  */
 goog.structs.Set.prototype.intersection = function(col) {
   var result = new goog.structs.Set();
@@ -193,7 +199,7 @@ goog.structs.Set.prototype.intersection = function(col) {
 /**
  * Finds all values that are present in this set and not in the given
  * collection.
- * @param {Array|Object} col A collection.
+ * @param {Array.<T>|goog.structs.Collection.<T>|Object.<?,T>} col A collection.
  * @return {!goog.structs.Set} A new set containing all the values
  *     (primitives or objects) present in this set but not in the given
  *     collection.
@@ -207,7 +213,7 @@ goog.structs.Set.prototype.difference = function(col) {
 
 /**
  * Returns an array containing all the elements in this set.
- * @return {!Array} An array containing all the elements in this set.
+ * @return {!Array.<T>} An array containing all the elements in this set.
  */
 goog.structs.Set.prototype.getValues = function() {
   return this.map_.getValues();
@@ -216,7 +222,7 @@ goog.structs.Set.prototype.getValues = function() {
 
 /**
  * Creates a shallow clone of this set.
- * @return {!goog.structs.Set} A new set containing all the same elements as
+ * @return {!goog.structs.Set.<T>} A new set containing all the same elements as
  *     this set.
  */
 goog.structs.Set.prototype.clone = function() {
@@ -229,7 +235,7 @@ goog.structs.Set.prototype.clone = function() {
  * regardless of order, without repetition.  Primitives are treated as equal if
  * they have the same type and convert to the same string; objects are treated
  * as equal if they are references to the same object.  This operation is O(n).
- * @param {Object} col A collection.
+ * @param {goog.structs.Collection.<T>|Object} col A collection.
  * @return {boolean} True if the given collection consists of the same elements
  *     as this set, regardless of order, without repetition.
  */
@@ -243,7 +249,7 @@ goog.structs.Set.prototype.equals = function(col) {
  * Primitives are treated as equal if they have the same type and convert to the
  * same string; objects are treated as equal if they are references to the same
  * object.  This operation is O(n).
- * @param {Object} col A collection.
+ * @param {goog.structs.Collection.<T>|Object} col A collection.
  * @return {boolean} True if this set is a subset of the given collection.
  */
 goog.structs.Set.prototype.isSubsetOf = function(col) {

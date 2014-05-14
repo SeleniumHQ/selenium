@@ -66,7 +66,7 @@ goog.require('goog.style.transition');
  */
 goog.fx.css3.Transition = function(
     element, duration, initialStyle, finalStyle, transitions) {
-  goog.base(this);
+  goog.fx.css3.Transition.base(this, 'constructor');
 
   /**
    * @type {Element}
@@ -183,7 +183,7 @@ goog.fx.css3.Transition.prototype.stop_ = function(stopped) {
 /** @override */
 goog.fx.css3.Transition.prototype.disposeInternal = function() {
   this.stop();
-  goog.base(this, 'disposeInternal');
+  goog.fx.css3.Transition.base(this, 'disposeInternal');
 };
 
 

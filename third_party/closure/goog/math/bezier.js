@@ -45,6 +45,7 @@ goog.require('goog.math.Coordinate');
  * @param {number} x3 X coordinate of the end point.
  * @param {number} y3 Y coordinate of the end point.
  * @constructor
+ * @final
  */
 goog.math.Bezier = function(x0, y0, x1, y1, x2, y2, x3, y3) {
   /**
@@ -147,38 +148,66 @@ goog.math.Bezier.prototype.flip = function() {
 
 
 /**
+ * Computes the curve's X coordinate at a point between 0 and 1.
+ * @param {number} t The point on the curve to find.
+ * @return {number} The computed coordinate.
+ */
+goog.math.Bezier.prototype.getPointX = function(t) {
+  // Special case start and end.
+  if (t == 0) {
+    return this.x0;
+  } else if (t == 1) {
+    return this.x3;
+  }
+
+  // Step one - from 4 points to 3
+  var ix0 = goog.math.lerp(this.x0, this.x1, t);
+  var ix1 = goog.math.lerp(this.x1, this.x2, t);
+  var ix2 = goog.math.lerp(this.x2, this.x3, t);
+
+  // Step two - from 3 points to 2
+  ix0 = goog.math.lerp(ix0, ix1, t);
+  ix1 = goog.math.lerp(ix1, ix2, t);
+
+  // Final step - last point
+  return goog.math.lerp(ix0, ix1, t);
+};
+
+
+/**
+ * Computes the curve's Y coordinate at a point between 0 and 1.
+ * @param {number} t The point on the curve to find.
+ * @return {number} The computed coordinate.
+ */
+goog.math.Bezier.prototype.getPointY = function(t) {
+  // Special case start and end.
+  if (t == 0) {
+    return this.y0;
+  } else if (t == 1) {
+    return this.y3;
+  }
+
+  // Step one - from 4 points to 3
+  var iy0 = goog.math.lerp(this.y0, this.y1, t);
+  var iy1 = goog.math.lerp(this.y1, this.y2, t);
+  var iy2 = goog.math.lerp(this.y2, this.y3, t);
+
+  // Step two - from 3 points to 2
+  iy0 = goog.math.lerp(iy0, iy1, t);
+  iy1 = goog.math.lerp(iy1, iy2, t);
+
+  // Final step - last point
+  return goog.math.lerp(iy0, iy1, t);
+};
+
+
+/**
  * Computes the curve at a point between 0 and 1.
  * @param {number} t The point on the curve to find.
  * @return {!goog.math.Coordinate} The computed coordinate.
  */
 goog.math.Bezier.prototype.getPoint = function(t) {
-  // Special case start and end
-  if (t == 0) {
-    return new goog.math.Coordinate(this.x0, this.y0);
-  } else if (t == 1) {
-    return new goog.math.Coordinate(this.x3, this.y3);
-  }
-
-  // Step one - from 4 points to 3
-  var ix0 = goog.math.lerp(this.x0, this.x1, t);
-  var iy0 = goog.math.lerp(this.y0, this.y1, t);
-
-  var ix1 = goog.math.lerp(this.x1, this.x2, t);
-  var iy1 = goog.math.lerp(this.y1, this.y2, t);
-
-  var ix2 = goog.math.lerp(this.x2, this.x3, t);
-  var iy2 = goog.math.lerp(this.y2, this.y3, t);
-
-  // Step two - from 3 points to 2
-  ix0 = goog.math.lerp(ix0, ix1, t);
-  iy0 = goog.math.lerp(iy0, iy1, t);
-
-  ix1 = goog.math.lerp(ix1, ix2, t);
-  iy1 = goog.math.lerp(iy1, iy2, t);
-
-  // Final step - last point
-  return new goog.math.Coordinate(goog.math.lerp(ix0, ix1, t),
-      goog.math.lerp(iy0, iy1, t));
+  return new goog.math.Coordinate(this.getPointX(t), this.getPointY(t));
 };
 
 
@@ -246,9 +275,9 @@ goog.math.Bezier.prototype.subdivide = function(s, t) {
 
 /**
  * Computes the position t of a point on the curve given its x coordinate.
- * That is, for an input xVal, finds t s.t. getPoint(t).x = xVal.
+ * That is, for an input xVal, finds t s.t. getPointX(t) = xVal.
  * As such, the following should always be true up to some small epsilon:
- * t ~ solvePositionFromXValue(getPoint(t).x) for t in [0, 1].
+ * t ~ solvePositionFromXValue(getPointX(t)) for t in [0, 1].
  * @param {number} xVal The x coordinate of the point to find on the curve.
  * @return {number} The position t.
  */
@@ -268,8 +297,8 @@ goog.math.Bezier.prototype.solvePositionFromXValue = function(xVal) {
   var tMin = 0;
   var tMax = 1;
   for (var i = 0; i < 8; i++) {
-    var value = this.getPoint(t).x;
-    var derivative = (this.getPoint(t + epsilon).x - value) / epsilon;
+    var value = this.getPointX(t);
+    var derivative = (this.getPointX(t + epsilon) - value) / epsilon;
     if (Math.abs(value - xVal) < epsilon) {
       return t;
     } else if (Math.abs(derivative) < epsilon) {
@@ -295,7 +324,7 @@ goog.math.Bezier.prototype.solvePositionFromXValue = function(xVal) {
       tMax = t;
       t = (t + tMin) / 2;
     }
-    value = this.getPoint(t).x;
+    value = this.getPointX(t);
   }
   return t;
 };
@@ -307,5 +336,5 @@ goog.math.Bezier.prototype.solvePositionFromXValue = function(xVal) {
  * @return {number} The y coordinate of the point on the curve.
  */
 goog.math.Bezier.prototype.solveYValueFromXValue = function(xVal) {
-  return this.getPoint(this.solvePositionFromXValue(xVal)).y;
+  return this.getPointY(this.solvePositionFromXValue(xVal));
 };

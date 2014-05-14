@@ -74,6 +74,7 @@ goog.require('goog.i18n.pluralRules');
  * @param {string} pattern The pattern we parse and apply positional parameters
  *     to.
  * @constructor
+ * @final
  */
 goog.i18n.MessageFormat = function(pattern) {
   /**
@@ -343,9 +344,9 @@ goog.i18n.MessageFormat.prototype.formatSelectBlock_ = function(
  * @param {!Object} parsedPattern JSON object containing plural block info.
  * @param {!Object} namedParameters Parameters that either influence
  *     the formatting or are used as actual data.
- * @param {!function(number):string} pluralSelector  A select function from
- *     goog.i18n.pluralRules or goog.i18n.ordinalRules which determines which
- *     plural/ordinal form to use based on the input number's cardinality.
+ * @param {!function(number, number=):string} pluralSelector  A select function
+ *     from goog.i18n.pluralRules or goog.i18n.ordinalRules which determines
+ *     which plural/ordinal form to use based on the input number's cardinality.
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
  *     literary character, else treat it as an ICU syntax character, resolving
  *     to the number (plural_variable - offset).
@@ -369,8 +370,15 @@ goog.i18n.MessageFormat.prototype.formatPluralOrdinalBlock_ = function(
   var option = parsedPattern[namedParameters[argumentIndex]];
   if (!goog.isDef(option)) {
     goog.asserts.assert(diff >= 0, 'Argument index smaller than offset.');
-
-    var item = pluralSelector(diff);
+    var item;
+    if (this.numberFormatter_.getMinimumFractionDigits) { // number formatter?
+      // If we know the number of fractional digits we can make better decisions
+      // We can decide (for instance) between "1 dollar" and "1.00 dollars".
+      item = pluralSelector(diff,
+          this.numberFormatter_.getMinimumFractionDigits());
+    } else {
+      item = pluralSelector(diff);
+    }
     goog.asserts.assertString(item, 'Invalid plural key.');
 
     option = parsedPattern[item];
@@ -449,7 +457,7 @@ goog.i18n.MessageFormat.prototype.insertPlaceholders_ = function(pattern) {
 /**
  * Breaks pattern into strings and top level {...} blocks.
  * @param {string} pattern (sub)Pattern to be broken.
- * @return {Array.<Object>} Each item is {type, value}.
+ * @return {!Array.<Object>} Each item is {type, value}.
  * @private
  */
 goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {
@@ -615,7 +623,7 @@ goog.i18n.MessageFormat.prototype.parseBlock_ = function(pattern) {
 /**
  * Parses a select type of a block and produces JSON object for it.
  * @param {string} pattern Subpattern that needs to be parsed as select pattern.
- * @return {Object} Object with select block info.
+ * @return {!Object} Object with select block info.
  * @private
  */
 goog.i18n.MessageFormat.prototype.parseSelectBlock_ = function(pattern) {
@@ -657,7 +665,7 @@ goog.i18n.MessageFormat.prototype.parseSelectBlock_ = function(pattern) {
 /**
  * Parses a plural type of a block and produces JSON object for it.
  * @param {string} pattern Subpattern that needs to be parsed as plural pattern.
- * @return {Object} Object with select block info.
+ * @return {!Object} Object with select block info.
  * @private
  */
 goog.i18n.MessageFormat.prototype.parsePluralBlock_ = function(pattern) {
@@ -715,7 +723,7 @@ goog.i18n.MessageFormat.prototype.parsePluralBlock_ = function(pattern) {
  *   other: [ { type: 4, value: 'Message B' } ]
  * }
  * @param {string} pattern Subpattern that needs to be parsed as plural pattern.
- * @return {Object} Object with select block info.
+ * @return {!Object} Object with select block info.
  * @private
  */
 goog.i18n.MessageFormat.prototype.parseOrdinalBlock_ = function(pattern) {

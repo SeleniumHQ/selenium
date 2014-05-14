@@ -339,7 +339,7 @@ goog.Uri.prototype.resolve = function(relativeUri) {
 
 /**
  * Clones the URI instance.
- * @return {!goog.Uri} New instance of the URI objcet.
+ * @return {!goog.Uri} New instance of the URI object.
  */
 goog.Uri.prototype.clone = function() {
   return new goog.Uri(this);
@@ -571,7 +571,7 @@ goog.Uri.prototype.getDecodedQuery = function() {
 
 /**
  * Returns the query data.
- * @return {goog.Uri.QueryData} QueryData object.
+ * @return {!goog.Uri.QueryData} QueryData object.
  */
 goog.Uri.prototype.getQueryData = function() {
   return this.queryData_;
@@ -635,7 +635,7 @@ goog.Uri.prototype.setParameterValues = function(key, values) {
  * Returns the value<b>s</b> for a given cgi parameter as a list of decoded
  * query parameter values.
  * @param {string} name The parameter to get values for.
- * @return {Array} The values for a given cgi parameter as a list of
+ * @return {!Array} The values for a given cgi parameter as a list of
  *     decoded query parameter values.
  */
 goog.Uri.prototype.getParameterValues = function(name) {
@@ -1021,6 +1021,7 @@ goog.Uri.haveSameDomain = function(uri1String, uri2String) {
  * @param {boolean=} opt_ignoreCase If true, ignore the case of the parameter
  *     name in #get.
  * @constructor
+ * @final
  */
 goog.Uri.QueryData = function(opt_query, opt_uri, opt_ignoreCase) {
   /**
@@ -1137,7 +1138,7 @@ goog.Uri.QueryData.createFromKeysValues = function(
  * We need to use a Map because we cannot guarantee that the key names will
  * not be problematic for IE.
  *
- * @type {goog.structs.Map}
+ * @type {goog.structs.Map.<string, Array>}
  * @private
  */
 goog.Uri.QueryData.prototype.keyMap_ = null;
@@ -1277,7 +1278,7 @@ goog.Uri.QueryData.prototype.getKeys = function() {
 goog.Uri.QueryData.prototype.getValues = function(opt_key) {
   this.ensureKeyMapInitialized_();
   var rv = [];
-  if (opt_key) {
+  if (goog.isString(opt_key)) {
     if (this.containsKey(opt_key)) {
       rv = goog.array.concat(rv, this.keyMap_.get(this.getKeyName_(opt_key)));
     }
@@ -1416,9 +1417,8 @@ goog.Uri.QueryData.prototype.invalidateCache_ = function() {
  */
 goog.Uri.QueryData.prototype.filterKeys = function(keys) {
   this.ensureKeyMapInitialized_();
-  goog.structs.forEach(this.keyMap_,
-      /** @this {goog.Uri.QueryData} */
-      function(value, key, map) {
+  this.keyMap_.forEach(
+      function(value, key) {
         if (!goog.array.contains(keys, key)) {
           this.remove(key);
         }
@@ -1469,8 +1469,7 @@ goog.Uri.QueryData.prototype.setIgnoreCase = function(ignoreCase) {
   if (resetKeys) {
     this.ensureKeyMapInitialized_();
     this.invalidateCache_();
-    goog.structs.forEach(this.keyMap_,
-        /** @this {goog.Uri.QueryData} */
+    this.keyMap_.forEach(
         function(value, key) {
           var lowerCase = key.toLowerCase();
           if (key != lowerCase) {

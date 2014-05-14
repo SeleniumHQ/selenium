@@ -44,6 +44,7 @@ goog.provide('goog.math.Integer');
  * @constructor
  * @param {Array.<number>} bits Array containing the bits of the number.
  * @param {number} sign The sign of the number: -1 for negative and 0 positive.
+ * @final
  */
 goog.math.Integer = function(bits, sign) {
   /**

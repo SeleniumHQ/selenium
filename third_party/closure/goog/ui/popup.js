@@ -29,14 +29,12 @@ goog.provide('goog.ui.Popup.ViewPortClientPosition');
 goog.provide('goog.ui.Popup.ViewPortPosition');
 
 goog.require('goog.math.Box');
-goog.require('goog.positioning');
 goog.require('goog.positioning.AbsolutePosition');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.AnchoredViewportPosition');
 goog.require('goog.positioning.ClientPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.Overflow');
-goog.require('goog.positioning.OverflowStatus');
 goog.require('goog.positioning.ViewportClientPosition');
 goog.require('goog.positioning.ViewportPosition');
 goog.require('goog.style');
@@ -74,7 +72,7 @@ goog.ui.Popup = function(opt_element, opt_position) {
    *
    * @type {goog.positioning.AbstractPosition|undefined}
    * @protected
-   * @suppress {underscore}
+   * @suppress {underscore|visibility}
    */
   this.position_ = opt_position || undefined;
   goog.ui.PopupBase.call(this, opt_element);
@@ -240,6 +238,7 @@ goog.ui.Popup.prototype.reposition = function() {
  *
  * @deprecated Use {@link goog.positioning.AnchoredPosition} instead, this
  *     alias will be removed at the end of Q1 2009.
+ * @final
  */
 goog.ui.Popup.AnchoredPosition = goog.positioning.AnchoredPosition;
 
@@ -287,6 +286,7 @@ goog.ui.Popup.AnchoredViewPortPosition =
  *
  * @deprecated Use {@link goog.positioning.AbsolutePosition} instead, this alias
  *     will be removed at the end of Q1 2009.
+ * @final
  */
 goog.ui.Popup.AbsolutePosition = goog.positioning.AbsolutePosition;
 
@@ -325,6 +325,7 @@ goog.ui.Popup.ViewPortPosition = goog.positioning.ViewportPosition;
  *
  * @deprecated Use {@link goog.positioning.ClientPosition} instead, this alias
  *     will be removed at the end of Q1 2009.
+ * @final
  */
 goog.ui.Popup.ClientPosition = goog.positioning.ClientPosition;
 

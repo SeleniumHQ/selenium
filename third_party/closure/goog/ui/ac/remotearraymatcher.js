@@ -23,6 +23,7 @@ goog.require('goog.Disposable');
 goog.require('goog.Uri');
 goog.require('goog.events');
 goog.require('goog.json');
+goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 
 

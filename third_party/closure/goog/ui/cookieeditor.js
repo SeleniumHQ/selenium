@@ -18,6 +18,7 @@
  */
 goog.provide('goog.ui.CookieEditor');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
@@ -33,9 +34,10 @@ goog.require('goog.ui.Component');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.CookieEditor = function(opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.ui.CookieEditor.base(this, 'constructor', opt_domHelper);
 };
 goog.inherits(goog.ui.CookieEditor, goog.ui.Component);
 
@@ -127,7 +129,7 @@ goog.ui.CookieEditor.prototype.createDom = function() {
 
 /** @override */
 goog.ui.CookieEditor.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.CookieEditor.base(this, 'enterDocument');
   this.getHandler().listen(this.clearButtonElem_,
       goog.events.EventType.CLICK,
       this.handleClear_);

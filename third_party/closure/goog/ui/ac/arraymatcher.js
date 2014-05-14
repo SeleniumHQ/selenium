@@ -33,7 +33,7 @@ goog.require('goog.string');
  *     input token against the dictionary.
  */
 goog.ui.ac.ArrayMatcher = function(rows, opt_noSimilar) {
-  this.rows_ = rows;
+  this.rows_ = rows || [];
   this.useSimilar_ = !opt_noSimilar;
 };
 
@@ -43,7 +43,7 @@ goog.ui.ac.ArrayMatcher = function(rows, opt_noSimilar) {
  * @param {Array} rows Dictionary of items to match.
  */
 goog.ui.ac.ArrayMatcher.prototype.setRows = function(rows) {
-  this.rows_ = rows;
+  this.rows_ = rows || [];
 };
 
 
@@ -57,12 +57,34 @@ goog.ui.ac.ArrayMatcher.prototype.setRows = function(rows) {
 goog.ui.ac.ArrayMatcher.prototype.requestMatchingRows =
     function(token, maxMatches, matchHandler, opt_fullString) {
 
-  var matches = this.getPrefixMatches(token, maxMatches);
+  var matches = this.useSimilar_ ?
+      goog.ui.ac.ArrayMatcher.getMatchesForRows(token, maxMatches, this.rows_) :
+      this.getPrefixMatches(token, maxMatches);
 
-  if (matches.length == 0 && this.useSimilar_) {
-    matches = this.getSimilarRows(token, maxMatches);
-  }
   matchHandler(token, matches);
+};
+
+
+/**
+ * Matches the token against the specified rows, first looking for prefix
+ * matches and if that fails, then looking for similar matches.
+ *
+ * @param {string} token Token to match.
+ * @param {number} maxMatches Max number of matches to return.
+ * @param {!Array} rows Rows to search for matches. Can be objects if they have
+ *     a toString method that returns the value to match against.
+ * @return {!Array} Rows that match.
+ */
+goog.ui.ac.ArrayMatcher.getMatchesForRows =
+    function(token, maxMatches, rows) {
+  var matches =
+      goog.ui.ac.ArrayMatcher.getPrefixMatchesForRows(token, maxMatches, rows);
+
+  if (matches.length == 0) {
+    matches = goog.ui.ac.ArrayMatcher.getSimilarMatchesForRows(token,
+        maxMatches, rows);
+  }
+  return matches;
 };
 
 
@@ -70,18 +92,33 @@ goog.ui.ac.ArrayMatcher.prototype.requestMatchingRows =
  * Matches the token against the start of words in the row.
  * @param {string} token Token to match.
  * @param {number} maxMatches Max number of matches to return.
- * @return {Array} Rows that match.
+ * @return {!Array} Rows that match.
  */
 goog.ui.ac.ArrayMatcher.prototype.getPrefixMatches =
     function(token, maxMatches) {
+  return goog.ui.ac.ArrayMatcher.getPrefixMatchesForRows(token, maxMatches,
+      this.rows_);
+};
+
+
+/**
+ * Matches the token against the start of words in the row.
+ * @param {string} token Token to match.
+ * @param {number} maxMatches Max number of matches to return.
+ * @param {!Array} rows Rows to search for matches. Can be objects if they have
+ *     a toString method that returns the value to match against.
+ * @return {!Array} Rows that match.
+ */
+goog.ui.ac.ArrayMatcher.getPrefixMatchesForRows =
+    function(token, maxMatches, rows) {
   var matches = [];
 
   if (token != '') {
     var escapedToken = goog.string.regExpEscape(token);
     var matcher = new RegExp('(^|\\W+)' + escapedToken, 'i');
 
-    for (var i = 0; i < this.rows_.length && matches.length < maxMatches; i++) {
-      var row = this.rows_[i];
+    for (var i = 0; i < rows.length && matches.length < maxMatches; i++) {
+      var row = rows[i];
       if (String(row).match(matcher)) {
         matches.push(row);
       }
@@ -96,13 +133,29 @@ goog.ui.ac.ArrayMatcher.prototype.getPrefixMatches =
  * terms.
  * @param {string} token Token to match.
  * @param {number} maxMatches Max number of matches to return.
- * @return {Array} The best maxMatches rows.
+ * @return {!Array} The best maxMatches rows.
  */
 goog.ui.ac.ArrayMatcher.prototype.getSimilarRows = function(token, maxMatches) {
+  return goog.ui.ac.ArrayMatcher.getSimilarMatchesForRows(token, maxMatches,
+      this.rows_);
+};
+
+
+/**
+ * Matches the token against similar rows, by calculating "distance" between the
+ * terms.
+ * @param {string} token Token to match.
+ * @param {number} maxMatches Max number of matches to return.
+ * @param {!Array} rows Rows to search for matches. Can be objects if they have
+ *     a toString method that returns the value to match against.
+ * @return {!Array} The best maxMatches rows.
+ */
+goog.ui.ac.ArrayMatcher.getSimilarMatchesForRows =
+    function(token, maxMatches, rows) {
   var results = [];
 
-  for (var index = 0; index < this.rows_.length; index++) {
-    var row = this.rows_[index];
+  for (var index = 0; index < rows.length; index++) {
+    var row = rows[index];
     var str = token.toLowerCase();
     var txt = String(row).toLowerCase();
     var score = 0;
