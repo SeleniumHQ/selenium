@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
@@ -32,8 +34,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
@@ -54,7 +54,7 @@ public class ErrorHandler {
   private static final String UNKNOWN_METHOD = "<anonymous method>";
   private static final String UNKNOWN_FILE = null;
 
-  private final ErrorCodes errorCodes = new ErrorCodes();
+  private ErrorCodes errorCodes;
 
   private boolean includeServerErrors;
 
@@ -68,6 +68,17 @@ public class ErrorHandler {
    */
   public ErrorHandler(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
+    this.errorCodes = new ErrorCodes();
+  }
+
+  /**
+   * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
+   *        information is available.
+   * @param codes The ErrorCodes object to use for linking error codes to exceptions.
+   */
+  public ErrorHandler(ErrorCodes codes, boolean includeServerErrors) {
+    this.includeServerErrors = includeServerErrors;
+    this.errorCodes = codes;
   }
 
   public boolean isIncludeServerErrors() {
