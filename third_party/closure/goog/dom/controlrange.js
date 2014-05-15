@@ -42,7 +42,6 @@ goog.require('goog.userAgent');
  * constructor: use one of the goog.dom.Range.createFrom* methods instead.
  * @constructor
  * @extends {goog.dom.AbstractMultiRange}
- * @final
  */
 goog.dom.ControlRange = function() {
 };
@@ -53,7 +52,7 @@ goog.inherits(goog.dom.ControlRange, goog.dom.AbstractMultiRange);
  * Create a new range wrapper from the given browser range object.  Do not use
  * this method directly - please use goog.dom.Range.createFrom* instead.
  * @param {Object} controlRange The browser range object.
- * @return {!goog.dom.ControlRange} A range wrapper object.
+ * @return {goog.dom.ControlRange} A range wrapper object.
  */
 goog.dom.ControlRange.createFromBrowserRange = function(controlRange) {
   var range = new goog.dom.ControlRange();
@@ -66,7 +65,7 @@ goog.dom.ControlRange.createFromBrowserRange = function(controlRange) {
  * Create a new range wrapper that selects the given element.  Do not use
  * this method directly - please use goog.dom.Range.createFrom* instead.
  * @param {...Element} var_args The element(s) to select.
- * @return {!goog.dom.ControlRange} A range wrapper object.
+ * @return {goog.dom.ControlRange} A range wrapper object.
  */
 goog.dom.ControlRange.createFromElements = function(var_args) {
   var range = goog.dom.getOwnerDocument(arguments[0]).body.createControlRange();
@@ -191,7 +190,7 @@ goog.dom.ControlRange.prototype.getEndOffset = function() {
 
 // TODO(robbyw): Figure out how to unify getElements with TextRange API.
 /**
- * @return {!Array.<Element>} Array of elements in the control range.
+ * @return {Array.<Element>} Array of elements in the control range.
  */
 goog.dom.ControlRange.prototype.getElements = function() {
   if (!this.elements_) {
@@ -208,7 +207,7 @@ goog.dom.ControlRange.prototype.getElements = function() {
 
 
 /**
- * @return {!Array.<Element>} Array of elements comprising the control range,
+ * @return {Array.<Element>} Array of elements comprising the control range,
  *     sorted by document order.
  */
 goog.dom.ControlRange.prototype.getSortedElements = function() {
@@ -394,7 +393,6 @@ goog.dom.DomSavedControlRange_.prototype.disposeInternal = function() {
  * @param {goog.dom.ControlRange?} range The range to traverse.
  * @constructor
  * @extends {goog.dom.RangeIterator}
- * @final
  */
 goog.dom.ControlRangeIterator = function(range) {
   if (range) {
@@ -497,7 +495,7 @@ goog.dom.ControlRangeIterator.prototype.copyFrom = function(other) {
 
 
 /**
- * @return {!goog.dom.ControlRangeIterator} An identical iterator.
+ * @return {goog.dom.ControlRangeIterator} An identical iterator.
  * @override
  */
 goog.dom.ControlRangeIterator.prototype.clone = function() {

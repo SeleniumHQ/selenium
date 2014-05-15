@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.SplitPane</title>
+  <script src="../base.js"></script>
+
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.ui.Component');
+    goog.require('goog.ui.Ratings');
+    goog.require('goog.ui.ServerChart');
+    goog.require('goog.ui.SplitPane');
+    goog.require('goog.ui.SplitPane.Orientation');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style class="text/css">
+
+    /* NOTE: A bug in Safari 3 requires these css definitions to be in here.
+       Do not move these to a seperate file without testing safari 3! */
+
+    /* These are recommended styles for the default splitpane */
+    .goog-splitpane {
+      height: 200px;
+      width: 300px;
+    }
+
+    .goog-splitpane-handle {
+      border-left: 1px solid gray;
+      border-right: 1px solid gray;
+      background: #ccc;
+      position: absolute;
+    }
+
+    .goog-splitpane-handle-horizontal {
+      cursor: col-resize;
+    }
+
+    .goog-splitpane-handle-vertical {
+      cursor: row-resize;
+    }
+
+    .goog-splitpane-first-container,
+    .goog-splitpane-second-container {
+      border: 5px solid black;
+      overflow: auto;
+      position: absolute;
+    }
+
+    /* The rest of these styles are for the splitpane demo, splitpane.html */
+
+    /* Example of styling a particular handle */
+    #another-splitpane .goog-splitpane-handle {
+      background: gray;
+    }
+
+    /* The following styles are for the rating widget, which is used in the splipane
+       example.  These have nothing to do with the splitpane! */
+    .goog-ratings {
+      display: block;
+      float: left;
+      height: 20px;
+      height: 20px;
+    }
+
+    .goog-ratings-star {
+      display: block;
+      float: left;
+      padding-left: 13px;
+      height: 19px;
+      cursor: pointer;
+      background-image: url('../images/ratingstars.gif');
+      background-repeat: no-repeat;
+    }
+
+    .goog-ratings-firststar-off {
+      padding-left: 20px;
+      background-position: 0px 0px;
+    }
+
+    .goog-ratings-firststar-on {
+      padding-left: 20px;
+      background-position: 0px -20px;
+    }
+
+    .goog-ratings-midstar-off {
+      background-position: 0px -40px;
+    }
+
+    .goog-ratings-midstar-on {
+      background-position: 0px -60px;
+    }
+
+    .goog-ratings-laststar-off {
+      padding-left: 18px;
+      background-position: 0px -80px;
+    }
+
+    .goog-ratings-laststar-on {
+      padding-left: 18px;
+      background-position: 0px -100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.SplitPane</h1>
+  Left Component Size: <input type='text' id='firstComponentSize' size='4' value=''>
+  Width: <input type='text' id='newWidth' size='5' value='300'>
+  Height: <input type='text' id='newHeight' size='5' value='200'>
+  <br>
+  <input type='radio' id='select1' name='selectSplitter' checked='true' value='first'>First One
+  <input type='radio' id='select2' name='selectSplitter' value='second'>Second One
+  <input type='button' value='Update Splitter' onclick='updatePane_()'>
+  <input type='button' value='Change Orientation' onclick='changeOrientation_()'>
+  <p>
+  <div class='goog-splitpane' id='anotherSplitter'>
+    <div class='goog-splitpane-first-container'>
+      Left Frame
+    </div>
+    <div class='goog-splitpane-second-container'>
+       <iframe style='z-index:10; width:100%; height:100%' src='http://www.google.com/'></iframe>
+    </div>
+    <div class='goog-splitpane-handle'></div>
+  </div>
+  First Component Width:  <span id='componentOneWidth'></span>
+
+  <div id="test1">
+    <select name="sel">
+      <option>Aweful</option>
+      <option>Bad</option>
+      <option selected>Ok</option>
+      <option>Good</option>
+      <option>Excellent</option>
+    </select>
+  </div>
+  <p/>
+
+
+  <p/>
+  <div id="chart"></div>
+
+  <script>
+
+    /**
+     * Show the width of the first splitpane on event changes.
+     * @param {goog.events.Event} e The event
+     */
+    var showWidth_ = function(e) {
+      var el = document.getElementById('componentOneWidth');
+      if (el) {
+        goog.dom.setTextContent(el, e.target.getFirstComponentSize());
+      }
+    }
+
+    var lhs = new goog.ui.Component();
+    var rhs = new goog.ui.Component();
+
+    // Set up splitpane with already existing DOM.
+    var splitpane1 = new goog.ui.SplitPane(lhs, rhs,
+        goog.ui.SplitPane.Orientation.HORIZONTAL);
+
+    // Listen for change events and call showWidth.
+    goog.events.listen(splitpane1, goog.ui.Component.EventType.CHANGE,
+        showWidth_);
+
+
+    splitpane1.setInitialSize(100);
+    splitpane1.setHandleSize(10);
+    splitpane1.decorate(document.getElementById('anotherSplitter'));
+    splitpane1.setSize(new goog.math.Size(600,300));
+
+    var rw1 = new goog.ui.Ratings();
+    rw1.decorate(document.getElementById('test1'));
+
+    // Create a barchart to put in a splitpane
+    bar = new goog.ui.ServerChart(goog.ui.ServerChart.ChartType.BAR, 180, 104);
+    bar.addDataSet([8,23,7], '008000');
+    bar.addDataSet([31,11,7], 'ffcc33');
+    bar.addDataSet([2,43,70,3,43,74], '3072f3');
+    bar.setLeftLabels(['','20K','','60K','','100K']);
+    bar.setXLabels(['O','N','D']);
+    bar.setMaxValue(100);
+
+    var splitpane2 = new goog.ui.SplitPane(rw1, bar,
+        goog.ui.SplitPane.Orientation.HORIZONTAL);
+    splitpane2.render();
+
+    splitpane2.setContinuousResize(false);
+
+    /**
+     * Change the left splitter size or size a split pane.
+     * This method reads the form fields to choose the splitter
+     * and get the new values.
+     */
+    var updatePane_ = function() {
+      var componentSizeValue =
+          document.getElementById('firstComponentSize').value;
+      var width = document.getElementById('newWidth').value;
+      var height = document.getElementById('newHeight').value;
+      var s1Checked = document.getElementById('select1').checked;
+      // Which splitter to update.
+      var whichSplitter = (s1Checked) ? splitpane1 : splitpane2;
+
+      var componentSize;
+      if ('' != componentSizeValue) {
+        componentSize = parseInt(componentSizeValue, 10);
+      }
+      else {
+        componentSize = whichSplitter.getFirstComponentSize();
+      }
+      whichSplitter.setFirstComponentSize(componentSize);
+      whichSplitter.setSize(new goog.math.Size(width, height));
+
+      // If the first pane height is changed, force the second one to update
+      // so it moves up or down the page.
+      splitpane2.setFirstComponentSize();
+    }
+
+    /**
+     * Change the orientation of the splitter pane.
+     */
+    var changeOrientation_ = function() {
+      var s1Checked = document.getElementById('select1').checked;
+      // Which splitter to update.
+      var whichSplitter = s1Checked ? splitpane1 : splitpane2;
+      var orientation = whichSplitter.getOrientation();
+      if (orientation == goog.ui.SplitPane.Orientation.VERTICAL) {
+        whichSplitter.setOrientation(goog.ui.SplitPane.Orientation.HORIZONTAL);
+      } else {
+        whichSplitter.setOrientation(goog.ui.SplitPane.Orientation.VERTICAL);
+      }
+    }
+
+  </script>
+
+</body>
+</html>

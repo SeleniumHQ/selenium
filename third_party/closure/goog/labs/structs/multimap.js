@@ -32,8 +32,6 @@ goog.require('goog.labs.structs.Map');
 /**
  * Creates a new multimap.
  * @constructor
- * @struct
- * @final
  */
 goog.labs.structs.Multimap = function() {
   this.clear();
@@ -138,7 +136,7 @@ goog.labs.structs.Multimap.prototype.replaceValues = function(key, values) {
  *     guaranteed to be consistent.
  */
 goog.labs.structs.Multimap.prototype.get = function(key) {
-  var values = /** @type {Array.<*>} */ (this.map_.get(key));
+  var values = /** @type {Array.<string>} */ (this.map_.get(key));
   return values ? goog.array.clone(values) : [];
 };
 
@@ -150,7 +148,7 @@ goog.labs.structs.Multimap.prototype.get = function(key) {
  * @return {boolean} Whether any matching (key, value) pair is removed.
  */
 goog.labs.structs.Multimap.prototype.remove = function(key, value) {
-  var values = /** @type {Array.<*>} */ (this.map_.get(key));
+  var values = /** @type {Array.<string>} */ (this.map_.get(key));
   if (!values) {
     return false;
   }
@@ -206,11 +204,11 @@ goog.labs.structs.Multimap.prototype.getCount = function() {
 
 /**
  * @param {string} key The key to check.
- * @param {*} value The value to check.
+ * @param {string} value The value to check.
  * @return {boolean} Whether the (key, value) pair exists in the multimap.
  */
 goog.labs.structs.Multimap.prototype.containsEntry = function(key, value) {
-  var values = /** @type {Array.<*>} */ (this.map_.get(key));
+  var values = /** @type {Array.<string>} */ (this.map_.get(key));
   if (!values) {
     return false;
   }

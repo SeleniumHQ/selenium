@@ -26,8 +26,10 @@ goog.provide('goog.ui.IframeMask');
 goog.require('goog.Disposable');
 goog.require('goog.Timer');
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.iframe');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventTarget');
 goog.require('goog.style');
 
 
@@ -64,7 +66,7 @@ goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
 
   /**
    * An event handler for listening to popups and the like.
-   * @type {goog.events.EventHandler.<!goog.ui.IframeMask>}
+   * @type {goog.events.EventHandler|undefined}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -151,7 +153,7 @@ goog.ui.IframeMask.prototype.hideMask = function() {
 /**
  * Gets the iframe to use as a mask. Creates a new one if one has not been
  * created yet.
- * @return {!HTMLIFrameElement} The iframe.
+ * @return {HTMLIFrameElement} The iframe.
  * @private
  */
 goog.ui.IframeMask.prototype.getIframe_ = function() {

@@ -32,7 +32,6 @@ goog.require('goog.fs.FileSystem');
  * @param {!FileSystem} fs The underlying FileSystem object.
  * @constructor
  * @implements {goog.fs.FileSystem}
- * @final
  */
 goog.fs.FileSystemImpl = function(fs) {
   /**

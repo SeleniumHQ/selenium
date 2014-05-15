@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>Deps Tree</title>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.object');
+  goog.require('goog.array');
+  goog.require('goog.debug');
+  goog.require('goog.events');
+</script>
+<style type="text/css">
+
+h1 {
+  font: bold 24px verdana,sans-serif;
+  margin: 0px;
+  margin-bottom: 14px;
+}
+
+div {
+  position: relative;
+  font: normal 9px verdana,sans-serif;
+  padding: 3px;
+  margin: 5px;
+  background-color: #EEE;
+  border: 1px solid #999;
+  cursor: pointer;
+  color: #333;
+}
+
+
+div.hover {
+  background-color: #EE6;
+  border: 1px solid #990;
+  color: #000;
+}
+
+div.hilite {
+  background-color: #AFA;
+  border: 1px solid #090;
+}
+
+div.infile {
+  background-color: #FFA;
+  border: 1px solid #990;
+}
+
+div.required {
+  background-color: #FAA;
+  border: 1px solid #900;
+}
+
+</style>
+</head>
+<body>
+<h1>Closure Dependency Graph</h1>
+<script type="text/javascript">
+
+// HackHack
+// Hacked together quickly to provide a quick visible analysis.  Not meant to be
+// a complete or long lived tool.
+
+var levels = [];
+var visited = [];
+
+var change = true;
+var i = 0;
+while (change) {
+  change = false;
+  levels[i] = [];
+  var newVisited = goog.array.clone(visited);
+  goog.object.forEach(goog.dependencies_.nameToPath, function(path, ns) {
+    var deps = goog.object.clone(goog.dependencies_.requires[path]);
+    goog.array.forEach(newVisited, function(value) {
+      goog.object.remove(deps, value);
+    });
+
+    if (goog.object.getCount(deps) == 0 && !goog.object.contains(visited, ns)) {
+      change = true;
+      levels[i].push(ns);
+      visited.push(ns);
+    }
+  });
+  i++;
+}
+
+var errors = [];
+goog.object.forEach(goog.dependencies_.nameToPath, function(path, ns) {
+  if (!goog.array.contains(visited, ns)) {
+    errors.push(ns);
+  }
+});
+if (errors.length > 0) {
+  alert('The following files were not added to dependency graph: \n' +
+        errors.join('\n'));
+}
+
+document.write('<table><tr>')
+goog.array.forEach(levels, function(level) {
+  document.write('<td>');
+  goog.array.forEach(level, function(ns) {
+    document.write(
+        goog.getMsg('<div id="{$ns}" class="dep">{$ns}</div>', {ns:ns}));
+  });
+});
+document.write('</tr></table>')
+
+
+var currentTarget = null;
+var hilited = [];
+var required = [];
+var infile = [];
+goog.events.listen(document, 'mouseover', handleMouse);
+goog.events.listen(document, 'keydown', handleKeys);
+
+
+function handleMouse(e) {
+  highlightElement(e.target);
+}
+
+function handleKeys(e) {
+  if (currentTarget) {
+    switch (e.keyCode) {
+      case 40:
+        highlightElement(currentTarget.nextSibling);
+        break;
+    
+      case 38:
+        highlightElement(currentTarget.previousSibling);
+        break;
+    
+      case 39:
+        // right
+        break;
+    
+      case 37:
+        // left
+        break;
+
+      default:
+        return;
+    }
+    e.preventDefault();
+  }
+}
+
+
+function highlightElement(el) {
+  if (el && el.id) {
+    
+    goog.array.forEach(hilited.concat(required).concat(infile), function(ns) {
+      document.getElementById(ns).className = 'dep';
+    });
+    hilited.length = 0;
+    required.length = 0;
+    infile.length = 0;
+
+    if (currentTarget) {
+      currentTarget.className = 'dep';
+    }
+
+    highlightDeps(el.id);
+    highlightRequired(el.id);
+    highlightFile(el.id);
+    
+    el.className = 'dep hover';
+    currentTarget = el;
+  }
+}
+
+function highlightFile(ns) {
+  var names = goog.dependencies_.pathToNames[goog.dependencies_.nameToPath[ns]];
+  goog.object.forEach(names, function(value, name) {
+    document.getElementById(name).className = 'dep infile';
+    infile.push(name);
+  });
+}
+
+function highlightRequired(ns) {
+  goog.object.forEach(goog.dependencies_.requires, function(value, key) {
+    if (goog.object.containsKey(value, ns)) {
+      var names = goog.dependencies_.pathToNames[key];
+      goog.object.forEach(names, function(val, id) {
+        if (!goog.array.contains(required, id)) {
+          document.getElementById(id).className = 'dep required';
+          required.push(id);
+          highlightRequired(id);
+        }
+      });
+    }
+  });  
+}
+
+function highlightDeps(ns) {
+  var deps = goog.dependencies_.requires[goog.dependencies_.nameToPath[ns]];
+  goog.object.forEach(deps, function(value, key) {
+    if (!goog.array.contains(hilited, key)) {
+      document.getElementById(key).className = 'dep hilite';
+      hilited.push(key);
+      highlightDeps(key);
+    }
+  });
+}
+
+</script>
+
+
+<div class="hover">selected item</div>
+<div class="infile">...is in same file as the selected item</div>
+<div class="hilite">...is a dependency of the selected item</div>
+<div class="required">the selected item is a dependency of...</div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>FPS Display</title>
+<script type="text/javascript" src="../base.js"></script>
+
+<script type="text/javascript">
+
+  goog.require('goog.debug.FpsDisplay');
+  goog.require('goog.string');
+
+</script>
+<body>
+<div id="fpsdisplay"></div>
+<button onclick="doSomethingExpensive()">Do something expensive and watch FPS decrease</button>
+<button onclick="stop()">Stop expensive action</button>
+<button onclick="display()">Alert FPS</button>
+<div id="output"></div>
+</body>
+<script>
+
+  var fpsDisplay = new goog.debug.FpsDisplay();
+  fpsDisplay.render(document.getElementById('fpsdisplay'));
+
+  var handle;
+  function doSomethingExpensive() {
+    var output = document.getElementById('output');
+    var appender = function() {
+      output.innerHTML += goog.string.repeat('<div>a </div>', 20);
+      // Force layout.
+      var b = output.offsetHeight;
+    }
+    handle = window.setInterval(appender, 20);
+  }
+
+  function stop() {
+    window.clearInterval(handle);
+  }
+
+  function display() {
+    alert(fpsDisplay.getFps());
+  }
+</script>
+</html>

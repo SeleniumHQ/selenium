@@ -24,8 +24,8 @@ goog.provide('goog.messaging.MultiChannel');
 goog.provide('goog.messaging.MultiChannel.VirtualChannel');
 
 goog.require('goog.Disposable');
+goog.require('goog.debug.Logger');
 goog.require('goog.events.EventHandler');
-goog.require('goog.log');
 goog.require('goog.messaging.MessageChannel'); // interface
 goog.require('goog.object');
 
@@ -43,10 +43,9 @@ goog.require('goog.object');
  *     channel to use as transport for the virtual channels.
  * @constructor
  * @extends {goog.Disposable}
- * @final
  */
 goog.messaging.MultiChannel = function(underlyingChannel) {
-  goog.messaging.MultiChannel.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The underlying channel across which all requests are sent.
@@ -71,11 +70,11 @@ goog.inherits(goog.messaging.MultiChannel, goog.Disposable);
 
 /**
  * Logger object for goog.messaging.MultiChannel.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.messaging.MultiChannel.prototype.logger_ =
-    goog.log.getLogger('goog.messaging.MultiChannel');
+    goog.debug.Logger.getLogger('goog.messaging.MultiChannel');
 
 
 /**
@@ -116,33 +115,31 @@ goog.messaging.MultiChannel.prototype.handleDefault_ = function(
     serviceName, payload) {
   var match = serviceName.match(/^([^:]*):(.*)/);
   if (!match) {
-    goog.log.warning(this.logger_,
-        'Invalid service name "' + serviceName + '": no ' +
-        'virtual channel specified');
+    this.logger_.warning('Invalid service name "' + serviceName + '": no ' +
+                         'virtual channel specified');
     return;
   }
 
   var channelName = match[1];
   serviceName = match[2];
   if (!(channelName in this.virtualChannels_)) {
-    goog.log.warning(this.logger_,
-        'Virtual channel "' + channelName + ' does not ' +
-        'exist, but a message was received for it: "' + serviceName + '"');
+    this.logger_.warning('Virtual channel "' + channelName + ' does not ' +
+                         'exist, but a message was received for it: "' +
+                         serviceName + '"');
     return;
   }
 
   var virtualChannel = this.virtualChannels_[channelName];
   if (!virtualChannel) {
-    goog.log.warning(this.logger_,
-        'Virtual channel "' + channelName + ' has been ' +
-        'disposed, but a message was received for it: "' + serviceName + '"');
+    this.logger_.warning('Virtual channel "' + channelName + ' has been ' +
+                         'disposed, but a message was received for it: "' +
+                         serviceName + '"');
     return;
   }
 
   if (!virtualChannel.defaultService_) {
-    goog.log.warning(this.logger_,
-        'Service "' + serviceName + '" is not registered ' +
-        'on virtual channel "' + channelName + '"');
+    this.logger_.warning('Service "' + serviceName + '" is not registered ' +
+                         'on virtual channel "' + channelName + '"');
     return;
   }
 
@@ -173,10 +170,9 @@ goog.messaging.MultiChannel.prototype.disposeInternal = function() {
  * @constructor
  * @implements {goog.messaging.MessageChannel}
  * @extends {goog.Disposable}
- * @final
  */
 goog.messaging.MultiChannel.VirtualChannel = function(parent, name) {
-  goog.messaging.MultiChannel.VirtualChannel.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The MultiChannel containing the underlying transport channel.
@@ -206,11 +202,11 @@ goog.messaging.MultiChannel.VirtualChannel.prototype.defaultService_;
 
 /**
  * Logger object for goog.messaging.MultiChannel.VirtualChannel.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.messaging.MultiChannel.VirtualChannel.prototype.logger_ =
-    goog.log.getLogger(
+    goog.debug.Logger.getLogger(
         'goog.messaging.MultiChannel.VirtualChannel');
 
 
@@ -286,9 +282,8 @@ goog.messaging.MultiChannel.VirtualChannel.prototype.send =
 goog.messaging.MultiChannel.VirtualChannel.prototype.doCallback_ =
     function(callback, var_args) {
   if (this.isDisposed()) {
-    goog.log.warning(this.logger_,
-        'Virtual channel "' + this.name_ + '" received ' +
-        ' a message after being disposed.');
+    this.logger_.warning('Virtual channel "' + this.name_ + '" received ' +
+                         ' a message after being disposed.');
     return;
   }
 

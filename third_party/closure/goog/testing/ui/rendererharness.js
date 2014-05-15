@@ -38,7 +38,6 @@ goog.require('goog.testing.dom');
  *     be decorated.
  * @constructor
  * @extends {goog.Disposable}
- * @final
  */
 goog.testing.ui.RendererHarness = function(renderer, renderParent,
     decorateParent) {

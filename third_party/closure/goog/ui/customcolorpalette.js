@@ -22,7 +22,7 @@ goog.provide('goog.ui.CustomColorPalette');
 
 goog.require('goog.color');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
+goog.require('goog.dom.classes');
 goog.require('goog.ui.ColorPalette');
 goog.require('goog.ui.Component');
 
@@ -40,7 +40,6 @@ goog.require('goog.ui.Component');
  *     document interaction.
  * @constructor
  * @extends {goog.ui.ColorPalette}
- * @final
  */
 goog.ui.CustomColorPalette = function(initColors, opt_renderer, opt_domHelper) {
   goog.ui.ColorPalette.call(this, initColors, opt_renderer, opt_domHelper);
@@ -52,14 +51,14 @@ goog.inherits(goog.ui.CustomColorPalette, goog.ui.ColorPalette);
 /**
  * Returns an array of DOM nodes for each color, and an additional cell with a
  * '+'.
- * @return {!Array.<Node>} Array of div elements.
+ * @return {Array.<Node>} Array of div elements.
  * @override
  */
 goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
   /** @desc Hover caption for the button that allows the user to add a color. */
   var MSG_CLOSURE_CUSTOM_COLOR_BUTTON = goog.getMsg('Add a color');
 
-  var nl = goog.ui.CustomColorPalette.base(this, 'createColorNodes');
+  var nl = goog.base(this, 'createColorNodes');
   nl.push(goog.dom.createDom('div', {
     'class': goog.getCssName('goog-palette-customcolor'),
     'title': MSG_CLOSURE_CUSTOM_COLOR_BUTTON
@@ -76,7 +75,7 @@ goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
 goog.ui.CustomColorPalette.prototype.performActionInternal = function(e) {
   var item = /** @type {Element} */ (this.getHighlightedItem());
   if (item) {
-    if (goog.dom.classlist.contains(
+    if (goog.dom.classes.has(
         item, goog.getCssName('goog-palette-customcolor'))) {
       // User activated the special "add custom color" swatch.
       this.promptForCustomColor();

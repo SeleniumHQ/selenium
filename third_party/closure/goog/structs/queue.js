@@ -30,32 +30,31 @@ goog.require('goog.array');
  * Class for FIFO Queue data structure.
  *
  * @constructor
- * @template T
  */
 goog.structs.Queue = function() {
-  /**
-   * The index of the next element to be removed from the queue.
-   * @private {number}
-   */
-  this.head_ = 0;
-
-  /**
-   * The index at which the next element would be added to the queue.
-   * @private {number}
-   */
-  this.tail_ = 0;
-
-  /**
-   * @const
-   * @private {!Array.<T>}
-   */
   this.elements_ = [];
 };
 
 
 /**
+ * The index of the next element to be removed from the queue.
+ * @private
+ * @type {number}
+ */
+goog.structs.Queue.prototype.head_ = 0;
+
+
+/**
+ * The index at which the next element would be added to the queue.
+ * @private
+ * @type {number}
+ */
+goog.structs.Queue.prototype.tail_ = 0;
+
+
+/**
  * Puts the specified element on this queue.
- * @param {T} element The element to be added to the queue.
+ * @param {*} element The element to be added to the queue.
  */
 goog.structs.Queue.prototype.enqueue = function(element) {
   this.elements_[this.tail_++] = element;
@@ -64,7 +63,7 @@ goog.structs.Queue.prototype.enqueue = function(element) {
 
 /**
  * Retrieves and removes the head of this queue.
- * @return {T} The element at the head of this queue. Returns undefined if the
+ * @return {*} The element at the head of this queue. Returns undefined if the
  *     queue is empty.
  */
 goog.structs.Queue.prototype.dequeue = function() {
@@ -80,7 +79,7 @@ goog.structs.Queue.prototype.dequeue = function() {
 
 /**
  * Retrieves but does not remove the head of this queue.
- * @return {T} The element at the head of this queue. Returns undefined if the
+ * @return {*} The element at the head of this queue. Returns undefined if the
  *     queue is empty.
  */
 goog.structs.Queue.prototype.peek = function() {
@@ -121,7 +120,7 @@ goog.structs.Queue.prototype.clear = function() {
 
 /**
  * Returns true if the given value is in the queue.
- * @param {T} obj The value to look for.
+ * @param {*} obj The value to look for.
  * @return {boolean} Whether the object is in the queue.
  */
 goog.structs.Queue.prototype.contains = function(obj) {
@@ -131,7 +130,7 @@ goog.structs.Queue.prototype.contains = function(obj) {
 
 /**
  * Removes the first occurrence of a particular value from the queue.
- * @param {T} obj Object to remove.
+ * @param {*} obj Object to remove.
  * @return {boolean} True if an element was removed.
  */
 goog.structs.Queue.prototype.remove = function(obj) {
@@ -151,7 +150,7 @@ goog.structs.Queue.prototype.remove = function(obj) {
 
 /**
  * Returns all the values in the queue.
- * @return {!Array.<T>} An array of the values in the queue.
+ * @return {Array} An array of the values in the queue.
  */
 goog.structs.Queue.prototype.getValues = function() {
   return this.elements_.slice(this.head_, this.tail_);

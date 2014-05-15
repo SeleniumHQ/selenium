@@ -33,7 +33,6 @@ goog.require('goog.dom.TagName');
  * @param {Node} baseNode The node to calculate the offset from.
  * @extends {goog.Disposable}
  * @constructor
- * @final
  */
 goog.dom.NodeOffset = function(node, baseNode) {
   goog.Disposable.call(this);

@@ -16,7 +16,7 @@
  * @fileoverview Provides a utility for tracing and debugging WebChannel
  *     requests.
  *
- * @visibility {:internal}
+ * @visibility {//visibility:private}
  */
 
 
@@ -31,8 +31,6 @@ goog.require('goog.log');
  * Logs and keeps a buffer of debugging info for the Channel.
  *
  * @constructor
- * @struct
- * @final
  */
 goog.labs.net.webChannel.WebChannelDebug = function() {
   /**
@@ -46,6 +44,14 @@ goog.labs.net.webChannel.WebChannelDebug = function() {
 
 goog.scope(function() {
 var WebChannelDebug = goog.labs.net.webChannel.WebChannelDebug;
+
+
+/**
+ * The normal response for forward channel requests.
+ * Used only before version 8 of the protocol.
+ * @type {string}
+ */
+WebChannelDebug.MAGIC_RESPONSE_COOKIE = 'y2f%';
 
 
 /**
@@ -218,8 +224,10 @@ WebChannelDebug.prototype.severe = function(text) {
  * @private
  */
 WebChannelDebug.prototype.redactResponse_ = function(responseText) {
-  if (!responseText) {
-    return null;
+  // first check if it's not JS - the only non-JS should be the magic cookie
+  if (!responseText ||
+      responseText == WebChannelDebug.MAGIC_RESPONSE_COOKIE) {
+    return responseText;
   }
   /** @preserveTry */
   try {
@@ -242,7 +250,7 @@ WebChannelDebug.prototype.redactResponse_ = function(responseText) {
 
 /**
  * Removes data from a response array that may be sensitive.
- * @param {!Array} array The array to clean.
+ * @param {Array} array The array to clean.
  * @private
  */
 WebChannelDebug.prototype.maybeRedactArray_ = function(array) {

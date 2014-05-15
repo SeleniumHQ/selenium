@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.history.Html5History Demo</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.events');
+    goog.require('goog.history.EventType');
+    goog.require('goog.history.Html5History');
+    goog.require('goog.Uri');
+  </script>
+  <style>
+  .section {
+    display: none;
+  }
+
+  .active {
+    display: block;
+  }
+  </style>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <h1>goog.history.Html5History</h1>
+
+  <p id="links">
+    <a href="kittens/" token="kittens" title="Kittens">Kittens</a> |
+    <a href="puppies/" token="puppies" title="Puppies">Puppies</a> |
+    <a href="pandas/" token="pandas" title="Pandas">Pandas</a> |
+    <a href="bucket/" token="bucket" title="Bucket">Bucket</a>
+  </p>
+
+  <div id="kittens" class="section active">
+    <img src="http://farm4.static.flickr.com/3045/2481490798_bba0c585b4.jpg">
+  </div>
+  <div id="puppies" class="section">
+    <img src="http://farm4.static.flickr.com/3178/2976942142_7f5be73d21.jpg">
+  </div>
+  <div id="pandas" class="section">
+    <img src="http://farm1.static.flickr.com/106/303160549_49917ba1b7.jpg">
+  </div>
+  <div id="bucket" class="section">
+    <img src="http://farm1.static.flickr.com/146/421093356_6bbefa304e.jpg">
+  </div>
+
+  <script>
+    var h;
+    try {
+      h = new goog.history.Html5History();
+    } catch (e) {
+      document.write(e.message);
+    }
+
+    if (h) {
+      var cur = 'kittens';
+
+      goog.events.listen(h, goog.history.EventType.NAVIGATE, function(e) {
+        var token = e.token || 'kittens';
+        var next = document.getElementById(token);
+        if (next) {
+          document.getElementById(cur).className = 'section';
+          next.className = 'section active';
+          cur = token;
+        }
+      });
+
+      h.setUseFragment(false);
+      h.setPathPrefix(new goog.Uri(document.location.href).getPath() + '/');
+      h.setEnabled(true);
+
+      goog.events.listen(
+          document.getElementById('links'), 'click', function(e) {
+        if (e.target.tagName == 'A') {
+          h.setToken(e.target.getAttribute('token'), e.target.title);
+          e.preventDefault();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

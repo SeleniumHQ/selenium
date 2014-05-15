@@ -22,6 +22,7 @@
 goog.provide('goog.net.XhrIoPool');
 
 goog.require('goog.net.XhrIo');
+goog.require('goog.structs');
 goog.require('goog.structs.PriorityPool');
 
 
@@ -50,14 +51,14 @@ goog.inherits(goog.net.XhrIoPool, goog.structs.PriorityPool);
 
 /**
  * Creates an instance of an XhrIo object to use in the pool.
- * @return {!goog.net.XhrIo} The created object.
+ * @return {goog.net.XhrIo} The created object.
  * @override
  */
 goog.net.XhrIoPool.prototype.createObject = function() {
   var xhrIo = new goog.net.XhrIo();
   var headers = this.headers_;
   if (headers) {
-    headers.forEach(function(value, key) {
+    goog.structs.forEach(headers, function(value, key) {
       xhrIo.headers.set(key, value);
     });
   }

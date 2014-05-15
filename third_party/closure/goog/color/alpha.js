@@ -25,8 +25,8 @@ goog.require('goog.color');
 /**
  * Parses an alpha color out of a string.
  * @param {string} str Color in some format.
- * @return {{hex: string, type: string}} 'hex' is a string containing
- *     a hex representation of the color, and 'type' is a string
+ * @return {Object} Contains two properties: 'hex', which is a string containing
+ *     a hex representation of the color, as well as 'type', which is a string
  *     containing the type of color format passed in ('hex', 'rgb', 'named').
  */
 goog.color.alpha.parse = function(str) {
@@ -132,8 +132,7 @@ goog.color.alpha.normalizeAlphaHex_ = function(hexColor) {
 /**
  * Converts an 8-hex representation of a color to RGBA.
  * @param {string} hexColor Color to convert.
- * @return {!Array} array containing [r, g, b, a]. r, g, b are ints between 0
- *     and 255, and a is a value between 0 and 1.
+ * @return {Array} array containing [r, g, b] as ints in [0, 255].
  */
 goog.color.alpha.hexToRgba = function(hexColor) {
   // TODO(user): Enhance code sharing with goog.color, for example by
@@ -272,7 +271,7 @@ goog.color.alpha.hslaToRgbaStyle = function(h, s, l, a) {
  * @param {number} s Amount of saturation, int between 0 and 100.
  * @param {number} l Amount of lightness, int between 0 and 100.
  * @param {number} a Amount of alpha, float between 0 and 1.
- * @return {!Array.<number>} [r, g, b, a] values for the color, where r, g, b
+ * @return {Array.<number>} [r, g, b, a] values for the color, where r, g, b
  *     are integers in [0, 255] and a is a float in [0, 1].
  */
 goog.color.alpha.hslaToRgba = function(h, s, l, a) {
@@ -287,7 +286,7 @@ goog.color.alpha.hslaToRgba = function(h, s, l, a) {
  * @param {number} g Value of green, in [0, 255].
  * @param {number} b Value of blue, in [0, 255].
  * @param {number} a Value of alpha, in [0, 255].
- * @return {!Array.<number>} [h, s, l, a] values for the color, with h an int in
+ * @return {Array.<number>} [h, s, l, a] values for the color, with h an int in
  *     [0, 360] and s, l and a in [0, 1].
  */
 goog.color.alpha.rgbaToHsla = function(r, g, b, a) {
@@ -299,7 +298,7 @@ goog.color.alpha.rgbaToHsla = function(r, g, b, a) {
  * Converts a color from RGBA color space to HSLA color space.
  * @param {Array.<number>} rgba [r, g, b, a] values for the color, each in
  *     [0, 255].
- * @return {!Array.<number>} [h, s, l, a] values for the color, with h in
+ * @return {Array.<number>} [h, s, l, a] values for the color, with h in
  *     [0, 360] and s, l and a in [0, 1].
  */
 goog.color.alpha.rgbaArrayToHsla = function(rgba) {
@@ -374,7 +373,7 @@ goog.color.alpha.hslaColorRe_ =
  * '(r, g, b, a)', or 'rgba(r, g, b, a)', where r, g, b are ints in [0, 255]
  *     and a is a float in [0, 1].
  * @param {string} str String to check.
- * @return {!Array.<number>} the integers [r, g, b, a] for valid colors or the
+ * @return {Array.<number>} the integers [r, g, b, a] for valid colors or the
  *     empty array for invalid colors.
  * @private
  */
@@ -404,7 +403,7 @@ goog.color.alpha.isValidRgbaColor_ = function(str) {
  * 'hsla(h, s, l, a)', where s in an int in [0, 360], s and l are percentages
  *     between 0 and 100 such as '50%' or '70%', and a is a float in [0, 1].
  * @param {string} str String to check.
- * @return {!Array.<number>} the integers [h, s, l, a] for valid colors or the
+ * @return {Array.<number>} the integers [h, s, l, a] for valid colors or the
  *     empty array for invalid colors.
  * @private
  */
@@ -431,17 +430,14 @@ goog.color.alpha.isValidHslaColor_ = function(str) {
 
 /**
  * Takes an array of [r, g, b, a] and converts it into a string appropriate for
- * CSS styles. The alpha channel value is rounded to 3 decimal places to make
- * sure the produced string is not too long.
+ * CSS styles.
  * @param {Array.<number>} rgba [r, g, b, a] with r, g, b in [0, 255] and a
  *     in [0, 1].
  * @return {string} string of the form 'rgba(r,g,b,a)'.
  * @private
  */
 goog.color.alpha.rgbaStyle_ = function(rgba) {
-  var roundedRgba = rgba.slice(0);
-  roundedRgba[3] = Math.round(rgba[3] * 1000) / 1000;
-  return 'rgba(' + roundedRgba.join(',') + ')';
+  return 'rgba(' + rgba.join(',') + ')';
 };
 
 

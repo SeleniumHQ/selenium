@@ -31,7 +31,6 @@ goog.provide('goog.testing.MockStorage');
  *
  * @constructor
  * @implements {Storage}
- * @final
  */
 goog.testing.MockStorage = function() {
   /**

@@ -31,7 +31,6 @@ goog.require('goog.testing.Mock');
  * class is necessary to manage the return/throw behavior when the mock is
  * being called.
  * @constructor
- * @final
  */
 goog.testing.LooseExpectationCollection = function() {
   /**
@@ -68,8 +67,7 @@ goog.testing.LooseExpectationCollection.prototype.getExpectations = function() {
  * result, it won't throw exceptions until verify() is called. The only
  * exception is that if a method is called that has no expectations, then an
  * exception will be thrown.
- * @param {Object|Function} objectToMock The object that should be mocked, or
- *    the constructor of an object to mock.
+ * @param {Object} objectToMock The object to mock.
  * @param {boolean=} opt_ignoreUnexpectedCalls Whether to ignore unexpected
  *     calls.
  * @param {boolean=} opt_mockStaticMethods An optional argument denoting that
@@ -113,7 +111,7 @@ goog.inherits(goog.testing.LooseMock, goog.testing.Mock);
 /**
  * A setter for the ignoreUnexpectedCalls field.
  * @param {boolean} ignoreUnexpectedCalls Whether to ignore unexpected calls.
- * @return {!goog.testing.LooseMock} This mock object.
+ * @return {goog.testing.LooseMock} This mock object.
  */
 goog.testing.LooseMock.prototype.$setIgnoreUnexpectedCalls = function(
     ignoreUnexpectedCalls) {

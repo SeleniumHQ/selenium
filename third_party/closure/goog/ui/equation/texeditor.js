@@ -14,6 +14,7 @@
 
 goog.provide('goog.ui.equation.TexEditor');
 
+goog.require('goog.dom');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.equation.ImageRenderer');
 goog.require('goog.ui.equation.TexPane');
@@ -27,7 +28,6 @@ goog.require('goog.ui.equation.TexPane');
  * @param {string} helpUrl URL pointing to help documentation.
  * @param {goog.dom.DomHelper=} opt_domHelper DomHelper to use.
  * @extends {goog.ui.Component}
- * @final
  */
 goog.ui.equation.TexEditor = function(context, helpUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
@@ -59,7 +59,7 @@ goog.ui.equation.TexEditor.prototype.texPane_ = null;
 
 /** @override */
 goog.ui.equation.TexEditor.prototype.createDom = function() {
-  goog.ui.equation.TexEditor.base(this, 'createDom');
+  goog.base(this, 'createDom');
   this.createDom_();
 };
 
@@ -137,6 +137,6 @@ goog.ui.equation.TexEditor.prototype.disposeInternal = function() {
     this.texPane_.dispose();
   }
   this.context_ = null;
-  goog.ui.equation.TexEditor.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };
 

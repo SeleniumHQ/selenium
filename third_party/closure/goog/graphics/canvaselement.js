@@ -54,7 +54,6 @@ goog.require('goog.string');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.CanvasGroupElement = function(graphics) {
   goog.graphics.GroupElement.call(this, null, graphics);
@@ -130,7 +129,6 @@ goog.graphics.CanvasGroupElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.EllipseElement}
- * @final
  */
 goog.graphics.CanvasEllipseElement = function(element, graphics,
     cx, cy, rx, ry, stroke, fill) {
@@ -254,7 +252,6 @@ goog.graphics.CanvasEllipseElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.RectElement}
- * @final
  */
 goog.graphics.CanvasRectElement = function(element, graphics, x, y, w, h,
     stroke, fill) {
@@ -361,7 +358,6 @@ goog.graphics.CanvasRectElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.PathElement}
- * @final
  */
 goog.graphics.CanvasPathElement = function(element, graphics, path, stroke,
     fill) {
@@ -456,7 +452,6 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
  * @param {goog.graphics.Fill} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.TextElement}
- * @final
  */
 goog.graphics.CanvasTextElement = function(graphics, text, x1, y1, x2, y2,
     align, font, stroke, fill) {
@@ -663,7 +658,6 @@ goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
  * @param {string} src Source of the image.
  * @constructor
  * @extends {goog.graphics.ImageElement}
- * @final
  */
 goog.graphics.CanvasImageElement = function(element, graphics, x, y, w, h,
     src) {

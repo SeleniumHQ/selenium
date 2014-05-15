@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.PopupColorPicker</title>
+  <script src="../base.js"></script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/colorpicker-simplegrid.css">
+  <script>
+    goog.require('goog.ui.PopupColorPicker');
+  </script>
+  <style>
+    .goog-popupcolorpicker {
+      position:absolute;
+      -moz-outline:0;
+      outline:0;
+    }
+    #button1, #button2 {
+      display: block;
+      width: 60px;
+      text-align: center;
+      margin: 10px;
+      padding: 10px;
+      font: normal 0.8em verdana,sans-serif;
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.PopupColorPicker</h1>
+  <a href="javascript:void(0)" id="button1">Show 1</a>
+  <a href="javascript:void(0)" id="button2">Show 2</a>
+  <script>
+    var picker = new goog.ui.PopupColorPicker();
+    picker.render();
+    picker.attach(document.getElementById('button1'));
+    picker.attach(document.getElementById('button2'));
+
+    goog.events.listen(picker, 'change', function(e) {
+      picker.getLastTarget().style.backgroundColor = picker.getSelectedColor();
+    });
+  </script>
+</body>
+</html>

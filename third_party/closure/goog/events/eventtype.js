@@ -26,20 +26,6 @@ goog.require('goog.userAgent');
 
 
 /**
- * Returns a prefixed event name for the current browser.
- * @param {string} eventName The name of the event.
- * @return {string} The prefixed event name.
- * @suppress {missingRequire|missingProvide}
- * @private
- */
-goog.events.getVendorPrefixedName_ = function(eventName) {
-  return goog.userAgent.WEBKIT ? 'webkit' + eventName :
-      (goog.userAgent.OPERA ? 'o' + eventName.toLowerCase() :
-          eventName.toLowerCase());
-};
-
-
-/**
  * Constants for event names.
  * @enum {string}
  */
@@ -52,10 +38,6 @@ goog.events.EventType = {
   MOUSEOVER: 'mouseover',
   MOUSEOUT: 'mouseout',
   MOUSEMOVE: 'mousemove',
-  MOUSEENTER: 'mouseenter',
-  MOUSELEAVE: 'mouseleave',
-  // Select start is non-standard.
-  // See http://msdn.microsoft.com/en-us/library/ie/ms536969(v=vs.85).aspx.
   SELECTSTART: 'selectstart', // IE, Safari, Chrome
 
   // Key events
@@ -102,14 +84,12 @@ goog.events.EventType = {
 
   // Misc
   BEFOREUNLOAD: 'beforeunload',
-  CONSOLEMESSAGE: 'consolemessage',
   CONTEXTMENU: 'contextmenu',
   DOMCONTENTLOADED: 'DOMContentLoaded',
   ERROR: 'error',
   HELP: 'help',
   LOAD: 'load',
   LOSECAPTURE: 'losecapture',
-  ORIENTATIONCHANGE: 'orientationchange',
   READYSTATECHANGE: 'readystatechange',
   RESIZE: 'resize',
   SCROLL: 'scroll',
@@ -142,35 +122,13 @@ goog.events.EventType = {
   MESSAGE: 'message',
   CONNECT: 'connect',
 
-  // CSS animation events.
-  /** @suppress {missingRequire} */
-  ANIMATIONSTART: goog.events.getVendorPrefixedName_('AnimationStart'),
-  /** @suppress {missingRequire} */
-  ANIMATIONEND: goog.events.getVendorPrefixedName_('AnimationEnd'),
-  /** @suppress {missingRequire} */
-  ANIMATIONITERATION: goog.events.getVendorPrefixedName_('AnimationIteration'),
-
   // CSS transition events. Based on the browser support described at:
   // https://developer.mozilla.org/en/css/css_transitions#Browser_compatibility
-  /** @suppress {missingRequire} */
-  TRANSITIONEND: goog.events.getVendorPrefixedName_('TransitionEnd'),
-
-  // W3C Pointer Events
-  // http://www.w3.org/TR/pointerevents/
-  POINTERDOWN: 'pointerdown',
-  POINTERUP: 'pointerup',
-  POINTERCANCEL: 'pointercancel',
-  POINTERMOVE: 'pointermove',
-  POINTEROVER: 'pointerover',
-  POINTEROUT: 'pointerout',
-  POINTERENTER: 'pointerenter',
-  POINTERLEAVE: 'pointerleave',
-  GOTPOINTERCAPTURE: 'gotpointercapture',
-  LOSTPOINTERCAPTURE: 'lostpointercapture',
+  TRANSITIONEND: goog.userAgent.WEBKIT ? 'webkitTransitionEnd' :
+      (goog.userAgent.OPERA ? 'oTransitionEnd' : 'transitionend'),
 
   // IE specific events.
-  // See http://msdn.microsoft.com/en-us/library/ie/hh772103(v=vs.85).aspx
-  // Note: these events will be supplanted in IE11.
+  // See http://msdn.microsoft.com/en-us/library/ie/hh673557(v=vs.85).aspx
   MSGESTURECHANGE: 'MSGestureChange',
   MSGESTUREEND: 'MSGestureEnd',
   MSGESTUREHOLD: 'MSGestureHold',
@@ -181,45 +139,14 @@ goog.events.EventType = {
   MSLOSTPOINTERCAPTURE: 'MSLostPointerCapture',
   MSPOINTERCANCEL: 'MSPointerCancel',
   MSPOINTERDOWN: 'MSPointerDown',
-  MSPOINTERENTER: 'MSPointerEnter',
-  MSPOINTERHOVER: 'MSPointerHover',
-  MSPOINTERLEAVE: 'MSPointerLeave',
   MSPOINTERMOVE: 'MSPointerMove',
-  MSPOINTEROUT: 'MSPointerOut',
   MSPOINTEROVER: 'MSPointerOver',
+  MSPOINTEROUT: 'MSPointerOut',
   MSPOINTERUP: 'MSPointerUp',
 
   // Native IMEs/input tools events.
   TEXTINPUT: 'textinput',
   COMPOSITIONSTART: 'compositionstart',
   COMPOSITIONUPDATE: 'compositionupdate',
-  COMPOSITIONEND: 'compositionend',
-
-  // Webview tag events
-  // See http://developer.chrome.com/dev/apps/webview_tag.html
-  EXIT: 'exit',
-  LOADABORT: 'loadabort',
-  LOADCOMMIT: 'loadcommit',
-  LOADREDIRECT: 'loadredirect',
-  LOADSTART: 'loadstart',
-  LOADSTOP: 'loadstop',
-  RESPONSIVE: 'responsive',
-  SIZECHANGED: 'sizechanged',
-  UNRESPONSIVE: 'unresponsive',
-
-  // HTML5 Page Visibility API.  See details at
-  // {@code goog.labs.dom.PageVisibilityMonitor}.
-  VISIBILITYCHANGE: 'visibilitychange',
-
-  // LocalStorage event.
-  STORAGE: 'storage',
-
-  // DOM Level 2 mutation events (deprecated).
-  DOMSUBTREEMODIFIED: 'DOMSubtreeModified',
-  DOMNODEINSERTED: 'DOMNodeInserted',
-  DOMNODEREMOVED: 'DOMNodeRemoved',
-  DOMNODEREMOVEDFROMDOCUMENT: 'DOMNodeRemovedFromDocument',
-  DOMNODEINSERTEDINTODOCUMENT: 'DOMNodeInsertedIntoDocument',
-  DOMATTRMODIFIED: 'DOMAttrModified',
-  DOMCHARACTERDATAMODIFIED: 'DOMCharacterDataModified'
+  COMPOSITIONEND: 'compositionend'
 };

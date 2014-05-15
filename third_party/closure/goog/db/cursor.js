@@ -34,10 +34,9 @@ goog.require('goog.events.EventTarget');
  *
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.db.Cursor = function() {
-  goog.db.Cursor.base(this, 'constructor');
+  goog.base(this);
 };
 goog.inherits(goog.db.Cursor, goog.events.EventTarget);
 

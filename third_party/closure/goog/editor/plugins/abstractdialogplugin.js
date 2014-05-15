@@ -264,7 +264,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeOriginalSelection =
 goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
     function() {
   this.disposeDialog_();
-  goog.editor.plugins.AbstractDialogPlugin.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };
 
 

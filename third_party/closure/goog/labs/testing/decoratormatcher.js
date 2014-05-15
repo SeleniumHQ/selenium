@@ -30,7 +30,6 @@ goog.require('goog.labs.testing.Matcher');
  *
  * @constructor
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.AnythingMatcher = function() {};
 

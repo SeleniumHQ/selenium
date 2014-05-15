@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.History</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    table {
+      border: 1px solid #666;
+      background: lightblue;
+      margin: 1em auto;
+    }
+    td {
+      text-align: center;
+      padding: 0 0.5em 0.5em 0.5em;
+    }
+  </style>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.History');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.history.EventType');
+    goog.require('goog.object');
+    goog.require('goog.string');
+  </script>
+</head>
+
+<body>
+  <h1>goog.History</h1>
+  <p>This page demonstrates the goog.History object which can create new browser
+  history entries without leaving the page. This version uses the hash portion of
+  the URL to make the history state available to the user. These URLs can be
+  bookmarked, edited, pasted in emails, etc., just like normal URLs. The browser's
+  back and forward buttons will navigate between the visited history states.</p>
+
+  <p>Try following the hash links below, or updating the location with your own
+  tokens. Replacing the token will update the page address without appending a
+  new history entry.</p>
+
+  <p>
+    Set #fragment<br>
+    <a href="#first">first</a><br>
+    <a href="#second">second</a><br>
+    <a href="#third">third</a>
+  </p>
+
+  <p>
+    Set Token<br>
+  <button onclick="setToken('//\\\\/\\/\\');">//\\/\/\</button>
+  <button onclick="setToken('{\'a\': \'123\', \'b\': \'456\'}');">
+    {'a': '123', 'b': '456'}
+  </button>
+  <button onclick="setToken('!@#$%^&*()_+-={}[]\\|;\':&quot;,./<>?');">
+    !@#$%^&*()_+-={}[]\|;':",./&lt;&gt;
+  </button>
+  <button onclick="setToken('%2F/foo');">%2F/foo</button>
+  <button onclick="setToken('%20   02%');">%20&nbsp;&nbsp;&nbsp;02%</button>
+  </p>
+
+  <p>
+  <input type="text" id="token_input" />
+  <button onclick="setToken()">Set Token</button>
+  <button onclick="replaceToken()">Replace Current Token</button>
+  </p>
+
+  <table><tr><td>
+  <h3>The current history state:</h3>
+  <div id="token_output"></div>
+  </td></tr></table>
+
+  <p>The state should be correctly restored after you
+  <a href="http://www.google.com/">leave the page</a> and hit the back button.</p>
+
+  <p>The history object can also be created so that the history state is not
+  user-visible/modifiable.
+  See <a href="history2.html#came from history 1">history2.html</a> for a demo.
+  To see visible/modifiable history work when the goog.History code itself is
+  loaded inside a hidden iframe,
+  see <a href="history3.html#came from history 1">history3.html</a>.
+  </p>
+
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+
+  <script>
+  var logger = goog.debug.Logger.getLogger('demo');
+  var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+  logconsole.setCapturing(true);
+
+  var events = goog.object.getValues(goog.history.EventType);
+  logger.info('Listening for: ' + events.join(', ') + '.');
+
+  var h = new goog.History();
+  goog.events.listen(h, events, function(e) {
+    logger.info(goog.string.subs('dispatched: %s (token="%s", isNavigation=%s)',
+        e.type, e.token, e.isNavigation));
+  });
+  goog.events.listen(h, goog.history.EventType.NAVIGATE, navCallback);
+  h.setEnabled(true);
+
+  function setToken(opt_val) {
+    var input = goog.dom.getElement('token_input');
+    h.setToken(opt_val || input.value);
+    return false;
+  }
+
+  function replaceToken() {
+    var input = goog.dom.getElement('token_input');
+    h.replaceToken(input.value);
+  }
+
+  function navCallback(e) {
+    var output = goog.dom.getElement('token_output');
+    if (output) {
+      var token = (e.token == null) ? 'null' : '\u201C' + e.token + '\u201D';
+      goog.dom.setTextContent(output, token);
+    }
+  }
+  </script>
+
+</body>
+</html>

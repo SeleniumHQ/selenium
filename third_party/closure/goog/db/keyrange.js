@@ -30,7 +30,6 @@ goog.provide('goog.db.KeyRange');
  *
  * @param {!IDBKeyRange} range Underlying IDBKeyRange object.
  * @constructor
- * @final
  */
 goog.db.KeyRange = function(range) {
   /**

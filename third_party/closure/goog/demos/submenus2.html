@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.SubMenu</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug');
+    goog.require('goog.positioning.Corner');
+    goog.require('goog.ui.Menu');
+    goog.require('goog.ui.SubMenu');
+    goog.require('goog.ui.PopupMenu');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/menuitem.css">
+  <link rel="stylesheet" href="../css/menuseparator.css">
+  <link rel="stylesheet" href="../css/submenu.css">
+</head>
+<body>
+  <h1>goog.ui.SubMenu</h1>
+  <p>Demonstration of different hierarchical menus which share its submenus.
+  A flyweight pattern demonstration for submenus.</p>
+  <p><button id="button">Open menu</button></p>
+
+
+  <div id="sharedMenu" class="goog-menu">
+    <div class="goog-menuitem">Google</div>
+    <div class="goog-menuitem">Yahoo</div>
+    <div class="goog-menuitem">MSN</div>
+    <hr>
+    <div class="goog-menuitem">Bla...</div>
+  </div>
+
+  <script>
+
+    // Popup menu with sub menus
+    var menu = new goog.ui.PopupMenu();
+    menu.attach(document.getElementById('button'),
+        goog.positioning.Corner.BOTTOM_LEFT,
+        goog.positioning.Corner.TOP_LEFT);
+
+    var sharedDecoratedSubmenu = new goog.ui.Menu();
+    sharedDecoratedSubmenu.decorate(document.getElementById('sharedMenu'));
+
+    var sharedSubmenu = new goog.ui.Menu();
+    var sa = new goog.ui.SubMenu('Shared sub one');
+    sa.addItem(new goog.ui.MenuItem('Shared sub sub one'));
+    sa.addItem(new goog.ui.MenuItem('Shared sub sub two'));
+    sharedSubmenu.addItem(sa);
+    sharedSubmenu.addItem(new goog.ui.MenuItem('Shared sub two'));
+    sharedSubmenu.addItem(new goog.ui.MenuItem('Shared sub three'));
+    var sb = new goog.ui.SubMenu('Shared sub four');
+    sb.setMenu(sharedDecoratedSubmenu);
+    sharedSubmenu.addItem(sb);
+
+    var a = new goog.ui.SubMenu('Zero');
+    var b = new goog.ui.SubMenu('Ten');
+    var c = new goog.ui.SubMenu('Twenty');
+    var d = new goog.ui.SubMenu('Thirty');
+    var e = new goog.ui.SubMenu('Has shared one');
+    var f = new goog.ui.SubMenu('Has shared two');
+    var g = new goog.ui.SubMenu('Has shared three');
+    var h = new goog.ui.SubMenu('Has decorated shared one');
+    var i = new goog.ui.SubMenu('Has decorated shared two');
+    var j = new goog.ui.SubMenu('Has decorated shared three');
+
+    e.setMenu(sharedSubmenu);
+    f.setMenu(sharedSubmenu);
+    g.setMenu(sharedSubmenu);
+
+    h.setMenu(sharedDecoratedSubmenu);
+    i.setMenu(sharedDecoratedSubmenu);
+    j.setMenu(sharedDecoratedSubmenu);
+
+    var aa = new goog.ui.SubMenu('One')
+    aa.setEnabled(false);
+    aa.addItem(new goog.ui.MenuItem('Add'));
+    aa.addItem(new goog.ui.MenuItem('Subtract'));
+    aa.addItem(new goog.ui.MenuItem('Multiply'));
+
+    a.addItem(aa);
+    a.addItem(new goog.ui.MenuItem('Two'));
+    a.addItem(new goog.ui.MenuItem('Three'));
+    a.addItem(new goog.ui.MenuItem('Four'));
+
+    b.addItem(new goog.ui.MenuItem('Eleven'));
+    b.addItem(new goog.ui.MenuItem('Thirteen'));
+    b.addItem(new goog.ui.MenuItem('Fourteen'));
+    b.addItem(new goog.ui.MenuItem('Fifteen'));
+
+    c.addItem(new goog.ui.MenuItem('Twenty-one'));
+
+
+    var cb = new goog.ui.SubMenu('Twenty-Two')
+    cb.addItem(new goog.ui.MenuItem('Add'));
+    cb.addItem(new goog.ui.MenuItem('Subtract'));
+    cb.addItem(new goog.ui.MenuItem('Multiply'));
+    var cbd = new goog.ui.SubMenu('More')
+    cbd.addItem(new goog.ui.MenuItem('Square Root'));
+    cbd.addItem(new goog.ui.MenuItem('Power'));
+    cbd.addItem(new goog.ui.MenuItem('Square'));
+    cb.addItem(cbd);
+    c.addItem(cb);
+
+    c.addItem(new goog.ui.MenuItem('Twenty-three'));
+    c.addItem(new goog.ui.MenuItem('Twenty-four'));
+
+    d.addItem(new goog.ui.MenuItem('Thirty-one'));
+    d.addItem(new goog.ui.MenuItem('Thirty-two'));
+    d.addItem(new goog.ui.MenuItem('Thirty-three'));
+    d.addItem(new goog.ui.MenuItem('Thirty-four'));
+
+    menu.addItem(a);
+    menu.addItem(new goog.ui.MenuItem('AaAaAaAaAaAa'));
+    menu.addItem(new goog.ui.MenuItem('BbBbBbBbBbBb'));
+    menu.addItem(b);
+    menu.addItem(c);
+    menu.addItem(d);
+
+    menu.addItem(e);
+    menu.addItem(f);
+    menu.addItem(g);
+
+    menu.addItem(h);
+    menu.addItem(i);
+    menu.addItem(j);
+
+    var ccc = new goog.ui.MenuItem('CcCcCcCcCcCc');
+    ccc.setEnabled(false);
+    menu.addItem(ccc);
+    menu.addItem(new goog.ui.MenuItem('DdDdDdDdDdDd'));
+
+
+    menu.render();
+    menu.getElement().id = 'foo';
+    goog.events.listen(menu, 'action', function(e) {
+      var action = e.target.getCaption();
+      alert(action);
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+  <head>
+    <script src="../base.js"></script>
+
+    <script>
+      goog.require('goog.dom');
+      goog.require('goog.fx');
+      goog.require('goog.fx.dom');
+      goog.require('goog.fx.AnimationQueue');
+    </script>
+    <script>
+      var sx = 5;
+      var sy = 5;
+
+      var isForward = false;
+
+      var parallelForward;
+      var parallelBackward;
+      var serialForward;
+      var serialBackward;
+      var currentlyPlaying;
+
+      function createAnimations() {
+        parallelForward = new goog.fx.AnimationParallelQueue();
+        parallelBackward = new goog.fx.AnimationParallelQueue();
+        serialForward = new goog.fx.AnimationSerialQueue();
+        serialBackward = new goog.fx.AnimationSerialQueue();
+
+        // move forward at the same time
+        parallelForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block1"),
+            [5, 5], [55, 50], 2000, goog.fx.easing.easeOut));
+        parallelForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block2"),
+            [10, 5], [60, 50], 2000, goog.fx.easing.easeOut));
+        parallelForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block3"),
+            [15, 5], [65, 50], 2000, goog.fx.easing.easeOut));
+        parallelForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block4"),
+            [20, 5], [70, 50], 2000, goog.fx.easing.easeOut));
+        parallelForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block5"),
+            [25, 5], [75, 50], 2000, goog.fx.easing.easeOut));
+
+        // move backward at the same time
+        parallelBackward.add(new goog.fx.dom.Slide(
+            goog.dom.getElement("block1"),
+            [55, 50], [5, 5], 2000, goog.fx.easing.easeOut));
+        parallelBackward.add(new goog.fx.dom.Slide(
+            goog.dom.getElement("block2"),
+            [60, 50], [10, 5], 2000, goog.fx.easing.easeOut));
+        parallelBackward.add(new goog.fx.dom.Slide
+            (goog.dom.getElement("block3"),
+            [65, 50], [15, 5], 2000, goog.fx.easing.easeOut));
+        parallelBackward.add(new goog.fx.dom.Slide(
+            goog.dom.getElement("block4"),
+            [70, 50], [20, 5], 2000, goog.fx.easing.easeOut));
+        parallelBackward.add(new goog.fx.dom.Slide(
+            goog.dom.getElement("block5"),
+            [75, 50], [25, 5], 2000, goog.fx.easing.easeOut));
+
+        // move forward in order
+        serialForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block1"),
+            [5, 5], [55, 50], 400, goog.fx.easing.easeOut));
+        serialForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block2"),
+            [10, 5], [60, 50], 400, goog.fx.easing.easeOut));
+        serialForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block3"),
+            [15, 5], [65, 50], 400, goog.fx.easing.easeOut));
+        serialForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block4"),
+            [20, 5], [70, 50], 400, goog.fx.easing.easeOut));
+        serialForward.add(new goog.fx.dom.Slide(goog.dom.getElement("block5"),
+            [25, 5], [75, 50], 400, goog.fx.easing.easeOut));
+
+        // move backward in order
+        serialBackward.add(new goog.fx.dom.Slide(goog.dom.getElement("block1"),
+            [55, 50], [5, 5], 400, goog.fx.easing.easeOut));
+        serialBackward.add(new goog.fx.dom.Slide(goog.dom.getElement("block2"),
+            [60, 50], [10, 5], 400, goog.fx.easing.easeOut));
+        serialBackward.add(new goog.fx.dom.Slide(goog.dom.getElement("block3"),
+            [65, 50], [15, 5], 400, goog.fx.easing.easeOut));
+        serialBackward.add(new goog.fx.dom.Slide(goog.dom.getElement("block4"),
+            [70, 50], [20, 5], 400, goog.fx.easing.easeOut));
+        serialBackward.add(new goog.fx.dom.Slide(goog.dom.getElement("block5"),
+            [75, 50], [25, 5], 400, goog.fx.easing.easeOut));
+      }
+
+      function demoParallel() {
+        if (isForward) {
+          parallelBackward.play();
+          currentlyPlaying = parallelBackward;
+        } else {
+          parallelForward.play();
+          currentlyPlaying = parallelForward;
+        }
+        isForward = !isForward;
+      }
+
+      function demoSerial() {
+        if (isForward) {
+          serialBackward.play();
+          currentlyPlaying = serialBackward;
+        } else {
+          serialForward.play();
+          currentlyPlaying = serialForward;
+        }
+        isForward = !isForward;
+      }
+
+      function pause() {
+        currentlyPlaying.pause();
+      }
+
+      function resume(doRestart) {
+        currentlyPlaying.play(doRestart);
+      }
+    </script>
+
+    <style>
+      .block {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="block1" class="block" style="left:  5px; top: 5px"></div>
+    <div id="block2" class="block" style="left: 10px; top: 5px"></div>
+    <div id="block3" class="block" style="left: 15px; top: 5px"></div>
+    <div id="block4" class="block" style="left: 20px; top: 5px"></div>
+    <div id="block5" class="block" style="left: 25px; top: 5px"></div>
+
+    <script>
+      createAnimations();
+    </script>
+
+    <div style="margin-top:70px">
+      <a href="javascript:demoParallel();">play parallel</a> |
+      <a href="javascript:demoSerial();">play serial</a> | <br/>
+      <a href="javascript:pause();">pause</a> |
+      <a href="javascript:resume(false);">resume</a> |
+      <a href="javascript:resume(true);">resume + restart</a>
+    </div>
+  </body>
+</html>

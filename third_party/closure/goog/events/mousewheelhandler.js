@@ -258,7 +258,6 @@ goog.events.MouseWheelHandler.prototype.disposeInternal = function() {
  *     direction.
  * @constructor
  * @extends {goog.events.BrowserEvent}
- * @final
  */
 goog.events.MouseWheelEvent = function(detail, browserEvent, deltaX, deltaY) {
   goog.events.BrowserEvent.call(this, browserEvent);

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.TabPane</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.TabPane');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    .goog-tabpane {
+      background: threedface;
+      padding-left: 1px;
+      position: relative;
+    }
+
+    .goog-tabpane-tabs {
+      list-style: none;
+      margin: 0px;
+      padding: 0px;
+      height: 1ex;
+      position: relative;
+    }
+
+    .goog-tabpane-left .goog-tabpane-tabs {
+      float: left;
+    }
+
+    .goog-tabpane-right .goog-tabpane-tabs {
+      float: right;
+    }
+
+    .goog-tabpane-cont {
+      overflow: auto;
+      background: threedface;
+      border: 1px solid;
+      border-color: threedhighlight threedshadow threedshadow threedhighlight;
+      padding: 2px;
+      height: 200px;
+    }
+
+    .goog-tabpane-tab, .goog-tabpane-tab-selected {
+      display: block;
+      padding: 0px 3ex;
+      background: threedface;
+      border: 1px solid;
+      margin: 0px;
+    }
+
+    .goog-tabpane-top .goog-tabpane-tab,
+    .goog-tabpane-top .goog-tabpane-tab-selected,
+    .goog-tabpane-bottom .goog-tabpane-tab,
+    .goog-tabpane-bottom .goog-tabpane-tab-selected {
+      float: left;
+    }
+
+    .goog-tabpane-top .goog-tabpane-tab,
+    .goog-tabpane-top .goog-tabpane-tab-selected {
+      border-color: threedhighlight threedshadow threedface threedhighlight;
+    }
+
+    .goog-tabpane-bottom .goog-tabpane-tab,
+    .goog-tabpane-bottom .goog-tabpane-tab-selected {
+      border-color: threedface threedshadow threedshadow threedhighlight;
+    }
+
+    .goog-tabpane-left .goog-tabpane-tab,
+    .goog-tabpane-left .goog-tabpane-tab-selected {
+      border-color: threedhighlight threedface threedshadow threedhighlight;
+    }
+
+    .goog-tabpane-right .goog-tabpane-tab,
+    .goog-tabpane-right .goog-tabpane-tab-selected {
+      border-color: threedhighlight threedshadow threedshadow threedface;
+    }
+
+    .goog-tabpane-top .goog-tabpane-tab {
+      margin-top: 3px;
+    }
+
+    .goog-tabpane-tab-selected {
+      font-weight: bold;
+    }
+
+    .goog-tabpane-tab-selected,
+    .goog-tabpane-tab-selected {
+      padding-bottom: 2px;
+      padding-top: 2px;
+    }
+
+    .goog-tabpane-top .goog-tabpane-tab-selected {
+      position: relative;
+      top: 1px;
+    }
+
+    .goog-tabpane-bottom .goog-tabpane-tab-selected {
+      position: relative;
+      top: -1px;
+    }
+
+    .goog-tabpane-left .goog-tabpane-tab-selected {
+      position: relative;
+      left: 1px;
+    }
+
+    .goog-tabpane-right .goog-tabpane-tab-selected {
+      position: relative;
+      left: -1px;
+    }
+
+    #tabpane2 .goog-tabpane-tab {
+      margin-top: 0px;
+    }
+
+    p {
+      margin-top: 0px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>goog.ui.TabPane</h1>
+
+  <div id="tabpane1"></div>
+  <strong id="tabpane1index"></strong> selected in tab pane 1.<br/><br/>
+
+  <h3>Bottom tabs</h3>
+  <div id="tabpane2">
+    <div>
+      <h2>Initial page</h2>
+      <p>
+        Page created automatically from tab pane child node.
+      </p>
+    </div>
+  </div>
+
+  <h3>Left tabs</h3>
+  <div id="tabpane3">
+    <div>
+      <h2>Front page!</h2>
+      <p>
+        Page created automatically from tab pane child node.
+      </p>
+    </div>
+  </div>
+
+  <h3>Right tabs</h3>
+  <div id="tabpane4">
+    <div>
+      <h2>Right 1</h2>
+      <p>
+        Page created automatically from tab pane child node.
+      </p>
+    </div>
+    <div>
+      <h2>Right 2</h2>
+      <p>
+        So was this page.
+      </p>
+    </div>
+  </div>
+
+  <div id="page1">
+    <h2>Page 1</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Duis ac augue sed
+      massa placerat iaculis. Aliquam tempor dictum massa. Quisque vehicula justo
+      ut tellus. Integer urna. Aliquam libero justo, ornare at, pretium ac,
+      vulputate quis, ante. Sed arcu. Etiam sit amet turpis. Maecenas pede. Sed
+      turpis. Sed ultricies commodo nisl. Morbi eget magna quis nisi euismod
+      porttitor. Vivamus lacinia massa et sem. Donec consequat ligula sed tellus.
+      Suspendisse enim sapien, vestibulum nec, eleifend id, placerat sit amet,
+      risus. Mauris in pede ac lorem varius facilisis. Donec dui. Nam mollis nisi
+      eu neque. Cras luctus nisl at sapien. Ut eleifend, odio id luctus
+      pellentesque, lorem diam dictum velit, ac gravida lectus magna vel velit.
+    </p>
+    <p>
+      Etiam tempus, ante semper iaculis ultrices, ligula eros lobortis tellus, sit
+      amet luctus dolor nisl sit amet dolor. Donec in velit. Vivamus facilisis.
+      Proin nisi felis, commodo ut, porta dignissim, vestibulum quis, ligula. Ut
+      egestas porttitor tortor. Ut porttitor diam a est. Sed placerat. Aliquam
+      luctus est a risus. Aenean blandit nibh et justo. Phasellus vel lectus ut
+      leo dictum consequat. Nam tincidunt facilisis nulla. Nunc nonummy tempus
+      quam. Aliquam id enim. Sed rhoncus cursus lorem. Curabitur ultricies, enim
+      quis eleifend mattis, est velit dapibus dolor, quis laoreet arcu tortor
+      volutpat tortor. Pellentesque habitant morbi tristique senectus et netus et
+      malesuada fames ac turpis egestas. Curabitur nec mauris et purus aliquam
+      mattis. Cras rhoncus posuere sapien. Class aptent taciti sociosqu ad litora
+      torquent per conubia nostra, per inceptos hymenaeos.
+    </p>
+    <p>
+      Mauris lacinia ornare nunc. Donec molestie. Sed nulla libero, tincidunt vel,
+      porta sit amet, nonummy eget, augue. Class aptent taciti sociosqu ad litora
+      torquent per conubia nostra, per inceptos hymenaeos. Donec ac risus. Cras
+      euismod congue orci. Mauris mattis, ipsum at vestibulum bibendum, odio est
+      rhoncus nisi, vel aliquam ante velit quis neque. Duis nonummy tortor id
+      ante. Aenean auctor odio non nulla. Fusce hendrerit, mi et fringilla
+      venenatis, sem ipsum fermentum lorem, vel posuere urna eros eget massa.
+    </p>
+    <p>
+      Nulla nec sapien eget mauris pretium tempor. Phasellus scelerisque quam id
+      mauris. Cras erat ante, pretium ut, vestibulum ac, tincidunt ut, nunc.
+      Vivamus velit sapien, feugiat ac, elementum ac, viverra non, leo. Phasellus
+      imperdiet, magna at placerat consectetuer, enim urna aliquam augue, nec
+      tincidunt justo lectus nec lectus. Nam neque. Nullam ullamcorper euismod
+      augue. Maecenas arcu purus, sollicitudin nec, consequat a, gravida quis,
+      massa. Nullam bibendum viverra risus. Sed nibh. Morbi dapibus pellentesque
+      erat.
+    </p>
+    <p>
+      Cras non tellus. Maecenas nulla est, tincidunt sed, porta sit amet, placerat
+      sed, diam. Morbi pulvinar. Vestibulum ante ipsum primis in faucibus orci
+      luctus et ultrices posuere cubilia Curae; Praesent felis lacus, pretium at,
+      egestas sed, fermentum at, est. Pellentesque sagittis feugiat orci. Nam
+      augue. Sed eget dolor. Proin vitae metus scelerisque massa fermentum tempus.
+      Nulla facilisi. Pellentesque habitant morbi tristique senectus et netus et
+      malesuada fames ac turpis egestas. Aenean eleifend, leo gravida mollis
+      tempor, tellus ipsum porttitor leo, eget condimentum tellus neque sit amet
+      orci. Sed non lectus. Suspendisse nonummy purus ac massa. Sed quis elit
+      dapibus nunc semper porta. Maecenas risus eros, euismod quis, sagittis eget,
+      aliquet eget, dui. Donec vel nibh. Vivamus nunc purus, euismod in, feugiat
+      in, sodales vitae, nunc. Nulla lobortis.
+    </p>
+  </div>
+
+  <div id="page2">
+    <p>
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras et nisi id
+      lorem tempor semper. Suspendisse ante. Integer ligula urna, venenatis quis,
+      placerat vitae, commodo quis, sapien. Quisque nec lectus. Sed non dolor. Sed
+      congue, nisi in pharetra consequat, odio diam pulvinar arcu, in laoreet elit
+      risus id ipsum. Class aptent taciti sociosqu ad litora torquent per conubia
+      nostra, per inceptos hymenaeos. Praesent tellus enim, imperdiet a, sagittis
+      id, pulvinar vel, tortor. Integer nulla. Sed nulla augue, lacinia id,
+      vulputate eu, rhoncus non, ante. Integer lobortis eros vitae quam. Phasellus
+      sagittis, ipsum sollicitudin bibendum laoreet, arcu erat luctus lacus, vel
+      pharetra felis metus tincidunt diam. Cras ac augue in enim ultricies
+      aliquam.
+    </p>
+    <input type="text" />
+    <select><option>Select box</option></select>
+    <button>Button</button>
+  </div>
+
+  <div id="page5">
+    <h2>Page 5</h2>
+    <p>
+      This is page 5.
+    </p>
+  </div>
+
+  <script>
+
+    var tabPane = new goog.ui.TabPane(document.getElementById('tabpane1'));
+    tabPane.addPage(new goog.ui.TabPane.TabPage(
+        document.getElementById('page1')));
+    tabPane.addPage(new goog.ui.TabPane.TabPage(
+        document.getElementById('page2'), 'Page 2'));
+    tabPane.addPage(new goog.ui.TabPane.TabPage(null, 'Page 3'));
+    tabPane.addPage(new goog.ui.TabPane.TabPage('Page 5'));
+    tabPane.addPage(new goog.ui.TabPane.TabPage('Page 4'), 3);
+
+    var pg5 = new goog.ui.TabPane.TabPage(document.getElementById('page5'))
+    tabPane.addPage(pg5);
+    tabPane.addPage(new goog.ui.TabPane.TabPage('Page 6'));
+    tabPane.removePage(pg5);
+    tabPane.removePage(2);
+
+    function tabChanged(event) {
+      goog.dom.setTextContent(document.getElementById('tabpane1index'),
+                              event.page.getTitle());
+    }
+    goog.events.listen(tabPane, goog.ui.TabPane.Events.CHANGE, tabChanged);
+
+    tabPane.setSelectedIndex(1);
+
+
+    var tabPane2 = new goog.ui.TabPane(document.getElementById('tabpane2'),
+                                       goog.ui.TabPane.TabLocation.BOTTOM);
+    tabPane2.addPage(new goog.ui.TabPane.TabPage('Page 7'));
+    tabPane2.addPage(pg5);
+
+    pg5.select();
+    pg5.setTitle('Renamed Page');
+
+    var tabPane3 = new goog.ui.TabPane(document.getElementById('tabpane3'),
+                                       goog.ui.TabPane.TabLocation.LEFT);
+    tabPane3.addPage(new goog.ui.TabPane.TabPage('Page 7'));
+
+    var tabPane4 = new goog.ui.TabPane(document.getElementById('tabpane4'),
+                                       goog.ui.TabPane.TabLocation.RIGHT);
+    tabPane4.addPage(new goog.ui.TabPane.TabPage('Page 99'));
+  </script>
+</body>
+</html>

@@ -31,7 +31,6 @@ goog.require('goog.graphics.ext.Element');
  * @param {string} src The path to the image to display.
  * @constructor
  * @extends {goog.graphics.ext.Element}
- * @final
  */
 goog.graphics.ext.Image = function(group, src) {
   // Initialize with some stock values.

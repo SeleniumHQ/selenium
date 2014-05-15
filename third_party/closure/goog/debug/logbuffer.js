@@ -32,7 +32,6 @@ goog.require('goog.debug.LogRecord');
 /**
  * Creates the log buffer.
  * @constructor
- * @final
  */
 goog.debug.LogBuffer = function() {
   goog.asserts.assert(goog.debug.LogBuffer.isBufferingEnabled(),

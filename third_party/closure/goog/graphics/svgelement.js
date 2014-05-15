@@ -50,7 +50,6 @@ goog.require('goog.graphics.TextElement');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.SvgGroupElement = function(element, graphics) {
   goog.graphics.GroupElement.call(this, element, graphics);
@@ -92,7 +91,6 @@ goog.graphics.SvgGroupElement.prototype.setSize = function(width, height) {
  * @param {goog.graphics.Fill?} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.EllipseElement}
- * @final
  */
 goog.graphics.SvgEllipseElement = function(element, graphics, stroke, fill) {
   goog.graphics.EllipseElement.call(this, element, graphics, stroke, fill);
@@ -137,7 +135,6 @@ goog.graphics.SvgEllipseElement.prototype.setRadius = function(rx, ry) {
  * @param {goog.graphics.Fill?} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.RectElement}
- * @final
  */
 goog.graphics.SvgRectElement = function(element, graphics, stroke, fill) {
   goog.graphics.RectElement.call(this, element, graphics, stroke, fill);
@@ -181,7 +178,6 @@ goog.graphics.SvgRectElement.prototype.setSize = function(width, height) {
  * @param {goog.graphics.Fill?} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.PathElement}
- * @final
  */
 goog.graphics.SvgPathElement = function(element, graphics, stroke, fill) {
   goog.graphics.PathElement.call(this, element, graphics, stroke, fill);
@@ -214,7 +210,6 @@ goog.graphics.SvgPathElement.prototype.setPath = function(path) {
  * @param {goog.graphics.Fill?} fill The fill to use for this element.
  * @constructor
  * @extends {goog.graphics.TextElement}
- * @final
  */
 goog.graphics.SvgTextElement = function(element, graphics, stroke, fill) {
   goog.graphics.TextElement.call(this, element, graphics, stroke, fill);
@@ -243,7 +238,6 @@ goog.graphics.SvgTextElement.prototype.setText = function(text) {
  *     this element.
  * @constructor
  * @extends {goog.graphics.ImageElement}
- * @final
  */
 goog.graphics.SvgImageElement = function(element, graphics) {
   goog.graphics.ImageElement.call(this, element, graphics);

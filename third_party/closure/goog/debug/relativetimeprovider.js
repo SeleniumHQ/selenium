@@ -30,7 +30,6 @@ goog.provide('goog.debug.RelativeTimeProvider');
  * behavior for most use cases is to share the same start time.
  *
  * @constructor
- * @final
  */
 goog.debug.RelativeTimeProvider = function() {
   /**

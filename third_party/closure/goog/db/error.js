@@ -37,7 +37,6 @@ goog.require('goog.debug.Error');
  * @param {string=} opt_message Additional message.
  * @constructor
  * @extends {goog.debug.Error}
- * @final
  */
 goog.db.Error = function(error, context, opt_message) {
   var errorCode = null;
@@ -69,7 +68,7 @@ goog.db.Error = function(error, context, opt_message) {
   if (opt_message) {
     msg += ', ' + opt_message;
   }
-  goog.db.Error.base(this, 'constructor', msg);
+  goog.base(this, msg);
 };
 goog.inherits(goog.db.Error, goog.debug.Error);
 
@@ -90,11 +89,9 @@ goog.db.Error.prototype.getName = function()  {
  *
  * @constructor
  * @extends {goog.debug.Error}
- * @final
  */
 goog.db.Error.VersionChangeBlockedError = function() {
-  goog.db.Error.VersionChangeBlockedError.base(
-      this, 'constructor', 'Version change blocked');
+  goog.base(this, 'Version change blocked');
 };
 goog.inherits(goog.db.Error.VersionChangeBlockedError, goog.debug.Error);
 
@@ -348,15 +345,13 @@ goog.db.Error.fromRequest = function(request, message) {
  */
 goog.db.Error.fromException = function(ex, message) {
   if ('name' in ex) {
-    // Chrome 22+.
-    var errorMessage = message + ': ' + ex.message;
-    return new goog.db.Error(/** @type {!DOMError} */ (ex), errorMessage);
-  } else if ('code' in ex) {
     // Chrome 21 and before.
+    return new goog.db.Error(/** @type {!DOMError} */ (ex), message);
+  } else if ('code' in ex) {
+    // Chrome 22+.
     var errorName = goog.db.Error.getName(ex.code);
-    var errorMessage = message + ': ' + ex.message;
     return new goog.db.Error(
-        /** @type {!DOMError} */ ({name: errorName}), errorMessage);
+        /** @type {!DOMError} */ ({name: errorName}), message);
   } else {
     return new goog.db.Error(/** @type {!DOMError} */ (
         {name: goog.db.Error.ErrorName.UNKNOWN_ERR}), message);

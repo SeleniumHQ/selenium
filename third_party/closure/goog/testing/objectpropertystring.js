@@ -30,7 +30,6 @@ goog.provide('goog.testing.ObjectPropertyString');
  * @param {Object} object The containing object.
  * @param {Object|string} propertyString Property name as a string literal.
  * @constructor
- * @final
  */
 goog.testing.ObjectPropertyString = function(object, propertyString) {
   this.object_ = object;

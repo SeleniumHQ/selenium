@@ -23,13 +23,13 @@ goog.provide('goog.events.FileDropHandler');
 goog.provide('goog.events.FileDropHandler.EventType');
 
 goog.require('goog.array');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.log');
 
 
 
@@ -43,14 +43,13 @@ goog.require('goog.log');
  *     area outside the {@code element}. Default false.
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.events.FileDropHandler = function(element, opt_preventDropOutside) {
   goog.events.EventTarget.call(this);
 
   /**
    * Handler for drag/drop events.
-   * @type {!goog.events.EventHandler.<!goog.events.FileDropHandler>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -102,11 +101,11 @@ goog.events.FileDropHandler.prototype.dndContainsFiles_ = false;
 
 /**
  * A logger, used to help us debug the algorithm.
- * @type {goog.log.Logger}
+ * @type {goog.debug.Logger}
  * @private
  */
 goog.events.FileDropHandler.prototype.logger_ =
-    goog.log.getLogger('goog.events.FileDropHandler');
+    goog.debug.Logger.getLogger('goog.events.FileDropHandler');
 
 
 /**
@@ -131,7 +130,7 @@ goog.events.FileDropHandler.prototype.disposeInternal = function() {
  * @private
  */
 goog.events.FileDropHandler.prototype.dispatch_ = function(e) {
-  goog.log.fine(this.logger_, 'Firing DROP event...');
+  this.logger_.fine('Firing DROP event...');
   var event = new goog.events.BrowserEvent(e.getBrowserEvent());
   event.type = goog.events.FileDropHandler.EventType.DROP;
   this.dispatchEvent(event);
@@ -144,8 +143,8 @@ goog.events.FileDropHandler.prototype.dispatch_ = function(e) {
  * @private
  */
 goog.events.FileDropHandler.prototype.onDocDragEnter_ = function(e) {
-  goog.log.log(this.logger_, goog.log.Level.FINER,
-      '"' + e.target.id + '" (' + e.target + ') dispatched: ' + e.type);
+  this.logger_.finer('"' + e.target.id + '" (' + e.target + ') dispatched: ' +
+                     e.type);
   var dt = e.getBrowserEvent().dataTransfer;
   // Check whether the drag event contains files.
   this.dndContainsFiles_ = !!(dt &&
@@ -158,8 +157,7 @@ goog.events.FileDropHandler.prototype.onDocDragEnter_ = function(e) {
     // Prevent default actions.
     e.preventDefault();
   }
-  goog.log.log(this.logger_, goog.log.Level.FINER,
-      'dndContainsFiles_: ' + this.dndContainsFiles_);
+  this.logger_.finer('dndContainsFiles_: ' + this.dndContainsFiles_);
 };
 
 
@@ -169,8 +167,8 @@ goog.events.FileDropHandler.prototype.onDocDragEnter_ = function(e) {
  * @private
  */
 goog.events.FileDropHandler.prototype.onDocDragOver_ = function(e) {
-  goog.log.log(this.logger_, goog.log.Level.FINEST,
-      '"' + e.target.id + '" (' + e.target + ') dispatched: ' + e.type);
+  this.logger_.finest('"' + e.target.id + '" (' + e.target + ') dispatched: ' +
+                      e.type);
   if (this.dndContainsFiles_) {
     // Prevent default actions.
     e.preventDefault();
@@ -187,8 +185,8 @@ goog.events.FileDropHandler.prototype.onDocDragOver_ = function(e) {
  * @private
  */
 goog.events.FileDropHandler.prototype.onElemDragOver_ = function(e) {
-  goog.log.log(this.logger_, goog.log.Level.FINEST,
-      '"' + e.target.id + '" (' + e.target + ') dispatched: ' + e.type);
+  this.logger_.finest('"' + e.target.id + '" (' + e.target + ') dispatched: ' +
+                      e.type);
   if (this.dndContainsFiles_) {
     // Prevent default actions and stop the event from propagating further to
     // the document. Both lines are needed! (See comment above).
@@ -208,8 +206,8 @@ goog.events.FileDropHandler.prototype.onElemDragOver_ = function(e) {
  * @private
  */
 goog.events.FileDropHandler.prototype.onElemDrop_ = function(e) {
-  goog.log.log(this.logger_, goog.log.Level.FINER,
-      '"' + e.target.id + '" (' + e.target + ') dispatched: ' + e.type);
+  this.logger_.finer('"' + e.target.id + '" (' + e.target + ') dispatched: ' +
+                     e.type);
   // If the drag and drop event contains files.
   if (this.dndContainsFiles_) {
     // Prevent default actions and stop the event from propagating further to

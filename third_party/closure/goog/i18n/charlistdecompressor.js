@@ -43,7 +43,6 @@ goog.require('goog.i18n.uChar');
 /**
  * Class to decompress base88 compressed character list.
  * @constructor
- * @final
  */
 goog.i18n.CharListDecompressor = function() {
   this.buildCharMap_('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr' +
@@ -131,8 +130,8 @@ goog.i18n.CharListDecompressor.prototype.addChars_ = function(list, lastcode,
 /**
  * Gets the list of characters specified in the given string by base 88 scheme.
  * @param {string} str The string encoding character list.
- * @return {!Array.<string>} The list of characters specified by the given
- *     string in base 88 scheme.
+ * @return {Array.<string>} The list of characters specified by the given string
+ *     in base 88 scheme.
  */
 goog.i18n.CharListDecompressor.prototype.toCharList = function(str) {
   var metasize = 8;

@@ -35,7 +35,6 @@ goog.require('goog.math.Rect');
  *     automatically resize to fit the element.  Defaults to false.
  * @constructor
  * @extends {goog.graphics.ext.StrokeAndFillElement}
- * @final
  */
 goog.graphics.ext.Shape = function(group, path, opt_autoSize) {
   this.autoSize_ = !!opt_autoSize;

@@ -57,10 +57,9 @@ goog.require('goog.userAgent');
  * @param {Element} el The element to listen on.
  * @extends {goog.events.EventTarget}
  * @constructor
- * @final
  */
 goog.events.ImeHandler = function(el) {
-  goog.events.ImeHandler.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The element to listen on.
@@ -72,14 +71,14 @@ goog.events.ImeHandler = function(el) {
   /**
    * Tracks the keyup event only, because it has a different life-cycle from
    * other events.
-   * @type {goog.events.EventHandler.<!goog.events.ImeHandler>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.keyUpHandler_ = new goog.events.EventHandler(this);
 
   /**
    * Tracks all the browser events.
-   * @type {goog.events.EventHandler.<!goog.events.ImeHandler>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -124,10 +123,9 @@ goog.events.ImeHandler.EventType = {
  * @param {goog.events.BrowserEvent} reason The trigger for this event.
  * @constructor
  * @extends {goog.events.Event}
- * @final
  */
 goog.events.ImeHandler.Event = function(type, reason) {
-  goog.events.ImeHandler.Event.base(this, 'constructor', type);
+  goog.base(this, type);
 
   /**
    * The event that triggered this.
@@ -361,5 +359,5 @@ goog.events.ImeHandler.prototype.disposeInternal = function() {
   this.handler_.dispose();
   this.keyUpHandler_.dispose();
   this.el_ = null;
-  goog.events.ImeHandler.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

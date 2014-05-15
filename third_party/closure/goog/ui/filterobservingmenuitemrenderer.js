@@ -34,7 +34,6 @@ goog.require('goog.ui.MenuItemRenderer');
  *
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
- * @final
  */
 goog.ui.FilterObservingMenuItemRenderer = function() {
   goog.ui.MenuItemRenderer.call(this);

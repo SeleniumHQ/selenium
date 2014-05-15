@@ -35,10 +35,9 @@ goog.require('goog.messaging.MessageChannel'); // interface
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.MessageChannel}
- * @final
  */
 goog.messaging.DeferredChannel = function(deferredChannel) {
-  goog.messaging.DeferredChannel.base(this, 'constructor');
+  goog.base(this);
   this.deferred_ = deferredChannel;
 };
 goog.inherits(goog.messaging.DeferredChannel, goog.Disposable);
@@ -95,5 +94,5 @@ goog.messaging.DeferredChannel.prototype.send = function(serviceName, payload) {
 /** @override */
 goog.messaging.DeferredChannel.prototype.disposeInternal = function() {
   this.cancel();
-  goog.messaging.DeferredChannel.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

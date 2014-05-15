@@ -60,7 +60,6 @@ goog.require('goog.testing.mockmatchers.IgnoreArgument');
  *
  * @param {goog.testing.MockControl} mockControl The parent MockControl.
  * @constructor
- * @final
  */
 goog.testing.async.MockControl = function(mockControl) {
   /**

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Select &amp; goog.ui.Option</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.object');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.ui.Component.EventType');
+    goog.require('goog.ui.FlatMenuButtonRenderer');
+    goog.require('goog.ui.Option');
+    goog.require('goog.ui.Select');
+    goog.require('goog.ui.Separator');
+    goog.require('goog.ui.decorate');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/menubutton.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/menuitem.css">
+  <link rel="stylesheet" href="../css/menuseparator.css">
+  <link rel="stylesheet" href="../css/flatmenubutton.css">
+  <style>
+    .good {
+      color: #080;
+      vertical-align: middle;
+    }
+
+    .bad {
+      color: #800;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.Select &amp; goog.ui.Option</h1>
+  <fieldset>
+    <legend>Demo of the <strong>goog.ui.Select</strong> component:</legend>
+    <br>
+    <label id="select1">The best movie of all time is </label>&nbsp;
+    <span class="good" id="value1"></span>
+    <br>
+    <br>
+    <label id="select2">The worst movie of all time is </label>&nbsp;
+    <span class="bad" id="value2"></span>
+    <br>
+    <br>
+    <label id="select3">The <strong>Select</strong> component for worst movie is
+    </label>&nbsp;<i>(This control doesn't auto-highlight; it only dispatches
+    ENTER and LEAVE events.)</i>
+    <br>
+    <br>
+    <a id="add" href="#">Click here</a> to add a new option for the best movie,
+    <a id="hide" href="#">here</a>
+    to hide/show the select component for the best movie, or
+    <a id="worst" href="#">here</a>
+    to set the worst movie of all time to "Catwoman."
+    <br>
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend>This <strong>goog.ui.Select</strong> was decorated:</legend>
+    <br>
+    <label>
+      My favorite Sergio Leone character is
+      <div id="spaghetti" class="goog-select">
+        Make your choice...
+        <ul class="goog-menu">
+          <li class="goog-menuitem">the Good</li>
+          <li class="goog-menuitem">the Bad</li>
+          <li class="goog-menuitem">the Ugly</li>
+          <li class="goog-menuitem">the Man with the Harmonica</li>
+        </ul>
+      </div>
+    </label>&nbsp;
+    <span class="good" id="value4"></span>
+    <br>
+    <br>
+  </fieldset>
+  <br>
+  <br>
+
+  <fieldset>
+    <legend>
+      Demo of <strong>goog.ui.Select</strong> using
+      <strong>goog.ui.FlatMenuButtonRenderer</strong>:
+    </legend>
+    <br>
+    <label id="flat-select1">The best Arnold movie is </label>&nbsp;
+    <span class="good" id="flat-value1"></span>
+    <br>
+    <br>
+    <label id="flat-select2">The worst Arnold movie is </label>&nbsp;
+    <span class="bad" id="flat-value2"></span>
+    <br>
+    <br>
+    <label id="flat-select3">
+      The <strong>Select</strong> component for worst movie is
+    </label>&nbsp;<i>(This control doesn't auto-highlight; it only dispatches
+    ENTER and LEAVE events.)</i>
+    <br>
+    <br>
+    <a id="flat-add" href="#">Click here</a>
+    to add a new option for the best Arnold movie,
+    <a id="flat-hide" href="#">here</a>
+    to hide/show the select component for the best Arnold movie, or
+    <a id="flat-worst" href="#">here</a>
+    to set the worst Arnold movie to "Jingle All the Way."
+    <br>
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend>This Flat <strong>goog.ui.Select</strong> was decorated:</legend>
+    <br>
+    <label>
+      My favorite Will Ferrell character is
+      <div id="flat-ferrell" class="goog-flat-menu-button">
+        Make your choice...
+        <ul class="goog-menu">
+          <li class="goog-menuitem">Ron Burgundy</li>
+          <li class="goog-menuitem">Chazz Reinhold</li>
+          <li class="goog-menuitem">Chazz Michael Michaels</li>
+          <li class="goog-menuitem">Ricky Bobby</li>
+        </ul>
+      </div>
+    </label>&nbsp;
+    <span class="good" id="flat-value4"></span>
+    <br>
+    <br>
+  </fieldset>
+  <br>
+  <br>
+
+  <!-- Event log. -->
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+  <br>
+  <div id="perf"></div>
+  <script>
+    var timer = goog.now();
+
+    // Set up a logger.
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logger = goog.debug.Logger.getLogger('demo');
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+
+    var EVENTS = goog.object.getValues(goog.ui.Component.EventType);
+    logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+    function logEvent(e) {
+      var component = e.target;
+      var caption = (typeof component.getCaption == 'function') ?
+          component.getCaption() : component.getId();
+      logger.info('"' + caption + '" dispatched: ' + e.type);
+    }
+
+
+    var select1 = new goog.ui.Select();
+    select1.addItem(new goog.ui.MenuItem('Blade Runner'));
+    select1.addItem(new goog.ui.MenuItem('Godfather Part II'));
+    select1.addItem(new goog.ui.MenuItem('Citizen Kane'));
+    select1.setSelectedIndex(0);
+    select1.render(goog.dom.getElement('select1'));
+
+    var select2 = new goog.ui.Select();
+    var disabledItem;
+    select2.addItem(new goog.ui.Option('Transformers'));
+    select2.addItem(new goog.ui.Option('Spider-Man 3'));
+    select2.addItem(disabledItem = new goog.ui.Option('Howard the Duck'));
+    select2.addItem(new goog.ui.Option('Catwoman'));
+    disabledItem.setEnabled(false);
+    select2.setValue('Spider-Man 3');
+    select2.render(goog.dom.getElement('select2'));
+
+    var select3 = new goog.ui.Select('Click to select');
+    // Turn off auto-highlighting, just for fun.
+    select3.setAutoStates(goog.ui.Component.State.HOVER, false);
+    select3.addItem(new goog.ui.Option('enabled', true));
+    select3.addItem(new goog.ui.Option('disabled', false));
+    select3.render(goog.dom.getElement('select3'));
+    select3.setSelectedIndex(0);
+
+    goog.events.listen(select1, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          var value = 'Yay ' + select.getValue() + '!';
+          goog.dom.setTextContent(goog.dom.getElement('value1'), value);
+          goog.dom.setTextContent(goog.dom.getElement('value2'), '');
+        });
+    goog.events.listen(select2, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          var value = 'Boo ' + select.getValue() + '...';
+          goog.dom.setTextContent(goog.dom.getElement('value2'), value);
+          goog.dom.setTextContent(goog.dom.getElement('value1'), '');
+        });
+    goog.events.listen(select3, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          select2.setEnabled(select.getValue());
+        });
+    goog.events.listen(goog.dom.getElement('add'), goog.events.EventType.CLICK,
+        function(e) {
+          var good = prompt('What\'s another good movie...?');
+          if (select1.getItemCount() == 3) {
+            select1.addItem(new goog.ui.Separator());
+          }
+          select1.addItem(new goog.ui.MenuItem(good));
+        });
+    goog.events.listen(goog.dom.getElement('hide'), goog.events.EventType.CLICK,
+        function(e) {
+          select1.setVisible(!select1.isVisible());
+        });
+    goog.events.listen(goog.dom.getElement('worst'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          select2.setValue('Catwoman');
+        });
+
+    // Decorate an element with a Select control.
+    var select4 = goog.ui.decorate(goog.dom.getElement('spaghetti'));
+
+    goog.events.listen(select1, EVENTS, logEvent);
+    goog.events.listen(select2, EVENTS, logEvent);
+    goog.events.listen(select3, EVENTS, logEvent);
+    goog.events.listen(select4, EVENTS, logEvent);
+
+    // goog.ui.Select using goog.ui.FlatMenuButtonRenderer
+    var flatSelect1 = new goog.ui.Select(null, null,
+        goog.ui.FlatMenuButtonRenderer.getInstance());
+    flatSelect1.addItem(new goog.ui.MenuItem('Total Recall'));
+    flatSelect1.addItem(new goog.ui.MenuItem('Kindergarten Cop'));
+    flatSelect1.addItem(new goog.ui.MenuItem('Predator'));
+    flatSelect1.setSelectedIndex(0);
+    flatSelect1.render(goog.dom.getElement('flat-select1'));
+
+    var flatSelect2 = new goog.ui.Select(null, null,
+        goog.ui.FlatMenuButtonRenderer.getInstance());
+    var flatDisabledItem;
+    flatSelect2.addItem(new goog.ui.Option('Conan the Barbarian'));
+    flatSelect2.addItem(new goog.ui.Option('Last Action Hero'));
+    flatSelect2.addItem(
+        flatDisabledItem = new goog.ui.Option('Eraser'));
+    flatSelect2.addItem(new goog.ui.Option('Jingle All the Way'));
+    flatDisabledItem.setEnabled(false);
+    flatSelect2.setValue('Last Action Hero');
+    flatSelect2.render(goog.dom.getElement('flat-select2'));
+
+    var flatSelect3 = new goog.ui.Select('Click to select', null,
+        goog.ui.FlatMenuButtonRenderer.getInstance());
+    // Turn off auto-highlighting, just for fun.
+    flatSelect3.setAutoStates(goog.ui.Component.State.HOVER, false);
+    flatSelect3.addItem(new goog.ui.Option('enabled', true));
+    flatSelect3.addItem(new goog.ui.Option('disabled', false));
+    flatSelect3.render(goog.dom.getElement('flat-select3'));
+    flatSelect3.setSelectedIndex(0);
+
+    goog.events.listen(flatSelect1, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          var value = 'Yay ' + select.getValue() + '!';
+          goog.dom.setTextContent(goog.dom.getElement('flat-value1'), value);
+          goog.dom.setTextContent(goog.dom.getElement('flat-value2'), '');
+        });
+    goog.events.listen(flatSelect2, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          var value = 'Boo ' + select.getValue() + '...';
+          goog.dom.setTextContent(goog.dom.getElement('flat-value2'), value);
+          goog.dom.setTextContent(goog.dom.getElement('flat-value1'), '');
+        });
+    goog.events.listen(flatSelect3, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          var select = e.target;
+          flatSelect2.setEnabled(select.getValue());
+        });
+    goog.events.listen(goog.dom.getElement('flat-add'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          var good = prompt('What\'s another good Arnold movie...?');
+          if (flatSelect1.getItemCount() == 3) {
+            flatSelect1.addItem(new goog.ui.Separator());
+          }
+          flatSelect1.addItem(new goog.ui.MenuItem(good));
+        });
+    goog.events.listen(goog.dom.getElement('flat-hide'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          flatSelect1.setVisible(!flatSelect1.isVisible());
+        });
+    goog.events.listen(goog.dom.getElement('flat-worst'),
+        goog.events.EventType.CLICK,
+        function(e) {
+          flatSelect2.setValue('Jingle All the Way');
+        });
+
+    // Decorate an element with a Select control using FlatMenuButtonRenderer.
+    var flatSelect4 = new goog.ui.Select(null, null,
+        goog.ui.FlatMenuButtonRenderer.getInstance());
+    flatSelect4.decorate(goog.dom.getElement('flat-ferrell'));
+
+    goog.events.listen(flatSelect1, EVENTS, logEvent);
+    goog.events.listen(flatSelect2, EVENTS, logEvent);
+    goog.events.listen(flatSelect3, EVENTS, logEvent);
+    goog.events.listen(flatSelect4, EVENTS, logEvent);
+
+    goog.dom.setTextContent(goog.dom.getElement('perf'),
+        (goog.now() - timer) + 'ms');
+  </script>
+</body>
+</html>

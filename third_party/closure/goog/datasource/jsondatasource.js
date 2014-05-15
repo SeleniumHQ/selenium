@@ -54,7 +54,6 @@ goog.require('goog.ds.logger');
  *
  * @extends {goog.ds.JsDataSource}
  * @constructor
- * @final
  */
 goog.ds.JsonDataSource = function(uri, name, opt_callbackParamName) {
   goog.ds.JsDataSource.call(this, null, name, null);
@@ -100,7 +99,7 @@ goog.ds.JsonDataSource.prototype.load = function() {
     // renamed.  It should therefore be accessed via array notation here so
     // that it also doesn't get renamed and stops the compiler from complaining
     goog.ds.JsonDataSource['dataSources'][this.dataName_] = this;
-    goog.log.info(goog.ds.logger, 'Sending JS request for DataSource ' +
+    goog.ds.logger.info('Sending JS request for DataSource ' +
         this.getDataName() + ' to ' + this.uri_);
 
     this.loadState_ = goog.ds.LoadState.LOADING;

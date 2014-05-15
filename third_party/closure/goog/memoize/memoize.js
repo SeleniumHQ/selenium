@@ -25,9 +25,6 @@ goog.provide('goog.memoize');
 
 /**
  * Decorator around functions that caches the inner function's return values.
- *
- * To cache parameterless functions, see goog.functions.cacheReturnValue.
- *
  * @param {Function} f The function to wrap. Its return value may only depend
  *     on its arguments and 'this' context. There may be further restrictions
  *     on the arguments depending on the capabilities of the serializer used.
@@ -38,6 +35,7 @@ goog.provide('goog.memoize');
  * @return {!Function} The wrapped function.
  */
 goog.memoize = function(f, opt_serializer) {
+  var functionUid = goog.getUid(f);
   var serializer = opt_serializer || goog.memoize.simpleSerializer;
 
   return function() {
@@ -49,7 +47,7 @@ goog.memoize = function(f, opt_serializer) {
       // Maps the serialized list of args to the corresponding return value.
       var cache = thisOrGlobal[goog.memoize.CACHE_PROPERTY_] ||
           (thisOrGlobal[goog.memoize.CACHE_PROPERTY_] = {});
-      var key = serializer(goog.getUid(f), arguments);
+      var key = serializer(functionUid, arguments);
       return cache.hasOwnProperty(key) ? cache[key] :
           (cache[key] = f.apply(this, arguments));
     } else {

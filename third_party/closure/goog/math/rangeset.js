@@ -43,7 +43,6 @@ goog.require('goog.math.Range');
  * ranges will be merged.
  *
  * @constructor
- * @final
  */
 goog.math.RangeSet = function() {
   /**

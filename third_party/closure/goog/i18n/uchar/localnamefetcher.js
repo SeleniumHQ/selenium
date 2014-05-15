@@ -21,9 +21,9 @@
 
 goog.provide('goog.i18n.uChar.LocalNameFetcher');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.i18n.uChar');
 goog.require('goog.i18n.uChar.NameFetcher');
-goog.require('goog.log');
 
 
 
@@ -34,7 +34,6 @@ goog.require('goog.log');
  *
  * @constructor
  * @implements {goog.i18n.uChar.NameFetcher}
- * @final
  */
 goog.i18n.uChar.LocalNameFetcher = function() {
 };
@@ -43,11 +42,11 @@ goog.i18n.uChar.LocalNameFetcher = function() {
 /**
  * A reference to the LocalNameFetcher logger.
  *
- * @type {goog.log.Logger}
+ * @type {!goog.debug.Logger}
  * @private
  */
 goog.i18n.uChar.LocalNameFetcher.logger_ =
-    goog.log.getLogger('goog.i18n.uChar.LocalNameFetcher');
+    goog.debug.Logger.getLogger('goog.i18n.uChar.LocalNameFetcher');
 
 
 /** @override */

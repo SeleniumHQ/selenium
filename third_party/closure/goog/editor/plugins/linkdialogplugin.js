@@ -42,12 +42,11 @@ goog.require('goog.uri.utils');
  * @extends {goog.editor.plugins.AbstractDialogPlugin}
  */
 goog.editor.plugins.LinkDialogPlugin = function() {
-  goog.editor.plugins.LinkDialogPlugin.base(
-      this, 'constructor', goog.editor.Command.MODAL_LINK_EDITOR);
+  goog.base(this, goog.editor.Command.MODAL_LINK_EDITOR);
 
   /**
    * Event handler for this object.
-   * @type {goog.events.EventHandler.<!goog.editor.plugins.LinkDialogPlugin>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -234,8 +233,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.setEmailWarning = function(
 goog.editor.plugins.LinkDialogPlugin.prototype.execCommandInternal = function(
     command, opt_arg) {
   this.currentLink_ = /** @type {goog.editor.Link} */(opt_arg);
-  return goog.editor.plugins.LinkDialogPlugin.base(
-      this, 'execCommandInternal', command, opt_arg);
+  return goog.base(this, 'execCommandInternal', command, opt_arg);
 };
 
 
@@ -246,16 +244,14 @@ goog.editor.plugins.LinkDialogPlugin.prototype.execCommandInternal = function(
  * @protected
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.handleAfterHide = function(e) {
-  goog.editor.plugins.LinkDialogPlugin.base(this, 'handleAfterHide', e);
+  goog.base(this, 'handleAfterHide', e);
   this.currentLink_ = null;
 };
 
 
 /**
- * @return {goog.events.EventHandler.<T>} The event handler.
+ * @return {goog.events.EventHandler} The event handler.
  * @protected
- * @this T
- * @template T
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.getEventHandler = function() {
   return this.eventHandler_;
@@ -276,7 +272,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.getCurrentLink = function() {
  * @param {goog.dom.DomHelper} dialogDomHelper The dom helper to be used to
  *     create the dialog.
  * @param {*=} opt_link The target link (should be a goog.editor.Link).
- * @return {!goog.ui.editor.LinkDialog} The dialog.
+ * @return {goog.ui.editor.LinkDialog} The dialog.
  * @override
  * @protected
  */
@@ -307,7 +303,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.createDialog = function(
 
 /** @override */
 goog.editor.plugins.LinkDialogPlugin.prototype.disposeInternal = function() {
-  goog.editor.plugins.LinkDialogPlugin.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
 };
 

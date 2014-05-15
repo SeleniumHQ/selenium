@@ -69,7 +69,7 @@ goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
 
   /**
    * The event handler.
-   * @type {goog.events.EventHandler.<!goog.ui.ActivityMonitor>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

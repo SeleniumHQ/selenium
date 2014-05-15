@@ -50,7 +50,6 @@ goog.require('goog.userAgent');
  * @param {Element|Document} element The element or document to listen on.
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.events.ActionHandler = function(element) {
   goog.events.EventTarget.call(this);
@@ -158,7 +157,6 @@ goog.events.ActionHandler.prototype.disposeInternal = function() {
  * @param {!goog.events.BrowserEvent} browserEvent Browser event object.
  * @constructor
  * @extends {goog.events.BrowserEvent}
- * @final
  */
 goog.events.ActionEvent = function(browserEvent) {
   goog.events.BrowserEvent.call(this, browserEvent.getBrowserEvent());
@@ -175,7 +173,6 @@ goog.inherits(goog.events.ActionEvent, goog.events.BrowserEvent);
  * @param {!goog.events.BrowserEvent} browserEvent Browser event object.
  * @constructor
  * @extends {goog.events.BrowserEvent}
- * @final
  */
 goog.events.BeforeActionEvent = function(browserEvent) {
   goog.events.BrowserEvent.call(this, browserEvent.getBrowserEvent());

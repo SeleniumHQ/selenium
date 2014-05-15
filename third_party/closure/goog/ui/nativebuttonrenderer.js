@@ -20,11 +20,10 @@
 
 goog.provide('goog.ui.NativeButtonRenderer');
 
-goog.require('goog.asserts');
-goog.require('goog.dom.classlist');
+goog.require('goog.dom.classes');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.ButtonRenderer');
-goog.require('goog.ui.Component');
+goog.require('goog.ui.Component.State');
 
 
 
@@ -88,9 +87,8 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
   if (element.disabled) {
     // Add the marker class for the DISABLED state before letting the superclass
     // implementation decorate the element, so its state will be correct.
-    var disabledClassName = goog.asserts.assertString(
+    goog.dom.classes.add(element,
         this.getClassForState(goog.ui.Component.State.DISABLED));
-    goog.dom.classlist.add(element, disabledClassName);
   }
   return goog.ui.NativeButtonRenderer.superClass_.decorate.call(this, button,
       element);

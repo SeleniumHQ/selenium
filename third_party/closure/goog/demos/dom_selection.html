@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title></title>
+<style>
+
+label {
+  display: block;
+}
+
+</style>
+<script src="../base.js"></script>
+<script>
+goog.require('goog.dom');
+goog.require('goog.dom.selection');
+</script>
+</head>
+<body>
+
+<script>
+
+var $ = goog.dom.getElement;
+
+var isSyncing = false;
+
+function update(i) {
+  isSyncing = true;
+  var selectionStart = $('selectionStart' + i).value;
+  var selectionEnd = $('selectionEnd' + i).value;
+  var selectionText = $('selectionText' + i).value;
+  var textField = $('textField' + i);
+  textField.focus();
+
+  if (!isNaN(selectionStart)) {
+    goog.dom.selection.setStart(textField, selectionStart);
+  }
+
+  if (!isNaN(selectionEnd)) {
+    goog.dom.selection.setEnd(textField, selectionEnd);
+  }
+
+  selection.setText(textField, selectionText);
+  isSyncing = false;
+  sync(i);
+}
+
+function sync(i) {
+  isSyncing = true;
+  var textField = $('textField' + i);
+  $('selectionStart' + i).value = goog.dom.selection.getStart(textField);
+  $('selectionEnd' + i).value = goog.dom.selection.getEnd(textField);
+  $('selectionText' + i).value = goog.dom.selection.getText(textField);
+  isSyncing = false;
+}
+
+</script>
+
+<label>selectionStart <input type=text id=selectionStart1></label>
+<label>selectionEnd <input type=text id=selectionEnd1></label>
+<label>selectionText <input type=text id=selectionText1></label>
+<button onclick="update(1)">Update Textarea</button><br>
+
+<textarea id=textField1 onkeydown="sync(1)" onkeyup="sync(1)"></textarea>
+
+
+<label>selectionStart <input type=text id=selectionStart2></label>
+<label>selectionEnd <input type=text id=selectionEnd2></label>
+<label>selectionText <input type=text id=selectionText2></label>
+<button onclick="update(2)">Update Input</button><br>
+<input type=text id=textField2 onkeydown="sync(2)" onkeyup="sync(2)">
+
+<script>
+
+window.onload = function() {
+  sync(1);
+  sync(2);
+};
+
+</script>
+
+</body>
+</html>

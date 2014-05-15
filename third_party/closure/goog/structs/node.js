@@ -25,21 +25,22 @@ goog.provide('goog.structs.Node');
 /**
  * A generic immutable node. This can be used in various collections that
  * require a node object for its item (such as a heap).
- * @param {K} key Key.
- * @param {V} value Value.
+ * @param {*} key Key.
+ * @param {*} value Vaue.
  * @constructor
- * @template K, V
  */
 goog.structs.Node = function(key, value) {
   /**
    * The key.
-   * @private {K}
+   * @type {*}
+   * @private
    */
   this.key_ = key;
 
   /**
    * The value.
-   * @private {V}
+   * @type {*}
+   * @private
    */
   this.value_ = value;
 };
@@ -47,7 +48,7 @@ goog.structs.Node = function(key, value) {
 
 /**
  * Gets the key.
- * @return {K} The key.
+ * @return {*} The key.
  */
 goog.structs.Node.prototype.getKey = function() {
   return this.key_;
@@ -56,7 +57,7 @@ goog.structs.Node.prototype.getKey = function() {
 
 /**
  * Gets the value.
- * @return {V} The value.
+ * @return {*} The value.
  */
 goog.structs.Node.prototype.getValue = function() {
   return this.value_;
@@ -65,8 +66,8 @@ goog.structs.Node.prototype.getValue = function() {
 
 /**
  * Clones a node and returns a new node.
- * @return {!goog.structs.Node.<K, V>} A new goog.structs.Node with the same
- *     key value pair.
+ * @return {goog.structs.Node} A new goog.structs.Node with the same key value
+ *     pair.
  */
 goog.structs.Node.prototype.clone = function() {
   return new goog.structs.Node(this.key_, this.value_);

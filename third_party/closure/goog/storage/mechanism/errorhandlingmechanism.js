@@ -32,11 +32,10 @@ goog.require('goog.storage.mechanism.Mechanism');
  *     errorHandler An error handler.
  * @constructor
  * @extends {goog.storage.mechanism.Mechanism}
- * @final
  */
 goog.storage.mechanism.ErrorHandlingMechanism = function(mechanism,
                                                          errorHandler) {
-  goog.storage.mechanism.ErrorHandlingMechanism.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The mechanism to be wrapped.

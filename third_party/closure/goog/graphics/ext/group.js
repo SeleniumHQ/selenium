@@ -21,7 +21,6 @@
 
 goog.provide('goog.graphics.ext.Group');
 
-goog.require('goog.array');
 goog.require('goog.graphics.ext.Element');
 
 
@@ -110,7 +109,7 @@ goog.graphics.ext.Group.prototype.forEachChild = function(f, opt_obj) {
 
 /**
  * @return {goog.graphics.GroupElement} The underlying thin wrapper.
- * @override
+ * @protected
  */
 goog.graphics.ext.Group.prototype.getWrapper;
 

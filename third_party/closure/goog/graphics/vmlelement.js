@@ -67,7 +67,6 @@ goog.graphics.vmlGetElement_ = function() {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlGroupElement = function(element, graphics) {
   this.id_ = element.id;
@@ -147,7 +146,6 @@ goog.graphics.VmlGroupElement.prototype.setSize = function(width, height) {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlEllipseElement = function(element, graphics,
     cx, cy, rx, ry, stroke, fill) {
@@ -238,7 +236,6 @@ goog.graphics.VmlEllipseElement.prototype.setRadius = function(rx, ry) {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlRectElement = function(element, graphics, stroke, fill) {
   this.id_ = element.id;
@@ -299,7 +296,6 @@ goog.graphics.VmlRectElement.prototype.setSize = function(width, height) {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlPathElement = function(element, graphics, stroke, fill) {
   this.id_ = element.id;
@@ -343,7 +339,6 @@ goog.graphics.VmlPathElement.prototype.setPath = function(path) {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlTextElement = function(element, graphics, stroke, fill) {
   this.id_ = element.id;
@@ -383,7 +378,6 @@ goog.graphics.VmlTextElement.prototype.setText = function(text) {
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlImageElement = function(element, graphics) {
   this.id_ = element.id;

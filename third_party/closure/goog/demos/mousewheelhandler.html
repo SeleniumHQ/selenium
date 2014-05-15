@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>goog.events.MouseWheelHandler</title>
+<link rel="stylesheet" href="../css/checkbox.css">
+<style>
+#out {
+  background-color: #eee;
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+#h-line, #v-line {
+  position: absolute;
+  background: black;
+}
+
+#h-line {
+  width: 20px;
+  height: 1px;
+}
+
+#v-line {
+  width: 1px;
+  height: 20px;
+}
+
+#status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font: 70% sans-serif;
+}
+
+</style>
+<script src="../base.js"></script>
+<script>
+
+goog.require('goog.events');
+goog.require('goog.events.MouseWheelHandler');
+
+</script>
+</head>
+<body>
+
+<h1>goog.events.MouseWheelHandler</h1>
+
+<p>Use your mousewheel on the gray box below to move the cross hair.
+
+<div id=out>
+  <div id=h-line></div>
+  <div id=v-line></div>
+  <div id=status></div>
+</div>
+
+<script>
+
+var MouseWheelHandler = goog.events.MouseWheelHandler;
+var MOUSEWHEEL = MouseWheelHandler.EventType.MOUSEWHEEL;
+
+function $(id) {
+  return document.getElementById(id)
+}
+
+var x = 100, y = 100;
+var out = $('out');
+var hLine= $('h-line');
+var vLine = $('v-line');
+var status = $('status');
+
+var availWidth = out.clientWidth - vLine.offsetWidth;
+var availHeight = out.clientHeight - hLine.offsetHeight;
+
+function handleMouseWheel(e) {
+  x += e.deltaX / 3;
+  x = Math.max(0, Math.min(availWidth, x));
+  y += e.deltaY / 3;
+  y = Math.max(0, Math.min(availHeight, y));
+  updateLines();
+  e.preventDefault();
+}
+
+function updateLines() {
+  vLine.style.left = x + 'px';
+  hLine.style.left = x - hLine.offsetWidth / 2 + 'px';
+  hLine.style.top = y + 'px';
+  vLine.style.top = y - vLine.offsetHeight / 2 + 'px';
+  status.innerHTML = x + ', ' + y;
+}
+
+updateLines();
+
+var mwh = new MouseWheelHandler(out);
+goog.events.listen(mwh, MOUSEWHEEL, handleMouseWheel);
+
+goog.events.listen(window, 'unload', function(e) {
+  goog.events.unlisten(mwh, MOUSEWHEEL, handleMouseWheel);
+});
+
+</script>
+</body>
+</html>

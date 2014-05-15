@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+
+  File for testing bubble control.
+-->
+<head>
+  <title>goog.ui.Bubble</title>
+  <script src="../base.js"></script>
+  <script>
+    if (typeof goog == 'undefined') {
+      alert('Closure failed to load');
+    } else {
+      goog.require('goog.ui.Bubble');
+    }
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/bubble.css">
+</head>
+<body bgcolor="green">
+  <h1>goog.ui.Bubble</h1>
+  <table width="100%" align="center">
+    <tbody>
+      <tr>
+          <td>
+            <div align="left">
+            <form>
+              <input type="text" id="textField1"/>
+              <input type="button" id="button1" value="Click for a bubble!!!"
+                  onclick="clickButton(button1, textField1);"/>
+            </form>
+            </div>
+          </td>
+          <td>
+            <div align="center">
+            <form>
+              <input type="text" id="textField2"/>
+              <input type="button" id="button2" value="Click for a bubble!!!"
+                  onclick="clickButton(button2, textField2);"/>
+            </form>
+            </div>
+          </td>
+          <td>
+            <div align="right">
+            <form>
+              <input type="text" id="textField3"/>
+              <input type="button" id="button3" value="Click for a bubble!!!"
+                  onclick="clickButton(button3, textField3);"/>
+            </form>
+            </div>
+          </td>
+      </tr>
+      <tr height>
+          <td>
+            <div align="left">
+            <form>
+              <input type="text" id="textField4"/>
+              <input type="button" id="button4" value="Click for a bubble!!!"
+                  onclick="clickButton(button4, textField4);"/>
+            </form>
+            </div>
+          </td>
+          <td>
+            <br>
+            <div align="left">
+            <form>
+              <table>
+              <tbody>
+              <tr><td>X:</td>
+                  <td><input type="text" id="xcoord" value="100"/></td>
+              </tr>
+              <tr><td>Y:</td>
+                  <td><input type="text" id="ycoord" value="100"/></td>
+              </tr>
+              <tr><td>Corner orientation(0-3):</td>
+                  <td><input type="text" id="corner" value="1"/></td>
+              </tr>
+              <tr><td>Auto-hide (true or false):</td>
+                  <td><input type="text" id="autoHide" value="false"/></td>
+              </tr>
+              <tr><td>Timeout (ms):</td>
+                  <td><input type="text" id="timeout" value="0"/></td>
+              <tr><td>Decorated</td>
+                  <td><input type="checkbox" id="decorated"/></td>
+              <tr><td><input type="button" id="button5.0.0"
+                  value="Click for a custom bubble!!!"
+                  onclick=
+                    "doCustom(xcoord, ycoord, corner, autoHide, timeout, decorated);"/>
+              </td><td><input type="button" id="button5.0.1"
+                  value="Toggle custom button!"
+                  onclick="toggleVisibility();"/>
+              </td>
+              </tr>
+              <tr><td><input type="button" id="button5.1"
+                  value="Click for a random bubble!!!"
+                  onclick="doRandom();"/>
+              </td></tr>
+              </tbody>
+              </table>
+            </form>
+            </div>
+            <br>
+          </td>
+          <td>
+            <div align="right">
+            <form>
+              <input type="text" id="textField6"/>
+              <input type="button" id="button6" value="Click for a bubble!!!"
+                  onclick="clickButton(button6, textField6);"/>
+            </form>
+            </div>
+          </td>
+      </tr>
+      <tr>
+          <td height="30%">
+            <div align="left">
+            <form>
+              <input type="text" id="textField7"/>
+              <input type="button" id="button7" value="Click for a bubble!!!"
+                  onclick="clickButton(button7, textField7);"/>
+            </form>
+            </div>
+          </td>
+          <td>
+            <div align="center">
+            <form>
+              <input type="text" id="textField8"/>
+              <input type="button" id="button8" value="Click for a bubble!!!"
+                  onclick="clickButton(button8, textField8);"/>
+            </form>
+            </div>
+          </td>
+          <td>
+            <div align="right">
+            <form>
+              <input type="text" id="textField9"/>
+              <input type="button" id="button9" value="Click for a bubble!!!"
+                  onclick="clickButton(button9, textField9);"/>
+            </form>
+            </div>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <script>
+
+    var defaultTimeout = 10000;
+    var bubble = null;
+    function clickButton(anchor, textField) {
+      if (bubble) {
+        bubble.dispose();
+        bubble = null;
+      }
+      var textString = textField.value;
+      if (!textString) {
+        textString = 'Input here!';
+        anchor = textField;
+      }
+
+      bubble = new goog.ui.Bubble(textString);
+      bubble.setAutoHide(false);
+      bubble.setPosition(new goog.positioning.AnchoredPosition(anchor, null));
+      bubble.setTimeout(defaultTimeout);
+      bubble.render();
+      bubble.attach(anchor);
+      bubble.setVisible(true);
+    }
+
+    var decorated = false;
+    var bubbleC = null;
+    function doCustom(xcoord, ycoord, corner, autoHide, timeout, decorated) {
+      if (bubbleC) {
+        bubbleC.dispose();
+        bubbleC = null;
+      }
+      if (parseInt(xcoord.value) == NaN ||
+          parseInt(ycoord.value) == NaN ||
+          parseInt(corner.value) == NaN ||
+          parseInt(timeout.value) == NaN ||
+          (autoHide.value != "true" && autoHide.value != "false") ||
+          (corner.value < 0 || corner.value > 3)) {
+        alert('Incorrect input!');
+        return;
+      }
+      var internalElement = null;
+      if (decorated.checked) {
+        internalElement = goog.dom.createElement('div');
+        internalElement.innerHTML = '<table><tbody>' +
+            '<tr><td>One!</td><td>Two!</td></tr>' +
+            '<tr><td>Three!</td><td>Four!</td></tr>' +
+            '</tbody></table>';
+      } else {
+        internalElement = 'Random Bubble. La-la-la-la! La-la-la-la-la!!!';
+      }
+      bubbleC = new goog.ui.Bubble(internalElement);
+      bubbleC.setAutoHide(autoHide.value == "false" ? false : true);
+      bubbleC.setPinnedCorner(parseInt(corner.value));
+      bubbleC.setPosition(new goog.positioning.AbsolutePosition(
+          parseInt(xcoord.value), parseInt(ycoord.value)));
+      bubbleC.setTimeout(parseInt(timeout.value));
+
+      bubbleC.render();
+      bubbleC.setVisible(true);
+    }
+
+    function toggleVisibility () {
+      if (bubbleC) {
+        bubbleC.setVisible(!bubbleC.isVisible());
+      }
+    }
+
+    var timer = null;
+    function doRandom() {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+        return;
+      }
+      doRandomClick();
+      timer = window.setInterval(doRandomClick, 2000);
+    }
+
+    function doRandomClick() {
+      for ( ; ; ) {
+        var number=Math.floor(Math.random()*9) + 1;
+        if (number != 5) {
+          break;
+        }
+      }
+
+      var button = document.getElementById("button" + number);
+      if (button) {
+        var defaultTimeoutSav = defaultTimeout;
+        defaultTimeout = 2000;
+        button.click ();
+        defaultTimeout = defaultTimeoutSav;
+      }
+    }
+  </script>
+
+</body>
+</html>

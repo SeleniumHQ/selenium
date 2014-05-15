@@ -36,7 +36,6 @@ goog.require('goog.ui.editor.AbstractDialog');
  * dialog's dom structure.
  * @constructor
  * @extends {goog.ui.editor.AbstractDialog}
- * @final
  */
 goog.demos.editor.HelloWorldDialog = function(domHelper) {
   goog.ui.editor.AbstractDialog.call(this, domHelper);
@@ -54,7 +53,6 @@ goog.inherits(goog.demos.editor.HelloWorldDialog,
  * @param {string} message Customized hello world message chosen by the user.
  * @constructor
  * @extends {goog.events.Event}
- * @final
  */
 goog.demos.editor.HelloWorldDialog.OkEvent = function(message) {
   this.message = message;

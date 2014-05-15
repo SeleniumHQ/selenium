@@ -44,10 +44,9 @@ goog.require('goog.events.EventTarget');
  *     which this code is executing.
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.labs.style.PixelDensityMonitor = function(opt_domHelper) {
-  goog.labs.style.PixelDensityMonitor.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * @type {Window}
@@ -175,5 +174,5 @@ goog.labs.style.PixelDensityMonitor.prototype.disposeInternal = function() {
   if (this.mediaQueryList_) {
     this.mediaQueryList_.removeListener(this.listener_);
   }
-  goog.labs.style.PixelDensityMonitor.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

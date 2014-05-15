@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+<html>
+<head>
+<title>Closure: CSS3 Transition Demo</title>
+<script src="../../../base.js"></script>
+<script src="../../../deps.js"></script>
+<link rel="stylesheet" href="../../css/demo.css">
+<style>
+.demo-options {
+  float: left;
+  padding: 0 0 20px;
+  width: 248px;
+}
+.demo-panel {
+  margin: 0 0 0 264px;
+  padding: 80px 0 0 80px;
+  text-align: center;
+}
+label.options {
+  padding-left: 35px;
+}
+#demo-animated-box {
+  background-color: #000;
+  color: white;
+  height: 20px;
+  padding: 40px 0;
+  text-align: center;
+  width: 100px;
+}
+#demo-buttons {
+  padding: 8px 0 0;
+  text-align: center;
+}
+.goog-debug-panel {
+  clear: both;
+}
+.goog-debug-panel .logdiv {
+  height: 300px;
+}
+</style>
+
+<script type="text/javascript">
+goog.require('goog.debug.DivConsole');
+goog.require('goog.debug.Logger');
+goog.require('goog.dispose');
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.ActionHandler');
+goog.require('goog.events.ActionHandler.EventType');
+goog.require('goog.fx.Transition.EventType');
+goog.require('goog.fx.css3');
+</script>
+</head>
+<body>
+<div class="demo-options">
+<form>
+  <fieldset>
+    <legend>CSS3 transition choices</legend>
+    <label>
+      <input type="radio" name="transition" value="FadeIn" checked>Fade In
+    </label><br/>
+      <label class="options">
+        Duration (in s):
+        <input type="text" size="3" name="FadeInDuration" value="1">
+      </label><br/>
+    <label>
+      <input type="radio" name="transition" value="FadeOut">Fade Out
+    </label><br/>
+      <label class="options">
+        Duration (in s):
+        <input type="text" size="3" name="FadeOutDuration" value="1">
+      </label><br/>
+    <label>
+      <input type="radio" name="transition" value="Fade">Fade
+    </label><br/>
+      <label class="options">
+        Duration (in s):
+        <input type="text" size="3" name="FadeDuration" value=".5">
+      </label><br/>
+      <label class="options">
+        CSS3 timing:
+        <input type="text" size="7" name="FadeTimingFn" value="ease-in">
+      </label><br/>
+      <label class="options">
+        Starting opacity:
+        <input type="text" size="3" name="FadeStartingOpacity" value=".2">
+      </label><br/>
+      <label class="options">
+        Ending opacity:
+        <input type="text" size="3" name="FadeEndingOpacity" value=".8">
+      </label>
+    <div id="demo-buttons">
+      <input type="button" id="animate-btn" value="Animate!"></input>
+      <input type="button" id="reset-btn" value="Reset"></input>
+    </div>
+  </fieldset>
+</form>
+</div>
+<div class="demo-panel">
+  <div id="demo-animated-box">Hi there!</div>
+</div>
+
+<!-- Logging panel -->
+<fieldset class="goog-debug-panel">
+  <legend>Event log for the transition object</legend>
+  <div id="log"></div>
+</fieldset>
+
+<script>
+// Set up debug console.
+var logger = goog.debug.Logger.getLogger('Demo');
+new goog.debug.DivConsole(goog.dom.getElement('log')).
+    setCapturing(true);
+var eventTypes = goog.object.getValues(goog.fx.Transition.EventType);
+
+var isPlaying = false;
+var transition;
+var animatedBox = goog.dom.getElement('demo-animated-box');
+var animateButton = goog.dom.getElement('animate-btn');
+var resetButton = goog.dom.getElement('reset-btn');
+
+function fadeIn() {
+  var duration = parseFloat(getValue_('FadeInDuration'));
+
+  transition = goog.fx.css3.fadeIn(animatedBox, duration);
+  installListener_(transition);
+  transition.play();
+}
+
+function fadeOut() {
+  var duration = parseFloat(getValue_('FadeOutDuration'));
+
+  transition = goog.fx.css3.fadeOut(animatedBox, duration);
+  installListener_(transition);
+  transition.play();
+}
+
+function fade() {
+  var duration = parseFloat(getValue_('FadeDuration'));
+  var timingFn = getValue_('FadeTimingFn');
+  var startOpacity = parseFloat(getValue_('FadeStartingOpacity'));
+  var endOpacity = parseFloat(getValue_('FadeEndingOpacity'));
+
+  transition = goog.fx.css3.fade(
+      animatedBox, duration, timingFn, startOpacity, endOpacity);
+  installListener_(transition);
+  transition.play();
+}
+
+function animate() {
+  stopOrReset();
+  goog.dispose(transition);
+  goog.Timer.callOnce(animate_);
+}
+
+function animate_() {
+  isPlaying = true;
+  resetButton.value = 'Stop';
+
+  var transitionType = getValue_('transition');
+  switch (transitionType) {
+    case 'FadeIn': fadeIn(); break;
+    case 'FadeOut': fadeOut(); break;
+    case 'Fade': fade(); break;
+  }
+
+  goog.events.listen(
+      transition, goog.fx.Transition.EventType.END, function() {
+        isPlaying = false;
+        resetButton.value = 'Reset';
+      });
+}
+
+function stopOrReset() {
+  if (!transition) return;
+
+  if (isPlaying) {
+    isPlaying = false;
+    resetButton.value = 'Reset';
+    transition.stop();
+  } else {
+    transition.dispose();
+    // Resets all the possible overriding (for now just opacity due to fade).
+    animatedBox.style.opacity = '';
+  }
+}
+
+function getValue_(name) {
+  var elements = document.forms[0].elements[name];
+  if (goog.isArrayLike(elements)) {
+    for (var i = 0; i < elements.length; ++i) {
+      if (elements[i].checked) return elements[i].value;
+    }
+  }
+
+  return elements.value;
+}
+
+function installListener_(transition) {
+  goog.events.listen(transition, eventTypes, function(e) {
+    logger.info('Fired event: ' + e.type);
+  });
+}
+
+goog.events.listen(
+    new goog.events.ActionHandler(animateButton),
+    goog.events.ActionHandler.EventType.ACTION, animate);
+goog.events.listen(
+    new goog.events.ActionHandler(resetButton),
+    goog.events.ActionHandler.EventType.ACTION, stopOrReset);
+
+</script>
+</body>
+</html>

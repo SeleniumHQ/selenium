@@ -45,7 +45,6 @@ goog.provide('goog.math.Long');
  * @param {number} low  The low (signed) 32 bits of the long.
  * @param {number} high  The high (signed) 32 bits of the long.
  * @constructor
- * @final
  */
 goog.math.Long = function(low, high) {
   /**
@@ -778,7 +777,7 @@ goog.math.Long.prototype.shiftRight = function(numBits) {
 
 /**
  * Returns this Long with bits shifted to the right by the given amount, with
- * zeros placed into the new leading bits.
+ * the new top bits matching the current sign bit.
  * @param {number} numBits The number of bits by which to shift.
  * @return {!goog.math.Long} This shifted to the right by the given amount, with
  *     zeros placed into the new leading bits.

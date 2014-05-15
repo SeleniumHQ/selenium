@@ -36,10 +36,9 @@ goog.require('goog.object');
  * @param {goog.dom.DomHelper=} opt_domHelper DOM helper.
  * @constructor
  * @extends {goog.Disposable}
- * @final
  */
 goog.a11y.aria.Announcer = function(opt_domHelper) {
-  goog.a11y.aria.Announcer.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * @type {goog.dom.DomHelper}
@@ -50,7 +49,7 @@ goog.a11y.aria.Announcer = function(opt_domHelper) {
   /**
    * Map of priority to live region elements to use for communicating updates.
    * Elements are created on demand.
-   * @type {Object.<goog.a11y.aria.LivePriority, !Element>}
+   * @type {Object.<goog.a11y.aria.LivePriority, Element>}
    * @private
    */
   this.liveRegions_ = {};
@@ -64,7 +63,7 @@ goog.a11y.aria.Announcer.prototype.disposeInternal = function() {
       this.liveRegions_, this.domHelper_.removeNode, this.domHelper_);
   this.liveRegions_ = null;
   this.domHelper_ = null;
-  goog.a11y.aria.Announcer.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };
 
 
@@ -84,16 +83,14 @@ goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
 /**
  * Returns an aria-live region that can be used to communicate announcements.
  * @param {!goog.a11y.aria.LivePriority} priority The required priority.
- * @return {!Element} A live region of the requested priority.
+ * @return {Element} A live region of the requested priority.
  * @private
  */
 goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
-  var liveRegion = this.liveRegions_[priority];
-  if (liveRegion) {
-    // Make sure the live region is not aria-hidden.
-    goog.a11y.aria.removeState(liveRegion, goog.a11y.aria.State.HIDDEN);
-    return liveRegion;
+  if (this.liveRegions_[priority]) {
+    return this.liveRegions_[priority];
   }
+  var liveRegion;
   liveRegion = this.domHelper_.createElement('div');
   // Note that IE has a habit of declaring things that aren't display:none as
   // invisible to third-party tools like JAWs, so we can't just use height:0.

@@ -74,9 +74,8 @@ goog.testing.events.Event = function(type, opt_target) {
 /**
  * Whether to cancel the event in internal capture/bubble processing for IE.
  * @type {boolean}
- * @public
- * @suppress {underscore|visibility} Technically public, but referencing this
- *     outside this package is strongly discouraged.
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.testing.events.Event.prototype.propagationStopped_ = false;
 
@@ -88,9 +87,8 @@ goog.testing.events.Event.prototype.defaultPrevented = false;
 /**
  * Return value for in internal capture/bubble processing for IE.
  * @type {boolean}
- * @public
- * @suppress {underscore|visibility} Technically public, but referencing this
- *     outside this package is strongly discouraged.
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
  */
 goog.testing.events.Event.prototype.returnValue_ = true;
 
@@ -119,7 +117,7 @@ goog.testing.events.Event.prototype.preventDefault = function() {
  * @private
  */
 goog.testing.events.assertEventTarget_ = function(target) {
-  return goog.asserts.assert(target, 'EventTarget should be defined.');
+  return goog.asserts.assert(target, 'Target should not be defined.');
 };
 
 
@@ -543,19 +541,6 @@ goog.testing.events.fireContextMenuSequence = function(target, opt_coords) {
 goog.testing.events.firePopStateEvent = function(target, state) {
   var e = new goog.testing.events.Event(goog.events.EventType.POPSTATE, target);
   e.state = state;
-  return goog.testing.events.fireBrowserEvent(e);
-};
-
-
-/**
- * Simulate a blur event on the given target.
- * @param {EventTarget} target The target for the event.
- * @return {boolean} The value returned by firing the blur browser event,
- *      which returns false iff 'preventDefault' was invoked.
- */
-goog.testing.events.fireBlurEvent = function(target) {
-  var e = new goog.testing.events.Event(
-      goog.events.EventType.BLUR, target);
   return goog.testing.events.fireBrowserEvent(e);
 };
 

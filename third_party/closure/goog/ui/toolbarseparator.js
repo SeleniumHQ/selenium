@@ -37,7 +37,6 @@ goog.require('goog.ui.registry');
  *    document interaction.
  * @constructor
  * @extends {goog.ui.Separator}
- * @final
  */
 goog.ui.ToolbarSeparator = function(opt_renderer, opt_domHelper) {
   goog.ui.Separator.call(this, opt_renderer ||

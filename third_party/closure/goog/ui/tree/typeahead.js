@@ -30,7 +30,6 @@ goog.require('goog.structs.Trie');
 /**
  * Constructs a TypeAhead object.
  * @constructor
- * @final
  */
 goog.ui.tree.TypeAhead = function() {
   this.nodeMap_ = new goog.structs.Trie();

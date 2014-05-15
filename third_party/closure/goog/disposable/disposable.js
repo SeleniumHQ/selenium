@@ -20,10 +20,7 @@
 
 
 goog.provide('goog.Disposable');
-/** @suppress {extraProvide} */
 goog.provide('goog.dispose');
-/** @suppress {extraProvide} */
-goog.provide('goog.disposeAll');
 
 goog.require('goog.disposable.IDisposable');
 
@@ -39,9 +36,7 @@ goog.require('goog.disposable.IDisposable');
  */
 goog.Disposable = function() {
   if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
-    if (goog.Disposable.INCLUDE_STACK_ON_CREATION) {
-      this.creationStack = new Error().stack;
-    }
+    this.creationStack = new Error().stack;
     goog.Disposable.instances_[goog.getUid(this)] = this;
   }
 };
@@ -58,7 +53,7 @@ goog.Disposable.MonitoringMode = {
   /**
    * Creating and disposing the goog.Disposable instances is monitored. All
    * disposable objects need to call the {@code goog.Disposable} base
-   * constructor. The PERMANENT mode must be switched on before creating any
+   * constructor. The PERMANENT mode must bet switched on before creating any
    * goog.Disposable instances.
    */
   PERMANENT: 1,
@@ -79,13 +74,6 @@ goog.Disposable.MonitoringMode = {
  *     compiles down to 0 bytes.
  */
 goog.define('goog.Disposable.MONITORING_MODE', 0);
-
-
-/**
- * @define {boolean} Whether to attach creation stack to each created disposable
- *     instance; This is only relevant for when MonitoringMode != OFF.
- */
-goog.define('goog.Disposable.INCLUDE_STACK_ON_CREATION', true);
 
 
 /**

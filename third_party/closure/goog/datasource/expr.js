@@ -47,7 +47,6 @@ goog.require('goog.string');
  *
  * @param {string=} opt_expr The string expression.
  * @constructor
- * @final
  */
 goog.ds.Expr = function(opt_expr) {
   if (opt_expr) {

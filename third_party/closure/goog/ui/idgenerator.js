@@ -24,7 +24,6 @@ goog.provide('goog.ui.IdGenerator');
 /**
  * Creates a new id generator.
  * @constructor
- * @final
  */
 goog.ui.IdGenerator = function() {
 };
@@ -46,3 +45,13 @@ goog.ui.IdGenerator.prototype.nextId_ = 0;
 goog.ui.IdGenerator.prototype.getNextUniqueId = function() {
   return ':' + (this.nextId_++).toString(36);
 };
+
+
+/**
+ * Default instance for id generation. Done as an instance instead of statics
+ * so it's possible to inject a mock for unit testing purposes.
+ * @type {goog.ui.IdGenerator}
+ * @deprecated Use goog.ui.IdGenerator.getInstance() instead and do not refer
+ * to goog.ui.IdGenerator.instance anymore.
+ */
+goog.ui.IdGenerator.instance = goog.ui.IdGenerator.getInstance();
