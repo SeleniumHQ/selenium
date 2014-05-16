@@ -40,9 +40,9 @@
       expectedFailures = new goog.testing.ExpectedFailures();
     }
 
-
     function tearDown() {
       expectedFailures.handleTearDown();
+      goog.style.setStyle(document.body, 'display', 'block');
       goog.style.setStyle(document.body, 'overflow', 'auto');
     }
 
@@ -50,6 +50,15 @@
       assertThrows(function() {
         isShown(undefined);
       });
+    }
+
+    function testBodyShown() {
+      assertTrue(isShown(document.body));
+    }
+
+    function testBodyAlwaysShown() {
+      goog.style.setStyle(document.body, 'display', 'none');
+      assertTrue("BODY element must *always* be shown", isShown(document.body));
     }
 
     function testCanDetermineIfAnElementIsShownOrNot() {
