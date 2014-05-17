@@ -38,7 +38,6 @@ public interface DriverCommand {
   String REFRESH = "refresh";
 
   String ADD_COOKIE = "addCookie";
-  String GET_COOKIE = "getCookie";
   String GET_ALL_COOKIES = "getCookies";
   String DELETE_COOKIE = "deleteCookie";
   String DELETE_ALL_COOKIES = "deleteAllCookies";
@@ -50,7 +49,6 @@ public interface DriverCommand {
 
   String CLEAR_ELEMENT = "clearElement";
   String CLICK_ELEMENT = "clickElement";
-  String HOVER_OVER_ELEMENT = "hoverOverElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
@@ -76,9 +74,7 @@ public interface DriverCommand {
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
 
   String GET_ELEMENT_TEXT = "getElementText";
-  String GET_ELEMENT_VALUE = "getElementValue";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";
-  String DRAG_ELEMENT = "dragElement";
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
   String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
@@ -91,7 +87,6 @@ public interface DriverCommand {
 
   String SCREENSHOT = "screenshot";
 
-  String GET_ALERT = "getAlert";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
@@ -134,7 +129,6 @@ public interface DriverCommand {
   String MOUSE_DOWN = "mouseButtonDown";
   String MOUSE_UP = "mouseButtonUp";
   String MOVE_TO = "mouseMoveTo";
-  String SEND_KEYS_TO_SESSION = "sendKeys";
 
   // Those allow interactions with the Input Methods installed on
   // the system.
