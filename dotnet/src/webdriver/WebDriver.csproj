@@ -142,7 +142,6 @@
     <Compile Include="Firefox\FirefoxWebElement.cs" />
     <Compile Include="Firefox\IExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\Executable.cs" />
-    <Compile Include="Firefox\Internal\ExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\ILock.cs" />
     <Compile Include="Firefox\Internal\IniFileReader.cs" />
     <Compile Include="Firefox\Internal\SocketLock.cs" />
@@ -222,10 +221,6 @@
     <Compile Include="Remote\ErrorResponse.cs" />
     <Compile Include="Remote\HttpCommandExecutor.cs" />
     <Compile Include="Remote\ICommandExecutor.cs" />
-    <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\RemoteAlert.cs" />
     <Compile Include="Remote\RemoteCookieJar.cs" />
     <Compile Include="Remote\RemoteCoordinates.cs" />
