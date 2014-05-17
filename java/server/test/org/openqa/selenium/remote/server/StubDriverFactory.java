@@ -22,13 +22,20 @@ import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 
 public class StubDriverFactory implements DriverFactory {
+  @Override
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> impl) {
   }
 
+  @Override
+  public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
+  }
+
+  @Override
   public WebDriver newInstance(Capabilities capabilities) {
     return new StubDriver();
   }
 
+  @Override
   public boolean hasMappingFor(Capabilities capabilities) {
     return true;
   }

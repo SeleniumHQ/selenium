@@ -118,7 +118,7 @@ function wrapped(globalFn) {
   };
 
   function asyncTestFn(fn) {
-    return function(done) {
+    var ret = function(done) {
       this.timeout(0);
       var timeout = this.timeout;
       this.timeout = undefined;  // Do not let tests change the timeout.
@@ -128,6 +128,12 @@ function wrapped(globalFn) {
         this.timeout = timeout;
       }
     };
+
+    ret.toString = function() {
+      return fn.toString();
+    };
+
+    return ret;
   }
 }
 

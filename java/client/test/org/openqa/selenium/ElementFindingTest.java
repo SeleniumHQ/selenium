@@ -558,6 +558,7 @@ public class ElementFindingTest extends JUnit4TestBase {
           reason = "Chrome: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
+    assumeFalse("Ignoring test for lack of error in CSS in IE6", TestUtilities.isIe6(driver));
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector("//a/b/c[@id='1']"));
   }
