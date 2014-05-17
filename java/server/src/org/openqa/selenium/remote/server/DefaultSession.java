@@ -74,7 +74,6 @@ public class DefaultSession implements Session {
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
   private volatile Thread inUseWithThread = null;
-  private final BrowserCreator browserCreator;
   private TemporaryFilesystem tempFs;
 
   // This method is to avoid constructor escape of partially constructed session object
@@ -102,7 +101,7 @@ public class DefaultSession implements Session {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
     this.tempFs = tempFs;
-    browserCreator = new BrowserCreator(factory, capabilities);
+    final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
