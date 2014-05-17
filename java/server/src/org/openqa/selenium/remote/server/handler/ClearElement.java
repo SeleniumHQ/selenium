@@ -18,32 +18,20 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
 
-public class ClearElement extends WebDriverHandler<Void> {
-
-  private volatile String elementId;
+public class ClearElement extends WebElementHandler<Void> {
 
   public ClearElement(Session session) {
     super(session);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
   @Override
   public Void call() throws Exception {
-    getKnownElements().get(elementId).clear();
+    getElement().clear();
     return null;
   }
 
   @Override
   public String toString() {
-    String element = "unknown element";
-    try {
-      element = String.valueOf(getKnownElements().get(elementId));
-    } catch (RuntimeException e) {
-      // Be paranoid!
-    }
-    return String.format("[clear: %s %s]", elementId, element);
+    return String.format("[clear: %s]", getElementAsString());
   }
 }
