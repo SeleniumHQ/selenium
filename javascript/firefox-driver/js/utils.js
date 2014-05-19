@@ -670,24 +670,6 @@ Utils.fireHtmlEvent = function(element, eventName) {
 };
 
 
-Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
-  Utils.triggerMouseEvent(element, eventName, clientX, clientY);
-};
-
-
-Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-  var event = element.ownerDocument.createEvent('MouseEvents');
-  var view = element.ownerDocument.defaultView;
-
-  clientX = clientX || 0;
-  clientY = clientY || 0;
-
-  event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
-      false, false, false, false, 0, element);
-  element.dispatchEvent(event);
-};
-
-
 Utils.getLocation = function(element, opt_onlyFirstRect) {
   element = element.wrappedJSObject ? element.wrappedJSObject : element;
   var rect = undefined;
