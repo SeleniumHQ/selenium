@@ -772,7 +772,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
