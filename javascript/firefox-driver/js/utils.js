@@ -635,27 +635,30 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     return false;
   }
 
-  var keyboardEvent = doc.createEvent('KeyEvents');
-  keyboardEvent.initKeyEvent(
-      type,             // in DOMString typeArg,
-      true,             // in boolean canBubbleArg
-      true,             // in boolean cancelableArg
-      doc.defaultView,  // in nsIDOMAbstractView viewArg
-      controlState,     // in boolean ctrlKeyArg
-      altState,         // in boolean altKeyArg
-      shiftState,       // in boolean shiftKeyArg
-      metaState,        // in boolean metaKeyArg
-      keyCode,          // in unsigned long keyCodeArg
-      charCode);        // in unsigned long charCodeArg
+  var windowUtils = doc.defaultView
+      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+      .getInterface(Components.interfaces.nsIDOMWindowUtils);
 
-  if (shouldPreventDefault) {
-    keyboardEvent.preventDefault();
+  var modifiers = 0;
+  if (controlState) {
+    modifiers += windowUtils.MODIFIER_CONTROL;
+  }
+  if (altState) {
+    modifiers += windowUtils.MODIFIER_ALT;
+  }
+  if (shiftState) {
+    modifiers += windowUtils.MODIFIER_SHIFT;
+  }
+  if (metaState) {
+    modifiers += windowUtils.MODIFIER_META;
   }
 
-  return doc.defaultView
-      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-      .getInterface(Components.interfaces.nsIDOMWindowUtils)
-      .dispatchDOMEventViaPresShell(element, keyboardEvent, true);
+  var additionalFlags = 0;
+  if (shouldPreventDefault) {
+    additionalFlags += windowUtils.KEY_FLAG_PREVENT_DEFAULT;
+  }
+
+  return windowUtils.sendKeyEvent(type, keyCode, charCode, modifiers, additionalFlags);
 };
 
 
