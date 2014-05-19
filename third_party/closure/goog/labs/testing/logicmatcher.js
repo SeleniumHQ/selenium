@@ -34,7 +34,9 @@ goog.require('goog.labs.testing.Matcher');
  * @param {!Array.<!goog.labs.testing.Matcher>} matchers Input matchers.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.AllOfMatcher = function(matchers) {
   /**
@@ -83,7 +85,9 @@ goog.labs.testing.AllOfMatcher.prototype.describe =
  * @param {!Array.<!goog.labs.testing.Matcher>} matchers Input matchers.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.AnyOfMatcher = function(matchers) {
   /**
@@ -131,7 +135,9 @@ goog.labs.testing.AnyOfMatcher.prototype.describe =
  * @param {!goog.labs.testing.Matcher} matcher The matcher to negate.
  *
  * @constructor
+ * @struct
  * @implements {goog.labs.testing.Matcher}
+ * @final
  */
 goog.labs.testing.IsNotMatcher = function(matcher) {
   /**

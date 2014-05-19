@@ -107,7 +107,7 @@ goog.debug.DivConsole.prototype.addLogRecord = function(logRecord) {
 /**
  * Gets the formatter for outputting to the console. The default formatter
  * is an instance of goog.debug.HtmlFormatter
- * @return {goog.debug.Formatter} The formatter in use.
+ * @return {!goog.debug.Formatter} The formatter in use.
  */
 goog.debug.DivConsole.prototype.getFormatter = function() {
   return this.formatter_;

@@ -42,6 +42,7 @@ goog.require('goog.userAgent');
  * @param {Object=} opt_extraStyles Other style attributes for the field,
  *     represented as a map of strings.
  * @constructor
+ * @final
  */
 goog.editor.icontent.FieldFormatInfo = function(fieldId, standards, blended,
     fixedHeight, opt_extraStyles) {
@@ -60,6 +61,7 @@ goog.editor.icontent.FieldFormatInfo = function(fieldId, standards, blended,
  * @param {Element} wrapper The wrapper div around a field.
  * @param {string} css The css for a field.
  * @constructor
+ * @final
  */
 goog.editor.icontent.FieldStyleInfo = function(wrapper, css) {
   this.wrapper_ = wrapper;

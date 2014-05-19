@@ -44,6 +44,7 @@ goog.require('goog.graphics.ext.Group');
  *     degradation of text support.
  * @constructor
  * @extends {goog.graphics.ext.Group}
+ * @final
  */
 goog.graphics.ext.Graphics = function(width, height, opt_coordWidth,
     opt_coordHeight, opt_domHelper, opt_isSimple) {
@@ -110,7 +111,7 @@ goog.graphics.ext.Graphics.prototype.setCoordOrigin = function(left, top) {
 
 
 /**
- * @return {goog.math.Coordinate} The coordinate system position.
+ * @return {!goog.math.Coordinate} The coordinate system position.
  */
 goog.graphics.ext.Graphics.prototype.getCoordOrigin = function() {
   return this.implementation_.getCoordOrigin();

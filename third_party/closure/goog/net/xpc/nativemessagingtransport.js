@@ -26,9 +26,11 @@ goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
+goog.require('goog.log');
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
+goog.require('goog.net.xpc.TransportTypes');
 
 
 
@@ -51,10 +53,12 @@ goog.require('goog.net.xpc.Transport');
  *     transport should use.  The default is '2'.
  * @constructor
  * @extends {goog.net.xpc.Transport}
+ * @final
  */
 goog.net.xpc.NativeMessagingTransport = function(channel, peerHostname,
     opt_domHelper, opt_oneSidedHandshake, opt_protocolVersion) {
-  goog.base(this, opt_domHelper);
+  goog.net.xpc.NativeMessagingTransport.base(
+      this, 'constructor', opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -82,7 +86,7 @@ goog.net.xpc.NativeMessagingTransport = function(channel, peerHostname,
 
   /**
    * The event handler.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.net.xpc.NativeMessagingTransport>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -167,7 +171,7 @@ goog.net.xpc.NativeMessagingTransport = function(channel, peerHostname,
       listen(this.maybeAttemptToConnectTimer_, goog.Timer.TICK,
           this.maybeAttemptToConnect_);
 
-  goog.net.xpc.logger.info('NativeMessagingTransport created.  ' +
+  goog.log.info(goog.net.xpc.logger, 'NativeMessagingTransport created.  ' +
       'protocolVersion=' + this.protocolVersion_ + ', oneSidedHandshake=' +
       this.oneSidedHandshake_ + ', role=' + this.channel_.getRole());
 };
@@ -301,8 +305,9 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   var service = data.substring(headDelim + 1, serviceDelim);
   var payload = data.substring(serviceDelim + 1);
 
-  goog.net.xpc.logger.fine('messageReceived: channel=' + channelName +
-                           ', service=' + service + ', payload=' + payload);
+  goog.log.fine(goog.net.xpc.logger,
+      'messageReceived: channel=' + channelName +
+      ', service=' + service + ', payload=' + payload);
 
   // Attempt to deliver message to the channel. Keep in mind that it may not
   // exist for several reasons, including but not limited to:
@@ -335,19 +340,14 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
       // navigation (particularly Firefox 1.5+). We can trust the outer peer,
       // since we only accept postMessage messages from the same hostname that
       // originally setup the channel.
-      goog.net.xpc.logger.fine('changing channel name to ' + channelName);
-      staleChannel.name = channelName;
-      // Remove old stale pointer to channel.
-      delete goog.net.xpc.channels[staleChannelName];
-      // Create fresh pointer to channel.
-      goog.net.xpc.channels[channelName] = staleChannel;
+      staleChannel.updateChannelNameAndCatalog(channelName);
       staleChannel.xpcDeliver(service, payload);
       return true;
     }
   }
 
   // Failed to find a channel to deliver this message to, so simply ignore it.
-  goog.net.xpc.logger.info('channel name mismatch; message ignored"');
+  goog.log.info(goog.net.xpc.logger, 'channel name mismatch; message ignored"');
   return false;
 };
 
@@ -390,8 +390,8 @@ goog.net.xpc.NativeMessagingTransport.prototype.transportServiceHandler =
         if ((prevPeerProtocolVersion == 1 || this.peerEndpointId_ != null) &&
             this.peerEndpointId_ != peerEndpointId) {
           // Send a new SETUP message since the peer has been replaced.
-          goog.net.xpc.logger.info('Sending SETUP and changing peer ID to: ' +
-              peerEndpointId);
+          goog.log.info(goog.net.xpc.logger,
+              'Sending SETUP and changing peer ID to: ' + peerEndpointId);
           this.sendSetupMessage_();
         }
         this.peerEndpointId_ = peerEndpointId;
@@ -524,7 +524,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.send = function(service,
                                                                 payload) {
   var win = this.channel_.getPeerWindowObject();
   if (!win) {
-    goog.net.xpc.logger.fine('send(): window not ready');
+    goog.log.fine(goog.net.xpc.logger, 'send(): window not ready');
     return;
   }
 
@@ -547,21 +547,21 @@ goog.net.xpc.NativeMessagingTransport.prototype.send = function(service,
         // object can sometimes be delayed.
         var obj = win.postMessage ? win : win.document;
         if (!obj.postMessage) {
-          goog.net.xpc.logger.warning('Peer window had no postMessage ' +
-              'function.');
+          goog.log.warning(goog.net.xpc.logger,
+              'Peer window had no postMessage function.');
           return;
         }
 
         obj.postMessage(channelName + '|' + service + ':' + payload,
             transport.peerHostname_);
-        goog.net.xpc.logger.fine('send(): service=' + service + ' payload=' +
-            payload + ' to hostname=' + transport.peerHostname_);
+        goog.log.fine(goog.net.xpc.logger, 'send(): service=' + service +
+            ' payload=' + payload + ' to hostname=' + transport.peerHostname_);
       } catch (error) {
         // There is some evidence (not totally convincing) that postMessage can
         // be missing or throw errors during a narrow timing window during
         // startup.  This protects against that.
-        goog.net.xpc.logger.warning('Error performing postMessage, ignoring.',
-            error);
+        goog.log.warning(goog.net.xpc.logger,
+            'Error performing postMessage, ignoring.', error);
       }
     };
     this.sendTimerId_ = goog.Timer.callOnce(sendFunctor, 0);
@@ -624,7 +624,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.disposeInternal = function() {
   // this.channel_.peerWindowObject_.
   delete this.send;
 
-  goog.base(this, 'disposeInternal');
+  goog.net.xpc.NativeMessagingTransport.base(this, 'disposeInternal');
 };
 
 

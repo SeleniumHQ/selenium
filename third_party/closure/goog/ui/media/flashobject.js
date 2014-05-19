@@ -45,10 +45,10 @@ goog.provide('goog.ui.media.FlashObject.ScriptAccessLevel');
 goog.provide('goog.ui.media.FlashObject.Wmodes');
 
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.structs.Map');
@@ -83,7 +83,7 @@ goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
 
   /**
    * An event handler used to handle events consistently between browsers.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.media.FlashObject>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -187,10 +187,10 @@ goog.ui.media.FlashObject.FLASH_CSS_CLASS =
 
 
 /**
- * Template for the object tag for IE.
+ * Template for the object tag for IE prior to version 11.
  *
- * @type {string}
- * @private
+ * @private {string}
+ * @const
  */
 goog.ui.media.FlashObject.IE_HTML_ =
     '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"' +
@@ -210,21 +210,21 @@ goog.ui.media.FlashObject.IE_HTML_ =
 
 
 /**
- * Template for the wmode param for IE.
+ * Template for the wmode param for IE prior to version 11.
  *
- * @type {string}
- * @private
+ * @private {string}
+ * @const
  */
 goog.ui.media.FlashObject.IE_WMODE_PARAMS_ = '<param name="wmode" value="%s"/>';
 
 
 /**
- * Template for the embed tag for FF.
+ * Embed tag template for most browsers.
  *
- * @type {string}
- * @private
+ * @private {string}
+ * @const
  */
-goog.ui.media.FlashObject.FF_HTML_ =
+goog.ui.media.FlashObject.EMBED_HTML_ =
     '<embed quality="high"' +
     ' id="%s"' +
     ' name="%s"' +
@@ -242,22 +242,22 @@ goog.ui.media.FlashObject.FF_HTML_ =
 
 
 /**
- * Template for the wmode param for Firefox.
+ * Template for the wmode param for most browsers.
  *
- * @type {string}
- * @private
+ * @private {string}
+ * @const
  */
-goog.ui.media.FlashObject.FF_WMODE_PARAMS_ = 'wmode=%s';
+goog.ui.media.FlashObject.WMODE_PARAMS_ = 'wmode=%s';
 
 
 /**
  * A logger used for debugging.
  *
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.ui.media.FlashObject.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.ui.media.FlashObject');
+    goog.log.getLogger('goog.ui.media.FlashObject');
 
 
 /**
@@ -320,7 +320,7 @@ goog.ui.media.FlashObject.prototype.allowScriptAccess_ =
  * Sets the flash movie Wmode.
  *
  * @param {goog.ui.media.FlashObject.Wmodes} wmode the flash movie Wmode.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setWmode = function(wmode) {
   this.wmode_ = wmode;
@@ -340,7 +340,7 @@ goog.ui.media.FlashObject.prototype.getWmode = function() {
  * Adds flash variables.
  *
  * @param {goog.structs.Map|Object} map A key-value map of variables.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.addFlashVars = function(map) {
   this.flashVars_.addAll(map);
@@ -353,7 +353,7 @@ goog.ui.media.FlashObject.prototype.addFlashVars = function(map) {
  *
  * @param {string} key The name of the flash variable.
  * @param {string} value The value of the flash variable.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
   this.flashVars_.set(key, value);
@@ -372,7 +372,7 @@ goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
  *    as a goog.structs.Map or an Object literal) or a key to the optional
  *    {@code opt_value}.
  * @param {string=} opt_value The optional value for the flashVar key.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setFlashVars = function(flashVar,
                                                             opt_value) {
@@ -401,7 +401,7 @@ goog.ui.media.FlashObject.prototype.getFlashVars = function() {
  * Sets the background color of the movie.
  *
  * @param {string} color The new color to be set.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setBackgroundColor = function(color) {
   this.backgroundColor_ = color;
@@ -421,7 +421,7 @@ goog.ui.media.FlashObject.prototype.getBackgroundColor = function() {
  * Sets the allowScriptAccess setting of the movie.
  *
  * @param {string} value The new value to be set.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setAllowScriptAccess = function(value) {
   this.allowScriptAccess_ = value;
@@ -442,7 +442,7 @@ goog.ui.media.FlashObject.prototype.getAllowScriptAccess = function() {
  *
  * @param {number|string} width The width of the movie.
  * @param {number|string} height The height of the movie.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setSize = function(width, height) {
   this.width_ = goog.isString(width) ? width : Math.round(width) + 'px';
@@ -467,7 +467,7 @@ goog.ui.media.FlashObject.prototype.getRequiredVersion = function() {
  *
  * @param {?string} version The minimum required version for this movie to work,
  *     or null if you want to unset it.
- * @return {goog.ui.media.FlashObject} The flash object instance for chaining.
+ * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setRequiredVersion = function(version) {
   this.requiredVersion_ = version;
@@ -538,7 +538,7 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
   if (this.hasRequiredVersion() &&
       !goog.userAgent.flash.isVersion(
           /** @type {string} */ (this.getRequiredVersion()))) {
-    this.logger_.warning('Required flash version not found:' +
+    goog.log.warning(this.logger_, 'Required flash version not found:' +
         this.getRequiredVersion());
     throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
   }
@@ -556,12 +556,13 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
  * @private
  */
 goog.ui.media.FlashObject.prototype.generateSwfTag_ = function() {
-  var template = goog.userAgent.IE ? goog.ui.media.FlashObject.IE_HTML_ :
-      goog.ui.media.FlashObject.FF_HTML_;
+  var template = goog.ui.media.FlashObject.EMBED_HTML_;
+  var params = goog.ui.media.FlashObject.WMODE_PARAMS_;
 
-  var params = goog.userAgent.IE ? goog.ui.media.FlashObject.IE_WMODE_PARAMS_ :
-      goog.ui.media.FlashObject.FF_WMODE_PARAMS_;
-
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) {
+    template = goog.ui.media.FlashObject.IE_HTML_;
+    params = goog.ui.media.FlashObject.IE_WMODE_PARAMS_;
+  }
   params = goog.string.subs(params, this.wmode_);
 
   var keys = this.flashVars_.getKeys();

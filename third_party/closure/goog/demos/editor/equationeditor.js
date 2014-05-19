@@ -24,6 +24,7 @@ goog.require('goog.ui.equation.EquationEditorDialog');
 
 /**
  * @constructor
+ * @final
  */
 goog.demos.editor.EquationEditor = function() {
 };

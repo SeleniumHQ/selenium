@@ -22,7 +22,8 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.soy.data');
+goog.require('goog.soy.data.SanitizedContent');
+goog.require('goog.soy.data.SanitizedContentKind');
 goog.require('goog.string');
 
 
@@ -45,12 +46,16 @@ goog.define('goog.soy.REQUIRE_STRICT_AUTOESCAPE', false);
  * will be easier to audit the code for cross-site scripting vulnerabilities.
  *
  * @param {Element} element The element whose content we are rendering into.
- * @param {Function} template The Soy template defining the element's content.
- * @param {Object=} opt_templateData The data for the template.
+ * @param {null|function(ARG_TYPES, null=, Object.<string, *>=):*} template
+ *     The Soy template defining the element's content.
+ * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.
+ * @template ARG_TYPES
  */
 goog.soy.renderElement = function(element, template, opt_templateData,
                                   opt_injectedData) {
+  // Soy template parameter is only nullable for historical reasons.
+  goog.asserts.assert(template, 'Soy template may not be null.');
   element.innerHTML = goog.soy.ensureTemplateOutputHtml_(template(
       opt_templateData || goog.soy.defaultTemplateData_, undefined,
       opt_injectedData));
@@ -64,15 +69,19 @@ goog.soy.renderElement = function(element, template, opt_templateData,
  * the method). Otherwise a document fragment is returned containing the
  * rendered nodes.
  *
- * @param {Function} template The Soy template defining the element's content.
- * @param {Object=} opt_templateData The data for the template.
+ * @param {null|function(ARG_TYPES, null=, Object.<string, *>=):*} template
+ *     The Soy template defining the element's content.
+ * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper used to
  *     create DOM nodes; defaults to {@code goog.dom.getDomHelper}.
  * @return {!Node} The resulting node or document fragment.
+ * @template ARG_TYPES
  */
 goog.soy.renderAsFragment = function(template, opt_templateData,
                                      opt_injectedData, opt_domHelper) {
+  // Soy template parameter is only nullable for historical reasons.
+  goog.asserts.assert(template, 'Soy template may not be null.');
   var dom = opt_domHelper || goog.dom.getDomHelper();
   var html = goog.soy.ensureTemplateOutputHtml_(
       template(opt_templateData || goog.soy.defaultTemplateData_,
@@ -87,16 +96,20 @@ goog.soy.renderAsFragment = function(template, opt_templateData,
  * HTML string represents a single node, then that node is returned. Otherwise,
  * a DIV element is returned containing the rendered nodes.
  *
- * @param {Function} template The Soy template defining the element's content.
- * @param {Object=} opt_templateData The data for the template.
+ * @param {null|function(ARG_TYPES, null=, Object.<string, *>=):*} template
+ *     The Soy template defining the element's content.
+ * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper used to
  *     create DOM nodes; defaults to {@code goog.dom.getDomHelper}.
  * @return {!Element} Rendered template contents, wrapped in a parent DIV
  *     element if necessary.
+ * @template ARG_TYPES
  */
 goog.soy.renderAsElement = function(template, opt_templateData,
                                     opt_injectedData, opt_domHelper) {
+  // Soy template parameter is only nullable for historical reasons.
+  goog.asserts.assert(template, 'Soy template may not be null.');
   var dom = opt_domHelper || goog.dom.getDomHelper();
   var wrapper = dom.createElement(goog.dom.TagName.DIV);
   var html = goog.soy.ensureTemplateOutputHtml_(template(

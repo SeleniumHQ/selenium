@@ -34,7 +34,7 @@ goog.require('goog.ui.MenuBarRenderer');
  *     decorate the menu bar; defaults to {@link goog.ui.MenuBarRenderer}.
  * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for document
  *     interaction.
- * @return {goog.ui.Container} The created menu bar.
+ * @return {!goog.ui.Container} The created menu bar.
  */
 goog.ui.menuBar.create = function(opt_renderer, opt_domHelper) {
   return new goog.ui.Container(

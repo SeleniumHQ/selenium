@@ -31,9 +31,10 @@ goog.require('goog.events.EventTarget');
  *     the method mock for #postMessage.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.testing.messaging.MockMessagePort = function(id, mockControl) {
-  goog.base(this);
+  goog.testing.messaging.MockMessagePort.base(this, 'constructor');
 
   /**
    * An opaque identifier, used because message ports otherwise have no

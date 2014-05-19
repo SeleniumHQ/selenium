@@ -135,7 +135,7 @@ goog.math.interpolator.Spline1.prototype.computeSplineCoeffs_ = function(x, y) {
  * the curve is C2. It uses not-a-knot boundary conditions.
  * @param {Array.<number>} dx The spacing between consecutive data points.
  * @param {Array.<number>} slope The slopes between consecutive data points.
- * @return {Array.<number>} The Spline derivative at each data point.
+ * @return {!Array.<number>} The Spline derivative at each data point.
  * @protected
  */
 goog.math.interpolator.Spline1.prototype.computeDerivatives = function(

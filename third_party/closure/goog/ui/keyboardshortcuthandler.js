@@ -122,6 +122,21 @@ goog.ui.KeyboardShortcutHandler = function(keyTarget) {
    */
   this.modifierShortcutsAreGlobal_ = true;
 
+  /**
+   * Whether to treat space key as a shortcut when the focused element is a
+   * checkbox, radiobutton or button.
+   * @type {boolean}
+   * @private
+   */
+  this.allowSpaceKeyOnButtons_ = false;
+
+  /**
+   * Tracks the currently pressed shortcut key, for Firefox.
+   * @type {?number}
+   * @private
+   */
+  this.activeShortcutKeyForGecko_ = null;
+
   this.initializeKeyListener(keyTarget);
 };
 goog.inherits(goog.ui.KeyboardShortcutHandler, goog.events.EventTarget);
@@ -222,12 +237,12 @@ goog.ui.KeyboardShortcutHandler.prototype.keyTarget_;
 
 
 /**
- * Due to a bug in the way that Gecko v1.8 on Mac handles
- * cut/copy/paste key events using the meta key, it is necessary to
- * fake the keydown for the action key (C,V,X) by capturing it on keyup.
- * Because users will often release the meta key a slight moment
- * before they release the action key, we need this variable that will
- * store whether the meta key has been released recently.
+ * Due to a bug in the way that Gecko on Mac handles cut/copy/paste key events
+ * using the meta key, it is necessary to fake the keyDown for the action key
+ * (C,V,X) by capturing it on keyUp.
+ * Because users will often release the meta key a slight moment before they
+ * release the action key, we need this variable that will store whether the
+ * meta key has been released recently.
  * It will be cleared after a short delay in the key handling logic.
  * @type {boolean}
  * @private
@@ -271,7 +286,7 @@ goog.ui.KeyboardShortcutHandler.getKeyCode = function(name) {
 /**
  * Sets whether to always prevent the default action when a shortcut event is
  * fired. If false, the default action is prevented only if preventDefault is
- * called on  either of the corresponding SHORTCUT_TRIGGERED or SHORTCUT_PREFIX
+ * called on either of the corresponding SHORTCUT_TRIGGERED or SHORTCUT_PREFIX
  * events. If true, the default action is prevented whenever a shortcut event
  * is fired. The default value is true.
  * @param {boolean} alwaysPreventDefault Whether to always call preventDefault.
@@ -368,6 +383,18 @@ goog.ui.KeyboardShortcutHandler.prototype.setModifierShortcutsAreGlobal =
 goog.ui.KeyboardShortcutHandler.prototype.getModifierShortcutsAreGlobal =
     function() {
   return this.modifierShortcutsAreGlobal_;
+};
+
+
+/**
+ * Sets whether to treat space key as a shortcut when the focused element is a
+ * checkbox, radiobutton or button.
+ * @param {boolean} allowSpaceKeyOnButtons Whether to treat space key as a
+ *     shortcut when the focused element is a checkbox, radiobutton or button.
+ */
+goog.ui.KeyboardShortcutHandler.prototype.setAllowSpaceKeyOnButtons = function(
+    allowSpaceKeyOnButtons) {
+  this.allowSpaceKeyOnButtons_ = allowSpaceKeyOnButtons;
 };
 
 
@@ -476,7 +503,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isShortcutRegistered = function(
  * @param {Object} args The "arguments" array passed
  *     to registerShortcut or unregisterShortcut.  Please see the comments in
  *     registerShortcut for list of allowed forms.
- * @return {Array.<Object>} The sequence of objects containing the
+ * @return {!Array.<Object>} The sequence of objects containing the
  *     keyCode and modifiers of each key in sequence.
  * @private
  */
@@ -529,7 +556,7 @@ goog.ui.KeyboardShortcutHandler.prototype.setGlobalKeys = function(keys) {
 
 
 /**
- * @return {Array.<string>} The global keys, i.e. keys that are safe to always
+ * @return {!Array.<string>} The global keys, i.e. keys that are safe to always
  *     regard as shortcuts, even if entered in a textarea or input field.
  */
 goog.ui.KeyboardShortcutHandler.prototype.getGlobalKeys = function() {
@@ -560,7 +587,7 @@ goog.ui.KeyboardShortcutHandler.prototype.getEventType =
 /**
  * Builds stroke array from string representation of shortcut.
  * @param {string} s String representation of shortcut.
- * @return {Array.<Object>} The stroke array.
+ * @return {!Array.<Object>} The stroke array.
  */
 goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
   // Normalize whitespace and force to lower case.
@@ -611,14 +638,10 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
 
   goog.events.listen(this.keyTarget_, goog.events.EventType.KEYDOWN,
       this.handleKeyDown_, false, this);
-  // Firefox 2 on mac does not fire a keydown event in conjunction with a meta
-  // key if the action involves cutting/copying/pasting text.
-  // In this case we capture the keyup (which is fired) and fake as
-  // if the user had pressed the key to begin with.
-  if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
+
+  if (goog.userAgent.GECKO) {
     goog.events.listen(this.keyTarget_, goog.events.EventType.KEYUP,
-        this.handleMacGeckoKeyUp_, false, this);
+        this.handleGeckoKeyUp_, false, this);
   }
 
   // Windows uses ctrl+alt keys (a.k.a. alt-graph keys) for typing characters
@@ -637,35 +660,44 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
 
 
 /**
- * Handler for when a keyup event is fired in Mac FF2 (Gecko 1.8).
+ * Handler for when a keyup event is fired in Firefox (Gecko).
  * @param {goog.events.BrowserEvent} e The key event.
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleMacGeckoKeyUp_ = function(e) {
-  // Due to a bug in the way that Gecko v1.8 on Mac handles
-  // cut/copy/paste key events using the meta key, it is necessary to
-  // fake the keydown for the action keys (C,V,X) by capturing it on keyup.
-  // This is because the keydown events themselves are not fired by the
-  // browser in this case.
-  // Because users will often release the meta key a slight moment
-  // before they release the action key, we need to store whether the
-  // meta key has been released recently to avoid "flaky" cutting/pasting
-  // behavior.
-  if (e.keyCode == goog.events.KeyCodes.MAC_FF_META) {
-    this.metaKeyRecentlyReleased_ = true;
-    goog.Timer.callOnce(function() {
-      this.metaKeyRecentlyReleased_ = false;
-    }, 400, this);
-    return;
+goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(e) {
+  // Due to a bug in the way that Gecko on Mac handles cut/copy/paste key events
+  // using the meta key, it is necessary to fake the keyDown for the action keys
+  // (C,V,X) by capturing it on keyUp.
+  // This is because the keyDown events themselves are not fired by the browser
+  // in this case.
+  // Because users will often release the meta key a slight moment before they
+  // release the action key, we need to store whether the meta key has been
+  // released recently to avoid "flaky" cutting/pasting behavior.
+  if (goog.userAgent.MAC) {
+    if (e.keyCode == goog.events.KeyCodes.MAC_FF_META) {
+      this.metaKeyRecentlyReleased_ = true;
+      goog.Timer.callOnce(function() {
+        this.metaKeyRecentlyReleased_ = false;
+      }, 400, this);
+      return;
+    }
+
+    var metaKey = e.metaKey || this.metaKeyRecentlyReleased_;
+    if ((e.keyCode == goog.events.KeyCodes.C ||
+        e.keyCode == goog.events.KeyCodes.X ||
+        e.keyCode == goog.events.KeyCodes.V) && metaKey) {
+      e.metaKey = metaKey;
+      this.handleKeyDown_(e);
+    }
   }
 
-  var metaKey = e.metaKey || this.metaKeyRecentlyReleased_;
-  if ((e.keyCode == goog.events.KeyCodes.C ||
-      e.keyCode == goog.events.KeyCodes.X ||
-      e.keyCode == goog.events.KeyCodes.V) && metaKey) {
-    e.metaKey = metaKey;
-    this.handleKeyDown_(e);
+  // Firefox triggers buttons on space keyUp instead of keyDown.  So if space
+  // keyDown activated a shortcut, do NOT also trigger the focused button.
+  if (goog.events.KeyCodes.SPACE == this.activeShortcutKeyForGecko_ &&
+      goog.events.KeyCodes.SPACE == e.keyCode) {
+    e.preventDefault();
   }
+  this.activeShortcutKeyForGecko_ = null;
 };
 
 
@@ -724,10 +756,9 @@ goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyUp_ = function(e) {
 goog.ui.KeyboardShortcutHandler.prototype.clearKeyListener = function() {
   goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYDOWN,
       this.handleKeyDown_, false, this);
-  if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
+  if (goog.userAgent.GECKO) {
     goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYUP,
-        this.handleMacGeckoKeyUp_, false, this);
+        this.handleGeckoKeyUp_, false, this);
   }
   if (goog.userAgent.WINDOWS && !goog.userAgent.GECKO) {
     goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYPRESS,
@@ -904,7 +935,7 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
   }
 
   // Dispatch keyboard shortcut event if a shortcut was triggered. In addition
-  // to the generic keyboard shortcut event a more specifc fine grained one,
+  // to the generic keyboard shortcut event a more specific fine grained one,
   // specific for the shortcut identifier, is fired.
   if (shortcut) {
     if (this.alwaysPreventDefault_) {
@@ -936,6 +967,11 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
 
     // Clear stored strokes
     this.lastKeys_.strokes.length = 0;
+
+    // For Firefox, track which shortcut key was pushed.
+    if (goog.userAgent.GECKO) {
+      this.activeShortcutKeyForGecko_ = keyCode;
+    }
   }
 };
 
@@ -988,7 +1024,13 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   }
   // Checkboxes, radiobuttons and buttons. Allow all but SPACE as shortcut.
   if (el.tagName == 'INPUT' || el.tagName == 'BUTTON') {
-    return keyCode != goog.events.KeyCodes.SPACE;
+    // TODO(gboyer): If more flexibility is needed, create protected helper
+    // methods for each case (e.g. button, input, etc).
+    if (this.allowSpaceKeyOnButtons_) {
+      return true;
+    } else {
+      return keyCode != goog.events.KeyCodes.SPACE;
+    }
   }
   // Don't allow any additional shortcut keys for textareas or selects.
   return false;
@@ -1004,6 +1046,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
  *     event originated from.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.ui.KeyboardShortcutEvent = function(type, identifier, target) {
   goog.events.Event.call(this, type, target);

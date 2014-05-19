@@ -50,6 +50,7 @@ goog.require('goog.testing.mockmatchers');
  * This is a class that represents an expectation.
  * @param {string} name The name of the method for this expectation.
  * @constructor
+ * @final
  */
 goog.testing.MockExpectation = function(name) {
   /**
@@ -170,7 +171,10 @@ goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
   }
   if (opt_createProxy && !opt_mockStaticMethods &&
       goog.isFunction(objectToMock)) {
-    /** @constructor */
+    /**
+ * @constructor
+ * @final
+ */
     var tempCtor = function() {};
     goog.inherits(tempCtor, objectToMock);
     this.$proxy = new tempCtor();
@@ -311,7 +315,7 @@ goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
  *     should be used.
  * @param {Function} fn Argument list verifier function.  Should take 2 argument
  *     arrays as arguments, and return true if they are considered equivalent.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$registerArgumentListVerifier = function(methodName,
                                                                      fn) {
@@ -400,7 +404,7 @@ goog.testing.Mock.prototype.$do = function(expectation, args) {
 /**
  * Specifies a return value for the currently pending expectation.
  * @param {*} val The return value.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$returns = function(val) {
   this.$pendingExpectation.returnValue = val;
@@ -411,7 +415,7 @@ goog.testing.Mock.prototype.$returns = function(val) {
 /**
  * Specifies a value for the currently pending expectation to throw.
  * @param {*} val The value to throw.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$throws = function(val) {
   this.$pendingExpectation.exceptionToThrow = val;
@@ -424,7 +428,7 @@ goog.testing.Mock.prototype.$throws = function(val) {
  * Note, that using this method overrides declarations made
  * using $returns() and $throws() methods.
  * @param {Function} func The function to call.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$does = function(func) {
   this.$pendingExpectation.toDo = func;
@@ -434,7 +438,7 @@ goog.testing.Mock.prototype.$does = function(func) {
 
 /**
  * Allows the expectation to be called 0 or 1 times.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$atMostOnce = function() {
   this.$pendingExpectation.minCalls = 0;
@@ -446,7 +450,7 @@ goog.testing.Mock.prototype.$atMostOnce = function() {
 /**
  * Allows the expectation to be called any number of times, as long as it's
  * called once.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$atLeastOnce = function() {
   this.$pendingExpectation.maxCalls = Infinity;
@@ -455,8 +459,30 @@ goog.testing.Mock.prototype.$atLeastOnce = function() {
 
 
 /**
+ * Allows the expectation to be called exactly once.
+ * @return {!goog.testing.Mock} This mock object.
+ */
+goog.testing.Mock.prototype.$once = function() {
+  this.$pendingExpectation.minCalls = 1;
+  this.$pendingExpectation.maxCalls = 1;
+  return this;
+};
+
+
+/**
+ * Disallows the expectation from being called.
+ * @return {!goog.testing.Mock} This mock object.
+ */
+goog.testing.Mock.prototype.$never = function() {
+  this.$pendingExpectation.minCalls = 0;
+  this.$pendingExpectation.maxCalls = 0;
+  return this;
+};
+
+
+/**
  * Allows the expectation to be called any number of times.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$anyTimes = function() {
   this.$pendingExpectation.minCalls = 0;
@@ -468,7 +494,7 @@ goog.testing.Mock.prototype.$anyTimes = function() {
 /**
  * Specifies the number of times the expectation should be called.
  * @param {number} times The number of times this method will be called.
- * @return {goog.testing.Mock} This mock object.
+ * @return {!goog.testing.Mock} This mock object.
  */
 goog.testing.Mock.prototype.$times = function(times) {
   this.$pendingExpectation.minCalls = times;

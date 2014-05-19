@@ -27,10 +27,11 @@ goog.provide('goog.ui.SelectionMenuButton');
 goog.provide('goog.ui.SelectionMenuButton.SelectionState');
 
 goog.require('goog.events.EventType');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Menu');
+goog.require('goog.style');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.MenuItem');
+goog.require('goog.ui.registry');
 
 
 
@@ -98,7 +99,7 @@ goog.ui.SelectionMenuButton.prototype.initialItemRenderer_;
  * @override
  */
 goog.ui.SelectionMenuButton.prototype.setEnabled = function(enable) {
-  goog.base(this, 'setEnabled', enable);
+  goog.ui.SelectionMenuButton.base(this, 'setEnabled', enable);
   this.setCheckboxEnabled(enable);
 };
 

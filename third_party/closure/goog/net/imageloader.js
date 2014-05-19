@@ -60,17 +60,19 @@ goog.require('goog.userAgent');
  *     should be used to load images.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.net.ImageLoader = function(opt_parent) {
   goog.events.EventTarget.call(this);
 
   /**
-   * Map of image IDs to their image src, used to keep track of the images to
-   * load.  Once images have started loading, they're removed from this map.
-   * @type {!Object.<string, string>}
+   * Map of image IDs to their request including their image src, used to keep
+   * track of the images to load.  Once images have started loading, they're
+   * removed from this map.
+   * @type {!Object.<!goog.net.ImageLoader.ImageRequest_>}
    * @private
    */
-  this.imageIdToUrlMap_ = {};
+  this.imageIdToRequestMap_ = {};
 
   /**
    * Map of image IDs to their image element, used only for images that are in
@@ -84,7 +86,7 @@ goog.net.ImageLoader = function(opt_parent) {
   /**
    * Event handler object, used to keep track of onload and onreadystatechange
    * listeners.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.net.ImageLoader>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -103,17 +105,51 @@ goog.inherits(goog.net.ImageLoader, goog.events.EventTarget);
 
 
 /**
+ * The type of image request to dispatch, if this is a CORS-enabled image
+ * request. CORS-enabled images can be reused in canvas elements without them
+ * being tainted. The server hosting the image should include the appropriate
+ * CORS header.
+ * @see https://developer.mozilla.org/en-US/docs/HTML/CORS_Enabled_Image
+ * @enum {string}
+ */
+goog.net.ImageLoader.CorsRequestType = {
+  ANONYMOUS: 'anonymous',
+  USE_CREDENTIALS: 'use-credentials'
+};
+
+
+/**
+ * Describes a request for an image. This includes its URL and its CORS-request
+ * type, if any.
+ * @typedef {{
+ *   src: string,
+ *   corsRequestType: ?goog.net.ImageLoader.CorsRequestType
+ * }}
+ * @private
+ */
+goog.net.ImageLoader.ImageRequest_;
+
+
+/**
  * An array of event types to listen to on images.  This is browser dependent.
- * Internet Explorer doesn't reliably raise LOAD events on images, so we must
- * use READY_STATE_CHANGE.  If the image is cached locally, IE won't fire the
- * LOAD event while the onreadystate event is fired always.  On the other hand,
- * the ERROR event is always fired whenever the image is not loaded successfully
- * no matter whether it's cached or not.
+ *
+ * For IE 10 and below, Internet Explorer doesn't reliably raise LOAD events
+ * on images, so we must use READY_STATE_CHANGE.  Since the image is cached
+ * locally, IE won't fire the LOAD event while the onreadystate event is fired
+ * always. On the other hand, the ERROR event is always fired whenever the image
+ * is not loaded successfully no matter whether it's cached or not.
+ *
+ * In IE 11, onreadystatechange is removed and replaced with onload:
+ *
+ * http://msdn.microsoft.com/en-us/library/ie/ms536957(v=vs.85).aspx
+ * http://msdn.microsoft.com/en-us/library/ie/bg182625(v=vs.85).aspx
+ *
  * @type {!Array.<string>}
  * @private
  */
 goog.net.ImageLoader.IMAGE_LOAD_EVENTS_ = [
-  goog.userAgent.IE ? goog.net.EventType.READY_STATE_CHANGE :
+  goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('11') ?
+      goog.net.EventType.READY_STATE_CHANGE :
       goog.events.EventType.LOAD,
   goog.net.EventType.ABORT,
   goog.net.EventType.ERROR
@@ -129,12 +165,19 @@ goog.net.ImageLoader.IMAGE_LOAD_EVENTS_ = [
  * @param {string} id The ID of the image to load.
  * @param {string|Image} image Either the source URL of the image or the HTML
  *     image element itself (or any object with a {@code src} property, really).
+ * @param {!goog.net.ImageLoader.CorsRequestType=} opt_corsRequestType The type
+ *     of CORS request to use, if any.
  */
-goog.net.ImageLoader.prototype.addImage = function(id, image) {
+goog.net.ImageLoader.prototype.addImage = function(
+    id, image, opt_corsRequestType) {
   var src = goog.isString(image) ? image : image.src;
   if (src) {
     // For now, we just store the source URL for the image.
-    this.imageIdToUrlMap_[id] = src;
+    this.imageIdToRequestMap_[id] = {
+      src: src,
+      corsRequestType: goog.isDef(opt_corsRequestType) ?
+          opt_corsRequestType : null
+    };
   }
 };
 
@@ -146,7 +189,7 @@ goog.net.ImageLoader.prototype.addImage = function(id, image) {
  * @param {string} id The ID of the image to remove.
  */
 goog.net.ImageLoader.prototype.removeImage = function(id) {
-  delete this.imageIdToUrlMap_[id];
+  delete this.imageIdToRequestMap_[id];
 
   var image = this.imageIdToImageMap_[id];
   if (image) {
@@ -158,7 +201,7 @@ goog.net.ImageLoader.prototype.removeImage = function(id) {
 
     // If this was the last image, raise a COMPLETE event.
     if (goog.object.isEmpty(this.imageIdToImageMap_) &&
-        goog.object.isEmpty(this.imageIdToUrlMap_)) {
+        goog.object.isEmpty(this.imageIdToRequestMap_)) {
       this.dispatchEvent(goog.net.EventType.COMPLETE);
     }
   }
@@ -174,13 +217,13 @@ goog.net.ImageLoader.prototype.start = function() {
   // Iterate over the keys, rather than the full object, to essentially clone
   // the initial queued images in case any event handlers decide to add more
   // images before this loop has finished executing.
-  var imageIdToUrlMap = this.imageIdToUrlMap_;
-  goog.array.forEach(goog.object.getKeys(imageIdToUrlMap),
+  var imageIdToRequestMap = this.imageIdToRequestMap_;
+  goog.array.forEach(goog.object.getKeys(imageIdToRequestMap),
       function(id) {
-        var src = imageIdToUrlMap[id];
-        if (src) {
-          delete imageIdToUrlMap[id];
-          this.loadImage_(src, id);
+        var imageRequest = imageIdToRequestMap[id];
+        if (imageRequest) {
+          delete imageIdToRequestMap[id];
+          this.loadImage_(imageRequest, id);
         }
       }, this);
 };
@@ -189,11 +232,11 @@ goog.net.ImageLoader.prototype.start = function() {
 /**
  * Creates an {@code Image} object with the specified ID and source URL, and
  * listens for network events raised as the image is loaded.
- * @param {string} src The image source URL.
+ * @param {!goog.net.ImageLoader.ImageRequest_} imageRequest The request data.
  * @param {string} id The unique ID of the image to load.
  * @private
  */
-goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
+goog.net.ImageLoader.prototype.loadImage_ = function(imageRequest, id) {
   if (this.isDisposed()) {
     // When loading an image in IE7 (and maybe IE8), the error handler
     // may fire before we yield JS control. If the error handler
@@ -209,12 +252,16 @@ goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
     image = new Image();
   }
 
+  if (imageRequest.corsRequestType) {
+    image.crossOrigin = imageRequest.corsRequestType;
+  }
+
   this.handler_.listen(image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_,
       this.onNetworkEvent_);
   this.imageIdToImageMap_[id] = image;
 
   image.id = id;
-  image.src = src;
+  image.src = imageRequest.src;
 };
 
 
@@ -284,7 +331,7 @@ goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
 
 /** @override */
 goog.net.ImageLoader.prototype.disposeInternal = function() {
-  delete this.imageIdToUrlMap_;
+  delete this.imageIdToRequestMap_;
   delete this.imageIdToImageMap_;
   goog.dispose(this.handler_);
 

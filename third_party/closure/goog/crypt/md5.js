@@ -42,9 +42,13 @@ goog.require('goog.crypt.Hash');
  * MD5 cryptographic hash constructor.
  * @constructor
  * @extends {goog.crypt.Hash}
+ * @final
+ * @struct
  */
 goog.crypt.Md5 = function() {
-  goog.base(this);
+  goog.crypt.Md5.base(this, 'constructor');
+
+  this.blockSize = 512 / 8;
 
   /**
    * Holds the current values of accumulated A-D variables (MD buffer).
@@ -58,7 +62,7 @@ goog.crypt.Md5 = function() {
    * @type {Array.<number>}
    * @private
    */
-  this.block_ = new Array(64);
+  this.block_ = new Array(this.blockSize);
 
   /**
    * The length of yet-unprocessed data as collected in the block.
@@ -350,7 +354,7 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
   if (!goog.isDef(opt_length)) {
     opt_length = bytes.length;
   }
-  var lengthMinusBlock = opt_length - 64;
+  var lengthMinusBlock = opt_length - this.blockSize;
 
   // Copy some object properties to local variables in order to save on access
   // time from inside the loop (~10% speedup was observed on Chrome 11).
@@ -367,14 +371,14 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
     if (blockLength == 0) {
       while (i <= lengthMinusBlock) {
         this.compress_(bytes, i);
-        i += 64;
+        i += this.blockSize;
       }
     }
 
     if (goog.isString(bytes)) {
       while (i < opt_length) {
         block[blockLength++] = bytes.charCodeAt(i++);
-        if (blockLength == 64) {
+        if (blockLength == this.blockSize) {
           this.compress_(block);
           blockLength = 0;
           // Jump to the outer loop so we use the full-block optimization.
@@ -384,7 +388,7 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
     } else {
       while (i < opt_length) {
         block[blockLength++] = bytes[i++];
-        if (blockLength == 64) {
+        if (blockLength == this.blockSize) {
           this.compress_(block);
           blockLength = 0;
           // Jump to the outer loop so we use the full-block optimization.
@@ -403,7 +407,9 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
 goog.crypt.Md5.prototype.digest = function() {
   // This must accommodate at least 1 padding byte (0x80), 8 bytes of
   // total bitlength, and must end at a 64-byte boundary.
-  var pad = new Array((this.blockLength_ < 56 ? 64 : 128) - this.blockLength_);
+  var pad = new Array((this.blockLength_ < 56 ?
+                       this.blockSize :
+                       this.blockSize * 2) - this.blockLength_);
 
   // Add padding: 0x80 0x00*
   pad[0] = 0x80;

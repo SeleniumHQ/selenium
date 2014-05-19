@@ -33,6 +33,7 @@ goog.require('goog.dom.pattern.MatchType');
  * @param {string|RegExp} match String or regular expression to match against.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
+ * @final
  */
 goog.dom.pattern.Text = function(match) {
   this.match_ = match;

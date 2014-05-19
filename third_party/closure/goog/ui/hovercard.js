@@ -23,10 +23,14 @@ goog.provide('goog.ui.HoverCard');
 goog.provide('goog.ui.HoverCard.EventType');
 goog.provide('goog.ui.HoverCard.TriggerEvent');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.AdvancedTooltip');
+goog.require('goog.ui.PopupBase');
+goog.require('goog.ui.Tooltip');
 
 
 
@@ -337,7 +341,7 @@ goog.ui.HoverCard.prototype.getAnchorElement = function() {
 /**
  * Make sure we detach from temp anchor when we are done displaying hovercard.
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.HoverCard.prototype.onHide_ = function() {
@@ -433,6 +437,7 @@ goog.ui.HoverCard.prototype.setMaxSearchSteps = function(maxSearchSteps) {
  * @param {Object=} opt_data Optional data to be available in the TRIGGER event.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.HoverCard.TriggerEvent = function(type, target, anchor, opt_data) {
   goog.events.Event.call(this, type, target);

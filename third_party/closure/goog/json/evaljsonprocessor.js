@@ -38,6 +38,7 @@ goog.require('goog.json.Serializer');
  *     valid, so it should only be used if you trust the source of the string.
  * @constructor
  * @implements {goog.json.Processor}
+ * @final
  */
 goog.json.EvalJsonProcessor = function(opt_replacer, opt_useUnsafeParsing) {
   /**

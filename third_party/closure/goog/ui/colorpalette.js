@@ -135,7 +135,7 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
 
 
 /**
- * @return {Array.<Node>} An array of DOM nodes for each color.
+ * @return {!Array.<!Node>} An array of DOM nodes for each color.
  * @protected
  */
 goog.ui.ColorPalette.prototype.createColorNodes = function() {

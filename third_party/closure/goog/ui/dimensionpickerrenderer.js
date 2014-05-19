@@ -198,7 +198,7 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
 /**
  * Creates a div and adds the appropriate contents to it.
  * @param {goog.ui.Control} control Picker to render.
- * @return {Element} Root element for the palette.
+ * @return {!Element} Root element for the palette.
  * @override
  */
 goog.ui.DimensionPickerRenderer.prototype.createDom = function(control) {

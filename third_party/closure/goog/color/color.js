@@ -17,6 +17,9 @@
  */
 
 goog.provide('goog.color');
+goog.provide('goog.color.Hsl');
+goog.provide('goog.color.Hsv');
+goog.provide('goog.color.Rgb');
 
 goog.require('goog.color.names');
 goog.require('goog.math');
@@ -54,9 +57,9 @@ goog.color.Hsl;
 /**
  * Parses a color out of a string.
  * @param {string} str Color in some format.
- * @return {Object} Contains two properties: 'hex', which is a string containing
- *     a hex representation of the color, as well as 'type', which is a string
- *     containing the type of color format passed in ('hex', 'rgb', 'named').
+ * @return {{hex: string, type: string}} 'hex' is a string containing a hex
+ *     representation of the color, 'type' is a string containing the type
+ *     of color format passed in ('hex', 'rgb', 'named').
  */
 goog.color.parse = function(str) {
   var result = {};

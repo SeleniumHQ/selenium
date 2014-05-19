@@ -43,6 +43,7 @@ goog.require('goog.userAgent');
  *     test channel.
  * @param {goog.net.ChannelDebug} channelDebug A ChannelDebug to use for
  *     logging.
+ * @final
  */
 goog.net.BrowserTestChannel = function(channel, channelDebug) {
   /**

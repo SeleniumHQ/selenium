@@ -72,6 +72,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.Photo = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -98,7 +99,7 @@ goog.ui.media.Photo.CSS_CLASS = goog.getCssName('goog-ui-media-photo');
  * over the configuration.
  *
  * @param {goog.ui.media.MediaModel} dataModel The photo data model.
- * @return {goog.ui.media.Media} A goog.ui.Control subclass with the photo
+ * @return {!goog.ui.media.Media} A goog.ui.Control subclass with the photo
  *     renderer.
  */
 goog.ui.media.Photo.newControl = function(dataModel) {
@@ -113,7 +114,7 @@ goog.ui.media.Photo.newControl = function(dataModel) {
  * Creates the initial DOM structure of a photo.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {Element} A DOM structure that represents the control.
+ * @return {!Element} A DOM structure that represents the control.
  * @override
  */
 goog.ui.media.Photo.prototype.createDom = function(c) {

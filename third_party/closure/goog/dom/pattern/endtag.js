@@ -40,6 +40,7 @@ goog.require('goog.dom.pattern.Tag');
  *     parameter and returns true if this pattern should match it.
  * @constructor
  * @extends {goog.dom.pattern.Tag}
+ * @final
  */
 goog.dom.pattern.EndTag = function(tag, opt_attrs, opt_styles, opt_test) {
   goog.dom.pattern.Tag.call(

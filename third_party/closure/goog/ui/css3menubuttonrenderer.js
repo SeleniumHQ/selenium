@@ -33,7 +33,6 @@ goog.provide('goog.ui.Css3MenuButtonRenderer');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.MenuButton');
 goog.require('goog.ui.MenuButtonRenderer');
@@ -48,6 +47,7 @@ goog.require('goog.ui.registry');
  *
  * @constructor
  * @extends {goog.ui.MenuButtonRenderer}
+ * @final
  */
 goog.ui.Css3MenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);

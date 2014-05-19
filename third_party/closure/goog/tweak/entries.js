@@ -43,7 +43,7 @@ goog.provide('goog.tweak.StringSetting');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.object');
 
 
@@ -87,11 +87,11 @@ goog.tweak.BaseEntry = function(id, description) {
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  */
 goog.tweak.BaseEntry.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BaseEntry');
+    goog.log.getLogger('goog.tweak.BaseEntry');
 
 
 /**
@@ -212,12 +212,12 @@ goog.tweak.BaseSetting.InitializeState_ = {
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.BaseSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BaseSetting');
+    goog.log.getLogger('goog.tweak.BaseSetting');
 
 
 /**
@@ -363,12 +363,12 @@ goog.inherits(goog.tweak.BasePrimitiveSetting, goog.tweak.BaseSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.BasePrimitiveSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BasePrimitiveSetting');
+    goog.log.getLogger('goog.tweak.BasePrimitiveSetting');
 
 
 /**
@@ -464,6 +464,7 @@ goog.tweak.BasePrimitiveSetting.prototype.getNewValueEncoded = function() {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BasePrimitiveSetting}
+ * @final
  */
 goog.tweak.StringSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, '');
@@ -478,12 +479,12 @@ goog.inherits(goog.tweak.StringSetting, goog.tweak.BasePrimitiveSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.StringSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.StringSetting');
+    goog.log.getLogger('goog.tweak.StringSetting');
 
 
 /**
@@ -573,7 +574,7 @@ goog.tweak.StringSetting.prototype.initialize = function(value) {
         }
       }
       // Warn if the value is not in the list of allowed values.
-      this.logger.warning('Tweak ' + this.getId() +
+      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
           ' has value outside of expected range:' + value);
     }
     this.setValue(value);
@@ -588,6 +589,7 @@ goog.tweak.StringSetting.prototype.initialize = function(value) {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BasePrimitiveSetting}
+ * @final
  */
 goog.tweak.NumericSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, 0);
@@ -602,12 +604,12 @@ goog.inherits(goog.tweak.NumericSetting, goog.tweak.BasePrimitiveSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.NumericSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.NumericSetting');
+    goog.log.getLogger('goog.tweak.NumericSetting');
 
 
 /**
@@ -689,12 +691,12 @@ goog.tweak.NumericSetting.prototype.initialize = function(value) {
     // Warn if the value is not in the list of allowed values.
     if (this.validValues_ &&
         !goog.array.contains(this.validValues_, coercedValue)) {
-      this.logger.warning('Tweak ' + this.getId() +
+      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
           ' has value outside of expected range: ' + value);
     }
 
     if (isNaN(coercedValue)) {
-      this.logger.warning('Tweak ' + this.getId() +
+      goog.log.warning(this.logger, 'Tweak ' + this.getId() +
           ' has value of NaN, resetting to ' + this.getDefaultValue());
       this.setValue(this.getDefaultValue());
     } else {
@@ -720,12 +722,12 @@ goog.inherits(goog.tweak.BooleanSetting, goog.tweak.BasePrimitiveSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.BooleanSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BooleanSetting');
+    goog.log.getLogger('goog.tweak.BooleanSetting');
 
 
 /**
@@ -793,6 +795,7 @@ goog.tweak.BooleanSetting.prototype.initialize = function(value) {
  *     to.
  * @constructor
  * @extends {goog.tweak.BooleanSetting}
+ * @final
  */
 goog.tweak.BooleanInGroupSetting = function(id, description, group) {
   goog.tweak.BooleanSetting.call(this, id, description);
@@ -820,12 +823,12 @@ goog.inherits(goog.tweak.BooleanInGroupSetting, goog.tweak.BooleanSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.BooleanInGroupSetting.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BooleanInGroupSetting');
+    goog.log.getLogger('goog.tweak.BooleanInGroupSetting');
 
 
 /**
@@ -873,6 +876,7 @@ goog.tweak.BooleanInGroupSetting.prototype.getGroup = function() {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BaseSetting}
+ * @final
  */
 goog.tweak.BooleanGroup = function(id, description) {
   goog.tweak.BaseSetting.call(this, id, description);
@@ -899,12 +903,12 @@ goog.inherits(goog.tweak.BooleanGroup, goog.tweak.BaseSetting);
 
 /**
  * The logger for this class.
- * @type {!goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.tweak.BooleanGroup.prototype.logger =
-    goog.debug.Logger.getLogger('goog.tweak.BooleanGroup');
+    goog.log.getLogger('goog.tweak.BooleanGroup');
 
 
 /**
@@ -987,6 +991,7 @@ goog.tweak.BooleanGroup.prototype.getNewValueEncoded = function() {
  * @param {!Function} callback Function to call when the button is clicked.
  * @constructor
  * @extends {goog.tweak.BaseEntry}
+ * @final
  */
 goog.tweak.ButtonAction = function(id, description, callback) {
   goog.tweak.BaseEntry.call(this, id, description);

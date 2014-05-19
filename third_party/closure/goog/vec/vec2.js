@@ -221,6 +221,23 @@ goog.vec.Vec2.negate = function(vec0, resultVec) {
 
 
 /**
+ * Takes the absolute value of each component of vec0 storing the result in
+ * resultVec.
+ *
+ * @param {goog.vec.Vec2.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec2.AnyType} resultVec The vector to receive the result.
+ *     May be vec0.
+ * @return {!goog.vec.Vec2.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec2.abs = function(vec0, resultVec) {
+  resultVec[0] = Math.abs(vec0[0]);
+  resultVec[1] = Math.abs(vec0[1]);
+  return resultVec;
+};
+
+
+/**
  * Multiplies each component of vec0 with scalar storing the product into
  * resultVec.
  *
@@ -359,6 +376,52 @@ goog.vec.Vec2.lerp = function(vec0, vec1, f, resultVec) {
   var x = vec0[0], y = vec0[1];
   resultVec[0] = (vec1[0] - x) * f + x;
   resultVec[1] = (vec1[1] - y) * f + y;
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the larger values in resultVec.
+ *
+ * @param {goog.vec.Vec2.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec2.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec2.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec2.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec2.max = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.max(vec0[0], limit);
+    resultVec[1] = Math.max(vec0[1], limit);
+  } else {
+    resultVec[0] = Math.max(vec0[0], limit[0]);
+    resultVec[1] = Math.max(vec0[1], limit[1]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the smaller values in resultVec.
+ *
+ * @param {goog.vec.Vec2.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec2.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec2.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec2.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec2.min = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.min(vec0[0], limit);
+    resultVec[1] = Math.min(vec0[1], limit);
+  } else {
+    resultVec[0] = Math.min(vec0[0], limit[0]);
+    resultVec[1] = Math.min(vec0[1], limit[1]);
+  }
   return resultVec;
 };
 

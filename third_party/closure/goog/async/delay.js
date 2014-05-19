@@ -42,6 +42,7 @@ goog.require('goog.Timer');
  * @param {Object=} opt_handler The object scope to invoke the function in.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.async.Delay = function(listener, opt_interval, opt_handler) {
   goog.Disposable.call(this);
@@ -83,6 +84,7 @@ goog.inherits(goog.async.Delay, goog.Disposable);
  * A deprecated alias.
  * @deprecated Use goog.async.Delay instead.
  * @constructor
+ * @final
  */
 goog.Delay = goog.async.Delay;
 

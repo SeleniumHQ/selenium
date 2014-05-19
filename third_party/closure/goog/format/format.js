@@ -104,15 +104,19 @@ goog.format.numericValueToString = function(val, opt_decimals) {
  * @param {number=} opt_decimals The number of decimals to use.  Defaults to 2.
  * @param {boolean=} opt_suffix If true, include trailing 'B' in returned
  *     string.  Default is true.
+ * @param {boolean=} opt_useSeparator If true, number and scale will be
+ *     separated by a no break space. Default is false.
  * @return {string} String representation of number of bytes.
  */
-goog.format.numBytesToString = function(val, opt_decimals, opt_suffix) {
+goog.format.numBytesToString = function(val, opt_decimals, opt_suffix,
+    opt_useSeparator) {
   var suffix = '';
   if (!goog.isDef(opt_suffix) || opt_suffix) {
     suffix = 'B';
   }
   return goog.format.numericValueToString_(
-      val, goog.format.NUMERIC_SCALES_BINARY_, opt_decimals, suffix);
+      val, goog.format.NUMERIC_SCALES_BINARY_, opt_decimals, suffix,
+      opt_useSeparator);
 };
 
 
@@ -141,14 +145,17 @@ goog.format.stringToNumericValue_ = function(stringValue, conversion) {
  * @param {Object} conversion Dictionary of scaling factors.
  * @param {number=} opt_decimals The number of decimals to use.  Default is 2.
  * @param {string=} opt_suffix Optional suffix to append.
+ * @param {boolean=} opt_useSeparator If true, number and scale will be
+ *     separated by a space. Default is false.
  * @return {string} The human readable form of the byte size.
  * @private
  */
 goog.format.numericValueToString_ = function(val, conversion,
-                                             opt_decimals, opt_suffix) {
+    opt_decimals, opt_suffix, opt_useSeparator) {
   var prefixes = goog.format.NUMERIC_SCALE_PREFIXES_;
   var orig_val = val;
   var symbol = '';
+  var separator = '';
   var scale = 1;
   if (val < 0) {
     val = -val;
@@ -165,11 +172,16 @@ goog.format.numericValueToString_ = function(val, conversion,
   }
   if (!symbol) {
     scale = 1;
-  } else if (opt_suffix) {
-    symbol += opt_suffix;
+  } else {
+    if (opt_suffix) {
+      symbol += opt_suffix;
+    }
+    if (opt_useSeparator) {
+      separator = ' ';
+    }
   }
   var ex = Math.pow(10, goog.isDef(opt_decimals) ? opt_decimals : 2);
-  return Math.round(orig_val / scale * ex) / ex + symbol;
+  return Math.round(orig_val / scale * ex) / ex + separator + symbol;
 };
 
 

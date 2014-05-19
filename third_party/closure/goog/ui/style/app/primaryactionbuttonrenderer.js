@@ -33,6 +33,7 @@ goog.require('goog.ui.style.app.ButtonRenderer');
  *
  * @constructor
  * @extends {goog.ui.style.app.ButtonRenderer}
+ * @final
  */
 goog.ui.style.app.PrimaryActionButtonRenderer = function() {
   goog.ui.style.app.ButtonRenderer.call(this);

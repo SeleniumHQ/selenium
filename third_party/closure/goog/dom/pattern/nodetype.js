@@ -30,6 +30,7 @@ goog.require('goog.dom.pattern.MatchType');
  * @param {goog.dom.NodeType} nodeType The node type to match.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
+ * @final
  */
 goog.dom.pattern.NodeType = function(nodeType) {
   /**

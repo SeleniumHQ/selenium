@@ -19,11 +19,12 @@
  * runner by the time window.onload occurs, the testRunner will try to auto-
  * discover JsUnit style test pages.
  *
- * The hooks for selenium are :-
+ * The hooks for selenium are (see http://go/selenium-hook-setup):-
  *  - Boolean G_testRunner.isFinished()
  *  - Boolean G_testRunner.isSuccess()
  *  - String G_testRunner.getReport()
  *  - number G_testRunner.getRunTime()
+ *  - Object.<string, Array.<string>> G_testRunner.getTestResults()
  *
  * Testing code should not have dependencies outside of goog.testing so as to
  * reduce the chance of masking missing dependencies.
@@ -101,7 +102,6 @@ goog.testing.TestRunner.prototype.initialize = function(testCase) {
     throw Error('The test runner is already waiting for a test to complete');
   }
   this.testCase = testCase;
-  testCase.setTestRunner(this);
   this.initialized = true;
 };
 
@@ -250,9 +250,19 @@ goog.testing.TestRunner.prototype.getNumFilesLoaded = function() {
  */
 goog.testing.TestRunner.prototype.execute = function() {
   if (!this.testCase) {
-    throw Error('The test runner must be initialized with a test case before ' +
-                'execute can be called.');
+    throw Error('The test runner must be initialized with a test case ' +
+                'before execute can be called.');
   }
+
+  if (this.strict_ && this.testCase.getCount() == 0) {
+    throw Error(
+        'No tests found in given test case: ' +
+        this.testCase.getName() + ' ' +
+        'By default, the test runner fails if a test case has no tests. ' +
+        'To modify this behavior, see goog.testing.TestRunner\'s ' +
+        'setStrict() method, or G_testRunner.setStrict()');
+  }
+
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
   this.testCase.runTests();
 };
@@ -396,4 +406,18 @@ goog.testing.TestRunner.prototype.log = function(s) {
   if (this.testCase) {
     this.testCase.log(s);
   }
+};
+
+
+// TODO(nnaze): Properly handle serving test results when multiple test cases
+// are run.
+/**
+ * @return {Object.<string, !Array.<string>>} A map of test names to a list of
+ * test failures (if any) to provide formatted data for the test runner.
+ */
+goog.testing.TestRunner.prototype.getTestResults = function() {
+  if (this.testCase) {
+    return this.testCase.getTestResults();
+  }
+  return null;
 };

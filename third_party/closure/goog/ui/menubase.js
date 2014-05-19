@@ -40,7 +40,7 @@ goog.ui.MenuBase = function(opt_element) {
 
   /**
    * Event handler for simplifiying adding/removing listeners.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.MenuBase>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -80,7 +80,7 @@ goog.ui.MenuBase.prototype.disposeInternal = function() {
  * event but should make sure to call the parent class method.
  *
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.MenuBase.prototype.onShow_ = function() {
@@ -109,7 +109,7 @@ goog.ui.MenuBase.prototype.onShow_ = function() {
  * event but should make sure to call the parent class method.
  * @param {Object=} opt_target Target of the event causing the hide.
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.MenuBase.prototype.onHide_ = function(opt_target) {

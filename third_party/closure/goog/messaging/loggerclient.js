@@ -37,13 +37,14 @@ goog.require('goog.debug.Logger');
  * @param {string} serviceName The name of the logging service to use.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.messaging.LoggerClient = function(channel, serviceName) {
   if (goog.messaging.LoggerClient.instance_) {
     return goog.messaging.LoggerClient.instance_;
   }
 
-  goog.base(this);
+  goog.messaging.LoggerClient.base(this, 'constructor');
 
   /**
    * The channel on which to send the log messages.
@@ -124,7 +125,7 @@ goog.messaging.LoggerClient.prototype.sendLog_ = function(logRecord) {
 
 /** @override */
 goog.messaging.LoggerClient.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.messaging.LoggerClient.base(this, 'disposeInternal');
   goog.debug.LogManager.getRoot().removeHandler(this.publishHandler_);
   delete this.channel_;
   goog.messaging.LoggerClient.instance_ = null;

@@ -31,7 +31,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.actionEventWrapper');
 goog.require('goog.functions');
 goog.require('goog.string.Unicode');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.editor.Bubble');
 goog.require('goog.userAgent');
 
@@ -53,14 +53,25 @@ goog.require('goog.userAgent');
  * @extends {goog.editor.Plugin}
  */
 goog.editor.plugins.AbstractBubblePlugin = function() {
-  goog.base(this);
+  goog.editor.plugins.AbstractBubblePlugin.base(this, 'constructor');
 
   /**
    * Place to register events the plugin listens to.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<
+   *     !goog.editor.plugins.AbstractBubblePlugin>}
    * @protected
    */
   this.eventRegister = new goog.events.EventHandler(this);
+
+  /**
+   * Instance factory function that creates a bubble UI component.  If set to a
+   * non-null value, this function will be used to create a bubble instead of
+   * the global factory function.  It takes as parameters the bubble parent
+   * element and the z index to draw the bubble at.
+   * @type {?function(!Element, number): !goog.ui.editor.Bubble}
+   * @private
+   */
+  this.bubbleFactory_ = null;
 };
 goog.inherits(goog.editor.plugins.AbstractBubblePlugin, goog.editor.Plugin);
 
@@ -106,30 +117,30 @@ goog.editor.plugins.AbstractBubblePlugin.defaultBubbleFactory_ = function(
 
 
 /**
- * Factory function that creates a bubble UI component. It takes as parameters
- * the bubble parent element and the z index to draw the bubble at.
+ * Global factory function that creates a bubble UI component. It takes as
+ * parameters the bubble parent element and the z index to draw the bubble at.
  * @type {function(!Element, number): !goog.ui.editor.Bubble}
  * @private
  */
-goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_ =
+goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_ =
     goog.editor.plugins.AbstractBubblePlugin.defaultBubbleFactory_;
 
 
 /**
- * Sets the bubble factory function.
+ * Sets the global bubble factory function.
  * @param {function(!Element, number): !goog.ui.editor.Bubble}
  *     bubbleFactory Function that creates a bubble for the given bubble parent
  *     element and z index.
  */
 goog.editor.plugins.AbstractBubblePlugin.setBubbleFactory = function(
     bubbleFactory) {
-  goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_ = bubbleFactory;
+  goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_ = bubbleFactory;
 };
 
 
 /**
  * Map from field id to shared bubble object.
- * @type {Object.<goog.ui.editor.Bubble>}
+ * @type {!Object.<goog.ui.editor.Bubble>}
  * @private
  */
 goog.editor.plugins.AbstractBubblePlugin.bubbleMap_ = {};
@@ -165,6 +176,20 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.keyboardNavigationEnabled_ =
 
 
 /**
+ * Sets the instance bubble factory function.  If set to a non-null value, this
+ * function will be used to create a bubble instead of the global factory
+ * function.
+ * @param {?function(!Element, number): !goog.ui.editor.Bubble} bubbleFactory
+ *     Function that creates a bubble for the given bubble parent element and z
+ *     index.  Null to reset the factory function.
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.setBubbleFactory = function(
+    bubbleFactory) {
+  this.bubbleFactory_ = bubbleFactory;
+};
+
+
+/**
  * Sets whether the bubble should support tabbing through the link elements.
  * @param {boolean} keyboardNavigationEnabled Whether the bubble should support
  *     tabbing through the link elements.
@@ -184,6 +209,16 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.enableKeyboardNavigation =
 goog.editor.plugins.AbstractBubblePlugin.prototype.setBubbleParent = function(
     bubbleParent) {
   this.bubbleParent_ = bubbleParent;
+};
+
+
+/**
+ * Returns the bubble map.  Subclasses may override to use a separate map.
+ * @return {!Object.<goog.ui.editor.Bubble>}
+ * @protected
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.getBubbleMap = function() {
+  return goog.editor.plugins.AbstractBubblePlugin.bubbleMap_;
 };
 
 
@@ -312,17 +347,18 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.disable = function(field) {
   // because the next time the field is made editable again it may be in
   // a different document / iframe.
   if (field.isUneditable()) {
-    var bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[field.id];
+    var bubbleMap = this.getBubbleMap();
+    var bubble = bubbleMap[field.id];
     if (bubble) {
       bubble.dispose();
-      delete goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[field.id];
+      delete bubbleMap[field.id];
     }
   }
 };
 
 
 /**
- * @return {goog.ui.editor.Bubble} The shared bubble object for the field this
+ * @return {!goog.ui.editor.Bubble} The shared bubble object for the field this
  *     plugin is registered on.  Creates it if necessary.
  * @private
  */
@@ -332,14 +368,14 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.getSharedBubble_ =
       this.getFieldObject().getAppWindow().document.body);
   this.dom_ = goog.dom.getDomHelper(bubbleParent);
 
-  var bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[
-      this.getFieldObject().id];
+  var bubbleMap = this.getBubbleMap();
+  var bubble = bubbleMap[this.getFieldObject().id];
   if (!bubble) {
-    bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_.call(null,
-        bubbleParent,
+    var factory = this.bubbleFactory_ ||
+        goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_;
+    bubble = factory.call(null, bubbleParent,
         this.getFieldObject().getBaseZindex());
-    goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[
-        this.getFieldObject().id] = bubble;
+    bubbleMap[this.getFieldObject().id] = bubble;
   }
   return bubble;
 };
@@ -459,6 +495,15 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.onShow = goog.nullFunction;
 
 
 /**
+ * Called when the bubble is closed or hidden. The default implementation does
+ * nothing.
+ * @protected
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.cleanOnBubbleClose =
+    goog.nullFunction;
+
+
+/**
  * Handles when the bubble panel is closed.  Invoked when the entire bubble is
  * hidden and also directly when the panel is closed manually.
  * @private
@@ -468,6 +513,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handlePanelClosed_ =
   this.targetElement_ = null;
   this.panelId_ = null;
   this.eventRegister.removeAll();
+  this.cleanOnBubbleClose();
 };
 
 

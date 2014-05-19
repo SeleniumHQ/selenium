@@ -61,6 +61,11 @@ goog.dom.dataset.set = function(element, key, value) {
  */
 goog.dom.dataset.get = function(element, key) {
   if (element.dataset) {
+    // Android browser (non-chrome) returns the empty string for
+    // element.dataset['doesNotExist'].
+    if (!(key in element.dataset)) {
+      return null;
+    }
     return element.dataset[key];
   } else {
     return element.getAttribute(goog.dom.dataset.PREFIX_ +

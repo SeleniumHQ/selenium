@@ -168,14 +168,14 @@ goog.ui.ac.InputHandler = function(opt_separators, opt_literals,
 
   /**
    * Event handler used by the input handler to manage events.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.ac.InputHandler>}
    * @private
    */
   this.eh_ = new goog.events.EventHandler(this);
 
   /**
    * Event handler to help us find an input element that already has the focus.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.ac.InputHandler>}
    * @private
    */
   this.activateHandler_ = new goog.events.EventHandler(this);
@@ -515,7 +515,9 @@ goog.ui.ac.InputHandler.prototype.detachInputs = function(var_args) {
  * @return {boolean} Whether to suppress the update event.
  */
 goog.ui.ac.InputHandler.prototype.selectRow = function(row, opt_multi) {
-  this.setTokenText(row.toString(), opt_multi);
+  if (this.activeElement_) {
+    this.setTokenText(row.toString(), opt_multi);
+  }
   return false;
 };
 
@@ -1000,19 +1002,19 @@ goog.ui.ac.InputHandler.prototype.handleBlur = function(opt_e) {
     // In order to fix the bug, we set a timeout to process the blur event, so
     // that any pending selection event can be processed first.
     this.activeTimeoutId_ =
-        window.setTimeout(goog.bind(this.processBlur_, this), 0);
+        window.setTimeout(goog.bind(this.processBlur, this), 0);
     return;
   } else {
-    this.processBlur_();
+    this.processBlur();
   }
 };
 
 
 /**
  * Helper function that does the logic to handle an element blurring.
- * @private
+ * @protected
  */
-goog.ui.ac.InputHandler.prototype.processBlur_ = function() {
+goog.ui.ac.InputHandler.prototype.processBlur = function() {
   // it's possible that a blur event could fire when there's no active element,
   // in the case where attachInput was called on an input that already had
   // the focus
@@ -1272,7 +1274,7 @@ goog.ui.ac.InputHandler.prototype.getTokenIndex_ = function(text, caret) {
  * entries.
  *
  * @param {string} text Input text.
- * @return {Array} Parsed array.
+ * @return {!Array} Parsed array.
  * @private
  */
 goog.ui.ac.InputHandler.prototype.splitInput_ = function(text) {

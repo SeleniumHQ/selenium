@@ -222,7 +222,7 @@ module Javascript
         py = "python"
       end
       @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
-                  "-c third_party/closure/bin/compiler-20130603.jar "
+                  "-c third_party/closure/bin/compiler-20140407.jar "
     end
 
     def js_name(dir, name)
@@ -515,7 +515,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20140407.jar"
           end
           arg :line => cmd
         end
@@ -684,7 +684,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20140407.jar"
           end
           arg :line => flags.join(" ")
         end
@@ -807,7 +807,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20140407.jar"
           end
           arg :line => cmd
         end
