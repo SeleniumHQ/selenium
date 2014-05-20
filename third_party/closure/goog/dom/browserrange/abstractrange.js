@@ -172,7 +172,7 @@ goog.dom.browserrange.AbstractRange.prototype.containsRange =
 
   var range = abstractRange.getBrowserRange();
   var start = goog.dom.RangeEndpoint.START, end = goog.dom.RangeEndpoint.END;
-  /** {@preserveTry} */
+  /** @preserveTry */
   try {
     if (checkPartial) {
       // There are two ways to not overlap.  Being before, and being after.
@@ -277,7 +277,7 @@ goog.dom.browserrange.AbstractRange.prototype.getValidHtml =
  * Returns a RangeIterator over the contents of the range.  Regardless of the
  * direction of the range, the iterator will move in document order.
  * @param {boolean=} opt_keys Unused for this iterator.
- * @return {goog.dom.RangeIterator} An iterator over tags in the range.
+ * @return {!goog.dom.RangeIterator} An iterator over tags in the range.
  */
 goog.dom.browserrange.AbstractRange.prototype.__iterator__ = function(
     opt_keys) {

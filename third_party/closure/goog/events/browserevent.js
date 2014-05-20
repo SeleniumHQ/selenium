@@ -65,6 +65,126 @@ goog.require('goog.userAgent');
  * @extends {goog.events.Event}
  */
 goog.events.BrowserEvent = function(opt_e, opt_currentTarget) {
+  goog.events.BrowserEvent.base(this, 'constructor', opt_e ? opt_e.type : '');
+
+  /**
+   * Target that fired the event.
+   * @override
+   * @type {Node}
+   */
+  this.target = null;
+
+  /**
+   * Node that had the listener attached.
+   * @override
+   * @type {Node|undefined}
+   */
+  this.currentTarget = null;
+
+  /**
+   * For mouseover and mouseout events, the related object for the event.
+   * @type {Node}
+   */
+  this.relatedTarget = null;
+
+  /**
+   * X-coordinate relative to target.
+   * @type {number}
+   */
+  this.offsetX = 0;
+
+  /**
+   * Y-coordinate relative to target.
+   * @type {number}
+   */
+  this.offsetY = 0;
+
+  /**
+   * X-coordinate relative to the window.
+   * @type {number}
+   */
+  this.clientX = 0;
+
+  /**
+   * Y-coordinate relative to the window.
+   * @type {number}
+   */
+  this.clientY = 0;
+
+  /**
+   * X-coordinate relative to the monitor.
+   * @type {number}
+   */
+  this.screenX = 0;
+
+  /**
+   * Y-coordinate relative to the monitor.
+   * @type {number}
+   */
+  this.screenY = 0;
+
+  /**
+   * Which mouse button was pressed.
+   * @type {number}
+   */
+  this.button = 0;
+
+  /**
+   * Keycode of key press.
+   * @type {number}
+   */
+  this.keyCode = 0;
+
+  /**
+   * Keycode of key press.
+   * @type {number}
+   */
+  this.charCode = 0;
+
+  /**
+   * Whether control was pressed at time of event.
+   * @type {boolean}
+   */
+  this.ctrlKey = false;
+
+  /**
+   * Whether alt was pressed at time of event.
+   * @type {boolean}
+   */
+  this.altKey = false;
+
+  /**
+   * Whether shift was pressed at time of event.
+   * @type {boolean}
+   */
+  this.shiftKey = false;
+
+  /**
+   * Whether the meta key was pressed at time of event.
+   * @type {boolean}
+   */
+  this.metaKey = false;
+
+  /**
+   * History state object, only set for PopState events where it's a copy of the
+   * state object provided to pushState or replaceState.
+   * @type {Object}
+   */
+  this.state = null;
+
+  /**
+   * Whether the default platform modifier key was pressed at time of event.
+   * (This is control for all platforms except Mac, where it's Meta.)
+   * @type {boolean}
+   */
+  this.platformModifierKey = false;
+
+  /**
+   * The browser event object.
+   * @private {Event}
+   */
+  this.event_ = null;
+
   if (opt_e) {
     this.init(opt_e, opt_currentTarget);
   }
@@ -85,151 +205,13 @@ goog.events.BrowserEvent.MouseButton = {
 
 /**
  * Static data for mapping mouse buttons.
- * @type {Array.<number>}
+ * @type {!Array.<number>}
  */
 goog.events.BrowserEvent.IEButtonMap = [
   1, // LEFT
   4, // MIDDLE
   2  // RIGHT
 ];
-
-
-/**
- * Target that fired the event.
- * @override
- * @type {Node}
- */
-goog.events.BrowserEvent.prototype.target = null;
-
-
-/**
- * Node that had the listener attached.
- * @override
- * @type {Node|undefined}
- */
-goog.events.BrowserEvent.prototype.currentTarget;
-
-
-/**
- * For mouseover and mouseout events, the related object for the event.
- * @type {Node}
- */
-goog.events.BrowserEvent.prototype.relatedTarget = null;
-
-
-/**
- * X-coordinate relative to target.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.offsetX = 0;
-
-
-/**
- * Y-coordinate relative to target.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.offsetY = 0;
-
-
-/**
- * X-coordinate relative to the window.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.clientX = 0;
-
-
-/**
- * Y-coordinate relative to the window.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.clientY = 0;
-
-
-/**
- * X-coordinate relative to the monitor.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.screenX = 0;
-
-
-/**
- * Y-coordinate relative to the monitor.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.screenY = 0;
-
-
-/**
- * Which mouse button was pressed.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.button = 0;
-
-
-/**
- * Keycode of key press.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.keyCode = 0;
-
-
-/**
- * Keycode of key press.
- * @type {number}
- */
-goog.events.BrowserEvent.prototype.charCode = 0;
-
-
-/**
- * Whether control was pressed at time of event.
- * @type {boolean}
- */
-goog.events.BrowserEvent.prototype.ctrlKey = false;
-
-
-/**
- * Whether alt was pressed at time of event.
- * @type {boolean}
- */
-goog.events.BrowserEvent.prototype.altKey = false;
-
-
-/**
- * Whether shift was pressed at time of event.
- * @type {boolean}
- */
-goog.events.BrowserEvent.prototype.shiftKey = false;
-
-
-/**
- * Whether the meta key was pressed at time of event.
- * @type {boolean}
- */
-goog.events.BrowserEvent.prototype.metaKey = false;
-
-
-/**
- * History state object, only set for PopState events where it's a copy of the
- * state object provided to pushState or replaceState.
- * @type {Object}
- */
-goog.events.BrowserEvent.prototype.state;
-
-
-/**
- * Whether the default platform modifier key was pressed at time of event.
- * (This is control for all platforms except Mac, where it's Meta.
- * @type {boolean}
- */
-goog.events.BrowserEvent.prototype.platformModifierKey = false;
-
-
-/**
- * The browser event object.
- * @type {Event}
- * @private
- */
-goog.events.BrowserEvent.prototype.event_ = null;
 
 
 /**
@@ -240,7 +222,6 @@ goog.events.BrowserEvent.prototype.event_ = null;
  */
 goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   var type = this.type = e.type;
-  goog.events.Event.call(this, type);
 
   // TODO(nicksantos): Change this.target to type EventTarget.
   this.target = /** @type {Node} */ (e.target) || e.srcElement;
@@ -295,7 +276,6 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   if (e.defaultPrevented) {
     this.preventDefault();
   }
-  delete this.propagationStopped_;
 };
 
 

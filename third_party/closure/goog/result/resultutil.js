@@ -18,6 +18,10 @@
  *     gives an overview of their functionality along with some examples and the
  *     actual definitions have detailed descriptions next to them.
  *
+ *
+ * NOTE: goog.result is soft deprecated - we expect to replace this and
+ * goog.async.Deferred with a wrapper around W3C Promises:
+ * http://dom.spec.whatwg.org/#promises.
  */
 
 goog.provide('goog.result');
@@ -258,11 +262,13 @@ goog.result.transform = function(result, transformer) {
  * of both of the results resolve (depending on their success or failure.) The
  * state and value of the returned result in the various cases is documented
  * below:
+ * <pre>
  *
  * First Result State:    Second Result State:    Returned Result State:
  * SUCCESS                SUCCESS                 SUCCESS
  * SUCCESS                ERROR                   ERROR
  * ERROR                  Not created             ERROR
+ * </pre>
  *
  * The value of the returned result, in the case both results succeed, is the
  * value of the second result (the result returned by the action callback.)
@@ -522,7 +528,7 @@ goog.result.cancelParentResults = function(dependentResult) {
  * @private
  */
 goog.result.DependentResultImpl_ = function(parentResults) {
-  goog.base(this);
+  goog.result.DependentResultImpl_.base(this, 'constructor');
   /**
    * A list of Results that will affect the eventual value of this Result.
    * @type {!Array.<!goog.result.Result>}

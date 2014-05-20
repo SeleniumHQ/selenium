@@ -44,3 +44,16 @@ goog.ui.Toolbar = function(opt_renderer, opt_orientation, opt_domHelper) {
       goog.ui.ToolbarRenderer.getInstance(), opt_domHelper);
 };
 goog.inherits(goog.ui.Toolbar, goog.ui.Container);
+
+
+/** @override */
+goog.ui.Toolbar.prototype.handleFocus = function(e) {
+  goog.ui.Toolbar.base(this, 'handleFocus', e);
+  // Highlight the first highlightable item on focus via the keyboard for ARIA
+  // spec compliance. Do not highlight the item if the mouse button is pressed,
+  // since this method is also called from handleMouseDown when a toolbar button
+  // is clicked.
+  if (!this.isMouseButtonPressed()) {
+    this.highlightFirst();
+  }
+};

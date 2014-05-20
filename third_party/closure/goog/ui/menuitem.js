@@ -21,15 +21,14 @@
 
 goog.provide('goog.ui.MenuItem');
 
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
-goog.require('goog.events.KeyCodes');
+goog.require('goog.dom.classlist');
 goog.require('goog.math.Coordinate');
 goog.require('goog.string');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.MenuItemRenderer');
 goog.require('goog.ui.registry');
 
@@ -157,9 +156,11 @@ goog.ui.MenuItem.prototype.getCaption = function() {
     var acceleratorClass = goog.ui.MenuItem.ACCELERATOR_CLASS_;
     var mnemonicWrapClass = goog.ui.MenuItem.MNEMONIC_WRAPPER_CLASS_;
     var caption = goog.array.map(content, function(node) {
-      var classes = goog.dom.classes.get(node);
-      if (goog.array.contains(classes, acceleratorClass) ||
-          goog.array.contains(classes, mnemonicWrapClass)) {
+      if (goog.dom.isElement(node) &&
+          (goog.dom.classlist.contains(/** @type {!Element} */ (node),
+              acceleratorClass) ||
+          goog.dom.classlist.contains(/** @type {!Element} */ (node),
+              mnemonicWrapClass))) {
         return '';
       } else {
         return goog.dom.getRawTextContent(node);
@@ -193,7 +194,7 @@ goog.ui.MenuItem.prototype.handleMouseUp = function(e) {
     }
   }
 
-  goog.base(this, 'handleMouseUp', e);
+  goog.ui.MenuItem.base(this, 'handleMouseUp', e);
 };
 
 
@@ -202,7 +203,7 @@ goog.ui.MenuItem.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == this.getMnemonic() && this.performActionInternal(e)) {
     return true;
   } else {
-    return goog.base(this, 'handleKeyEventInternal', e);
+    return goog.ui.MenuItem.base(this, 'handleKeyEventInternal', e);
   }
 };
 
@@ -233,3 +234,26 @@ goog.ui.registry.setDecoratorByClassName(goog.ui.MenuItemRenderer.CSS_CLASS,
       // MenuItem defaults to using MenuItemRenderer.
       return new goog.ui.MenuItem(null);
     });
+
+
+/**
+ * @override
+ */
+goog.ui.MenuItem.prototype.createDom = function() {
+  goog.ui.MenuItem.base(this, 'createDom');
+  this.getRenderer().correctAriaRole(this, this.getElement());
+};
+
+
+/**
+ * @override
+ */
+goog.ui.MenuItem.prototype.getPreferredAriaRole = function() {
+  if (this.isSupportedState(goog.ui.Component.State.CHECKED)) {
+    return goog.a11y.aria.Role.MENU_ITEM_CHECKBOX;
+  }
+  if (this.isSupportedState(goog.ui.Component.State.SELECTED)) {
+    return goog.a11y.aria.Role.MENU_ITEM_RADIO;
+  }
+  return goog.ui.MenuItem.base(this, 'getPreferredAriaRole');
+};

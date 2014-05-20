@@ -29,7 +29,7 @@
 goog.provide('goog.ui.RangeModel');
 
 goog.require('goog.events.EventTarget');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 
 
 

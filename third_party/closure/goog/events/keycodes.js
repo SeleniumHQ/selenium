@@ -69,6 +69,7 @@ goog.events.KeyCodes = {
   NINE: 57,
   FF_SEMICOLON: 59, // Firefox (Gecko) fires this for semicolon instead of 186
   FF_EQUALS: 61, // Firefox (Gecko) fires this for equals instead of 187
+  FF_DASH: 173, // Firefox (Gecko) fires this for dash instead of 189
   QUESTION_MARK: 63, // needs localization
   A: 65,
   B: 66,
@@ -147,6 +148,8 @@ goog.events.KeyCodes = {
   CLOSE_SQUARE_BRACKET: 221, // needs localization
   WIN_KEY: 224,
   MAC_FF_META: 224, // Firefox (Gecko) fires this for the meta key instead of 91
+  MAC_WK_CMD_LEFT: 91,  // WebKit Left Command key fired, same as META
+  MAC_WK_CMD_RIGHT: 93, // WebKit Right Command key fired, different from META
   WIN_IME: 229,
 
   // We've seen users whose machines fire this keycode at regular one
@@ -256,6 +259,9 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
   // Saves Ctrl or Alt + key for IE and WebKit 525+, which won't fire keypress.
   // Non-IE browsers and WebKit prior to 525 won't get this far so no need to
   // check the user agent.
+  if (goog.isNumber(opt_heldKeyCode)) {
+    opt_heldKeyCode = goog.events.KeyCodes.normalizeKeyCode(opt_heldKeyCode);
+  }
   if (!opt_shiftKey &&
       (opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
        opt_heldKeyCode == goog.events.KeyCodes.ALT ||
@@ -357,6 +363,22 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
 
 
 /**
+ * Normalizes key codes from OS/Browser-specific value to the general one.
+ * @param {number} keyCode The native key code.
+ * @return {number} The normalized key code.
+ */
+goog.events.KeyCodes.normalizeKeyCode = function(keyCode) {
+  if (goog.userAgent.GECKO) {
+    return goog.events.KeyCodes.normalizeGeckoKeyCode(keyCode);
+  } else if (goog.userAgent.MAC && goog.userAgent.WEBKIT) {
+    return goog.events.KeyCodes.normalizeMacWebKitKeyCode(keyCode);
+  } else {
+    return keyCode;
+  }
+};
+
+
+/**
  * Normalizes key codes from their Gecko-specific value to the general one.
  * @param {number} keyCode The native key code.
  * @return {number} The normalized key code.
@@ -367,10 +389,27 @@ goog.events.KeyCodes.normalizeGeckoKeyCode = function(keyCode) {
       return goog.events.KeyCodes.EQUALS;
     case goog.events.KeyCodes.FF_SEMICOLON:
       return goog.events.KeyCodes.SEMICOLON;
+    case goog.events.KeyCodes.FF_DASH:
+      return goog.events.KeyCodes.DASH;
     case goog.events.KeyCodes.MAC_FF_META:
       return goog.events.KeyCodes.META;
     case goog.events.KeyCodes.WIN_KEY_FF_LINUX:
       return goog.events.KeyCodes.WIN_KEY;
+    default:
+      return keyCode;
+  }
+};
+
+
+/**
+ * Normalizes key codes from their Mac WebKit-specific value to the general one.
+ * @param {number} keyCode The native key code.
+ * @return {number} The normalized key code.
+ */
+goog.events.KeyCodes.normalizeMacWebKitKeyCode = function(keyCode) {
+  switch (keyCode) {
+    case goog.events.KeyCodes.MAC_WK_CMD_RIGHT:  // 93
+      return goog.events.KeyCodes.META;          // 91
     default:
       return keyCode;
   }

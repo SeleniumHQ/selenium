@@ -26,7 +26,6 @@
 goog.provide('goog.editor.SeamlessField');
 
 goog.require('goog.cssom.iframe.style');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
@@ -38,6 +37,7 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.log');
 goog.require('goog.style');
 
 
@@ -64,7 +64,7 @@ goog.inherits(goog.editor.SeamlessField, goog.editor.Field);
  * @override
  */
 goog.editor.SeamlessField.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.SeamlessField');
+    goog.log.getLogger('goog.editor.SeamlessField');
 
 // Functions dealing with field sizing.
 
@@ -734,5 +734,5 @@ goog.editor.SeamlessField.prototype.clearListeners = function() {
   goog.events.unlistenByKey(this.listenForDragOverEventKey_);
   goog.events.unlistenByKey(this.listenForIframeLoadEventKey_);
 
-  goog.base(this, 'clearListeners');
+  goog.editor.SeamlessField.base(this, 'clearListeners');
 };

@@ -107,7 +107,7 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
  *     add before the color palettes.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
  *     document interaction.
- * @return {goog.ui.Menu} Color menu.
+ * @return {!goog.ui.Menu} Color menu.
  */
 goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
   var menu = new goog.ui.Menu(opt_domHelper);
@@ -130,7 +130,7 @@ goog.ui.ColorMenuButton.newColorMenu = function(opt_extraItems, opt_domHelper) {
 
 /**
  * Returns the currently selected color (null if none).
- * @return {?string} The selected color.
+ * @return {string} The selected color.
  */
 goog.ui.ColorMenuButton.prototype.getSelectedColor = function() {
   return /** @type {string} */ (this.getValue());

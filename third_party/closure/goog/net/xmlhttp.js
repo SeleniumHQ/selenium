@@ -22,14 +22,16 @@ goog.provide('goog.net.DefaultXmlHttpFactory');
 goog.provide('goog.net.XmlHttp');
 goog.provide('goog.net.XmlHttp.OptionType');
 goog.provide('goog.net.XmlHttp.ReadyState');
+goog.provide('goog.net.XmlHttpDefines');
 
+goog.require('goog.asserts');
 goog.require('goog.net.WrapperXmlHttpFactory');
 goog.require('goog.net.XmlHttpFactory');
 
 
 /**
  * Static class for creating XMLHttpRequest objects.
- * @return {!(XMLHttpRequest|GearsHttpRequest)} A new XMLHttpRequest object.
+ * @return {!goog.net.XhrLike.OrNative} A new XMLHttpRequest object.
  */
 goog.net.XmlHttp = function() {
   return goog.net.XmlHttp.factory_.createInstance();
@@ -38,9 +40,24 @@ goog.net.XmlHttp = function() {
 
 /**
  * @define {boolean} Whether to assume XMLHttpRequest exists. Setting this to
- *     true strips the ActiveX probing code.
+ *     true bypasses the ActiveX probing code.
+ * NOTE(user): Due to the way JSCompiler works, this define *will not* strip
+ * out the ActiveX probing code from binaries.  To achieve this, use
+ * {@code goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR} instead.
+ * TODO(user): Collapse both defines.
  */
 goog.define('goog.net.XmlHttp.ASSUME_NATIVE_XHR', false);
+
+
+/** @const */
+goog.net.XmlHttpDefines = {};
+
+
+/**
+ * @define {boolean} Whether to assume XMLHttpRequest exists. Setting this to
+ *     true eliminates the ActiveX probing code.
+ */
+goog.define('goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR', false);
 
 
 /**
@@ -123,8 +140,8 @@ goog.net.XmlHttp.factory_;
  */
 goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
   goog.net.XmlHttp.setGlobalFactory(new goog.net.WrapperXmlHttpFactory(
-      /** @type {function() : !(XMLHttpRequest|GearsHttpRequest)} */ (factory),
-      /** @type {function() : !Object}*/ (optionsFactory)));
+      goog.asserts.assert(factory),
+      goog.asserts.assert(optionsFactory)));
 };
 
 
@@ -187,7 +204,8 @@ goog.net.DefaultXmlHttpFactory.prototype.ieProgId_;
  * @private
  */
 goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
-  if (goog.net.XmlHttp.ASSUME_NATIVE_XHR) {
+  if (goog.net.XmlHttp.ASSUME_NATIVE_XHR ||
+      goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR) {
     return '';
   }
 

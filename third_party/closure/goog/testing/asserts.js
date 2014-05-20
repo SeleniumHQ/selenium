@@ -1076,6 +1076,27 @@ var assertNotContains = function(a, b, opt_c) {
 
 
 /**
+ * Checks if the given string matches the given regular expression.
+ * @param {*} a Failure message (3 arguments) or the expected regular
+ *     expression as a string or RegExp (2 arguments).
+ * @param {*} b The regular expression (3 arguments) or the string to test
+ *     (2 arguments).
+ * @param {*=} opt_c The string to test.
+ */
+var assertRegExp = function(a, b, opt_c) {
+  _validateArguments(2, arguments);
+  var regexp = nonCommentArg(1, 2, arguments);
+  var string = nonCommentArg(2, 2, arguments);
+  if (typeof(regexp) == 'string') {
+    regexp = new RegExp(regexp);
+  }
+  _assert(commentArg(2, arguments),
+      regexp.test(string),
+      'Expected \'' + string + '\' to match RegExp ' + regexp.toString());
+};
+
+
+/**
  * Converts an array like object to array or clones it if it's already array.
  * @param {goog.testing.asserts.ArrayLike} arrayLike The collection.
  * @return {!Array} Copy of the collection as array.
@@ -1184,6 +1205,7 @@ goog.testing.asserts.isArrayIndexProp_ = function(prop) {
  * @param {?string=} opt_message A description of the exception.
  * @constructor
  * @extends {Error}
+ * @final
  */
 goog.testing.JsUnitException = function(comment, opt_message) {
   this.isJsUnitException = true;
@@ -1241,3 +1263,4 @@ goog.exportSymbol('assertHashEquals', assertHashEquals);
 goog.exportSymbol('assertRoughlyEquals', assertRoughlyEquals);
 goog.exportSymbol('assertContains', assertContains);
 goog.exportSymbol('assertNotContains', assertNotContains);
+goog.exportSymbol('assertRegExp', assertRegExp);

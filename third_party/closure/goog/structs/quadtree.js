@@ -38,25 +38,22 @@ goog.require('goog.math.Coordinate');
  * @param {number} maxX Maximum x-value that can be held in tree.
  * @param {number} maxY Maximum y-value that can be held in tree.
  * @constructor
+ * @final
  */
 goog.structs.QuadTree = function(minX, minY, maxX, maxY) {
+  /**
+   * Count of the number of items in the tree.
+   * @private {number}
+   */
+  this.count_ = 0;
 
   /**
    * The root node for the quad tree.
-   * @type {goog.structs.QuadTree.Node}
-   * @private
+   * @private {goog.structs.QuadTree.Node}
    */
   this.root_ = new goog.structs.QuadTree.Node(
       minX, minY, maxX - minX, maxY - minY);
 };
-
-
-/**
- * Count of the number of items in the tree.
- * @type {number}
- * @private
- */
-goog.structs.QuadTree.prototype.count_ = 0;
 
 
 /**
@@ -164,7 +161,7 @@ goog.structs.QuadTree.prototype.clear = function() {
 
 /**
  * Returns an array containing the coordinates of each point stored in the tree.
- * @return {Array.<goog.math.Coordinate?>} Array of coordinates.
+ * @return {!Array.<goog.math.Coordinate?>} Array of coordinates.
  */
 goog.structs.QuadTree.prototype.getKeys = function() {
   var arr = [];
@@ -177,7 +174,7 @@ goog.structs.QuadTree.prototype.getKeys = function() {
 
 /**
  * Returns an array containing all values stored within the tree.
- * @return {Array.<Object>} The values stored within the tree.
+ * @return {!Array.<Object>} The values stored within the tree.
  */
 goog.structs.QuadTree.prototype.getValues = function() {
   var arr = [];
@@ -191,7 +188,7 @@ goog.structs.QuadTree.prototype.getValues = function() {
 
 /**
  * Clones the quad-tree and returns the new instance.
- * @return {goog.structs.QuadTree} A clone of the tree.
+ * @return {!goog.structs.QuadTree} A clone of the tree.
  */
 goog.structs.QuadTree.prototype.clone = function() {
   var x1 = this.root_.x;
@@ -465,6 +462,7 @@ goog.structs.QuadTree.NodeType = {
  * @param {number} h Height of node.
  * @param {goog.structs.QuadTree.Node=} opt_parent Optional parent node.
  * @constructor
+ * @final
  */
 goog.structs.QuadTree.Node = function(x, y, w, h, opt_parent) {
   /**
@@ -549,6 +547,7 @@ goog.structs.QuadTree.Node.prototype.point = null;
  * @param {number} y The y-coordinate of the point.
  * @param {*=} opt_value Optional value associated with the point.
  * @constructor
+ * @final
  */
 goog.structs.QuadTree.Point = function(x, y, opt_value) {
   /**

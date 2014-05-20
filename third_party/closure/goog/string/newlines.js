@@ -61,6 +61,7 @@ goog.string.newlines.splitLines = function(str, opt_keepNewlines) {
  *     newlines.
  * @constructor
  * @struct
+ * @final
  */
 goog.string.newlines.Line = function(string, startLineIndex,
                                      endContentIndex, endLineIndex) {

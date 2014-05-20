@@ -97,7 +97,7 @@ goog.locale.timeZoneDetection.detectTimeZone = function(opt_country, opt_date) {
  *     a better guess for user's time zone.
  * @param {Date=} opt_date Date for retrieving timezone list. Defaults to the
  *     current date.
- * @return {Array.<string>} Array of time zone IDs.
+ * @return {!Array.<string>} Array of time zone IDs.
  */
 goog.locale.timeZoneDetection.getTimeZoneList = function(opt_country,
     opt_date) {

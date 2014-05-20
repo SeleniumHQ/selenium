@@ -341,7 +341,7 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
  *
  * @param {Array} terms  An array of
  *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
- * @return {Array}  An array of
+ * @return {!Array}  An array of
  *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  * @private
  */

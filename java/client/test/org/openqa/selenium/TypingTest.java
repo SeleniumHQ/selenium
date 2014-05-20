@@ -737,6 +737,14 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
+  @Test
+  public void testShouldBeAbleToTypeOnANumberInputField() {
+    driver.get(pages.formPage);
+    WebElement email = driver.findElement(By.id("age"));
+    email.sendKeys("33");
+    assertThat(email.getAttribute("value"), equalTo("33"));
+  }
+
   @Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
@@ -762,6 +770,23 @@ public class TypingTest extends JUnit4TestBase {
     editable.sendKeys(", edited");
 
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
+  }
+
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
+          reason = "Untested browsers;" +
+                   " Safari: cannot type on contentEditable with synthetic events",
+          issues = {3127})
+  @Test
+  public void testShouldBeAbleToTypeIntoTinyMCE() {
+    driver.get(appServer.whereIs("tinymce.html"));
+    driver.switchTo().frame("mce_0_ifr");
+
+    WebElement editable = driver.findElement(By.id("tinymce"));
+
+    editable.clear();
+    editable.sendKeys("cheese"); // requires focus on OS X
+
+    assertThat(editable.getText(), equalTo("cheese"));
   }
 
   @JavascriptEnabled

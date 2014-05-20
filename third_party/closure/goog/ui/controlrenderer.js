@@ -22,12 +22,14 @@
 goog.provide('goog.ui.ControlRenderer');
 
 goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
@@ -146,14 +148,33 @@ goog.ui.ControlRenderer.IE6_CLASS_COMBINATIONS = [];
 
 
 /**
- * Map of component states to corresponding ARIA states.  Since the mapping of
- * component states to ARIA states is neither component- nor renderer-specific,
- * this is a static property of the renderer class, and is initialized on first
- * use.
- * @type {Object}
+ * Map of component states to corresponding ARIA attributes.  Since the mapping
+ * of component states to ARIA attributes is neither component- nor
+ * renderer-specific, this is a static property of the renderer class, and is
+ * initialized on first use.
+ * @type {Object.<goog.ui.Component.State, goog.a11y.aria.State>}
  * @private
+ * @const
  */
-goog.ui.ControlRenderer.ARIA_STATE_MAP_;
+goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_;
+
+
+/**
+ * Map of certain ARIA states to ARIA roles that support them. Used for checked
+ * and selected Component states because they are used on Components with ARIA
+ * roles that do not support the corresponding ARIA state.
+ * @private {!Object.<goog.a11y.aria.Role, goog.a11y.aria.State>}
+ * @const
+ */
+goog.ui.ControlRenderer.TOGGLE_ARIA_STATE_MAP_ = goog.object.create(
+    goog.a11y.aria.Role.BUTTON, goog.a11y.aria.State.PRESSED,
+    goog.a11y.aria.Role.CHECKBOX, goog.a11y.aria.State.CHECKED,
+    goog.a11y.aria.Role.MENU_ITEM, goog.a11y.aria.State.SELECTED,
+    goog.a11y.aria.Role.MENU_ITEM_CHECKBOX, goog.a11y.aria.State.CHECKED,
+    goog.a11y.aria.Role.MENU_ITEM_RADIO, goog.a11y.aria.State.CHECKED,
+    goog.a11y.aria.Role.RADIO, goog.a11y.aria.State.CHECKED,
+    goog.a11y.aria.Role.TAB, goog.a11y.aria.State.SELECTED,
+    goog.a11y.aria.Role.TREEITEM, goog.a11y.aria.State.SELECTED);
 
 
 /**
@@ -212,17 +233,18 @@ goog.ui.ControlRenderer.prototype.enableClassName = function(control,
   var element = /** @type {Element} */ (
       control.getElement ? control.getElement() : control);
   if (element) {
+    var classNames = [className];
+
     // For IE6, we need to enable any combined classes involving this class
     // as well.
+    // TODO(user): Remove this as IE6 is no longer in use.
     if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('7')) {
-      var combinedClasses = this.getAppliedCombinedClassNames_(
-          goog.dom.classes.get(element), className);
-      combinedClasses.push(className);
-      var f = enable ? goog.dom.classes.add : goog.dom.classes.remove;
-      goog.partial(f, element).apply(null, combinedClasses);
-    } else {
-      goog.dom.classes.enable(element, className, enable);
+      classNames = this.getAppliedCombinedClassNames_(
+          goog.dom.classlist.get(element), className);
+      classNames.push(className);
     }
+
+    goog.dom.classlist.enableAll(element, classNames, enable);
   }
 };
 
@@ -286,7 +308,7 @@ goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
   var hasRendererClassName = false;
   var hasStructuralClassName = false;
   var hasCombinedClassName = false;
-  var classNames = goog.dom.classes.get(element);
+  var classNames = goog.array.toArray(goog.dom.classlist.get(element));
   goog.array.forEach(classNames, function(className) {
     if (!hasRendererClassName && className == rendererClassName) {
       hasRendererClassName = true;
@@ -331,7 +353,7 @@ goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
   // Only write to the DOM if new class names had to be added to the element.
   if (!hasRendererClassName || !hasStructuralClassName ||
       extraClassNames || hasCombinedClassName) {
-    goog.dom.classes.set(element, classNames.join(' '));
+    goog.dom.classlist.set(element, classNames.join(' '));
   }
 
   this.setAriaStates(control, element);
@@ -375,15 +397,20 @@ goog.ui.ControlRenderer.prototype.setAriaRole = function(element,
   if (ariaRole) {
     goog.asserts.assert(element,
         'The element passed as a first parameter cannot be null.');
+    var currentRole = goog.a11y.aria.getRole(element);
+    if (ariaRole == currentRole) {
+      return;
+    }
     goog.a11y.aria.setRole(element, ariaRole);
   }
 };
 
 
 /**
- * Sets the element's ARIA states. An element does not need an ARIA role in
- * order to have an ARIA state. Only states which are initialized to be true
- * will be set.
+ * Sets the element's ARIA attributes, including distinguishing between
+ * universally supported ARIA properties and ARIA states that are only
+ * supported by certain ARIA roles. Only attributes which are initialized to be
+ * true will be set.
  * @param {!goog.ui.Control} control Control whose ARIA state will be updated.
  * @param {!Element} element Element whose ARIA state is to be updated.
  */
@@ -531,7 +558,9 @@ goog.ui.ControlRenderer.prototype.setState = function(control, state, enable) {
 
 
 /**
- * Updates the element's ARIA (accessibility) state.
+ * Updates the element's ARIA (accessibility) attributes , including
+ * distinguishing between universally supported ARIA properties and ARIA states
+ * that are only supported by certain ARIA roles.
  * @param {Element} element Element whose ARIA state is to be updated.
  * @param {goog.ui.Component.State} state Component state being enabled or
  *     disabled.
@@ -540,20 +569,55 @@ goog.ui.ControlRenderer.prototype.setState = function(control, state, enable) {
  */
 goog.ui.ControlRenderer.prototype.updateAriaState = function(element, state,
     enable) {
-  // Ensure the ARIA state map exists.
-  if (!goog.ui.ControlRenderer.ARIA_STATE_MAP_) {
-    goog.ui.ControlRenderer.ARIA_STATE_MAP_ = goog.object.create(
+  // Ensure the ARIA attribute map exists.
+  if (!goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_) {
+    goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_ = goog.object.create(
         goog.ui.Component.State.DISABLED, goog.a11y.aria.State.DISABLED,
         goog.ui.Component.State.SELECTED, goog.a11y.aria.State.SELECTED,
         goog.ui.Component.State.CHECKED, goog.a11y.aria.State.CHECKED,
         goog.ui.Component.State.OPENED, goog.a11y.aria.State.EXPANDED);
   }
-  var ariaState = goog.ui.ControlRenderer.ARIA_STATE_MAP_[state];
-  if (ariaState) {
-    goog.asserts.assert(element,
-        'The element passed as a first parameter cannot be null.');
-    goog.a11y.aria.setState(element, ariaState, enable);
+  goog.asserts.assert(element,
+      'The element passed as a first parameter cannot be null.');
+  var ariaAttr = goog.ui.ControlRenderer.getAriaStateForAriaRole_(
+      element, goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_[state]);
+  if (ariaAttr) {
+    goog.a11y.aria.setState(element, ariaAttr, enable);
   }
+};
+
+
+/**
+ * Returns the appropriate ARIA attribute based on ARIA role if the ARIA
+ * attribute is an ARIA state.
+ * @param {!Element} element The element from which to get the ARIA role for
+ * matching ARIA state.
+ * @param {goog.a11y.aria.State} attr The ARIA attribute to check to see if it
+ * can be applied to the given ARIA role.
+ * @return {goog.a11y.aria.State} An ARIA attribute that can be applied to the
+ * given ARIA role.
+ * @private
+ */
+goog.ui.ControlRenderer.getAriaStateForAriaRole_ = function(element, attr) {
+  var role = goog.a11y.aria.getRole(element);
+  if (!role) {
+    return attr;
+  }
+  role = /** @type {goog.a11y.aria.Role} */ (role);
+  var matchAttr = goog.ui.ControlRenderer.TOGGLE_ARIA_STATE_MAP_[role] || attr;
+  return goog.ui.ControlRenderer.isAriaState_(attr) ? matchAttr : attr;
+};
+
+
+/**
+ * Determines if the given ARIA attribute is an ARIA property or ARIA state.
+ * @param {goog.a11y.aria.State} attr The ARIA attribute to classify.
+ * @return {boolean} If the ARIA attribute is an ARIA state.
+ * @private
+ */
+goog.ui.ControlRenderer.isAriaState_ = function(attr) {
+  return attr == goog.a11y.aria.State.CHECKED ||
+      attr == goog.a11y.aria.State.SELECTED;
 };
 
 
@@ -679,7 +743,7 @@ goog.ui.ControlRenderer.prototype.getStructuralCssClass = function() {
  * method is guaranteed to return an array of at least one element.
  * @param {goog.ui.Control} control Control whose CSS classes are to be
  *     returned.
- * @return {Array.<string>} Array of CSS class names applicable to the control.
+ * @return {!Array.<string>} Array of CSS class names applicable to the control.
  * @protected
  */
 goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
@@ -724,11 +788,11 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
  * If opt_includedClass is provided, return only the combined classes that have
  * all members contained in classes AND include opt_includedClass as well.
  * opt_includedClass is added to classes as well.
- * @param {Array.<string>} classes Array of classes to return matching combined
- *     classes for.
+ * @param {goog.array.ArrayLike.<string>} classes Array-like thing of classes to
+ *     return matching combined classes for.
  * @param {?string=} opt_includedClass If provided, get only the combined
  *     classes that include this one.
- * @return {Array.<string>} Array of combined class names that should be
+ * @return {!Array.<string>} Array of combined class names that should be
  *     applied.
  * @private
  */
@@ -814,6 +878,13 @@ goog.ui.ControlRenderer.prototype.getStateFromClass = function(className) {
  */
 goog.ui.ControlRenderer.prototype.createClassByStateMap_ = function() {
   var baseClass = this.getStructuralCssClass();
+
+  // This ensures space-separated css classnames are not allowed, which some
+  // ControlRenderers had been doing.  See http://b/13694665.
+  var isValidClassName = !goog.string.contains(
+      goog.string.normalizeWhitespace(baseClass), ' ');
+  goog.asserts.assert(isValidClassName,
+      'ControlRenderer has an invalid css class: \'' + baseClass + '\'');
 
   /**
    * Map of component states to state-specific structural class names,

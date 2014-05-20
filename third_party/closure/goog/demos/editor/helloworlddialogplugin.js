@@ -36,6 +36,7 @@ goog.require('goog.ui.editor.AbstractDialog');
  * A plugin that opens the hello world dialog.
  * @constructor
  * @extends {goog.editor.plugins.AbstractDialogPlugin}
+ * @final
  */
 goog.demos.editor.HelloWorldDialogPlugin = function() {
   goog.editor.plugins.AbstractDialogPlugin.call(this,

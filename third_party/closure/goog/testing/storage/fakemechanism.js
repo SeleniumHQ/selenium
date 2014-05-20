@@ -29,6 +29,7 @@ goog.require('goog.structs.Map');
  *
  * @constructor
  * @extends {goog.storage.mechanism.IterableMechanism}
+ * @final
  */
 goog.testing.storage.FakeMechanism = function() {
   /**

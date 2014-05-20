@@ -39,6 +39,7 @@ goog.require('goog.structs.Set');
  * @param {string=} opt_language Content language.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.spell.SpellCheck = function(opt_lookupFunction, opt_language) {
   goog.events.EventTarget.call(this);
@@ -455,6 +456,7 @@ goog.spell.SpellCheck.prototype.getSuggestions = function(word) {
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.spell.SpellCheck.WordChangedEvent = function(target, word, status) {
   goog.events.Event.call(this, goog.spell.SpellCheck.EventType.WORD_CHANGED,

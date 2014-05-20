@@ -146,7 +146,7 @@ goog.graphics.AbstractGraphics.prototype.setCoordOrigin = goog.abstractMethod;
 
 
 /**
- * @return {goog.math.Coordinate} The coordinate system position.
+ * @return {!goog.math.Coordinate} The coordinate system position.
  */
 goog.graphics.AbstractGraphics.prototype.getCoordOrigin = function() {
   return new goog.math.Coordinate(this.coordLeft, this.coordTop);
@@ -392,7 +392,7 @@ goog.graphics.AbstractGraphics.prototype.createGroup = goog.abstractMethod;
 /**
  * Create an empty path.
  *
- * @return {goog.graphics.Path} The path.
+ * @return {!goog.graphics.Path} The path.
  * @deprecated Use {@code new goog.graphics.Path()}.
  */
 goog.graphics.AbstractGraphics.prototype.createPath = function() {

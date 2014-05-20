@@ -24,68 +24,54 @@ goog.provide('goog.labs.userAgent.engine');
 
 goog.require('goog.array');
 goog.require('goog.labs.userAgent.util');
-goog.require('goog.memoize');
 goog.require('goog.string');
-
-
-/**
- * Returns the user agent string.
- *
- * @return {?string} The user agent string.
- */
-goog.labs.userAgent.engine.getUserAgentString = goog.memoize(function() {
-  return goog.global['navigator'] ? goog.global['navigator'].userAgent : null;
-});
-
-
-/**
- * @param {string} str
- * @return {boolean} Whether the user agent contains the given string.
- * @private
- */
-goog.labs.userAgent.engine.matchUserAgent_ = function(str) {
-  var userAgentString = goog.labs.userAgent.engine.getUserAgentString();
-  return Boolean(userAgentString && goog.string.contains(userAgentString, str));
-};
 
 
 /**
  * @return {boolean} Whether the rendering engine is Presto.
  */
-goog.labs.userAgent.engine.isPresto = goog.memoize(
-    goog.partial(goog.labs.userAgent.engine.matchUserAgent_, 'Presto'));
+goog.labs.userAgent.engine.isPresto = function() {
+  return goog.labs.userAgent.util.matchUserAgent('Presto');
+};
 
 
 /**
  * @return {boolean} Whether the rendering engine is Trident.
  */
-goog.labs.userAgent.engine.isTrident = goog.memoize(
-    goog.partial(goog.labs.userAgent.engine.matchUserAgent_, 'Trident'));
+goog.labs.userAgent.engine.isTrident = function() {
+  // IE only started including the Trident token in IE8.
+  return goog.labs.userAgent.util.matchUserAgent('Trident') ||
+      goog.labs.userAgent.util.matchUserAgent('MSIE');
+};
 
 
 /**
  * @return {boolean} Whether the rendering engine is WebKit.
  */
-goog.labs.userAgent.engine.isWebKit = goog.memoize(
-    goog.partial(goog.labs.userAgent.engine.matchUserAgent_, 'WebKit'));
+goog.labs.userAgent.engine.isWebKit = function() {
+  return goog.labs.userAgent.util.matchUserAgentIgnoreCase('WebKit');
+};
 
 
 /**
  * @return {boolean} Whether the rendering engine is Gecko.
  */
-goog.labs.userAgent.engine.isGecko = goog.memoize(
-    goog.partial(goog.labs.userAgent.engine.matchUserAgent_, 'Gecko'));
+goog.labs.userAgent.engine.isGecko = function() {
+  return goog.labs.userAgent.util.matchUserAgent('Gecko') &&
+      !goog.labs.userAgent.engine.isWebKit() &&
+      !goog.labs.userAgent.engine.isTrident();
+};
 
 
 /**
  * @return {string} The rendering engine's version or empty string if version
  *     can't be determined.
  */
-goog.labs.userAgent.engine.getVersion = goog.memoize(function() {
-  var userAgentString = goog.labs.userAgent.engine.getUserAgentString();
-
+goog.labs.userAgent.engine.getVersion = function() {
+  var userAgentString = goog.labs.userAgent.util.getUserAgent();
   if (userAgentString) {
-    var tuples = goog.labs.userAgent.util.extractVersionTuples(userAgentString);
+    var tuples = goog.labs.userAgent.util.extractVersionTuples(
+        userAgentString);
 
     var engineTuple = tuples[1];
     if (engineTuple) {
@@ -93,7 +79,8 @@ goog.labs.userAgent.engine.getVersion = goog.memoize(function() {
       // Firefox version.  See Gecko user agent string reference:
       // http://goo.gl/mULqa
       if (engineTuple[0] == 'Gecko') {
-        return goog.labs.userAgent.engine.getVersionForKey_(tuples, 'Firefox');
+        return goog.labs.userAgent.engine.getVersionForKey_(
+            tuples, 'Firefox');
       }
 
       return engineTuple[1];
@@ -109,10 +96,9 @@ goog.labs.userAgent.engine.getVersion = goog.memoize(function() {
         return match[1];
       }
     }
-
-    return '';
   }
-});
+  return '';
+};
 
 
 /**
@@ -127,7 +113,7 @@ goog.labs.userAgent.engine.isVersionOrHigher = function(version) {
 
 
 /**
- * @param {!Array.<string>} tuples Version tuples.
+ * @param {!Array.<!Array.<string>>} tuples Version tuples.
  * @param {string} key The key to look for.
  * @return {string} The version string of the given key, if present.
  *     Otherwise, the empty string.

@@ -136,7 +136,7 @@ goog.testing.PerformanceTimer.prototype.isDiscardOutliers = function() {
  *
  * @param {Function} testFn Test function whose performance is to
  *     be measured.
- * @return {Object} Object containing performance stats.
+ * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.prototype.run = function(testFn) {
   return this.runTask(new goog.testing.PerformanceTimer.Task(
@@ -151,7 +151,7 @@ goog.testing.PerformanceTimer.prototype.run = function(testFn) {
  * @see goog.testing.PerformanceTimer#run
  * @param {goog.testing.PerformanceTimer.Task} task A task describing the test
  *     function to invoke.
- * @return {Object} Object containing performance stats.
+ * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.prototype.runTask = function(task) {
   var samples = [];
@@ -181,7 +181,7 @@ goog.testing.PerformanceTimer.prototype.runTask = function(task) {
  * Finishes the run of a task by creating a result object from samples, in the
  * format described in {@code run}.
  * @see goog.testing.PerformanceTimer#run
- * @return {Object} Object containing performance stats.
+ * @return {!Object} Object containing performance stats.
  * @private
  */
 goog.testing.PerformanceTimer.prototype.finishTask_ = function(samples) {
@@ -289,7 +289,7 @@ goog.testing.PerformanceTimer.prototype.handleOptionalDeferred_ = function(
  * Creates a performance timer results object by analyzing a given array of
  * sample timings.
  * @param {Array.<number>} samples The samples to analyze.
- * @return {Object} Object containing performance stats.
+ * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.createResults = function(samples) {
   return {
@@ -323,6 +323,7 @@ goog.testing.PerformanceTimer.TestFunction;
  * @param {goog.testing.PerformanceTimer.TestFunction} test Test function whose
  *     performance is to be measured.
  * @constructor
+ * @final
  */
 goog.testing.PerformanceTimer.Task = function(test) {
   /**
@@ -366,7 +367,7 @@ goog.testing.PerformanceTimer.Task.prototype.getTest = function() {
  * function.
  * @param {goog.testing.PerformanceTimer.TestFunction} setUp The set up
  *     function.
- * @return {goog.testing.PerformanceTimer.Task} This task.
+ * @return {!goog.testing.PerformanceTimer.Task} This task.
  */
 goog.testing.PerformanceTimer.Task.prototype.withSetUp = function(setUp) {
   this.setUp_ = setUp;
@@ -388,7 +389,7 @@ goog.testing.PerformanceTimer.Task.prototype.getSetUp = function() {
  * test function.
  * @param {goog.testing.PerformanceTimer.TestFunction} tearDown The tear down
  *     function.
- * @return {goog.testing.PerformanceTimer.Task} This task.
+ * @return {!goog.testing.PerformanceTimer.Task} This task.
  */
 goog.testing.PerformanceTimer.Task.prototype.withTearDown = function(tearDown) {
   this.tearDown_ = tearDown;

@@ -32,6 +32,7 @@ goog.require('goog.ds.FastDataNode');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
 goog.require('goog.events');
+goog.require('goog.log');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 
@@ -50,6 +51,7 @@ goog.require('goog.net.XhrIo');
  *
  * @extends {goog.ds.FastDataNode}
  * @constructor
+ * @final
  */
 goog.ds.JsXmlHttpDataSource = function(uri, name, opt_startText, opt_endText,
                                        opt_usePost) {
@@ -115,7 +117,7 @@ goog.ds.JsXmlHttpDataSource.prototype.setQueryData = function(data) {
  * @override
  */
 goog.ds.JsXmlHttpDataSource.prototype.load = function() {
-  goog.ds.logger.info('Sending JS request for DataSource ' +
+  goog.log.info(goog.ds.logger, 'Sending JS request for DataSource ' +
       this.getDataName() + ' to ' + this.uri_);
 
   if (this.uri_) {
@@ -157,7 +159,8 @@ goog.ds.JsXmlHttpDataSource.prototype.success_ = function()  {
  */
 goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
   if (this.xhr_.isSuccess()) {
-    goog.ds.logger.info('Got data for DataSource ' + this.getDataName());
+    goog.log.info(goog.ds.logger,
+        'Got data for DataSource ' + this.getDataName());
     var text = this.xhr_.getResponseText();
 
     // Look for start and end token and trim text
@@ -174,19 +177,19 @@ goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
     /** @preserveTry */
     try {
       var jsonObj = /** @type {Object} */ (eval('[' + text + '][0]'));
-      this.extendWith_(jsonObj);
+      this.extendWith(jsonObj);
       this.loadState_ = goog.ds.LoadState.LOADED;
     }
     catch (ex) {
       // Invalid JS
       this.loadState_ = goog.ds.LoadState.FAILED;
-      goog.ds.logger.severe('Failed to parse data: ' + ex.message);
+      goog.log.error(goog.ds.logger, 'Failed to parse data: ' + ex.message);
     }
 
     // Call on a timer to avoid threading issues on IE.
     goog.global.setTimeout(goog.bind(this.success_, this), 0);
   } else {
-    goog.ds.logger.info('Data retrieve failed for DataSource ' +
+    goog.log.info(goog.ds.logger, 'Data retrieve failed for DataSource ' +
         this.getDataName());
     this.loadState_ = goog.ds.LoadState.FAILED;
   }

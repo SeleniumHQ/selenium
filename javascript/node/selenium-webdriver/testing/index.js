@@ -31,6 +31,7 @@
  * simplify writing asynchronous tests:
  * <pre><code>
  * var webdriver = require('selenium-webdriver'),
+ *     portprober = require('selenium-webdriver/net/portprober'),
  *     remote = require('selenium-webdriver/remote'),
  *     test = require('selenium-webdriver/testing');
  *
@@ -38,9 +39,9 @@
  *   var driver, server;
  *
  *   test.before(function() {
- *     server = new remote.SeleniumServer({
- *       jar: 'path/to/selenium-server-standalone.jar'
- *     });
+ *     server = new remote.SeleniumServer(
+ *         'path/to/selenium-server-standalone.jar',
+ *         {port: portprober.findFreePort()});
  *     server.start();
  *
  *     driver = new webdriver.Builder().

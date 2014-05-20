@@ -20,8 +20,8 @@
 
 goog.provide('goog.proto2.ObjectSerializer');
 
+goog.require('goog.asserts');
 goog.require('goog.proto2.Serializer');
-goog.require('goog.proto2.Util');
 goog.require('goog.string');
 
 
@@ -65,7 +65,7 @@ goog.proto2.ObjectSerializer.KeyOption = {
  * Serializes a message to an object.
  *
  * @param {goog.proto2.Message} message The message to be serialized.
- * @return {Object} The serialized form of the message.
+ * @return {!Object} The serialized form of the message.
  * @override
  */
 goog.proto2.ObjectSerializer.prototype.serialize = function(message) {
@@ -129,7 +129,7 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
       field = descriptor.findFieldByTag(key);
     } else {
       // We must be in Key == NAME mode to lookup by name.
-      goog.proto2.Util.assert(
+      goog.asserts.assert(
           this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME);
 
       field = descriptor.findFieldByName(key);
@@ -137,13 +137,13 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
 
     if (field) {
       if (field.isRepeated()) {
-        goog.proto2.Util.assert(goog.isArray(value));
+        goog.asserts.assert(goog.isArray(value));
 
         for (var j = 0; j < value.length; j++) {
           message.add(field, this.getDeserializedValue(field, value[j]));
         }
       } else {
-        goog.proto2.Util.assert(!goog.isArray(value));
+        goog.asserts.assert(!goog.isArray(value));
         message.set(field, this.getDeserializedValue(field, value));
       }
     } else {
@@ -152,7 +152,7 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
         message.setUnknown(Number(key), value);
       } else {
         // Named fields must be present.
-        goog.proto2.Util.assert(field);
+        goog.asserts.assert(field);
       }
     }
   }

@@ -22,7 +22,7 @@
 goog.provide('goog.net.BulkLoaderHelper');
 
 goog.require('goog.Disposable');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 
 
 
@@ -31,6 +31,7 @@ goog.require('goog.debug.Logger');
  * @param {Array.<string|goog.Uri>} uris The URIs to load.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.net.BulkLoaderHelper = function(uris) {
   goog.Disposable.call(this);
@@ -54,11 +55,11 @@ goog.inherits(goog.net.BulkLoaderHelper, goog.Disposable);
 
 /**
  * A logger.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.net.BulkLoaderHelper.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.net.BulkLoaderHelper');
+    goog.log.getLogger('goog.net.BulkLoaderHelper');
 
 
 /**

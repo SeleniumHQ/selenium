@@ -32,8 +32,8 @@
 goog.provide('goog.editor.ContentEditableField');
 
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.editor.Field');
+goog.require('goog.log');
 
 
 
@@ -60,7 +60,7 @@ goog.inherits(goog.editor.ContentEditableField, goog.editor.Field);
  * @override
  */
 goog.editor.ContentEditableField.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.ContentEditableField');
+    goog.log.getLogger('goog.editor.ContentEditableField');
 
 
 /** @override */

@@ -1297,7 +1297,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   }
 
   var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);

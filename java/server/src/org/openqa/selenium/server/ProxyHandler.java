@@ -30,7 +30,6 @@ import org.openqa.jetty.http.handler.AbstractHttpHandler;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;

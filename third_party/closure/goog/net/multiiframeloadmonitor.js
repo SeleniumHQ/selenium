@@ -34,6 +34,7 @@ goog.require('goog.net.IframeLoadMonitor');
  * @param {boolean=} opt_hasContent true if the monitor should wait until the
  *     iframes have content (body.firstChild != null).
  * @constructor
+ * @final
  */
 goog.net.MultiIframeLoadMonitor = function(iframes, callback, opt_hasContent) {
   /**

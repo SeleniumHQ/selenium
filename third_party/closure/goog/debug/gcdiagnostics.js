@@ -19,8 +19,8 @@
 
 goog.provide('goog.debug.GcDiagnostics');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.debug.Trace');
+goog.require('goog.log');
 goog.require('goog.userAgent');
 
 
@@ -65,9 +65,9 @@ goog.debug.GcDiagnostics_.prototype.install = function() {
           goog.debug.Trace.setGcTracer(this.gcTracer_);
         }
       }
-      this.logger_.info('Installed L2 native helper');
+      goog.log.info(this.logger_, 'Installed L2 native helper');
     } catch (e) {
-      this.logger_.info('Failed to install L2 native helper: ' + e);
+      goog.log.info(this.logger_, 'Failed to install L2 native helper: ' + e);
     }
   }
 };
@@ -75,11 +75,11 @@ goog.debug.GcDiagnostics_.prototype.install = function() {
 
 /**
  * Logger for the gcDiagnotics
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.debug.GcDiagnostics_.prototype.logger_ =
-    goog.debug.Logger.getLogger('goog.debug.GcDiagnostics');
+    goog.log.getLogger('goog.debug.GcDiagnostics');
 
 
 /**
@@ -107,8 +107,8 @@ goog.debug.GcDiagnostics_.prototype.stop = function() {
     this.gcTracer_['endGcTracing']();
 
     var numGCs = gcTracer['getNumTraces']();
-    this.logger_.info('*********GC TRACE*********');
-    this.logger_.info('GC ran ' + numGCs + ' times.');
+    goog.log.info(this.logger_, '*********GC TRACE*********');
+    goog.log.info(this.logger_, 'GC ran ' + numGCs + ' times.');
     var totalTime = 0;
     for (var i = 0; i < numGCs; i++) {
       var trace = gcTracer['getTrace'](i);
@@ -124,14 +124,14 @@ goog.debug.GcDiagnostics_.prototype.stop = function() {
       if (goog.debug.Trace) {
         goog.debug.Trace.addComment(s, null, msStart);
       }
-      this.logger_.info(s);
+      goog.log.info(this.logger_, s);
       totalTime += msElapsed;
     }
     if (goog.debug.Trace) {
       goog.debug.Trace.addComment('Total GC time was ' + totalTime + ' ms.');
     }
-    this.logger_.info('Total GC time was ' + totalTime + ' ms.');
-    this.logger_.info('*********GC TRACE*********');
+    goog.log.info(this.logger_, 'Total GC time was ' + totalTime + ' ms.');
+    goog.log.info(this.logger_, '*********GC TRACE*********');
   }
 };
 

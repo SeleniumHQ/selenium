@@ -159,7 +159,7 @@ goog.db.openDatabase = function(name, opt_version, opt_onUpgradeNeeded,
  * @param {string} name The name of the database to delete.
  * @param {goog.db.BlockedCallback=} opt_onBlocked Called if there are active
  *     connections to the database.
- * @return {goog.async.Deferred} A deferred object that will fire once the
+ * @return {!goog.async.Deferred} A deferred object that will fire once the
  *     database is deleted.
  */
 goog.db.deleteDatabase = function(name, opt_onBlocked) {

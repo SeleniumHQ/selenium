@@ -196,6 +196,24 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
+  @Ignore(value = {ANDROID, IPHONE, OPERA, PHANTOMJS, SAFARI}, reason = "Not tested")
+  @Test
+  public void canMoveMouseToAnElementInAnIframeAndClick() {
+    driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
+
+    wait.until(presenceOfElementLocated(By.id("ifr")));
+    driver.switchTo().frame("ifr");
+
+    WebElement link = driver.findElement(By.id("link"));
+
+    new Actions(driver)
+        .moveToElement(link)
+        .click()
+        .perform();
+
+    wait.until(titleIs("Submitted Successfully!"));
+  }
+
   @Ignore({IPHONE})
   @Test
   public void testCanClickOnLinks() {

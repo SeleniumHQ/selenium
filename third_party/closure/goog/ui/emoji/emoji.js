@@ -29,6 +29,7 @@ goog.provide('goog.ui.emoji.Emoji');
  * @param {string} url URL pointing to the source image for the emoji.
  * @param {string} id The id of the emoji, e.g., 'std.1'.
  * @constructor
+ * @final
  */
 goog.ui.emoji.Emoji = function(url, id) {
   /**

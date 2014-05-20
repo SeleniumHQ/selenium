@@ -35,6 +35,7 @@ goog.require('goog.dom.pattern.MatchType');
  *     consisting entirely of whitespace.  The default is to not ignore them.
  * @constructor
  * @extends {goog.dom.pattern.AbstractPattern}
+ * @final
  */
 goog.dom.pattern.Sequence = function(patterns, opt_ignoreWhitespace) {
   this.patterns = patterns;

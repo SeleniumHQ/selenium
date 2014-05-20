@@ -15,7 +15,6 @@
 goog.provide('goog.ui.equation.ChangeEvent');
 
 goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
 
 
 
@@ -24,6 +23,7 @@ goog.require('goog.events.EventType');
  * @constructor
  * @param {boolean} isValid Whether the equation is valid.
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.equation.ChangeEvent = function(isValid) {
   goog.events.Event.call(this, 'change');

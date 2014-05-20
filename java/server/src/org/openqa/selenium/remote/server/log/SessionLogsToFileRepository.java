@@ -32,53 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
-class LogFile {
-  private String logName;
-  private ObjectOutputStream logWriter;
-  private ObjectInputStream logReader;
-
-  public LogFile(String logName) {
-    this.logName = logName;
-  }
-
-  public void openLogWriter() throws IOException {
-    logWriter = new ObjectOutputStream(new FileOutputStream(logName));
-  }
-
-  public void closeLogWriter() throws IOException {
-    if (logWriter != null) {
-      logWriter.close();
-    }
-  }
-
-  public void openLogReader() throws IOException {
-    logReader = new ObjectInputStream(new FileInputStream(logName));
-  }
-
-  public void closeLogReader() throws IOException {
-    if (logReader != null) {
-      logReader.close();
-    }
-  }
-
-  public ObjectOutputStream getLogWriter() {
-    return logWriter;
-  }
-
-  public ObjectInputStream getLogReader() {
-    return logReader;
-  }
-
-  public void removeLogFile() throws IOException {
-    if (logName != null) {
-      closeLogReader();
-      closeLogWriter();
-      new File(logName).delete();
-    }
-  }
-}
-
-
 public class SessionLogsToFileRepository {
   private Map<SessionId, LogFile> sessionToLogFileMap;
 
@@ -171,6 +124,52 @@ public class SessionLogsToFileRepository {
       logFile.removeLogFile();
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  static class LogFile {
+    private String logName;
+    private ObjectOutputStream logWriter;
+    private ObjectInputStream logReader;
+
+    public LogFile(String logName) {
+      this.logName = logName;
+    }
+
+    public void openLogWriter() throws IOException {
+      logWriter = new ObjectOutputStream(new FileOutputStream(logName));
+    }
+
+    public void closeLogWriter() throws IOException {
+      if (logWriter != null) {
+        logWriter.close();
+      }
+    }
+
+    public void openLogReader() throws IOException {
+      logReader = new ObjectInputStream(new FileInputStream(logName));
+    }
+
+    public void closeLogReader() throws IOException {
+      if (logReader != null) {
+        logReader.close();
+      }
+    }
+
+    public ObjectOutputStream getLogWriter() {
+      return logWriter;
+    }
+
+    public ObjectInputStream getLogReader() {
+      return logReader;
+    }
+
+    public void removeLogFile() throws IOException {
+      if (logName != null) {
+        closeLogReader();
+        closeLogWriter();
+        new File(logName).delete();
+      }
     }
   }
 }

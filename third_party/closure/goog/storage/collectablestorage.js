@@ -21,12 +21,10 @@
 goog.provide('goog.storage.CollectableStorage');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.iter');
 goog.require('goog.storage.ErrorCode');
 goog.require('goog.storage.ExpiringStorage');
-goog.require('goog.storage.RichStorage.Wrapper');
-goog.require('goog.storage.mechanism.IterableMechanism');
+goog.require('goog.storage.RichStorage');
 
 
 
@@ -39,26 +37,29 @@ goog.require('goog.storage.mechanism.IterableMechanism');
  * @extends {goog.storage.ExpiringStorage}
  */
 goog.storage.CollectableStorage = function(mechanism) {
-  goog.base(this, mechanism);
+  goog.storage.CollectableStorage.base(this, 'constructor', mechanism);
 };
 goog.inherits(goog.storage.CollectableStorage, goog.storage.ExpiringStorage);
 
 
 /**
- * Cleans up the storage by removing expired keys.
+ * Iterate over keys and returns those that expired.
  *
- * @param {boolean=} opt_strict Also remove invalid keys.
+ * @param {goog.iter.Iterable} keys keys to iterate over.
+ * @param {boolean=} opt_strict Also return invalid keys.
+ * @return {!Array.<string>} Keys of values that expired.
+ * @private
  */
-goog.storage.CollectableStorage.prototype.collect = function(opt_strict) {
-  var selfObj = this;
+goog.storage.CollectableStorage.prototype.getExpiredKeys_ =
+    function(keys, opt_strict) {
   var keysToRemove = [];
-  goog.iter.forEach(this.mechanism.__iterator__(true), function(key) {
+  goog.iter.forEach(keys, function(key) {
     // Get the wrapper.
     var wrapper;
     /** @preserveTry */
     try {
       wrapper = goog.storage.CollectableStorage.prototype.getWrapper.call(
-          selfObj, key, true);
+          this, key, true);
     } catch (ex) {
       if (ex == goog.storage.ErrorCode.INVALID_VALUE) {
         // Bad wrappers are removed in strict mode.
@@ -71,7 +72,11 @@ goog.storage.CollectableStorage.prototype.collect = function(opt_strict) {
       // Unknown error, escalate.
       throw ex;
     }
-    goog.asserts.assert(wrapper);
+    if (!goog.isDef(wrapper)) {
+      // A value for a given key is no longer available. Clean it up.
+      keysToRemove.push(key);
+      return;
+    }
     // Remove expired objects.
     if (goog.storage.ExpiringStorage.isExpired(wrapper)) {
       keysToRemove.push(key);
@@ -93,8 +98,34 @@ goog.storage.CollectableStorage.prototype.collect = function(opt_strict) {
         throw ex;
       }
     }
-  });
+  }, this);
+  return keysToRemove;
+};
+
+
+/**
+ * Cleans up the storage by removing expired keys.
+ *
+ * @param {Array.<string>} keys List of all keys.
+ * @param {boolean=} opt_strict Also remove invalid keys.
+ * @return {!Array.<string>} a list of expired keys.
+ * @protected
+ */
+goog.storage.CollectableStorage.prototype.collectInternal = function(
+    keys, opt_strict) {
+  var keysToRemove = this.getExpiredKeys_(keys, opt_strict);
   goog.array.forEach(keysToRemove, function(key) {
-    goog.storage.CollectableStorage.prototype.remove.call(selfObj, key);
-  });
+    goog.storage.CollectableStorage.prototype.remove.call(this, key);
+  }, this);
+  return keysToRemove;
+};
+
+
+/**
+ * Cleans up the storage by removing expired keys.
+ *
+ * @param {boolean=} opt_strict Also remove invalid keys.
+ */
+goog.storage.CollectableStorage.prototype.collect = function(opt_strict) {
+  this.collectInternal(this.mechanism.__iterator__(true), opt_strict);
 };

@@ -59,6 +59,12 @@ goog.dom.SavedCaretRange = function(range) {
   this.endCaretId_ = goog.string.createUniqueString();
 
   /**
+   * Whether the range is reversed (anchor at the end).
+   * @private {boolean}
+   */
+  this.reversed_ = range.isReversed();
+
+  /**
    * A DOM helper for storing the current document context.
    * @type {goog.dom.DomHelper}
    * @private
@@ -80,6 +86,7 @@ goog.dom.SavedCaretRange.prototype.toAbstractRange = function() {
   var startCaret = this.getCaret(true);
   var endCaret = this.getCaret(false);
   if (startCaret && endCaret) {
+    /** @suppress {missingRequire} circular dependency */
     range = goog.dom.Range.createFromNodes(startCaret, 0, endCaret, 0);
   }
   return range;
@@ -132,19 +139,24 @@ goog.dom.SavedCaretRange.prototype.setRestorationDocument = function(doc) {
  */
 goog.dom.SavedCaretRange.prototype.restoreInternal = function() {
   var range = null;
-  var startCaret = this.getCaret(true);
-  var endCaret = this.getCaret(false);
-  if (startCaret && endCaret) {
-    var startNode = startCaret.parentNode;
-    var startOffset = goog.array.indexOf(startNode.childNodes, startCaret);
-    var endNode = endCaret.parentNode;
-    var endOffset = goog.array.indexOf(endNode.childNodes, endCaret);
-    if (endNode == startNode) {
+  var anchorCaret = this.getCaret(!this.reversed_);
+  var focusCaret = this.getCaret(this.reversed_);
+  if (anchorCaret && focusCaret) {
+    var anchorNode = anchorCaret.parentNode;
+    var anchorOffset = goog.array.indexOf(anchorNode.childNodes, anchorCaret);
+    var focusNode = focusCaret.parentNode;
+    var focusOffset = goog.array.indexOf(focusNode.childNodes, focusCaret);
+    if (focusNode == anchorNode) {
       // Compensate for the start caret being removed.
-      endOffset -= 1;
+      if (this.reversed_) {
+        anchorOffset--;
+      } else {
+        focusOffset--;
+      }
     }
-    range = goog.dom.Range.createFromNodes(startNode, startOffset,
-                                           endNode, endOffset);
+    /** @suppress {missingRequire} circular dependency */
+    range = goog.dom.Range.createFromNodes(anchorNode, anchorOffset,
+                                           focusNode, focusOffset);
     range = this.removeCarets(range);
     range.select();
   } else {
@@ -170,7 +182,7 @@ goog.dom.SavedCaretRange.prototype.disposeInternal = function() {
  * Creates a caret element.
  * @param {boolean} start If true, creates the start caret. Otherwise,
  *     creates the end caret.
- * @return {Element} The new caret element.
+ * @return {!Element} The new caret element.
  * @private
  */
 goog.dom.SavedCaretRange.prototype.createCaret_ = function(start) {

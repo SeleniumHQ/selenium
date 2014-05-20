@@ -43,7 +43,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.dom.selection');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -645,7 +645,10 @@ goog.ui.AbstractSpellChecker.prototype.initSuggestionsMenu = function() {
   this.menu_.addChild(this.menuEdit_, true);
   this.menu_.render();
 
-  goog.dom.classes.add(this.menu_.getElement(), this.suggestionsMenuClassName);
+  var menuElement = this.menu_.getElement();
+  goog.asserts.assert(menuElement);
+  goog.dom.classlist.add(menuElement,
+      this.suggestionsMenuClassName);
 
   goog.events.listen(this.menu_, goog.ui.Component.EventType.ACTION,
       this.onCorrectionAction, false, this);
@@ -758,7 +761,7 @@ goog.ui.AbstractSpellChecker.prototype.getElementById = function(id) {
  *
  * @param {string} word Word to create element for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
- * @return {HTMLSpanElement} The created element.
+ * @return {!HTMLSpanElement} The created element.
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.createWordElement = function(

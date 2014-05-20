@@ -30,6 +30,7 @@ goog.require('goog.ui.equation.Palette');
  *     manager of the palette.
  * @extends {goog.ui.equation.Palette}
  * @constructor
+ * @final
  */
 goog.ui.equation.SymbolPalette = function(paletteManager) {
   goog.ui.equation.Palette.call(this, paletteManager,
