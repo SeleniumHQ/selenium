@@ -94,11 +94,14 @@ namespace OpenQA.Selenium
             driver.Navigate().Back();
             // We may have returned to the browser's home page
             string currentTitle = driver.Title;
-            Assert.IsTrue(currentTitle == originalTitle || currentTitle == "We Leave From Here", "title is " + currentTitle);
-            if (driver.Title == originalTitle)
+            Assert.IsTrue(currentTitle == originalTitle || currentTitle == "We Leave From Here" || currentTitle == "data:", "currentTitle is " + currentTitle + ", originalTitle is " + originalTitle);
+            // we want to try again because there is a chance that either:
+            //  1. the driver.Navigate().Back(); failed
+            //  2. we just went back to the default "data:" page, if we navigate back again we will actually be performing the test.
+            if (driver.Title == originalTitle || driver.Title == "data:")
             {
                 driver.Navigate().Back();
-                Assert.AreEqual(originalTitle, driver.Title);
+                Assert.AreEqual(originalTitle, driver.Title, "originalTitle and current driver.Title are not equal");
             }
         }
 
