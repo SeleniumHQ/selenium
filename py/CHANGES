@@ -1,3 +1,12 @@
+Selenium 2.42
+* Support for Firefox 29 Native Events
+* "remote_url" and "remote_browser" parameters for "./go test_remote".
+* missing __init__ in new android module
+* issue #7304 Fix memory leak caused by __del__ in PhantomJS
+* File upload using remotedriver on python3
+* Updating xpi install to align with mozprofile
+* command_executor should also support unicode strings as well.
+
 Selenium 2.41
 * Support for Firefox 28
 * deprecating switch_to_* in favour of driver.switch_to.*

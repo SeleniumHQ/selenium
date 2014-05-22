@@ -1,3 +1,82 @@
+v2.42.0
+=======
+WebDriver:
+
+  * updating firefox prebuilts, thanks jleyba for fixing the build!
+  * Use PRUnichar for Gecko < 29, char16_t otherwise.
+  * Updating third_party/py/jython.jar to Jython 2.5.3
+  * Removing unused functions
+  * Implementing more straightforward way to send keyboard events in synthesized mode. Fixes typing into number inputs and rich text editors (like tinymce)
+  * Fixing interactions API in Firefox to be able to move mouse to elements in frames using native events. Fixes issue 7253
+  * Removing unused import
+  * Refactoring: moving an auxiliary class from the top level to inner class
+  * Removing outdated getValue command handler
+  * Change ClearElement to be a subclass of WebElementHandler instead of WebDriverHandler
+  * Removing outdated (unused) command constants
+  * Fixing clicks on invisible elements in HtmlUnitDriver broken by ElementNotVisibleException being a subclass of InvalidElementStateException
+  * Click after move with offset should use last mouse position
+  * Adding new interface methods to the stubs
+  * Preserve wrapped test function's string representation for Mocah's BDD interface.
+  * Fixing IE driver to allow JavaScript objects with property names with spaces
+  * Ignoring IE6-only test failure for CSS
+  * Bump the hmltunit version to 2.14
+  * Remove a class of our which replicates HTTP status codes already given meaningful names in the standard JRE.
+  * Updating version match for native libs in firefox plugin manifest file
+  * Updating native events dll for FF28
+  * Implement ability to load driver providers using ServiceLoader. A user can add new providers or override existing ones. To use this ability a user should:
+  * Refactoring the process of driver instances creation to use a new DriverProvider interface. DefaultDriverProvider wraps the current logic -- creating instances using reflection. This is a step to implement ability to load additional providers using ServiceLoader that can add new providers or override existing ones.
+  * Ruby: Fix for extensions whose install.rdf uses an attribute for em:id (issue 5978)
+  * fixes issue for locating newly installed chrome versions
+  * Fixing IE driver crash when clicking on link that opens a new window.
+  * Properly configure the http client in the presence of user credentials.
+  * java json converter chooses Long (Number base class). Fixing RemoteNetworkConnection
+  * SUPPORTS_BROWSER_CONNECTION was removed, missed a reference
+  * Clean up use deprecated methods & classes.
+  * ElementNotVisibleException is a type of InvalidElementStateException.
+  * Tweak messaging on SafariDriver client page to better reflect what is happening. Also added a log message pointing users to the toolbar button that opens the driver log page.
+  * Remove some no-op calls to deprecated functions.
+  * Pull the logic for converting Command/Response pairs to and frame HTTP request/response pairs into a common codec instead of duplicating the logic on the client and server.
+  * Change some tests to use Alert#accept() instead of Alert#dismiss() to get rid of alert dialogs. This is a workaround to ChromeDriver issue 764:
+  * When running tests against the remote server, ignore two tests that use required capabilities. The remote server only supports desired capabilities on new session requests.
+  * Update two tests to work when running with a remote server, where the original js error will be the root exception, but not necessarily the second error in the cause chain.
+  * Test if we need to skip cookie tests for lack of a valid domain name before calling a method that asserts we have a valid domain name.
+  * Convert HttpRequest/Response to POJOs; handle all conversion to and from HttpServletRequest/Response inside DriverServlet.
+  * Every command handler returns ResultType.SUCCESS and those handlers that return an actual value do so through a level of indirection. This commit changes command handlers to just return results directly to the caller, making it possible to delete a lot of unnecessary code.
+  * Move static resource serving code into DriverServlet. It is not part of the JSON wire protocol and including it in the command dispatcher complicates planned refactoring and other code cleanup.
+  * Mobile - Network Connection implementation for Java and Python.
+  * ChromeDriver 2.10.267517 binds to the loopback address instead of 0.0.0.0, so only attempt to connect using the loopback address.
+  * Code comment changes for wait()
+  * added task name to SCHEDULE_TASK event
+  * Eclipse compiler update for Java 8 support
+  * Updating naive user agent string checks to account for IE11
+  * Adding Windows 8.1 detection to Platform.extractFromSysProperty
+  * retry a test failure if there was a 'sauce' issue, like we exceeded the total time a test session is allowed to take.
+  * adding Windows 8.1 platform, so we can use it in saucelabs for IE11 testing
+  * Remove deprecated functions on webdriver.promise.Promise class * Use templates with webdriver.promise.Promise to improve types   documentation.
+  * Loosen input type to webdriver.stacktrace.getStack_ to account for an rare condition in FF 28+ where the Error() constructor returns undefined (not sure what causes it, just know it happens)
+  * Add ability to save an abitrary base64 string as a screenshot from a WebDriverJS test running in a browser.
+  * When Firefox is configured to accept all SSL certs (which is the default behavior), we need to set a time offset to prevent Firefox from using HSTS (HTTP Strict Transport Security). If we don't do this, Firefox will pre-fetch the certs for sites that should always be accessed over HTTPS and allows Firefox to catch man-in-the-middle attacks. While this is A Good Thing for users, it prevents WebDriver from accepting self-signed certs for these domains (e.g. when they are accessed through a HTTPS proxy).
+  * Remove unnecessary dependency on bouncycastle.
+  * Making ChromeDriver directly implement the interfaces representing features it implements.
+  * Updating build process for Firefox native events components to use gecko 29 SDK
+  * Updating buck version to latest OSS release
+  * Use addEventListener if possible. Fixes issue 6680
+  * Packaging webdriven selenium (emulator) to client-combined jar. Fixes issue 7206
+  * Don't use system path separators when computing URL paths.
+  * Make Cookie serializable
+  * Ignoring a test for HtmlUnitDriver that can't be run due to HtmlUnit restrictions
+  * Allowing FindBy, FindBys, FindAll annotations on types
+  * Minor cleanup FirefoxBinary.java
+  * Adding Firefox native event version support to CHANGELOG
+  * Adding version number to the capabilities returned by htmlunitdriver. Fixes issue 7110
+  * Implementing augmentation indicator as an annotation
+  * Error handling for startSession is handled in the parent class now.
+  * Remove deprecated functions.
+  * Revert "Fixing Java 8 incompatibility caused by use of old jruby" because it breaks java 7 compatibility :(
+  * Fixing Java 8 incompatibility caused by use of old jruby
+  * Export logging API from main webdriver module.
+  * Setting pixel density to be independent from OS settings. Fixes issue 6112
+
 v2.41.0
 =======
 WebDriver:
@@ -137,7 +216,7 @@ WebDriver:
  * FIXED: 6512: When the host is unknown, make the HtmlUnitDriver
    return an error page.
  * FIXED: 6657: Make the LoggingPreferences implement Serializable.
- * FIXED: 6681: Preventing augmentation of subclasses of RemoteWebDriver. Fixes 
+ * FIXED: 6681: Preventing augmentation of subclasses of RemoteWebDriver. Fixes
  * FIXED: 6830: (on behalf of GeorgeKlinich) Urlencoding result
    returned by server implementation of WebDriverBackedSelenium.
  * FIXED: 6834: Creating sesion cookie if expiry is not set. Fixes issue 6834
@@ -310,7 +389,7 @@ WebDriver:
 Grid:
   * Added ability to fetch slotCounts from /grid/api/hub. The resource
     looks like this:
-    
+
         { "slotCounts": { "total": 20, "free": 8 } }
 
   * Added ability to fetch newSessionRequestCount from the
@@ -385,7 +464,7 @@ WebDriver:
     webelement.
 
 WebDriver JS:
-  * When capturing console output, guard against user scripts that 
+  * When capturing console output, guard against user scripts that
     redefine the console global.
   * Improved logging in the test client.
   * Use goog.labs.testing.assertThat for the assertThat library.
@@ -457,11 +536,11 @@ Grid:
   * Addressed memory leaks caused by per-session logging.
   * FIXED: 3001: Making Selenium the default protocol if a node was
     started with "-role rc" option.
-  
+
 RC:
   * FIXED: 3636: selenium.fireEvent works with the webdriver-backed
      selenium and IE.
-  
+
 v2.32.0
 =======
 
@@ -524,12 +603,12 @@ WebDriver:
 JS:
   * Update WebDriverJS to support parallel flows.  This change renames
    several low-level classes and functions in the promise module:
-    
+
       promise.Application                                 -> promise.ControlFlow
         #schedule(string, function)                       ->   #execute(function, [string])
         #scheduleTimeout(string, number)                  ->   #timeout(number, [string])
         #scheduleWait(string, function, number, [string]) ->   #wait(function, number, [string])
-   
+
     The old schedule* functions are still present, but will print a
     warning message if called. They will be removed in 2.31.
 
@@ -603,7 +682,7 @@ v2.27.0
 =======
 
 WebDriver:
-  * Added support for native events for Firefox 17. 
+  * Added support for native events for Firefox 17.
   * Added support for ghostdriver (PhantomJS)
   * Adding new capability "enableElementCacheCleanup" to the IE
     driver. When set to true, the IE driver will clean the
@@ -661,7 +740,7 @@ v2.26.0
 WebDriver:
   * Updated OperaDriver to 0.15.
   * Added transparency support to the Color class.
-  * Increased lock time a bit for the FirefoxDriver to make tests more 
+  * Increased lock time a bit for the FirefoxDriver to make tests more
     stable on Windows.
   * Added the enablePersistenHover capability to allow the user to specify
     whether to use the persistent hover thread in the IE driver. Defaults
@@ -674,7 +753,7 @@ WebDriver:
   * Fixed SafariDriver to allow calling .quit() consecutively without error.
   * Modified FirefoxDriver to use atoms to switch between frames.
   * FIXED: 4535: Hover still does not work perfectly in IE.
-  * FIXED: 4676: Unable to fire javascript events into SVG's. 
+  * FIXED: 4676: Unable to fire javascript events into SVG's.
   * FIXED: 4320: Impossible to IE run tests in parallel via TestNG.
   * FIXED: 4309: 'Could not convert Native argument arg 0' error with Firefox.
   * FIXED: 4593: Alert.accept() Cancels the Resend Alert/Dialog Box.
@@ -806,7 +885,7 @@ WebDriver:
   * IE can use synthesized events if the capability
     "enableNativeEvents" is set to false. This is experimental and not
     expected to work properly.
-  * Native events added for Firefox 12. 
+  * Native events added for Firefox 12.
   * Native events retained for Firefox 10, 11, and 3.x
   * Selenium-backed WebDriver can now return WebElements from
     executeScript.
@@ -835,7 +914,7 @@ Grid:
 Atoms:
   * bot.actions.type now works as expected in Firefox 12.
   * Introduced better mouse and keyboard abstractions
-  
+
 
 v2.21.0
 =======
@@ -857,7 +936,7 @@ Grid:
   * Significant changes in the timeout strategy0 between hub, nodes and browser.
     See http://code.google.com/p/selenium/wiki/Grid2 section on timeouts.
     Compatibility note: It is recommended to at least update the nodes
-    to 2.21. Upgrading only the hub will effectively disable the 
+    to 2.21. Upgrading only the hub will effectively disable the
     browser-death timeout and is *not* recommended.
   * Improved error messages on console
   * Content length issue solved, Issue 2362
@@ -871,12 +950,12 @@ Server:
     differentiate between browser hang and client gone (which is
     -timeout <timeout>)
     - System property -Dselenium.server.timeout removed, use -timeout instead.
-    See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer 
+    See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer
     for further details.
     * Issue 3577
 
 
-v2.20.0 
+v2.20.0
 =======
 
 WebDriver:
@@ -921,7 +1000,7 @@ Atoms:
 v2.19.0
 =======
 
-WebDriver: 
+WebDriver:
   * Server-side implementation of the webdriver-backed selenium.
   * "sendKeys" works in the webdriver-backed selenium when using
     safari.
@@ -1018,7 +1097,7 @@ RC:
 v2.16.0
 =======
 
-WebDriver: 
+WebDriver:
   * Native events enabled for Firefox 9
   * The FirefoxDriver now enables apps to use offline storage by
     default.
@@ -1061,18 +1140,18 @@ RC:
   * WebDriverCommandProcessor has all constructors depending on the
     (deprecated) SuppliesWebDriver class marked as deprecated. Will be
     deleted in the next release.
- 
-Automation Atoms: 
+
+Automation Atoms:
   * Bug fixes and updates
   * Included a touchscreen abstraction
- 
- 
+
+
 v2.15.0
 =======
 Project:
   * Code donation from Google.
 
-WebDriver: 
+WebDriver:
   * Now supports up to and including Firefox 11.
   * Changed order of FirefoxProfile initialization attempts on a
     remote host: 1) try to load from capabilities, 2) try to load
@@ -1124,9 +1203,9 @@ Server:
   * Memory leak fixed
 
 Grid:
-  * New beta console added.  
+  * New beta console added.
   * Grid nodes were leaking even more memory that regular server
-    nodes.  
+    nodes.
   * Fixed a scenario that used to lead to "session = null" errors.
   * Now support iOS nodes.
 
@@ -1172,7 +1251,7 @@ v2.12.0
 =======
 
 RC
-  * Disabled web security checks for Chrome by default. 
+  * Disabled web security checks for Chrome by default.
   * Actually reenabling *safariproxy.
 
 WebDriver
@@ -1355,7 +1434,7 @@ WebDriver
 
 Grid
   * FIXED: Thread Safety Issues
-  
+
 
 
 v2.4.0
@@ -1378,7 +1457,7 @@ WebDriver:
 
 Selenium:
   * Firefox 8 support.
-  
+
 
 v2.3.0
 ======
