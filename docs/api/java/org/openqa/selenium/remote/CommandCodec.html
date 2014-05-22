@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>BrowserConnection</title>
+<title>CommandCodec</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="BrowserConnection";
+        parent.document.title="CommandCodec";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/html5/BrowserConnection.html" target="_top">Frames</a></li>
-<li><a href="BrowserConnection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/CommandCodec.html" target="_top">Frames</a></li>
+<li><a href="CommandCodec.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,21 +76,22 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.html5</div>
-<h2 title="Interface BrowserConnection" class="title">Interface BrowserConnection</h2>
+<div class="subTitle">org.openqa.selenium.remote</div>
+<h2 title="Interface CommandCodec" class="title">Interface CommandCodec&lt;T&gt;</h2>
 </div>
 <div class="contentContainer">
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl><dt><span class="strong">Type Parameters:</span></dt><dd><code>T</code> - The type of an encoded command.</dd></dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../org/openqa/selenium/remote/html5/RemoteBrowserConnection.html" title="class in org.openqa.selenium.remote.html5">RemoteBrowserConnection</a></dd>
+<dd><a href="../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">JsonHttpCommandCodec</a></dd>
 </dl>
 <hr>
 <br>
-<pre>public interface <span class="strong">BrowserConnection</span></pre>
-<div class="block">Represents the connection state of the application.</div>
+<pre>public interface <span class="strong">CommandCodec&lt;T&gt;</span></pre>
+<div class="block">Converts <a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote"><code>Command</code></a> objects to and from another representation.</div>
 </li>
 </ul>
 </div>
@@ -110,13 +111,15 @@
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html#isOnline()">isOnline</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#decode(T)">decode</a></strong>(<a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a>&nbsp;encodedCommand)</code>
+<div class="block">Decodes a command.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">setOnline</a></strong>(boolean&nbsp;online)</code>
-<div class="block">Changes the application online state.</div>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#encode(org.openqa.selenium.remote.Command)">encode</a></strong>(<a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>
+<div class="block">Encodes a command.</div>
 </td>
 </tr>
 </table>
@@ -134,28 +137,34 @@
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="isOnline()">
+<a name="encode(org.openqa.selenium.remote.Command)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isOnline</h4>
-<pre>boolean&nbsp;isOnline()</pre>
-<dl><dt><span class="strong">Returns:</span></dt><dd>true if the application is online, false otherwise</dd></dl>
+<h4>encode</h4>
+<pre><a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a>&nbsp;encode(<a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</pre>
+<div class="block">Encodes a command.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>command</code> - the command to encode.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the encoded command.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/UnsupportedCommandException.html" title="class in org.openqa.selenium">UnsupportedCommandException</a></code> - If the command is not supported by this codec.</dd></dl>
 </li>
 </ul>
-<a name="setOnline(boolean)">
+<a name="decode(java.lang.Object)">
+<!--   -->
+</a><a name="decode(T)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>setOnline</h4>
-<pre>void&nbsp;setOnline(boolean&nbsp;online)
-               throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
-<div class="block">Changes the application online state.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>online</code> - A boolean representing the state</dd>
+<h4>decode</h4>
+<pre><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;decode(<a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a>&nbsp;encodedCommand)</pre>
+<div class="block">Decodes a command.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>encodedCommand</code> - the command to decode.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the decoded command.</dd>
 <dt><span class="strong">Throws:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code></dd></dl>
+<dd><code><a href="../../../../org/openqa/selenium/UnsupportedCommandException.html" title="class in org.openqa.selenium">UnsupportedCommandException</a></code> - If the command is not supported by this codec.</dd></dl>
 </li>
 </ul>
 </li>
@@ -183,12 +192,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/html5/BrowserConnection.html" target="_top">Frames</a></li>
-<li><a href="BrowserConnection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/CommandCodec.html" target="_top">Frames</a></li>
+<li><a href="CommandCodec.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

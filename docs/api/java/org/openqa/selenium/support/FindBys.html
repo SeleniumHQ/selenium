@@ -82,7 +82,7 @@
 <hr>
 <br>
 <pre>@Retention(value=RUNTIME)
-@Target(value=FIELD)
+@Target(value={FIELD,TYPE})
 public @interface <span class="strong">FindBys</span></pre>
 <div class="block">Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
  in a chain as described in <a href="../../../../org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory"><code>ByChained</code></a>

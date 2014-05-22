@@ -65,8 +65,10 @@
 <ul>
 <li><a href="#interface">Deprecated Interfaces</a></li>
 <li><a href="#class">Deprecated Classes</a></li>
+<li><a href="#enum">Deprecated Enums</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
+<li><a href="#constructor">Deprecated Constructors</a></li>
 </ul>
 </div>
 <div class="contentContainer"><a name="interface">
@@ -125,6 +127,26 @@
 </table>
 </li>
 </ul>
+<a name="enum">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Enums table, listing deprecated enums, and an explanation">
+<caption><span>Deprecated Enums</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Enum and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/HttpVerb.html" title="enum in org.openqa.selenium.remote">org.openqa.selenium.remote.HttpVerb</a>
+<div class="block"><i>Use <a href="org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http"><code>HttpMethod</code></a>.</i></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
 <a name="field">
 <!--   -->
 </a>
@@ -161,7 +183,9 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/browserlaunchers/Proxies.html#extractProxy(org.openqa.selenium.Capabilities)">org.openqa.selenium.browserlaunchers.Proxies.extractProxy(Capabilities)</a></td>
+<td class="colOne"><a href="org/openqa/selenium/browserlaunchers/Proxies.html#extractProxy(org.openqa.selenium.Capabilities)">org.openqa.selenium.browserlaunchers.Proxies.extractProxy(Capabilities)</a>
+<div class="block"><i>Use Proxy.extractFrom(Capabilities)</i></div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/os/CommandLine.html#find(java.lang.String)">org.openqa.selenium.os.CommandLine.find(String)</a>
@@ -191,6 +215,26 @@
 <tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement(org.openqa.selenium.By, java.lang.String)">org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(By, String)</a>
 <div class="block"><i>Use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated(org.openqa.selenium.By, java.lang.String)"><code>ExpectedConditions.textToBePresentInElementLocated(By, String)</code></a> instead</i></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a name="constructor">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
+<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/CommandInfo.html#CommandInfo(java.lang.String, org.openqa.selenium.remote.HttpVerb)">org.openqa.selenium.remote.CommandInfo(String, HttpVerb)</a>
+<div class="block"><i>Use <code>org.openqa.selenium.remote.CommandInfo(String, HttpMethod)</code>.</i></div>
 </td>
 </tr>
 </tbody>

@@ -21,10 +21,13 @@ org.openqa.selenium.lift.find
 org.openqa.selenium.lift.match
 org.openqa.selenium.logging
 org.openqa.selenium.logging.profiler
+org.openqa.selenium.mobile
 org.openqa.selenium.net
 org.openqa.selenium.os
 org.openqa.selenium.remote
 org.openqa.selenium.remote.html5
+org.openqa.selenium.remote.http
+org.openqa.selenium.remote.mobile
 org.openqa.selenium.remote.service
 org.openqa.selenium.safari
 org.openqa.selenium.security

@@ -98,12 +98,13 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="strong">ChromeDriver</span>
-extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></pre>
+extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
+implements <a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
 <div class="block">A <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Chrome browser running on the local machine.
  This class is provided as a convenience for easily testing the Chrome browser. The control server
  which each instance communicates with will live and die with the instance.
@@ -115,17 +116,14 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
  
  import static org.junit.Assert.assertEquals;
  
- import org.junit.After;
- import org.junit.AfterClass;
- import org.junit.Before;
- import org.junit.BeforeClass;
+ import org.junit.*;
  import org.junit.runner.RunWith;
- import org.junit.runners.BlockJUnit4ClassRunner
+ import org.junit.runners.JUnit4;
  import org.openqa.selenium.chrome.ChromeDriverService;
  import org.openqa.selenium.remote.DesiredCapabilities;
  import org.openqa.selenium.remote.RemoteWebDriver;
  
- @RunWith(BlockJUnit4ClassRunner.class)
+ @RunWith(JUnit4.class)
  public class ChromeTest extends TestCase {
  
    private static ChromeDriverService service;
@@ -165,8 +163,13 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
      assertEquals("webdriver - Google Search", driver.getTitle());
    }
  }
- 
- </pre></code></div>
+ </pre></code>
+
+ Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
+ role interfaces such as <a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5"><code>LocationContext</code></a> and <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5"><code>WebStorage</code></a>.
+ Therefore, to access that functionality, it needs to be
+ <a href="../../../../org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><code>augmented</code></a> and then cast
+ to the appropriate interface.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>ChromeDriverService.createDefaultService()</code></a></dd></dl>
 </li>
 </ul>
@@ -256,9 +259,17 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></strong>(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code>
-<div class="block">Capture the screenshot and store it in the specified location.</div>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#getLocalStorage()">getLocalStorage</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#getSessionStorage()">getSessionStorage</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#location()">location</a></strong>()</code>
+<div class="block">Gets the physical location of the browser.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -268,9 +279,10 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#startSession(org.openqa.selenium.Capabilities, org.openqa.selenium.Capabilities)">startSession</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-            <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</a></strong>(<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location)</code>
+<div class="block">Sets the physical location.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -278,7 +290,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close()">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute(java.lang.String, java.util.Map)">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String, java.lang.Object...)">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement(java.lang.String, java.lang.String)">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName(java.lang.String)">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector(java.lang.String)">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById(java.lang.String)">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText(java.lang.String)">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName(java.lang.String)">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText(java.lang.String)">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName(java.lang.String)">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath(java.lang.String)">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements(java.lang.String, java.lang.String)">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName(java.lang.String)">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector(java.lang.String)">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById(java.lang.String)">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText(java.lang.String)">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName(java.lang.String)">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText(java.lang.String)">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName(java.lang.String)">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath(java.lang.String)">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getRemoteStatus()">getRemoteStatus</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object, org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.internal.JsonToWebElementConverter)">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext, org.openqa.selenium.WebElement, java.lang.String, java.lang.String)">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient()">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient()">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString()">toString</a></code></li>
+<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close()">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute(java.lang.String, java.util.Map)">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String, java.lang.Object...)">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement(java.lang.String, java.lang.String)">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName(java.lang.String)">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector(java.lang.String)">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById(java.lang.String)">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText(java.lang.String)">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName(java.lang.String)">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText(java.lang.String)">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName(java.lang.String)">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath(java.lang.String)">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements(java.lang.String, java.lang.String)">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName(java.lang.String)">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector(java.lang.String)">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById(java.lang.String)">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText(java.lang.String)">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName(java.lang.String)">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText(java.lang.String)">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName(java.lang.String)">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath(java.lang.String)">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getRemoteStatus()">getRemoteStatus</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object, org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.internal.JsonToWebElementConverter)">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext, org.openqa.selenium.WebElement, java.lang.String, java.lang.String)">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient()">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities, org.openqa.selenium.Capabilities)">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient()">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -400,50 +412,61 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <a href="../../../../org/openqa/selenium/remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote"><code>UselessFileDetector</code></a></dd></dl>
 </li>
 </ul>
-<a name="getScreenshotAs(org.openqa.selenium.OutputType)">
+<a name="getLocalStorage()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getScreenshotAs</h4>
-<pre>public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</a></code></strong></div>
-<div class="block">Capture the screenshot and store it in the specified location.
-
- <p>For WebDriver extending TakesScreenshot, this makes a best effort
- depending on the browser to return the following in order of preference:
- <ul>
-   <li>Entire page</li>
-   <li>Current window</li>
-   <li>Visible portion of the current frame</li>
-   <li>The screenshot of the entire display containing the browser</li>
- </ul>
-
- <p>For WebElement extending TakesScreenshot, this makes a best effort
- depending on the browser to return the following in order of preference:
-   - The entire content of the HTML element
-   - The visisble portion of the HTML element</div>
+<h4>getLocalStorage</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a>&nbsp;getLocalStorage()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code></dd>
-<dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-<dt><span class="strong">Type Parameters:</span></dt><dd><code>X</code> - Return type for getScreenshotAs.</dd><dt><span class="strong">Parameters:</span></dt><dd><code>target</code> - target type, @see OutputType</dd>
-<dt><span class="strong">Returns:</span></dt><dd>Object in which is stored information about the screenshot.</dd></dl>
+<dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getLocalStorage()">getLocalStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
+</dl>
 </li>
 </ul>
-<a name="startSession(org.openqa.selenium.Capabilities, org.openqa.selenium.Capabilities)">
+<a name="getSessionStorage()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionStorage</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a>&nbsp;getSessionStorage()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getSessionStorage()">getSessionStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="location()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>location</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location()</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#location()">LocationContext</a></code></strong></div>
+<div class="block">Gets the physical location of the browser.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#location()">location</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>A <a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><code>Location</code></a> containing the location information. Returns null if the location is
+         not available</dd></dl>
+</li>
+</ul>
+<a name="setLocation(org.openqa.selenium.html5.Location)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>startSession</h4>
-<pre>protected&nbsp;void&nbsp;startSession(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-                <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
+<h4>setLocation</h4>
+<pre>public&nbsp;void&nbsp;setLocation(<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location)</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">LocationContext</a></code></strong></div>
+<div class="block">Sets the physical location.</div>
 <dl>
-<dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities, org.openqa.selenium.Capabilities)">startSession</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-</dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>location</code> - A <a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><code>Location</code></a> containing the new location information</dd></dl>
 </li>
 </ul>
 </li>

@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>RemoteBrowserConnection</title>
+<title>JsonHttpResponseCodec</title>
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="RemoteBrowserConnection";
+        parent.document.title="JsonHttpResponseCodec";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteApplicationCache.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteDatabaseStorage.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteBrowserConnection.html" target="_top">Frames</a></li>
-<li><a href="RemoteBrowserConnection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/remote/http/JsonHttpResponseCodec.html" target="_top">Frames</a></li>
+<li><a href="JsonHttpResponseCodec.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,15 +76,15 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.remote.html5</div>
-<h2 title="Class RemoteBrowserConnection" class="title">Class RemoteBrowserConnection</h2>
+<div class="subTitle">org.openqa.selenium.remote.http</div>
+<h2 title="Class JsonHttpResponseCodec" class="title">Class JsonHttpResponseCodec</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.remote.html5.RemoteBrowserConnection</li>
+<li>org.openqa.selenium.remote.http.JsonHttpResponseCodec</li>
 </ul>
 </li>
 </ul>
@@ -93,14 +93,16 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&gt;</dd>
 </dl>
 <hr>
 <br>
-<pre>public class <span class="strong">RemoteBrowserConnection</span>
+<pre>public class <span class="strong">JsonHttpResponseCodec</span>
 extends java.lang.Object
-implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a></pre>
-<div class="block">Provides remote access to the <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5"><code>BrowserConnection</code></a> API.</div>
+implements <a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&gt;</pre>
+<div class="block">A response codec that adheres to the Selenium project's JSON/HTTP wire protocol.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">
+   JSON wire protocol</a></dd></dl>
 </li>
 </ul>
 </div>
@@ -119,7 +121,7 @@ implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.h
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteBrowserConnection.html#RemoteBrowserConnection(org.openqa.selenium.remote.ExecuteMethod)">RemoteBrowserConnection</a></strong>(<a href="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpResponseCodec.html#JsonHttpResponseCodec()">JsonHttpResponseCodec</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -137,13 +139,15 @@ implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.h
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteBrowserConnection.html#isOnline()">isOnline</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpResponseCodec.html#decode(org.openqa.selenium.remote.http.HttpResponse)">decode</a></strong>(<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;encodedResponse)</code>
+<div class="block">Decodes a response.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteBrowserConnection.html#setOnline(boolean)">setOnline</a></strong>(boolean&nbsp;online)</code>
-<div class="block">Changes the application online state.</div>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpResponseCodec.html#encode(org.openqa.selenium.remote.Response)">encode</a></strong>(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</code>
+<div class="block">Encodes the given response as a HTTP response message.</div>
 </td>
 </tr>
 </table>
@@ -168,13 +172,13 @@ implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.h
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="RemoteBrowserConnection(org.openqa.selenium.remote.ExecuteMethod)">
+<a name="JsonHttpResponseCodec()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>RemoteBrowserConnection</h4>
-<pre>public&nbsp;RemoteBrowserConnection(<a href="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</pre>
+<h4>JsonHttpResponseCodec</h4>
+<pre>public&nbsp;JsonHttpResponseCodec()</pre>
 </li>
 </ul>
 </li>
@@ -185,35 +189,35 @@ implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.h
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="isOnline()">
+<a name="encode(org.openqa.selenium.remote.Response)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isOnline</h4>
-<pre>public&nbsp;boolean&nbsp;isOnline()</pre>
+<h4>encode</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;encode(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</pre>
+<div class="block">Encodes the given response as a HTTP response message. This method is guaranteed not to throw.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html#isOnline()">isOnline</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>true if the application is online, false otherwise</dd></dl>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html#encode(org.openqa.selenium.remote.Response)">encode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>response</code> - The response to encode.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The encoded response.</dd></dl>
 </li>
 </ul>
-<a name="setOnline(boolean)">
+<a name="decode(org.openqa.selenium.remote.http.HttpResponse)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>setOnline</h4>
-<pre>public&nbsp;void&nbsp;setOnline(boolean&nbsp;online)
-               throws <a href="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">BrowserConnection</a></code></strong></div>
-<div class="block">Changes the application online state.</div>
+<h4>decode</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;decode(<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;encodedResponse)</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html#decode(T)">ResponseCodec</a></code></strong></div>
+<div class="block">Decodes a response.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">setOnline</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>online</code> - A boolean representing the state</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code></dd></dl>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html#decode(T)">decode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>encodedResponse</code> - the response to decode.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the decoded response.</dd></dl>
 </li>
 </ul>
 </li>
@@ -241,12 +245,12 @@ implements <a href="../../../../../org/openqa/selenium/html5/BrowserConnection.h
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteApplicationCache.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteDatabaseStorage.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteBrowserConnection.html" target="_top">Frames</a></li>
-<li><a href="RemoteBrowserConnection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/remote/http/JsonHttpResponseCodec.html" target="_top">Frames</a></li>
+<li><a href="JsonHttpResponseCodec.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>

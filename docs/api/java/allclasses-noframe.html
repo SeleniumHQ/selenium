@@ -13,12 +13,12 @@
 <li><a href="org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions"><i>Action</i></a></li>
 <li><a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></li>
 <li><a href="org/openqa/selenium/remote/html5/AddApplicationCache.html" title="class in org.openqa.selenium.remote.html5">AddApplicationCache</a></li>
-<li><a href="org/openqa/selenium/remote/html5/AddBrowserConnection.html" title="class in org.openqa.selenium.remote.html5">AddBrowserConnection</a></li>
 <li><a href="org/openqa/selenium/remote/html5/AddDatabaseStorage.html" title="class in org.openqa.selenium.remote.html5">AddDatabaseStorage</a></li>
 <li><a href="org/openqa/selenium/remote/AddFindsByCss.html" title="class in org.openqa.selenium.remote">AddFindsByCss</a></li>
 <li><a href="org/openqa/selenium/remote/AddFindsChildByCss.html" title="class in org.openqa.selenium.remote">AddFindsChildByCss</a></li>
 <li><a href="org/openqa/selenium/remote/html5/AddLocationContext.html" title="class in org.openqa.selenium.remote.html5">AddLocationContext</a></li>
 <li><a href="com/thoughtworks/selenium/webdriven/commands/AddLocationStrategy.html" title="class in com.thoughtworks.selenium.webdriven.commands">AddLocationStrategy</a></li>
+<li><a href="org/openqa/selenium/remote/mobile/AddNetworkConnection.html" title="class in org.openqa.selenium.remote.mobile">AddNetworkConnection</a></li>
 <li><a href="org/openqa/selenium/remote/AddRemoteTouchScreen.html" title="class in org.openqa.selenium.remote">AddRemoteTouchScreen</a></li>
 <li><a href="org/openqa/selenium/remote/AddRotatable.html" title="class in org.openqa.selenium.remote">AddRotatable</a></li>
 <li><a href="com/thoughtworks/selenium/webdriven/commands/AddSelection.html" title="class in com.thoughtworks.selenium.webdriven.commands">AddSelection</a></li>
@@ -37,6 +37,7 @@
 <li><a href="com/thoughtworks/selenium/webdriven/commands/AssignId.html" title="class in com.thoughtworks.selenium.webdriven.commands">AssignId</a></li>
 <li><a href="com/thoughtworks/selenium/webdriven/commands/AttachFile.html" title="class in com.thoughtworks.selenium.webdriven.commands">AttachFile</a></li>
 <li><a href="org/openqa/selenium/lift/match/AttributeMatcher.html" title="class in org.openqa.selenium.lift.match">AttributeMatcher</a></li>
+<li><a href="org/openqa/selenium/remote/Augmentable.html" title="annotation in org.openqa.selenium.remote">Augmentable</a></li>
 <li><a href="org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote">Augmenter</a></li>
 <li><a href="org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote"><i>AugmenterProvider</i></a></li>
 <li><a href="org/openqa/selenium/internal/Base64Encoder.html" title="class in org.openqa.selenium.internal">Base64Encoder</a></li>
@@ -46,7 +47,6 @@
 <li><a href="org/openqa/selenium/remote/BeanToJsonConverter.html" title="class in org.openqa.selenium.remote">BeanToJsonConverter</a></li>
 <li><a href="org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">Beta</a></li>
 <li><a href="com/thoughtworks/selenium/BrowserConfigurationOptions.html" title="class in com.thoughtworks.selenium">BrowserConfigurationOptions</a></li>
-<li><a href="org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5"><i>BrowserConnection</i></a></li>
 <li><a href="org/openqa/selenium/browserlaunchers/locators/BrowserInstallation.html" title="class in org.openqa.selenium.browserlaunchers.locators">BrowserInstallation</a></li>
 <li><a href="org/openqa/selenium/browserlaunchers/BrowserLauncher.html" title="interface in org.openqa.selenium.browserlaunchers"><i>BrowserLauncher</i></a></li>
 <li><a href="org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html" title="interface in org.openqa.selenium.browserlaunchers.locators"><i>BrowserLocator</i></a></li>
@@ -86,6 +86,7 @@
 <li><a href="org/openqa/selenium/support/Colors.html" title="enum in org.openqa.selenium.support">Colors</a></li>
 <li><a href="org/openqa/selenium/browserlaunchers/locators/CombinedFirefoxLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">CombinedFirefoxLocator</a></li>
 <li><a href="org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a></li>
+<li><a href="org/openqa/selenium/remote/CommandCodec.html" title="interface in org.openqa.selenium.remote"><i>CommandCodec</i></a></li>
 <li><a href="org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><i>CommandExecutor</i></a></li>
 <li><a href="org/openqa/selenium/remote/CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a></li>
 <li><a href="org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a></li>
@@ -231,7 +232,10 @@
 <li><a href="org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></li>
 <li><a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></li>
 <li><a href="com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">HttpCommandProcessor</a></li>
+<li><a href="org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a></li>
 <li><a href="org/openqa/selenium/logging/profiler/HttpProfilerLogEntry.html" title="class in org.openqa.selenium.logging.profiler">HttpProfilerLogEntry</a></li>
+<li><a href="org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></li>
+<li><a href="org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></li>
 <li><a href="org/openqa/selenium/remote/HttpSessionId.html" title="class in org.openqa.selenium.remote">HttpSessionId</a></li>
 <li><a href="org/openqa/selenium/remote/HttpVerb.html" title="enum in org.openqa.selenium.remote">HttpVerb</a></li>
 <li><a href="org/openqa/selenium/lift/find/ImageFinder.html" title="class in org.openqa.selenium.lift.find">ImageFinder</a></li>
@@ -264,6 +268,8 @@
 <li><a href="com/thoughtworks/selenium/webdriven/JavascriptLibrary.html" title="class in com.thoughtworks.selenium.webdriven">JavascriptLibrary</a></li>
 <li><a href="org/openqa/selenium/remote/JdkAugmenter.html" title="class in org.openqa.selenium.remote">JdkAugmenter</a></li>
 <li><a href="org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote">JsonException</a></li>
+<li><a href="org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">JsonHttpCommandCodec</a></li>
+<li><a href="org/openqa/selenium/remote/http/JsonHttpResponseCodec.html" title="class in org.openqa.selenium.remote.http">JsonHttpResponseCodec</a></li>
 <li><a href="org/openqa/selenium/remote/JsonToBeanConverter.html" title="class in org.openqa.selenium.remote">JsonToBeanConverter</a></li>
 <li><a href="com/thoughtworks/selenium/condition/JUnit4AndTestNgConditionRunner.html" title="class in com.thoughtworks.selenium.condition">JUnit4AndTestNgConditionRunner</a></li>
 <li><a href="com/thoughtworks/selenium/condition/JUnitConditionRunner.html" title="class in com.thoughtworks.selenium.condition">JUnitConditionRunner</a></li>
@@ -322,6 +328,8 @@
 <li><a href="org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</a></li>
 <li><a href="org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions">MoveToOffsetAction</a></li>
 <li><a href="org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging"><i>NeedsLocalLogs</i></a></li>
+<li><a href="org/openqa/selenium/mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile"><i>NetworkConnection</i></a></li>
+<li><a href="org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></li>
 <li><a href="org/openqa/selenium/net/NetworkInterface.html" title="class in org.openqa.selenium.net">NetworkInterface</a></li>
 <li><a href="org/openqa/selenium/net/NetworkInterfaceProvider.html" title="interface in org.openqa.selenium.net"><i>NetworkInterfaceProvider</i></a></li>
 <li><a href="org/openqa/selenium/net/NetworkUtils.html" title="class in org.openqa.selenium.net">NetworkUtils</a></li>
@@ -357,7 +365,6 @@
 <li><a href="org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a></li>
 <li><a href="com/thoughtworks/selenium/webdriven/commands/Refresh.html" title="class in com.thoughtworks.selenium.webdriven.commands">Refresh</a></li>
 <li><a href="org/openqa/selenium/remote/html5/RemoteApplicationCache.html" title="class in org.openqa.selenium.remote.html5">RemoteApplicationCache</a></li>
-<li><a href="org/openqa/selenium/remote/html5/RemoteBrowserConnection.html" title="class in org.openqa.selenium.remote.html5">RemoteBrowserConnection</a></li>
 <li><a href="com/thoughtworks/selenium/RemoteCommand.html" title="interface in com.thoughtworks.selenium"><i>RemoteCommand</i></a></li>
 <li><a href="org/openqa/selenium/remote/html5/RemoteDatabaseStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteDatabaseStorage</a></li>
 <li><a href="org/openqa/selenium/remote/RemoteExecuteMethod.html" title="class in org.openqa.selenium.remote">RemoteExecuteMethod</a></li>
@@ -365,6 +372,7 @@
 <li><a href="org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteLocalStorage</a></li>
 <li><a href="org/openqa/selenium/remote/html5/RemoteLocationContext.html" title="class in org.openqa.selenium.remote.html5">RemoteLocationContext</a></li>
 <li><a href="org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote">RemoteLogs</a></li>
+<li><a href="org/openqa/selenium/remote/mobile/RemoteNetworkConnection.html" title="class in org.openqa.selenium.remote.mobile">RemoteNetworkConnection</a></li>
 <li><a href="org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteSessionStorage</a></li>
 <li><a href="org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></li>
 <li><a href="org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote">RemoteTouchScreen</a></li>
@@ -375,6 +383,8 @@
 <li><a href="com/thoughtworks/selenium/webdriven/commands/RemoveAllSelections.html" title="class in com.thoughtworks.selenium.webdriven.commands">RemoveAllSelections</a></li>
 <li><a href="com/thoughtworks/selenium/webdriven/commands/RemoveSelection.html" title="class in com.thoughtworks.selenium.webdriven.commands">RemoveSelection</a></li>
 <li><a href="org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></li>
+<li><a href="org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote"><i>ResponseCodec</i></a></li>
+<li><a href="org/openqa/selenium/remote/Responses.html" title="class in org.openqa.selenium.remote">Responses</a></li>
 <li><a href="org/openqa/selenium/html5/ResultSet.html" title="class in org.openqa.selenium.html5">ResultSet</a></li>
 <li><a href="org/openqa/selenium/html5/ResultSetRows.html" title="class in org.openqa.selenium.html5">ResultSetRows</a></li>
 <li><a href="org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium"><i>Rotatable</i></a></li>
