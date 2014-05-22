@@ -3,7 +3,7 @@
 
     <Description about="urn:mozilla:install-manifest">
         <em:id>fxdriver@googlecode.com</em:id>
-        <em:version>2.41.0</em:version>
+        <em:version>2.42.0</em:version>
         <em:type>2</em:type>
         <em:name>Firefox WebDriver</em:name>
         <em:description>WebDriver implementation for Firefox</em:description>
@@ -23,7 +23,7 @@
         <em:targetPlatform>Darwin</em:targetPlatform>
         <em:targetPlatform>SunOS</em:targetPlatform>
         <em:targetPlatform>FreeBSD</em:targetPlatform>
-        
+
         <!-- Platforms where we are -->
         <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
         <em:targetPlatform>Linux</em:targetPlatform>
