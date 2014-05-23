@@ -52,7 +52,9 @@ comma-separated list of browsers you wish to test against. For example:
 
 ## Documentation
 
-Full documentation is available on the [Selenium project wiki](http://code.google.com/p/selenium/wiki/WebDriverJs "User guide").
+API documentation is included in the docs module. The API documentation for the
+current release are also available online from the [Selenium project](http://selenium.googlecode.com/git/docs/api/javascript/index.html "API docs"). A full user guide is available on the
+[Selenium project wiki](http://code.google.com/p/selenium/wiki/WebDriverJs "User guide").
 
 ## Issues
 
