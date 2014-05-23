@@ -2,6 +2,7 @@
 
 * Removed deprecated functions `Promise#addCallback()`,
     `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
+* Fail with a more descriptive error if the server returns a malformed redirect
 * FIXED: 7300: Connect to ChromeDriver using the loopback address since
     ChromeDriver 2.10.267517 binds to localhost by default.
 * FIXED: 7339: Preserve wrapped test function's string representation for
