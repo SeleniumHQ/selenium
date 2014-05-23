@@ -1,4 +1,4 @@
-## v2.42.0-dev
+## v2.42.0
 
 * Removed deprecated functions `Promise#addCallback()`,
     `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
