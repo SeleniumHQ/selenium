@@ -1,8 +1,9 @@
-2.42.0 (???)
-============
+2.42.0 (2014-05-23)
+===================
 
 Firefox:
   * Fix for extensions whose install.rdf uses an attribute for em:id (#5978)
+  * Support for Firefox 29 Native Events
 
 2.41.0 (2014-03-28)
 ===================
