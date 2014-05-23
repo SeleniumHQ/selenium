@@ -888,6 +888,17 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets an object allowing the user to manipulate local web storage on the page.
+            /// </summary>
+            public ILocalStorage LocalStorage
+            {
+                get
+                {
+                    return this.wrappedOptions.LocalStorage;
+                }
+            }
+
+            /// <summary>
             /// Gets an object allowing the user to manipulate the currently-focused browser window.
             /// </summary>
             /// <remarks>"Currently-focused" is defined as the browser window having the window handle

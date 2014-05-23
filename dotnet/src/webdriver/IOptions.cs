@@ -34,6 +34,11 @@ namespace OpenQA.Selenium
         ICookieJar Cookies { get; }
 
         /// <summary>
+        /// Gets an object allowing the user to manipulate local storage on the page.
+        /// </summary>
+        ILocalStorage LocalStorage { get; }
+
+        /// <summary>
         /// Gets an object allowing the user to manipulate the currently-focused browser window.
         /// </summary>
         /// <remarks>"Currently-focused" is defined as the browser window having the window handle

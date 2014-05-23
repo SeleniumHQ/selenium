@@ -90,6 +90,7 @@
     <Compile Include="IAllowsFileDetection.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="IHasTouchScreen.cs" />
+    <Compile Include="ILocalStorage.cs" />
     <Compile Include="Interactions\ScreenMoveAction.cs" />
     <Compile Include="Interactions\ScreenReleaseAction.cs" />
     <Compile Include="Interactions\ScreenPressAction.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
+    <Compile Include="Remote\RemoteLocalStorage.cs" />
     <Compile Include="Safari\SafariDriverExtension.cs" />
     <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />

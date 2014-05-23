@@ -50,6 +50,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets an object allowing the user to manipulate local storage on the page.
+        /// </summary>
+        public ILocalStorage LocalStorage
+        {
+            get { return new RemoteLocalStorage(this.driver); }
+        }
+
+        /// <summary>
         /// Gets an object allowing the user to manipulate the currently-focused browser window.
         /// </summary>
         /// <remarks>"Currently-focused" is defined as the browser window having the window handle

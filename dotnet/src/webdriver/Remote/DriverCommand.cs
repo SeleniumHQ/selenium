@@ -397,5 +397,35 @@ namespace OpenQA.Selenium.Remote
         /// Represents the TouchFlick command.
         /// </summary>
         public static readonly string TouchFlick = "touchFlick";
+
+        /// <summary>
+        /// Represents the LocalStorageGetKeys command.
+        /// </summary>
+        public static readonly string LocalStorageGetKeys = "localStorageGetKeys";
+
+        /// <summary>
+        /// Represents the LocalStorageGetItem command.
+        /// </summary>
+        public static readonly string LocalStorageGetItem = "localStorageGetItem";
+
+        /// <summary>
+        /// Represents the LocalStorageSetItem command.
+        /// </summary>
+        public static readonly string LocalStorageSetItem = "localStorageSetItem";
+
+        /// <summary>
+        /// Represents the LocalStorageSize command.
+        /// </summary>
+        public static readonly string LocalStorageSize = "localStorageSize";
+
+        /// <summary>
+        /// Represents the LocalStorageDeleteItem command.
+        /// </summary>
+        public static readonly string LocalStorageDeleteItem = "localStorageDeleteItem";
+
+        /// <summary>
+        /// Represents the LocalStorageClear command.
+        /// </summary>
+        public static readonly string LocalStorageClear = "localStorageClear";
     }
 }
