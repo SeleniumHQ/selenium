@@ -1,3 +1,4 @@
+# Copyright 2014 Software Freedom Conservancy
 # Copyright 2008-2011 WebDriver committers
 # Copyright 2008-2011 Google Inc.
 #
@@ -340,8 +341,8 @@ class FirefoxProfile(object):
                     manifest = f.read()
             else:
                 raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
-        except (IOError, KeyError), e:
-            raise AddonFormatError, str(e), sys.exc_info()[2]
+        except (IOError, KeyError) as e:
+            raise AddonFormatError(str(e), sys.exc_info()[2])
 
         try:
             doc = minidom.parseString(manifest)
@@ -356,8 +357,8 @@ class FirefoxProfile(object):
                 entry = node.nodeName.replace(em, "")
                 if entry in details.keys():
                     details.update({entry: get_text(node)})
-        except Exception, e:
-            raise AddonFormatError, str(e), sys.exc_info()[2]
+        except Exception as e:
+            raise AddonFormatError(str(e), sys.exc_info()[2])
 
         # turn unpack into a true/false value
         if isinstance(details['unpack'], basestring):
