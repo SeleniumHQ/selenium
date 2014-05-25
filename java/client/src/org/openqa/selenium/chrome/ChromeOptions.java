@@ -202,7 +202,12 @@ public class ChromeOptions {
    *     JSON.
    */
   public JSONObject toJson() throws IOException, JSONException {
-    JSONObject options = new JSONObject(experimentalOptions);
+    JSONObject options = new JSONObject();
+    // copy experimental options, instead of passing to the JSONObject constructor
+    // because the JSON library will mutate the map passed in.
+    for (String key : experimentalOptions.keySet()) {
+      options.put(key, experimentalOptions.get(key));
+    }
 
     if (binary != null) {
       options.put("binary", binary);
