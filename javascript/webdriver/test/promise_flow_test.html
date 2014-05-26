@@ -1175,10 +1175,13 @@ limitations under the License.
 
     scheduleAction('doFoo and throw', function() {
       webdriver.test.testutil.messages.push('foo');
-      throw new Error('ouch');
+      throw STUB_ERROR;
     }).then(goog.partial(schedulePush, 'bar')).
         thenFinally(goog.partial(schedulePush, 'baz'));
-    runAndExpectSuccess(assertingMessages('foo', 'baz'));
+    runAndExpectFailure(function(e) {
+      assertIsStubError(e);
+      webdriver.test.testutil.assertMessages('foo', 'baz');
+    });
   }
 
 
@@ -1199,11 +1202,13 @@ limitations under the License.
             throw STUB_ERROR;
           });
         }).
-        thenFinally(function(e) {
-          assertIsStubError(e);
+        thenFinally(function() {
           return schedulePush('baz');
         });
-    runAndExpectSuccess(assertingMessages('foo', 'bar', 'baz'));
+    runAndExpectFailure(function(e) {
+      assertIsStubError(e);
+      webdriver.test.testutil.assertMessages('foo', 'bar' , 'baz');
+    });
   }
 
 

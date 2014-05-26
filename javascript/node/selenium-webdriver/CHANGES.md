@@ -1,3 +1,7 @@
+## v2.43.0-dev
+
+* FIXED: 7156: `Promise#thenFinally` should not suppress original error
+
 ## v2.42.0
 
 * Removed deprecated functions `Promise#addCallback()`,

@@ -184,7 +184,15 @@ webdriver.promise.Promise.prototype.thenCatch = function(errback) {
  * @template R
  */
 webdriver.promise.Promise.prototype.thenFinally = function(callback) {
-  return this.then(callback, callback);
+  return this.then(callback, function(err) {
+    var value = callback();
+    if (webdriver.promise.isPromise(value)) {
+      return value.then(function() {
+        throw err;
+      });
+    }
+    throw err;
+  });
 };
 
 

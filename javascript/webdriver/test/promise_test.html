@@ -248,6 +248,44 @@ function testThrowingNewRejectionErrors() {
 }
 
 
+function testThenFinally_nonFailingCallbackDoesNotSuppressOriginalError() {
+  var done = callbackHelper(assertIsStubError);
+  webdriver.promise.rejected(STUB_ERROR).
+      thenFinally(goog.nullFunction).
+      thenCatch(done);
+  done.assertCalled();
+}
+
+
+function testThenFinally_failingCallbackSuppressesOriginalError() {
+  var done = callbackHelper(assertIsStubError);
+  webdriver.promise.rejected(new Error('original')).
+      thenFinally(throwStubError).
+      thenCatch(done);
+  done.assertCalled();
+}
+
+
+function testThenFinally_callbackThrowsAfterFulfilledPromise() {
+  var done = callbackHelper(assertIsStubError);
+  webdriver.promise.fulfilled().
+      thenFinally(throwStubError).
+      thenCatch(done);
+  done.assertCalled();
+}
+
+
+function testThenFinally_callbackReturnsRejectedPromise() {
+  var done = callbackHelper(assertIsStubError);
+  webdriver.promise.fulfilled().
+      thenFinally(function() {
+        return webdriver.promise.rejected(STUB_ERROR);
+      }).
+      thenCatch(done);
+  done.assertCalled();
+}
+
+
 function testChainingThen_AllResolved() {
   var callbacks = [
     callbackHelper(function(value) {
