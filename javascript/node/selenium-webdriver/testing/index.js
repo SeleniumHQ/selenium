@@ -27,8 +27,8 @@
  *   <li>xit
  * </ul>
  *
- * <p>The provided wrappers leverage the webdriver.promise.ControlFlow to
- * simplify writing asynchronous tests:
+ * <p>The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
+ * to simplify writing asynchronous tests:
  * <pre><code>
  * var webdriver = require('selenium-webdriver'),
  *     portprober = require('selenium-webdriver/net/portprober'),
@@ -80,7 +80,8 @@
  * </code></pre>
  */
 
-var flow = require('..').promise.controlFlow();
+var promise = require('..').promise;
+var flow = promise.controlFlow();
 
 
 /**
@@ -124,7 +125,12 @@ function wrapped(globalFn) {
       var timeout = this.timeout;
       this.timeout = undefined;  // Do not let tests change the timeout.
       try {
-        flow.execute(fn.bind(this)).then(seal(done), done);
+        var testFn = fn.bind(this);
+        flow.execute(function() {
+          var done = promise.defer();
+          promise.asap(testFn(done.reject), done.fulfill, done.reject);
+          return done.promise;
+        }).then(seal(done), done);
       } finally {
         this.timeout = timeout;
       }
