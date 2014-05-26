@@ -161,10 +161,11 @@ class WebDriver(object):
         :Returns:
           The command's JSON response loaded into a dictionary object.
         """
-        if not params:
-            params = {'sessionId': self.session_id}
-        elif 'sessionId' not in params:
-            params['sessionId'] = self.session_id
+        if self.session_id is not None:
+            if not params:
+                params = {'sessionId': self.session_id}
+            elif 'sessionId' not in params:
+                params['sessionId'] = self.session_id
 
         params = self._wrap_value(params)
         response = self.command_executor.execute(driver_command, params)
