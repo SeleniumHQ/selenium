@@ -800,7 +800,7 @@ class WebDriver(object):
 
     def is_online(self):
         """ Returns a boolean if the browser is online or offline"""
-        return self.execute(Command.IS_BROWSER_ONLINE)['value']
+        return self.execute(Command.GET_NETWORK_CONNECTION)['value']
 
     @property
     def application_cache(self):
