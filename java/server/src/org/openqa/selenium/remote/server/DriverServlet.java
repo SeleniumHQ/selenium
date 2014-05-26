@@ -236,6 +236,7 @@ public class DriverServlet extends HttpServlet {
 
   private void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
       throws IOException {
+    servletResponse.setStatus(response.getStatus());
     for (String name : response.getHeaderNames()) {
       for (String value : response.getHeaders(name)) {
         servletResponse.addHeader(name, value);
