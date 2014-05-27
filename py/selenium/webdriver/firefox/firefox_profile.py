@@ -340,7 +340,7 @@ class FirefoxProfile(object):
                     manifest = f.read()
             else:
                 raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
-        except (IOError, KeyError), e:
+        except (IOError, KeyError) as e:
             raise AddonFormatError, str(e), sys.exc_info()[2]
 
         try:
@@ -356,7 +356,7 @@ class FirefoxProfile(object):
                 entry = node.nodeName.replace(em, "")
                 if entry in details.keys():
                     details.update({entry: get_text(node)})
-        except Exception, e:
+        except Exception as e:
             raise AddonFormatError, str(e), sys.exc_info()[2]
 
         # turn unpack into a true/false value
