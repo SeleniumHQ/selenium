@@ -45,14 +45,16 @@ class WebDriver(RemoteWebDriver):
          - chrome_options: this takes an instance of ChromeOptions
         """
         if chrome_options is None:
-            options = Options()
+            if desired_capabilities is None:
+                desired_capabilities = Options().to_capabilities()
+            else:
+                # desired_capabilities stays as passed
+                pass
         else:
-            options = chrome_options
-
-        if desired_capabilities is not None:
-          desired_capabilities.update(options.to_capabilities())
-        else:
-          desired_capabilities = options.to_capabilities()
+            if desired_capabilities is None:
+                desired_capabilities = options.to_capabilities()
+            else:
+                desired_capabilities.update(options.to_capabilities())
 
         self.service = Service(executable_path, port=port,
             service_args=service_args, log_path=service_log_path)
