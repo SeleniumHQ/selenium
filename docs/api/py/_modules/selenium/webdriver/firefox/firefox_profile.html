@@ -47,6 +47,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.firefox.firefox_profile</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2014 Software Freedom Conservancy</span>
 <span class="c"># Copyright 2008-2011 WebDriver committers</span>
 <span class="c"># Copyright 2008-2011 Google Inc.</span>
 <span class="c">#</span>
@@ -69,13 +70,14 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span> <span class="k">as</span> <span class="n">BytesIO</span>
     <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">str</span>
-    <span class="nb">str</span> <span class="o">=</span> <span class="nb">unicode</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
@@ -89,6 +91,10 @@
 <span class="n">EXTENSION_NAME</span> <span class="o">=</span> <span class="s">&quot;fxdriver@googlecode.com&quot;</span>
 
 
+<div class="viewcode-block" id="AddonFormatError"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.AddonFormatError">[docs]</a><span class="k">class</span> <span class="nc">AddonFormatError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for not well-formed add-on manifest files&quot;&quot;&quot;</span>
+
+</div>
 <div class="viewcode-block" id="FirefoxProfile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile">[docs]</a><span class="k">class</span> <span class="nc">FirefoxProfile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">ANONYMOUS_PROFILE_NAME</span> <span class="o">=</span> <span class="s">&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
     <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="bp">None</span>
@@ -329,20 +335,22 @@
 
     <span class="k">def</span> <span class="nf">_addon_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            returns a dictionary of details about the addon</span>
-<span class="sd">            - addon_path : path to the addon directory</span>
-<span class="sd">            Returns:</span>
-<span class="sd">            {&#39;id&#39;: &#39;rainbow@colors.org&#39;, # id of the addon</span>
-<span class="sd">            &#39;version&#39;: &#39;1.4&#39;, # version of the addon</span>
-<span class="sd">            &#39;name&#39;: &#39;Rainbow&#39;, # name of the addon</span>
-<span class="sd">            &#39;unpack&#39;: False } # whether to unpack the addon</span>
+<span class="sd">        Returns a dictionary of details about the addon.</span>
+
+<span class="sd">        :param addon_path: path to the add-on directory or XPI</span>
+
+<span class="sd">        Returns::</span>
+
+<span class="sd">            {&#39;id&#39;:      u&#39;rainbow@colors.org&#39;, # id of the addon</span>
+<span class="sd">             &#39;version&#39;: u&#39;1.4&#39;,                # version of the addon</span>
+<span class="sd">             &#39;name&#39;:    u&#39;Rainbow&#39;,            # name of the addon</span>
+<span class="sd">             &#39;unpack&#39;:  False }                # whether to unpack the addon</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c"># TODO: We don&#39;t use the unpack variable yet, but we should: bug 662683</span>
         <span class="n">details</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;unpack&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
             <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="s">&#39;unpack&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
             <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="bp">None</span>
         <span class="p">}</span>
 
@@ -365,18 +373,49 @@
                     <span class="n">rc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="n">doc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s">&#39;install.rdf&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Add-on path does not exist: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">addon_path</span><span class="p">)</span>
 
-        <span class="c"># Get the namespaces abbreviations</span>
-        <span class="n">em</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s">&quot;http://www.mozilla.org/2004/em-rdf#&quot;</span><span class="p">)</span>
-        <span class="n">rdf</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
+                <span class="c"># Bug 944361 - We cannot use &#39;with&#39; together with zipFile because</span>
+                <span class="c"># it will cause an exception thrown in Python 2.6.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">compressed_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+                    <span class="n">manifest</span> <span class="o">=</span> <span class="n">compressed_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;install.rdf&#39;</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="n">compressed_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">addon_path</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">addon_path</span><span class="p">,</span> <span class="s">&#39;install.rdf&#39;</span><span class="p">),</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">manifest</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Add-on path is neither an XPI nor a directory: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">addon_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
 
-        <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="n">rdf</span> <span class="o">+</span> <span class="s">&quot;Description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">description</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
-            <span class="c"># Remove the namespace prefix from the tag for comparison</span>
-            <span class="n">entry</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeName</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">details</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)})</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">manifest</span><span class="p">)</span>
+
+            <span class="c"># Get the namespaces abbreviations</span>
+            <span class="n">em</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s">&#39;http://www.mozilla.org/2004/em-rdf#&#39;</span><span class="p">)</span>
+            <span class="n">rdf</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s">&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#39;</span><span class="p">)</span>
+
+            <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="n">rdf</span> <span class="o">+</span> <span class="s">&#39;Description&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">description</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
+                <span class="c"># Remove the namespace prefix from the tag for comparison</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeName</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">details</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c"># turn unpack into a true/false value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">details</span><span class="p">[</span><span class="s">&#39;unpack&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">details</span><span class="p">[</span><span class="s">&#39;unpack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s">&#39;unpack&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;true&#39;</span>
+
+        <span class="c"># If no ID is set, the add-on is invalid</span>
+        <span class="k">if</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="s">&#39;Add-on id could not be found.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">details</span></div>
 </pre></div>

@@ -805,12 +805,6 @@ execute_async_script, see set_script_timeout.</dd>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="selenium.webdriver.remote.webdriver.WebDriver.is_online">
-<tt class="descname">is_online</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.is_online"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.is_online" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a boolean if the browser is online or offline</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.log_types">
 <tt class="descname">log_types</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.log_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.log_types" title="Permalink to this definition">¶</a></dt>
@@ -830,6 +824,11 @@ execute_async_script, see set_script_timeout.</dd>
 <tt class="descname">maximize_window</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.maximize_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.maximize_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximizes the current window that webdriver is using</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.mobile">
+<tt class="descname">mobile</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.mobile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.mobile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.name">
@@ -1050,93 +1049,39 @@ to define custom startup behavior.</p>
 to define custom shutdown behavior.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to">
+<tt class="descname">switch_to</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_active_element">
 <tt class="descname">switch_to_active_element</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to_active_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to_active_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the element with focus, or BODY if nothing has focus.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.switch_to_active_element()</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated use driver.switch_to.active_element</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_alert">
 <tt class="descname">switch_to_alert</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to_alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to_alert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Switches focus to an alert on the page.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.switch_to_alert()</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated use driver.switch_to.alert</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_default_content">
 <tt class="descname">switch_to_default_content</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to_default_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to_default_content" title="Permalink to this definition">¶</a></dt>
-<dd><p>Switch focus to the default frame.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.switch_to_default_content()</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated use driver.switch_to.default_content</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_frame">
 <tt class="descname">switch_to_frame</tt><big>(</big><em>frame_reference</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Switches focus to the specified frame, by index, name, or webelement.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first">
-<li><dl class="first docutils">
-<dt>frame_reference: The name of the window to switch to, an integer representing the index,</dt>
-<dd><p class="first last">or a webelement that is an (i)frame to switch to.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.switch_to_frame(&#8216;frame_name&#8217;)
-driver.switch_to_frame(1)
-driver.switch_to_frame(driver.find_elements_by_tag_name(&#8220;iframe&#8221;)[0])</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated use driver.switch_to.frame</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_window">
 <tt class="descname">switch_to_window</tt><big>(</big><em>window_name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Switches focus to the specified window.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>window_name: The name or window handle of the window to switch to.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.switch_to_window(&#8216;main&#8217;)</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Deprecated use driver.switch_to.window</p>
 </dd></dl>
 
 <dl class="attribute">

@@ -63,17 +63,18 @@
 
 
 <span class="sd">&quot;&quot;&quot;WebElement implementation.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span> <span class="k">as</span> <span class="n">IOStream</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c"># 3+</span>
-    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span> <span class="k">as</span> <span class="n">IOStream</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 
 
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span> 
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
@@ -117,7 +118,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.get_attribute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the attribute value.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - name of the attribute property to retieve.</span>
 
@@ -151,16 +152,16 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds element within the child elements of this element.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - id_ - ID of child element to locate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Finds a list of elements within the children of this element </span>
+        <span class="sd">&quot;&quot;&quot;Finds a list of elements within the children of this element</span>
 <span class="sd">        with the matching ID.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - id_ - Id of child element to find.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -175,7 +176,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements with in this element&#39;s children by name.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - name property to search for.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,7 +184,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds element with in this element&#39;s children by visible link text.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - link_text - Link text string to search for.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -191,7 +192,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements with in this element&#39;s children by visible link text.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - link_text - Link text string to search for.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -199,7 +200,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_partial_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_partial_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_partial_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds element with in this element&#39;s children by parial visible link text.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - link_text - Link text string to search for.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -207,7 +208,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_partial_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_partial_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_partial_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements with in this element&#39;s children by link text.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - link_text - Link text string to search for.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -215,7 +216,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_tag_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds element with in this element&#39;s children by tag name.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - name of html tag (eg: h1, a, span)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -223,7 +224,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_tag_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements with in this element&#39;s children by tag name.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - name of html tag (eg: h1, a, span)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -231,7 +232,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_xpath"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_xpath">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_xpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xpath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds element by xpath.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            xpath - xpath of element to locate.  &quot;//input[@class=&#39;myelement&#39;]&quot;</span>
 
@@ -250,7 +251,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_xpath"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_xpath">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_xpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xpath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds elements within the elements by xpath.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - xpath - xpath locator string.</span>
 
@@ -268,7 +269,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_class_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds an element within this element&#39;s children by their class name.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - class name to search on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -276,7 +277,7 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_class_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within children of this element by their class name.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - name - class name to search on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -284,16 +285,16 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_element_by_css_selector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_css_selector">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_css_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css_selector</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find and return an element that&#39;s a child of this element by CSS selector.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - css_selector - CSS selctor string, ex: &#39;a.nav#home&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_css_selector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_css_selector">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_css_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css_selector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Find and return list of multiple elements within the children of this </span>
+        <span class="sd">&quot;&quot;&quot;Find and return list of multiple elements within the children of this</span>
 <span class="sd">        element by CSS selector.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">            - css_selector - CSS selctor string, ex: &#39;a.nav#home&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -303,19 +304,19 @@
         <span class="sd">&quot;&quot;&quot;Simulates typing into the element.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - value - A string for typing, or setting form fields.  For setting </span>
+<span class="sd">            - value - A string for typing, or setting form fields.  For setting</span>
 <span class="sd">            file inputs, this could be a local file path.</span>
 
 <span class="sd">        Use this to send simple key events or to fill out form fields::</span>
 
 <span class="sd">            form_textfield = driver.find_element_by_name(&#39;username&#39;)</span>
 <span class="sd">            form_textfield.send_keys(&quot;admin&quot;)</span>
-<span class="sd">        </span>
+
 <span class="sd">        This can also be used to set file inputs.::</span>
 
 <span class="sd">            file_input = driver.find_element_by_name(&#39;profilePic&#39;)</span>
 <span class="sd">            file_input.send_keys(&quot;path/to/profilepic.gif&quot;)</span>
-<span class="sd">            # Generally it&#39;s better to wrap the file path in one of the methods </span>
+<span class="sd">            # Generally it&#39;s better to wrap the file path in one of the methods</span>
 <span class="sd">            # in os.path to return the actual path to support cross OS testing.</span>
 <span class="sd">            # file_input.send_keys(os.path.abspath(&quot;path/to/profilepic.gif&quot;))</span>
 
@@ -384,11 +385,11 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns internal id used by selenium. </span>
-<span class="sd">        </span>
-<span class="sd">        This is mainly for internal use.  Simple use cases such as checking if 2 webelements </span>
+        <span class="sd">&quot;&quot;&quot; Returns internal id used by selenium.</span>
+
+<span class="sd">        This is mainly for internal use.  Simple use cases such as checking if 2 webelements</span>
 <span class="sd">        refer to the same element, can be done using &#39;==&#39;::</span>
-<span class="sd">        </span>
+
 <span class="sd">            if element1 == element2:</span>
 <span class="sd">                print(&quot;These 2 are equal&quot;)</span>
 
@@ -431,14 +432,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>
                              <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">IOStream</span><span class="p">()</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
         <span class="n">zipped</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">zipped</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span> 
-                            <span class="p">{</span><span class="s">&#39;file&#39;</span><span class="p">:</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span>
+                            <span class="p">{</span><span class="s">&#39;file&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="s">&quot;Unrecognized command: POST&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">__str__</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">filename</span>

@@ -93,11 +93,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">[:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;--webdriver=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">log_path</span><span class="p">:</span>
             <span class="n">log_path</span> <span class="o">=</span> <span class="s">&quot;ghostdriver.log&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># subprocess.Popen doesn&#39;t send signal on __del__;</span>
+        <span class="c"># we have to try to stop the launched process.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Service.start"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

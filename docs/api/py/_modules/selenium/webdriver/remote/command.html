@@ -108,13 +108,12 @@
     <span class="n">SET_WINDOW_POSITION</span> <span class="o">=</span> <span class="s">&quot;setWindowPosition&quot;</span>
     <span class="n">SWITCH_TO_WINDOW</span> <span class="o">=</span> <span class="s">&quot;switchToWindow&quot;</span>
     <span class="n">SWITCH_TO_FRAME</span> <span class="o">=</span> <span class="s">&quot;switchToFrame&quot;</span>
+    <span class="n">SWITCH_TO_PARENT_FRAME</span> <span class="o">=</span> <span class="s">&quot;switchToParentFrame&quot;</span>
     <span class="n">GET_ACTIVE_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;getActiveElement&quot;</span>
     <span class="n">GET_CURRENT_URL</span> <span class="o">=</span> <span class="s">&quot;getCurrentUrl&quot;</span>
     <span class="n">GET_PAGE_SOURCE</span> <span class="o">=</span> <span class="s">&quot;getPageSource&quot;</span>
     <span class="n">GET_TITLE</span> <span class="o">=</span> <span class="s">&quot;getTitle&quot;</span>
     <span class="n">EXECUTE_SCRIPT</span> <span class="o">=</span> <span class="s">&quot;executeScript&quot;</span>
-    <span class="n">SET_BROWSER_VISIBLE</span> <span class="o">=</span> <span class="s">&quot;setBrowserVisible&quot;</span>
-    <span class="n">IS_BROWSER_VISIBLE</span> <span class="o">=</span> <span class="s">&quot;isBrowserVisible&quot;</span>
     <span class="n">GET_ELEMENT_TEXT</span> <span class="o">=</span> <span class="s">&quot;getElementText&quot;</span>
     <span class="n">GET_ELEMENT_VALUE</span> <span class="o">=</span> <span class="s">&quot;getElementValue&quot;</span>
     <span class="n">GET_ELEMENT_TAG_NAME</span> <span class="o">=</span> <span class="s">&quot;getElementTagName&quot;</span>
@@ -144,25 +143,25 @@
     <span class="n">GET_ALERT_TEXT</span> <span class="o">=</span> <span class="s">&quot;getAlertText&quot;</span>
 
     <span class="c"># Advanced user interactions</span>
-    <span class="n">CLICK</span> <span class="o">=</span> <span class="s">&quot;mouseClick&quot;</span><span class="p">;</span>
-    <span class="n">DOUBLE_CLICK</span> <span class="o">=</span> <span class="s">&quot;mouseDoubleClick&quot;</span><span class="p">;</span>
-    <span class="n">MOUSE_DOWN</span> <span class="o">=</span> <span class="s">&quot;mouseButtonDown&quot;</span><span class="p">;</span>
-    <span class="n">MOUSE_UP</span> <span class="o">=</span> <span class="s">&quot;mouseButtonUp&quot;</span><span class="p">;</span>
-    <span class="n">MOVE_TO</span> <span class="o">=</span> <span class="s">&quot;mouseMoveTo&quot;</span><span class="p">;</span>
+    <span class="n">CLICK</span> <span class="o">=</span> <span class="s">&quot;mouseClick&quot;</span>
+    <span class="n">DOUBLE_CLICK</span> <span class="o">=</span> <span class="s">&quot;mouseDoubleClick&quot;</span>
+    <span class="n">MOUSE_DOWN</span> <span class="o">=</span> <span class="s">&quot;mouseButtonDown&quot;</span>
+    <span class="n">MOUSE_UP</span> <span class="o">=</span> <span class="s">&quot;mouseButtonUp&quot;</span>
+    <span class="n">MOVE_TO</span> <span class="o">=</span> <span class="s">&quot;mouseMoveTo&quot;</span>
 
     <span class="c"># Screen Orientation</span>
     <span class="n">SET_SCREEN_ORIENTATION</span> <span class="o">=</span> <span class="s">&quot;setScreenOrientation&quot;</span>
     <span class="n">GET_SCREEN_ORIENTATION</span> <span class="o">=</span> <span class="s">&quot;getScreenOrientation&quot;</span>
 
     <span class="c"># Touch Actions</span>
-    <span class="n">SINGLE_TAP</span> <span class="o">=</span> <span class="s">&quot;touchSingleTap&quot;</span><span class="p">;</span>
-    <span class="n">TOUCH_DOWN</span> <span class="o">=</span> <span class="s">&quot;touchDown&quot;</span><span class="p">;</span>
-    <span class="n">TOUCH_UP</span> <span class="o">=</span> <span class="s">&quot;touchUp&quot;</span><span class="p">;</span>
-    <span class="n">TOUCH_MOVE</span> <span class="o">=</span> <span class="s">&quot;touchMove&quot;</span><span class="p">;</span>
-    <span class="n">TOUCH_SCROLL</span> <span class="o">=</span> <span class="s">&quot;touchScroll&quot;</span><span class="p">;</span>
-    <span class="n">DOUBLE_TAP</span> <span class="o">=</span> <span class="s">&quot;touchDoubleTap&quot;</span><span class="p">;</span>
-    <span class="n">LONG_PRESS</span> <span class="o">=</span> <span class="s">&quot;touchLongPress&quot;</span><span class="p">;</span>
-    <span class="n">FLICK</span> <span class="o">=</span> <span class="s">&quot;touchFlick&quot;</span><span class="p">;</span>
+    <span class="n">SINGLE_TAP</span> <span class="o">=</span> <span class="s">&quot;touchSingleTap&quot;</span>
+    <span class="n">TOUCH_DOWN</span> <span class="o">=</span> <span class="s">&quot;touchDown&quot;</span>
+    <span class="n">TOUCH_UP</span> <span class="o">=</span> <span class="s">&quot;touchUp&quot;</span>
+    <span class="n">TOUCH_MOVE</span> <span class="o">=</span> <span class="s">&quot;touchMove&quot;</span>
+    <span class="n">TOUCH_SCROLL</span> <span class="o">=</span> <span class="s">&quot;touchScroll&quot;</span>
+    <span class="n">DOUBLE_TAP</span> <span class="o">=</span> <span class="s">&quot;touchDoubleTap&quot;</span>
+    <span class="n">LONG_PRESS</span> <span class="o">=</span> <span class="s">&quot;touchLongPress&quot;</span>
+    <span class="n">FLICK</span> <span class="o">=</span> <span class="s">&quot;touchFlick&quot;</span>
 
     <span class="c">#HTML 5</span>
     <span class="n">EXECUTE_SQL</span> <span class="o">=</span> <span class="s">&quot;executeSql&quot;</span>
@@ -174,8 +173,8 @@
     <span class="n">GET_APP_CACHE_STATUS</span> <span class="o">=</span> <span class="s">&quot;getAppCacheStatus&quot;</span>
     <span class="n">CLEAR_APP_CACHE</span> <span class="o">=</span> <span class="s">&quot;clearAppCache&quot;</span>
 
-    <span class="n">IS_BROWSER_ONLINE</span> <span class="o">=</span> <span class="s">&quot;isBrowserOnline&quot;</span>
-    <span class="n">SET_BROWSER_ONLINE</span> <span class="o">=</span> <span class="s">&quot;setBrowserOnline&quot;</span>
+    <span class="n">GET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;getNetworkConnection&quot;</span>
+    <span class="n">SET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;setNetworkConnection&quot;</span>
 
     <span class="n">GET_LOCAL_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;getLocalStorageItem&quot;</span>
     <span class="n">REMOVE_LOCAL_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;removeLocalStorageItem&quot;</span>
@@ -184,7 +183,7 @@
     <span class="n">CLEAR_LOCAL_STORAGE</span> <span class="o">=</span> <span class="s">&quot;clearLocalStorage&quot;</span>
     <span class="n">GET_LOCAL_STORAGE_SIZE</span> <span class="o">=</span> <span class="s">&quot;getLocalStorageSize&quot;</span>
 
-    <span class="n">GET_SESSION_STORAGE_ITEM</span><span class="o">=</span> <span class="s">&quot;getSessionStorageItem&quot;</span>
+    <span class="n">GET_SESSION_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;getSessionStorageItem&quot;</span>
     <span class="n">REMOVE_SESSION_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;removeSessionStorageItem&quot;</span>
     <span class="n">GET_SESSION_STORAGE_KEYS</span> <span class="o">=</span> <span class="s">&quot;getSessionStorageKeys&quot;</span>
     <span class="n">SET_SESSION_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;setSessionStorageItem&quot;</span>

@@ -196,7 +196,11 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">driver</span><span class="o">.</span><span class="n">switch_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_locator</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_locator</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">frame_locator</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
@@ -305,7 +309,7 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">alert</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">switch_to_alert</span><span class="p">()</span>
+            <span class="n">alert</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">alert</span>
             <span class="n">alert</span><span class="o">.</span><span class="n">text</span>
             <span class="k">return</span> <span class="n">alert</span>
         <span class="k">except</span> <span class="n">NoAlertPresentException</span><span class="p">:</span>
