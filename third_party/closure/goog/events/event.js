@@ -21,9 +21,13 @@
 goog.provide('goog.events.Event');
 goog.provide('goog.events.EventLike');
 
-// goog.events.Event no longer depends on goog.Disposable. Keep requiring
-// goog.Disposable here to not break projects which assume this dependency.
+/**
+ * goog.events.Event no longer depends on goog.Disposable. Keep requiring
+ * goog.Disposable here to not break projects which assume this dependency.
+ * @suppress {extraRequire}
+ */
 goog.require('goog.Disposable');
+goog.require('goog.events.EventId');
 
 
 /**
@@ -32,7 +36,7 @@ goog.require('goog.Disposable');
  * goog.events.Event. Objects are treated as an extension of a new
  * goog.events.Event with the type property of the object being used as the type
  * of the Event.
- * @typedef {string|Object|goog.events.Event}
+ * @typedef {string|Object|goog.events.Event|goog.events.EventId}
  */
 goog.events.EventLike;
 
@@ -42,7 +46,7 @@ goog.events.EventLike;
  * A base class for event objects, so that they can support preventDefault and
  * stopPropagation.
  *
- * @param {string} type Event Type.
+ * @param {string|!goog.events.EventId} type Event Type.
  * @param {Object=} opt_target Reference to the object that is the target of
  *     this event. It has to implement the {@code EventTarget} interface
  *     declared at {@link http://developer.mozilla.org/en/DOM/EventTarget}.
@@ -53,7 +57,7 @@ goog.events.Event = function(type, opt_target) {
    * Event type.
    * @type {string}
    */
-  this.type = type;
+  this.type = type instanceof goog.events.EventId ? String(type) : type;
 
   /**
    * Target of the event.
@@ -66,6 +70,34 @@ goog.events.Event = function(type, opt_target) {
    * @type {Object|undefined}
    */
   this.currentTarget = this.target;
+
+  /**
+   * Whether to cancel the event in internal capture/bubble processing for IE.
+   * @type {boolean}
+   * @public
+   * @suppress {underscore|visibility} Technically public, but referencing this
+   *     outside this package is strongly discouraged.
+   */
+  this.propagationStopped_ = false;
+
+  /**
+   * Whether the default action has been prevented.
+   * This is a property to match the W3C specification at
+   * {@link http://www.w3.org/TR/DOM-Level-3-Events/
+   * #events-event-type-defaultPrevented}.
+   * Must be treated as read-only outside the class.
+   * @type {boolean}
+   */
+  this.defaultPrevented = false;
+
+  /**
+   * Return value for in internal capture/bubble processing for IE.
+   * @type {boolean}
+   * @public
+   * @suppress {underscore|visibility} Technically public, but referencing this
+   *     outside this package is strongly discouraged.
+   */
+  this.returnValue_ = true;
 };
 
 
@@ -85,34 +117,6 @@ goog.events.Event.prototype.disposeInternal = function() {
  */
 goog.events.Event.prototype.dispose = function() {
 };
-
-
-/**
- * Whether to cancel the event in internal capture/bubble processing for IE.
- * @type {boolean}
- * @suppress {underscore} Technically public, but referencing this outside
- *     this package is strongly discouraged.
- */
-goog.events.Event.prototype.propagationStopped_ = false;
-
-
-/**
- * Whether the default action has been prevented.
- * This is a property to match the W3C specification at {@link
- * http://www.w3.org/TR/DOM-Level-3-Events/#events-event-type-defaultPrevented}.
- * Must be treated as read-only outside the class.
- * @type {boolean}
- */
-goog.events.Event.prototype.defaultPrevented = false;
-
-
-/**
- * Return value for in internal capture/bubble processing for IE.
- * @type {boolean}
- * @suppress {underscore} Technically public, but referencing this outside
- *     this package is strongly discouraged.
- */
-goog.events.Event.prototype.returnValue_ = true;
 
 
 /**

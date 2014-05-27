@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.browserlaunchers;
 
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class MacProxyManager {
     }
     customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
     if (customProxyPACDir.exists()) {
-      LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
+      FileHandler.delete(customProxyPACDir);
     }
     customProxyPACDir.mkdir();
     log.info("Modifying OS X global network settings...");
@@ -213,7 +214,7 @@ public class MacProxyManager {
     String output = runNetworkSetup("-getwebproxy", networkService);
     log.fine(output);
     Map<String, String> dictionary =
-        Maps.parseDictionary(output.toString(), NETWORKSETUP_LINE, false);
+        Maps.parseDictionary(output, NETWORKSETUP_LINE, false);
     String strEnabled = verifyKey("Enabled", dictionary, "networksetup", output);
     boolean enabled = isTrueOrSomething(strEnabled);
     String server = verifyKey("Server", dictionary, "networksetup", output);
@@ -281,11 +282,11 @@ public class MacProxyManager {
     // and communicated with it line-by-line using stdin/stdout
     String output = runScutil("show State:/Network/Global/IPv4");
     log.fine(output);
-    Map<String, String> dictionary = Maps.parseDictionary(output.toString(), SCUTIL_LINE, false);
+    Map<String, String> dictionary = Maps.parseDictionary(output, SCUTIL_LINE, false);
     String primaryInterface = verifyKey("PrimaryInterface", dictionary, "scutil", output);
     output = runNetworkSetup("-listnetworkserviceorder");
     log.fine(output);
-    dictionary = Maps.parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
+    dictionary = Maps.parseDictionary(output, NETWORKSETUP_LISTORDER_LINE, true);
     String userDefinedName =
         verifyKey(primaryInterface, dictionary, "networksetup -listnetworksetuporder", output);
     networkService = userDefinedName;

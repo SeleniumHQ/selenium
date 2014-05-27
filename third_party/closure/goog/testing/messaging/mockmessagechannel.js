@@ -32,9 +32,10 @@ goog.require('goog.testing.asserts');
  *   the method mock for #send.
  * @extends {goog.messaging.AbstractChannel}
  * @constructor
+ * @final
  */
 goog.testing.messaging.MockMessageChannel = function(mockControl) {
-  goog.base(this);
+  goog.testing.messaging.MockMessageChannel.base(this, 'constructor');
 
   /**
    * Whether the channel has been disposed.

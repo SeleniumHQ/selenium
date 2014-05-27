@@ -45,6 +45,7 @@ goog.require('goog.iter');
  * all matches eventually.
  *
  * @constructor
+ * @final
  */
 goog.dom.pattern.Matcher = function() {
   this.patterns_ = [];

@@ -241,8 +241,8 @@ class FormHandlingTests(unittest.TestCase):
         self.assertEqual(True, peas.is_selected())
         
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

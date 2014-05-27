@@ -24,7 +24,7 @@ goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.object');
 goog.require('goog.ui.ControlRenderer');
 
@@ -37,7 +37,7 @@ goog.require('goog.ui.ControlRenderer');
  * @extends {goog.ui.ControlRenderer}
  */
 goog.ui.CheckboxRenderer = function() {
-  goog.base(this);
+  goog.ui.CheckboxRenderer.base(this, 'constructor');
 };
 goog.inherits(goog.ui.CheckboxRenderer, goog.ui.ControlRenderer);
 goog.addSingletonGetter(goog.ui.CheckboxRenderer);
@@ -67,21 +67,28 @@ goog.ui.CheckboxRenderer.prototype.createDom = function(checkbox) {
 goog.ui.CheckboxRenderer.prototype.decorate = function(checkbox, element) {
   // The superclass implementation takes care of common attributes; we only
   // need to set the checkbox state.
-  element = goog.base(this, 'decorate', checkbox, element);
-
-  var classes = goog.dom.classes.get(element);
+  element = goog.ui.CheckboxRenderer.base(this, 'decorate', checkbox, element);
+  goog.asserts.assert(element);
+  var classes = goog.dom.classlist.get(element);
   // Update the checked state of the element based on its css classNames
   // with the following order: undetermined -> checked -> unchecked.
-  var checked = goog.ui.Checkbox.State.UNCHECKED;
+  var checked = /** @suppress {missingRequire} */ (
+      goog.ui.Checkbox.State.UNCHECKED);
   if (goog.array.contains(classes,
-      this.getClassForCheckboxState(goog.ui.Checkbox.State.UNDETERMINED))) {
-    checked = goog.ui.Checkbox.State.UNDETERMINED;
+      this.getClassForCheckboxState(
+          /** @suppress {missingRequire} */
+          goog.ui.Checkbox.State.UNDETERMINED))) {
+    checked = (/** @suppress {missingRequire} */
+        goog.ui.Checkbox.State.UNDETERMINED);
   } else if (goog.array.contains(classes,
-      this.getClassForCheckboxState(goog.ui.Checkbox.State.CHECKED))) {
-    checked = goog.ui.Checkbox.State.CHECKED;
+      this.getClassForCheckboxState(
+          /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED))) {
+    checked = /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED;
   } else if (goog.array.contains(classes,
-      this.getClassForCheckboxState(goog.ui.Checkbox.State.UNCHECKED))) {
-    checked = goog.ui.Checkbox.State.UNCHECKED;
+      this.getClassForCheckboxState(/** @suppress {missingRequire} */
+          goog.ui.Checkbox.State.UNCHECKED))) {
+    checked = (/** @suppress {missingRequire} */
+        goog.ui.Checkbox.State.UNCHECKED);
   }
   checkbox.setCheckedInternal(checked);
   goog.asserts.assert(element, 'The element cannot be null.');
@@ -111,16 +118,21 @@ goog.ui.CheckboxRenderer.prototype.getAriaRole = function() {
 goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
     element, state) {
   if (element) {
+    goog.asserts.assert(element);
     var classToAdd = this.getClassForCheckboxState(state);
     goog.asserts.assert(classToAdd);
-    if (goog.dom.classes.has(element, classToAdd)) {
+    goog.asserts.assert(element);
+    if (goog.dom.classlist.contains(element, classToAdd)) {
       return;
     }
-    goog.object.forEach(goog.ui.Checkbox.State, function(state) {
-      var className = this.getClassForCheckboxState(state);
-      goog.dom.classes.enable(element, className,
-          className == classToAdd);
-    }, this);
+    goog.object.forEach(
+        /** @suppress {missingRequire} */ goog.ui.Checkbox.State,
+        function(state) {
+          var className = this.getClassForCheckboxState(state);
+          goog.asserts.assert(element);
+          goog.dom.classlist.enable(element, className,
+                                    className == classToAdd);
+        }, this);
     goog.a11y.aria.setState(element, goog.a11y.aria.State.CHECKED,
         this.ariaStateFromCheckState_(state));
   }
@@ -135,9 +147,11 @@ goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
  * @private
  */
 goog.ui.CheckboxRenderer.prototype.ariaStateFromCheckState_ = function(state) {
-  if (state == goog.ui.Checkbox.State.UNDETERMINED) {
+  if (state ==
+      /** @suppress {missingRequire} */ goog.ui.Checkbox.State.UNDETERMINED) {
     return 'mixed';
-  } else if (state == goog.ui.Checkbox.State.CHECKED) {
+  } else if (state ==
+             /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
     return 'true';
   } else {
     return 'false';
@@ -160,11 +174,16 @@ goog.ui.CheckboxRenderer.prototype.getCssClass = function() {
  */
 goog.ui.CheckboxRenderer.prototype.getClassForCheckboxState = function(state) {
   var baseClass = this.getStructuralCssClass();
-  if (state == goog.ui.Checkbox.State.CHECKED) {
+  if (state ==
+      /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
     return goog.getCssName(baseClass, 'checked');
-  } else if (state == goog.ui.Checkbox.State.UNCHECKED) {
+  } else if (state ==
+             /** @suppress {missingRequire} */
+             goog.ui.Checkbox.State.UNCHECKED) {
     return goog.getCssName(baseClass, 'unchecked');
-  } else if (state == goog.ui.Checkbox.State.UNDETERMINED) {
+  } else if (state ==
+             /** @suppress {missingRequire} */
+             goog.ui.Checkbox.State.UNDETERMINED) {
     return goog.getCssName(baseClass, 'undetermined');
   }
   throw Error('Invalid checkbox state: ' + state);

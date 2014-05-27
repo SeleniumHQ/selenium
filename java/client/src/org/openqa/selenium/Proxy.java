@@ -330,4 +330,17 @@ public class Proxy {
     }
   }
 
+  @SuppressWarnings({"unchecked"})
+  public static Proxy extractFrom(Capabilities capabilities) {
+    Object rawProxy = capabilities.getCapability("proxy");
+    Proxy proxy = null;
+    if (rawProxy != null) {
+      if (rawProxy instanceof Proxy) {
+        proxy = (Proxy) rawProxy;
+      } else if (rawProxy instanceof Map) {
+        proxy = new Proxy((Map<String, ?>) rawProxy);
+      }
+    }
+    return proxy;
+  }
 }

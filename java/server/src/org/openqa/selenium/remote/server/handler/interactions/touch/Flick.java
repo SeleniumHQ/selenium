@@ -25,11 +25,10 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class Flick extends WebElementHandler implements JsonParametersAware {
+public class Flick extends WebElementHandler<Void> implements JsonParametersAware {
 
   private static final String ELEMENT = "element";
   private static final String XOFFSET = "xoffset";
@@ -48,7 +47,8 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     if (elementId != null) {
@@ -59,7 +59,7 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
       touchScreen.flick(xSpeed, ySpeed);
     }
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

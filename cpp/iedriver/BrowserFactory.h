@@ -142,8 +142,6 @@ class BrowserFactory {
   UINT html_getobject_msg_;
   HINSTANCE oleacc_instance_handle_;
 
-  void SetThreadIntegrityLevel(void);
-  void ResetThreadIntegrityLevel(void);
   bool CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                     HANDLE* mic_token_handle,
                                     PSID* sid);

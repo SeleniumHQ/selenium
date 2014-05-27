@@ -22,14 +22,12 @@ goog.provide('goog.ui.editor.AbstractDialog');
 goog.provide('goog.ui.editor.AbstractDialog.Builder');
 goog.provide('goog.ui.editor.AbstractDialog.EventType');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventTarget');
+goog.require('goog.string');
 goog.require('goog.ui.Dialog');
-goog.require('goog.ui.Dialog.ButtonSet');
-goog.require('goog.ui.Dialog.DefaultButtonKeys');
-goog.require('goog.ui.Dialog.Event');
-goog.require('goog.ui.Dialog.EventType');
 
 
 // *** Public interface ***************************************************** //
@@ -58,7 +56,7 @@ goog.ui.editor.AbstractDialog.prototype.show = function() {
   // Lazily create the wrapped dialog to be shown.
   if (!this.dialogInternal_) {
     this.dialogInternal_ = this.createDialogControl();
-    this.dialogInternal_.addEventListener(goog.ui.Dialog.EventType.AFTER_HIDE,
+    this.dialogInternal_.listen(goog.ui.Dialog.EventType.AFTER_HIDE,
         this.handleAfterHide_, false, this);
   }
 
@@ -146,7 +144,7 @@ goog.ui.editor.AbstractDialog.Builder = function(editorDialog) {
 /**
  * Sets the title of the dialog.
  * @param {string} title Title HTML (escaped).
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.setTitle = function(title) {
   this.wrappedDialog_.setTitle(title);
@@ -158,7 +156,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.setTitle = function(title) {
  * Adds an OK button to the dialog. Clicking this button will cause {@link
  * handleOk} to run, subsequently dispatching an OK event.
  * @param {string=} opt_label The caption for the button, if not "OK".
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addOkButton =
     function(opt_label) {
@@ -177,7 +175,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addOkButton =
  * Adds a Cancel button to the dialog. Clicking this button will cause {@link
  * handleCancel} to run, subsequently dispatching a CANCEL event.
  * @param {string=} opt_label The caption for the button, if not "Cancel".
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addCancelButton =
     function(opt_label) {
@@ -201,7 +199,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addCancelButton =
  *     it dispatch an event (see {@link handleOk}).
  * @param {string=} opt_buttonId Identifier to be used to access the button when
  *     calling AbstractDialog.getButtonElement().
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addButton =
     function(label, handler, opt_buttonId) {
@@ -217,11 +215,12 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addButton =
 /**
  * Puts a CSS class on the dialog's main element.
  * @param {string} className The class to add.
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.addClassName =
     function(className) {
-  goog.dom.classes.add(this.wrappedDialog_.getDialogElement(), className);
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.wrappedDialog_.getDialogElement()), className);
   return this;
 };
 
@@ -229,7 +228,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.addClassName =
 /**
  * Sets the content element of the dialog.
  * @param {Element} contentElem An element for the main body.
- * @return {goog.ui.editor.AbstractDialog.Builder} This.
+ * @return {!goog.ui.editor.AbstractDialog.Builder} This.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.setContent =
     function(contentElem) {
@@ -241,7 +240,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.setContent =
 /**
  * Builds the wrapped dialog control. May only be called once, after which
  * no more methods may be called on this builder.
- * @return {goog.ui.Dialog} The wrapped dialog control.
+ * @return {!goog.ui.Dialog} The wrapped dialog control.
  */
 goog.ui.editor.AbstractDialog.Builder.prototype.build = function() {
   if (this.buttonSet_.isEmpty()) {
@@ -253,7 +252,7 @@ goog.ui.editor.AbstractDialog.Builder.prototype.build = function() {
 
   var handlers = this.buttonHandlers_;
   this.buttonHandlers_ = null;
-  this.wrappedDialog_.addEventListener(goog.ui.Dialog.EventType.SELECT,
+  this.wrappedDialog_.listen(goog.ui.Dialog.EventType.SELECT,
       // Listen for the SELECT event, which means a button was clicked, and
       // call the handler associated with that button via the key property.
       function(e) {
@@ -318,7 +317,7 @@ goog.ui.editor.AbstractDialog.prototype.dom;
 /**
  * Creates and returns the goog.ui.Dialog control that is being wrapped
  * by this object.
- * @return {goog.ui.Dialog} Created Dialog control.
+ * @return {!goog.ui.Dialog} Created Dialog control.
  * @protected
  */
 goog.ui.editor.AbstractDialog.prototype.createDialogControl =

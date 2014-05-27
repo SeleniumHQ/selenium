@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2010 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package org.openqa.selenium.remote;
 import static org.openqa.selenium.remote.CapabilityType.HAS_TOUCHSCREEN;
 import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
@@ -31,10 +31,10 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
-import org.openqa.selenium.remote.html5.AddBrowserConnection;
 import org.openqa.selenium.remote.html5.AddDatabaseStorage;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
+import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public abstract class BaseAugmenter {
     addDriverAugmentation(SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
     addDriverAugmentation(SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
     addDriverAugmentation(SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
-    addDriverAugmentation(SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
+    addDriverAugmentation(SUPPORTS_NETWORK_CONNECTION, new AddNetworkConnection());
     addDriverAugmentation(SUPPORTS_WEB_STORAGE, new AddWebStorage());
     addDriverAugmentation(ROTATABLE, new AddRotatable());
     addDriverAugmentation(HAS_TOUCHSCREEN, new AddRemoteTouchScreen());

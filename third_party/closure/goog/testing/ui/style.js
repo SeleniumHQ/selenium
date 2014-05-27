@@ -21,8 +21,9 @@
 goog.provide('goog.testing.ui.style');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.testing.asserts');
 
 
@@ -56,7 +57,7 @@ goog.testing.ui.style.getReferenceNode = function(referenceId) {
 /**
  * Returns an array of all element children of a given node.
  * @param {Node} element The node to get element children of.
- * @return {Array.<Node>} An array of all the element children.
+ * @return {!Array.<!Node>} An array of all the element children.
  */
 goog.testing.ui.style.getElementChildren = function(element) {
   var first = goog.dom.getFirstElementChild(element);
@@ -115,8 +116,10 @@ goog.testing.ui.style.assertStructureMatchesReferenceInner_ = function(element,
   assertTrue('Expected two elements.', !!element && !!reference);
   assertEquals('Expected nodes to have the same nodeName.',
       element.nodeName, reference.nodeName);
-  var elementClasses = goog.dom.classes.get(element);
-  goog.array.forEach(goog.dom.classes.get(reference), function(referenceClass) {
+  var testElem = goog.asserts.assertElement(element);
+  var refElem = goog.asserts.assertElement(reference);
+  var elementClasses = goog.dom.classlist.get(testElem);
+  goog.array.forEach(goog.dom.classlist.get(refElem), function(referenceClass) {
     assertContains('Expected test node to have all reference classes.',
         referenceClass, elementClasses);
   });

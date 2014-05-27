@@ -17,34 +17,21 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class ClearElement extends WebDriverHandler {
-
-  private volatile String elementId;
+public class ClearElement extends WebElementHandler<Void> {
 
   public ClearElement(Session session) {
     super(session);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
-  public ResultType call() throws Exception {
-    getKnownElements().get(elementId).clear();
-
-    return ResultType.SUCCESS;
+  @Override
+  public Void call() throws Exception {
+    getElement().clear();
+    return null;
   }
 
   @Override
   public String toString() {
-    String element = "unknown element";
-    try {
-      element = String.valueOf(getKnownElements().get(elementId));
-    } catch (RuntimeException e) {
-      // Be paranoid!
-    }
-    return String.format("[clear: %s %s]", elementId, element);
+    return String.format("[clear: %s]", getElementAsString());
   }
 }

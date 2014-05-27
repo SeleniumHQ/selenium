@@ -19,6 +19,8 @@
 
 goog.provide('goog.math.Range');
 
+goog.require('goog.asserts');
+
 
 
 /**
@@ -43,10 +45,49 @@ goog.math.Range = function(a, b) {
 
 
 /**
+ * Creates a goog.math.Range from an array of two numbers.
+ * @param {!Array.<number>} pair
+ * @return {!goog.math.Range}
+ */
+goog.math.Range.fromPair = function(pair) {
+  goog.asserts.assert(pair.length == 2);
+  return new goog.math.Range(pair[0], pair[1]);
+};
+
+
+/**
  * @return {!goog.math.Range} A clone of this Range.
  */
 goog.math.Range.prototype.clone = function() {
   return new goog.math.Range(this.start, this.end);
+};
+
+
+/**
+ * @return {number} Length of the range.
+ */
+goog.math.Range.prototype.getLength = function() {
+  return this.end - this.start;
+};
+
+
+/**
+ * Extends this range to include the given point.
+ * @param {number} point
+ */
+goog.math.Range.prototype.includePoint = function(point) {
+  this.start = Math.min(this.start, point);
+  this.end = Math.max(this.end, point);
+};
+
+
+/**
+ * Extends this range to include the given range.
+ * @param {!goog.math.Range} range
+ */
+goog.math.Range.prototype.includeRange = function(range) {
+  this.start = Math.min(this.start, range.start);
+  this.end = Math.max(this.end, range.end);
 };
 
 

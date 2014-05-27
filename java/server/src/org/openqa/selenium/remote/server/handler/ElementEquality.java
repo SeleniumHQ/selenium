@@ -20,9 +20,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class ElementEquality extends WebElementHandler {
+public class ElementEquality extends WebElementHandler<Boolean> {
   private volatile String otherId;
 
   public ElementEquality(Session session) {
@@ -33,7 +32,8 @@ public class ElementEquality extends WebElementHandler {
     this.otherId = otherId;
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Boolean call() throws Exception {
 
     WebElement one = getElement();
     WebElement two = getKnownElements().get(otherId);
@@ -46,9 +46,7 @@ public class ElementEquality extends WebElementHandler {
       two = ((KnownElements.ProxiedElement) two).getWrappedElement();
     }
 
-    response.setValue(one.equals(two));
-
-    return ResultType.SUCCESS;
+    return one.equals(two);
   }
 
   @Override

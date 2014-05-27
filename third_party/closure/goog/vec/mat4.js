@@ -36,7 +36,7 @@ goog.require('goog.vec.Vec4');
 /** @typedef {goog.vec.AnyType} */ goog.vec.Mat4.AnyType;
 
 // The following two types are deprecated - use the above types instead.
-/** @typedef {Float32Array} */ goog.vec.Mat4.Type;
+/** @typedef {!Float32Array} */ goog.vec.Mat4.Type;
 /** @typedef {goog.vec.ArrayType} */ goog.vec.Mat4.Mat4Like;
 
 
@@ -1793,7 +1793,7 @@ goog.vec.Mat4.getTranslation = function(mat, translation) {
 
 
 /**
- * @type {Array.<goog.vec.Vec3.Type>}
+ * @type {!Array.<!goog.vec.Vec3.Type>}
  * @private
  */
 goog.vec.Mat4.tmpVec3_ = [
@@ -1803,7 +1803,7 @@ goog.vec.Mat4.tmpVec3_ = [
 
 
 /**
- * @type {Array.<goog.vec.Vec4.Type>}
+ * @type {!Array.<!goog.vec.Vec4.Type>}
  * @private
  */
 goog.vec.Mat4.tmpVec4_ = [
@@ -1814,7 +1814,7 @@ goog.vec.Mat4.tmpVec4_ = [
 
 
 /**
- * @type {Array.<goog.vec.Mat4.Type>}
+ * @type {!Array.<!goog.vec.Mat4.Type>}
  * @private
  */
 goog.vec.Mat4.tmpMat4_ = [

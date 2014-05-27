@@ -21,19 +21,18 @@ import static org.openqa.selenium.OutputType.BASE64;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class CaptureScreenshot extends ResponseAwareWebDriverHandler {
+public class CaptureScreenshot extends WebDriverHandler<String> {
 
   public CaptureScreenshot(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public String call() throws Exception {
     WebDriver driver = getUnwrappedDriver();
 
-    response.setValue(((TakesScreenshot) driver).getScreenshotAs(BASE64));
-    return ResultType.SUCCESS;
+    return ((TakesScreenshot) driver).getScreenshotAs(BASE64);
   }
 
   @Override

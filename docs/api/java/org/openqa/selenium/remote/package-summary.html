@@ -96,35 +96,47 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a>&lt;T&gt;</td>
+<td class="colLast">
+<div class="block">Converts <a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote"><code>Command</code></a> objects to and from another representation.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></td>
 <td class="colLast">
 <div class="block">An empty interface defining constants for the standard commands defined in the WebDriver JSON
  wire protocol.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a></td>
 <td class="colLast">
 <div class="block">An encapsulation of
  <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String, java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a></td>
 <td class="colLast">
 <div class="block">Used for identifying whether a sequence of chars represents the path to a
  file.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/InterfaceImplementation.html" title="interface in org.openqa.selenium.remote">InterfaceImplementation</a></td>
 <td class="colLast">
 <div class="block">An implementation of a particular interface, used by the
  <a href="../../../../org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><code>Augmenter</code></a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a>&lt;T&gt;</td>
+<td class="colLast">
+<div class="block">Converts <a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote"><code>Response</code></a> objects to and from another representation.</div>
 </td>
 </tr>
 </tbody>
@@ -267,14 +279,20 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/remote/Responses.html" title="class in org.openqa.selenium.remote">Responses</a></td>
+<td class="colLast">
+<div class="block">Contains factory methods for creating <a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote"><code>Response</code></a> objects.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote">SimplePropertyDescriptor</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote">UselessFileDetector</a></td>
 <td class="colLast">
 <div class="block">A file detector that never finds anything.</div>
@@ -293,7 +311,9 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/HttpVerb.html" title="enum in org.openqa.selenium.remote">HttpVerb</a></td>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">Deprecated
+<div class="block"><i>Use <a href="../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http"><code>HttpMethod</code></a>.</i></div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote">RemoteWebDriver.When</a></td>
@@ -335,6 +355,23 @@
 <td class="colLast">
 <div class="block">Indicates there was a problem communicating with the browser being
  controlled or the Selenium server.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Annotation Types Summary table, listing annotation types, and an explanation">
+<caption><span>Annotation Types Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Annotation Type</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/remote/Augmentable.html" title="annotation in org.openqa.selenium.remote">Augmentable</a></td>
+<td class="colLast">
+<div class="block">Indicates that a class can be processed by <a href="../../../../org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><code>Augmenter</code></a>.</div>
 </td>
 </tr>
 </tbody>

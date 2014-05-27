@@ -29,6 +29,7 @@ goog.require('goog.string');
  * @param {string=} opt_address The email address.
  * @param {string=} opt_name The name associated with the email address.
  * @constructor
+ * @final
  */
 goog.format.EmailAddress = function(opt_address, opt_name) {
   /**
@@ -101,6 +102,47 @@ goog.format.EmailAddress.ALL_BACKSLASHES_ = /\\/g;
  * @private
  */
 goog.format.EmailAddress.ESCAPED_BACKSLASHES_ = /\\\\/g;
+
+
+/**
+ * A string representing the RegExp for the local part of an email address.
+ * @private {string}
+ */
+goog.format.EmailAddress.LOCAL_PART_REGEXP_STR_ =
+    '[+a-zA-Z0-9_.!#$%&\'*\\/=?^`{|}~-]+';
+
+
+/**
+ * A string representing the RegExp for the domain part of an email address.
+ * @private {string}
+ */
+goog.format.EmailAddress.DOMAIN_PART_REGEXP_STR_ =
+    '([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,63}';
+
+
+/**
+ * A RegExp to match the local part of an email address.
+ * @private {RegExp}
+ */
+goog.format.EmailAddress.LOCAL_PART_ =
+    new RegExp('^' + goog.format.EmailAddress.LOCAL_PART_REGEXP_STR_ + '$');
+
+
+/**
+ * A RegExp to match the domain part of an email address.
+ * @private {RegExp}
+ */
+goog.format.EmailAddress.DOMAIN_PART_ =
+    new RegExp('^' + goog.format.EmailAddress.DOMAIN_PART_REGEXP_STR_ + '$');
+
+
+/**
+ * A RegExp to match an email address.
+ * @private {RegExp}
+ */
+goog.format.EmailAddress.EMAIL_ADDRESS_ =
+    new RegExp('^' + goog.format.EmailAddress.LOCAL_PART_REGEXP_STR_ + '@' +
+        goog.format.EmailAddress.DOMAIN_PART_REGEXP_STR_ + '$');
 
 
 /**
@@ -201,9 +243,29 @@ goog.format.EmailAddress.isValidAddrSpec = function(str) {
   // For more details, see http://en.wikipedia.org/wiki/Email_address#Syntax
   // TODO(mariakhomenko): we should also be handling i18n domain names as per
   // http://en.wikipedia.org/wiki/Internationalized_domain_name
-  var filter =
-      /^[+a-zA-Z0-9_.!#$%&'*\/=?^`{|}~-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,6}$/;
-  return filter.test(str);
+  return goog.format.EmailAddress.EMAIL_ADDRESS_.test(str);
+};
+
+
+/**
+ * Checks if the provided string is a valid local port (part before the '@') of
+ * an email address.
+ * @param {string} str The local part to check.
+ * @return {boolean} Whether the provided string is a valid local part.
+ */
+goog.format.EmailAddress.isValidLocalPartSpec = function(str) {
+  return goog.format.EmailAddress.LOCAL_PART_.test(str);
+};
+
+
+/**
+ * Checks if the provided string is a valid domain port (part after the '@') of
+ * an email address.
+ * @param {string} str The domain part to check.
+ * @return {boolean} Whether the provided string is a valid domain part.
+ */
+goog.format.EmailAddress.isValidDomainPartSpec = function(str) {
+  return goog.format.EmailAddress.DOMAIN_PART_.test(str);
 };
 
 
@@ -211,7 +273,7 @@ goog.format.EmailAddress.isValidAddrSpec = function(str) {
  * Parse an email address of the form "name" &lt;address&gt; into
  * an email address.
  * @param {string} addr The address string.
- * @return {goog.format.EmailAddress} The parsed address.
+ * @return {!goog.format.EmailAddress} The parsed address.
  */
 goog.format.EmailAddress.parse = function(addr) {
   // TODO(ecattell): Strip bidi markers.
@@ -249,12 +311,17 @@ goog.format.EmailAddress.parse = function(addr) {
  * Parse a string containing email addresses of the form
  * "name" &lt;address&gt; into an array of email addresses.
  * @param {string} str The address list.
- * @return {Array.<goog.format.EmailAddress>} The parsed emails.
+ * @return {!Array.<!goog.format.EmailAddress>} The parsed emails.
  */
 goog.format.EmailAddress.parseList = function(str) {
   var result = [];
   var email = '';
   var token;
+
+  // Remove non-UNIX-style newlines that would otherwise cause getToken_ to
+  // choke. Remove multiple consecutive whitespace characters for the same
+  // reason.
+  str = goog.string.collapseWhitespace(str);
 
   for (var i = 0; i < str.length; ) {
     token = goog.format.EmailAddress.getToken_(str, i);

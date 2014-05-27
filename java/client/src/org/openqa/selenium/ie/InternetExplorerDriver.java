@@ -17,15 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
@@ -145,37 +142,31 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    */
   private final static int DEFAULT_PORT = 0;
 
-  /**
-   * Proxy manager.
-   */
-  private WindowsProxyManager proxyManager;
-
   public InternetExplorerDriver() {
-    this(null, null, null, DEFAULT_PORT);
+    this(null, null, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(Capabilities capabilities) {
-    this(null, null, capabilities, DEFAULT_PORT);
+    this(null, capabilities, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(int port) {
-    this(null, null, null, port);
+    this(null, null, port);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(null, service, null, DEFAULT_PORT);
+    this(service, null, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
-    this(null, service, capabilities, DEFAULT_PORT);
+    this(service, capabilities, DEFAULT_PORT);
   }
 
-  public InternetExplorerDriver(WindowsProxyManager proxy, InternetExplorerDriverService service, Capabilities capabilities, int port) {
+  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities,
+      int port) {
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }
-
-    proxyManager = proxy;
 
     if (service == null) {
       service = setupService(capabilities, port);
@@ -185,8 +176,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   private void run(InternetExplorerDriverService service, Capabilities capabilities) {
     assertOnWindows();
-
-    prepareProxy(capabilities);
 
     setCommandExecutor(new DriverCommandExecutor(service));
 
@@ -265,25 +254,4 @@ public class InternetExplorerDriver extends RemoteWebDriver {
       throw Throwables.propagate(ex);
     }
   }
-
-  private void prepareProxy(Capabilities caps) {
-    // do not prepare proxy manager if it will be managed by server.
-    if (caps == null || caps.getCapability(PROXY) == null || proxyManager == null) {
-      return;
-    }
-
-    // Because of the way that the proxying is currently implemented,
-    // we can only set a single host.
-    proxyManager.backupRegistrySettings();
-    proxyManager.changeRegistrySettings(caps);
-
-    Thread cleanupThread = new Thread() { // Thread safety reviewed
-      @Override
-      public void run() {
-        proxyManager.restoreRegistrySettings(true);
-      }
-    };
-    Runtime.getRuntime().addShutdownHook(cleanupThread);
-  }
-
 }

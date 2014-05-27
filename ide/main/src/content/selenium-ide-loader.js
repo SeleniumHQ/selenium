@@ -37,30 +37,42 @@ SeleniumIDE.Loader.getTopEditor = function() {
 
 SeleniumIDE.Loader.getEditors = function() {
 	var editors = [];
-	if (document) {
-		var sidebarBox = document.getElementById('sidebar-box');
-		if (sidebarBox && !sidebarBox.hidden) {
-			var sidebar = document.getElementById('sidebar');
-			try {
-				if (sidebar && sidebar.contentDocument) {
-					if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
-						var sidebarView = sidebar.contentDocument.defaultView;
-						if (sidebarView && sidebarView.editor) {
-							editors.push(sidebarView.editor);
-						}
-					}
-				}
-			} catch (error) {
-			}
-		}
+  var editor = this.getSidebarEditor(document);
+	if (editor) {
+    editors.push(editor);
 	}
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var editorWindow = wm.getMostRecentWindow('global:selenium-ide');
 	if (editorWindow && editorWindow.editor) {
 		editors.push(editorWindow.editor);
 	}
+  var mainWindow = wm.getMostRecentWindow("navigator:browser");
+  editor = this.getSidebarEditor(mainWindow.document);
+  if (editor) {
+    editors.push(editor);
+  }
 	return editors;
-}
+};
+
+SeleniumIDE.Loader.getSidebarEditor = function(doc) {
+  if (doc) {
+    var sidebarBox = doc.getElementById('sidebar-box');
+    if (sidebarBox && !sidebarBox.hidden) {
+      var sidebar = doc.getElementById('sidebar');
+      try {
+        if (sidebar && sidebar.contentDocument) {
+          if ("chrome://selenium-ide/content/selenium-ide-sidebar.xul" == sidebar.contentDocument.documentURI) {
+            var sidebarView = sidebar.contentDocument.defaultView;
+            if (sidebarView && sidebarView.editor) {
+              return sidebarView.editor;
+            }
+          }
+        }
+      } catch (error) {
+      }
+    }
+  }
+};
 
 SeleniumIDE.Loader.reloadRecorder = function(contentWindow, isRootDocument) {
 	var editors = this.getEditors();

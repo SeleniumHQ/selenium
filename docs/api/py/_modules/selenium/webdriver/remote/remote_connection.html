@@ -47,9 +47,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.remote_connection</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2009 WebDriver committers</span>
-<span class="c"># Copyright 2008-2009 Google Inc.</span>
-<span class="c"># Copyright 2013 BrowserStack</span>
+<span class="c"># Copyright 2008-2013 Software Freedom Conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -70,17 +68,11 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">httplib</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">httplib</span>
-
-<span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
-
-<span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> <span class="c"># above is available in py3+, below is py2.7</span>
+    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">httplib</span>
+    <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
     <span class="kn">import</span> <span class="nn">urlparse</span> <span class="kn">as</span> <span class="nn">parse</span>
 
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
@@ -100,8 +92,8 @@
 <span class="sd">        Initialise a new HTTP request.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - url - String for the URL to send the request to.</span>
-<span class="sd">         - data - Data to send with the request.</span>
+<span class="sd">        - url - String for the URL to send the request to.</span>
+<span class="sd">        - data - Data to send with the request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">method</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="s">&#39;POST&#39;</span> <span class="ow">or</span> <span class="s">&#39;GET&#39;</span>
@@ -127,10 +119,10 @@
 <span class="sd">        Initialise a new Response.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - fp - The response body file object.</span>
-<span class="sd">         - code - The HTTP status code returned by the server.</span>
-<span class="sd">         - headers - A dictionary of headers returned by the server.</span>
-<span class="sd">         - url - URL of the retrieved resource represented by this Response.</span>
+<span class="sd">        - fp - The response body file object.</span>
+<span class="sd">        - code - The HTTP status code returned by the server.</span>
+<span class="sd">        - headers - A dictionary of headers returned by the server.</span>
+<span class="sd">        - url - URL of the retrieved resource represented by this Response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span>
@@ -170,14 +162,14 @@
 <span class="sd">        Default HTTP error handler.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - req - The original Request object.</span>
-<span class="sd">         - fp - The response body file object.</span>
-<span class="sd">         - code - The HTTP status code returned by the server.</span>
-<span class="sd">         - msg - The HTTP status message returned by the server.</span>
-<span class="sd">         - headers - The response headers.</span>
+<span class="sd">        - req - The original Request object.</span>
+<span class="sd">        - fp - The response body file object.</span>
+<span class="sd">        - code - The HTTP status code returned by the server.</span>
+<span class="sd">        - msg - The HTTP status message returned by the server.</span>
+<span class="sd">        - headers - The response headers.</span>
 
 <span class="sd">        :Returns:</span>
-<span class="sd">          A new Response object.</span>
+<span class="sd">        A new Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">get_full_url</span><span class="p">())</span>
 
@@ -189,8 +181,9 @@
 <span class="sd">    Communicates with the server using the WebDriver wire protocol:</span>
 <span class="sd">    http://code.google.com/p/selenium/wiki/JsonWireProtocol</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="c"># Attempt to resolve the hostname and get an IP address.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">remote_server_addr</span><span class="p">)</span>
         <span class="n">addr</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">:</span>
@@ -211,7 +204,8 @@
                 <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not get IP address for host: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">remote_server_addr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">keep_alive</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">STATUS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/status&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session&#39;</span><span class="p">),</span>
@@ -401,45 +395,88 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send an HTTP request to the remote server.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - method - A string for the HTTP method to send the request with.</span>
-<span class="sd">         - url - The URL to send the request to.</span>
-<span class="sd">         - body - The message body to send.</span>
+<span class="sd">         - url - A string for the URL to send the request to.</span>
+<span class="sd">         - body - A string for request body. Ignored unless method is POST or PUT.</span>
 
 <span class="sd">        :Returns:</span>
 <span class="sd">          A dictionary with the server&#39;s parsed JSON response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">))</span>
 
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Connection&quot;</span><span class="p">:</span> <span class="s">&quot;keep-alive&quot;</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                   <span class="s">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s">&quot;Python http auth&quot;</span><span class="p">,</span>
-                   <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
-                   <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
 
-        <span class="c"># for basic auth</span>
-        <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-            <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
-            <span class="c"># Authorization header</span>
-            <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">auth</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Connection&quot;</span><span class="p">:</span> <span class="s">&#39;keep-alive&#39;</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                       <span class="s">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s">&quot;Python http auth&quot;</span><span class="p">,</span>
+                       <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+                       <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+                <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                       <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">auth</span>
+            <span class="k">if</span> <span class="n">body</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;PUT&#39;</span><span class="p">:</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+                <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
-        <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">status</span>
-        <span class="n">statusmessage</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">msg</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">statuscode</span><span class="p">,</span> <span class="n">statusmessage</span><span class="p">))</span>
+            <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">status</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">password_manager</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+                <span class="n">netloc</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span>
+                <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">:</span>
+                    <span class="n">netloc</span> <span class="o">+=</span> <span class="s">&quot;:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span>
+                <span class="n">cleaned_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlunparse</span><span class="p">((</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                                                   <span class="n">netloc</span><span class="p">,</span>
+                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">,</span>
+                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">fragment</span><span class="p">))</span>
+                <span class="n">password_manager</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">HTTPPasswordMgrWithDefaultRealm</span><span class="p">()</span>
+                <span class="n">password_manager</span><span class="o">.</span><span class="n">add_password</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
+                                              <span class="s">&quot;</span><span class="si">%s</span><span class="s">://</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="p">),</span>
+                                              <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                                              <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">cleaned_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+
+            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Accept&#39;</span><span class="p">,</span> <span class="s">&#39;application/json&#39;</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s">&#39;application/json;charset=UTF-8&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">password_manager</span><span class="p">:</span>
+                <span class="n">opener</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>
+                                                  <span class="n">HttpErrorHandler</span><span class="p">(),</span>
+                                                  <span class="n">url_request</span><span class="o">.</span><span class="n">HTTPBasicAuthHandler</span><span class="p">(</span><span class="n">password_manager</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">opener</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>
+                                                  <span class="n">HttpErrorHandler</span><span class="p">())</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">code</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s">&#39;getheader&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="s">&#39;getheader&#39;</span><span class="p">):</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="s">&#39;get&#39;</span><span class="p">):</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
         <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="mi">399</span> <span class="o">&lt;</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">statuscode</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
             <span class="k">if</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">304</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s">&#39;location&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;GET&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s">&#39;location&#39;</span><span class="p">))</span>
             <span class="n">body</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">content_type</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>

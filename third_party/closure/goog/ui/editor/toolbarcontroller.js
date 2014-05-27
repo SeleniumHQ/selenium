@@ -22,10 +22,10 @@
 
 goog.provide('goog.ui.editor.ToolbarController');
 
-goog.require('goog.editor.Field.EventType');
+goog.require('goog.editor.Field');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 
 
 
@@ -52,7 +52,7 @@ goog.ui.editor.ToolbarController = function(field, toolbar) {
 
   /**
    * Event handler to listen for field events and user actions.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.ui.editor.ToolbarController>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -138,8 +138,10 @@ goog.ui.editor.ToolbarController.prototype.getCommand = function(id) {
 /**
  * Returns the event handler object for the editor toolbar.  Useful for classes
  * that extend {@code goog.ui.editor.ToolbarController}.
- * @return {!goog.events.EventHandler} The event handler object.
+ * @return {!goog.events.EventHandler.<T>} The event handler object.
  * @protected
+ * @this T
+ * @template T
  */
 goog.ui.editor.ToolbarController.prototype.getHandler = function() {
   return this.handler_;

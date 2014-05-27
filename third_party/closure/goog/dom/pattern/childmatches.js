@@ -35,6 +35,7 @@ goog.require('goog.dom.pattern.MatchType');
  *     Defaults to 0.
  * @constructor
  * @extends {goog.dom.pattern.AllChildren}
+ * @final
  */
 goog.dom.pattern.ChildMatches = function(childPattern, opt_minimumMatches) {
   this.childPattern_ = childPattern;

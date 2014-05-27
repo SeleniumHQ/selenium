@@ -1,6 +1,5 @@
 /*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,9 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
@@ -38,7 +35,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -100,23 +96,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   @Test 
   public void requiredApplicatonCacheCapabilityShouldHavePriority() {
     configureCapabilityTwice(SUPPORTS_APPLICATION_CACHE, true);
-  }
-
-  @Test 
-  public void enableBrowserConnCapability() {
-    configureCapability(SUPPORTS_BROWSER_CONNECTION, true);
-    // TODO: Checks that browser connection is enabled
-  }
-
-  @Test 
-  public void disableBrowserConnCapability() {
-    configureCapability(SUPPORTS_BROWSER_CONNECTION, false);
-    // TODO: Checks that browser connection is disabled
-  }
-
-  @Test 
-  public void requiredConnectionCapabilityShouldHavePriority() {
-    configureCapabilityTwice(SUPPORTS_BROWSER_CONNECTION, true);
   }
 
   @Test 

@@ -33,6 +33,7 @@ goog.require('goog.string');
  * Object that can serialize objects or values to a protocol buffer string.
  * @constructor
  * @extends {goog.json.Serializer}
+ * @final
  */
 goog.proto.Serializer = function() {
   goog.json.Serializer.call(this);
@@ -61,7 +62,7 @@ goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
         emptySlots = 0;
       }
       sb.push(sep);
-      this.serialize_(arr[i], sb);
+      this.serializeInternal(arr[i], sb);
       sep = ',';
     }
   }

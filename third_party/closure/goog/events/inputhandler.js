@@ -57,7 +57,7 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.events.InputHandler = function(element) {
-  goog.base(this);
+  goog.events.InputHandler.base(this, 'constructor');
 
   /**
    * The element that you want to listen for input events on.
@@ -80,7 +80,7 @@ goog.events.InputHandler = function(element) {
           element.tagName == 'TEXTAREA');
 
   /**
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.events.InputHandler>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -125,6 +125,14 @@ goog.events.InputHandler.prototype.timer_ = null;
  */
 goog.events.InputHandler.prototype.handleEvent = function(e) {
   if (e.type == 'input') {
+    // http://stackoverflow.com/questions/18389732/changing-placeholder-triggers-input-event-in-ie-10
+    // IE 10+ fires an input event when there are inputs with placeholders.
+    // It fires the event with keycode 0, so if we detect it we don't
+    // propagate the input event.
+    if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher(10) &&
+        e.keyCode == 0 && e.charCode == 0) {
+      return;
+    }
     // This event happens after all the other events we listen to, so cancel
     // an asynchronous event dispatch if we have it queued up.  Otherwise, we
     // will end up firing an extra event.
@@ -194,7 +202,7 @@ goog.events.InputHandler.prototype.cancelTimerIfSet_ = function() {
 /**
  * Creates an input event from the browser event.
  * @param {goog.events.BrowserEvent} be A browser event.
- * @return {goog.events.BrowserEvent} An input event.
+ * @return {!goog.events.BrowserEvent} An input event.
  * @private
  */
 goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
@@ -206,7 +214,7 @@ goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
 
 /** @override */
 goog.events.InputHandler.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.events.InputHandler.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
   this.cancelTimerIfSet_();
   delete this.element_;

@@ -20,6 +20,9 @@
 
 goog.provide('goog.net.XmlHttpFactory');
 
+/** @suppress {extraRequire} Typedef. */
+goog.require('goog.net.XhrLike');
+
 
 
 /**
@@ -39,7 +42,7 @@ goog.net.XmlHttpFactory.prototype.cachedOptions_ = null;
 
 
 /**
- * @return {!(XMLHttpRequest|GearsHttpRequest)} A new XMLHttpRequest instance.
+ * @return {!goog.net.XhrLike.OrNative} A new XhrLike instance.
  */
 goog.net.XmlHttpFactory.prototype.createInstance = goog.abstractMethod;
 

@@ -20,21 +20,21 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class FindActiveElement extends ResponseAwareWebDriverHandler {
+import java.util.Map;
+
+public class FindActiveElement extends WebDriverHandler<Map<String, String>> {
 
   public FindActiveElement(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Map<String, String> call() throws Exception {
 
     WebElement element = getDriver().switchTo().activeElement();
     String elementId = getKnownElements().add(element);
-    response.setValue(ImmutableMap.of("ELEMENT", elementId));
-
-    return ResultType.SUCCESS;
+    return ImmutableMap.of("ELEMENT", elementId);
   }
 
   @Override

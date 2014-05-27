@@ -371,7 +371,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     } else if (c == '\uE006') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE007') {
-      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
     } else if (c == '\uE008') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       shiftKey = !shiftKey;
@@ -635,27 +635,30 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     return false;
   }
 
-  var keyboardEvent = doc.createEvent('KeyEvents');
-  keyboardEvent.initKeyEvent(
-      type,             // in DOMString typeArg,
-      true,             // in boolean canBubbleArg
-      true,             // in boolean cancelableArg
-      doc.defaultView,  // in nsIDOMAbstractView viewArg
-      controlState,     // in boolean ctrlKeyArg
-      altState,         // in boolean altKeyArg
-      shiftState,       // in boolean shiftKeyArg
-      metaState,        // in boolean metaKeyArg
-      keyCode,          // in unsigned long keyCodeArg
-      charCode);        // in unsigned long charCodeArg
+  var windowUtils = doc.defaultView
+      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+      .getInterface(Components.interfaces.nsIDOMWindowUtils);
 
-  if (shouldPreventDefault) {
-    keyboardEvent.preventDefault();
+  var modifiers = 0;
+  if (controlState) {
+    modifiers += windowUtils.MODIFIER_CONTROL;
+  }
+  if (altState) {
+    modifiers += windowUtils.MODIFIER_ALT;
+  }
+  if (shiftState) {
+    modifiers += windowUtils.MODIFIER_SHIFT;
+  }
+  if (metaState) {
+    modifiers += windowUtils.MODIFIER_META;
   }
 
-  return doc.defaultView
-      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-      .getInterface(Components.interfaces.nsIDOMWindowUtils)
-      .dispatchDOMEventViaPresShell(element, keyboardEvent, true);
+  var additionalFlags = 0;
+  if (shouldPreventDefault) {
+    additionalFlags += windowUtils.KEY_FLAG_PREVENT_DEFAULT;
+  }
+
+  return windowUtils.sendKeyEvent(type, keyCode, charCode, modifiers, additionalFlags);
 };
 
 
@@ -664,24 +667,6 @@ Utils.fireHtmlEvent = function(element, eventName) {
   var e = doc.createEvent('HTMLEvents');
   e.initEvent(eventName, true, true);
   return element.dispatchEvent(e);
-};
-
-
-Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
-  Utils.triggerMouseEvent(element, eventName, clientX, clientY);
-};
-
-
-Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-  var event = element.ownerDocument.createEvent('MouseEvents');
-  var view = element.ownerDocument.defaultView;
-
-  clientX = clientX || 0;
-  clientY = clientY || 0;
-
-  event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
-      false, false, false, false, 0, element);
-  element.dispatchEvent(event);
 };
 
 

@@ -43,11 +43,11 @@ goog.require('goog.events.EventType');
 goog.require('goog.positioning.AnchoredViewportPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.positioning.MenuAnchoredPosition');
+goog.require('goog.positioning.Overflow');
 goog.require('goog.positioning.ViewportClientPosition');
-goog.require('goog.structs');
 goog.require('goog.structs.Map');
 goog.require('goog.style');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.PopupBase');
 goog.require('goog.userAgent');
@@ -127,7 +127,7 @@ goog.ui.PopupMenu.prototype.decorateInternal = function(element) {
 goog.ui.PopupMenu.prototype.enterDocument = function() {
   goog.ui.PopupMenu.superClass_.enterDocument.call(this);
 
-  goog.structs.forEach(this.targets_, this.attachEvent_, this);
+  this.targets_.forEach(this.attachEvent_, this);
 
   var handler = this.getHandler();
   handler.listen(

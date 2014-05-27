@@ -17,11 +17,11 @@
  * @fileoverview The base module responsible for bootstrapping the Closure
  * library and providing a means of loading Closure-based modules.
  *
- * Each script loaded by this module will be granted access to this module's
+ * <p>Each script loaded by this module will be granted access to this module's
  * {@code require} function; all required non-native modules must be specified
  * relative to <em>this</em> module.
  *
- * This module will load all scripts from the "lib" subdirectory, unless the
+ * <p>This module will load all scripts from the "lib" subdirectory, unless the
  * SELENIUM_DEV_MODE environment variable has been set to 1, in which case all
  * scripts will be loaded from the Selenium client containing this script.
  */
@@ -44,18 +44,46 @@ var devMode = (function() {
 })();
 
 
-/**
- * @type {string} Path to Closure's base file, relative to this module.
- * @const
- */
-var CLOSURE_BASE_FILE_PATH = computeClosureBasePath();
+/** @return {boolean} Whether this script was loaded in dev mode. */
+function isDevMode() {
+  return devMode;
+}
 
 
 /**
  * @type {string} Path to Closure's base file, relative to this module.
  * @const
  */
-var DEPS_FILE_PATH = computeDepsPath();
+var CLOSURE_BASE_FILE_PATH = (function() {
+  var relativePath = isDevMode() ?
+      '../../../third_party/closure/goog/base.js' :
+      './lib/goog/base.js';
+  return path.join(__dirname, relativePath);
+})();
+
+
+/**
+ * @type {string} Path to Closure's base file, relative to this module.
+ * @const
+ */
+var DEPS_FILE_PATH = (function() {
+  var relativePath = isDevMode() ?
+      '../../../javascript/deps.js' :
+      './lib/goog/deps.js';
+  return path.join(__dirname, relativePath);
+})();
+
+
+
+/**
+ * Synchronously loads a script into the protected Closure context.
+ * @param {string} src Path to the file to load.
+ */
+function loadScript(src) {
+  src = path.normalize(src);
+  var contents = fs.readFileSync(src, 'utf8');
+  vm.runInContext(contents, closure, src);
+}
 
 
 /**
@@ -78,9 +106,11 @@ var closure = vm.createContext({
     loadScript(src);
     return true;
   },
-  CLOSURE_NO_DEPS: !isDevMode()
+  CLOSURE_NO_DEPS: !isDevMode(),
+  goog: {}
 });
 closure.window = closure;
+
 
 loadScript(CLOSURE_BASE_FILE_PATH);
 loadScript(DEPS_FILE_PATH);
@@ -89,48 +119,12 @@ loadScript(DEPS_FILE_PATH);
 /**
  * Loads a symbol by name from the protected Closure context.
  * @param {string} symbol The symbol to load.
- * @return {*} The loaded symbol.
+ * @return {?} The loaded symbol, or {@code null} if not found.
  * @throws {Error} If the symbol has not been defined.
  */
 function closureRequire(symbol) {
   closure.goog.require(symbol);
   return closure.goog.getObjectByName(symbol);
-}
-
-
-/** @return {string} Path to the closure library's base script. */
-function computeClosureBasePath() {
-  var relativePath = isDevMode() ?
-      '../../../third_party/closure/goog/base.js' :
-      './lib/goog/base.js';
-  return path.join(__dirname, relativePath);
-}
-
-
-/** @return {string} Path to the deps file used to locate closure resources. */
-function computeDepsPath() {
-  var relativePath = isDevMode() ?
-      '../../../javascript/deps.js' :
-      './lib/deps.js';
-  return path.join(__dirname, relativePath);
-}
-
-
-/** @return {boolean} Whether this script was loaded in dev mode. */
-function isDevMode() {
-  return devMode;
-}
-exports.isDevMode = isDevMode;
-
-
-/**
- * Synchronously loads a script into the protected Closure context.
- * @param {string} src Path to the file to load.
- */
-function loadScript(src) {
-  src = path.normalize(src);
-  var contents = fs.readFileSync(src, 'utf8');
-  vm.runInContext(contents, closure, src);
 }
 
 

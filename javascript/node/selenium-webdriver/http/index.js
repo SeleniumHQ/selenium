@@ -25,7 +25,8 @@ var base = require('../_base'),
 
 
 /**
- * HTTP client for use with NodeJS.
+ * A {@link webdriver.http.Client} implementation using Node's built-in http
+ * module.
  * @param {string} serverUrl URL for the WebDriver server to send commands to.
  * @constructor
  * @implements {webdriver.http.Client}
@@ -85,7 +86,15 @@ HttpClient.prototype.send = function(httpRequest, callback) {
 var sendRequest = function(options, callback, opt_data) {
   var request = http.request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
-      var location = url.parse(response.headers['location']);
+      try {
+        var location = url.parse(response.headers['location']);
+      } catch (ex) {
+        callback(Error(
+            'Failed to parse "Location" header for server redirect: ' +
+            ex.message + '\nResponse was: \n' +
+            new HttpResponse(response.statusCode, response.headers, '')));
+        return;
+      }
 
       if (!location.hostname) {
         location.hostname = options.host;
@@ -138,9 +147,13 @@ var sendRequest = function(options, callback, opt_data) {
 
 // PUBLIC API
 
-
+/** @type {webdriver.http.Executor.} */
 exports.Executor = base.require('webdriver.http.Executor');
+
+/** @type {webdriver.http.Request.} */
 exports.Request = base.require('webdriver.http.Request');
+
+/** @type {webdriver.http.Response.} */
 exports.Response = base.require('webdriver.http.Response');
+
 exports.HttpClient = HttpClient;
-exports.util = require('./util');

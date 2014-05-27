@@ -21,7 +21,7 @@
 goog.provide('goog.ui.TriStateMenuItem');
 goog.provide('goog.ui.TriStateMenuItem.State');
 
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.TriStateMenuItemRenderer');
@@ -39,17 +39,20 @@ goog.require('goog.ui.registry');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper used for
  *     document interactions.
  * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
+ * @param {boolean=} opt_alwaysAllowPartial  If true, always allow partial
+ *     state.
  * @constructor
  * @extends {goog.ui.MenuItem}
- *
  * TODO(attila): Figure out how to better integrate this into the
  * goog.ui.Control state management framework.
+ * @final
  */
 goog.ui.TriStateMenuItem = function(content, opt_model, opt_domHelper,
-    opt_renderer) {
+    opt_renderer, opt_alwaysAllowPartial) {
   goog.ui.MenuItem.call(this, content, opt_model, opt_domHelper,
       opt_renderer || new goog.ui.TriStateMenuItemRenderer());
   this.setCheckable(true);
+  this.alwaysAllowPartial_ = opt_alwaysAllowPartial || false;
 };
 goog.inherits(goog.ui.TriStateMenuItem, goog.ui.MenuItem);
 
@@ -91,6 +94,15 @@ goog.ui.TriStateMenuItem.prototype.checkState_ =
  * @private
  */
 goog.ui.TriStateMenuItem.prototype.allowPartial_ = false;
+
+
+/**
+ * Used to override allowPartial_ to force the third state to always be
+ * permitted.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.TriStateMenuItem.prototype.alwaysAllowPartial_ = false;
 
 
 /**
@@ -136,7 +148,7 @@ goog.ui.TriStateMenuItem.prototype.setCheckedState_ = function(state) {
 goog.ui.TriStateMenuItem.prototype.performActionInternal = function(e) {
   switch (this.getCheckedState()) {
     case goog.ui.TriStateMenuItem.State.NOT_CHECKED:
-      this.setCheckedState_(this.allowPartial_ ?
+      this.setCheckedState_(this.alwaysAllowPartial_ || this.allowPartial_ ?
           goog.ui.TriStateMenuItem.State.PARTIALLY_CHECKED :
           goog.ui.TriStateMenuItem.State.FULLY_CHECKED);
       break;
@@ -150,8 +162,8 @@ goog.ui.TriStateMenuItem.prototype.performActionInternal = function(e) {
 
   var checkboxClass = goog.getCssName(
       this.getRenderer().getCssClass(), 'checkbox');
-  var clickOnCheckbox = e.target && goog.dom.classes.has(
-      /** @type {Element} */ (e.target), checkboxClass);
+  var clickOnCheckbox = e.target && goog.dom.classlist.contains(
+      /** @type {!Element} */ (e.target), checkboxClass);
 
   return this.dispatchEvent(clickOnCheckbox || this.allowPartial_ ?
       goog.ui.Component.EventType.CHANGE :

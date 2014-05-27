@@ -16,15 +16,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
-
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class SetAlertText extends WebDriverHandler implements JsonParametersAware {
+public class SetAlertText extends WebDriverHandler<Void> implements JsonParametersAware {
   private String text;
 
   public SetAlertText(Session session) {
@@ -35,9 +32,10 @@ public class SetAlertText extends WebDriverHandler implements JsonParametersAwar
     text = (String) allParameters.get("text");
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().switchTo().alert().sendKeys(text);
-    return SUCCESS;
+    return null;
   }
 
   @Override

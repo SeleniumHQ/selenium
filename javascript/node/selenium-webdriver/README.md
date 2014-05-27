@@ -11,18 +11,18 @@ implementations you wish to utilize. As of 2.34.0, `selenium-webdriver`
 natively supports the [ChromeDriver](http://chromedriver.storage.googleapis.com/index.html).
 Simply download a copy and make sure it can be found on your `PATH`. The other
 drivers (e.g. Firefox, Internet Explorer, and Safari), still require the
-[standalone Selenium server](https://code.google.com/p/selenium/downloads/list).
+[standalone Selenium server](http://selenium-release.storage.googleapis.com/index.html).
 
 ### Running the tests
 
-_(New in 2.34.0)_ To run the tests, you will need to download a copy of the
+To run the tests, you will need to download a copy of the
 [ChromeDriver](http://chromedriver.storage.googleapis.com/index.html) and make
 sure it can be found on your `PATH`.
 
     npm test selenium-webdriver
 
 To run the tests against multiple browsers, download the
-[Selenium server](https://code.google.com/p/selenium/downloads/list) and
+[Selenium server](http://selenium-release.storage.googleapis.com/index.html) and
 specify its location through the `SELENIUM_SERVER_JAR` environment variable.
 You can use the `SELENIUM_BROWSER` environment variable to define a
 comma-separated list of browsers you wish to test against. For example:
@@ -52,7 +52,9 @@ comma-separated list of browsers you wish to test against. For example:
 
 ## Documentation
 
-Full documentation is available on the [Selenium project wiki](http://code.google.com/p/selenium/wiki/WebDriverJs "User guide").
+API documentation is included in the docs module. The API documentation for the
+current release are also available online from the [Selenium project](http://selenium.googlecode.com/git/docs/api/javascript/index.html "API docs"). A full user guide is available on the
+[Selenium project wiki](http://code.google.com/p/selenium/wiki/WebDriverJs "User guide").
 
 ## Issues
 
@@ -60,4 +62,16 @@ Please report any issues using the [Selenium issue tracker](https://code.google.
 
 ## License
 
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0 "Apache 2")
+Copyright 2009-2014 Software Freedom Conservancy
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

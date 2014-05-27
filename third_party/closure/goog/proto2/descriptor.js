@@ -20,8 +20,9 @@ goog.provide('goog.proto2.Descriptor');
 goog.provide('goog.proto2.Metadata');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.proto2.Util');
+goog.require('goog.string');
 
 
 /**
@@ -44,6 +45,7 @@ goog.proto2.Metadata;
  *      message described by this descriptor.
  *
  * @constructor
+ * @final
  */
 goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
@@ -184,7 +186,7 @@ goog.proto2.Descriptor.prototype.findFieldByName = function(name) {
  * @return {goog.proto2.FieldDescriptor} The field found, if any.
  */
 goog.proto2.Descriptor.prototype.findFieldByTag = function(tag) {
-  goog.proto2.Util.assert(goog.string.isNumeric(tag));
+  goog.asserts.assert(goog.string.isNumeric(tag));
   return this.fields_[parseInt(tag, 10)] || null;
 };
 

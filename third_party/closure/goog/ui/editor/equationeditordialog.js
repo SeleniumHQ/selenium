@@ -31,6 +31,7 @@ goog.require('goog.ui.equation.TexEditor');
  * @param {string} helpUrl URL pointing to help documentation.
  * @constructor
  * @extends {goog.ui.editor.AbstractDialog}
+ * @final
  */
 goog.ui.editor.EquationEditorDialog = function(context, domHelper,
     equation, helpUrl) {

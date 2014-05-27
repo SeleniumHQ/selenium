@@ -79,6 +79,7 @@ goog.dom.iter.SiblingIterator.prototype.next = function() {
  * @param {number=} opt_startIndex Optional starting index.
  * @constructor
  * @extends {goog.dom.iter.SiblingIterator}
+ * @final
  */
 goog.dom.iter.ChildIterator = function(element, opt_reverse, opt_startIndex) {
   if (!goog.isDef(opt_startIndex)) {
@@ -99,6 +100,7 @@ goog.inherits(goog.dom.iter.ChildIterator, goog.dom.iter.SiblingIterator);
  *     first return value from next.
  * @constructor
  * @extends {goog.iter.Iterator}
+ * @final
  */
 goog.dom.iter.AncestorIterator = function(node, opt_includeNode) {
   /**

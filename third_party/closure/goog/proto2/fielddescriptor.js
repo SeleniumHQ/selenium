@@ -18,7 +18,7 @@
 
 goog.provide('goog.proto2.FieldDescriptor');
 
-goog.require('goog.proto2.Util');
+goog.require('goog.asserts');
 goog.require('goog.string');
 
 
@@ -33,6 +33,7 @@ goog.require('goog.string');
  *     to construct this descriptor.
  *
  * @constructor
+ * @final
  */
 goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   /**
@@ -44,7 +45,7 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   this.parent_ = messageType;
 
   // Ensure that the tag is numeric.
-  goog.proto2.Util.assert(goog.string.isNumeric(tag));
+  goog.asserts.assert(goog.string.isNumeric(tag));
 
   /**
    * The field's tag number.
@@ -199,9 +200,14 @@ goog.proto2.FieldDescriptor.prototype.getDefaultValue = function() {
     } else if (nativeType === Number) {
       this.defaultValue_ = 0;
     } else if (nativeType === String) {
-      this.defaultValue_ = '';
+      if (this.deserializationConversionPermitted_) {
+        // This field is a 64 bit integer represented as a string.
+        this.defaultValue_ = '0';
+      } else {
+        this.defaultValue_ = '';
+      }
     } else {
-      this.defaultValue_ = new nativeType;
+      return new nativeType;
     }
   }
 
@@ -248,7 +254,7 @@ goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
  * @return {goog.proto2.Descriptor} The message descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
-  goog.proto2.Util.assert(this.isCompositeType(), 'Expected message or group');
+  goog.asserts.assert(this.isCompositeType(), 'Expected message or group');
 
   return this.nativeType_.getDescriptor();
 };

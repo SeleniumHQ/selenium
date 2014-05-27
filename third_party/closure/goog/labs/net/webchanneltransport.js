@@ -68,7 +68,8 @@ goog.net.WebChannelTransport.LATEST_VERSION_ = 0;
  *
  * @param {string} url The URL path for the new WebChannel instance.
  * @param {!goog.net.WebChannel.Options=} opt_options Configuration for the
- *     new WebChannel instance.
+ *     new WebChannel instance. The configuration object is reusable after
+ *     the new channel instance is created.
  * @return {!goog.net.WebChannel} the newly created WebChannel instance.
  */
 goog.net.WebChannelTransport.prototype.createWebChannel = goog.abstractMethod;

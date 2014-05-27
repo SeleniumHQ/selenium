@@ -287,7 +287,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     element.submit();
     Alert alert = driver.switchTo().alert();
     String text = alert.getText();
-    alert.dismiss();
+    alert.accept();
 
     assertEquals("Tasty cheese", text);
   }

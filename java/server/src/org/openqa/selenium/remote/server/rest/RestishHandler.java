@@ -16,7 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-public interface RestishHandler {
+public interface RestishHandler<T> {
 
-  ResultType handle() throws Exception;
+  T handle() throws Exception;
 }

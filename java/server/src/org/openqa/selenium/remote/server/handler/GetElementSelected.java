@@ -17,18 +17,16 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementSelected extends WebElementHandler {
+public class GetElementSelected extends WebElementHandler<Boolean> {
 
   public GetElementSelected(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getElement().isSelected());
-
-    return ResultType.SUCCESS;
+  @Override
+  public Boolean call() throws Exception {
+    return getElement().isSelected();
   }
 
   @Override

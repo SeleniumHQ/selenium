@@ -20,12 +20,16 @@ package org.openqa.selenium.remote;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.remote.http.JsonHttpCommandCodecTest;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodecTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     BeanToJsonConverterTest.class,
     DesiredCapabilitiesTest.class,
-    JsonToBeanConverterTest.class
+    JsonToBeanConverterTest.class,
+    JsonHttpCommandCodecTest.class,
+    JsonHttpResponseCodecTest.class
 })
 public class RemoteCommonTests {
 }

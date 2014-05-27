@@ -13,18 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 import os
 import tempfile
 import zipfile
-
-try:
-    import json
-except ImportError: # < 2.6
-    import simplejson as json
-
-if not hasattr(json, 'dumps'):
-    import simplejson as json
 
 from selenium.common.exceptions import NoSuchElementException
 

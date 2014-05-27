@@ -21,9 +21,9 @@
 
 goog.provide('goog.ui.ColorMenuButtonRenderer');
 
+goog.require('goog.asserts');
 goog.require('goog.color');
-goog.require('goog.dom.classes');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.userAgent');
 
@@ -137,8 +137,10 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
  * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.initializeDom = function(button) {
-  this.setValue(button.getElement(), button.getValue());
-  goog.dom.classes.add(button.getElement(),
+  var buttonElement = button.getElement();
+  goog.asserts.assert(buttonElement);
+  this.setValue(buttonElement, button.getValue());
+  goog.dom.classlist.add(buttonElement,
       goog.ui.ColorMenuButtonRenderer.CSS_CLASS);
   goog.ui.ColorMenuButtonRenderer.superClass_.initializeDom.call(this,
       button);

@@ -16,21 +16,17 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
-
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetAlertText extends ResponseAwareWebDriverHandler {
+public class GetAlertText extends WebDriverHandler<String> {
 
   public GetAlertText(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getDriver().switchTo().alert().getText());
-
-    return SUCCESS;
+  @Override
+  public String call() throws Exception {
+    return getDriver().switchTo().alert().getText();
   }
 
 

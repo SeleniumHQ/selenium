@@ -178,8 +178,18 @@ public class ChromeOptions {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOptions(String name, Object value) {
+  public void setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+  }
+
+  /**
+   * Returns the value of an experimental option.
+   *
+   * @param name The option name.
+   * @return The option value, or {@code null} if not set.
+   */
+  public Object getExperimentalOption(String name) {
+    return experimentalOptions.get(checkNotNull(name));
   }
 
   /**
@@ -192,7 +202,12 @@ public class ChromeOptions {
    *     JSON.
    */
   public JSONObject toJson() throws IOException, JSONException {
-    JSONObject options = new JSONObject(experimentalOptions);
+    JSONObject options = new JSONObject();
+    // copy experimental options, instead of passing to the JSONObject constructor
+    // because the JSON library will mutate the map passed in.
+    for (String key : experimentalOptions.keySet()) {
+      options.put(key, experimentalOptions.get(key));
+    }
 
     if (binary != null) {
       options.put("binary", binary);
@@ -251,6 +266,7 @@ public class ChromeOptions {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions, this.extensions);
+    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions,
+        this.extensions);
   }
 }

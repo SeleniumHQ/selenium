@@ -42,7 +42,7 @@ java_library(name = "util",
     "InProject.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
     "//java/client/src/org/openqa/selenium/remote",
   ])
 

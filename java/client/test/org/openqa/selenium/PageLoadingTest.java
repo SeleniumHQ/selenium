@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
@@ -33,7 +32,9 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -47,6 +48,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isLocal;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.After;
 import org.junit.Test;
@@ -57,9 +61,10 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
@@ -247,24 +252,25 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI}, issues = {3771})
+  @Ignore(value = {IPHONE, SAFARI, HTMLUNIT}, issues = {3771},
+          reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  @JavascriptEnabled
   @NeedsFreshDriver
+  @NoDriverAfterTest
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
-    if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
-      // Sauce opens about:blank after the browser loads, which IE doesn't include in history
-      // Navigate back past it, so when we do the next navigation back, there is nothing to go
-      // back to, rather than skipping past about:blank (whose title we will get as originalTitle)
-      // to whatever as before (the WebDriver placeholder page).
-      driver.navigate().back();
-    }
-
+    Set<String> currentWindowHandles = driver.getWindowHandles();
+    ((JavascriptExecutor) driver).executeScript(
+        "window.open('" + pages.formPage + "', 'newWindow')");
+    wait.until(newWindowIsOpened(currentWindowHandles));
+    driver.switchTo().window("newWindow");
     String originalTitle = driver.getTitle();
-    driver.get(pages.formPage);
-
+    driver.get(pages.blankPage);
+    wait.until(not(titleIs(originalTitle)));
     driver.navigate().back();
-    // We may have returned to the browser's home page
-    assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
+    wait.until(titleIs(originalTitle));
+    driver.navigate().back(); // Nothing to go back to, must stay.
+    assertThat(driver.getTitle(), equalTo(originalTitle));
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
@@ -320,7 +326,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
-    assumeTrue(TestUtilities.isLocal());
+    assumeTrue(isLocal());
 
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(ACCEPT_SSL_CERTS, false);
@@ -393,7 +399,47 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       start = System.currentTimeMillis();
       driver.get(pages.xhtmlTestPage);
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      wait.until(titleIs("XHTML Test Page"));
+      end = System.currentTimeMillis();
+      duration = (int) (end - start);
+      assertThat(duration, lessThan(2000));
+
+    } finally {
+      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+    }
+  }
+
+  @Ignore(value = {ANDROID, IPHONE, HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+          reason = "Not implemented; Safari: see issue 687, comment 41",
+          issues = {687})
+  @NeedsLocalEnvironment
+  @Test
+  public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+
+    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+
+    driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
+    WebElement link = driver.findElement(By.id("link-to-slow-loading-page"));
+
+    long start = System.currentTimeMillis();
+    try {
+      link.click();
+      fail("I should have timed out");
+    } catch (RuntimeException e) {
+      long end = System.currentTimeMillis();
+
+      assertThat(e, is(instanceOf(TimeoutException.class)));
+
+      int duration = (int) (end - start);
+      assertThat(duration, greaterThan(2000));
+      assertThat(duration, lessThan(5000));
+
+      // check that after the exception another page can be loaded
+
+      start = System.currentTimeMillis();
+      driver.get(pages.xhtmlTestPage);
+      wait.until(titleIs("XHTML Test Page"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
@@ -433,7 +479,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       start = System.currentTimeMillis();
       driver.get(pages.xhtmlTestPage);
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      wait.until(titleIs("XHTML Test Page"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
@@ -467,7 +513,9 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
 
-      wait.until(elementTextToEqual(By.tagName("body"), "Slept for 5s"));
+      new WebDriverWait(driver, 30)
+          .ignoring(StaleElementReferenceException.class)
+          .until(elementTextToEqual(By.tagName("body"), "Slept for 5s"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, greaterThan(5000));

@@ -18,11 +18,10 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class SwitchToWindow extends WebDriverHandler implements JsonParametersAware {
+public class SwitchToWindow extends WebDriverHandler<Void> implements JsonParametersAware {
 
   private volatile String name;
 
@@ -38,10 +37,11 @@ public class SwitchToWindow extends WebDriverHandler implements JsonParametersAw
     setName((String) allParameters.get("name"));
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().switchTo().window(name);
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

@@ -141,26 +141,6 @@ module Selenium
       end
 
       #
-      # Get the visibility of the browser. Not applicable for all browsers.
-      #
-      # @return [Boolean]
-      #
-
-      def visible?
-        bridge.getBrowserVisible
-      end
-
-      #
-      # Set the visibility of the browser. Not applicable for all browsers.
-      #
-      # @param [Boolean]
-      #
-
-      def visible=(bool)
-        bridge.setBrowserVisible bool
-      end
-
-      #
       # Quit the browser
       #
 

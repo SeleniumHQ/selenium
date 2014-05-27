@@ -23,7 +23,6 @@
 
 goog.provide('goog.ui.FilterObservingMenuItem');
 
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.FilterObservingMenuItemRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.registry');

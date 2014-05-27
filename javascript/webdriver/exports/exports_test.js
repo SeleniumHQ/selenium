@@ -143,7 +143,7 @@ function checkWebDriver() {
   assertFunction('webdriver.WebDriver', 'attachToSession');
   assertFunction('webdriver.WebDriver', 'createSession');
   assertFunction('webdriver.WebDriver.prototype', 'getSession');
-  assertFunction('webdriver.WebDriver.prototype', 'getCapability');
+  assertFunction('webdriver.WebDriver.prototype', 'getCapabilities');
   assertFunction('webdriver.WebDriver.prototype', 'quit');
   assertFunction('webdriver.WebDriver.prototype', 'call');
   assertFunction('webdriver.WebDriver.prototype', 'sleep');
@@ -265,10 +265,6 @@ function checkPromise() {
   assertFunction('webdriver.promise.Promise.prototype', 'thenCatch');
   assertFunction('webdriver.promise.Promise.prototype', 'thenFinally');
   assertFunction('webdriver.promise.Promise.prototype', 'cancel');
-  assertFunction('webdriver.promise.Promise.prototype', 'addBoth');
-  assertFunction('webdriver.promise.Promise.prototype', 'addCallback');
-  assertFunction('webdriver.promise.Promise.prototype', 'addCallbacks');
-  assertFunction('webdriver.promise.Promise.prototype', 'addErrback');
   assertFunction('webdriver.promise.Promise.prototype', 'isPending');
 
   assertFunction('webdriver.promise', 'Deferred');
@@ -276,10 +272,6 @@ function checkPromise() {
   assertFunction('new webdriver.promise.Deferred()', 'thenCatch');
   assertFunction('new webdriver.promise.Deferred()', 'thenFinally');
   assertFunction('new webdriver.promise.Deferred()', 'cancel');
-  assertFunction('new webdriver.promise.Deferred()', 'addBoth');
-  assertFunction('new webdriver.promise.Deferred()', 'addCallback');
-  assertFunction('new webdriver.promise.Deferred()', 'addCallbacks');
-  assertFunction('new webdriver.promise.Deferred()', 'addErrback');
   assertFunction('new webdriver.promise.Deferred()', 'isPending');
   assertFunction('new webdriver.promise.Deferred()', 'fulfill');
   assertFunction('new webdriver.promise.Deferred()', 'reject');

@@ -93,7 +93,11 @@ NS_IMETHODIMP nsNativeIME::ImeGetActiveEngine(nsAString &activeEngine)
     LOG(DEBUG) << "Active engine:" << engine;
     std::wstring wengine(engine.begin(), engine.end());
     // We know that PRUnichar* is wchar_t*. see comment in sendKeys
+#ifdef WEBDRIVER_LEGACY_GECKO
     activeEngine.Assign((const PRUnichar*) wengine.c_str(), wengine.length());
+#else
+    activeEngine.Assign((const nsAString::char_type*) wengine.c_str(), wengine.length());
+#endif  // WEBDRIVER_LEGACY_GECKO
     tryToCloseImeLib(handler, lib);
     return NS_OK;
   }

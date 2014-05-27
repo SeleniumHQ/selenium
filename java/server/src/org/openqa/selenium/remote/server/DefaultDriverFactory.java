@@ -20,64 +20,41 @@ import static com.google.common.base.Preconditions.checkState;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 public class DefaultDriverFactory implements DriverFactory {
 
-  private static final Logger log = Logger.getLogger(DefaultDriverFactory.class.getName());
-
-  private Map<Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-      new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
+  private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
+      new ConcurrentHashMap<Capabilities, DriverProvider>();
 
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    capabilitiesToDriver.put(capabilities, implementation);
+    registerDriverProvider(capabilities, new DefaultDriverProvider(capabilities, implementation));
+  }
+
+  public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
+    capabilitiesToDriverProvider.put(capabilities, implementation);
   }
 
   protected Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
+    return getProviderMatching(desired).getDriverClass();
+  }
+
+  protected DriverProvider getProviderMatching(Capabilities desired) {
     // We won't be able to make a match if no drivers have been registered.
-    checkState(!capabilitiesToDriver.isEmpty(),
-        "No drivers have been registered, will be unable to match %s", desired);
+    checkState(!capabilitiesToDriverProvider.isEmpty(),
+               "No drivers have been registered, will be unable to match %s", desired);
     Capabilities bestMatchingCapabilities =
-        CapabilitiesComparator.getBestMatch(desired, capabilitiesToDriver.keySet());
-    return capabilitiesToDriver.get(bestMatchingCapabilities);
+        CapabilitiesComparator.getBestMatch(desired, capabilitiesToDriverProvider.keySet());
+    return capabilitiesToDriverProvider.get(bestMatchingCapabilities);
   }
 
   public WebDriver newInstance(Capabilities capabilities) {
-    log.info("Creating a new session for " + capabilities);
-    Class<? extends WebDriver> clazz = getBestMatchFor(capabilities);
-
-    // Try and call the single arg constructor that takes a capabilities first
-    return callConstructor(clazz, capabilities);
-  }
-
-  private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
-    try {
-      Constructor<? extends WebDriver> constructor = from.getConstructor(Capabilities.class);
-      return constructor.newInstance(capabilities);
-    } catch (NoSuchMethodException e) {
-      try {
-        return from.newInstance();
-      } catch (InstantiationException e1) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e1) {
-        throw new WebDriverException(e);
-      }
-    } catch (InvocationTargetException e) {
-      throw new WebDriverException(e);
-    } catch (InstantiationException e) {
-      throw new WebDriverException(e);
-    } catch (IllegalAccessException e) {
-      throw new WebDriverException(e);
-    }
+    return getProviderMatching(capabilities).newInstance(capabilities);
   }
 
   public boolean hasMappingFor(Capabilities capabilities) {
-    return capabilitiesToDriver.containsKey(capabilities);
+    return capabilitiesToDriverProvider.containsKey(capabilities);
   }
 }

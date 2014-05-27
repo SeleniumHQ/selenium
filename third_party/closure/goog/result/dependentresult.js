@@ -30,6 +30,7 @@ goog.require('goog.result.Result');
  * Results given as arguments.
  * @interface
  * @extends {goog.result.Result}
+ * @deprecated Use {@link goog.Promise} instead - http://go/promisemigration
  */
 goog.result.DependentResult = function() {};
 

@@ -42,7 +42,7 @@ goog.labs.classdef.ClassDescriptor;
  *     the class.  It may have the following properties:
  *     "constructor": the constructor function
  *     "statics": an object literal containing methods to add to the constructor
- *        as "static" methods or a function that will recieve the constructor
+ *        as "static" methods or a function that will receive the constructor
  *        function as its only parameter to which static properties can
  *        be added.
  *     all other properties are added to the prototype.

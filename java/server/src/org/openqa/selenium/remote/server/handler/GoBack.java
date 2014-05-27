@@ -17,18 +17,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GoBack extends WebDriverHandler {
+public class GoBack extends WebDriverHandler<Void> {
 
   public GoBack(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Void call() throws Exception {
     getDriver().navigate().back();
 
-    return ResultType.SUCCESS;
+    return null;
   }
 
   @Override

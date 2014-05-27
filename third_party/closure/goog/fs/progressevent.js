@@ -29,9 +29,10 @@ goog.require('goog.events.Event');
  * @param {!Object} target The file access object emitting the event.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.fs.ProgressEvent = function(event, target) {
-  goog.base(this, event.type, target);
+  goog.fs.ProgressEvent.base(this, 'constructor', event.type, target);
 
   /**
    * The underlying event object.

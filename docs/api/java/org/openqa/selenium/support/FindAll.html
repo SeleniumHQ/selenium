@@ -82,7 +82,7 @@
 <hr>
 <br>
 <pre>@Retention(value=RUNTIME)
-@Target(value=FIELD)
+@Target(value={FIELD,TYPE})
 public @interface <span class="strong">FindAll</span></pre>
 <div class="block">Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
  It will then search for all elements that match any of the FindBy criteria. Note that elements

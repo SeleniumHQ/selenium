@@ -17,6 +17,7 @@ limitations under the License.
 package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+import com.thoughtworks.selenium.webdriven.Timer;
 
 import org.openqa.selenium.WebDriver;
 

@@ -31,19 +31,22 @@ goog.require('goog.Timer');
  * per interval (specified in milliseconds). If it gets multiple signals
  * to perform the action while it is waiting, it will only perform the action
  * once at the end of the interval.
- * @param {Function} listener Function to callback when the action is triggered.
- * @param {number} interval Interval over which to throttle. The handler can
+ * @param {function(this: T)} listener Function to callback when the action is
+ *     triggered.
+ * @param {number} interval Interval over which to throttle. The listener can
  *     only be called once per interval.
- * @param {Object=} opt_handler Object in whose scope to call the listener.
+ * @param {T=} opt_handler Object in whose scope to call the listener.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
+ * @template T
  */
 goog.async.Throttle = function(listener, interval, opt_handler) {
   goog.Disposable.call(this);
 
   /**
    * Function to callback
-   * @type {Function}
+   * @type {function(this: T)}
    * @private
    */
   this.listener_ = listener;
@@ -77,6 +80,7 @@ goog.inherits(goog.async.Throttle, goog.Disposable);
  * A deprecated alias.
  * @deprecated Use goog.async.Throttle instead.
  * @constructor
+ * @final
  */
 goog.Throttle = goog.async.Throttle;
 

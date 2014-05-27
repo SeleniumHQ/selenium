@@ -49,9 +49,7 @@ namespace OpenQA.Selenium.Chrome
     /// <para>For use with RemoteWebDriver:</para>
     /// <para></para>
     /// <code>
-    /// DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
-    /// capabilities.SetCapability(ChromeOptions.Capability, options);
-    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), capabilities);
+    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
     public class ChromeOptions
@@ -422,6 +420,7 @@ namespace OpenQA.Selenium.Chrome
                 capabilityName == ChromeOptions.DetachChromeOption ||
                 capabilityName == ChromeOptions.DebuggerAddressChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
+                capabilityName == ChromeOptions.ExcludeSwitchesChromeOption ||
                 capabilityName == ChromeOptions.MinidumpPathChromeOption)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);

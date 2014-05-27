@@ -430,6 +430,21 @@ webdriver.browser.CommandExecutor.prototype.sendKeysToElement_ = function(
 
 
 /**
+ * Tests whether an element is displayed on the page.
+ * @param {!webdriver.Command} command The command.
+ * @return {boolean} Whether the element is displayed.
+ * @throws {bot.Error} If the element reference is no longer valid.
+ * @private
+ */
+webdriver.browser.CommandExecutor.prototype.isElementDisplayed_ = function(
+    command) {
+  var id = command.getParameter('id')[bot.inject.ELEMENT_KEY];
+  var el = bot.inject.cache.getElement(id, this.window_.document);
+  return bot.dom.isShown(el);
+};
+
+
+/**
  * Executes a user-supplier snippet of JavaScript in the context of the page
  * under test.
  * @param {!webdriver.Command} command The command.
@@ -530,4 +545,5 @@ map[name.GET_ELEMENT_ATTRIBUTE] = proto.getElementAttribute_;
 map[name.GET_ELEMENT_TEXT] = proto.getElementText_;
 map[name.GET_ELEMENT_TAG_NAME] = proto.getElementTagName_;
 map[name.SEND_KEYS_TO_ELEMENT] = proto.sendKeysToElement_;
+map[name.IS_ELEMENT_DISPLAYED] = proto.isElementDisplayed_;
 });  // goog.scope

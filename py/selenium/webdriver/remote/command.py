@@ -59,13 +59,12 @@ class Command(object):
     SET_WINDOW_POSITION = "setWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
+    SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
-    SET_BROWSER_VISIBLE = "setBrowserVisible"
-    IS_BROWSER_VISIBLE = "isBrowserVisible"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
@@ -95,25 +94,25 @@ class Command(object):
     GET_ALERT_TEXT = "getAlertText"
 
     # Advanced user interactions
-    CLICK = "mouseClick";
-    DOUBLE_CLICK = "mouseDoubleClick";
-    MOUSE_DOWN = "mouseButtonDown";
-    MOUSE_UP = "mouseButtonUp";
-    MOVE_TO = "mouseMoveTo";
+    CLICK = "mouseClick"
+    DOUBLE_CLICK = "mouseDoubleClick"
+    MOUSE_DOWN = "mouseButtonDown"
+    MOUSE_UP = "mouseButtonUp"
+    MOVE_TO = "mouseMoveTo"
 
     # Screen Orientation
     SET_SCREEN_ORIENTATION = "setScreenOrientation"
     GET_SCREEN_ORIENTATION = "getScreenOrientation"
 
     # Touch Actions
-    SINGLE_TAP = "touchSingleTap";
-    TOUCH_DOWN = "touchDown";
-    TOUCH_UP = "touchUp";
-    TOUCH_MOVE = "touchMove";
-    TOUCH_SCROLL = "touchScroll";
-    DOUBLE_TAP = "touchDoubleTap";
-    LONG_PRESS = "touchLongPress";
-    FLICK = "touchFlick";
+    SINGLE_TAP = "touchSingleTap"
+    TOUCH_DOWN = "touchDown"
+    TOUCH_UP = "touchUp"
+    TOUCH_MOVE = "touchMove"
+    TOUCH_SCROLL = "touchScroll"
+    DOUBLE_TAP = "touchDoubleTap"
+    LONG_PRESS = "touchLongPress"
+    FLICK = "touchFlick"
 
     #HTML 5
     EXECUTE_SQL = "executeSql"
@@ -125,8 +124,8 @@ class Command(object):
     GET_APP_CACHE_STATUS = "getAppCacheStatus"
     CLEAR_APP_CACHE = "clearAppCache"
 
-    IS_BROWSER_ONLINE = "isBrowserOnline"
-    SET_BROWSER_ONLINE = "setBrowserOnline"
+    GET_NETWORK_CONNECTION = "getNetworkConnection"
+    SET_NETWORK_CONNECTION = "setNetworkConnection"
 
     GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem"
     REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem"
@@ -135,7 +134,7 @@ class Command(object):
     CLEAR_LOCAL_STORAGE = "clearLocalStorage"
     GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize"
 
-    GET_SESSION_STORAGE_ITEM= "getSessionStorageItem"
+    GET_SESSION_STORAGE_ITEM = "getSessionStorageItem"
     REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem"
     GET_SESSION_STORAGE_KEYS = "getSessionStorageKeys"
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"

@@ -36,18 +36,20 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -184,7 +186,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   private void navigateToClicksPageAndClickLink() {
     driver.get(pages.clicksPage);
 
-    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
+    wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
@@ -192,6 +194,24 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .perform();
 
     wait.until(titleIs("XHTML Test Page"));
+  }
+
+  @Ignore(value = {ANDROID, IPHONE, OPERA, PHANTOMJS, SAFARI}, reason = "Not tested")
+  @Test
+  public void canMoveMouseToAnElementInAnIframeAndClick() {
+    driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
+
+    wait.until(presenceOfElementLocated(By.id("ifr")));
+    driver.switchTo().frame("ifr");
+
+    WebElement link = driver.findElement(By.id("link"));
+
+    new Actions(driver)
+        .moveToElement(link)
+        .click()
+        .perform();
+
+    wait.until(titleIs("Submitted Successfully!"));
   }
 
   @Ignore({IPHONE})
@@ -207,7 +227,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
-    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
+    wait.until(presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
@@ -216,6 +236,43 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .perform();
 
     wait.until(titleIs("XHTML Test Page"));
+  }
+
+  @Ignore(
+      value = {HTMLUNIT, IPHONE},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @Test
+  public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
+    driver.get(pages.clickEventPage);
+
+    WebElement element = driver.findElement(By.id("eventish"));
+    Point location = element.getLocation();
+
+    new Actions(driver)
+        .moveToElement(element, 20, 10)
+        .click()
+        .perform();
+
+    wait.until(presenceOfElementLocated(By.id("pageX")));
+
+    int x;
+    int y;
+    if (isInternetExplorer(driver) && getIEVersion(driver) < 10) {
+      x = Integer.parseInt(driver.findElement(By.id("clientX")).getText());
+      y = Integer.parseInt(driver.findElement(By.id("clientY")).getText());
+    } else {
+      x = Integer.parseInt(driver.findElement(By.id("pageX")).getText());
+      y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
+    }
+
+    assertTrue(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y));
+  }
+
+  private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
+    // Everything within 5 pixels range is OK
+    final int ALLOWED_DEVIATION = 5;
+    return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&
+           Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
@@ -316,7 +373,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     new Actions(driver).keyDown(Keys.SHIFT).click(toClick).keyUp(Keys.SHIFT).perform();
 
     WebElement shiftInfo =
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("shiftKey")));
+        wait.until(presenceOfElementLocated(By.id("shiftKey")));
     assertThat(shiftInfo.getText(), equalTo("true"));
   }
 

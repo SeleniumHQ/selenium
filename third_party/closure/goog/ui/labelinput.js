@@ -351,10 +351,9 @@ goog.ui.LabelInput.prototype.handleFormSubmit_ = function(e) {
 
 /**
  * Restore value after submit
- * @param {Event} e The event object passed in to the event handler.
  * @private
  */
-goog.ui.LabelInput.prototype.handleAfterSubmit_ = function(e) {
+goog.ui.LabelInput.prototype.handleAfterSubmit_ = function() {
   if (!this.hasChanged()) {
     this.getElement().value = this.label_;
   }
@@ -381,7 +380,7 @@ goog.ui.LabelInput.prototype.hasFocus = function() {
 
 
 /**
- * @return {boolean} Whether the value has changed been changed by the user.
+ * @return {boolean} Whether the value has been changed by the user.
  */
 goog.ui.LabelInput.prototype.hasChanged = function() {
   return !!this.getElement() && this.getElement().value != '' &&
@@ -517,8 +516,8 @@ goog.ui.LabelInput.prototype.check_ = function() {
 
 
 /**
- * This method focuses the input and if selects all the text. If the value
- * hasn't changed it will set the value to the label so that the label text is
+ * This method focuses the input and selects all the text. If the value hasn't
+ * changed it will set the value to the label so that the label text is
  * selected.
  */
 goog.ui.LabelInput.prototype.focusAndSelect = function() {

@@ -27,8 +27,10 @@ goog.provide('goog.ui.Tooltip.State');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.positioning');
@@ -365,13 +367,27 @@ goog.ui.Tooltip.prototype.setText = function(str) {
 };
 
 
+// TODO(user): Deprecate in favor of setSafeHtml, once developer docs on.
 /**
  * Sets tooltip message as HTML markup.
+ * using goog.html.SafeHtml are in place.
  *
  * @param {string} str HTML message to display in tooltip.
  */
 goog.ui.Tooltip.prototype.setHtml = function(str) {
-  this.getElement().innerHTML = str;
+  this.setSafeHtml(goog.html.legacyconversions.safeHtmlFromString(str));
+};
+
+
+/**
+ * Sets tooltip message as HTML markup.
+ * @param {!goog.html.SafeHtml} html HTML message to display in tooltip.
+ */
+goog.ui.Tooltip.prototype.setSafeHtml = function(html) {
+  var element = this.getElement();
+  if (element) {
+    goog.dom.safe.setInnerHtml(element, html);
+  }
 };
 
 
@@ -403,7 +419,7 @@ goog.ui.Tooltip.prototype.getText = function() {
 
 
 /**
- * @return {string} The tooltip message as HTML.
+ * @return {string} The tooltip message as HTML as plain string.
  */
 goog.ui.Tooltip.prototype.getHtml = function() {
   return this.getElement().innerHTML;
@@ -496,7 +512,7 @@ goog.ui.Tooltip.prototype.onBeforeShow = function() {
  * Called after the popup is hidden.
  *
  * @protected
- * @suppress {underscore}
+ * @suppress {underscore|visibility}
  * @override
  */
 goog.ui.Tooltip.prototype.onHide_ = function() {
@@ -915,6 +931,7 @@ goog.ui.Tooltip.prototype.disposeInternal = function() {
  * @param {number=} opt_arg2 Top position.
  * @constructor
  * @extends {goog.positioning.ViewportPosition}
+ * @final
  */
 goog.ui.Tooltip.CursorTooltipPosition = function(arg1, opt_arg2) {
   goog.positioning.ViewportPosition.call(this, arg1, opt_arg2);

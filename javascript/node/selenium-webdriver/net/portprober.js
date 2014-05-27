@@ -144,6 +144,8 @@ function findWindowsPortRange() {
 /**
  * Tests if a port is free.
  * @param {number} port The port to test.
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
  * @return {!webdriver.promise.Promise.<boolean>} A promise that will resolve
  *     with whether the port is free.
  */
@@ -171,6 +173,8 @@ function isFree(port, opt_host) {
 
 
 /**
+ * @param {string=} opt_host The bound host to test the {@code port} against.
+ *     Defaults to {@code INADDR_ANY}.
  * @return {!webdriver.promise.Promise.<number>} A promise that will resolve
  *     to a free port. If a port cannot be found, the promise will be
  *     rejected.

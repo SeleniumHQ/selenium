@@ -13,9 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import platform
+import signal
 import subprocess
 import time
-import signal
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -43,11 +44,18 @@ class Service(object):
             self.port = utils.free_port()
         if self.service_args is None:
             self.service_args = []
+        else:
+            self.service_args=service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         if not log_path:
             log_path = "ghostdriver.log"
         self._log = open(log_path, 'w')
+
+    def __del__(self):
+        # subprocess.Popen doesn't send signal on __del__;
+        # we have to try to stop the launched process.
+        self.stop()
 
     def start(self):
         """
@@ -59,8 +67,8 @@ class Service(object):
         """
         try:
             self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
-                                            close_fds=True, stdout=self._log,
-                                            stderr=self._log)
+                                            close_fds=platform.system() != 'Windows',
+                                            stdout=self._log, stderr=self._log)
 
         except Exception as e:
             raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)

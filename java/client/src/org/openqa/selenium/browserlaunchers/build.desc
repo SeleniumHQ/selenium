@@ -2,7 +2,6 @@
 java_library(name = "browserlaunchers",
   srcs = [
     "BrowserLauncher.java",
-    "MacProxyManager.java",
   ],
   deps = [
     ":launcher-utils",
@@ -14,38 +13,32 @@ java_library(name = "browserlaunchers",
     "//third_party/java/guava-libraries",
   ])
 
-java_library(name = "proxies",
-  srcs = [
-    "DoNotUseProxyPac.java",
-    "Maps.java",
-    "Proxies.java",
-  ],
-  deps = [
-    "//java/client/src/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium/remote:base",
-  ])
-
-java_library(name = "windows_proxy_manager",
-  srcs = [
-    "WindowsProxyManager.java",
-  ],
-  deps = [
-    ":proxies",
-    "//java/client/src/org/openqa/selenium/io",
-    "//java/client/src/org/openqa/selenium/os",
-  ])
-
 java_library(name = "launcher-utils",
   srcs = [
     "LauncherUtils.java",
+    "MacProxyManager.java",
     "Sleeper.java",
   ],
   deps = [
-    ":windows_proxy_manager",
+    ":proxies",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",
     "//java/client/src/org/openqa/selenium/remote:base",
     "//third_party/java/guava-libraries",
+  ])
+
+java_library(name = "proxies",
+  srcs = [
+    "DoNotUseProxyPac.java",
+    "Maps.java",
+    "Proxies.java",
+    "WindowsProxyManager.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
+    "//java/client/src/org/openqa/selenium/remote:base",
+    "//java/client/src/org/openqa/selenium/io",
+    "//java/client/src/org/openqa/selenium/os",
   ])

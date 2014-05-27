@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.io.FileHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class MakeProxyPacUnitTest {
 
   @After
   public void tearDown() {
-    LauncherUtils.recursivelyDeleteDir(parentDir);
+    FileHandler.delete(parentDir);
   }
 
   private String makeProxyPAC() throws IOException {

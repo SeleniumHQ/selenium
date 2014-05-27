@@ -33,16 +33,15 @@
 goog.provide('goog.ui.SplitPane');
 goog.provide('goog.ui.SplitPane.Orientation');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
-goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Component.EventType');
 goog.require('goog.userAgent');
 
 
@@ -64,7 +63,7 @@ goog.require('goog.userAgent');
  */
 goog.ui.SplitPane = function(firstComponent, secondComponent, orientation,
     opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.ui.SplitPane.base(this, 'constructor', opt_domHelper);
 
   /**
    * The orientation of the containers.
@@ -88,6 +87,9 @@ goog.ui.SplitPane = function(firstComponent, secondComponent, orientation,
    */
   this.secondComponent_ = secondComponent;
   this.addChild(secondComponent);
+
+  /** @private {Element} */
+  this.splitpaneHandle_ = null;
 };
 goog.inherits(goog.ui.SplitPane, goog.ui.Component);
 
@@ -351,8 +353,8 @@ goog.ui.SplitPane.prototype.getElementToDecorate_ = function(rootElement,
   // Decorate the root element's children, if available.
   var childElements = goog.dom.getChildren(rootElement);
   for (var i = 0; i < childElements.length; i++) {
-    var childElement = childElements[i];
-    if (goog.dom.classes.has(childElement, className)) {
+    var childElement = goog.asserts.assertElement(childElements[i]);
+    if (goog.dom.classlist.contains(childElement, className)) {
       return childElement;
     }
   }
@@ -371,7 +373,7 @@ goog.ui.SplitPane.prototype.getElementToDecorate_ = function(rootElement,
  * @override
  */
 goog.ui.SplitPane.prototype.decorateInternal = function(element) {
-  goog.base(this, 'decorateInternal', element);
+  goog.ui.SplitPane.base(this, 'decorateInternal', element);
 
   this.setUpHandle_();
 
@@ -422,7 +424,7 @@ goog.ui.SplitPane.prototype.finishSetup_ = function() {
  * @override
  */
 goog.ui.SplitPane.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.SplitPane.base(this, 'enterDocument');
 
   // If position is not set in the inline style of the element, it is not
   // possible to get the element's real CSS position until the element is in
@@ -497,11 +499,11 @@ goog.ui.SplitPane.prototype.isVertical = function() {
 goog.ui.SplitPane.prototype.setUpHandle_ = function() {
   if (this.isVertical()) {
     this.splitpaneHandle_.style.height = this.handleSize_ + 'px';
-    goog.dom.classes.add(this.splitpaneHandle_,
+    goog.dom.classlist.add(this.splitpaneHandle_,
         goog.ui.SplitPane.HANDLE_CLASS_NAME_VERTICAL_);
   } else {
     this.splitpaneHandle_.style.width = this.handleSize_ + 'px';
-    goog.dom.classes.add(this.splitpaneHandle_,
+    goog.dom.classlist.add(this.splitpaneHandle_,
         goog.ui.SplitPane.HANDLE_CLASS_NAME_HORIZONTAL_);
   }
 };
@@ -512,14 +514,15 @@ goog.ui.SplitPane.prototype.setUpHandle_ = function() {
  * @protected
  */
 goog.ui.SplitPane.prototype.setOrientationClassForHandle = function() {
+  goog.asserts.assert(this.splitpaneHandle_);
   if (this.isVertical()) {
-    goog.dom.classes.swap(this.splitpaneHandle_,
-                          goog.ui.SplitPane.HANDLE_CLASS_NAME_HORIZONTAL_,
-                          goog.ui.SplitPane.HANDLE_CLASS_NAME_VERTICAL_);
+    goog.dom.classlist.swap(this.splitpaneHandle_,
+        goog.ui.SplitPane.HANDLE_CLASS_NAME_HORIZONTAL_,
+        goog.ui.SplitPane.HANDLE_CLASS_NAME_VERTICAL_);
   } else {
-    goog.dom.classes.swap(this.splitpaneHandle_,
-                          goog.ui.SplitPane.HANDLE_CLASS_NAME_VERTICAL_,
-                          goog.ui.SplitPane.HANDLE_CLASS_NAME_HORIZONTAL_);
+    goog.dom.classlist.swap(this.splitpaneHandle_,
+        goog.ui.SplitPane.HANDLE_CLASS_NAME_VERTICAL_,
+        goog.ui.SplitPane.HANDLE_CLASS_NAME_HORIZONTAL_);
   }
 };
 
@@ -571,7 +574,6 @@ goog.ui.SplitPane.prototype.getOrientation = function() {
  * @private
  */
 goog.ui.SplitPane.prototype.moveAndSize_ = function(element, rect) {
-
   goog.style.setPosition(element, rect.left, rect.top);
   // TODO(user): Add a goog.math.Size.max call for below.
   goog.style.setBorderBoxSize(element,
@@ -890,11 +892,11 @@ goog.ui.SplitPane.prototype.handleDoubleClick_ = function(e) {
 
 /** @override */
 goog.ui.SplitPane.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
-
-  this.splitDragger_.dispose();
+  goog.dispose(this.splitDragger_);
   this.splitDragger_ = null;
 
   goog.dom.removeNode(this.iframeOverlay_);
   this.iframeOverlay_ = null;
+
+  goog.ui.SplitPane.base(this, 'disposeInternal');
 };

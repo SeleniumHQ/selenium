@@ -38,6 +38,14 @@ public class DomainHelper {
     return appServer.whereIs(path);
   }
 
+  public String getSecureUrlForFirstValidHostname(String path) {
+    Preconditions.checkArgument(
+        isValidHostname(appServer.getHostName()),
+        "Expected valid hostname but was %s",
+        appServer.getHostName());
+    return appServer.whereIsSecure(path);
+  }
+
   public String getUrlForSecondValidHostname(String path) {
     Preconditions.checkArgument(
       isValidHostname(appServer.getAlternateHostName()),

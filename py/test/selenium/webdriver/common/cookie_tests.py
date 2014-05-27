@@ -92,4 +92,4 @@ class CookieTest(unittest.TestCase):
         self.driver.get(self._pageURL(name))
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+        return self.webserver.where_is(name + '.html')

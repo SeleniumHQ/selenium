@@ -185,7 +185,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
     tab.once(safaridriver.message.Load.TYPE, onLoad);
   }
   safaridriver.extension.commands.sendCommand(session, command).
-      then(onSuccess, onFailure);
+      then(onSuccess, /** @type {function(*)} */(onFailure));
   return response.promise;
 
   /** Load message handler that completes the command response. */

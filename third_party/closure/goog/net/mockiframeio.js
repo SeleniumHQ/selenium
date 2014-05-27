@@ -32,6 +32,7 @@ goog.require('goog.net.IframeIo');
  *     events.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.net.MockIFrameIo = function(testQueue) {
   goog.events.EventTarget.call(this);

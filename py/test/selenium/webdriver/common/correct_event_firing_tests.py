@@ -34,13 +34,13 @@ class CorrectEventFiringTests(unittest.TestCase):
         self._loadPage("javascriptPage")
         self._clickOnElementWhichRecordsEvents()
         self._assertEventFired("click")
-        
+
 
     def testShouldFireMouseDownEventWhenClicking(self):
         self._loadPage("javascriptPage")
         self._clickOnElementWhichRecordsEvents()
         self._assertEventFired("mousedown")
-        
+
 
     def testShouldFireMouseUpEventWhenClicking(self):
         self._loadPage("javascriptPage")
@@ -58,7 +58,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         self.driver.find_element_by_id("mouseclick").click()
         result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse click")
-        
+
     def testShouldIssueMouseUpEvents(self):
         self._loadPage("javascriptPage")
         self.driver.find_element_by_id("mouseup").click()
@@ -70,7 +70,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         self.driver.find_element_by_id("child").click()
         result = self.driver.find_element_by_id("result").text
         self.assertEqual(result, "mouse down")
-    
+
     def testShouldEmitOnChangeEventsWhenSelectingElements(self):
         self._loadPage("javascriptPage")
         # Intentionally not looking up the select tag.  See selenium r7937 for details.
@@ -90,7 +90,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         checkbox = self.driver.find_element_by_id("checkbox")
         checkbox.click()
         self.assertEqual(self.driver.find_element_by_id("result").text, "checkbox thing")
-        
+
 
     def testShouldEmitClickEventWhenClickingOnATextInputElement(self):
         self._loadPage("javascriptPage")
@@ -98,7 +98,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         clicker.click()
 
         self.assertEqual(clicker.get_attribute("value"), "Clicked")
-        
+
     def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element_by_id("clearMe")
@@ -106,7 +106,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         result = self.driver.find_element_by_id("result")
         self.assertEqual(result.text, "Cleared");
 
-    # TODO Currently Failing and needs fixing    
+    # TODO Currently Failing and needs fixing
     #def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(self):
     #    self._loadPage("javascriptPage")
     #    element = self.driver.find_element_by_id("theworks")
@@ -131,8 +131,8 @@ class CorrectEventFiringTests(unittest.TestCase):
         self.assertTrue(eventName in text, "No " + eventName + " fired: " + text)
 
     def _pageURL(self, name):
-        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+        return self.webserver.where_is(name + '.html')
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

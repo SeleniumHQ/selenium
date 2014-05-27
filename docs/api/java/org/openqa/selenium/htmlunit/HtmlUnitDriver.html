@@ -93,13 +93,13 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="strong">HtmlUnitDriver</span>
 extends java.lang.Object
-implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></pre>
+implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></pre>
 </li>
 </ul>
 </div>
@@ -232,37 +232,45 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByCssSelector(java.lang.String)">findElementByCssSelector</a></strong>(java.lang.String&nbsp;using)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByClassName(java.lang.String)">findElementByClassName</a></strong>(java.lang.String&nbsp;className)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByCssSelector(java.lang.String)">findElementByCssSelector</a></strong>(java.lang.String&nbsp;using)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementById(java.lang.String)">findElementById</a></strong>(java.lang.String&nbsp;id)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByLinkText(java.lang.String)">findElementByLinkText</a></strong>(java.lang.String&nbsp;selector)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByName(java.lang.String)">findElementByName</a></strong>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByPartialLinkText(java.lang.String)">findElementByPartialLinkText</a></strong>(java.lang.String&nbsp;using)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByTagName(java.lang.String)">findElementByTagName</a></strong>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementByXPath(java.lang.String)">findElementByXPath</a></strong>(java.lang.String&nbsp;selector)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElements(org.openqa.selenium.By)">findElements</a></strong>(<a href="../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;by)</code>
 <div class="block">Find all elements within the current page using the given mechanism.</div>
 </td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#findElementsByClassName(java.lang.String)">findElementsByClassName</a></strong>(java.lang.String&nbsp;className)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
@@ -945,6 +953,13 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
  support nested lists.</li>
  <li>Unless the value is null or there is no return value, in which null is returned</li>
  </ul>
+
+ <p>
+ The default timeout for a script to be executed is 0ms. In most cases, including the examples
+ below, one must set the script timeout
+ <a href="../../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a>  beforehand
+ to a value sufficiently large enough.
+
  
  <p>
  Example #1: Performing a sleep in the browser under test. <code><pre>
@@ -991,7 +1006,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - The JavaScript to execute.</dd><dd><code>args</code> - The arguments to the script. May be empty.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd></dl>
+<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a></dd></dl>
 </li>
 </ul>
 <a name="assertElementNotStale(com.gargoylesoftware.htmlunit.html.HtmlElement)">
@@ -1128,6 +1143,32 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/internal/FindsById.html#findElementsById(java.lang.String)">findElementsById</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="findElementByClassName(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findElementByClassName</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElementByClassName(java.lang.String&nbsp;className)</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/internal/FindsByClassName.html#findElementByClassName(java.lang.String)">findElementByClassName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="findElementsByClassName(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findElementsByClassName</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElementsByClassName(java.lang.String&nbsp;className)</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/internal/FindsByClassName.html#findElementsByClassName(java.lang.String)">findElementsByClassName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a></code></dd>
 </dl>
 </li>
 </ul>

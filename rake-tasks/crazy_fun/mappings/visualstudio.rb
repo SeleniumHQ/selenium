@@ -411,10 +411,6 @@ module CrazyFunDotNet
 
         doc_sources = resolve_doc_sources(dir, args[:srcs])
 
-        if ENV['DXROOT'].nil?
-          fail "Sandcastle documentation tools not found. Documentation will not be created."
-        end
-
         if ENV['SHFBROOT'].nil?
           fail "Sandcastle Help File Builder not found. Documentation will not be created."
         end

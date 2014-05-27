@@ -36,9 +36,6 @@ goog.require('goog.math');
  * the {@code transform} method.
  *
  * @constructor
- * @deprecated goog.graphics is deprecated. It existed to abstract over browser
- *     differences before the canvas tag was widely supported.  See
- *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.Path = function() {
   /**
@@ -106,7 +103,6 @@ goog.graphics.Path.Segment = {
  * The number of points for each segment type.
  * @type {!Array.<number>}
  * @private
- * @suppress {deprecated} goog.graphics.Path is deprecated.
  */
 goog.graphics.Path.segmentArgCounts_ = (function() {
   var counts = [];

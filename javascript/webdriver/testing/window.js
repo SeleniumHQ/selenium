@@ -33,7 +33,7 @@ goog.require('webdriver.promise.Promise');
  * <pre><code>
  *   var testWindow = webdriver.testing.Window.create(driver);
  *   // Throw a custom error when the window fails to open.
- *   testWindow.addErrback(function(e) {
+ *   testWindow.thenCatch(function(e) {
  *     throw Error('Failed to open test window: ' + e);
  *   });
  * </code></pre>

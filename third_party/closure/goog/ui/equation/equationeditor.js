@@ -14,12 +14,9 @@
 
 goog.provide('goog.ui.equation.EquationEditor');
 
-goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Tab');
 goog.require('goog.ui.TabBar');
-goog.require('goog.ui.equation.EditorPane');
 goog.require('goog.ui.equation.ImageRenderer');
 goog.require('goog.ui.equation.TexPane');
 
@@ -33,10 +30,11 @@ goog.require('goog.ui.equation.TexPane');
  * @param {string=} opt_helpUrl Help document URL to use in the "Learn more"
  *     link.
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.equation.EquationEditor = function(context, opt_domHelper,
     opt_helpUrl) {
-  goog.base(this, opt_domHelper);
+  goog.ui.equation.EquationEditor.base(this, 'constructor', opt_domHelper);
 
   /**
    * The context this editor runs in.
@@ -77,7 +75,7 @@ goog.ui.equation.EquationEditor.prototype.activeTabIndex_ = 0;
 
 /** @override */
 goog.ui.equation.EquationEditor.prototype.createDom = function() {
-  goog.base(this, 'createDom');
+  goog.ui.equation.EquationEditor.base(this, 'createDom');
   this.createDom_();
 };
 
@@ -219,5 +217,5 @@ goog.ui.equation.EquationEditor.prototype.setEquation = function(equation) {
 /** @override */
 goog.ui.equation.EquationEditor.prototype.disposeInternal = function() {
   this.context_ = null;
-  goog.base(this, 'disposeInternal');
+  goog.ui.equation.EquationEditor.base(this, 'disposeInternal');
 };

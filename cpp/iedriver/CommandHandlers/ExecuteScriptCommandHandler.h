@@ -196,7 +196,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       }
       std::string counter_string = std::to_string(static_cast<long long>(counter));
       std::string name = it.memberName();
-      object_script += name + ":arguments[" + counter_string + "]";
+      object_script += "\"" + name + "\"" + ":arguments[" + counter_string + "]";
       ++counter;
     }
     object_script += "};}})();";

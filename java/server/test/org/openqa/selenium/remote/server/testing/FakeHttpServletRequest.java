@@ -16,11 +16,12 @@
 
 package org.openqa.selenium.remote.server.testing;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
@@ -43,7 +44,12 @@ public class FakeHttpServletRequest extends HeaderContainer
   private final Map<String, String> parameters;
   private final String method;
 
-  private BufferedReader reader;
+  private ServletInputStream inputStream = new ServletInputStream() {
+    @Override
+    public int read() throws IOException {
+      return 0;
+    }
+  };
 
   public FakeHttpServletRequest(String method, UrlInfo requestUrl) {
     this.attributes = Maps.newHashMap();
@@ -59,8 +65,21 @@ public class FakeHttpServletRequest extends HeaderContainer
     this.parameters.putAll(parameters);
   }
 
-  public void setBody(String data) {
-    this.reader = new BufferedReader(new StringReader(data));
+  public void setBody(final String data) {
+    this.inputStream = new ServletInputStream() {
+      private final ByteArrayInputStream delegate =
+          new ByteArrayInputStream(data.getBytes(Charsets.UTF_8));
+
+      @Override
+      public void close() throws IOException {
+        delegate.close();
+      }
+
+      @Override
+      public int read() throws IOException {
+        return delegate.read();
+      }
+    };
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -174,7 +193,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public ServletInputStream getInputStream() throws IOException {
-    throw new UnsupportedOperationException();
+    return inputStream;
   }
 
   public String getParameter(String s) {
@@ -211,7 +230,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public BufferedReader getReader() throws IOException {
-    return reader;
+    throw new UnsupportedOperationException();
   }
 
   public String getRemoteAddr() {

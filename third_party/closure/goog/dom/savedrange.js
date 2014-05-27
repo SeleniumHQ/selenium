@@ -22,7 +22,7 @@
 goog.provide('goog.dom.SavedRange');
 
 goog.require('goog.Disposable');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 
 
 
@@ -39,11 +39,11 @@ goog.inherits(goog.dom.SavedRange, goog.Disposable);
 
 /**
  * Logging object.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @private
  */
 goog.dom.SavedRange.logger_ =
-    goog.debug.Logger.getLogger('goog.dom.SavedRange');
+    goog.log.getLogger('goog.dom.SavedRange');
 
 
 /**
@@ -55,7 +55,7 @@ goog.dom.SavedRange.logger_ =
  */
 goog.dom.SavedRange.prototype.restore = function(opt_stayAlive) {
   if (this.isDisposed()) {
-    goog.dom.SavedRange.logger_.severe(
+    goog.log.error(goog.dom.SavedRange.logger_,
         'Disposed SavedRange objects cannot be restored.');
   }
 

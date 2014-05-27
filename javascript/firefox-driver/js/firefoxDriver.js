@@ -1,7 +1,5 @@
 /*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
+ Copyright 2007-2014 Software Freedom Conservancy
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,7 +20,6 @@ goog.require('Utils');
 goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.appcache');
-goog.require('bot.connection');
 goog.require('bot.dom');
 goog.require('bot.frame');
 goog.require('bot.locators');
@@ -626,6 +623,18 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 };
 
 
+/**
+ * Changes the command session's focus to the parent frame.
+ * @param {Response} respond Object to send the command response with.
+ */
+FirefoxDriver.prototype.switchToParentFrame = function(respond) {
+  var p = respond.session.getWindow().parent;
+  respond.session.setWindow(p);
+  respond.session.setFrame(p.frameElement);
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
   var id = Utils.addToKnownElements(element);
@@ -1010,11 +1019,6 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
 };
 
 // HTML 5
-FirefoxDriver.prototype.isOnline = function(respond, parameters) {
-  respond.value = bot.connection.isOnline(respond.session.getBrowser().contentWindow);
-  respond.send();
-};
-
 FirefoxDriver.prototype.getAppCacheStatus = function(respond, parameters) {
   respond.value = bot.appcache.getStatus(respond.session.getBrowser().contentWindow);
   respond.send();
@@ -1063,7 +1067,7 @@ FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnVa
   }
 };
 
-FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
+FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
   // Coordinate spaces in use:
   //   * Owner document space: Coordinates are relative to the top-left of the
   //     top-level document contained by the window handle containing the
@@ -1186,7 +1190,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   }
 };
 
-FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
@@ -1224,7 +1228,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   respond.send();
 };
 
-FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
   var doc = respond.session.getDocument();
 
   if (!this.enableNativeEvents) {
@@ -1293,7 +1297,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   }
 
   var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);

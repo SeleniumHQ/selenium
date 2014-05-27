@@ -34,6 +34,7 @@ limitations under the License.
       if (isAsync) {
         window.clearTimeout(timeoutId);
         window.removeEventListener('unload', onunload, false);
+        timeoutId = true;
       }
 
       document.__webdriver_evaluate['args'] = null;
@@ -67,12 +68,16 @@ limitations under the License.
     try {
       var result = new Function(script).apply(null, args);
       if (isAsync) {
-        timeoutId = window.setTimeout(function() {
-          sendResponse(
-              Error('Timed out waiting for async script result after ' +
-                  (new Date().getTime() - startTime) + 'ms'),
-              28);  // "script timeout" == 28
-        }, timeout);
+        // if the callback method is called synchronously in the provided script
+        // don't set a timeout function, since the timeout has already been 'cleared'
+        if (!timeoutId) {
+          timeoutId = window.setTimeout(function() {
+            sendResponse(
+                Error('Timed out waiting for async script result after ' +
+                      (new Date().getTime() - startTime) + 'ms'),
+                28);  // "script timeout" == 28
+          }, timeout);
+        }
       } else {
         sendResponse(result, 0);
       }

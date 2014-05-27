@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -48,6 +49,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import com.google.common.base.Throwables;
 
 @Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE, PHANTOMJS, MARIONETTE},
         reason = "Opera: not implemented yet")
@@ -239,6 +242,16 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
+    driver.get(pages.ajaxyPage);
+    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MILLISECONDS);
+    assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
+    assertTrue((Boolean) executor.executeAsyncScript(
+        "var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"));
+  }
+
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
   public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
@@ -249,9 +262,12 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
       executor.executeAsyncScript(js);
       fail("Expected an exception");
     } catch (WebDriverException e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("errormessage"));
+      assertThat(e.getMessage(), containsString("errormessage"));
 
-      StackTraceElement [] st = e.getCause().getStackTrace();
+      Throwable rootCause = Throwables.getRootCause(e);
+      assertThat(rootCause.getMessage(), containsString("errormessage"));
+
+      StackTraceElement [] st = rootCause.getStackTrace();
       boolean seen = false;
       for (StackTraceElement s: st) {
         if (s.getMethodName().equals("functionB")) {

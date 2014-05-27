@@ -49,6 +49,7 @@ var buttonEntry;
  *     registry.
  * @param {!Object.<string|number|boolean>=} opt_compilerOverrides Compiler
  *     overrides.
+ * @suppress {accessControls} Private state is accessed for test purposes.
  */
 function createRegistryEntries(queryParams, opt_compilerOverrides) {
   // Initialize the registry with the given query string.

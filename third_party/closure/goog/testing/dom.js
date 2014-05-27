@@ -20,12 +20,14 @@
 
 goog.provide('goog.testing.dom');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagIterator');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.iter');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -35,11 +37,23 @@ goog.require('goog.userAgent');
 
 
 /**
- * A unique object to use as an end tag marker.
- * @type {Object}
+ * @return {!Node} A DIV node with a unique ID identifying the
+ *     {@code END_TAG_MARKER_}.
  * @private
  */
-goog.testing.dom.END_TAG_MARKER_ = {};
+goog.testing.dom.createEndTagMarker_ = function() {
+  var marker = goog.dom.createElement(goog.dom.TagName.DIV);
+  marker.id = goog.getUid(marker);
+  return marker;
+};
+
+
+/**
+ * A unique object to use as an end tag marker.
+ * @private {!Node}
+ * @const
+ */
+goog.testing.dom.END_TAG_MARKER_ = goog.testing.dom.createEndTagMarker_();
 
 
 /**
@@ -158,8 +172,8 @@ goog.testing.dom.checkUserAgents_ = function(userAgents) {
  * Map function that converts end tags to a specific object.
  * @param {Node} node The node to map.
  * @param {undefined} ignore Always undefined.
- * @param {goog.dom.TagIterator} iterator The iterator.
- * @return {Node|Object} The resulting iteration item.
+ * @param {!goog.iter.Iterator.<Node>} iterator The iterator.
+ * @return {Node} The resulting iteration item.
  * @private
  */
 goog.testing.dom.endTagMap_ = function(node, ignore, iterator) {
@@ -235,7 +249,7 @@ goog.testing.dom.describeNode_ = function(node) {
  * expected to show up in that user agent and expected not to show up in
  * others.
  * @param {string} htmlPattern The pattern to match.
- * @param {!Element} actual The element to check: its contents are matched
+ * @param {!Node} actual The element to check: its contents are matched
  *     against the HTML pattern.
  * @param {boolean=} opt_strictAttributes If false, attributes that appear in
  *     htmlPattern must be in actual, but actual can have attributes not
@@ -306,17 +320,19 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
         expectedNode.nodeType, actualNode.nodeType);
 
     if (expectedNode.nodeType == goog.dom.NodeType.ELEMENT) {
+      var expectedElem = goog.asserts.assertElement(expectedNode);
+      var actualElem = goog.asserts.assertElement(actualNode);
+
       assertEquals('Tag names should match' + errorSuffix,
-          expectedNode.tagName, actualNode.tagName);
+          expectedElem.tagName, actualElem.tagName);
       assertObjectEquals('Should have same styles' + errorSuffix,
-          goog.style.parseStyleAttribute(expectedNode.style.cssText),
-          goog.style.parseStyleAttribute(actualNode.style.cssText));
-      goog.testing.dom.assertAttributesEqual_(errorSuffix, expectedNode,
-          actualNode, !!opt_strictAttributes);
+          goog.style.parseStyleAttribute(expectedElem.style.cssText),
+          goog.style.parseStyleAttribute(actualElem.style.cssText));
+      goog.testing.dom.assertAttributesEqual_(errorSuffix, expectedElem,
+          actualElem, !!opt_strictAttributes);
 
       if (IE_TEXT_COLLAPSE &&
-          goog.style.getCascadedStyle(
-              /** @type {Element} */ (actualNode), 'display') != 'inline') {
+          goog.style.getCascadedStyle(actualElem, 'display') != 'inline') {
         // Text may be collapsed after any non-inline element.
         collapsible = true;
       }
@@ -456,8 +472,8 @@ goog.testing.dom.getAttributeValue_ = function(node, name) {
  * Assert that the attributes of two Nodes are the same (ignoring any
  * instances of the style attribute).
  * @param {string} errorSuffix String to add to end of error messages.
- * @param {Node} expectedNode The node whose attributes we are expecting.
- * @param {Node} actualNode The node with the actual attributes.
+ * @param {!Element} expectedElem The element whose attributes we are expecting.
+ * @param {!Element} actualElem The element with the actual attributes.
  * @param {boolean} strictAttributes If false, attributes that appear in
  *     expectedNode must also be in actualNode, but actualNode can have
  *     attributes not present in expectedNode.  If true, expectedNode and
@@ -465,21 +481,21 @@ goog.testing.dom.getAttributeValue_ = function(node, name) {
  * @private
  */
 goog.testing.dom.assertAttributesEqual_ = function(errorSuffix,
-    expectedNode, actualNode, strictAttributes) {
+    expectedElem, actualElem, strictAttributes) {
   if (strictAttributes) {
-    goog.testing.dom.compareClassAttribute_(expectedNode, actualNode);
+    goog.testing.dom.compareClassAttribute_(expectedElem, actualElem);
   }
 
-  var expectedAttributes = expectedNode.attributes;
-  var actualAttributes = actualNode.attributes;
+  var expectedAttributes = expectedElem.attributes;
+  var actualAttributes = actualElem.attributes;
 
   for (var i = 0, len = expectedAttributes.length; i < len; i++) {
     var expectedName = expectedAttributes[i].name;
-    var expectedValue = goog.testing.dom.getAttributeValue_(expectedNode,
+    var expectedValue = goog.testing.dom.getAttributeValue_(expectedElem,
         expectedName);
 
     var actualAttribute = actualAttributes[expectedName];
-    var actualValue = goog.testing.dom.getAttributeValue_(actualNode,
+    var actualValue = goog.testing.dom.getAttributeValue_(actualElem,
         expectedName);
 
     // IE enumerates attribute names in the expected node that are not present,
@@ -501,12 +517,12 @@ goog.testing.dom.assertAttributesEqual_ = function(errorSuffix,
 
     assertNotUndefined('Expected to find attribute with name ' +
         expectedName + ', in element ' +
-        goog.testing.dom.describeNode_(actualNode) + errorSuffix,
+        goog.testing.dom.describeNode_(actualElem) + errorSuffix,
         actualAttribute);
     assertEquals('Expected attribute ' + expectedName +
         ' has a different value ' + errorSuffix,
         expectedValue,
-        goog.testing.dom.getAttributeValue_(actualNode, actualAttribute.name));
+        goog.testing.dom.getAttributeValue_(actualElem, actualAttribute.name));
   }
 
   if (strictAttributes) {
@@ -520,7 +536,7 @@ goog.testing.dom.assertAttributesEqual_ = function(errorSuffix,
 
       assertNotUndefined('Unexpected attribute with name ' +
           actualName + ' in element ' +
-          goog.testing.dom.describeNode_(actualNode) + errorSuffix,
+          goog.testing.dom.describeNode_(actualElem) + errorSuffix,
           expectedAttributes[actualName]);
     }
   }
@@ -528,15 +544,15 @@ goog.testing.dom.assertAttributesEqual_ = function(errorSuffix,
 
 
 /**
- * Assert the class attribute of actualNode is the same as the one in
- * expectedNode, ignoring classes that are useragents.
- * @param {Node} expectedNode The DOM node whose class we expect.
- * @param {Node} actualNode The DOM node with the actual class.
+ * Assert the class attribute of actualElem is the same as the one in
+ * expectedElem, ignoring classes that are useragents.
+ * @param {!Element} expectedElem The DOM element whose class we expect.
+ * @param {!Element} actualElem The DOM element with the actual class.
  * @private
  */
-goog.testing.dom.compareClassAttribute_ = function(expectedNode,
-    actualNode) {
-  var classes = goog.dom.classes.get(expectedNode);
+goog.testing.dom.compareClassAttribute_ = function(expectedElem,
+    actualElem) {
+  var classes = goog.dom.classlist.get(expectedElem);
 
   var expectedClasses = [];
   for (var i = 0, len = classes.length; i < len; i++) {
@@ -546,12 +562,12 @@ goog.testing.dom.compareClassAttribute_ = function(expectedNode,
   }
   expectedClasses.sort();
 
-  var actualClasses = goog.dom.classes.get(actualNode);
+  var actualClasses = goog.array.toArray(goog.dom.classlist.get(actualElem));
   actualClasses.sort();
 
   assertArrayEquals(
       'Expected class was: ' + expectedClasses.join(' ') +
-      ', but actual class was: ' + actualNode.className,
+      ', but actual class was: ' + actualElem.className,
       expectedClasses, actualClasses);
 };
 

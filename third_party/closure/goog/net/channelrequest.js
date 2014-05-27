@@ -103,7 +103,7 @@ goog.net.ChannelRequest = function(channel, channelDebug, opt_sessionId,
 
   /**
    * An object to keep track of the channel request event listeners.
-   * @type {!goog.events.EventHandler}
+   * @type {!goog.events.EventHandler.<!goog.net.ChannelRequest>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -716,7 +716,7 @@ goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
 
   if (this.decodeChunks_) {
     this.decodeNextChunks_(readyState, responseText);
-    if (goog.userAgent.OPERA &&
+    if (goog.userAgent.OPERA && this.successful_ &&
         readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE) {
       this.startPolling_();
     }

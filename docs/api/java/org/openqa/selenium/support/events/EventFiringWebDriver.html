@@ -603,6 +603,13 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
  support nested lists.</li>
  <li>Unless the value is null or there is no return value, in which null is returned</li>
  </ul>
+
+ <p>
+ The default timeout for a script to be executed is 0ms. In most cases, including the examples
+ below, one must set the script timeout
+ <a href="../../../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a>  beforehand
+ to a value sufficiently large enough.
+
  
  <p>
  Example #1: Performing a sleep in the browser under test. <code><pre>
@@ -649,7 +656,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - The JavaScript to execute.</dd><dd><code>args</code> - The arguments to the script. May be empty.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd></dl>
+<dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a></dd></dl>
 </li>
 </ul>
 <a name="getScreenshotAs(org.openqa.selenium.OutputType)">

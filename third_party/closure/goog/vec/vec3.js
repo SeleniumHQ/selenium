@@ -208,7 +208,7 @@ goog.vec.Vec3.clone = function(vec) {
  * @param {number} v0 The value for element at index 0.
  * @param {number} v1 The value for element at index 1.
  * @param {number} v2 The value for element at index 2.
- * @return {!goog.vec.Vec3.AnyType} return vec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.setFromValues = function(vec, v0, v1, v2) {
@@ -225,7 +225,7 @@ goog.vec.Vec3.setFromValues = function(vec, v0, v1, v2) {
  * @param {goog.vec.Vec3.AnyType} vec The vector to receive the
  *     values.
  * @param {goog.vec.Vec3.AnyType} values The array of values.
- * @return {!goog.vec.Vec3.AnyType} return vec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return vec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.setFromArray = function(vec, values) {
@@ -244,7 +244,7 @@ goog.vec.Vec3.setFromArray = function(vec, values) {
  * @param {goog.vec.Vec3.AnyType} vec1 The second addend.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
@@ -263,7 +263,7 @@ goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
  * @param {goog.vec.Vec3.AnyType} vec1 The subtrahend.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
@@ -280,13 +280,31 @@ goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
  * @param {goog.vec.Vec3.AnyType} vec0 The vector to negate.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.negate = function(vec0, resultVec) {
   resultVec[0] = -vec0[0];
   resultVec[1] = -vec0[1];
   resultVec[2] = -vec0[2];
+  return resultVec;
+};
+
+
+/**
+ * Takes the absolute value of each component of vec0 storing the result in
+ * resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the result.
+ *     May be vec0.
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.abs = function(vec0, resultVec) {
+  resultVec[0] = Math.abs(vec0[0]);
+  resultVec[1] = Math.abs(vec0[1]);
+  resultVec[2] = Math.abs(vec0[2]);
   return resultVec;
 };
 
@@ -299,7 +317,7 @@ goog.vec.Vec3.negate = function(vec0, resultVec) {
  * @param {number} scalar The value to multiply with each component of vec0.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.scale = function(vec0, scalar, resultVec) {
@@ -340,7 +358,7 @@ goog.vec.Vec3.magnitude = function(vec0) {
  * @param {goog.vec.Vec3.AnyType} vec0 The vector to normalize.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.normalize = function(vec0, resultVec) {
@@ -372,7 +390,7 @@ goog.vec.Vec3.dot = function(v0, v1) {
  * @param {goog.vec.Vec3.AnyType} v1 The second vector.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
  *     results. May be either v0 or v1.
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.cross = function(v0, v1, resultVec) {
@@ -420,7 +438,7 @@ goog.vec.Vec3.distance = function(vec0, vec1) {
  * @param {goog.vec.Vec3.AnyType} vec1 Target point.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
  *     results (may be vec0 or vec1).
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.direction = function(vec0, vec1, resultVec) {
@@ -449,7 +467,7 @@ goog.vec.Vec3.direction = function(vec0, vec1, resultVec) {
  * @param {number} f The interpolation factor.
  * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
  *     results (may be v0 or v1).
- * @return {!goog.vec.Vec3.AnyType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
@@ -457,6 +475,56 @@ goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
   resultVec[0] = (v1[0] - x) * f + x;
   resultVec[1] = (v1[1] - y) * f + y;
   resultVec[2] = (v1[2] - z) * f + z;
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the larger values in resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.max = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.max(vec0[0], limit);
+    resultVec[1] = Math.max(vec0[1], limit);
+    resultVec[2] = Math.max(vec0[2], limit);
+  } else {
+    resultVec[0] = Math.max(vec0[0], limit[0]);
+    resultVec[1] = Math.max(vec0[1], limit[1]);
+    resultVec[2] = Math.max(vec0[2], limit[2]);
+  }
+  return resultVec;
+};
+
+
+/**
+ * Compares the components of vec0 with the components of another vector or
+ * scalar, storing the smaller values in resultVec.
+ *
+ * @param {goog.vec.Vec3.AnyType} vec0 The source vector.
+ * @param {goog.vec.Vec3.AnyType|number} limit The limit vector or scalar.
+ * @param {goog.vec.Vec3.AnyType} resultVec The vector to receive the
+ *     results (may be vec0 or limit).
+ * @return {!goog.vec.Vec3.AnyType} Return resultVec so that operations can be
+ *     chained together.
+ */
+goog.vec.Vec3.min = function(vec0, limit, resultVec) {
+  if (goog.isNumber(limit)) {
+    resultVec[0] = Math.min(vec0[0], limit);
+    resultVec[1] = Math.min(vec0[1], limit);
+    resultVec[2] = Math.min(vec0[2], limit);
+  } else {
+    resultVec[0] = Math.min(vec0[0], limit[0]);
+    resultVec[1] = Math.min(vec0[1], limit[1]);
+    resultVec[2] = Math.min(vec0[2], limit[2]);
+  }
   return resultVec;
 };
 

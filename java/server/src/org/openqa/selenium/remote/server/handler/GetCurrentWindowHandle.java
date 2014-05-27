@@ -17,18 +17,16 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetCurrentWindowHandle extends ResponseAwareWebDriverHandler {
+public class GetCurrentWindowHandle extends WebDriverHandler<String> {
 
   public GetCurrentWindowHandle(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getDriver().getWindowHandle());
-
-    return ResultType.SUCCESS;
+  @Override
+  public String call() throws Exception {
+    return getDriver().getWindowHandle();
   }
 
   @Override

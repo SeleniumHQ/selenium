@@ -19,16 +19,16 @@
 
 goog.provide('goog.editor.plugins.Blockquote');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.functions');
+goog.require('goog.log');
 
 
 
@@ -42,6 +42,7 @@ goog.require('goog.functions');
  *     blockquotes.  Defaults to 'tr_bq'.
  * @constructor
  * @extends {goog.editor.Plugin}
+ * @final
  */
 goog.editor.plugins.Blockquote = function(requiresClassNameToSplit,
     opt_className) {
@@ -84,12 +85,12 @@ goog.editor.plugins.Blockquote.CLASS_ID = 'Blockquote';
 
 /**
  * Logging object.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.editor.plugins.Blockquote.prototype.logger =
-    goog.debug.Logger.getLogger('goog.editor.plugins.Blockquote');
+    goog.log.getLogger('goog.editor.plugins.Blockquote');
 
 
 /** @override */
@@ -131,8 +132,8 @@ goog.editor.plugins.Blockquote.isBlockquote = function(node, isAlreadySetup,
   if (!requiresClassNameToSplit) {
     return isAlreadySetup;
   }
-  var hasClassName = goog.dom.classes.has(/** @type {Element} */ (node),
-      className);
+  var hasClassName = goog.dom.classlist.contains(
+      /** @type {!Element} */ (node), className);
   return isAlreadySetup ? hasClassName : !hasClassName;
 };
 
@@ -159,7 +160,8 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
     return true;
   }
 
-  return goog.dom.classes.has(node, this.className_);
+  return goog.dom.classlist.contains(/** @type {!Element} */ (node),
+      this.className_);
 };
 
 
@@ -172,7 +174,8 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
 goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
     function(node) {
   return node.tagName == goog.dom.TagName.BLOCKQUOTE &&
-      goog.dom.classes.has(node, this.className_);
+      goog.dom.classlist.contains(/** @type {!Element} */ (node),
+          this.className_);
 };
 
 

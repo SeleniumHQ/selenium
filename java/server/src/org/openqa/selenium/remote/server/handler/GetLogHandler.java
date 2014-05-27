@@ -16,31 +16,31 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
 /**
  * RestishHandler used to fetch logs from the Remote WebDriver server.
  */
-public class GetLogHandler extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class GetLogHandler extends WebDriverHandler<LogEntries> implements JsonParametersAware {
   private volatile String type;
 
   public GetLogHandler(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public LogEntries call() throws Exception {
     if (LogType.SERVER.equals(type)) {
-      response.setValue(LoggingManager.perSessionLogHandler().getSessionLog(getSessionId()));
+      return LoggingManager.perSessionLogHandler().getSessionLog(getSessionId());
     } else {
-      response.setValue(getDriver().manage().logs().get(type));
+      return getDriver().manage().logs().get(type);
     }
-    return ResultType.SUCCESS;
   }
 
   @Override

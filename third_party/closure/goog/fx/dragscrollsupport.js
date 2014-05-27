@@ -69,7 +69,7 @@ goog.fx.DragScrollSupport = function(containerNode, opt_margin,
 
   /**
    * EventHandler used to set up and tear down listeners.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.fx.DragScrollSupport>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

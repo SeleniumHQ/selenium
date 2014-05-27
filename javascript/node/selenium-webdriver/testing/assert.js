@@ -13,20 +13,23 @@
 // limitations under the License.
 
 /**
- * @fileoverview Defines an assertion library that simplifies writing
- * assertions against promised values.
+ * @fileoverview Defines a library that simplifies writing assertions against
+ * promised values.
  *
- * ---------------------------------------------------------------------------
- * NOTE: This module is considered experimental and is subject to change,
- * or removal, at any time!
- * ---------------------------------------------------------------------------
+ * <blockquote>
+ * <hr>
+ * <b>NOTE:</b> This module is considered experimental and is subject to
+ * change, or removal, at any time!
+ * <hr>
+ * </blockquote>
  *
  * Sample usage:
- *
+ * <pre><code>
  * var driver = new webdriver.Builder().build();
  * driver.get('http://www.google.com');
  *
  * assert(driver.getTitle()).equalTo('Google');
+ * </code></pre>
  */
 
 var base = require('../_base'),
@@ -36,4 +39,5 @@ var base = require('../_base'),
 // PUBLIC API
 
 
+/** @type {webdriver.testing.assert.} */
 module.exports = assert;

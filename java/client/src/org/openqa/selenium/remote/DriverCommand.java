@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ public interface DriverCommand {
   String REFRESH = "refresh";
 
   String ADD_COOKIE = "addCookie";
-  String GET_COOKIE = "getCookie";
   String GET_ALL_COOKIES = "getCookies";
   String DELETE_COOKIE = "deleteCookie";
   String DELETE_ALL_COOKIES = "deleteAllCookies";
@@ -50,7 +49,6 @@ public interface DriverCommand {
 
   String CLEAR_ELEMENT = "clearElement";
   String CLICK_ELEMENT = "clickElement";
-  String HOVER_OVER_ELEMENT = "hoverOverElement";
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
@@ -59,8 +57,13 @@ public interface DriverCommand {
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
 
+  String GET_CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle";
+  String GET_CONTEXT_HANDLES = "getContextHandles";
+
   String SWITCH_TO_WINDOW = "switchToWindow";
+  String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
+  String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
 
   String GET_CURRENT_URL = "getCurrentUrl";
@@ -70,13 +73,8 @@ public interface DriverCommand {
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
 
-  String SET_BROWSER_VISIBLE = "setBrowserVisible";
-  String IS_BROWSER_VISIBLE = "isBrowserVisible";
-
   String GET_ELEMENT_TEXT = "getElementText";
-  String GET_ELEMENT_VALUE = "getElementValue";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";
-  String DRAG_ELEMENT = "dragElement";
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
   String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
@@ -89,7 +87,6 @@ public interface DriverCommand {
 
   String SCREENSHOT = "screenshot";
 
-  String GET_ALERT = "getAlert";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
@@ -132,7 +129,6 @@ public interface DriverCommand {
   String MOUSE_DOWN = "mouseButtonDown";
   String MOUSE_UP = "mouseButtonUp";
   String MOVE_TO = "mouseMoveTo";
-  String SEND_KEYS_TO_SESSION = "sendKeys";
 
   // Those allow interactions with the Input Methods installed on
   // the system.
@@ -162,4 +158,9 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
+  String GET_SESSION_LOGS = "getSessionLogs";
+
+  // Mobile API
+  String GET_NETWORK_CONNECTION = "getNetworkConnection";
+  String SET_NETWORK_CONNECTION = "setNetworkConnection";
 }

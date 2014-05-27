@@ -95,7 +95,7 @@ class FindChildElementCommandHandler : public IECommandHandler {
 
         // This code is executed when status_code == ENOSUCHELEMENT
         response->SetErrorResponse(status_code, 
-          "Unable to find element with " + mechanism + " == " + value);
+            "Unable to find element with " + mechanism + " == " + value);
       } else {
         response->SetErrorResponse(status_code, "Element is no longer valid");
         return;

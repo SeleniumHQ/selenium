@@ -38,7 +38,7 @@ goog.provide('goog.fx.dom.Swipe');
 goog.require('goog.color');
 goog.require('goog.events');
 goog.require('goog.fx.Animation');
-goog.require('goog.fx.Transition.EventType');
+goog.require('goog.fx.Transition');
 goog.require('goog.style');
 goog.require('goog.style.bidi');
 
@@ -206,14 +206,14 @@ goog.fx.dom.Swipe = function(element, start, end, time, opt_acc) {
   }
   goog.fx.dom.PredefinedEffect.apply(this, arguments);
 
-  /*
+  /**
    * Maximum width for element.
    * @type {number}
    * @private
    */
   this.maxWidth_ = Math.max(this.endPoint[0], this.startPoint[0]);
 
-  /*
+  /**
    * Maximum height for element.
    * @type {number}
    * @private
@@ -280,7 +280,7 @@ goog.inherits(goog.fx.dom.Scroll, goog.fx.dom.PredefinedEffect);
 
 
 /**
- * Animation event handler that will set the scroll posiiton of an element
+ * Animation event handler that will set the scroll position of an element.
  * @protected
  * @override
  */
@@ -512,7 +512,7 @@ goog.fx.dom.FadeOutAndHide.prototype.onEnd = function() {
 
 /**
  * Sets an element's display to be visible and then fades an element in from
- * completely transparent to fully opacity
+ * completely transparent to fully opaque.
  *
  * @param {Element} element Dom Node to be used in the animation.
  * @param {number} time Length of animation in milliseconds.

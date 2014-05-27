@@ -79,6 +79,7 @@ namespace Selenium
 		/// <summary>
 		/// Sets the extension Javascript for the session
 		/// </summary>
+        /// <param name="extensionJs">The extension JavaScript to use.</param>
 		void SetExtensionJs(string extensionJs);
 		
 		/// <summary>

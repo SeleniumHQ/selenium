@@ -36,6 +36,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.seleniumhq.jetty7.server.Server;
 import org.seleniumhq.jetty7.server.bio.SocketConnector;
 import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.util.thread.QueuedThreadPool;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +55,7 @@ public class Hub {
 
   private final int port;
   private final String host;
+  private final int maxThread;
   private final boolean isHostRestricted;
   private final Registry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
@@ -75,6 +77,8 @@ public class Hub {
 
   public Hub(GridHubConfiguration config) {
     registry = Registry.newInstance(this, config);
+
+    maxThread = config.getJettyMaxThreads();
 
     if (config.getHost() != null) {
       host = config.getHost();
@@ -108,6 +112,7 @@ public class Hub {
         socketListener.setHost(host);
       }
       socketListener.setPort(port);
+      socketListener.setLowResourcesMaxIdleTime(6000);
       server.addConnector(socketListener);
 
       ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -160,6 +165,11 @@ public class Hub {
   public void start() throws Exception {
     initServer();
     server.start();
+    if (maxThread>0){
+      QueuedThreadPool pool = new QueuedThreadPool();
+      pool.setMaxThreads(maxThread);
+      server.setThreadPool(pool);
+    }
   }
 
   public void stop() throws Exception {

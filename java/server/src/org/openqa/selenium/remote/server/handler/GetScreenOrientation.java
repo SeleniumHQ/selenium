@@ -17,18 +17,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetScreenOrientation extends ResponseAwareWebDriverHandler {
+public class GetScreenOrientation extends WebDriverHandler<ScreenOrientation> {
 
   public GetScreenOrientation(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(((Rotatable) getUnwrappedDriver()).getOrientation());
-    return ResultType.SUCCESS;
+  @Override
+  public ScreenOrientation call() throws Exception {
+    return ((Rotatable) getUnwrappedDriver()).getOrientation();
   }
 
   @Override

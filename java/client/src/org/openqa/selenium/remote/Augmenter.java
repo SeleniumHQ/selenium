@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Enhance the interfaces implemented by an instance of the
@@ -44,6 +45,8 @@ import java.util.Set;
  * Note: this class is still experimental. Use at your own risk.
  */
 public class Augmenter extends BaseAugmenter {
+
+  private static final Logger logger = Logger.getLogger(Augmenter.class.getName());
 
   @Override
   protected <X> X create(RemoteWebDriver driver,
@@ -59,9 +62,14 @@ public class Augmenter extends BaseAugmenter {
 
   @Override
   protected RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {
-    if (driver instanceof RemoteWebDriver) {
+    if (driver.getClass().isAnnotationPresent(Augmentable.class) ||
+        driver.getClass().getName().startsWith(
+            "org.openqa.selenium.remote.RemoteWebDriver$$EnhancerByCGLIB")) {
       return (RemoteWebDriver) driver;
+
     } else {
+      logger.warning("Augmenter should be applied to the instances of @Augmentable clases " +
+                     "or previously augmented instances only");
       return null;
     }
   }

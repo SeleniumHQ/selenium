@@ -243,8 +243,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     if (arg instanceof List<?>) {
       List<?> aList = (List<?>) arg;
       List<Object> toReturn = new ArrayList<Object>();
-      for (int j = 0; j < aList.size(); j++) {
-        toReturn.add(unpackWrappedElement(aList.get(j)));
+      for (Object anAList : aList) {
+        toReturn.add(unpackWrappedElement(anAList));
       }
       return toReturn;
     } else if (arg instanceof Map<?, ?>) {
@@ -579,6 +579,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public WebDriver frame(WebElement frameElement) {
       return targetLocator.frame(frameElement);
+    }
+
+    public WebDriver parentFrame() {
+      return targetLocator.parentFrame();
     }
 
     public WebDriver window(String windowName) {

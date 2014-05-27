@@ -57,7 +57,7 @@ public class LauncherUtils {
 
     customProfileDir = customProfileDir(sessionId);
     if (customProfileDir.exists()) {
-      LauncherUtils.recursivelyDeleteDir(customProfileDir);
+      FileHandler.delete(customProfileDir);
     }
     customProfileDir.mkdirs();
     return customProfileDir;
@@ -83,18 +83,11 @@ public class LauncherUtils {
   }
 
   /**
-   * Delete a directory and all subdirectories
-   */
-  public static void recursivelyDeleteDir(File customProfileDir) {
-    FileHandler.delete(customProfileDir);
-  }
-
-  /**
    * Try several times to recursively delete a directory
    */
   public static void deleteTryTryAgain(File dir, int tries) {
     try {
-      recursivelyDeleteDir(dir);
+      FileHandler.delete(dir);
     } catch (RuntimeException e) {
       if (tries > 0) {
         Sleeper.sleepTight(2000);

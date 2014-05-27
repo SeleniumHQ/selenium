@@ -204,7 +204,7 @@ options.header =
     "import com.thoughtworks.selenium.Selenium;\n" +
     "import org.openqa.selenium.firefox.FirefoxDriver;\n" +
     "import org.openqa.selenium.WebDriver;\n" +
-    "import org.openqa.selenium.WebDriverBackedSelenium;\n" +
+    "import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;\n" +
     "import org.junit.After;\n" +
     "import org.junit.Before;\n" +
     "import org.junit.Test;\n" +

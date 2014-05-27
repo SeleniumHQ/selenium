@@ -1,6 +1,5 @@
 java_library(name = "apache-httpclient",
-  export_deps = True,
-  deps = [
+  exported_deps = [
     ':client',
     ':core',
     ':mime',
@@ -12,13 +11,16 @@ java_library(name = "apache-httpclient",
 )
 
 prebuilt_jar(name = 'client',
-  binary_jar = 'httpclient-4.3.1.jar',
+  binary_jar = 'httpclient-4.3.2.jar',
+  source_jar = 'httpclient-4.3.2-sources.jar',
 )
 
 prebuilt_jar(name = 'core',
-  binary_jar = 'httpcore-4.3.jar',
+  binary_jar = 'httpcore-4.3.1.jar',
+  source_jar = 'httpcore-4.3.1-sources.jar',
 )
 
 prebuilt_jar(name = 'mime',
-  binary_jar = 'httpmime-4.3.1.jar',
+  binary_jar = 'httpmime-4.3.2.jar',
+  source_jar = 'httpmime-4.3.2-sources.jar',
 )

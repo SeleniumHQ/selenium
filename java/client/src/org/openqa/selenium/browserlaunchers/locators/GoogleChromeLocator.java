@@ -61,7 +61,9 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
    */
   protected String[] usualWindowsLauncherLocations() {
     return new String[] {
-        WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
+        WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application",
+        WindowsUtils.getProgramFiles86Path() + "\\Google\\Chrome\\Application",
+        WindowsUtils.getProgramFilesPath() + "\\Google\\Chrome\\Application"
     };
   }
 

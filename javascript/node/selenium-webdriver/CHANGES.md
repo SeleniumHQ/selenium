@@ -1,8 +1,33 @@
-## v2.40.0-dev
+## v2.43.0-dev
 
+* FIXED: 7277: Support `done` callback in Mocha's BDD interface
+* FIXED: 7156: `Promise#thenFinally` should not suppress original error
+
+## v2.42.0
+
+* Removed deprecated functions `Promise#addCallback()`,
+    `Promise#addCallbacks()`, `Promise#addErrback()`, and `Promise#addBoth()`.
+* Fail with a more descriptive error if the server returns a malformed redirect
+* FIXED: 7300: Connect to ChromeDriver using the loopback address since
+    ChromeDriver 2.10.267517 binds to localhost by default.
+* FIXED: 7339: Preserve wrapped test function's string representation for
+    Mocha's BDD interface.
+
+## v2.41.0
+
+* FIXED: 7138: export logging API from webdriver module.
+* FIXED: 7105: beforeEach/it/afterEach properly bind `this` for Mocha tests.
+
+## v2.40.0
+
+* API documentation is now included in the docs directory.
+* Added utility functions for working with an array of promises:
+    `promise.all`, `promise.map`, and `promise.filter`
 * Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
 * Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
     `Promise#addErrback()`, and `Promise#addBoth()`.
+* Removed deprecated function `webdriver.WebDriver#getCapability`.
+* FIXED: 6826: Added support for custom locators.
 
 ## v2.39.0
 

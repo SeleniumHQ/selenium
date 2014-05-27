@@ -16,21 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementLocationInView extends WebElementHandler {
+public class GetElementLocationInView extends WebElementHandler<Point> {
 
   public GetElementLocationInView(Session session) {
     super(session);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Point call() throws Exception {
     Locatable element = (Locatable) getElement();
-    response.setValue(element.getCoordinates().inViewPort());
-
-    return ResultType.SUCCESS;
+    return element.getCoordinates().inViewPort();
   }
 
   @Override

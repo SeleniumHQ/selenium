@@ -25,34 +25,30 @@ goog.require('goog.array');
 
 
 /**
- * Maps ranges to values using goog.structs.Inversion.
+ * Maps ranges to values.
  * @param {Array.<number>} rangeArray An array of monotonically
  *     increasing integer values, with at least one instance.
- * @param {Array.<*>} valueArray An array of corresponding values.
+ * @param {Array.<T>} valueArray An array of corresponding values.
  *     Length must be the same as rangeArray.
  * @param {boolean=} opt_delta If true, saves only delta from previous value.
  * @constructor
+ * @template T
  */
 goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
+  /**
+   * @protected {Array}
+   */
+  this.rangeArray = null;
+
   if (rangeArray.length != valueArray.length) {
     // rangeArray and valueArray has to match in number of entries.
     return null;
   }
   this.storeInversion_(rangeArray, opt_delta);
 
-  /**
-   * @type {Array}
-   * @protected
-   */
+  /** @protected {Array.<T>} */
   this.values = valueArray;
 };
-
-
-/**
- * @type {Array}
- * @protected
- */
-goog.structs.InversionMap.prototype.rangeArray;
 
 
 /**
@@ -83,7 +79,7 @@ goog.structs.InversionMap.prototype.storeInversion_ = function(rangeArray,
  * Splices a range -> value map into this inversion map.
  * @param {Array.<number>} rangeArray An array of monotonically
  *     increasing integer values, with at least one instance.
- * @param {Array.<*>} valueArray An array of corresponding values.
+ * @param {Array.<T>} valueArray An array of corresponding values.
  *     Length must be the same as rangeArray.
  * @param {boolean=} opt_delta If true, saves only delta from previous value.
  */
@@ -120,7 +116,7 @@ goog.structs.InversionMap.prototype.spliceInversion = function(
  * Gets the value corresponding to a number from the inversion map.
  * @param {number} intKey The number for which value needs to be retrieved
  *     from inversion map.
- * @return {*} Value retrieved from inversion map; null if not found.
+ * @return {T|null} Value retrieved from inversion map; null if not found.
  */
 goog.structs.InversionMap.prototype.at = function(intKey) {
   var index = this.getLeast(intKey);

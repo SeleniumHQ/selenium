@@ -20,7 +20,7 @@
 goog.provide('goog.ui.MenuBarRenderer');
 
 goog.require('goog.a11y.aria.Role');
-goog.require('goog.dom');
+goog.require('goog.ui.Container');
 goog.require('goog.ui.ContainerRenderer');
 
 
@@ -30,9 +30,11 @@ goog.require('goog.ui.ContainerRenderer');
  * goog.ui.ContainerRenderer}.
  * @constructor
  * @extends {goog.ui.ContainerRenderer}
+ * @final
  */
 goog.ui.MenuBarRenderer = function() {
-  goog.base(this);
+  goog.ui.MenuBarRenderer.base(this, 'constructor',
+      goog.a11y.aria.Role.MENUBAR);
 };
 goog.inherits(goog.ui.MenuBarRenderer, goog.ui.ContainerRenderer);
 goog.addSingletonGetter(goog.ui.MenuBarRenderer);
@@ -44,14 +46,6 @@ goog.addSingletonGetter(goog.ui.MenuBarRenderer);
  * @type {string}
  */
 goog.ui.MenuBarRenderer.CSS_CLASS = goog.getCssName('goog-menubar');
-
-
-/**
- * @override
- */
-goog.ui.MenuBarRenderer.prototype.getAriaRole = function() {
-  return goog.a11y.aria.Role.MENUBAR;
-};
 
 
 /**

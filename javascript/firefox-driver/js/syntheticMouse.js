@@ -182,7 +182,7 @@ SyntheticMouse.prototype.click = function(target) {
     keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
   }
 
-  bot.action.click(element, undefined /* coords */, new bot.Mouse(null, keyboardState));
+  bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, keyboardState));
 
   this.lastElement = element;
 
@@ -201,7 +201,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
   }
 
   fxdriver.logging.info('About to do a bot.action.rightClick on ' + element);
-  bot.action.rightClick(element, undefined /* coords */);
+  bot.action.rightClick(element, this.lastMousePosition);
 
   this.lastElement = element;
 
@@ -218,7 +218,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   }
 
   fxdriver.logging.info('About to do a bot.action.doubleClick on ' + element);
-  bot.action.doubleClick(element, undefined /* coords */);
+  bot.action.doubleClick(element, this.lastMousePosition);
 
   this.lastElement = element;
 

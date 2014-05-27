@@ -17,9 +17,8 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementAttribute extends WebElementHandler {
+public class GetElementAttribute extends WebElementHandler<String> {
 
   private volatile String name;
 
@@ -31,10 +30,9 @@ public class GetElementAttribute extends WebElementHandler {
     this.name = name;
   }
 
-  public ResultType call() throws Exception {
-    response.setValue(getElement().getAttribute(name));
-
-    return ResultType.SUCCESS;
+  @Override
+  public String call() throws Exception {
+    return getElement().getAttribute(name);
   }
 
   @Override

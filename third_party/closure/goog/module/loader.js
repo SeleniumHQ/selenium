@@ -37,6 +37,7 @@ goog.require('goog.object');
  * the goog.module.Loader instance.
  *
  * @constructor
+ * @final
  */
 goog.module.Loader = function() {
   /**
@@ -253,6 +254,7 @@ goog.module.Loader.prototype.load_ = function(module) {
       return;
     }
 
+    goog.asserts.assertString(this.urlBase_);
     var url = this.getModuleUrl_(this.urlBase_, module);
 
     // Check if specified URL is already in flight

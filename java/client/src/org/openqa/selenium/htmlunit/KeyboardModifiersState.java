@@ -20,11 +20,8 @@ import org.openqa.selenium.Keys;
 
 /**
  * Holds the state of the modifier keys (Shift, ctrl, alt) for HtmlUnit.
- *
- * @deprecated This class will soon be marked private
  */
-@Deprecated
-public class KeyboardModifiersState {
+class KeyboardModifiersState {
   private boolean shiftPressed = false;
   private boolean ctrlPressed = false;
   private boolean altPressed = false;

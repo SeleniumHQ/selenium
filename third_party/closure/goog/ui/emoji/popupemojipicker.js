@@ -29,9 +29,9 @@
 
 goog.provide('goog.ui.emoji.PopupEmojiPicker');
 
-goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.positioning.AnchoredPosition');
+goog.require('goog.positioning.Corner');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
 goog.require('goog.ui.emoji.EmojiPicker');
@@ -47,6 +47,7 @@ goog.require('goog.ui.emoji.EmojiPicker');
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @extends {goog.ui.Component}
  * @constructor
+ * @final
  */
 goog.ui.emoji.PopupEmojiPicker =
     function(defaultImgUrl, opt_domHelper) {

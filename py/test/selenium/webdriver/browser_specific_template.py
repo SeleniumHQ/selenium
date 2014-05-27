@@ -19,10 +19,11 @@
 from selenium import webdriver
 from selenium.##PACKAGE_NAME## import ##GENERAL_FILENAME##
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
+from selenium.test.selenium.webdriver.common.network import get_lan_ip
 
 def setup_module(module):
     ##CUSTOM_TEST_SETUP##
-    webserver = SimpleWebServer()
+    webserver = SimpleWebServer(host=get_lan_ip())
     webserver.start()
     ##BROWSER_SPECIFIC_TEST_CLASS##.webserver = webserver
     ##BROWSER_SPECIFIC_TEST_CLASS##.driver = webdriver.##BROWSER_CONSTRUCTOR##
@@ -40,5 +41,5 @@ def teardown_module(module):
     try:
         ##BROWSER_SPECIFIC_TEST_CLASS##.webserver.stop()
     except AttributeError:
-        pass 
+        pass
     ##CUSTOM_TEST_TEARDOWN##

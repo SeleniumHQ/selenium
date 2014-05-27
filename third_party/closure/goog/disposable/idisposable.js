@@ -36,10 +36,10 @@ goog.disposable.IDisposable = function() {};
  * Disposes of the object and its resources.
  * @return {void} Nothing.
  */
-goog.disposable.IDisposable.prototype.dispose;
+goog.disposable.IDisposable.prototype.dispose = goog.abstractMethod;
 
 
 /**
  * @return {boolean} Whether the object has been disposed of.
  */
-goog.disposable.IDisposable.prototype.isDisposed;
+goog.disposable.IDisposable.prototype.isDisposed = goog.abstractMethod;

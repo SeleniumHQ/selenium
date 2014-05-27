@@ -30,12 +30,12 @@ goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.debug');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
+goog.require('goog.log');
 goog.require('goog.messaging.AbstractChannel');
 goog.require('goog.messaging.DeferredChannel');
 goog.require('goog.object');
@@ -59,9 +59,10 @@ goog.require('goog.string');
  *     worker or removing it from the DOM if it's an iframe.
  * @constructor
  * @extends {goog.messaging.AbstractChannel}
+ * @final
  */
 goog.messaging.PortChannel = function(underlyingPort) {
-  goog.base(this);
+  goog.messaging.PortChannel.base(this, 'constructor');
 
   /**
    * The wrapped message-passing entity.
@@ -214,12 +215,12 @@ goog.messaging.PortChannel.REQUIRES_SERIALIZATION_ = goog.userAgent.WEBKIT &&
 
 /**
  * Logger for this class.
- * @type {goog.debug.Logger}
+ * @type {goog.log.Logger}
  * @protected
  * @override
  */
 goog.messaging.PortChannel.prototype.logger =
-    goog.debug.Logger.getLogger('goog.messaging.PortChannel');
+    goog.log.getLogger('goog.messaging.PortChannel');
 
 
 /**
@@ -305,14 +306,16 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
  */
 goog.messaging.PortChannel.prototype.validateMessage_ = function(data) {
   if (!('serviceName' in data)) {
-    this.logger.warning('Message object doesn\'t contain service name: ' +
-                        goog.debug.deepExpose(data));
+    goog.log.warning(this.logger,
+        'Message object doesn\'t contain service name: ' +
+        goog.debug.deepExpose(data));
     return false;
   }
 
   if (!('payload' in data)) {
-    this.logger.warning('Message object doesn\'t contain payload: ' +
-                        goog.debug.deepExpose(data));
+    goog.log.warning(this.logger,
+        'Message object doesn\'t contain payload: ' +
+        goog.debug.deepExpose(data));
     return false;
   }
 
@@ -395,5 +398,5 @@ goog.messaging.PortChannel.prototype.disposeInternal = function() {
     this.port_.terminate();
   }
   delete this.port_;
-  goog.base(this, 'disposeInternal');
+  goog.messaging.PortChannel.base(this, 'disposeInternal');
 };

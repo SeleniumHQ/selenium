@@ -25,12 +25,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class FindElement extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class FindElement extends WebDriverHandler<Map<String, String>> implements JsonParametersAware {
   private static Logger log = Logger.getLogger(FindElement.class.getName());
   private volatile By by;
 
@@ -42,13 +41,12 @@ public class FindElement extends ResponseAwareWebDriverHandler implements JsonPa
     by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
-  public ResultType call() throws Exception {
+  @Override
+  public Map<String, String> call() throws Exception {
     try {
       WebElement element = getDriver().findElement(by);
       String elementId = getKnownElements().add(element);
-      response.setValue(ImmutableMap.of("ELEMENT", elementId));
-
-      return ResultType.SUCCESS;
+      return ImmutableMap.of("ELEMENT", elementId);
     } catch (RuntimeException e) {
       // Add logging to detect when issue #1800 occurs
       if (!(e instanceof NoSuchElementException)) {

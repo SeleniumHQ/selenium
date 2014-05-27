@@ -181,6 +181,12 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteTargetLocator.html#parentFrame()">parentFrame</a></strong>()</code>
+<div class="block">Change focus to the parent context.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteTargetLocator.html#window(java.lang.String)">window</a></strong>(java.lang.String&nbsp;windowName)</code>
 <div class="block">Switch the focus of future commands for this driver to the window with the given name/handle.</div>
 </td>
@@ -275,6 +281,22 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html
 <dd><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html#frame(org.openqa.selenium.WebElement)">frame</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>frameElement</code> - The frame element to switch to.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>This driver focused on the given frame.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By)</code></a></dd></dl>
+</li>
+</ul>
+<a name="parentFrame()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parentFrame</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;parentFrame()</pre>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()">WebDriver.TargetLocator</a></code></strong></div>
+<div class="block">Change focus to the parent context. If the current context is the top level browsing context,
+ the context remains unchanged.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html#parentFrame()">parentFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>This driver focused on the parent frame</dd></dl>
 </li>
 </ul>
 <a name="window(java.lang.String)">

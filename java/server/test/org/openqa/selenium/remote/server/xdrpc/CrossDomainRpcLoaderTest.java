@@ -21,15 +21,19 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.base.Charsets;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -87,12 +91,19 @@ public class CrossDomainRpcLoaderTest {
   private HttpServletRequest createJsonRequest(final String method,
       final String path, final Object data) throws IOException, JSONException {
     when(mockRequest.getHeader("content-type")).thenReturn("application/json");
-    when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(
-        new JSONObject()
-            .put("method", method)
-            .put("path", path)
-            .put("data", data)
-            .toString())));
+
+    final ByteArrayInputStream stream = new ByteArrayInputStream(new JSONObject()
+        .put("method", method)
+        .put("path", path)
+        .put("data", data)
+        .toString()
+        .getBytes(Charsets.UTF_8));
+    when(mockRequest.getInputStream()).thenReturn(new ServletInputStream() {
+      @Override
+      public int read() throws IOException {
+        return stream.read();
+      }
+    });
 
     return mockRequest;
   }

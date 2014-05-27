@@ -18,8 +18,12 @@ package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -29,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StubElement;
 import org.openqa.selenium.WebDriver;
 
@@ -117,5 +122,45 @@ public class AugmenterTest extends BaseAugmenterTest {
       threw = true;
     }
     assertTrue("Did not throw", threw);
+  }
+
+  @Test
+  public void shouldNotAugmentRemoteWebDriverWithoutExtraCapabilities() {
+    Capabilities caps = new DesiredCapabilities();
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+
+    WebDriver augmentedDriver = getAugmenter().augment(driver);
+
+    assertThat(augmentedDriver, sameInstance(driver));
+  }
+
+  @Test
+  public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+
+    WebDriver augmentedDriver = getAugmenter().augment(driver);
+
+    assertThat(augmentedDriver, not(sameInstance(driver)));
+  }
+
+  public static class RemoteWebDriverSubclass extends RemoteWebDriver {
+    public RemoteWebDriverSubclass(CommandExecutor stubExecutor, Capabilities caps) {
+      super(stubExecutor, caps);
+    }
+  }
+
+  @Test
+  public void shouldNotAugmentSubclassesOfRemoteWebDriver() {
+    Capabilities caps = new DesiredCapabilities();
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    WebDriver driver = new RemoteWebDriverSubclass(stubExecutor, caps);
+
+    WebDriver augmentedDriver = getAugmenter().augment(driver);
+
+    assertThat(augmentedDriver, sameInstance(driver));
   }
 }

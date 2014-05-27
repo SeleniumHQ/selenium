@@ -33,8 +33,8 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../com/thoughtworks/selenium/condition/package-summary.html">Prev Package</a></li>
-<li><a href="../../../org/openqa/selenium/android/package-summary.html">Next Package</a></li>
+<li><a href="../../../com/thoughtworks/selenium/webdriven/commands/package-summary.html">Prev Package</a></li>
+<li><a href="../../../org/openqa/selenium/browserlaunchers/package-summary.html">Next Package</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?org/openqa/selenium/package-summary.html" target="_top">Frames</a></li>
@@ -83,79 +83,86 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../org/openqa/selenium/ContextAware.html" title="interface in org.openqa.selenium">ContextAware</a></td>
+<td class="colLast">
+<div class="block">Some implementations of WebDriver, notably those that support native testing, need the ability
+ to switch between the native and web-based contexts.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></td>
 <td class="colLast">
 <div class="block">Used by classes to indicate that they can describe the <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
  they possess.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></td>
 <td class="colLast">
 <div class="block">Indicates that a driver can execute JavaScript, providing access to the mechanism to do so.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;T&gt;</td>
 <td class="colLast">
 <div class="block">Defines the output type for a screenshot.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a></td>
 <td class="colLast">
 <div class="block">Represents rotation of the browser view for orientation-sensitive devices.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></td>
 <td class="colLast">
 <div class="block">Indicates a driver that can capture a screenshot and store it in different ways.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></td>
 <td class="colLast">
 <div class="block">The main interface to use for testing, which represents an idealised web browser.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a></td>
 <td class="colLast">
 <div class="block">An interface for managing input methods.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></td>
 <td class="colLast">
 <div class="block">An interface for managing stuff you would do in a browser menu</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></td>
 <td class="colLast">
 <div class="block">Used to locate a given frame or window.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></td>
 <td class="colLast">
 <div class="block">An interface for managing timeout behavior for WebDriver instances.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></td>
 <td class="colLast">
 <div class="block">Represents an HTML element.</div>
@@ -234,16 +241,6 @@
 <td class="colFirst"><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></td>
 <td class="colLast">
 <div class="block">Configuration parameters for using proxies in WebDriver.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><a href="../../../org/openqa/selenium/WebDriverBackedSelenium.html" title="class in org.openqa.selenium">WebDriverBackedSelenium</a></td>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium">WebDriverCommandProcessor</a></td>
-<td class="colLast">
-<div class="block">A CommandProcessor which delegates commands down to an underlying webdriver instance.</div>
 </td>
 </tr>
 </tbody>
@@ -340,66 +337,72 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="../../../org/openqa/selenium/NoSuchContextException.html" title="class in org.openqa.selenium">NoSuchContextException</a></td>
+<td class="colLast">
+<div class="block">Thrown by <code>WebDriver.switchTo().context(String name)</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></td>
 <td class="colLast">
 <div class="block">Thrown by <a href="../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(By by)</code></a> and
  <a href="../../../org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(By by)</code></a>.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/NoSuchFrameException.html" title="class in org.openqa.selenium">NoSuchFrameException</a></td>
 <td class="colLast">
 <div class="block">Thrown by <a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html#frame(int)"><code>WebDriver.switchTo().frame(int frameIndex)</code></a>
  and <a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html#frame(java.lang.String)"><code>WebDriver.switchTo().frame(String frameName)</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/NoSuchWindowException.html" title="class in org.openqa.selenium">NoSuchWindowException</a></td>
 <td class="colLast">
 <div class="block">Thrown by <a href="../../../org/openqa/selenium/WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.switchTo().window(String
  windowName)</code></a>.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/NotFoundException.html" title="class in org.openqa.selenium">NotFoundException</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></td>
 <td class="colLast">
 <div class="block">Indicates that a session could not be created.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/StaleElementReferenceException.html" title="class in org.openqa.selenium">StaleElementReferenceException</a></td>
 <td class="colLast">
 <div class="block">Indicates that a reference to an element is now "stale" --- the element no longer appears on the
  DOM of the page.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/TimeoutException.html" title="class in org.openqa.selenium">TimeoutException</a></td>
 <td class="colLast">
 <div class="block">Thrown when a command does not complete in enough time.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/UnableToSetCookieException.html" title="class in org.openqa.selenium">UnableToSetCookieException</a></td>
 <td class="colLast">
 <div class="block">Thrown when a driver fails to set a cookie.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/UnhandledAlertException.html" title="class in org.openqa.selenium">UnhandledAlertException</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/UnsupportedCommandException.html" title="class in org.openqa.selenium">UnsupportedCommandException</a></td>
 <td class="colLast">
 <div class="block">Used to indicate that a command used by the remote webdriver is unsupported.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -444,8 +447,8 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../com/thoughtworks/selenium/condition/package-summary.html">Prev Package</a></li>
-<li><a href="../../../org/openqa/selenium/android/package-summary.html">Next Package</a></li>
+<li><a href="../../../com/thoughtworks/selenium/webdriven/commands/package-summary.html">Prev Package</a></li>
+<li><a href="../../../org/openqa/selenium/browserlaunchers/package-summary.html">Next Package</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?org/openqa/selenium/package-summary.html" target="_top">Frames</a></li>

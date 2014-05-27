@@ -21,6 +21,8 @@ import org.openqa.selenium.WebDriver;
 public interface DriverFactory {
   void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
 
+  void registerDriverProvider(Capabilities capabilities, DriverProvider implementation);
+
   WebDriver newInstance(Capabilities capabilities);
 
   boolean hasMappingFor(Capabilities capabilities);

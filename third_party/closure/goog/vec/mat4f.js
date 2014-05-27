@@ -76,7 +76,7 @@ goog.vec.mat4f.create = function() {
  * @param {number} v13 The values at (1, 3).
  * @param {number} v23 The values at (2, 3).
  * @param {number} v33 The values at (3, 3).
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setFromValues = function(
@@ -212,7 +212,7 @@ goog.vec.mat4f.getElement = function(mat, row, column) {
  * @param {number} row The row index.
  * @param {number} column The column index.
  * @param {number} value The value to set at the requested row, column.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setElement = function(mat, row, column, value) {
@@ -229,7 +229,7 @@ goog.vec.mat4f.setElement = function(mat, row, column, value) {
  * @param {number} v11 The values for (1, 1).
  * @param {number} v22 The values for (2, 2).
  * @param {number} v33 The values for (3, 3).
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setDiagonalValues = function(mat, v00, v11, v22, v33) {
@@ -246,7 +246,7 @@ goog.vec.mat4f.setDiagonalValues = function(mat, v00, v11, v22, v33) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix to receive the values.
  * @param {goog.vec.vec4f.Type} vec The vector containing the values.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setDiagonal = function(mat, vec) {
@@ -295,7 +295,7 @@ goog.vec.mat4f.getDiagonal = function(mat, vec, opt_diagonal) {
  * @param {number} v1 The value for row 1.
  * @param {number} v2 The value for row 2.
  * @param {number} v3 The value for row 3.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setColumnValues = function(mat, column, v0, v1, v2, v3) {
@@ -314,7 +314,7 @@ goog.vec.mat4f.setColumnValues = function(mat, column, v0, v1, v2, v3) {
  * @param {goog.vec.mat4f.Type} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {goog.vec.vec4f.Type} vec The vector of elements for the column.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setColumn = function(mat, column, vec) {
@@ -334,7 +334,7 @@ goog.vec.mat4f.setColumn = function(mat, column, vec) {
  * @param {number} column The column to get the values from.
  * @param {goog.vec.vec4f.Type} vec The vector of elements to
  *     receive the column.
- * @return {goog.vec.vec4f.Type} return vec so that operations can be
+ * @return {!goog.vec.vec4f.Type} return vec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.getColumn = function(mat, column, vec) {
@@ -355,7 +355,7 @@ goog.vec.mat4f.getColumn = function(mat, column, vec) {
  * @param {goog.vec.vec4f.Type} vec1 The values for column 1.
  * @param {goog.vec.vec4f.Type} vec2 The values for column 2.
  * @param {goog.vec.vec4f.Type} vec3 The values for column 3.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setColumns = function(mat, vec0, vec1, vec2, vec3) {
@@ -417,7 +417,7 @@ goog.vec.mat4f.getColumns = function(mat, vec0, vec1, vec2, vec3) {
  * @param {number} v1 The value for column 1.
  * @param {number} v2 The value for column 2.
  * @param {number} v3 The value for column 3.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setRowValues = function(mat, row, v0, v1, v2, v3) {
@@ -435,7 +435,7 @@ goog.vec.mat4f.setRowValues = function(mat, row, v0, v1, v2, v3) {
  * @param {goog.vec.mat4f.Type} mat The matrix to receive the row values.
  * @param {number} row The index of the row.
  * @param {goog.vec.vec4f.Type} vec The vector containing the values.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setRow = function(mat, row, vec) {
@@ -453,7 +453,7 @@ goog.vec.mat4f.setRow = function(mat, row, vec) {
  * @param {goog.vec.mat4f.Type} mat The matrix supplying the values.
  * @param {number} row The index of the row supplying the values.
  * @param {goog.vec.vec4f.Type} vec The vector to receive the row.
- * @return {goog.vec.vec4f.Type} return vec so that operations can be
+ * @return {!goog.vec.vec4f.Type} return vec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.getRow = function(mat, row, vec) {
@@ -473,7 +473,7 @@ goog.vec.mat4f.getRow = function(mat, row, vec) {
  * @param {goog.vec.vec4f.Type} vec1 The values for row 1.
  * @param {goog.vec.vec4f.Type} vec2 The values for row 2.
  * @param {goog.vec.vec4f.Type} vec3 The values for row 3.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.setRows = function(mat, vec0, vec1, vec2, vec3) {
@@ -557,7 +557,7 @@ goog.vec.mat4f.makeZero = function(mat) {
  * Makes the given 4x4 matrix the identity matrix.
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
- * @return {goog.vec.mat4f.Type} return mat so operations can be chained.
+ * @return {!goog.vec.mat4f.Type} return mat so operations can be chained.
  */
 goog.vec.mat4f.makeIdentity = function(mat) {
   mat[0] = 1;
@@ -588,7 +588,7 @@ goog.vec.mat4f.makeIdentity = function(mat) {
  * @param {goog.vec.mat4f.Type} mat1 The second addend.
  * @param {goog.vec.mat4f.Type} resultMat The matrix to
  *     receive the results (may be either mat0 or mat1).
- * @return {goog.vec.mat4f.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.addMat = function(mat0, mat1, resultMat) {
@@ -620,7 +620,7 @@ goog.vec.mat4f.addMat = function(mat0, mat1, resultMat) {
  * @param {goog.vec.mat4f.Type} mat1 The subtrahend.
  * @param {goog.vec.mat4f.Type} resultMat The matrix to receive
  *     the results (may be either mat0 or mat1).
- * @return {goog.vec.mat4f.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.subMat = function(mat0, mat1, resultMat) {
@@ -652,7 +652,7 @@ goog.vec.mat4f.subMat = function(mat0, mat1, resultMat) {
  * @param {number} scalar The scalar value to multiply to each element of mat.
  * @param {goog.vec.mat4f.Type} resultMat The matrix to receive
  *     the results (may be mat).
- * @return {goog.vec.mat4f.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multScalar = function(mat, scalar, resultMat) {
@@ -684,7 +684,7 @@ goog.vec.mat4f.multScalar = function(mat, scalar, resultMat) {
  * @param {goog.vec.mat4f.Type} mat1 The second (right hand) matrix.
  * @param {goog.vec.mat4f.Type} resultMat The matrix to receive
  *     the results (may be either mat0 or mat1).
- * @return {goog.vec.mat4f.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multMat = function(mat0, mat1, resultMat) {
@@ -727,7 +727,7 @@ goog.vec.mat4f.multMat = function(mat0, mat1, resultMat) {
  * @param {goog.vec.mat4f.Type} mat The matrix to transpose.
  * @param {goog.vec.mat4f.Type} resultMat The matrix to receive
  *     the results (may be mat).
- * @return {goog.vec.mat4f.Type} return resultMat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return resultMat so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.transpose = function(mat, resultMat) {
@@ -893,7 +893,7 @@ goog.vec.mat4f.equals = function(mat0, mat1) {
  * @param {goog.vec.vec3f.Type} vec The 3 element vector to transform.
  * @param {goog.vec.vec3f.Type} resultVec The 3 element vector to
  *     receive the results (may be vec).
- * @return {goog.vec.vec3f.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec3f.Type} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multVec3 = function(mat, vec, resultVec) {
@@ -915,7 +915,7 @@ goog.vec.mat4f.multVec3 = function(mat, vec, resultVec) {
  * @param {goog.vec.vec3f.Type} vec The 3 element vector to transform.
  * @param {goog.vec.vec3f.Type} resultVec The 3 element vector to
  *     receive the results (may be vec).
- * @return {goog.vec.vec3f.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec3f.Type} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multVec3NoTranslate = function(mat, vec, resultVec) {
@@ -937,7 +937,7 @@ goog.vec.mat4f.multVec3NoTranslate = function(mat, vec, resultVec) {
  * @param {goog.vec.vec3f.Type} vec The 3 element vector to transform.
  * @param {goog.vec.vec3f.Type} resultVec The 3 element vector
  *     to receive the results (may be vec).
- * @return {goog.vec.vec3f.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec3f.Type} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multVec3Projective = function(mat, vec, resultVec) {
@@ -958,7 +958,7 @@ goog.vec.mat4f.multVec3Projective = function(mat, vec, resultVec) {
  * @param {goog.vec.vec4f.Type} vec The vector to transform.
  * @param {goog.vec.vec4f.Type} resultVec The vector to
  *     receive the results (may be vec).
- * @return {goog.vec.vec4f.Type} return resultVec so that operations can be
+ * @return {!goog.vec.vec4f.Type} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.multVec4 = function(mat, vec, resultVec) {
@@ -979,7 +979,7 @@ goog.vec.mat4f.multVec4 = function(mat, vec, resultVec) {
  * @param {number} x The translation along the x axis.
  * @param {number} y The translation along the y axis.
  * @param {number} z The translation along the z axis.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeTranslate = function(mat, x, y, z) {
@@ -1010,7 +1010,7 @@ goog.vec.mat4f.makeTranslate = function(mat, x, y, z) {
  * @param {number} x The scale along the x axis.
  * @param {number} y The scale along the y axis.
  * @param {number} z The scale along the z axis.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeScale = function(mat, x, y, z) {
@@ -1043,7 +1043,7 @@ goog.vec.mat4f.makeScale = function(mat, x, y, z) {
  * @param {number} ax The x component of the rotation axis.
  * @param {number} ay The y component of the rotation axis.
  * @param {number} az The z component of the rotation axis.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeRotate = function(mat, angle, ax, ay, az) {
@@ -1078,7 +1078,7 @@ goog.vec.mat4f.makeRotate = function(mat, angle, ax, ay, az) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeRotateX = function(mat, angle) {
@@ -1112,7 +1112,7 @@ goog.vec.mat4f.makeRotateX = function(mat, angle) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeRotateY = function(mat, angle) {
@@ -1146,7 +1146,7 @@ goog.vec.mat4f.makeRotateY = function(mat, angle) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The rotation angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeRotateZ = function(mat, angle) {
@@ -1184,7 +1184,7 @@ goog.vec.mat4f.makeRotateZ = function(mat, angle) {
  * @param {number} top The coordinate of the top clipping plane.
  * @param {number} near The distance to the near clipping plane.
  * @param {number} far The distance to the far clipping plane.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeFrustum = function(
@@ -1271,7 +1271,7 @@ goog.vec.mat4f.makePerspective = function(mat, fovy, aspect, near, far) {
  * @param {number} top The coordinate of the top clipping plane.
  * @param {number} near The distance to the near clipping plane.
  * @param {number} far The distance to the far clipping plane.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeOrtho = function(mat, left, right, bottom, top, near, far) {
@@ -1429,7 +1429,7 @@ goog.vec.mat4f.toLookAt = function(mat, eyePt, fwdVec, worldUpVec) {
  * @param {number} theta1 The angle of rotation around the Z axis in radians.
  * @param {number} theta2 The angle of rotation around the X axis in radians.
  * @param {number} theta3 The angle of rotation around the Z axis in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
@@ -1477,7 +1477,7 @@ goog.vec.mat4f.makeEulerZXZ = function(mat, theta1, theta2, theta3) {
  *     radians as [theta1, theta2, theta3].
  * @param {boolean=} opt_theta2IsNegative Whether theta2 is in [-pi, 0] instead
  *     of the default [0, pi].
- * @return {goog.vec.vec4f.Type} return euler so that operations can be
+ * @return {!goog.vec.vec4f.Type} return euler so that operations can be
  *     chained together.
  */
 goog.vec.mat4f.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {
@@ -1525,7 +1525,7 @@ goog.vec.mat4f.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {
  * @param {number} x The translation along the x axis.
  * @param {number} y The translation along the y axis.
  * @param {number} z The translation along the z axis.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.translate = function(mat, x, y, z) {
@@ -1549,7 +1549,7 @@ goog.vec.mat4f.translate = function(mat, x, y, z) {
  * @param {number} x The x scale factor.
  * @param {number} y The y scale factor.
  * @param {number} z The z scale factor.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.scale = function(mat, x, y, z) {
@@ -1586,7 +1586,7 @@ goog.vec.mat4f.scale = function(mat, x, y, z) {
  * @param {number} x The x component of the rotation axis.
  * @param {number} y The y component of the rotation axis.
  * @param {number} z The z component of the rotation axis.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.rotate = function(mat, angle, x, y, z) {
@@ -1635,7 +1635,7 @@ goog.vec.mat4f.rotate = function(mat, angle, x, y, z) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.rotateX = function(mat, angle) {
@@ -1667,7 +1667,7 @@ goog.vec.mat4f.rotateX = function(mat, angle) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.rotateY = function(mat, angle) {
@@ -1699,7 +1699,7 @@ goog.vec.mat4f.rotateY = function(mat, angle) {
  *
  * @param {goog.vec.mat4f.Type} mat The matrix.
  * @param {number} angle The angle in radians.
- * @return {goog.vec.mat4f.Type} return mat so that operations can be
+ * @return {!goog.vec.mat4f.Type} return mat so that operations can be
  *     chained.
  */
 goog.vec.mat4f.rotateZ = function(mat, angle) {
@@ -1728,7 +1728,7 @@ goog.vec.mat4f.rotateZ = function(mat, angle) {
  * @param {goog.vec.mat4f.Type} mat The transformation matrix.
  * @param {goog.vec.vec3f.Type} translation The vector for storing the
  *     result.
- * @return {goog.vec.vec3f.Type} return translation so that operations can be
+ * @return {!goog.vec.vec3f.Type} return translation so that operations can be
  *     chained.
  */
 goog.vec.mat4f.getTranslation = function(mat, translation) {

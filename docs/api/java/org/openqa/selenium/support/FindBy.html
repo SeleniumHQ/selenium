@@ -82,7 +82,7 @@
 <hr>
 <br>
 <pre>@Retention(value=RUNTIME)
-@Target(value=FIELD)
+@Target(value={FIELD,TYPE})
 public @interface <span class="strong">FindBy</span></pre>
 <div class="block">Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
  element or a list of elements. Used in conjunction with

@@ -34,6 +34,8 @@ goog.require('goog.testing.recordFunction');
 /**
  * Setup step for the test functions. This needs to be called from the
  * test setUp.
+ * @param {function():!goog.events.Listenable} listenableFactoryFn Function
+ *     that will return a new Listenable instance each time it is called.
  * @param {Function} listenFn Function that, given the same signature
  *     as goog.events.listen, will add listener to the given event
  *     target.
@@ -71,10 +73,12 @@ goog.require('goog.testing.recordFunction');
  *     Object is supported.
  */
 goog.events.eventTargetTester.setUp = function(
+    listenableFactoryFn,
     listenFn, unlistenFn, unlistenByKeyFn, listenOnceFn,
     dispatchEventFn, removeAllFn,
     getListenersFn, getListenerFn, hasListenerFn,
     listenKeyType, unlistenFnReturnType, objectListenerSupported) {
+  listenableFactory = listenableFactoryFn;
   listen = listenFn;
   unlisten = unlistenFn;
   unlistenByKey = unlistenByKeyFn;
@@ -95,7 +99,7 @@ goog.events.eventTargetTester.setUp = function(
 
   eventTargets = [];
   for (i = 0; i < goog.events.eventTargetTester.MAX_; i++) {
-    eventTargets[i] = new goog.events.EventTarget();
+    eventTargets[i] = listenableFactory();
   }
 };
 
@@ -193,6 +197,7 @@ var eventTargets, listeners;
  * Custom event object for testing.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 var TestEvent = function() {
   goog.base(this, EventType.A);
@@ -383,6 +388,9 @@ function testDispatchEventWithCustomEventObject() {
 
 
 function testDisposingEventTargetRemovesListeners() {
+  if (!(listenableFactory() instanceof goog.events.EventTarget)) {
+    return;
+  }
   listen(eventTargets[0], EventType.A, listeners[0]);
   goog.dispose(eventTargets[0]);
   dispatchEvent(eventTargets[0], EventType.A);
@@ -927,6 +935,31 @@ function testRemoveAll() {
 }
 
 
+function testRemoveAllCallsMarkAsRemoved() {
+  if (!removeAll) {
+    return;
+  }
+
+  var key0 = listen(eventTargets[0], EventType.A, listeners[0]);
+  var key1 = listen(eventTargets[1], EventType.A, listeners[1]);
+
+  assertNotNullNorUndefined(key0.listener);
+  assertFalse(key0.removed);
+  assertNotNullNorUndefined(key1.listener);
+  assertFalse(key1.removed);
+
+  assertEquals(1, removeAll(eventTargets[0]));
+  assertNull(key0.listener);
+  assertTrue(key0.removed);
+  assertNotNullNorUndefined(key1.listener);
+  assertFalse(key1.removed);
+
+  assertEquals(1, removeAll(eventTargets[1]));
+  assertNull(key1.listener);
+  assertTrue(key1.removed);
+}
+
+
 function testGetListeners() {
   if (!getListeners) {
     return;
@@ -993,6 +1026,7 @@ function testFiringEventBeforeDisposeInternalWorks() {
   /**
    * @extends {goog.events.EventTarget}
    * @constructor
+   * @final
    */
   var MockTarget = function() {
     goog.base(this);
@@ -1016,7 +1050,7 @@ function testFiringEventBeforeDisposeInternalWorks() {
 
 
 function testLoopDetection() {
-  var target = new goog.events.EventTarget();
+  var target = listenableFactory();
   target.setParentEventTarget(target);
 
   try {

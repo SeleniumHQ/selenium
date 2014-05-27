@@ -33,6 +33,7 @@ goog.require('goog.vec.Vec3');
  * @param {goog.vec.Vec3.AnyType=} opt_origin The optional origin.
  * @param {goog.vec.Vec3.AnyType=} opt_dir The optional direction.
  * @constructor
+ * @final
  */
 goog.vec.Ray = function(opt_origin, opt_dir) {
   /**
