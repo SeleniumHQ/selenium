@@ -28,7 +28,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass':{'install': install},
     'name':'selenium',
-    'version':"2.42.0",
+    'version':"2.42.1",
     'description':'Python bindings for Selenium',
     'long_description':open(join(abspath(dirname(__file__)), "py", "README")).read(),
     'url':'http://code.google.com/p/selenium/',
