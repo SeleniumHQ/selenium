@@ -28,7 +28,7 @@ import zipfile
 try:
     from cStringIO import StringIO as BytesIO
     bytes = str
-    str = unicode
+    str = basestring
 except ImportError:
     from io import BytesIO
 
@@ -361,7 +361,7 @@ class FirefoxProfile(object):
             raise AddonFormatError(str(e), sys.exc_info()[2])
 
         # turn unpack into a true/false value
-        if isinstance(details['unpack'], basestring):
+        if isinstance(details['unpack'], str):
             details['unpack'] = details['unpack'].lower() == 'true'
 
         # If no ID is set, the add-on is invalid
