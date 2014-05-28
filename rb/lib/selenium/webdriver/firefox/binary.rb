@@ -44,7 +44,14 @@ module Selenium
         end
 
         def wait
-          @process.poll_for_exit(WAIT_TIMEOUT) if @process
+          return unless @process
+
+          begin
+            @process.poll_for_exit(WAIT_TIMEOUT)
+          rescue ChildProcess::TimeoutError => e
+            @process.stop
+            raise e
+          end
         end
 
         private
