@@ -70,10 +70,6 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window_handle"));
     defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"));
 
-    defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
-    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
-    defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
-
     defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
     defineCommand(GET, post("/session/:sessionId/url"));
     defineCommand(GO_BACK, post("/session/:sessionId/back"));
@@ -178,6 +174,9 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     // https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile
     defineCommand(GET_NETWORK_CONNECTION, get("/session/:sessionId/network_connection"));
     defineCommand(SET_NETWORK_CONNECTION, post("/session/:sessionId/network_connection"));
+    defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
+    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
+    defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
   }
 
   @Override
