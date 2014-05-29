@@ -1,3 +1,12 @@
+v2.42.1
+=======
+WebDriver:
+
+  * resorting context endpoints, belong with mobile spec
+  * re-added Context endpoints to java client
+  * allow custom ErrorHandler for HTTPCommandExecutor
+  * fixing toJSON of chrome options where equal options become unequal.
+
 v2.42.0
 =======
 WebDriver:
