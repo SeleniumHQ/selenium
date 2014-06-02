@@ -81,7 +81,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
   private Level level = Level.FINE;
 
-  private ErrorHandler errorHandler;
+  private ErrorHandler errorHandler = new ErrorHandler();
   private CommandExecutor executor;
   private Capabilities capabilities;
   private SessionId sessionId;
@@ -102,7 +102,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    this.errorHandler = new ErrorHandler();
     this.executor = executor;
 
     init(desiredCapabilities, requiredCapabilities);
