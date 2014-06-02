@@ -98,6 +98,17 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Select the parent frame of the currently selected frame.
+        /// </summary>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+        public IWebDriver ParentFrame()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            this.driver.InternalExecute(DriverCommand.SwitchToParentFrame, parameters);
+            return this.driver;
+        }
+
+        /// <summary>
         /// Change to the Window by passing in the name
         /// </summary>
         /// <param name="windowName">name of the window that you wish to move to</param>

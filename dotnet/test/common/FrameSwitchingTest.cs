@@ -195,6 +195,69 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame(27);
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
+        public void ShouldBeAbleToSwitchToParentFrame()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fourth").SwitchTo().ParentFrame().SwitchTo().Frame("first");
+            Assert.AreEqual("1", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
+        public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
+        {
+            driver.Url = framesetPage;
+
+            driver.SwitchTo().Frame("fourth").SwitchTo().Frame("child1").SwitchTo().ParentFrame().SwitchTo().Frame("child2");
+            Assert.AreEqual("11", driver.FindElement(By.Id("pageNumber")).Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
+        public void SwitchingToParentFrameFromDefaultContextIsNoOp()
+        {
+            driver.Url = xhtmlTestPage;
+            driver.SwitchTo().ParentFrame();
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
+        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
+        public void ShouldBeAbleToSwitchToParentFromAnIframe()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame(0);
+
+            driver.SwitchTo().ParentFrame();
+            driver.FindElement(By.Id("iframe_page_heading"));
+        }
+
         // ----------------------------------------------------------------------------------------------
         //
         // General frame handling behavior tests

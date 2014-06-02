@@ -993,6 +993,26 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Select the parent frame of the currently selected frame.
+            /// </summary>
+            /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+            public IWebDriver ParentFrame()
+            {
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.ParentFrame();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
+            }
+
+            /// <summary>
             /// Change to the Window by passing in the name
             /// </summary>
             /// <param name="windowName">name of the window that you wish to move to</param>
