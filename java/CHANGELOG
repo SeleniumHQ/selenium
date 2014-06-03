@@ -1,3 +1,9 @@
+v2.42.2
+=======
+WebDriver:
+
+  * errorHandler needs to be instantiated. Fixing NPE with IEDriver Issue #7415
+
 v2.42.1
 =======
 WebDriver:
