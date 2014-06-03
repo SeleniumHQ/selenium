@@ -45,11 +45,9 @@ class WebDriver(RemoteWebDriver):
          - chrome_options: this takes an instance of ChromeOptions
         """
         if chrome_options is None:
+            # desired_capabilities stays as passed in
             if desired_capabilities is None:
                 desired_capabilities = Options().to_capabilities()
-            else:
-                # desired_capabilities stays as passed
-                pass
         else:
             if desired_capabilities is None:
                 desired_capabilities = options.to_capabilities()
@@ -67,7 +65,7 @@ class WebDriver(RemoteWebDriver):
                 keep_alive=True)
         except:
             self.quit()
-            raise 
+            raise
         self._is_remote = False
 
     def quit(self):
