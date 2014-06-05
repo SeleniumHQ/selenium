@@ -156,6 +156,34 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   return this->SetFocusedFrameByIdentifier(frame_identifier);
 }
 
+void DocumentHost::SetFocusedFrameToParent() {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameToParent";
+  // Three possible outcomes.
+  // Outcome 1: Already at top-level browsing context. No-op.
+  if (this->focused_frame_window_ != NULL) {
+    CComPtr<IHTMLWindow2> parent_window;
+    HRESULT hr = this->focused_frame_window_->get_parent(&parent_window);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLWindow2::get_parent call failed.";
+    }
+    CComPtr<IHTMLWindow2> top_window;
+    hr = this->focused_frame_window_->get_top(&top_window);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "IHTMLWindow2::get_top call failed.";
+    }
+    if (top_window.IsEqualObject(parent_window)) {
+      // Outcome 2: Focus is on a frame one level deep, making the
+      // parent the top-level browsing context. Set focused frame
+      // pointer to NULL.
+      this->focused_frame_window_ = NULL;
+    } else {
+      // Outcome 3: Focus is on a frame more than one level deep.
+      // Set focused frame pointer to parent frame.
+      this->focused_frame_window_ = parent_window;
+    }
+  }
+}
+
 int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
   LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByIdentifier";
 

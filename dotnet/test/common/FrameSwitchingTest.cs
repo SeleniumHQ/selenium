@@ -197,7 +197,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
@@ -212,7 +211,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
@@ -228,7 +226,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
@@ -243,7 +240,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.IE, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
