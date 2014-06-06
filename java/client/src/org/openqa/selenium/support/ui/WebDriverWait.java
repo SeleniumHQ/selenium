@@ -17,7 +17,10 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WebDriverWait extends FluentWait<WebDriver> {
   public final static long DEFAULT_SLEEP_TIMEOUT = 500;
+  private final WebDriver driver;
 
   /**
    * Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
@@ -67,5 +71,22 @@ public class WebDriverWait extends FluentWait<WebDriver> {
     withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
     pollingEvery(sleepTimeOut, TimeUnit.MILLISECONDS);
     ignoring(NotFoundException.class);
+    this.driver = driver;
+  }
+
+  @Override
+  protected RuntimeException timeoutException(String message, Throwable lastException) {
+    TimeoutException ex = new TimeoutException(message, lastException);
+    ex.addInfo(WebDriverException.DRIVER_INFO, driver.getClass().getName());
+    if (driver instanceof RemoteWebDriver) {
+      RemoteWebDriver remote = (RemoteWebDriver) driver;
+      if (remote.getSessionId() != null) {
+        ex.addInfo(WebDriverException.SESSION_ID, remote.getSessionId().toString());
+      }
+      if (remote.getCapabilities() != null) {
+        ex.addInfo("Capabilities", remote.getCapabilities().toString());
+      }
+    }
+    throw ex;
   }
 }
