@@ -115,7 +115,7 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      Throwable serverError = rebuildServerError(rawErrorData);
+      Throwable serverError = rebuildServerError(rawErrorData, response.getStatus());
 
       // If serverError is null, then the server did not provide a className (only expected if
       // the server is a Java process) or a stack trace. The lack of a className is OK, but
@@ -141,7 +141,7 @@ public class ErrorHandler {
 
     String duration1 = duration(duration);
 
-    if (message != null && message.indexOf(duration1) == -1) {
+    if (message != null && !message.contains(duration1)) {
       message = message + duration1;
     }
 
@@ -216,7 +216,7 @@ public class ErrorHandler {
     return null;
   }
 
-  private Throwable rebuildServerError(Map<String, Object> rawErrorData) {
+  private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
     if (!rawErrorData.containsKey(CLASS) && !rawErrorData.containsKey(STACK_TRACE)) {
       // Not enough information for us to try to rebuild an error.
@@ -225,22 +225,32 @@ public class ErrorHandler {
 
     Throwable toReturn = null;
     String message = (String) rawErrorData.get(MESSAGE);
+    Class clazz = null;
 
+    // First: allow Remote Driver to specify the Selenium Server internal exception
     if (rawErrorData.containsKey(CLASS)) {
       String className = (String) rawErrorData.get(CLASS);
       try {
-        Class clazz = Class.forName(className);
-        if (clazz.equals(UnhandledAlertException.class)) {
-          toReturn = createUnhandledAlertException(rawErrorData);
-        } else if (Throwable.class.isAssignableFrom(clazz)) {
-          @SuppressWarnings({"unchecked"})
-          Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
-          toReturn = createThrowable(throwableType, new Class<?>[] {String.class},
-              new Object[] {message});
-        }
+        clazz = Class.forName(className);
       } catch (ClassNotFoundException ignored) {
         // Ok, fall-through
       }
+    }
+
+    // If the above fails, map Response Status to Exception class
+    if (null == clazz) {
+      clazz = errorCodes.getExceptionType(responseStatus);
+    }
+
+    if (clazz.equals(UnhandledAlertException.class)) {
+      toReturn = createUnhandledAlertException(rawErrorData);
+    } else if (Throwable.class.isAssignableFrom(clazz)) {
+      @SuppressWarnings({"unchecked"})
+      Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
+      toReturn = createThrowable(
+          throwableType,
+          new Class<?>[] {String.class},
+          new Object[] {message});
     }
 
     if (toReturn == null) {
