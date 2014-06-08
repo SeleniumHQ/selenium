@@ -1,6 +1,7 @@
 2.43.0 (???)
 ============
 
+* Make sure UnhandledAlertErrors includes the alert text if provided by the driver.
 * Firefox
   - Make sure browser process is properly killed if silent startup hangs (#7392)
 

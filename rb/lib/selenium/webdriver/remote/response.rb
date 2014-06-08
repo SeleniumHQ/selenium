@@ -31,6 +31,7 @@ module Selenium
           case val
           when Hash
             msg = val['message'] or return "unknown error"
+            msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
             msg << " (#{ val['class'] })" if val['class']
           when String
             msg = val
