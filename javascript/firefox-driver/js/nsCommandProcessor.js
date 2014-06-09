@@ -736,7 +736,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'javascriptEnabled': true,
     'nativeEvents': Utils.useNativeEvents(),
     // See https://developer.mozilla.org/en/OS_TARGET
-    'platform': xulRuntime.OS,
+    'platform': (xulRuntime.OS == 'WINNT' ? 'WINDOWS' : xulRuntime.OS),
     'rotatable': false,
     'takesScreenshot': true,
     'version': appInfo.version
