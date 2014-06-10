@@ -1,5 +1,6 @@
-## v2.43.0-dev
+## v2.42.1
 
+* FIXED: 7465: Fixed `net.getLoopbackAddress` on Windows
 * FIXED: 7277: Support `done` callback in Mocha's BDD interface
 * FIXED: 7156: `Promise#thenFinally` should not suppress original error
 
