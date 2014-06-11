@@ -1,5 +1,5 @@
 prebuilt_jar(name = 'cssparser',
-  binary_jar = 'cssparser-0.9.11.jar',
+  binary_jar = 'cssparser-0.9.14.jar',
   deps = [
     '//third_party/java/sac:sac',
   ],
