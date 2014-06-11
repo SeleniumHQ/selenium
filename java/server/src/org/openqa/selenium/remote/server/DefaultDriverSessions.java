@@ -99,9 +99,9 @@ public class DefaultDriverSessions implements DriverSessions {
     try {
       registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
     } catch (ClassNotFoundException e) {
-      log.log(Level.INFO, "Unable to register driver with className " + className + " - not be able to create due " + e.getMessage(), e);
+      log.log(Level.INFO, "Unable to register driver with className " + className + " due to ClassNotFoundException");
     } catch (NoClassDefFoundError e) {
-      log.log(Level.WARNING, "Unable to register driver with className " + className + " - dependency missing due " + e.getMessage(), e);
+      log.log(Level.WARNING, "Unable to register driver with className " + className + " due to NoClassDefFoundError");
     }
   }
 

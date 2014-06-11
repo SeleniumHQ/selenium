@@ -1,7 +1,0 @@
-<NUnitProject>
-	<Settings appbase="." />
-	<Config name="Default" binpathtype="Auto">
-		<assembly path="WebDriver.Common.Tests.dll" />
-		<assembly path="WebDriver.Android.Tests.dll" />
-	</Config>
-</NUnitProject>

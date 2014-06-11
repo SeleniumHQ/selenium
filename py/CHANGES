@@ -1,3 +1,8 @@
+Selenium 2.42.1
+* Fixed Py3 issues
+* Make firefox_binary.py and firefox_profile.py not executable
+* Make exceptions Python 3 compatible
+
 Selenium 2.42
 * Support for Firefox 29 Native Events
 * "remote_url" and "remote_browser" parameters for "./go test_remote".

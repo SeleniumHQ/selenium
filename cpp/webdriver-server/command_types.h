@@ -47,6 +47,7 @@ namespace CommandType {
   const std::string GetWindowHandles = "getWindowHandles";
   const std::string SwitchToWindow = "switchToWindow";
   const std::string SwitchToFrame = "switchToFrame";
+  const std::string SwitchToParentFrame = "switchToParentFrame";
   const std::string GetActiveElement = "getActiveElement";
   const std::string GetCurrentUrl = "getCurrentUrl";
   const std::string GetPageSource = "getPageSource";

@@ -639,6 +639,7 @@ void Server::PopulateCommandRepository() {
   this->AddCommand("/session/:sessionid/execute_async", "POST",  webdriver::CommandType::ExecuteAsyncScript);
   this->AddCommand("/session/:sessionid/screenshot", "GET",  webdriver::CommandType::Screenshot);
   this->AddCommand("/session/:sessionid/frame", "POST",  webdriver::CommandType::SwitchToFrame);
+  this->AddCommand("/session/:sessionid/frame/parent", "POST",  webdriver::CommandType::SwitchToParentFrame);
   this->AddCommand("/session/:sessionid/window", "POST",  webdriver::CommandType::SwitchToWindow);
   this->AddCommand("/session/:sessionid/window", "DELETE",  webdriver::CommandType::Close);
   this->AddCommand("/session/:sessionid/cookie", "GET",  webdriver::CommandType::GetAllCookies);

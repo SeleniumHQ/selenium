@@ -799,10 +799,6 @@ class WebDriver(object):
         else:
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 
-    def is_online(self):
-        """ Returns a boolean if the browser is online or offline"""
-        return self.execute(Command.IS_BROWSER_ONLINE)['value']
-
     @property
     def application_cache(self):
         """ Returns a ApplicationCache Object to interact with the browser app cache"""

@@ -140,6 +140,10 @@ extends java.lang.Object</pre>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorHandler.html#ErrorHandler(boolean)">ErrorHandler</a></strong>(boolean&nbsp;includeServerErrors)</code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorHandler.html#ErrorHandler(org.openqa.selenium.remote.ErrorCodes, boolean)">ErrorHandler</a></strong>(<a href="../../../../org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a>&nbsp;codes,
+            boolean&nbsp;includeServerErrors)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -202,12 +206,24 @@ extends java.lang.Object</pre>
 <a name="ErrorHandler(boolean)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ErrorHandler</h4>
 <pre>public&nbsp;ErrorHandler(boolean&nbsp;includeServerErrors)</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>includeServerErrors</code> - Whether to include server-side details in thrown exceptions if the
         information is available.</dd></dl>
+</li>
+</ul>
+<a name="ErrorHandler(org.openqa.selenium.remote.ErrorCodes, boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ErrorHandler</h4>
+<pre>public&nbsp;ErrorHandler(<a href="../../../../org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a>&nbsp;codes,
+            boolean&nbsp;includeServerErrors)</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>includeServerErrors</code> - Whether to include server-side details in thrown exceptions if the
+        information is available.</dd><dd><code>codes</code> - The ErrorCodes object to use for linking error codes to exceptions.</dd></dl>
 </li>
 </ul>
 </li>

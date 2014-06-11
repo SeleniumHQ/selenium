@@ -47,7 +47,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webdriver</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
+<span class="c"># Copyright 2008-2014 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -64,14 +64,16 @@
 <span class="sd">The WebDriver implementation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
 <span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">RemoteConnection</span>
 <span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="kn">import</span> <span class="n">ErrorHandler</span>
+<span class="kn">from</span> <span class="nn">.switch_to</span> <span class="kn">import</span> <span class="n">SwitchTo</span>
+<span class="kn">from</span> <span class="nn">.mobile</span> <span class="kn">import</span> <span class="n">Mobile</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.alert</span> <span class="kn">import</span> <span class="n">Alert</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="kn">import</span> <span class="n">ApplicationCache</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -110,7 +112,7 @@
         <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">command_executor</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bytes</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bytes</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">RemoteConnection</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="bp">None</span>
@@ -118,7 +120,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span> <span class="o">=</span> <span class="n">ErrorHandler</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_client</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span> <span class="o">=</span> <span class="n">SwitchTo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mobile</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebDriver.mobile"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.mobile">[docs]</a>    <span class="k">def</span> <span class="nf">mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mobile</span>
+</div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the name of the underlying browser for this instance.</span>
@@ -202,10 +210,11 @@
 <span class="sd">        :Returns:</span>
 <span class="sd">          The command&#39;s JSON response loaded into a dictionary object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;sessionId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">}</span>
-        <span class="k">elif</span> <span class="s">&#39;sessionId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s">&#39;sessionId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;sessionId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="s">&#39;sessionId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="s">&#39;sessionId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">driver_command</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
@@ -436,10 +445,6 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.execute_script(&#39;document.title&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">converted_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_SCRIPT</span><span class="p">,</span>
             <span class="p">{</span><span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="n">script</span><span class="p">,</span> <span class="s">&#39;args&#39;</span><span class="p">:</span><span class="n">converted_args</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
@@ -455,10 +460,6 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.execute_async_script(&#39;document.title&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">converted_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_ASYNC_SCRIPT</span><span class="p">,</span>
             <span class="p">{</span><span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="n">script</span><span class="p">,</span> <span class="s">&#39;args&#39;</span><span class="p">:</span><span class="n">converted_args</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
@@ -529,61 +530,41 @@
 <span class="sd">        Maximizes the current window that webdriver is using</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;windowHandle&quot;</span><span class="p">:</span> <span class="s">&quot;current&quot;</span><span class="p">})</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebDriver.switch_to"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span>
 
     <span class="c">#Target Locators</span></div>
 <div class="viewcode-block" id="WebDriver.switch_to_active_element"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_active_element">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_active_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the element with focus, or BODY if nothing has focus.</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.switch_to_active_element()</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated use driver.switch_to.active_element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ACTIVE_ELEMENT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;use driver.switch_to.active_element instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span><span class="o">.</span><span class="n">active_element</span>
 </div>
 <div class="viewcode-block" id="WebDriver.switch_to_window"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_window">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to the specified window.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - window_name: The name or window handle of the window to switch to.</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.switch_to_window(&#39;main&#39;)</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated use driver.switch_to.window</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">window_name</span><span class="p">})</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;use driver.switch_to.window instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebDriver.switch_to_frame"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_reference</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to the specified frame, by index, name, or webelement.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - frame_reference: The name of the window to switch to, an integer representing the index,</span>
-<span class="sd">                            or a webelement that is an (i)frame to switch to.</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.switch_to_frame(&#39;frame_name&#39;)</span>
-<span class="sd">            driver.switch_to_frame(1)</span>
-<span class="sd">            driver.switch_to_frame(driver.find_elements_by_tag_name(&quot;iframe&quot;)[0])</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated use driver.switch_to.frame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">frame_reference</span><span class="p">})</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;use driver.switch_to.frame instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">frame_reference</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebDriver.switch_to_default_content"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_default_content">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_default_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switch focus to the default frame.</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.switch_to_default_content()</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated use driver.switch_to.default_content</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;use driver.switch_to.default_content instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span><span class="o">.</span><span class="n">default_content</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="WebDriver.switch_to_alert"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_alert">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to an alert on the page.</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.switch_to_alert()</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated use driver.switch_to.alert</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Alert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;use driver.switch_to.alert instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span><span class="o">.</span><span class="n">alert</span>
 
     <span class="c">#Navigation</span></div>
 <div class="viewcode-block" id="WebDriver.back"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.back">[docs]</a>    <span class="k">def</span> <span class="nf">back</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -863,13 +844,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;LANDSCAPE&#39;</span><span class="p">,</span> <span class="s">&#39;PORTRAIT&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;You can only set the orientation to &#39;LANDSCAPE&#39; and &#39;PORTRAIT&#39;&quot;</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="WebDriver.is_online"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.is_online">[docs]</a>    <span class="k">def</span> <span class="nf">is_online</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a boolean if the browser is online or offline&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_BROWSER_ONLINE</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.application_cache"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.application_cache">[docs]</a>    <span class="k">def</span> <span class="nf">application_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

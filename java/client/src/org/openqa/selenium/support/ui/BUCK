@@ -46,6 +46,7 @@ java_library(name = 'wait',
   deps = [
     ':clock',
     '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava-libraries:guava-libraries',
   ],
   visibility = ['PUBLIC'],

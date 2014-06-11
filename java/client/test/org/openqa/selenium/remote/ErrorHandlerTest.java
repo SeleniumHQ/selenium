@@ -249,7 +249,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
-  public void testShouldDefaultToUnknownServerErrorIfClassIsNotSpecified()
+  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
@@ -264,7 +264,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(ErrorHandler.UnknownServerException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
           cause.getMessage());
       assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
@@ -273,7 +273,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
-  public void testShouldStillTryToBuildServerErrorIfClassIsNotProvidedAndStackTraceIsNotForJava() {
+  public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Lists.newArrayList(
@@ -297,7 +297,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(ErrorHandler.UnknownServerException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 

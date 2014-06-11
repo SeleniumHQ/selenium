@@ -1,3 +1,10 @@
+v2.42.0
+=======
+ * Supports native events for Firefox versions 29 (current), 28 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Updated Json.NET dependency to version 6.0.2.
+ * Refactored JSON serialization of cookies.
+
 v2.41.0
 =======
  * Supports native events for Firefox versions 28 (current), 27 (immediately

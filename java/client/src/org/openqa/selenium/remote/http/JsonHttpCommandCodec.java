@@ -174,6 +174,9 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     // https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile
     defineCommand(GET_NETWORK_CONNECTION, get("/session/:sessionId/network_connection"));
     defineCommand(SET_NETWORK_CONNECTION, post("/session/:sessionId/network_connection"));
+    defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
+    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
+    defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
   }
 
   @Override

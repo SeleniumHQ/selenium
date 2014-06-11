@@ -53,6 +53,12 @@ namespace OpenQA.Selenium
         IWebDriver Frame(IWebElement frameElement);
 
         /// <summary>
+        /// Select the parent frame of the currently selected frame.
+        /// </summary>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+        IWebDriver ParentFrame();
+
+        /// <summary>
         /// Switches the focus of future commands for this driver to the window with the given name.
         /// </summary>
         /// <param name="windowName">The name of the window to select.</param>
