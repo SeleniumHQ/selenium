@@ -287,7 +287,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
       = "Not tested against these browsers")
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
@@ -301,7 +301,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
       = "Chrome: failed, Firefox: failed with native events, others: not tested")
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
@@ -331,7 +331,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
       = "not tested")
   public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter() {
     String url = appServer.whereIs("fixedFooterNoScroll.html");
@@ -344,7 +344,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
       = "not tested")
   public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode() {
     String url = appServer.whereIs("fixedFooterNoScrollQuirksMode.html");
