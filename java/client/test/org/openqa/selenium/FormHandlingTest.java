@@ -256,7 +256,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = {IPHONE, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {IPHONE, ANDROID, HTMLUNIT, OPERA_MOBILE},
           reason = "Not implemented going to the end of the line first;\n" +
                    "iPhone: sendKeys not implemented correctly")
   @Test
@@ -298,7 +298,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_explicit_submit");
   }
 
-  @Ignore(value = {ANDROID, IPHONE, SAFARI, OPERA_MOBILE}, reason = "untested")
+  @Ignore(value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
