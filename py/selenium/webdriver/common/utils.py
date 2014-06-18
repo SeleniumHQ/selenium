@@ -40,7 +40,7 @@ def is_connectable(port):
     try:
         socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_.settimeout(1)
-        socket_.connect(("localhost", port))
+        socket_.connect(("127.0.0.1", port))
         socket_.close()
         return True
     except socket.error:
@@ -60,7 +60,7 @@ def is_url_connectable(port):
         import urllib2 as url_request
 
     try:
-        res = url_request.urlopen("http://localhost:%s/status" % port)
+        res = url_request.urlopen("http://127.0.0.1:%s/status" % port)
         if res.getcode() == 200:
             return True
         else:
