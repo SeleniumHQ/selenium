@@ -43,6 +43,19 @@ bot.frame.activeElement = function() {
 
 
 /**
+ * Gets the parent frame of the specified frame.
+ *
+ * @param {!Window=} opt_root The window get the parent of.
+ *     Defaults to {@code bot.getWindow()}.
+ * @return {Window} The frame if found, null otherwise.
+ */
+bot.frame.parentFrame = function(opt_root) {
+  var domWindow = opt_root || bot.getWindow();
+  return domWindow.parent;
+};
+
+
+/**
  * Returns a reference to the window object corresponding to the given element.
  * Note that the element must be a frame or an iframe.
  *

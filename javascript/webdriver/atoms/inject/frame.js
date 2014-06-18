@@ -49,6 +49,20 @@ webdriver.atoms.inject.frame.activeElement = function() {
 
 
 /**
+ * Finds the parent frame of the specified frame.
+ *
+ * @param {!Window=} opt_root The window to perform the search under.
+ * If not specified window is used as the default.
+ * @return {string} A frame element wrapped in a JSON string as defined by
+ *     the wire protocol.
+ */
+webdriver.atoms.inject.frame.parentFrame = function (opt_root) {
+  return webdriver.atoms.inject.executeScript(bot.frame.parentFrame,
+      [opt_root]);
+};
+
+
+/**
  * Finds a frame by index.
  *
  * @param {number} index The index of the frame to search for.
