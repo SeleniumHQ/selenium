@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="webbit">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/webbit/webbit-0.4.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/webbit/webbit-0.4.15.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/webbit/webbit-0.4.14-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/webbit/webbit-0.4.15-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

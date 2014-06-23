@@ -45,7 +45,7 @@ public class PathAugmentingStaticFileHandler extends ImprovedStaticFileHandler {
     private PathAugmentingFileWorker(HttpRequest request,
                                      HttpResponse response,
                                      HttpControl control) {
-      super(request, response, control);
+      super(request, response, control, Long.MAX_VALUE);
     }
     
     @Override
