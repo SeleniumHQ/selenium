@@ -134,6 +134,21 @@ class UnixProcess implements OsProcess {
     handler.waitFor();
   }
   
+  public void waitFor(long timeout) throws InterruptedException {
+	  long until = System.currentTimeMillis() + timeout;
+	  boolean timedOut = true;
+      while (System.currentTimeMillis() < until) {
+    	  if(handler.hasResult()){
+    		  timedOut = false;
+    		  break;
+    	  }
+          Thread.sleep(50);
+      }
+	if(timedOut){
+		throw new InterruptedException(String.format("Process timed out after waiting for %d ms.",timeout) );
+	}
+  }
+  
   public boolean isRunning() {
     return !handler.hasResult();
   }

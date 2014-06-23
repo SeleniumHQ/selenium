@@ -156,6 +156,10 @@ public class WindowsProcessGroup implements OsProcess {
   public void waitFor() throws InterruptedException {
     // no-op
   }
+  
+  public void waitFor(long timeout) throws InterruptedException {
+	    // no-op
+	  }
 
   public int destroy() {
     if (!isRunning()) {
