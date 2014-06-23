@@ -123,6 +123,14 @@ public class CommandLine {
       throw new WebDriverException(e);
     }
   }
+  
+  public void waitFor(long timeout) {
+	try {
+		process.waitFor(timeout);
+	} catch (InterruptedException e) {
+		throw new WebDriverException(e);
+	}
+  }
 
   public boolean isSuccessful() {
     return 0 == getExitCode();

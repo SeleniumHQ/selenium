@@ -35,6 +35,8 @@ interface OsProcess {
   void executeAsync();
 
   void waitFor() throws InterruptedException;
+  
+  void waitFor(long timeout) throws InterruptedException;
 
   int destroy();
 
