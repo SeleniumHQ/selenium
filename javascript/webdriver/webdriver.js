@@ -459,7 +459,7 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  *     'var callback = arguments[arguments.length - 1];' +
  *     'mailClient.getComposeWindowWidget().onload(callback);');
  * driver.switchTo().frame('composeWidget');
- * driver.findElement(By.id('to')).sendKEys('dog@example.com');
+ * driver.findElement(By.id('to')).sendKeys('dog@example.com');
  * </pre></code>
  *
  * Example #3: Injecting a XMLHttpRequest and waiting for the result. In this
@@ -474,7 +474,7 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  *   xhr.open("GET", "/resource/data.json", true);
  *   xhr.onreadystatechange = function() {
  *     if (xhr.readyState == 4) {
- *       callback(xhr.resposneText);
+ *       callback(xhr.responseText);
  *     }
  *   }
  *   xhr.send('');
