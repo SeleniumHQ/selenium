@@ -190,6 +190,10 @@ module Selenium
           execute :switchToFrame, {}, :id => id
         end
 
+        def switchToParentFrame
+          execute :switchToParentFrame
+        end
+
         def switchToDefaultContent
           execute :switchToFrame, {}, :id => nil
         end
