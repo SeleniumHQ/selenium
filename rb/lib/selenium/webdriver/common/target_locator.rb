@@ -19,6 +19,14 @@ module Selenium
       end
 
       #
+      # switch to the parent frame
+      #
+
+      def parent_frame
+        @bridge.switchToParentFrame
+      end
+
+      #
       # switch to the given window handle
       #
       # If given a block, this method will switch back to the original window after
