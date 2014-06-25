@@ -17,8 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Remote
@@ -74,7 +72,7 @@ namespace OpenQA.Selenium.Remote
                     foreach (string name in capabilities.Capabilities.Keys)
                     {
                         writer.WritePropertyName(name);
-                        writer.WriteRawValue(JsonConvert.SerializeObject(capabilities.Capabilities[name], new PlatformJsonConverter()));
+                        writer.WriteRawValue(JsonConvert.SerializeObject(capabilities.Capabilities[name], new PlatformJsonConverter(), new LoggingPreferencesJsonConverter()));
                     }
 
                     writer.WriteEndObject();
