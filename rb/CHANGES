@@ -3,7 +3,9 @@
 
 * Make sure UnhandledAlertErrors includes the alert text if provided by the driver.
 * Firefox
-  - Make sure browser process is properly killed if silent startup hangs (#7392)
+  - Make sure the browser process is properly killed if silent startup hangs (#7392)
+* Loosen websocket dependency to ~> 1.0
+* Add support for `switch_to.parent_frame` (thanks abotalov)
 
 2.42.0 (2014-05-23)
 ===================
