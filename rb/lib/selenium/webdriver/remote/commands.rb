@@ -65,6 +65,7 @@ class Selenium::WebDriver::Remote::Bridge
   #
 
   command :switchToFrame,                          :post,    "session/:session_id/frame"
+  command :switchToParentFrame,                    :post,    "session/:session_id/frame/parent"
   command :switchToWindow,                         :post,    "session/:session_id/window"
 
   #

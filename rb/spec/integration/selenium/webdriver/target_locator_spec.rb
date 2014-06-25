@@ -26,6 +26,18 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
+  it "should switch to parent frame" do
+    driver.navigate.to url_for("iframes.html")
+
+    iframe = driver.find_element(:tag_name => "iframe")
+    driver.switch_to.frame(iframe)
+
+    driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
+
+    driver.switch_to.parent_frame
+    driver.find_element(:id, 'iframe_page_heading').should be_kind_of(WebDriver::Element)
+  end
+
   # switching by name not yet supported by safari
   not_compliant_on :browser => [:ie, :iphone, :safari] do
     it "should switch to a window and back when given a block" do
