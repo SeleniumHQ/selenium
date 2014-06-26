@@ -31,6 +31,31 @@ public class PlatformTest {
   }
 
   @Test
+  public void testXpIsWindows() {
+    assertTrue(Platform.XP.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testVistaIsWindows() {
+    assertTrue(Platform.VISTA.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testWin8IsWindows() {
+    assertTrue(Platform.WIN8.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testWin81IsWindows() {
+    assertTrue(Platform.WIN8_1.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void testLinuxIsUnix() {
+    assertTrue(Platform.LINUX.is(Platform.UNIX));
+  }
+
+  @Test
   public void testShouldIdentifyVistaVariants() {
     assertAllAre(Platform.VISTA, "Windows Vista", "windows server 2008", "Windows 7", "win7");
   }
