@@ -72,9 +72,7 @@ public class DefaultDriverSessions implements DriverSessions {
   private void registerDefaults(Platform current) {
     for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
       Capabilities caps = entry.getKey();
-      if (caps.getPlatform() != null && caps.getPlatform().is(current)) {
-        registerDriver(caps, entry.getValue());
-      } else if (caps.getPlatform() == null) {
+      if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
         registerDriver(caps, entry.getValue());
       } else {
         log.info("Default driver " + entry.getValue() + " registration is skipped: registration capabilities "

@@ -32,13 +32,7 @@ public enum Platform {
   /**
    * Never returned, but can be used to request a browser running on any version of Windows.
    */
-  WINDOWS("") {
-    @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == XP
-          || compareWith == VISTA || compareWith == WIN8;
-    }
-  },
+  WINDOWS("") {},
 
   /**
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
@@ -46,8 +40,8 @@ public enum Platform {
    */
   XP("Windows Server 2003", "xp", "windows", "winnt") {
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == XP;
+    public Platform family() {
+      return WINDOWS;
     }
   },
 
@@ -56,8 +50,8 @@ public enum Platform {
    */
   VISTA("windows vista", "Windows Server 2008", "windows 7", "win7") {
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == VISTA;
+    public Platform family() {
+      return WINDOWS;
     }
   },
 
@@ -66,15 +60,15 @@ public enum Platform {
    */
   WIN8("Windows Server 2012", "windows 8", "win8") {
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == WIN8;
+    public Platform family() {
+      return WINDOWS;
     }
   },
 
   WIN8_1("windows 8.1", "win8.1") {
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == WIN8_1;
+    public Platform family() {
+      return WINDOWS;
     }
   },
 
@@ -87,8 +81,8 @@ public enum Platform {
 
   LINUX("linux") {
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == UNIX || compareWith == LINUX;
+    public Platform family() {
+      return UNIX;
     }
   },
 
@@ -98,8 +92,8 @@ public enum Platform {
     }
 
     @Override
-    public boolean is(Platform compareWith) {
-      return compareWith == LINUX || compareWith == ANDROID;
+    public Platform family() {
+      return LINUX;
     }
   },
 
@@ -109,7 +103,7 @@ public enum Platform {
   ANY("") {
     @Override
     public boolean is(Platform compareWith) {
-      return true;
+      return this == compareWith;
     }
   };
 
@@ -230,7 +224,17 @@ public enum Platform {
    * @return true if platforms are approximately similar, false otherwise
    */
   public boolean is(Platform compareWith) {
-    return this.equals(compareWith);
+    return this == compareWith || this.family().is(compareWith);
+  }
+
+  /**
+   * Returns a platform that represents a family for the current platform.  For instance
+   * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
+   *
+   * @return the family platform for the current one
+   */
+  public Platform family() {
+    return ANY;
   }
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
