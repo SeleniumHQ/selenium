@@ -155,7 +155,18 @@ public class ExpectedConditions {
       public List<WebElement> apply(WebDriver driver) {
         List<WebElement> elements = findElements(locator, driver);
         for(WebElement element : elements){
-          if(!element.isDisplayed()){
+          try {
+            if(!element.isDisplayed()){
+              return null;
+            }
+          } catch (NoSuchElementException e){
+            /*
+            There is a possibility that by the time we check isDisplayed the element may not be
+            present in the DOM or become stale. The try block checks the same and returns null
+            if any of such exceptions occur.
+            */
+            return null;
+          } catch (StaleElementReferenceException e){
             return null;
           }
         }
