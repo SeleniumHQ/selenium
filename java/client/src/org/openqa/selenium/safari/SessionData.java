@@ -26,7 +26,7 @@ class SessionData {
     Platform current = Platform.getCurrent();
 
     Iterable<File> files = ImmutableList.of();
-    if (Platform.MAC.is(current)) {
+    if (current.is(Platform.MAC)) {
       File libraryDir = new File("/Users", System.getenv("USER") + "/Library");
       files = ImmutableList.of(
           new File(libraryDir, "Caches/com.apple.Safari/Cache.db"),
@@ -38,7 +38,7 @@ class SessionData {
           new File(libraryDir, "Safari/Databases"));
     }
 
-    if (Platform.WINDOWS.is(current)) {
+    if (current.is(Platform.WINDOWS)) {
       File appDataDir = new File(System.getenv("APPDATA"), "Apple Computer/Safari");
       File localDataDir = new File(System.getenv("LOCALAPPDATA"), "Apple Computer/Safari");
 

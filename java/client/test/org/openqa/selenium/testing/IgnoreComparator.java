@@ -50,7 +50,7 @@ public class IgnoreComparator {
     for (Ignore.Driver value : ignoreAnnotation.value()) {
       if (ignored.contains(value) || value == Ignore.Driver.ALL) {
         for (Platform platform : ignoreAnnotation.platforms()) {
-          if (platform.is(currentPlatform)) {
+          if (currentPlatform.is(platform)) {
             return true;
           }
         }

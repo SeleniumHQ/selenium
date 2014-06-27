@@ -84,7 +84,7 @@ public class DefaultDriverSessions implements DriverSessions {
   private void registerDriverProviders(Platform current) {
     for (DriverProvider provider : ServiceLoader.load(DriverProvider.class)) {
       Capabilities caps = provider.getProvidedCapabilities();
-      if (caps.getPlatform() == null || caps.getPlatform().is(current)) {
+      if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
         factory.registerDriverProvider(caps, provider);
       } else {
         log.info("Driver provider " + provider + " registration is skipped: registration capabilities "

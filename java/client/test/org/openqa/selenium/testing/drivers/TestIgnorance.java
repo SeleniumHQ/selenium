@@ -48,6 +48,7 @@ import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -131,7 +132,7 @@ public class TestIgnorance {
     }
 
     // We only have native events on Linux and Windows.
-    Platform platform = Platform.getCurrent();
+    Platform platform = TestUtilities.getEffectivePlatform();
     return !(platform.is(LINUX) || platform.is(WINDOWS));
   }
 

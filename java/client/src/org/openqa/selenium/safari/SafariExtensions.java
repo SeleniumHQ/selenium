@@ -155,9 +155,9 @@ class SafariExtensions {
    */
   private static File getSafariDataDirectory() {
     Platform current = Platform.getCurrent();
-    if (Platform.MAC.is(current)) {
+    if (current.is(Platform.MAC)) {
       return new File("/Users/" + System.getenv("USER"), "Library/Safari");
-    } else if (Platform.WINDOWS.is(current)) {
+    } else if (current.is(Platform.WINDOWS)) {
       return new File(System.getenv("APPDATA"), "Apple Computer/Safari");
     }
 

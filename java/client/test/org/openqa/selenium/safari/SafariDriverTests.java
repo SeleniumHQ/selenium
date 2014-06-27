@@ -25,6 +25,7 @@ import org.openqa.selenium.StandardSeleniumTests;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.testing.TestUtilities;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -39,7 +40,7 @@ public class SafariDriverTests {
 
   @BeforeClass
   public static void isSupportedPlatform() {
-    Platform current = Platform.getCurrent();
-    assumeTrue(Platform.MAC.is(current) || Platform.WINDOWS.is(current));
+    Platform current = TestUtilities.getEffectivePlatform();
+    assumeTrue(current.is(Platform.MAC) || current.is(Platform.WINDOWS));
   }
 }
