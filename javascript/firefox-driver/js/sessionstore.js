@@ -223,6 +223,9 @@ wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities,
       }
     }
   });
+  if (driver.enableNativeEvents) {
+    prefStore.setCharPref('layout.css.devPixelsPerPx', '1.0');
+  }
 };
 
 
