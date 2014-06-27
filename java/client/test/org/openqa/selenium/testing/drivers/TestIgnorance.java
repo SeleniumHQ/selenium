@@ -48,7 +48,6 @@ import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -132,8 +131,16 @@ public class TestIgnorance {
     }
 
     // We only have native events on Linux and Windows.
-    Platform platform = TestUtilities.getEffectivePlatform();
+    Platform platform = getEffectivePlatform();
     return !(platform.is(LINUX) || platform.is(WINDOWS));
+  }
+
+  private static Platform getEffectivePlatform() {
+    if (SauceDriver.shouldUseSauce()) {
+      return SauceDriver.getEffectivePlatform();
+    }
+
+    return Platform.getCurrent();
   }
 
   private boolean isIgnoredDueToBeingOnSauce(FrameworkMethod method, Object test) {
