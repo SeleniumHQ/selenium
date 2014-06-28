@@ -34,7 +34,7 @@ import com.google.common.io.Files;
 
 class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
-      ImmutableSet.of("", ".exe", ".com", ".bat") : ImmutableSet.of("");
+      ImmutableSet.of("", ".cmd", ".exe", ".com", ".bat") : ImmutableSet.of("");
 
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
 

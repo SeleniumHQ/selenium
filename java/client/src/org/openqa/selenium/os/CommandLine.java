@@ -178,4 +178,8 @@ public class CommandLine {
   public void copyOutputTo(OutputStream out) {
     process.copyOutputTo(out);
   }
+
+  public void checkForError() {
+    process.checkForError();
+  }
 }

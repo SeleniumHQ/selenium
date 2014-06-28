@@ -161,6 +161,12 @@ class UnixProcess implements OsProcess {
     return handler.getExitValue();
   }
 
+  public void checkForError() {
+    if (handler.getException() != null) {
+      log.severe(handler.getException().toString());
+    }
+  }
+
   public String getStdOut() {
     if (isRunning()) {
       throw new IllegalStateException(

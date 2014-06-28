@@ -161,6 +161,10 @@ public class WindowsProcessGroup implements OsProcess {
 	    // no-op
 	  }
 
+  public void checkForError() {
+    // no-op
+  }
+
   public int destroy() {
     if (!isRunning()) {
       return 0; // Hard code the return value

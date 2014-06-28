@@ -45,4 +45,6 @@ interface OsProcess {
   String getStdOut();
   
   boolean isRunning();
+
+  void checkForError();
 }
