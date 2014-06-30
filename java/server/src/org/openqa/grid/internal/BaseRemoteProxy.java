@@ -310,7 +310,11 @@ public class BaseRemoteProxy implements RemoteProxy {
             log.logp(Level.WARNING, "SessionCleanup", null,
                 "session " + session
                     + " has TIMED OUT due to client inactivity and will be released.");
-            ((TimeoutListener) proxy).beforeRelease(session);
+            try {
+              ((TimeoutListener) proxy).beforeRelease(session);
+            } catch(IllegalStateException ignore){
+              log.log(Level.WARNING, ignore.getMessage());
+            }
             registry.terminate(session, SessionTerminationReason.TIMEOUT);
           }
         }
@@ -318,7 +322,11 @@ public class BaseRemoteProxy implements RemoteProxy {
         if (session.isOrphaned()) {
           log.logp(Level.WARNING, "SessionCleanup", null,
               "session " + session + " has been ORPHANED and will be released");
-          ((TimeoutListener) proxy).beforeRelease(session);
+          try {
+            ((TimeoutListener) proxy).beforeRelease(session);
+          } catch(IllegalStateException ignore){
+            log.log(Level.WARNING, ignore.getMessage());
+          }
           registry.terminate(session, SessionTerminationReason.ORPHAN);
         }
       }
