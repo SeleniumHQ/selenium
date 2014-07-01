@@ -80,9 +80,11 @@ public class GridLauncher {
         throw new RuntimeException(e);
       }
     } else {
+      boolean logLongForm = helper.isParamPresent("-logLongForm");
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
           handler.setLevel(logLevel);
+          handler.setFormatter(new TerseFormatter(logLongForm));
         }
       }
     }

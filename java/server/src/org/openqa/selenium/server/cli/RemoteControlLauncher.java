@@ -80,7 +80,9 @@ public class RemoteControlLauncher {
         INDENT,
         "-trustAllSSLCertificates: Forces the Selenium proxy to trust all SSL certificates.  This doesn't work in browsers that don't use the Selenium proxy.");
     printWrappedLine(INDENT,
-        "-log <logFileName>: writes lots of debug information out to a log file");
+        "-log <logFileName>: writes lots of debug information out to a log file and disables logging to console");
+    printWrappedLine(INDENT,
+        "-logLongForm: writes information out to console in long format (for debugging purpose)");
     printWrappedLine(
         INDENT,
         "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
