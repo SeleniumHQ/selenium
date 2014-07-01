@@ -34,6 +34,8 @@ class Response {
 
   Json::Value value(void) const { return this->value_; }
 
+  std::string session_id(void) const { return this->session_id_; }
+
   void SetResponse(const int status_code, const Json::Value& response_value);
   void SetSuccessResponse(const Json::Value& response_value);
   void SetErrorResponse(const int error_code, const std::string& message);

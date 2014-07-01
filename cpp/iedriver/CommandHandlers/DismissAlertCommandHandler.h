@@ -30,7 +30,6 @@ class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     BrowserHandle browser_wrapper;

@@ -152,7 +152,7 @@ LRESULT IECommandExecutor::OnSetCommand(UINT uMsg,
   LOG(TRACE) << "Entering IECommandExecutor::OnSetCommand";
 
   LPCSTR json_command = reinterpret_cast<LPCSTR>(lParam);
-  this->current_command_.Populate(json_command);
+  this->current_command_.Deserialize(json_command);
   return 0;
 }
 

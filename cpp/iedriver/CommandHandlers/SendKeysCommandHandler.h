@@ -48,20 +48,19 @@ class SendKeysCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response)
   {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
     } else if (value_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter: value");
       return;
     } else {
-      std::string element_id = id_parameter_iterator->second;
+      std::string element_id = id_parameter_iterator->second.asString();
 
       Json::Value key_array = value_parameter_iterator->second;
 

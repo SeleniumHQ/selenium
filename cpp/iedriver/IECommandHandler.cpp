@@ -25,7 +25,6 @@ IECommandHandler::~IECommandHandler() {
 }
 
 void IECommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                       const LocatorMap& locator_parameters,
                                        const ParametersMap& command_parameters,
                                        Response* response) {
   LOG(TRACE) << "Entering IECommandHandler::ExecuteInternal";

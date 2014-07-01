@@ -31,13 +31,12 @@ class FindChildElementCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
     ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
     } else if (using_parameter_iterator == command_parameters.end()) {
@@ -49,7 +48,7 @@ class FindChildElementCommandHandler : public IECommandHandler {
     } else {
       std::string mechanism = using_parameter_iterator->second.asString();
       std::string value = value_parameter_iterator->second.asString();
-      std::string element_id = id_parameter_iterator->second;
+      std::string element_id = id_parameter_iterator->second.asString();
 
       ElementHandle parent_element_wrapper;
       int status_code = this->GetElement(executor,

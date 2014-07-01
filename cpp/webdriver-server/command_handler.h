@@ -33,14 +33,12 @@ class CommandHandler {
   virtual ~CommandHandler(void) {}
   void Execute(const T& executor, const Command& command, Response* response) {
     this->ExecuteInternal(executor,
-                          command.locator_parameters(),
                           command.command_parameters(),
                           response);
   }
 
  protected:
   virtual void ExecuteInternal(const T& executor,
-                               const LocatorMap& locator_parameters,
                                const ParametersMap& command_parameters,
                                Response* response) = 0;
 

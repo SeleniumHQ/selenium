@@ -30,20 +30,19 @@ class GetElementAttributeCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
-    LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
+    ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
-    } else if (name_parameter_iterator == locator_parameters.end()) {
+    } else if (name_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: name");
       return;
     } else {
-      std::string element_id = id_parameter_iterator->second;
-      std::string name = name_parameter_iterator->second;
+      std::string element_id = id_parameter_iterator->second.asString();
+      std::string name = name_parameter_iterator->second.asString();
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);

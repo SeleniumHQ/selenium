@@ -30,7 +30,6 @@ class GetAllWindowHandlesCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     Json::Value handles(Json::arrayValue);

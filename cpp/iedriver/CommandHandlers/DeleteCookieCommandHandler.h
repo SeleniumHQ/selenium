@@ -30,16 +30,15 @@ class DeleteCookieCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
-    if (name_parameter_iterator == locator_parameters.end()) {
+    ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
+    if (name_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: name");
       return;
     }
 
-    std::string cookie_name = name_parameter_iterator->second;
+    std::string cookie_name = name_parameter_iterator->second.asString();
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {

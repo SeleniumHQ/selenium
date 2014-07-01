@@ -170,15 +170,6 @@ void Server::AddCommand(const std::string& url,
   this->commands_[url][http_verb] = command_name;
 }
 
-std::string Server::CreateSession() {
-  LOG(TRACE) << "Entering Server::CreateSession";
-
-  SessionHandle session_handle= this->InitializeSession();
-  std::string session_id = session_handle->session_id();
-  this->sessions_[session_id] = session_handle;
-  return session_id;
-}
-
 void Server::ShutDownSession(const std::string& session_id) {
   LOG(TRACE) << "Entering Server::ShutDownSession";
 
@@ -264,12 +255,9 @@ std::string Server::DispatchCommand(const std::string& uri,
     // not by the session.
     serialized_response = this->ListSessions();
   } else {
-    if (command == webdriver::CommandType::NewSession) {
-      session_id = this->CreateSession();
-    }
-
     SessionHandle session_handle = NULL;
-    if (!this->LookupSession(session_id, &session_handle)) {
+    if (command != webdriver::CommandType::NewSession &&
+        !this->LookupSession(session_id, &session_handle)) {
       if (command == webdriver::CommandType::Quit) {
         // Calling quit on an invalid session should be a no-op.
         // Hand-code the response for quit on an invalid (already
@@ -291,15 +279,23 @@ std::string Server::DispatchCommand(const std::string& uri,
       }
     } else {
       // Compile the serialized JSON representation of the command by hand.
-      std::string serialized_command = "{ \"command\" : \"" + command + "\"";
+      std::string serialized_command = "{ \"name\" : \"" + command + "\"";
       serialized_command.append(", \"locator\" : ");
       serialized_command.append(locator_parameters);
       serialized_command.append(", \"parameters\" : ");
       serialized_command.append(command_body);
       serialized_command.append(" }");
+      if (command == webdriver::CommandType::NewSession) {
+        session_handle = this->InitializeSession();
+      }
       bool session_is_valid = session_handle->ExecuteCommand(
           serialized_command,
           &serialized_response);
+      if (command == webdriver::CommandType::NewSession) {
+        Response new_session_response;
+        new_session_response.Deserialize(serialized_response);
+        this->sessions_[new_session_response.session_id()] = session_handle;
+      }
       if (!session_is_valid) {
         this->ShutDownSession(session_id);
       }
@@ -314,7 +310,7 @@ std::string Server::ListSessions() {
 
   // Manually construct the serialized command for getting 
   // session capabilities.
-  std::string get_caps_command = "{ \"command\" : \"" + webdriver::CommandType::GetSessionCapabilities + "\"" +
+  std::string get_caps_command = "{ \"name\" : \"" + webdriver::CommandType::GetSessionCapabilities + "\"" +
                                  ", \"locator\" : {}, \"parameters\" : {} }";
 
   Json::Value sessions(Json::arrayValue);

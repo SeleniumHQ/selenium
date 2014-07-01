@@ -31,7 +31,6 @@ class SendKeysToActiveElementCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");

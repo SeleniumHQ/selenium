@@ -30,15 +30,14 @@ class IsElementSelectedCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
-    if (id_parameter_iterator == locator_parameters.end()) {
+    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
+    if (id_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
     } else {
-      std::string element_id = id_parameter_iterator->second;
+      std::string element_id = id_parameter_iterator->second.asString();
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);

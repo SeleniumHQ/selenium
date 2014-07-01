@@ -75,7 +75,6 @@ class Server {
   std::string DispatchCommand(const std::string& url,
                               const std::string& http_verb,
                               const std::string& command_body);
-  std::string CreateSession(void);
   void ShutDownSession(const std::string& session_id);
   std::string ReadRequestBody(struct mg_connection* conn,
                               const struct mg_request_info* request_info);

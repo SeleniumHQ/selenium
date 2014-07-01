@@ -62,7 +62,6 @@ class IECommandHandler : public CommandHandler<IECommandExecutor> {
 
  protected:
   virtual void ExecuteInternal(const IECommandExecutor& executor,
-                               const LocatorMap& locator_parameters,
                                const ParametersMap& command_parameters,
                                Response* response);
   int GetElement(const IECommandExecutor& executor,

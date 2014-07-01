@@ -30,7 +30,6 @@ class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     std::string current_handle = executor.current_browser_id();
