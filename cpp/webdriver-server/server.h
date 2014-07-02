@@ -19,7 +19,6 @@
 
 #include <vector>
 #include <map>
-#include <sstream>
 #include <string>
 #include "command_types.h"
 #include "mongoose.h"
