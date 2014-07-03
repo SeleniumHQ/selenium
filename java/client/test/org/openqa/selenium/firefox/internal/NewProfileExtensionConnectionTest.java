@@ -8,16 +8,19 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 public class NewProfileExtensionConnectionTest {
 
   @Test
+  @NeedsLocalEnvironment
   public void canBeConstructed() throws Exception {
     new NewProfileExtensionConnection
         (makeLock(), new FirefoxBinary(), new FirefoxProfile(), "my-host");
   }
 
   @Test
+  @NeedsLocalEnvironment
   public void shouldDefaultToPortSpecifiedInProfileWhenDeterminingNextFreePort() throws Exception {
     int expectedPort = 2400;
 
