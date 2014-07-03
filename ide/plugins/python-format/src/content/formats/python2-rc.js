@@ -172,6 +172,7 @@ this.options = {
 	rcPort: "4444",
 	environment: "*chrome",
 	header:
+  '# -*- coding: utf-8 -*-\n' +
 	'from selenium import selenium\n' +
 	'import unittest, time, re\n' +
 	'\n' +
