@@ -52,8 +52,9 @@ function setUp() {
 
 
 function tearDown() {
-  driver.quit();
-  if (container) {
-    goog.dom.removeNode(container);
-  }
+  driver.quit().thenFinally(function() {
+    if (container) {
+      goog.dom.removeNode(container);
+    }
+  });
 }
