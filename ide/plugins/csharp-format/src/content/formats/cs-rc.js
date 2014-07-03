@@ -209,7 +209,9 @@ this.options = {
     	indents(2) + '}\n' +
     	indents(1) + '}\n' +
     	'}\n',
-    configForm:
+    defaultExtension: "cs"
+};
+this.configForm =
     	'<description>Variable for Selenium instance</description>' +
     	'<textbox id="options_receiver" />' +
     	'<description>Selenium RC host</description>' +
@@ -219,6 +221,4 @@ this.options = {
     	'<description>Environment</description>' +
     	'<textbox id="options_environment" />' +
     	'<description>Namespace</description>' +
-    	'<textbox id="options_namespace" />',
-    defaultExtension: "cs"
-};
+    	'<textbox id="options_namespace" />';
