@@ -738,6 +738,23 @@ namespace OpenQA.Selenium
 
         }
 
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToPassInAndRetrieveDates()
+        {
+            string function = "displayMessage(arguments[0]);";
+
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+
+            ExecuteScript(function, "2014-05-20T20:00:00+08:00");
+            IWebElement element = driver.FindElement(By.Id("result"));
+            string text = element.Text;
+            Assert.AreEqual("2014-05-20T20:00:00+08:00", text);
+        }
+
         private bool CompareLists(ReadOnlyCollection<object> first, ReadOnlyCollection<object> second)
         {
             if (first.Count != second.Count)

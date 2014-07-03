@@ -87,7 +87,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            return JsonConvert.DeserializeObject<Response>(value);
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.DateParseHandling = DateParseHandling.None;
+            return JsonConvert.DeserializeObject<Response>(value, settings);
         }
 
         /// <summary>
