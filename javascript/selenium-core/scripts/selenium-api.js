@@ -1189,10 +1189,15 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
                 throw e;
             }
         }
-        
+
         if (!targetWindow) return false;
-        if (!targetWindow.location) return false;
-        if ("about:blank" == targetWindow.location) return false;
+        try {
+            if (!targetWindow.location) return false;
+            if ("about:blank" == targetWindow.location) return false;
+        } catch (e) {
+            LOG.debug("Location exception (" + e.message + ")!");
+            return false;
+        }
         if (browserVersion.isKonqueror) {
             if ("/" == targetWindow.location.href) {
                 // apparently Konqueror uses this as the temporary location, instead of about:blank
