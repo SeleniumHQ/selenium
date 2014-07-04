@@ -21,6 +21,7 @@ package org.openqa.selenium.firefox.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -35,9 +36,7 @@ public class ExecutableTest {
   @Test
   @NeedsLocalEnvironment
   public void testEnvironmentDiscovery() {
-    if (SauceDriver.shouldUseSauce()) {
-      return;
-    }
+    Assume.assumeFalse(SauceDriver.shouldUseSauce());
     Executable env = new Executable(null);
     File exe = env.getFile();
     assertNotNull(exe);

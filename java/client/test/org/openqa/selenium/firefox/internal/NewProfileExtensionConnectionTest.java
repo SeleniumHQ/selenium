@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class NewProfileExtensionConnectionTest {
 
@@ -18,6 +20,7 @@ public class NewProfileExtensionConnectionTest {
   @Test
   @NeedsLocalEnvironment
   public void canBeConstructed() throws Exception {
+    Assume.assumeFalse(SauceDriver.shouldUseSauce());
     connection = new NewProfileExtensionConnection
         (makeLock(), new FirefoxBinary(), new FirefoxProfile(), "my-host");
   }
@@ -25,6 +28,7 @@ public class NewProfileExtensionConnectionTest {
   @Test
   @NeedsLocalEnvironment
   public void shouldDefaultToPortSpecifiedInProfileWhenDeterminingNextFreePort() throws Exception {
+    Assume.assumeFalse(SauceDriver.shouldUseSauce());
     int expectedPort = 2400;
 
     FirefoxProfile profile = new FirefoxProfile();
