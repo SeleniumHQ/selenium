@@ -242,7 +242,10 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     String name = nameToSpec.inverse().get(spec);
     SessionId sessionId = null;
     if (parameters.containsKey(SESSION_ID_PARAM)) {
-      sessionId = new SessionId((String) parameters.remove(SESSION_ID_PARAM));
+      String id = (String) parameters.remove(SESSION_ID_PARAM);
+      if (id != null) {
+        sessionId = new SessionId(id);
+      }
     }
 
     return new Command(sessionId, name, parameters);

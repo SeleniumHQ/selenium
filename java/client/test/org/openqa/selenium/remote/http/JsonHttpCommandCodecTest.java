@@ -208,6 +208,26 @@ public class JsonHttpCommandCodecTest {
     codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");
 
     Command decoded = codec.decode(request);
+    assertThat(decoded.getSessionId(), is(new SessionId("sessionX")));
+    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+        "fruit", "apple", "size", "large", "color", "red")));
+  }
+
+  @Test
+  public void ignoresNullSessionIdInSessionBody() throws JSONException, URISyntaxException {
+    String data = new JSONObject()
+        .put("sessionId", JSONObject.NULL)
+        .put("fruit", "apple")
+        .put("color", "red")
+        .put("size", "large")
+        .toString();
+
+    HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
+    request.setContent(data.getBytes(UTF_8));
+    codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");
+
+    Command decoded = codec.decode(request);
+    assertThat(decoded.getSessionId(), is(nullValue()));
     assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
         "fruit", "apple", "size", "large", "color", "red")));
   }
