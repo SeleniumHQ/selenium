@@ -32,12 +32,23 @@ js_library(name = "asserts_lib",
   srcs = ["testing/asserts.js"],
   deps = [":webdriver_lib"])
 
-js_library(name = "test_lib",
+js_library(name = "test_support_lib",
   srcs = [
     "testing/*.js",
   ],
   deps = [
     ":webdriver_lib"
+  ])
+
+js_library(name = "unit_test_lib",
+  srcs = [
+    "test/*.js",
+    "test/http/*.js",
+    "test/testing/*.js",
+  ],
+  deps = [
+    ":webdriver_lib",
+    ":test_support_lib",
   ])
 
 js_deps(name = "deps",
@@ -96,7 +107,7 @@ js_test(name = "test",
     "test/**/*_test.html",
   ],
   deps = [
-    ":test_lib",
+    ":test_support_lib",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])

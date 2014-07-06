@@ -74,46 +74,59 @@ var DEPS_FILE_PATH = (function() {
 })();
 
 
-
 /**
- * Synchronously loads a script into the protected Closure context.
- * @param {string} src Path to the file to load.
+ * Maintains a unique context for Closure library-based code.
+ * @param {boolean=} opt_configureForTesting Whether to configure a fake DOM
+ *     for Closure-testing code that (incorrectly) assumes a DOM is always
+ *     present.
+ * @constructor
  */
-function loadScript(src) {
-  src = path.normalize(src);
-  var contents = fs.readFileSync(src, 'utf8');
-  vm.runInContext(contents, closure, src);
+function Context(opt_configureForTesting) {
+  var closure = this.closure = vm.createContext({
+    console: console,
+    setTimeout: setTimeout,
+    setInterval: setInterval,
+    clearTimeout: clearTimeout,
+    clearInterval: clearInterval,
+    process: process,
+    require: require,
+    Buffer: Buffer,
+    Error: Error,
+    CLOSURE_BASE_PATH: path.dirname(CLOSURE_BASE_FILE_PATH) + '/',
+    CLOSURE_IMPORT_SCRIPT: function(src) {
+      loadScript(src);
+      return true;
+    },
+    CLOSURE_NO_DEPS: !isDevMode(),
+    goog: {}
+  });
+  closure.window = closure.top = closure;
+
+  if (opt_configureForTesting) {
+    closure.document = {
+      body: {},
+      createElement: function() { return {}; },
+      getElementsByTagName: function() { return []; }
+    };
+    closure.document.body.ownerDocument = closure.document;
+  }
+
+  loadScript(CLOSURE_BASE_FILE_PATH);
+  loadScript(DEPS_FILE_PATH);
+
+  /**
+   * Synchronously loads a script into the protected Closure context.
+   * @param {string} src Path to the file to load.
+   */
+  function loadScript(src) {
+    src = path.normalize(src);
+    var contents = fs.readFileSync(src, 'utf8');
+    vm.runInContext(contents, closure, src);
+  }
 }
 
 
-/**
- * The protected context to host the Closure library.
- * @type {!Object}
- * @const
- */
-var closure = vm.createContext({
-  console: console,
-  setTimeout: setTimeout,
-  setInterval: setInterval,
-  clearTimeout: clearTimeout,
-  clearInterval: clearInterval,
-  process: process,
-  require: require,
-  Buffer: Buffer,
-  Error: Error,
-  CLOSURE_BASE_PATH: path.dirname(CLOSURE_BASE_FILE_PATH) + '/',
-  CLOSURE_IMPORT_SCRIPT: function(src) {
-    loadScript(src);
-    return true;
-  },
-  CLOSURE_NO_DEPS: !isDevMode(),
-  goog: {}
-});
-closure.window = closure;
-
-
-loadScript(CLOSURE_BASE_FILE_PATH);
-loadScript(DEPS_FILE_PATH);
+var context = new Context();
 
 
 /**
@@ -123,8 +136,8 @@ loadScript(DEPS_FILE_PATH);
  * @throws {Error} If the symbol has not been defined.
  */
 function closureRequire(symbol) {
-  closure.goog.require(symbol);
-  return closure.goog.getObjectByName(symbol);
+  context.closure.goog.require(symbol);
+  return context.closure.goog.getObjectByName(symbol);
 }
 
 
@@ -159,7 +172,8 @@ exports.exportPublicApi = function(symbol) {
 
 
 if (isDevMode()) {
-  exports.closure = closure;
+  exports.closure = context.closure;
 }
+exports.Context = Context;
 exports.isDevMode = isDevMode;
 exports.require = closureRequire;

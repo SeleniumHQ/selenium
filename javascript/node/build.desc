@@ -4,6 +4,7 @@ node_module(
   deps = [
     "//javascript/webdriver:asserts_lib",
     "//javascript/webdriver:webdriver_lib",
+    "//javascript/webdriver:unit_test_lib",
   ],
   content_roots = [
     "javascript",

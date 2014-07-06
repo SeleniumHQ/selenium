@@ -199,12 +199,17 @@ function copyLibraries(outputDirPath, filePaths) {
   var seenFiles = {};
   var symbols = [];
   var providedSymbols = [];
+  var rootFiles = [];
   filePaths.filter(function(path) {
     return !fs.statSync(path).isDirectory();
   }).forEach(function(path) {
+    if (!FILE_INFO[path].provides.length) {
+      rootFiles.push(path);
+    }
     providedSymbols = providedSymbols.concat(FILE_INFO[path].provides);
     symbols = symbols.concat(FILE_INFO[path].requires);
   });
+  rootFiles.forEach(processFile);
   providedSymbols.forEach(resolveDeps);
   symbols.forEach(resolveDeps);
 
@@ -220,7 +225,10 @@ function copyLibraries(outputDirPath, filePaths) {
           '; required in\n  ' + UNPROVIDED[symbol].join('\n  '));
     }
 
-    var file = PROVIDERS[symbol];
+    processFile(PROVIDERS[symbol]);
+  }
+
+  function processFile(file) {
     if (seenFiles[file]) return;
     seenFiles[file] = true;
 
@@ -321,12 +329,20 @@ function copyResources(outputDirPath, resources, exclusions) {
 }
 
 
-function generateDocs(outputDir) {
+function generateDocs(outputDir, callback) {
   var libDir = path.join(outputDir, 'lib');
   var excludedDirs = [
     path.join(outputDir, 'example'),
     path.join(libDir, 'test'),
+    path.join(libDir, 'webdriver/test'),
     path.join(outputDir, 'test')
+  ];
+
+  var excludedFiles = [
+    path.join(libDir, 'webdriver/testing/client.js'),
+    path.join(libDir, 'webdriver/testing/flowtester.js'),
+    path.join(libDir, 'webdriver/testing/jsunit.js'),
+    path.join(libDir, 'webdriver/testing/window.js'),
   ];
 
   var endsWith = function(str, suffix) {
@@ -335,15 +351,24 @@ function generateDocs(outputDir) {
   };
 
   var getFiles = function(dir) {
-    return fs.readdirSync(dir).map(function(file) {
-      return path.join(dir, file);
-    }).filter(function(file) {
-      if (fs.statSync(file).isDirectory()) {
-        return excludedDirs.indexOf(file) == -1;
+    var files = [];
+    fs.readdirSync(dir).forEach(function(file) {
+      file = path.join(dir, file);
+      if (fs.statSync(file).isDirectory() &&
+          excludedDirs.indexOf(file) == -1) {
+        files = files.concat(getFiles(file));
+      } else if (endsWith(path.basename(file), '.js') &&
+          excludedFiles.indexOf(file) == -1) {
+        files.push(file);
       }
-      return endsWith(path.basename(file), '.js');
     });
+    return files;
   };
+
+  var sourceFiles = getFiles(libDir);
+  var moduleFiles = getFiles(outputDir).filter(function(file) {
+    return sourceFiles.indexOf(file) == -1;
+  });
 
   var config = {
     'output': path.join(outputDir, 'docs'),
@@ -351,10 +376,8 @@ function generateDocs(outputDir) {
     'license': path.join(outputDir, 'COPYING'),
     'readme': path.join(outputDir, 'README.md'),
     'language': 'ES5',
-    'sources': getFiles(libDir),
-    'modules': getFiles(outputDir).filter(function(file) {
-      return file != libDir;
-    })
+    'sources': sourceFiles,
+    'modules': moduleFiles
   };
 
   var configFile = outputDir + '-docs.json';
@@ -365,9 +388,7 @@ function generateDocs(outputDir) {
           __dirname, '../../third_party/java/dossier/dossier-0.3.0.jar'),
       '-c', configFile
   ].join(' ');
-  child_process.exec(command, function(error) {
-    if (error) throw error;
-  });
+  child_process.exec(command, callback);
 }
 
 
@@ -423,9 +444,10 @@ function main() {
   console.log('Copying resource files...');
   copyResources(options.output, options.resource, options.exclude_resource);
   console.log('Generating documentation...');
-  generateDocs(options.output);
-
-  console.log('ALL DONE');
+  generateDocs(options.output, function(e) {
+    if (e) throw e;
+    console.log('ALL DONE');
+  });
 }
 
 
