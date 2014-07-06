@@ -25,17 +25,13 @@ limitations under the License.
   goog.require('goog.userAgent.product.isVersion');
   goog.require('webdriver.WebDriver');
   goog.require('webdriver.Session');
-  goog.require('webdriver.test.JsExecutor');
+  goog.require('webdriver.browser');
   goog.require('webdriver.test.testutil');
   goog.require('webdriver.testing.jsunit');
 </script>
 <body>
 <script>
-  var DRIVER = new webdriver.WebDriver(
-      new webdriver.Session('test_session_id', {}),
-      new webdriver.test.JsExecutor);
-
-  var bugsBunnyElement, iframeElement, iframeDoc, daffyDuckElement;
+  var bugsBunnyElement, driver, iframeElement, iframeDoc, daffyDuckElement;
 
   function setUpPage() {
     bugsBunnyElement = document.createElement('div');
@@ -65,20 +61,21 @@ limitations under the License.
     iframeDoc[bot.inject.cache.CACHE_KEY_] = null;
 
     bot.setWindow(window);
+    driver = webdriver.browser.createDriver(window);
   }
 
   function testCanFindDomElementInCurrentDocument() {
-    var webElement = DRIVER.findElement(bugsBunnyElement);
+    var webElement = driver.findElement(bugsBunnyElement);
     assertThat(webElement.getInnerHtml(), equals('bunny'));
-    assertThat(DRIVER.isElementPresent(bugsBunnyElement), equals(true));
+    assertThat(driver.isElementPresent(bugsBunnyElement), equals(true));
   }
 
   function testCanFindElementsNotAttachedToTheDom() {
     var orphanNode = document.createElement('div');
     assertEquals('sanity check', document, orphanNode.ownerDocument);
 
-    assertThat(DRIVER.isElementPresent(orphanNode), equals(true));
-    DRIVER.findElement(orphanNode).
+    assertThat(driver.isElementPresent(orphanNode), equals(true));
+    driver.findElement(orphanNode).
         getInnerHtml().
         then(goog.partial(fail, 'Should not be able to use an orphaned node'),
              function(e) {
@@ -88,13 +85,13 @@ limitations under the License.
   }
 
   function testGracefullyFailsToFindElementsBelongingToADifferentFrame() {
-    DRIVER.findElement(daffyDuckElement).
+    driver.findElement(daffyDuckElement).
         then(goog.partial(fail, 'Should have failed to find the element'),
              function(e) {
                assertEquals('Should report element not found',
                    bot.ErrorCode.NO_SUCH_ELEMENT, e.code);
              });
-    assertThat(DRIVER.isElementPresent(daffyDuckElement), equals(false));
+    assertThat(driver.isElementPresent(daffyDuckElement), equals(false));
   }
 
   function testCanFindFramedElementsWhenFrameIsSelected() {
@@ -104,10 +101,11 @@ limitations under the License.
         goog.userAgent.product.isVersion(4)) {
       return;
     }
-    bot.setWindow(goog.dom.getFrameContentWindow(iframeElement));
-    var webElement = DRIVER.findElement(daffyDuckElement);
+    driver = webdriver.browser.createDriver(
+        goog.dom.getFrameContentWindow(iframeElement));
+    var webElement = driver.findElement(daffyDuckElement);
     assertThat(webElement.getInnerHtml(), equals('duck'));
-    assertThat(DRIVER.isElementPresent(daffyDuckElement), equals(true));
+    assertThat(driver.isElementPresent(daffyDuckElement), equals(true));
   }
 </script>
 </body>

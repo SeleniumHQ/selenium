@@ -20,6 +20,7 @@ limitations under the License.
   goog.require('goog.dom');
   goog.require('webdriver.WebDriver');
   goog.require('webdriver.Session');
+  goog.require('webdriver.browser');
   goog.require('webdriver.test.JsExecutor');
   goog.require('webdriver.test.testutil');
   goog.require('webdriver.testing.jsunit');
@@ -45,13 +46,11 @@ limitations under the License.
 <button id="add" onclick="addFoo();">Add foo!</button>
 <button id="remove" onclick="removeFoo();">Remove foo!</button>
 <script>
-  var DRIVER = new webdriver.WebDriver(
-      new webdriver.Session('test_session_id', {}),
-      new webdriver.test.JsExecutor);
+  var driver = webdriver.browser.createDriver(window);
 
   function testWaiting() {
-    var addButton = DRIVER.findElement(By.id("add"));
-    var removeButton = DRIVER.findElement(By.id("remove"));
+    var addButton = driver.findElement(By.id("add"));
+    var removeButton = driver.findElement(By.id("remove"));
 
     addButton.click();
     addButton.click();
@@ -73,8 +72,8 @@ limitations under the License.
   }
 
   function waitForNFoo(n) {
-    DRIVER.wait(function() {
-      return DRIVER.findElements(By.className('foo')).then(function(foos) {
+    driver.wait(function() {
+      return driver.findElements(By.className('foo')).then(function(foos) {
         return foos.length == n;
       });
     }, 3000);
