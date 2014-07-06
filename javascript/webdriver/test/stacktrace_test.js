@@ -1,46 +1,35 @@
-<!DOCTYPE html>
-<!--
-Copyright 2012 Selenium comitters
-Copyright 2012 Software Freedom Conservancy
+// Copyright 2014 Software Freedom Conservancy. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
+goog.require('goog.string');
+goog.require('goog.testing.JsUnitException');
+goog.require('goog.testing.PropertyReplacer');
+goog.require('goog.testing.StrictMock');
+goog.require('goog.testing.jsunit');
+goog.require('goog.testing.stacktrace');
+goog.require('webdriver.stacktrace');
+goog.require('webdriver.test.testutil');
 
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<title>stacktrace_test</title>
-<script src="test_bootstrap.js"></script>
-<script>
-  goog.require('bot.Error');
-  goog.require('bot.ErrorCode');
-  goog.require('goog.string');
-  goog.require('goog.testing.ExpectedFailures');
-  goog.require('goog.testing.JsUnitException');
-  goog.require('goog.testing.PropertyReplacer');
-  goog.require('goog.testing.StrictMock');
-  goog.require('goog.testing.jsunit');
-  goog.require('goog.testing.stacktrace');
-  goog.require('webdriver.stacktrace');
-  goog.require('webdriver.test.testutil');
-</script>
-<script>
-var expectedFailures;
 var stubs;
 
 function setUpPage() {
-  expectedFailures = new goog.testing.ExpectedFailures();
   stubs = new goog.testing.PropertyReplacer();
 }
 
 function tearDown() {
-  expectedFailures.handleTearDown();
   stubs.reset();
 }
 
@@ -76,23 +65,14 @@ function assertFrame(frame, file, line) {
   assertEquals(line, frame.getLine());
 }
 
-function testGetStacktraceFromHtmlFile() {
-  if (!webdriver.stacktrace.BROWSER_SUPPORTED) {
-    return false;
-  }
-
-  var stacktrace = webdriver.stacktrace.get();
-  assertFrame(stacktrace[0], 'stacktrace_test.html', 84);
-}
-
-function testGetStacktraceFromJsFile() {
+function testGetStacktraceFromFile() {
   if (!webdriver.stacktrace.BROWSER_SUPPORTED) {
     return false;
   }
 
   var stacktrace = webdriver.test.testutil.getStackTrace();
   assertFrame(stacktrace[0], 'testutil.js', 36);
-  assertFrame(stacktrace[1], 'stacktrace_test.html', 93);
+  assertFrame(stacktrace[1], 'stacktrace_test.js', 73);
 }
 
 function testGetStacktraceWithUrlOnLine() {
@@ -106,10 +86,10 @@ function testGetStacktraceWithUrlOnLine() {
   }
 
   var stacktrace = getStacktraceWithUrlArgument('http://www.google.com');
-  assertFrame(stacktrace[0], 'stacktrace_test.html', 105);
+  assertFrame(stacktrace[0], 'stacktrace_test.js', 85);
 
   stacktrace = getStacktraceWithUrlArgument('http://www.google.com/search');
-  assertFrame(stacktrace[0], 'stacktrace_test.html', 105);
+  assertFrame(stacktrace[0], 'stacktrace_test.js', 85);
 }
 
 function testParseStackFrameInV8() {
@@ -522,4 +502,3 @@ function testParseStackFrameInIE10() {
       new webdriver.stacktrace.Frame('', 'foo', '',
           'http://bar:4000/bar.js?a=)'));
 }
-</script>

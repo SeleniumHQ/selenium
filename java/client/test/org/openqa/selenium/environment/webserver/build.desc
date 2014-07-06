@@ -7,6 +7,7 @@ java_library(
     "BasicAuth.java",
     "CookieServlet.java",
     "EncodingServlet.java",
+    "GeneratedJsTestServlet.java",
     "Jetty7AppServer.java",
     "KillSwitchServlet.java",
     "ManifestServlet.java",

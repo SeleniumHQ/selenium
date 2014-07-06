@@ -45,7 +45,7 @@ class TestFileLocator {
     FilenameFilter filter = new TestFilenameFilter(getExcludedFiles(directory));
     return findTestFiles(directory, filter);
   }
-  
+
   private static List<File> findTestFiles(File directory, FilenameFilter filter) {
     List<File> files = Lists.newLinkedList();
     for (File file : directory.listFiles()) {
@@ -89,8 +89,12 @@ class TestFileLocator {
   }
 
   public static String getTestFilePath(File baseDir, File testFile) {
-    return testFile.getAbsolutePath()
+    String path = testFile.getAbsolutePath()
         .replace(baseDir.getAbsolutePath() + File.separator, "")
         .replace(File.separator, "/");
+    if (path.endsWith(".js")) {
+      path = "common/generated/" + path;
+    }
+    return path;
   }
 }

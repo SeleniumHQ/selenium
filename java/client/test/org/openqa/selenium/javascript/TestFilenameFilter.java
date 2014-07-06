@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium.javascript;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -32,6 +33,13 @@ public class TestFilenameFilter implements FilenameFilter {
   /** @inheritDoc */
   public boolean accept(File dir, String name) {
     File file = new File(dir, name);
-    return !excludedFiles.contains(file) && name.endsWith("_test.html");
+    return !excludedFiles.contains(file)
+           && (name.endsWith("_test.html")
+           || (name.endsWith("_test.js") && !hasHtmlSibling(file)));
+  }
+
+  private static boolean hasHtmlSibling(File file) {
+    File sibling = new File(Files.getNameWithoutExtension(file.getAbsolutePath()) + ".html");
+    return sibling.exists();
   }
 }

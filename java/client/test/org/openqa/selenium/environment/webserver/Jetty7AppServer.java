@@ -105,6 +105,8 @@ public class Jetty7AppServer implements AppServer {
     addServlet(defaultContext, "/cookie", CookieServlet.class);
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
+    addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
+
     addFilter(defaultContext, MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
 
     listenOn(getHttpPort());
