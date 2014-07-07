@@ -155,7 +155,14 @@ public class ExpectedConditions {
       public List<WebElement> apply(WebDriver driver) {
         List<WebElement> elements = findElements(locator, driver);
         for(WebElement element : elements){
-          if(!element.isDisplayed()){
+          try {
+            if(!element.isDisplayed()){
+              return null;
+            }
+          } catch (StaleElementReferenceException e) {
+            // There is a possibility that by the time we check isDisplayed the element may
+            // become stale. The try block checks the same and returns null in case such
+            // exception occurs.
             return null;
           }
         }
@@ -183,7 +190,14 @@ public class ExpectedConditions {
       @Override
       public List<WebElement> apply(WebDriver driver) {
         for(WebElement element : elements){
-          if(!element.isDisplayed()){
+          try {
+            if(!element.isDisplayed()) {
+              return null;
+            }
+          } catch (StaleElementReferenceException e) {
+            // There is a possibility that by the time we check isDisplayed the element may
+            // become stale. The try block checks the same and returns null in case such
+            // exception occurs.
             return null;
           }
         }
@@ -210,7 +224,14 @@ public class ExpectedConditions {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(WebDriver driver) {
-        return elementIfVisible(element);
+        try {
+          return elementIfVisible(element);
+        } catch (StaleElementReferenceException e) {
+          // There is a possibility that by the time we check isDisplayed the element may
+          // become stale. The try block checks the same and returns null in case such
+          // exception occurs.
+          return null;
+        }
       }
 
       @Override
@@ -650,7 +671,11 @@ public class ExpectedConditions {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
-        return element.isSelected() == selected;
+        try {
+          return element.isSelected() == selected;
+        } catch (StaleElementReferenceException e) {
+          return null;
+        }
       }
 
       @Override
