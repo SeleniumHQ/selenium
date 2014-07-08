@@ -1,3 +1,8 @@
+## v2.43.0-dev
+
+* FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
+    timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
+
 ## v2.42.1
 
 * FIXED: 7465: Fixed `net.getLoopbackAddress` on Windows

@@ -16,6 +16,7 @@
 'use strict';
 
 var assert = require('assert');
+var promise = require('../..').promise;
 
 var test = require('../../testing');
 
@@ -37,5 +38,51 @@ describe('Mocha Integration', function() {
     beforeEach(function() { this.x = 1; });
     test.it('', function() { this.x = 2; });
     afterEach(function() { assert.equal(this.x, 2); });
+  });
+
+  describe('it properly allows timeouts and cancels control flow', function() {
+    var timeoutErr, flowReset;
+
+    beforeEach(function() {
+      flowReset = false;
+      promise.controlFlow().on(promise.ControlFlow.EventType.RESET, function() {
+        flowReset = true;
+      });
+    });
+
+    test.it('', function() {
+      var mochaCallback = this.runnable().callback.mochaCallback;
+      this.runnable().callback.mochaCallback = function(err) {
+        timeoutErr = err;
+        // We do not pass along the arguments because we want this it block
+        // to always pass, we apply the tests that ensure the timeout was
+        // successfully called and that the controlFlow promise were reset
+        // in the afterEach block.
+        return mochaCallback.apply(this);
+      };
+
+      this.timeout(1000);
+      var unresolvedPromise = promise.defer();
+      return unresolvedPromise.promise;
+    });
+
+    afterEach(function() {
+      assert.equal(
+        flowReset,
+        true,
+        'the controlFlow for the test block should be cancelled on timeout'
+      );
+
+      assert.equal(
+        timeoutErr instanceof Error,
+        true,
+        'the testing error should be propegated back up to the mocha test runner'
+      );
+
+      assert.equal(
+        timeoutErr.message,
+        'timeout of 1000ms exceeded'
+      );
+    });
   });
 });

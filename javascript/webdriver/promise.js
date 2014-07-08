@@ -1007,6 +1007,9 @@ webdriver.promise.ControlFlow.EventType = {
   /** Emitted when all tasks have been successfully executed. */
   IDLE: 'idle',
 
+  /** Emitted when a ControlFlow has been reset. */
+  RESET: 'reset',
+
   /** Emitted whenever a new task has been scheduled. */
   SCHEDULE_TASK: 'scheduleTask',
 
@@ -1109,6 +1112,7 @@ webdriver.promise.ControlFlow.prototype.numAbortedFrames_ = 0;
 webdriver.promise.ControlFlow.prototype.reset = function() {
   this.activeFrame_ = null;
   this.clearHistory();
+  this.emit(webdriver.promise.ControlFlow.EventType.RESET);
   this.removeAllListeners();
   this.cancelShutdown_();
   this.cancelEventLoop_();
