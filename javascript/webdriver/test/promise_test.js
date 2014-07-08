@@ -548,39 +548,9 @@ function testResolvingADeferredWithAnotherCopiesTheResolvedValue() {
 }
 
 
-function testCanResolveADeferredWithItself() {
-  var callback;
+function testCannotResolveADeferredWithItself() {
   var deferred = new webdriver.promise.Deferred();
-  deferred.then(callback = callbackHelper(function(d) {
-    assertEquals(deferred, d);
-  }));
-
-  callback.assertNotCalled();
-  deferred.fulfill(deferred);
-  callback.assertCalled();
-}
-
-
-function testResolvingADeferredWithAnotherThatResolvedUponItself() {
-  var d1 = new webdriver.promise.Deferred();
-  var d2 = new webdriver.promise.Deferred();
-  var callback1, callback2;
-
-  d1.then(callback1 = callbackHelper(function(value) {
-    assertEquals(d2, value);
-  }));
-
-  d2.then(callback2 = callbackHelper(function(value) {
-    assertEquals(d2, value);
-  }));
-
-  d1.fulfill(d2);
-  callback1.assertNotCalled();
-  callback2.assertNotCalled();
-
-  d2.fulfill(d2);
-  callback1.assertCalled();
-  callback2.assertCalled();
+  assertThrows(goog.bind(deferred.fulfill, deferred, deferred));
 }
 
 
@@ -955,20 +925,6 @@ function testFullyResolved_arrayWithPromisedHash() {
 
   errback.assertNotCalled();
   callback.assertCalled();
-}
-
-
-function testFullyResolved_deferredThatResolvesOnItself() {
-  var deferred = new webdriver.promise.Deferred();
-  deferred.fulfill(deferred);
-
-  var callbacks = callbackPair(function(resolved) {
-    assertEquals(deferred, resolved);
-  });
-
-  webdriver.promise.fullyResolved(deferred).
-      then(callbacks.callback, callbacks.errback);
-  callbacks.assertCallback();
 }
 
 
@@ -1714,4 +1670,12 @@ function testFilteringAnArray_preservesOrderWhenFilterReturnsPromise() {
     d.fulfill(i > 0 && i < 3);
   });
   pair.assertCallback();
+}
+
+
+function testAddThenableImplementation() {
+  function tmp() {}
+  assertFalse(webdriver.promise.Thenable.isImplementation(new tmp()));
+  webdriver.promise.Thenable.addImplementation(tmp);
+  assertTrue(webdriver.promise.Thenable.isImplementation(new tmp()));
 }

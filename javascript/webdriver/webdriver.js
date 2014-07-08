@@ -17,9 +17,11 @@
  */
 
 goog.provide('webdriver.Alert');
+goog.provide('webdriver.AlertPromise');
 goog.provide('webdriver.UnhandledAlertError');
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebElement');
+goog.provide('webdriver.WebElementPromise');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
@@ -144,9 +146,8 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
  * Converts an object to its JSON representation in the WebDriver wire protocol.
  * When converting values of type object, the following steps will be taken:
  * <ol>
- * <li>if the object provides a "toWireValue" function, the return value will
- *     be returned in its fully resolved state (e.g. this function may return
- *     promise values)</li>
+ * <li>if the object is a WebElement, the return value will be the element's
+ *     server ID</li>
  * <li>if the object provides a "toJSON" function, the return value of this
  *     function will be returned</li>
  * <li>otherwise, the value of each key will be recursively converted according
@@ -154,20 +155,23 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
  * </ol>
  *
  * @param {*} obj The object to convert.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
+ * @return {!webdriver.promise.Promise.<?>} A promise that will resolve to the
  *     input value's JSON representation.
  * @private
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
 webdriver.WebDriver.toWireValue_ = function(obj) {
+  if (webdriver.promise.isPromise(obj)) {
+    return obj.then(webdriver.WebDriver.toWireValue_);
+  }
   switch (goog.typeOf(obj)) {
     case 'array':
-      return webdriver.promise.fullyResolved(
+      return webdriver.promise.all(
           goog.array.map(/** @type {!Array} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'object':
-      if (goog.isFunction(obj.toWireValue)) {
-        return webdriver.promise.fullyResolved(obj.toWireValue());
+      if (obj instanceof webdriver.WebElement) {
+        return obj.getId_();
       }
       if (goog.isFunction(obj.toJSON)) {
         return webdriver.promise.fulfilled(obj.toJSON());
@@ -209,8 +213,7 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
   } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
-      value = new webdriver.WebElement(driver,
-          value[webdriver.WebElement.ELEMENT_KEY]);
+      value = new webdriver.WebElement(driver, value);
     } else {
       value = goog.object.map(/**@type {!Object}*/ (value),
           goog.partial(webdriver.WebDriver.fromWireValue_, driver));
@@ -230,8 +233,7 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
  * @private
  */
 webdriver.WebDriver.executeCommand_ = function(executor, command) {
-  return webdriver.promise.fullyResolved(command.getParameters()).
-      then(webdriver.WebDriver.toWireValue_).
+  return webdriver.WebDriver.toWireValue_(command.getParameters()).
       then(function(parameters) {
         command.setParameters(parameters);
         return webdriver.promise.checkedNodeCall(
@@ -279,7 +281,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
       var value = response['value'];
       if (ex.code === bot.ErrorCode.MODAL_DIALOG_OPENED) {
         var text = value && value['alert'] ? value['alert']['text'] : '';
-        throw new webdriver.UnhandledAlertError(ex.message,
+        throw new webdriver.UnhandledAlertError(ex.message, text,
             new webdriver.Alert(self, text));
       }
       throw ex;
@@ -527,8 +529,8 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  * user supplied function. If any errors occur while evaluating the wait, they
  * will be allowed to propagate.
  *
- * <p>In the event a condition returns a {@link webdriver.promise.Promise}, the 
- * polling loop will wait for it to be resolved and use the resolved value for 
+ * <p>In the event a condition returns a {@link webdriver.promise.Promise}, the
+ * polling loop will wait for it to be resolved and use the resolved value for
  * evaluating whether the condition has been satisfied. The resolution time for
  * a promise is factored into whether a wait has timed out.
  *
@@ -711,7 +713,7 @@ webdriver.WebDriver.prototype.findElement = function(locator) {
       id = this.schedule(command, 'WebDriver.findElement(' + locator + ')');
     }
   }
-  return new webdriver.WebElement(this, id);
+  return new webdriver.WebElementPromise(this, id);
 };
 
 
@@ -1376,13 +1378,13 @@ webdriver.WebDriver.TargetLocator = function(driver) {
  * Schedules a command retrieve the {@code document.activeElement} element on
  * the current document, or {@code document.body} if activeElement is not
  * available.
- * @return {!webdriver.WebElement} The active element.
+ * @return {!webdriver.WebElementPromise} The active element.
  */
 webdriver.WebDriver.TargetLocator.prototype.activeElement = function() {
   var id = this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET_ACTIVE_ELEMENT),
       'WebDriver.switchTo().activeElement()');
-  return new webdriver.WebElement(this.driver_, id);
+  return new webdriver.WebElementPromise(driver, id);
 };
 
 
@@ -1450,13 +1452,16 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
  * Schedules a command to change focus to the active alert dialog. This command
  * will return a {@link bot.ErrorCode.NO_MODAL_DIALOG_OPEN} error if a modal
  * dialog is not currently open.
- * @return {!webdriver.Alert} The open alert.
+ * @return {!webdriver.AlertPromise} The open alert.
  */
 webdriver.WebDriver.TargetLocator.prototype.alert = function() {
   var text = this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET_ALERT_TEXT),
       'WebDriver.switchTo().alert()');
-  return new webdriver.Alert(this.driver_, text);
+  var driver = this.driver_;
+  return new webdriver.AlertPromise(driver, text.then(function(text) {
+    return new webdriver.Alert(driver, text);
+  }));
 };
 
 
@@ -1517,52 +1522,18 @@ webdriver.Key.chord = function(var_args) {
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
- * @param {!(string|webdriver.promise.Promise)} id Either the opaque ID for the
- *     underlying DOM element assigned by the server, or a promise that will
- *     resolve to that ID or another WebElement.
+ * @param {webdriver.WebElement.Id} id The server-assigned opaque ID for the
+ *     underlying DOM element.
  * @constructor
- * @extends {webdriver.promise.Deferred}
  */
 webdriver.WebElement = function(driver, id) {
-  webdriver.promise.Deferred.call(this, null, driver.controlFlow());
 
-  /**
-   * The parent WebDriver instance for this element.
-   * @private {!webdriver.WebDriver}
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  // This class is responsible for resolving itself; delete the resolve and
-  // reject methods so they may not be accessed by consumers of this class.
-  var fulfill = goog.partial(this.fulfill, this);
-  var reject = this.reject;
-  delete this.promise;
-  delete this.fulfill;
-  delete this.reject;
-
-  /**
-   * A promise that resolves to the JSON representation of this WebElement's
-   * ID, as defined by the WebDriver wire protocol.
-   * @private {!webdriver.promise.Promise.<webdriver.WebElement.Id>}
-   * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
-   */
-  this.id_ = webdriver.promise.when(id, function(id) {
-    if (id instanceof webdriver.WebElement) {
-      return id.id_;
-    } else if (goog.isDef(id[webdriver.WebElement.ELEMENT_KEY])) {
-      return id;
-    }
-
-    var json = {};
-    json[webdriver.WebElement.ELEMENT_KEY] = id;
-    return json;
-  });
-
-  // This WebElement should not be resolved until its ID has been
-  // fully resolved.
-  this.id_.then(fulfill, reject);
+  /** @private {!webdriver.promise.Promise.<webdriver.WebElement.Id>} */
+  this.id_ = webdriver.promise.fulfilled(id);
 };
-goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
 
 
 /**
@@ -1593,7 +1564,8 @@ webdriver.WebElement.equals = function(a, b) {
   if (a == b) {
     return webdriver.promise.fulfilled(true);
   }
-  return webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
+  var ids = [a.getId_(), b.getId_()];
+  return webdriver.promise.all(ids).then(function(ids) {
     // If the two element's have the same ID, they should be considered
     // equal. Otherwise, they may still be equivalent, but we'll need to
     // ask the server to check for us.
@@ -1602,10 +1574,10 @@ webdriver.WebElement.equals = function(a, b) {
       return true;
     }
 
-    var command = new webdriver.Command(
-        webdriver.CommandName.ELEMENT_EQUALS);
-    command.setParameter('other', b);
-    return a.schedule_(command, 'webdriver.WebElement.equals()');
+    var command = new webdriver.Command(webdriver.CommandName.ELEMENT_EQUALS);
+    command.setParameter('id', ids[0]);
+    command.setParameter('other', ids[1]);
+    return a.driver_.schedule(command, 'webdriver.WebElement.equals()');
   });
 };
 
@@ -1622,9 +1594,10 @@ webdriver.WebElement.prototype.getDriver = function() {
  * @return {!webdriver.promise.Promise.<webdriver.WebElement.Id>} A promise
  *     that resolves to this element's JSON representation as defined by the
  *     WebDriver wire protocol.
+ * @private
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
-webdriver.WebElement.prototype.toWireValue = function() {
+webdriver.WebElement.prototype.getId_ = function() {
   return this.id_;
 };
 
@@ -1642,7 +1615,7 @@ webdriver.WebElement.prototype.toWireValue = function() {
  * @private
  */
 webdriver.WebElement.prototype.schedule_ = function(command, description) {
-  command.setParameter('id', this.id_);
+  command.setParameter('id', this.getId_());
   return this.driver_.schedule(command, description);
 };
 
@@ -1699,7 +1672,7 @@ webdriver.WebElement.prototype.findElement = function(locator) {
         setParameter('value', locator.value);
     id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
   }
-  return new webdriver.WebElement(this.driver_, id);
+  return new webdriver.WebElementPromise(this.driver_, id);
 };
 
 
@@ -2020,39 +1993,77 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
 
 
 /**
+ * WebElementPromise is a promise that will be fulfilled with a WebElement.
+ * This serves as a forward proxy on WebElement, allowing calls to be
+ * scheduled without directly on this instance before the underlying
+ * WebElement has been fulfilled. In other words, the following two statements
+ * are equivalent:
+ * <pre><code>
+ *     driver.findElement({id: 'my-button'}).click();
+ *     driver.findElement({id: 'my-button'}).then(function(el) {
+ *       return el.click();
+ *     });
+ * </code></pre>
+ *
+ * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
+ *     element.
+ * @param {!webdriver.promise.Promise.<!webdriver.WebElement>} el A promise
+ *     that will resolve to the promised element.
+ * @constructor
+ * @extends {webdriver.WebElement}
+ * @implements {webdriver.promise.Thenable.<!webdriver.WebElement>}
+ * @final
+ */
+webdriver.WebElementPromise = function(driver, el) {
+  var unused = webdriver.promise.defer();
+  webdriver.WebElement.call(this, driver, unused.promise);
+
+  /** @override */
+  this.cancel = goog.bind(el.cancel, el);
+
+  /** @override */
+  this.isPending = goog.bind(el.isPending, el);
+
+  /** @override */
+  this.then = goog.bind(el.then, el);
+
+  /** @override */
+  this.thenCatch = goog.bind(el.thenCatch, el);
+
+  /** @override */
+  this.thenFinally = goog.bind(el.thenFinally, el);
+
+  /**
+   * Defers returning the element ID until the wrapped WebElement has been
+   * resolved.
+   * @override
+   */
+  this.getId_ = function() {
+    return el.then(function(el) {
+      return el.getId_();
+    });
+  };
+};
+goog.inherits(webdriver.WebElementPromise, webdriver.WebElement);
+
+
+/**
  * Represents a modal dialog such as {@code alert}, {@code confirm}, or
  * {@code prompt}. Provides functions to retrieve the message displayed with
  * the alert, accept or dismiss the alert, and set the response text (in the
  * case of {@code prompt}).
  * @param {!webdriver.WebDriver} driver The driver controlling the browser this
  *     alert is attached to.
- * @param {!(string|webdriver.promise.Promise.<string>)} text Either the
- *     message text displayed with this alert, or a promise that will be
- *     resolved to said text.
+ * @param {string} text The message text displayed with this alert.
  * @constructor
- * @extends {webdriver.promise.Deferred}
  */
 webdriver.Alert = function(driver, text) {
-  goog.base(this, null, driver.controlFlow());
-
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  // This class is responsible for resolving itself; delete the resolve and
-  // reject methods so they may not be accessed by consumers of this class.
-  var fulfill = goog.partial(this.fulfill, this);
-  var reject = this.reject;
-  delete this.promise;
-  delete this.fulfill;
-  delete this.reject;
-
   /** @private {!webdriver.promise.Promise.<string>} */
   this.text_ = webdriver.promise.when(text);
-
-  // Make sure this instance is resolved when its displayed text is.
-  this.text_.then(fulfill, reject);
 };
-goog.inherits(webdriver.Alert, webdriver.promise.Deferred);
 
 
 /**
@@ -2108,15 +2119,72 @@ webdriver.Alert.prototype.sendKeys = function(text) {
 
 
 /**
+ * AlertPromise is a promise that will be fulfilled with an Alert. This promise
+ * serves as a forward proxy on an Alert, allowing calls to be scheduled
+ * directly on this instance before the underlying Alert has been fulfilled. In
+ * other words, the following two statements are equivalent:
+ * <pre><code>
+ *     driver.switchTo().alert().dismiss();
+ *     driver.switchTo().alert().then(function(alert) {
+ *       return alert.dismiss();
+ *     });
+ * </code></pre>
+ *
+ * @param {!webdriver.WebDriver} driver The driver controlling the browser this
+ *     alert is attached to.
+ * @param {!webdriver.promise.Thenable.<!webdriver.Alert>} alert A thenable
+ *     that will be fulfilled with the promised alert.
+ * @constructor
+ * @extends {webdriver.Alert}
+ * @implements {webdriver.promise.Thenable.<!webdriver.Alert>}
+ * @final
+ */
+webdriver.AlertPromise = function(driver, alert) {
+  webdriver.Alert.call(this, driver, 'unused');
+
+  /** @override */
+  this.cancel = goog.bind(alert.cancel, alert);
+
+  /** @override */
+  this.isPending = goog.bind(alert.isPending, alert);
+
+  /** @override */
+  this.then = goog.bind(alert.then, alert);
+
+  /** @override */
+  this.thenCatch = goog.bind(alert.thenCatch, alert);
+
+  /** @override */
+  this.thenFinally = goog.bind(alert.thenFinally, alert);
+
+  /**
+   * Defer returning text until the promised alert has been resolved.
+   * @override
+   */
+  this.getText = function() {
+    return alert.then(function(alert) {
+      return alert.getText();
+    });
+  };
+};
+goog.inherits(webdriver.AlertPromise, webdriver.Alert);
+
+
+
+/**
  * An error returned to indicate that there is an unhandled modal dialog on the
  * current page.
  * @param {string} message The error message.
+ * @param {string} text The text displayed with the unhandled alert.
  * @param {!webdriver.Alert} alert The alert handle.
  * @constructor
  * @extends {bot.Error}
  */
-webdriver.UnhandledAlertError = function(message, alert) {
+webdriver.UnhandledAlertError = function(message, text, alert) {
   goog.base(this, bot.ErrorCode.MODAL_DIALOG_OPENED, message);
+
+  /** @private {string} */
+  this.text_ = text;
 
   /** @private {!webdriver.Alert} */
   this.alert_ = alert;
@@ -2125,7 +2193,17 @@ goog.inherits(webdriver.UnhandledAlertError, bot.Error);
 
 
 /**
+ * @return {string} The text displayed with the unhandled alert.
+ */
+webdriver.UnhandledAlertError.prototype.getAlertText = function() {
+  return this.text_;
+};
+
+
+/**
  * @return {!webdriver.Alert} The open alert.
+ * @deprecated Use {@link #getAlertText}. This method will be removed in
+ *     2.45.0.
  */
 webdriver.UnhandledAlertError.prototype.getAlert = function() {
   return this.alert_;

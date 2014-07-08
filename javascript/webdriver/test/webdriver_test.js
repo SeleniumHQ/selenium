@@ -387,9 +387,26 @@ function testToWireValue_webElement() {
   var expected = {};
   expected[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
-  var element = new webdriver.WebElement(STUB_DRIVER, 'fefifofum');
+  var element = new webdriver.WebElement(STUB_DRIVER, expected);
   var callback;
   webdriver.WebDriver.toWireValue_(element).
+      then(callback = callbackHelper(function(actual) {
+        webdriver.test.testutil.assertObjectEquals(expected, actual);
+      }));
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
+function testToWireValue_webElementPromise() {
+  var expected = {};
+  expected[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
+
+  var element = new webdriver.WebElement(STUB_DRIVER, expected);
+  var elementPromise = new webdriver.WebElementPromise(STUB_DRIVER,
+      webdriver.promise.fulfilled(element));
+  var callback;
+  webdriver.WebDriver.toWireValue_(elementPromise).
       then(callback = callbackHelper(function(actual) {
         webdriver.test.testutil.assertObjectEquals(expected, actual);
       }));
@@ -421,7 +438,7 @@ function testToWireValue_arrayWithWebElement() {
   var elementJson = {};
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
-  var element = new webdriver.WebElement(STUB_DRIVER, 'fefifofum');
+  var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
   var callback;
   webdriver.WebDriver.toWireValue_([element]).
       then(callback = callbackHelper(function(actual) {
@@ -439,13 +456,31 @@ function testToWireValue_complexArray() {
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
   var expected = ['abc', 123, true, elementJson, [123, {'foo': 'bar'}]];
 
-  var element = new webdriver.WebElement(STUB_DRIVER, 'fefifofum');
+  var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
   var input = ['abc', 123, true, element, [123, {'foo': 'bar'}]];
   var callback;
   webdriver.WebDriver.toWireValue_(input).
       then(callback = callbackHelper(function(actual) {
         webdriver.test.testutil.assertObjectEquals(expected, actual);
       }));
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
+function testToWireValue_arrayWithNestedPromises() {
+  var callback;
+  webdriver.WebDriver.toWireValue_([
+    'abc',
+    webdriver.promise.fulfilled([
+      123,
+     webdriver.promise.fulfilled(true)
+    ])
+  ]).then(callback = callbackHelper(function(actual) {
+    assertEquals(2, actual.length);
+    assertEquals('abc', actual[0]);
+    assertArrayEquals([123, true], actual[1]);
+  }));
   callback.assertCalled();
   verifyAll();  // Expected by tear down.
 }
@@ -460,7 +495,7 @@ function testToWireValue_complexHash() {
     'sessionId': 'foo'
   };
 
-  var element = new webdriver.WebElement(STUB_DRIVER, 'fefifofum');
+  var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
   var parameters = {
     'script': 'return 1',
     'args':['abc', 123, true, element, [123, {'foo': 'bar'}]],
@@ -1209,64 +1244,37 @@ function testExecutingACustomFunctionThatReturnsADeferredAction() {
   testHelper.execute();
 }
 
-function runWebElementResolutionTest(resolvedId) {
-  var id = new webdriver.promise.Deferred();
-
-  var callback, idCallback;
-  var element = new webdriver.WebElement(STUB_DRIVER, id.promise);
-
-  webdriver.promise.when(element,
-      callback = callbackHelper(function(resolvedElement) {
-        assertEquals(element, resolvedElement);
-        assertFalse(element.toWireValue().isPending());
+function testWebElementPromise_resolvesWhenUnderlyingElementDoes() {
+  var el = new webdriver.WebElement(STUB_DRIVER, {'ELEMENT': 'foo'});
+  var d = webdriver.promise.defer();
+  var callback;
+  new webdriver.WebElementPromise(STUB_DRIVER, d.promise).then(
+      callback = callbackHelper(function(e) {
+        assertEquals(e, el);
       }));
-
-  webdriver.promise.when(element.toWireValue(),
-      idCallback = callbackHelper(function(id) {
-        assertEquals('object', goog.typeOf(id));
-        assertEquals('foo', id[webdriver.WebElement.ELEMENT_KEY]);
-      }));
-
   callback.assertNotCalled();
-  idCallback.assertNotCalled();
-
-  id.fulfill(resolvedId);
-
+  d.fulfill(el);
   callback.assertCalled();
-  idCallback.assertCalled();
   verifyAll();  // Make tearDown happy.
 }
 
-function testWebElement_resolvesWhenTheUnderlyingIdResolves() {
-  runWebElementResolutionTest('foo');
-}
-
-function testWebElement_resolvesWhenIdResolvesToElementJsonObject() {
-  runWebElementResolutionTest({'ELEMENT': 'foo'});
-}
-
-function testWebElement_resolvesWhenIdResolvesToAnotherElement() {
-  runWebElementResolutionTest(
-      new webdriver.WebElement(STUB_DRIVER, {'ELEMENT': 'foo'}));
-}
-
-function testWebElement_resolvesWhenIdResolvesToElementJsonObjectResolvesBeforeCallbacksOnWireValueTrigger() {
-  var id = new webdriver.promise.Deferred();
+function testWebElement_resolvesBeforeCallbacksOnWireValueTrigger() {
+  var el = new webdriver.promise.Deferred();
 
   var callback, idCallback;
-  var element = new webdriver.WebElement(STUB_DRIVER, id.promise);
+  var element = new webdriver.WebElementPromise(STUB_DRIVER, el.promise);
   var messages = [];
 
   webdriver.promise.when(element, function() {
     messages.push('element resolved');
   });
 
-  webdriver.promise.when(element.toWireValue(), function() {
+  webdriver.promise.when(element.getId_(), function() {
     messages.push('wire value resolved');
   });
 
   assertArrayEquals([], messages);
-  id.fulfill('foo');
+  el.fulfill(new webdriver.WebElement(STUB_DRIVER, {'ELEMENT': 'foo'}));
   assertArrayEquals([
     'element resolved',
     'wire value resolved'
@@ -1278,7 +1286,7 @@ function testWebElement_isRejectedIfUnderlyingIdIsRejected() {
   var id = new webdriver.promise.Deferred();
 
   var callback, errback;
-  var element = new webdriver.WebElement(STUB_DRIVER, id.promise);
+  var element = new webdriver.WebElementPromise(STUB_DRIVER, id.promise);
 
   webdriver.promise.when(element,
       callback = callbackHelper(),
@@ -1466,7 +1474,7 @@ function testExecuteScript_webElementArgumentConversion() {
 
   var driver = testHelper.createDriver();
   driver.executeScript('return 1;',
-      new webdriver.WebElement(driver, 'fefifofum'));
+      new webdriver.WebElement(driver, elementJson));
   testHelper.execute();
 }
 
@@ -1485,7 +1493,7 @@ function testExecuteScript_argumentConversion() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var element = new webdriver.WebElement(driver, 'fefifofum');
+  var element = new webdriver.WebElement(driver, elementJson);
   driver.executeScript('return 1;',
       'abc', 123, true, element, [123, {'foo': 'bar'}]);
   testHelper.execute();
@@ -1755,7 +1763,7 @@ function testFindElements() {
     function assertTypeAndId(index) {
       assertTrue('Not a WebElement at index ' + index,
           elements[index] instanceof webdriver.WebElement);
-      elements[index].toWireValue().
+      elements[index].getId_().
           then(callbacks[index] = callbackHelper(function(id) {
             webdriver.test.testutil.assertObjectEquals(json[index], id);
           }));
@@ -1797,7 +1805,7 @@ function testFindElements_byJs() {
         function assertTypeAndId(index) {
           assertTrue('Not a WebElement at index ' + index,
               elements[index] instanceof webdriver.WebElement);
-          elements[index].toWireValue().
+          elements[index].getId_().
               then(callbacks[index] = callbackHelper(function(id) {
                 webdriver.test.testutil.assertObjectEquals(json[index], id);
               }));
@@ -1843,7 +1851,7 @@ function testFindElements_byJs_filtersOutNonWebElementResponses() {
         function assertTypeAndId(index, jsonIndex) {
           assertTrue('Not a WebElement at index ' + index,
               elements[index] instanceof webdriver.WebElement);
-          elements[index].toWireValue().
+          elements[index].getId_().
               then(callbacks[index] = callbackHelper(function(id) {
                 webdriver.test.testutil.assertObjectEquals(json[jsonIndex], id);
               }));
@@ -1878,7 +1886,7 @@ function testFindElements_byJs_convertsSingleWebElementResponseToArray() {
       then(callback1 = callbackHelper(function(elements) {
         assertEquals(1, elements.length);
         assertTrue(elements[0] instanceof webdriver.WebElement);
-        elements[0].toWireValue().
+        elements[0].getId_().
             then(callback2 = callbackHelper(function(id) {
               webdriver.test.testutil.assertObjectEquals(json, id);
             }));
@@ -1909,15 +1917,13 @@ function testFindElements_byJs_canPassScriptArguments() {
 function testSendKeysConvertsVarArgsIntoStrings_simpleArgs() {
   var testHelper = TestHelper.
       expectingSuccess().
-      expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
-          andReturnSuccess({'ELEMENT':'one'}).
       expect(CName.SEND_KEYS_TO_ELEMENT, {'id':{'ELEMENT':'one'},
                                           'value':['1','2','abc','3']}).
           andReturnSuccess().
       replayAll();
 
   var driver = testHelper.createDriver();
-  var element = driver.findElement(By.id('foo'));
+  var element = new webdriver.WebElement(driver, {'ELEMENT': 'one'});
   element.sendKeys(1, 2, 'abc', 3);
   testHelper.execute();
 }
@@ -1973,16 +1979,17 @@ function testElementEquals_doesNotSendRpcIfElementsHaveSameId() {
 }
 
 function testElementEquals_sendsRpcIfElementsHaveDifferentIds() {
+  var id1 = {'ELEMENT':'foo'};
+  var id2 = {'ELEMENT':'bar'};
   var testHelper = TestHelper.
       expectingSuccess().
-      expect(CName.ELEMENT_EQUALS,
-          {'id':{'ELEMENT':'foo'}, 'other':{'ELEMENT':'bar'}}).
+      expect(CName.ELEMENT_EQUALS, {'id':id1, 'other':id2}).
       andReturnSuccess(true).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var a = new webdriver.WebElement(driver, 'foo'),
-      b = new webdriver.WebElement(driver, 'bar'),
+  var a = new webdriver.WebElement(driver, id1),
+      b = new webdriver.WebElement(driver, id2),
       callback;
 
   webdriver.WebElement.equals(a, b).then(
@@ -2077,40 +2084,36 @@ function testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse(
 }
 
 function testAlertHandleResolvesWhenPromisedTextResolves() {
-  var text = new webdriver.promise.Deferred();
+  var promise = new webdriver.promise.Deferred();
 
-  var alert = new webdriver.Alert(STUB_DRIVER, text);
+  var alert = new webdriver.AlertPromise(STUB_DRIVER, promise);
   assertTrue(alert.isPending());
 
-  var callback, textCallback;
-  webdriver.promise.when(alert,
-      callback = callbackHelper(function(resolvedAlert) {
-        assertEquals(alert, resolvedAlert);
-        assertFalse(alert.getText().isPending());
-      }));
-
+  var callback;
   webdriver.promise.when(alert.getText(),
-      textCallback = callbackHelper(function(text) {
+      callback = callbackHelper(function(text) {
         assertEquals('foo', text);
       }));
 
   callback.assertNotCalled();
-  textCallback.assertNotCalled();
 
-  text.fulfill('foo');
+  promise.fulfill(new webdriver.Alert(STUB_DRIVER, 'foo'));
 
   callback.assertCalled();
-  textCallback.assertCalled();
   verifyAll();  // Make tearDown happy.
 }
 
 
 function testWebElementsBelongToSameFlowAsParentDriver() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = TestHelper
+      .expectingSuccess()
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'})
+      .andReturnSuccess({'ELEMENT': 'abc123'})
+      .replayAll();
 
   var driver = testHelper.createDriver();
   webdriver.promise.createFlow(function() {
-    new webdriver.WebElement(driver, 'foo').then(function() {
+    driver.findElement({id: 'foo'}).then(function() {
       assertEquals(
           'WebElement should belong to the same flow as its parent driver',
           driver.controlFlow(), webdriver.promise.controlFlow());
@@ -2121,12 +2124,29 @@ function testWebElementsBelongToSameFlowAsParentDriver() {
 }
 
 
+function testSwitchToAlertThatIsNotPresent() {
+  var testHelper = TestHelper
+      .expectingFailure(expectedError(ECode.NO_MODAL_DIALOG_OPEN, 'no alert'))
+      .expect(CName.GET_ALERT_TEXT)
+      .andReturnError(ECode.NO_MODAL_DIALOG_OPEN, {'message': 'no alert'})
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var alert = driver.switchTo().alert();
+  alert.dismiss();  // Should never execute.
+  testHelper.execute();
+}
+
+
 function testAlertsBelongToSameFlowAsParentDriver() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = TestHelper
+      .expectingSuccess()
+      .expect(CName.GET_ALERT_TEXT).andReturnSuccess('hello')
+      .replayAll();
 
   var driver = testHelper.createDriver();
   webdriver.promise.createFlow(function() {
-    new webdriver.Alert(driver, 'foo').then(function() {
+    driver.switchTo().alert().then(function() {
       assertEquals(
           'Alert should belong to the same flow as its parent driver',
           driver.controlFlow(), webdriver.promise.controlFlow());

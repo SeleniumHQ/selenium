@@ -51,6 +51,7 @@ goog.provide('webdriver.promise.ControlFlow');
 goog.provide('webdriver.promise.ControlFlow.Timer');
 goog.provide('webdriver.promise.Deferred');
 goog.provide('webdriver.promise.Promise');
+goog.provide('webdriver.promise.Thenable');
 
 goog.require('goog.array');
 goog.require('goog.debug.Error');
@@ -61,43 +62,32 @@ goog.require('webdriver.stacktrace.Snapshot');
 
 
 /**
- * Represents the eventual value of a completed operation. Each promise may be
- * in one of three states: pending, resolved, or rejected. Each promise starts
- * in the pending state and may make a single transition to either a
- * fulfilled or failed state.
+ * Thenable is a promise-like object with a {@code then} method which may be
+ * used to schedule callbacks on a promised value.
  *
- * <p/>This class is based on the Promise/A proposal from CommonJS. Additional
- * functions are provided for API compatibility with Dojo Deferred objects.
- *
- * @constructor
+ * @interface
  * @template T
- * @see http://wiki.commonjs.org/wiki/Promises/A
  */
-webdriver.promise.Promise = function() {
-};
+webdriver.promise.Thenable = function() {};
 
 
 /**
  * Cancels the computation of this promise's value, rejecting the promise in the
- * process.
+ * process. This method is a no-op if the promise has alreayd been resolved.
+ *
  * @param {*} reason The reason this promise is being cancelled. If not an
  *     {@code Error}, one will be created using the value's string
  *     representation.
  */
-webdriver.promise.Promise.prototype.cancel = function(reason) {
-  throw new TypeError('Unimplemented function: "cancel"');
-};
+webdriver.promise.Thenable.prototype.cancel = function(opt_reason) {};
 
 
 /** @return {boolean} Whether this promise's value is still being computed. */
-webdriver.promise.Promise.prototype.isPending = function() {
-  throw new TypeError('Unimplemented function: "isPending"');
-};
+webdriver.promise.Thenable.prototype.isPending = function() {};
 
 
 /**
- * Registers listeners for when this instance is resolved. This function most
- * overridden by subtypes.
+ * Registers listeners for when this instance is resolved.
  *
  * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback The
  *     function to call if this promise is successfully resolved. The function
@@ -109,10 +99,8 @@ webdriver.promise.Promise.prototype.isPending = function() {
  *     resolved with the result of the invoked callback.
  * @template R
  */
-webdriver.promise.Promise.prototype.then = function(
-    opt_callback, opt_errback) {
-  throw new TypeError('Unimplemented function: "then"');
-};
+webdriver.promise.Thenable.prototype.then = function(
+    opt_callback, opt_errback) {};
 
 
 /**
@@ -139,9 +127,7 @@ webdriver.promise.Promise.prototype.then = function(
  *     resolved with the result of the invoked callback.
  * @template R
  */
-webdriver.promise.Promise.prototype.thenCatch = function(errback) {
-  return this.then(null, errback);
-};
+webdriver.promise.Thenable.prototype.thenCatch = function(errback) {};
 
 
 /**
@@ -183,6 +169,102 @@ webdriver.promise.Promise.prototype.thenCatch = function(errback) {
  *     with the callback result.
  * @template R
  */
+webdriver.promise.Thenable.prototype.thenFinally = function(callback) {};
+
+
+/**
+ * Property used to flag constructor's as implementing the Thenable interface
+ * for runtime type checking.
+ * @private {string}
+ * @const
+ */
+webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_ = '$webdriver_Thenable';
+
+
+/**
+ * Adds a property to a class prototype to allow runtime checks of whether
+ * instances of that class implement the Thenable interface. This function will
+ * also ensure the prototype's {@code then} function is exported from compiled
+ * code.
+ * @param {function(new: webdriver.promise.Thenable, ...[?])} ctor The
+ *     constructor whose prototype to modify.
+ */
+webdriver.promise.Thenable.addImplementation = function(ctor) {
+  // Based on goog.promise.Thenable.isImplementation.
+  ctor.prototype['then'] = ctor.prototype.then;
+  Object.defineProperty(
+      ctor.prototype,
+      webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_,
+      {'value': true, 'enumerable': false});
+};
+
+
+/**
+ * Checks if an object has been tagged for implementing the Thenable interface
+ * as defined by {@link webdriver.promise.Thenable.addImplementation}.
+ * @param {*} object The object to test.
+ * @return {boolean} Whether the object is an implementation of the Thenable
+ *     interface.
+ */
+webdriver.promise.Thenable.isImplementation = function(object) {
+  // Based on goog.promise.Thenable.isImplementation.
+  if (!object) {
+    return false;
+  }
+  try {
+    if (COMPILED) {
+      return !!object[webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_];
+    }
+    return !!object.$webdriver_Thenable;
+  } catch (e) {
+    return false;  // Property access seems to be forbidden.
+  }
+};
+
+
+
+/**
+ * Represents the eventual value of a completed operation. Each promise may be
+ * in one of three states: pending, resolved, or rejected. Each promise starts
+ * in the pending state and may make a single transition to either a
+ * fulfilled or rejected state, at which point the promise is considered
+ * resolved.
+ *
+ * @constructor
+ * @implements {webdriver.promise.Thenable.<T>}
+ * @template T
+ * @see http://promises-aplus.github.io/promises-spec/
+ */
+webdriver.promise.Promise = function() {};
+webdriver.promise.Thenable.addImplementation(webdriver.promise.Promise);
+
+
+/** @override */
+webdriver.promise.Promise.prototype.cancel = function(reason) {
+  throw new TypeError('Unimplemented function: "cancel"');
+};
+
+
+/** @override */
+webdriver.promise.Promise.prototype.isPending = function() {
+  throw new TypeError('Unimplemented function: "isPending"');
+};
+
+
+/** @override */
+webdriver.promise.Promise.prototype.then = function(
+    opt_callback, opt_errback) {
+  throw new TypeError('Unimplemented function: "then"');
+};
+
+
+/** @override */
+webdriver.promise.Promise.prototype.thenCatch = function(errback) {
+  return this.then(null, errback);
+};
+
+
+/** @override */
 webdriver.promise.Promise.prototype.thenFinally = function(callback) {
   return this.then(callback, function(err) {
     var value = callback();
@@ -293,9 +375,15 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
       return;
     }
 
+    if (newValue === self) {
+      // See promise a+, 2.3.1
+      // http://promises-aplus.github.io/promises-spec/#point-48
+      throw TypeError('A promise may not resolve to itself');
+    }
+
     state = webdriver.promise.Deferred.State_.BLOCKED;
 
-    if (webdriver.promise.isPromise(newValue) && newValue !== self) {
+    if (webdriver.promise.isPromise(newValue)) {
       var onFulfill = goog.partial(notifyAll, newState);
       var onReject = goog.partial(
           notifyAll, webdriver.promise.Deferred.State_.REJECTED);
@@ -635,7 +723,7 @@ webdriver.promise.checkedNodeCall = function(fn) {
  * @return {!webdriver.promise.Promise} A new promise.
  */
 webdriver.promise.when = function(value, opt_callback, opt_errback) {
-  if (value instanceof webdriver.promise.Promise) {
+  if (webdriver.promise.Thenable.isImplementation(value)) {
     return value.then(opt_callback, opt_errback);
   }
 
@@ -1558,7 +1646,8 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
     newFrame.then(function() {
       webdriver.promise.asap(result, callback, errback);
     }, function(e) {
-      if (result instanceof webdriver.promise.Promise && result.isPending()) {
+      if (webdriver.promise.Thenable.isImplementation(result) &&
+          result.isPending()) {
         result.cancel(e);
         e = result;
       }

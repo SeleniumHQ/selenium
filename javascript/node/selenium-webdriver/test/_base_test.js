@@ -40,8 +40,10 @@ function runClosureTest(file) {
   describe(name, function() {
     var context = new base.Context(true);
     context.closure.document.title = name;
-    // Null out console so everything loads silently.
-    context.closure.console = null;
+    if (process.env.VERBOSE != '1') {
+      // Null out console so everything loads silently.
+      context.closure.console = null;
+    }
     context.closure.CLOSURE_IMPORT_SCRIPT(file);
 
     var tc = context.closure.G_testRunner.testCase;
@@ -49,8 +51,6 @@ function runClosureTest(file) {
       tc = new context.closure.goog.testing.TestCase(name);
       tc.autoDiscoverTests();
     }
-    // Reset console for running tests.
-    context.closure.console = console;
 
     var allTests = tc.getTests();
     allTests.forEach(function(test) {

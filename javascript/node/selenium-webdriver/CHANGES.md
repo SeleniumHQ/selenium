@@ -1,5 +1,9 @@
 ## v2.43.0-dev
 
+* Promise A+ compliance: a promise may no longer resolve to itself.
+* For consistency with other language bindings, deprecated
+    `UnhandledAlertError#getAlert` and added `#getAlertText`.
+    `getAlert` will be removed in `2.45.0`.
 * FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
     timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
 
