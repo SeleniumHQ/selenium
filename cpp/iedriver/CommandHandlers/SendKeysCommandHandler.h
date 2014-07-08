@@ -327,7 +327,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     for (int i = clock(); i < max_wait; i = clock()) {
       wait(1);
       CComPtr<IHTMLElement> active_wait_element;
-      if (document->get_activeElement(&active_wait_element) == S_OK) {
+      if (document->get_activeElement(&active_wait_element) == S_OK && active_wait_element != NULL) {
         CComPtr<IHTMLElement2> active_wait_element2;
         active_wait_element->QueryInterface<IHTMLElement2>(&active_wait_element2);
         if (element2.IsEqualObject(active_wait_element2)) {
