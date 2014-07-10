@@ -20,7 +20,7 @@ class Command(object):
     While these constants have no meaning in and of themselves, they are
     used to marshal commands through a service that implements WebDriver's
     remote wire protocol:
-    
+
         http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
 
@@ -75,6 +75,7 @@ class Command(object):
     GET_ELEMENT_LOCATION = "getElementLocation"
     GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView"
     GET_ELEMENT_SIZE = "getElementSize"
+    GET_ELEMENT_RECT = "getElementRect"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"

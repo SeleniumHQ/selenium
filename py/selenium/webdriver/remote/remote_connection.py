@@ -210,6 +210,8 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/location_in_view'),
             Command.GET_ELEMENT_SIZE:
                 ('GET', '/session/$sessionId/element/$id/size'),
+            Command.GET_ELEMENT_RECT:
+                ('GET', '/session/$sessionId/element/$id/rect'),
             Command.GET_ELEMENT_ATTRIBUTE:
                 ('GET', '/session/$sessionId/element/$id/attribute/$name'),
             Command.ELEMENT_EQUALS:

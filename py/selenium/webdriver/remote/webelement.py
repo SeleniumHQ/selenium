@@ -330,6 +330,11 @@ class WebElement(object):
         return new_loc
 
     @property
+    def rect(self):
+        """ Returns a dictionary with the size and location of the element"""
+        return self._execute(Command.GET_ELEMENT_RECT)['value']
+
+    @property
     def parent(self):
         """ Returns parent element is available. """
         return self._parent

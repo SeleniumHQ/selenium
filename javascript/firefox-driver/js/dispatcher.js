@@ -204,6 +204,9 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/size').
       on(Request.Method.GET, Dispatcher.executeAs('getElementSize'));
 
+  this.bind_('/session/:sessionId/element/:id/rect').
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
+
   this.bind_('/session/:sessionId/element/:id/css/:propertyName').
       on(Request.Method.GET,
          Dispatcher.executeAs('getElementValueOfCssProperty'));

@@ -376,6 +376,20 @@ WebElement.getElementSize = function(respond, parameters) {
   respond.send();
 };
 
+WebElement.getElementRect = function(respond, parameters) {
+  var element = Utils.getElementAt(parameters.id,
+                                   respond.session.getDocument());
+  var win = respond.session.getWindow();
+  var rect = Utils.getLocation(element);
+  respond.value = {
+    x: Math.round(rect.x + win.pageXOffset),
+    y: Math.round(rect.y + win.pageYOffset),
+    width: Math.round(rect.width),
+    height: Math.round(rect.height)
+  };
+  respond.send();
+};
+
 
 WebElement.getElementValueOfCssProperty = function(respond,
                                                                 parameters) {
