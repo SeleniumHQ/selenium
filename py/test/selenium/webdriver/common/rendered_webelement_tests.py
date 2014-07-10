@@ -53,7 +53,7 @@ class RenderedWebElementTests(unittest.TestCase):
         self.assertTrue(size["width"] > 0, "Width expected to be greater than 0")
         self.assertTrue(size["height"] > 0, "Height expected to be greater than 0")
 
-    def testShouldBeAbleToDetermineTheLocationOfAnElement(self):
+    def testShouldBeAbleToDetermineTheRectOfAnElement(self):
         self._loadPage("xhtmlTest")
 
         element = self.driver.find_element(By.ID, "username")
