@@ -15,6 +15,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 
+import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,7 +28,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -183,24 +184,20 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
-
+    List webElements = Lists.newArrayList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
     when(mockElement.isDisplayed()).thenReturn(true);
 
-    List<WebElement>
-        returnedElements =
+    List returnedElements =
         wait.until(visibilityOfAllElementsLocatedBy(By.cssSelector(testSelector)));
     assertEquals(webElements, returnedElements);
   }
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenElementNotDisplayed() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
+    List webElements = Lists.newArrayList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -211,8 +208,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = StaleElementReferenceException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsStaleExceptionWhenElementIsStale() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
+    List webElements = Lists.newArrayList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -223,7 +219,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenNoElementsFound() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List webElements = Lists.newArrayList();
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -233,9 +229,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfAllElementsReturnsListOfElements() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
-
+    List webElements = Lists.newArrayList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements = wait.until(visibilityOfAllElements(webElements));
@@ -244,9 +238,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenElementNotDisplayed() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
-
+    List webElements = Lists.newArrayList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(false);
 
     wait.until(visibilityOfAllElements(webElements));
@@ -254,8 +246,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = StaleElementReferenceException.class)
   public void waitingForVisibilityOfAllElementsThrowsStaleElementReferenceExceptionWhenElementIsStale() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
-    webElements.add(mockElement);
+    List webElements = Lists.newArrayList(mockElement);
 
     when(mockElement.isDisplayed()).thenThrow(new StaleElementReferenceException("Stale element"));
 
@@ -264,7 +255,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenNoElementsFound() {
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List webElements = Lists.newArrayList();
 
     wait.until(visibilityOfAllElements(webElements));
   }
