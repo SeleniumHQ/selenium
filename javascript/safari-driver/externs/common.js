@@ -17,38 +17,6 @@
  * @fileoverview Extern definitions for compiling the SafariDriver.
  */
 
-
-/** @type {!Object} */
-var console = {};
-/**
- * @param {string} msg
- * @param {...} var_args
- */
-console.group = function(msg, var_args) {};
-
-console.groupEnd = function() {};
-/**
- * @param {string} msg
- * @param {...} var_args
- */
-console.error = function(msg, var_args) {};
-/**
- * @param {string} msg
- * @param {...} var_args
- */
-console.warn = function(msg, var_args) {};
-/**
- * @param {string} msg
- * @param {...} var_args
- */
-console.info = function(msg, var_args) {};
-/**
- * @param {string} msg
- * @param {...} var_args
- */
-console.debug = function(msg, var_args) {};
-
-
 /**
  * @constructor
  * @extends {SafariEvent}
