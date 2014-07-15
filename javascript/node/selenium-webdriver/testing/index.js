@@ -105,35 +105,35 @@ function seal(fn) {
  */
 function wrapped(globalFn) {
   return function() {
-    switch (arguments.length) {
-      case 1:
-        globalFn(asyncTestFn(arguments[0]));
-        break;
-
-      case 2:
-        globalFn(arguments[0], asyncTestFn(arguments[1]));
-        break;
-
-      default:
-        throw Error('Invalid # arguments: ' + arguments.length);
+    if (arguments.length === 1) {
+      return globalFn(asyncTestFn(arguments[0]));
+    }
+    else if (arguments.length === 2) {
+      return globalFn(arguments[0], asyncTestFn(arguments[1]));
+    }
+    else {
+      throw Error('Invalid # arguments: ' + arguments.length);
     }
   };
 
   function asyncTestFn(fn) {
     var ret = function(done) {
-      this.timeout(0);
-      var timeout = this.timeout;
-      this.timeout = undefined;  // Do not let tests change the timeout.
-      try {
-        var testFn = fn.bind(this);
-        flow.execute(function() {
-          var done = promise.defer();
-          promise.asap(testFn(done.reject), done.fulfill, done.reject);
-          return done.promise;
-        }).then(seal(done), done);
-      } finally {
-        this.timeout = timeout;
+      function cleanupBeforeCallback() {
+        flow.reset();
+        return cleanupBeforeCallback.mochaCallback.apply(this, arguments);
       }
+      // We set this as an attribute of the callback function to allow us to
+      // test this properly.
+      cleanupBeforeCallback.mochaCallback = this.runnable().callback;
+
+      this.runnable().callback = cleanupBeforeCallback;
+
+      var testFn = fn.bind(this);
+      flow.execute(function() {
+        var done = promise.defer();
+        promise.asap(testFn(done.reject), done.fulfill, done.reject);
+        return done.promise;
+      }).then(seal(done), done);
     };
 
     ret.toString = function() {
