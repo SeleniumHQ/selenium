@@ -34,15 +34,17 @@ public interface NetworkConnection {
 
   /**
    * ConnectionType is a bitmask to represent a device's network connection
+   * <p><pre>
    * Data  | WIFI | Airplane
    * 0       0      1         == 1
    * 1       1      0         == 6
    * 1       0      0         == 4
    * 0       1      0         == 2
    * 0       0      0         == 0
+   * </pre>
    *
-   *  Giving "Data" the first bit positions in order to give room for the future of enabling
-   *  specific types of data (Edge / 2G, 3G, 4G, LTE, etc) if the device allows it.
+   * <p>Giving "Data" the first bit positions in order to give room for the future of enabling
+   * specific types of data (Edge / 2G, 3G, 4G, LTE, etc) if the device allows it.
    */
   public class ConnectionType {
     public static final ConnectionType WIFI = new ConnectionType(2);
