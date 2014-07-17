@@ -25,6 +25,6 @@
         "mocha" : "~1.10.0"
     },
     "scripts": {
-        "test": "node_modules/mocha/bin/mocha -R list --recursive test"
+        "test": "node_modules/mocha/bin/mocha -R list --timeout=10000 --recursive test"
     }
 }
