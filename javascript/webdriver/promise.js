@@ -212,10 +212,7 @@ webdriver.promise.Thenable.isImplementation = function(object) {
     return false;
   }
   try {
-    if (COMPILED) {
-      return !!object[webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_];
-    }
-    return !!object.$webdriver_Thenable;
+    return !!object[webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_];
   } catch (e) {
     return false;  // Property access seems to be forbidden.
   }
