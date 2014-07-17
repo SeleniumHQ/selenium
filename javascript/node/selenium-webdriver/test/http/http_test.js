@@ -14,6 +14,7 @@
 // limitations under the License.
 
 var assert = require('assert');
+var http = require('http');
 
 var HttpClient = require('../../http').HttpClient;
 var HttpRequest = require('../../_base').require('webdriver.http.Request');
@@ -52,7 +53,10 @@ describe('HttpClient', function() {
     var request = new HttpRequest('GET', '/echo');
     request.headers['Foo'] = 'Bar';
 
-    var client = new HttpClient(server.url());
+    var agent = new http.Agent();
+    agent.maxSockets = 1;  // Only making 1 request.
+
+    var client = new HttpClient(server.url(), agent);
     return promise.checkedNodeCall(client.send.bind(client, request))
         .then(function(response) {
           assert.equal(200, response.status);
