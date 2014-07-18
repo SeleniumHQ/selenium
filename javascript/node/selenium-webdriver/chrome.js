@@ -444,9 +444,10 @@ Options.prototype.toJSON = function() {
  * @param {(webdriver.Capabilities|Options)=} opt_options The session options.
  * @param {remote.DriverService=} opt_service The session to use; will use
  *     the {@link getDefaultService default service} by default.
- * @return {!webdriver.WebDriver} A new WebDriver instance.
+ * @constructor
+ * @extends {webdriver.WebDriver}
  */
-function createDriver(opt_options, opt_service) {
+var ChromeDriver = function(opt_options, opt_service) {
   var service = opt_service || getDefaultService();
   var executor = executors.createExecutor(service.start());
 
@@ -457,8 +458,25 @@ function createDriver(opt_options, opt_service) {
     options = Options.fromCapabilities(options);
   }
 
-  return webdriver.WebDriver.createSession(
+  var driver = webdriver.WebDriver.createSession(
       executor, options.toCapabilities());
+  webdriver.WebDriver.call(
+      this, driver.getSession(), executor, driver.controlFlow());
+};
+util.inherits(ChromeDriver, webdriver.WebDriver);
+
+
+/**
+ * Creates a new ChromeDriver session.
+ * @param {(webdriver.Capabilities|Options)=} opt_options The session options.
+ * @param {remote.DriverService=} opt_service The session to use; will use
+ *     the {@link getDefaultService default service} by default.
+ * @return {!webdriver.WebDriver} A new WebDriver instance.
+ * @deprecated Use {@link ChromeDriver} directly. This function will be
+ *     removed in 2.45.0.
+ */
+function createDriver(opt_options, opt_service) {
+  return new ChromeDriver(opt_options, opt_service);
 }
 
 
@@ -466,8 +484,9 @@ function createDriver(opt_options, opt_service) {
 // PUBLIC API
 
 
-exports.ServiceBuilder = ServiceBuilder;
+exports.ChromeDriver = ChromeDriver;
 exports.Options = Options;
+exports.ServiceBuilder = ServiceBuilder;
 exports.createDriver = createDriver;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;

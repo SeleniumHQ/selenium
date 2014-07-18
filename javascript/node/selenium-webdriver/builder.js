@@ -34,13 +34,13 @@ function createNativeDriver(capabilities) {
       // Requiring 'chrome' above would create a cycle:
       // index -> builder -> chrome -> index
       var chrome = require('./chrome');
-      return chrome.createDriver(capabilities);
+      return new chrome.ChromeDriver(capabilities);
 
     case Browser.PHANTOM_JS:
       // Requiring 'phantomjs' would create a cycle:
       // index -> builder -> phantomjs -> index
       var phantomjs = require('./phantomjs');
-      return phantomjs.createDriver(capabilities);
+      return new phantomjs.PhantomJsDriver(capabilities);
 
     default:
       return null;
