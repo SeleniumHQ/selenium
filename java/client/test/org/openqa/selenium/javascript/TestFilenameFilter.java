@@ -39,7 +39,8 @@ public class TestFilenameFilter implements FilenameFilter {
   }
 
   private static boolean hasHtmlSibling(File file) {
-    File sibling = new File(Files.getNameWithoutExtension(file.getAbsolutePath()) + ".html");
+    File sibling = new File(file.getParentFile(),
+        Files.getNameWithoutExtension(file.getAbsolutePath()) + ".html");
     return sibling.exists();
   }
 }

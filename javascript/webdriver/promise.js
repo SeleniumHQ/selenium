@@ -1302,7 +1302,9 @@ webdriver.promise.ControlFlow.prototype.getSchedule = function() {
 
 /**
  * Schedules a task for execution. If there is nothing currently in the
- * queue, the task will be executed in the next turn of the event loop.
+ * queue, the task will be executed in the next turn of the event loop. If
+ * the task function is a generator, the task will be executed using
+ * {@link webdriver.promise.consume}.
  *
  * @param {function(): (T|webdriver.promise.Promise.<T>)} fn The function to
  *     call to start the task. If the function returns a
@@ -1315,6 +1317,10 @@ webdriver.promise.ControlFlow.prototype.getSchedule = function() {
  */
 webdriver.promise.ControlFlow.prototype.execute = function(
     fn, opt_description) {
+  if (webdriver.promise.isGenerator(fn)) {
+    fn = goog.partial(webdriver.promise.consume, fn);
+  }
+
   this.cancelShutdown_();
 
   if (!this.activeFrame_) {
@@ -1381,6 +1387,10 @@ webdriver.promise.ControlFlow.prototype.wait = function(
     condition, timeout, opt_message) {
   var sleep = Math.min(timeout, 100);
   var self = this;
+
+  if (webdriver.promise.isGenerator(condition)) {
+    condition = goog.partial(webdriver.promise.consume, condition);
+  }
 
   return this.execute(function() {
     var startTime = goog.now();
@@ -2144,4 +2154,99 @@ webdriver.promise.createFlow = function(callback) {
   return flow.execute(function() {
     return callback(flow);
   });
+};
+
+
+/**
+ * Tests is a function is a generator.
+ * @param {!Function} fn The function to test.
+ * @return {boolean} Whether the function is a generator.
+ */
+webdriver.promise.isGenerator = function(fn) {
+  return fn.constructor.name === 'GeneratorFunction';
+};
+
+
+/**
+ * Consumes a {@code GeneratorFunction}. Each time the generator yields a
+ * promise, this function will wait for it to be fulfilled before feeding the
+ * fulfilled value back into {@code next}. Likewise, if a yielded promise is
+ * rejected, the rejection error will be passed to {@code throw}.
+ *
+ * <p>Example 1: the Fibonacci Sequence.
+ * <pre><code>
+ * webdriver.promise.consume(function* fibonacci() {
+ *   var n1 = 1, n2 = 1;
+ *   for (var i = 0; i < 4; ++i) {
+ *     var tmp = yield n1 + n2;
+ *     n1 = n2;
+ *     n2 = tmp;
+ *   }
+ *   return n1 + n2;
+ * }).then(function(result) {
+ *   console.log(result);  // 13
+ * });
+ * </code></pre>
+ *
+ * <p>Example 2: a generator that throws.
+ * <pre><code>
+ * webdriver.promise.consume(function* () {
+ *   yield webdriver.promise.delayed(250).then(function() {
+ *     throw Error('boom');
+ *   });
+ * }).thenCatch(function(e) {
+ *   console.log(e.toString());  // Error: boom
+ * });
+ * </code></pre>
+ * 
+ * @param {!Function} generatorFn The generator function to execute.
+ * @param {Object=} opt_self The object to use as "this" when invoking the
+ *     initial generator.
+ * @param {...*} var_args Any arguments to pass to the initial generator.
+ * @return {!webdriver.promise.Promise.<?>} A promise that will resolve to the
+ *     generator's final result.
+ * @throws {TypeError} If the given function is not a generator. 
+ */
+webdriver.promise.consume = function(generatorFn, opt_self, var_args) {
+  if (!webdriver.promise.isGenerator(generatorFn)) {
+    throw TypeError('Input is not a GeneratorFunction: ' +
+        generatorFn.constructor.name);
+  }
+
+  var deferred = webdriver.promise.defer();
+  var generator = generatorFn.apply(opt_self, goog.array.slice(arguments, 2));
+  callNext();
+  return deferred.promise;
+
+  /** @param {*=} opt_value . */
+  function callNext(opt_value) {
+    pump(generator.next, opt_value);
+  }
+
+  /** @param {*=} opt_error . */
+  function callThrow(opt_error) {
+    // Dictionary lookup required because Closure compiler's built-in
+    // externs does not include GeneratorFunction.prototype.throw.
+    pump(generator['throw'], opt_error);
+  }
+
+  function pump(fn, opt_arg) {
+    if (!deferred.isPending()) {
+      return;  // Defererd was cancelled; silently abort.
+    }
+
+    try {
+      var result = fn.call(generator, opt_arg);
+    } catch (ex) {
+      deferred.reject(ex);
+      return;
+    }
+
+    if (result.done) {
+      deferred.fulfill(result.value);
+      return;
+    }
+
+    webdriver.promise.asap(result.value, callNext, callThrow);
+  }
 };

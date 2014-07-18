@@ -33,9 +33,27 @@ describe('Context', function() {
 });
 
 
+function haveGenerators() {
+  try {
+    // Test for generator support.
+    new Function('function* x() {}');
+    return true;
+  } catch (ex) {
+    return false;
+  }
+}
+
+
 function runClosureTest(file) {
   var name = path.basename(file);
   name = name.substring(0, name.length - '.js'.length);
+
+  // Generator tests will fail to parse in ES5, so mark those tests as
+  // pending under ES5.
+  if (name.indexOf('_generator_') != -1 && !haveGenerators()) {
+    it(name);
+    return;
+  }
 
   describe(name, function() {
     var context = new base.Context(true);
@@ -52,8 +70,14 @@ function runClosureTest(file) {
       tc.autoDiscoverTests();
     }
 
+    var shouldRunTests = tc.shouldRunTests();
     var allTests = tc.getTests();
     allTests.forEach(function(test) {
+      if (!shouldRunTests) {
+        it(test.name);
+        return;
+      }
+
       it(test.name, function(done) {
         tc.setTests([test]);
         tc.setCompletedCallback(function() {

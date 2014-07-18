@@ -518,6 +518,10 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var flow = this.flow_;
   return flow.execute(function() {
     return webdriver.promise.fullyResolved(args).then(function(args) {
+      if (webdriver.promise.isGenerator(fn)) {
+        args.unshift(fn, opt_scope);
+        return webdriver.promise.consume.apply(null, args);
+      }
       return fn.apply(opt_scope, args);
     });
   }, 'WebDriver.call(' + (fn.name || 'function') + ')');
