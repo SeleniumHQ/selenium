@@ -192,10 +192,16 @@ webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_ = '$webdriver_Thenable';
 webdriver.promise.Thenable.addImplementation = function(ctor) {
   // Based on goog.promise.Thenable.isImplementation.
   ctor.prototype['then'] = ctor.prototype.then;
-  Object.defineProperty(
-      ctor.prototype,
-      webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_,
-      {'value': true, 'enumerable': false});
+  try {
+    // Old IE7 does not support defineProperty; IE8 only supports it for
+    // DOM elements.
+    Object.defineProperty(
+        ctor.prototype,
+        webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_,
+        {'value': true, 'enumerable': false});
+  } catch (ex) {
+    ctor.prototype[webdriver.promise.Thenable.IMPLEMENTED_BY_PROP_] = true;
+  }
 };
 
 
