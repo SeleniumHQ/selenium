@@ -49,7 +49,8 @@ var HttpClient = function(serverUrl, opt_agent) {
   this.options_ = {
     host: parsedUrl.hostname,
     path: parsedUrl.pathname,
-    port: parsedUrl.port
+    port: parsedUrl.port,
+    auth: parsedUrl.auth
   };
 };
 
@@ -75,6 +76,7 @@ HttpClient.prototype.send = function(httpRequest, callback) {
     method: httpRequest.method,
     host: this.options_.host,
     port: this.options_.port,
+    auth: this.options_.auth,
     path: path,
     headers: httpRequest.headers
   };
