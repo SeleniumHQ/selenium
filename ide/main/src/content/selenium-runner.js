@@ -107,8 +107,6 @@ Selenium.prototype.doStore = function(value, varName) {
 storedVars.nbsp = String.fromCharCode(160);
 storedVars.space = ' ';
 
-var unicodeToKeys = {};
-
 function build_sendkeys_maps() {
 
 //  add_sendkeys_key("NULL", '\uE000');
@@ -179,7 +177,6 @@ function add_sendkeys_key(key, unicodeChar, alias, botKey) {
     if (alias) {
       storedVars['KEY_' + alias] = unicodeChar;
     }
-    unicodeToKeys[unicodeChar] = bot.Keyboard.Keys[botKey];
     return true;
   }
   return false;

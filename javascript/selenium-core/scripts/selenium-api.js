@@ -19,6 +19,82 @@
 
 var storedVars = new Object();
 
+var unicodeToKeys = {};
+
+function build_sendkeys_maps() {
+
+//  add_sendkeys_key("NULL", '\uE000');
+//  add_sendkeys_key("CANCEL", '\uE001'); // ^break
+//  add_sendkeys_key("HELP", '\uE002');
+  add_sendkeys_key("BACKSPACE", '\uE003');
+  add_sendkeys_key("TAB", '\uE004');
+//  add_sendkeys_key("CLEAR", '\uE005');
+//  add_sendkeys_key("RETURN", '\uE006');
+  add_sendkeys_key("ENTER", '\uE007');
+  add_sendkeys_key("SHIFT", '\uE008');
+  add_sendkeys_key("CONTROL", '\uE009');
+  add_sendkeys_key("ALT", '\uE00A');
+  add_sendkeys_key("PAUSE", '\uE00B');
+  add_sendkeys_key("ESC", '\uE00C');
+  add_sendkeys_key("SPACE", '\uE00D');
+  add_sendkeys_key("PAGE_UP", '\uE00E');
+  add_sendkeys_key("PAGE_DOWN", '\uE00F');
+  add_sendkeys_key("END", '\uE010');
+  add_sendkeys_key("HOME", '\uE011');
+  add_sendkeys_key("LEFT", '\uE012');
+  add_sendkeys_key("UP", '\uE013');
+  add_sendkeys_key("RIGHT", '\uE014');
+  add_sendkeys_key("DOWN", '\uE015');
+  add_sendkeys_key("INSERT", '\uE016');
+  add_sendkeys_key("DELETE", '\uE017');
+  add_sendkeys_key("SEMICOLON", '\uE018');
+  add_sendkeys_key("EQUALS", '\uE019');
+
+  add_sendkeys_key("NUMPAD0", '\uE01A', "NUM_ZERO");  // number pad keys
+  add_sendkeys_key("NUMPAD1", '\uE01B', "NUM_ONE");
+  add_sendkeys_key("NUMPAD2", '\uE01C', "NUM_TWO");
+  add_sendkeys_key("NUMPAD3", '\uE01D', "NUM_THREE");
+  add_sendkeys_key("NUMPAD4", '\uE01E', "NUM_FOUR");
+  add_sendkeys_key("NUMPAD5", '\uE01F', "NUM_FIVE");
+  add_sendkeys_key("NUMPAD6", '\uE020', "NUM_SIX");
+  add_sendkeys_key("NUMPAD7", '\uE021', "NUM_SEVEN");
+  add_sendkeys_key("NUMPAD8", '\uE022', "NUM_EIGHT");
+  add_sendkeys_key("NUMPAD9", '\uE023', "NUM_NINE");
+  add_sendkeys_key("MULTIPLY", '\uE024', "NUM_MULTIPLY");
+  add_sendkeys_key("ADD", '\uE025', "NUM_PLUS");
+  add_sendkeys_key("SEPARATOR", '\uE026');
+  add_sendkeys_key("SUBTRACT", '\uE027', "NUM_MINUS");
+  add_sendkeys_key("DECIMAL", '\uE028', "NUM_PERIOD");
+  add_sendkeys_key("DIVIDE", '\uE029', "NUM_DIVISION");
+
+  add_sendkeys_key("F1", '\uE031');  // function keys
+  add_sendkeys_key("F2", '\uE032');
+  add_sendkeys_key("F3", '\uE033');
+  add_sendkeys_key("F4", '\uE034');
+  add_sendkeys_key("F5", '\uE035');
+  add_sendkeys_key("F6", '\uE036');
+  add_sendkeys_key("F7", '\uE037');
+  add_sendkeys_key("F8", '\uE038');
+  add_sendkeys_key("F9", '\uE039');
+  add_sendkeys_key("F10", '\uE03A');
+  add_sendkeys_key("F11", '\uE03B');
+  add_sendkeys_key("F12", '\uE03C');
+
+  add_sendkeys_key("META", '\uE03D', "COMMAND");
+
+}
+
+function add_sendkeys_key(key, unicodeChar, botKey) {
+  botKey = botKey || key;
+  if (bot.Keyboard.Keys[botKey]) {
+    unicodeToKeys[unicodeChar] = bot.Keyboard.Keys[botKey];
+    return true;
+  }
+  return false;
+}
+
+build_sendkeys_maps();
+
 function Selenium(browserbot) {
     /**
      * Defines an object that runs Selenium commands.
@@ -785,6 +861,52 @@ Selenium.prototype.doTypeKeys = function(locator, value) {
         this.doKeyPress(locator, c);
     }
 };
+
+
+Selenium.prototype.doSendKeys = function(locator, value) {
+  /**
+   * *Experimental* Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+   *
+   * <p>This simulates a real user typing every character in the specified string; it is also bound by the limitations of a
+   * real user, like not being able to type into a invisible or read only elements. This is useful for dynamic UI widgets
+   * (like auto-completing combo boxes) that require explicit key events.</p>
+   * <p>Unlike the simple "type" command, which forces the specified value into the page directly, this command will not
+   * replace the existing content. If you want to replace the existing contents, you need to use the simple "type" command to set the value of the
+   * field to empty string to clear the field and then the "sendKeys" command to send the keystroke for what you want
+   * to type.</p>
+   * <p>This command is experimental. It may replace the typeKeys command in the future.</p>
+   * <p>For those who are interested in the details, unlike the typeKeys command, which tries to
+   * fire the keyDown, the keyUp and the keyPress events, this command is backed by the atoms from Selenium 2 and provides a
+   * much more robust implementation that will be maintained in the future.</p>
+   *
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param value the value to type
+   */
+  if (this.browserbot.controlKeyDown || this.browserbot.altKeyDown || this.browserbot.metaKeyDown) {
+    throw new SeleniumError("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
+  }
+
+  var element = this.browserbot.findElement(locator);
+
+
+  if (value.match(/[\uE000-\uF8FF]/)) {
+    //we have special keys, process separately
+    var keysRa = value.split(/([\0-\uDFFF]+)|([\uE000-\uF8FF])/).filter(function (key) {
+      return (key && key.length > 0);
+    }).map(function (key) {
+      if (key.match(/[\uE000-\uF8FF]/) && unicodeToKeys.hasOwnProperty(key)) {
+        return unicodeToKeys[key];
+      }
+      return key;
+    });
+
+    bot.action.type(element, keysRa);
+  } else {
+    bot.action.type(element, value);
+  }
+};
+
 
 Selenium.prototype.doSetSpeed = function(value) {
  /**
