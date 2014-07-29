@@ -50,7 +50,11 @@
 #include <nsStringAPI.h>
 #include <algorithm>
 
+#ifdef WEBDRIVER_GECKO_VAR_ARGS_ISUPPORTS
+NS_IMPL_ISUPPORTS(nsNativeIME, nsINativeIME)
+#else
 NS_IMPL_ISUPPORTS1(nsNativeIME, nsINativeIME)
+#endif
 
 nsNativeIME::nsNativeIME()
 {

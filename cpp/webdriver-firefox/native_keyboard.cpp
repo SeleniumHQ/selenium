@@ -40,7 +40,11 @@
 #define WD_RESULT int
 #endif
 
+#ifdef WEBDRIVER_GECKO_VAR_ARGS_ISUPPORTS
+NS_IMPL_ISUPPORTS(nsNativeKeyboard, nsINativeKeyboard)
+#else
 NS_IMPL_ISUPPORTS1(nsNativeKeyboard, nsINativeKeyboard)
+#endif
 
 nsNativeKeyboard::nsNativeKeyboard()
 {
