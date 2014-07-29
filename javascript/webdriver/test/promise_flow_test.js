@@ -33,6 +33,10 @@ var STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
 
 var clock, flow, flowHistory, flowTester;
 
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 
 function setUp() {
   clock = webdriver.test.testutil.createMockClock();
@@ -2165,9 +2169,6 @@ function testCancelsRemainingTasksInFrameIfATaskFails() {
 }
 
 function testAnnotatesRejectedPromiseErrorsWithFlowState() {
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
-    return;  // stacktrace parsing is off in IE7.
-  }
   var error = Error('original message');
   var originalStack = webdriver.stacktrace.format(error).stack;
 
@@ -2194,9 +2195,6 @@ function testAnnotatesRejectedPromiseErrorsWithFlowState() {
 }
 
 function testAnnotatesChainedErrors() {
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
-    return;  // stacktrace parsing is off in IE7.
-  }
   var error = Error('original message');
   var originalStack = webdriver.stacktrace.format(error).stack;
 
@@ -2223,9 +2221,6 @@ function testAnnotatesChainedErrors() {
 }
 
 function testAnnotatesRejectedPromiseErrorsWithFlowState_taskErrorBubblesUp() {
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
-    return;  // stacktrace parsing is off in IE7.
-  }
   var error = Error('original message');
   var originalStack = webdriver.stacktrace.format(error).stack;
   var pair = callbackPair(null, function(e) {
