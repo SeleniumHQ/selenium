@@ -16,7 +16,7 @@ mozilla_lib(name = "webdriver_firefox_esr_previous",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="17")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_esr_previous_64",
   srcs = [ 
@@ -24,7 +24,7 @@ mozilla_lib(name = "webdriver_firefox_esr_previous_64",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="17")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest",
   srcs = [ 
@@ -32,7 +32,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="24")
+  geckoversion="31")
 
 mozilla_lib(name = "webdriver_firefox_esr_latest_64",
   srcs = [ 
@@ -40,7 +40,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest_64",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="24")
+  geckoversion="31")
 
 
 mozilla_lib(name = "webdriver_firefox_previous",
