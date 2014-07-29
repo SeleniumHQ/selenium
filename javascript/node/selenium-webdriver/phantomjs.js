@@ -101,10 +101,9 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a new PhantomJS WebDriver client.
  * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
- * @constructor
- * @extends {webdriver.WebDriver}
+ * @return {!webdriver.WebDriver} A new WebDriver instance.
  */
-var PhantomJsDriver = function(opt_capabilities) {
+function createDriver(opt_capabilities) {
   var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
   var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
   var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
@@ -141,9 +140,7 @@ var PhantomJsDriver = function(opt_capabilities) {
   args = args.concat(capabilities.get(CLI_ARGS_CAPABILITY) || []);
 
   var port = portprober.findFreePort();
-
-  /** @private {!remote.DriverService} */
-  this.service_ = new remote.DriverService(exe, {
+  var service = new remote.DriverService(exe, {
     port: port,
     args: webdriver.promise.when(port, function(port) {
       args.push('--webdriver=' + port);
@@ -151,38 +148,17 @@ var PhantomJsDriver = function(opt_capabilities) {
     })
   });
 
-  var executor = executors.createExecutor(this.service_.start());
+  var executor = executors.createExecutor(service.start());
   var driver = webdriver.WebDriver.createSession(executor, capabilities);
-
-  webdriver.WebDriver.call(
-      this, driver.getSession(), executor, driver.controlFlow());
-}
-util.inherits(PhantomJsDriver, webdriver.WebDriver);
-
-
-/** @override */
-PhantomJsDriver.prototype.quit = function() {
-  var self = this;
-  return webdriver.WebDriver.prototype.quit.call(this).thenFinally(function() {
-    return self.service_.kill();
-  });
-};
-
-
-/**
- * Creates a new PhantomJS WebDriver client.
- * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
- * @return {!webdriver.WebDriver} A new WebDriver instance.
- * @deprecated Use {@link PhantomJsDriver}. This function will be removed in
- *     the 2.45.0 release.
- */
-function createDriver(opt_capabilities) {
-  return new PhantomJsDriver(opt_capabilities);
+  var boundQuit = driver.quit.bind(driver);
+  driver.quit = function() {
+    return boundQuit().thenFinally(service.kill.bind(service));
+  };
+  return driver;
 }
 
 
 // PUBLIC API
 
 
-exports.PhantomJsDriver = PhantomJsDriver;
 exports.createDriver = createDriver;
