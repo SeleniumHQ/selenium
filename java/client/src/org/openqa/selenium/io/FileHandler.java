@@ -129,8 +129,11 @@ public class FileHandler {
     boolean deleted = true;
 
     if (toDelete.isDirectory()) {
-      for (File child : toDelete.listFiles()) {
-        deleted &= child.canWrite() && delete(child);
+      File[] children = toDelete.listFiles();
+      if (children != null) {
+        for (File child : children) {
+          deleted &= child.canWrite() && delete(child);
+        }
       }
     }
 

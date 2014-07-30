@@ -88,10 +88,13 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       }
       File atomsDir = InProject.locate("build/javascript/selenium-atoms");
 
-      for (File file : atomsDir.listFiles()) {
-        if (file.getName().endsWith(".js")) {
-          File dest = new File(buildDir, file.getName());
-          Files.copy(file, dest);
+      File[] atomsFiles = atomsDir.listFiles();
+      if (atomsFiles != null) {
+        for (File file : atomsFiles) {
+          if (file.getName().endsWith(".js")) {
+            File dest = new File(buildDir, file.getName());
+            Files.copy(file, dest);
+          }
         }
       }
 
@@ -100,10 +103,13 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
       File seDir = InProject.locate("java/client/test/com/thoughtworks/selenium");
       File destDir = InProject.locate("java/client/build/production/com/thoughtworks/selenium");
-      for (File file : seDir.listFiles()) {
-        if (file.getName().endsWith(".js")) {
-          File dest = new File(destDir, file.getName());
-          Files.copy(file, dest);
+      File[] seFiles = seDir.listFiles();
+      if (seFiles != null) {
+        for (File file : seFiles) {
+          if (file.getName().endsWith(".js")) {
+            File dest = new File(destDir, file.getName());
+            Files.copy(file, dest);
+          }
         }
       }
 
