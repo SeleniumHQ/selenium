@@ -4,3 +4,12 @@ java_library(name = "jetty",
     "//third_party/java/jasper",
     "//third_party/java/servlet-api",
   ])
+
+java_library(name = "jetty-for-rc",
+  deps = [
+    "jetty-repacked-5.jar",
+    "//third_party/java/commons-logging",
+    "//third_party/java/jasper",
+    "//third_party/java/mx4j",
+    "//third_party/java/servlet-api",
+  ])

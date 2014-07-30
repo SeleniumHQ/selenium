@@ -38,10 +38,10 @@ java_library(name = "logging",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/remote:common",
-    "//java/server/src/org/openqa/jetty",
     "//java/client/src/org/openqa/selenium/logging:api",
     "//java/client/src/org/openqa/selenium/logging:logging",
     "//java/server/src/org/openqa/selenium/remote/server/log",
+    "//third_party/java/jetty:jetty-for-rc",
   ])
 
 java_library(name = "base",
@@ -59,7 +59,7 @@ java_library(name = "base",
     "//java/client/src/org/openqa/selenium/support",
     "//java/server/src/cybervillains",
     "//java/server/src/org/openqa/selenium/remote/server",
-    "//java/server/src/org/openqa/jetty",
+    "//third_party/java/jetty:jetty-for-rc",
     "//third_party/java/servlet-api"
   ])
 
