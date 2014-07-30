@@ -15,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import subprocess
-from subprocess import PIPE
 import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
