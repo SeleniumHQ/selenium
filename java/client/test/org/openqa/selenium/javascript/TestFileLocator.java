@@ -48,11 +48,14 @@ class TestFileLocator {
 
   private static List<File> findTestFiles(File directory, FilenameFilter filter) {
     List<File> files = Lists.newLinkedList();
-    for (File file : directory.listFiles()) {
-      if (file.isDirectory()) {
-        files.addAll(findTestFiles(file, filter));
-      } else if (filter.accept(file.getParentFile(), file.getName())) {
-        files.add(file);
+    File[] list = directory.listFiles();
+    if (list != null) {
+      for (File file : list) {
+        if (file.isDirectory()) {
+          files.addAll(findTestFiles(file, filter));
+        } else if (filter.accept(file.getParentFile(), file.getName())) {
+          files.add(file);
+        }
       }
     }
     return files;

@@ -93,8 +93,11 @@ public class Zip {
 
   private void addToZip(String basePath, ZipOutputStream zos, File toAdd) throws IOException {
     if (toAdd.isDirectory()) {
-      for (File file : toAdd.listFiles()) {
-        addToZip(basePath, zos, file);
+      File[] files = toAdd.listFiles();
+      if (files != null) {
+        for (File file : files) {
+          addToZip(basePath, zos, file);
+        }
       }
     } else {
       FileInputStream fis = new FileInputStream(toAdd);

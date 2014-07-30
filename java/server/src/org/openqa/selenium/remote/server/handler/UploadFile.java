@@ -42,7 +42,7 @@ public class UploadFile extends WebDriverHandler<String> implements JsonParamete
     new Zip().unzip(file, tempDir);
     // Select the first file
     File[] allFiles = tempDir.listFiles();
-    if (allFiles.length != 1) {
+    if (allFiles == null || allFiles.length != 1) {
       throw new WebDriverException("Expected there to be only 1 file. There were: " +
           allFiles.length);
     }
