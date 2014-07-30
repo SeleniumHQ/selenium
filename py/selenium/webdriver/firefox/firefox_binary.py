@@ -16,7 +16,7 @@
 
 import os
 import platform
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, STDOUT
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 import time
@@ -34,10 +34,10 @@ class FirefoxBinary(object):
          - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
          - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.
                       Please note that with parallel run the output won't be synchronous.
-                      By default, it will be redirected to subprocess.PIPE.
+                      By default, it will be redirected to /dev/null.
         """
         self._start_cmd = firefox_path
-        self._log_file = log_file or PIPE
+        self._log_file = log_file or open(os.devnull, "wb")
         self.command_line = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
