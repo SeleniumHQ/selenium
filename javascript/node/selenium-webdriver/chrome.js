@@ -444,9 +444,11 @@ Options.prototype.toJSON = function() {
  * @param {(webdriver.Capabilities|Options)=} opt_options The session options.
  * @param {remote.DriverService=} opt_service The session to use; will use
  *     the {@link getDefaultService default service} by default.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
  * @return {!webdriver.WebDriver} A new WebDriver instance.
  */
-function createDriver(opt_options, opt_service) {
+function createDriver(opt_options, opt_service, opt_flow) {
   var service = opt_service || getDefaultService();
   var executor = executors.createExecutor(service.start());
 
@@ -458,7 +460,7 @@ function createDriver(opt_options, opt_service) {
   }
 
   return webdriver.WebDriver.createSession(
-      executor, options.toCapabilities());
+      executor, options.toCapabilities(), opt_flow);
 }
 
 

@@ -10,6 +10,8 @@
     `getAlert` will be removed in `2.45.0`.
 * FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
     timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
+* FIXED: 7470: Make it easier to create WebDriver instances in custom flows for
+    parallel execution.
 
 ## v2.42.1
 

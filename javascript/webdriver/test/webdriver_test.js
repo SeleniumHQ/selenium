@@ -274,6 +274,36 @@ function testAttachToSession_failsToGetSessionInfo() {
 }
 
 
+function testAttachToSession_usesActiveFlowByDefault() {
+  var testHelper = TestHelper.expectingSuccess().
+      expect(CName.DESCRIBE_SESSION).
+      withParameters({'sessionId': SESSION_ID}).
+      andReturnSuccess({}).
+      replayAll();
+
+  var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
+      SESSION_ID);
+  assertEquals(driver.controlFlow(), webdriver.promise.controlFlow());
+  testHelper.execute();
+}
+
+
+function testAttachToSession_canAttachInCustomFlow() {
+  var testHelper = TestHelper.expectingSuccess().
+      expect(CName.DESCRIBE_SESSION).
+      withParameters({'sessionId': SESSION_ID}).
+      andReturnSuccess({}).
+      replayAll();
+
+  var otherFlow = new webdriver.promise.ControlFlow(goog.global);
+  var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
+      SESSION_ID, otherFlow);
+  assertEquals(otherFlow, driver.controlFlow());
+  assertNotEquals(otherFlow, webdriver.promise.controlFlow());
+  testHelper.execute();
+}
+
+
 function testCreateSession_happyPathWithCapabilitiesHashObject() {
   var testHelper = TestHelper.expectingSuccess().
       expect(CName.NEW_SESSION).
@@ -340,6 +370,35 @@ function testCreateSession_failsToCreateSession() {
   }));
   testHelper.execute();
   errback.assertCalled();
+}
+
+
+function testCreateSession_usesActiveFlowByDefault() {
+  var testHelper = TestHelper.expectingSuccess().
+      expect(CName.NEW_SESSION).
+      withParameters({'desiredCapabilities': {}}).
+      andReturnSuccess({}).
+      replayAll();
+
+  var driver = webdriver.WebDriver.createSession(testHelper.executor, {});
+  assertEquals(webdriver.promise.controlFlow(), driver.controlFlow());
+  testHelper.execute();
+}
+
+
+function testCreateSession_canCreateInCustomFlow() {
+  var testHelper = TestHelper.expectingSuccess().
+      expect(CName.NEW_SESSION).
+      withParameters({'desiredCapabilities': {}}).
+      andReturnSuccess({}).
+      replayAll();
+
+  var otherFlow = new webdriver.promise.ControlFlow(goog.global);
+  var driver = webdriver.WebDriver.createSession(
+      testHelper.executor, {}, otherFlow);
+  assertEquals(otherFlow, driver.controlFlow());
+  assertNotEquals(otherFlow, webdriver.promise.controlFlow());
+  testHelper.execute();
 }
 
 

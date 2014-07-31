@@ -25,22 +25,24 @@ var goog = base.require('goog'),
 
 /**
  * @param {!webdriver.Capabilities} capabilities The desired capabilities.
+ * @param {webdriver.promise.ControlFlow} flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
  * @return {webdriver.WebDriver} A new WebDriver instance or {@code null}
  *     if the requested browser is not natively supported in Node.
  */
-function createNativeDriver(capabilities) {
+function createNativeDriver(capabilities, flow) {
   switch (capabilities.get(Capability.BROWSER_NAME)) {
     case Browser.CHROME:
       // Requiring 'chrome' above would create a cycle:
       // index -> builder -> chrome -> index
       var chrome = require('./chrome');
-      return chrome.createDriver(capabilities);
+      return chrome.createDriver(capabilities, null, flow);
 
     case Browser.PHANTOM_JS:
       // Requiring 'phantomjs' would create a cycle:
       // index -> builder -> phantomjs -> index
       var phantomjs = require('./phantomjs');
-      return phantomjs.createDriver(capabilities);
+      return phantomjs.createDriver(capabilities, flow);
 
     default:
       return null;
@@ -56,6 +58,9 @@ function createNativeDriver(capabilities) {
  */
 var Builder = function() {
   goog.base(this);
+
+  /** @private {webdriver.promise.ControlFlow} */
+  this.flow_ = null;
 };
 goog.inherits(Builder, AbstractBuilder);
 
@@ -85,6 +90,20 @@ Builder.prototype.setChromeOptions = function(options) {
 
 
 /**
+ * Sets the control flow that created drivers should execute actions in. If
+ * the flow is never set, or is set to {@code null}, it will use the active
+ * flow at the time {@link #build()} is called.
+ * @param {webdriver.promise.ControlFlow} flow The control flow to use, or
+ *     {@code null} to 
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setControlFlow = function(flow) {
+  this.flow_ = flow;
+  return this;
+};
+
+
+/**
  * @override
  */
 Builder.prototype.build = function() {
@@ -93,7 +112,7 @@ Builder.prototype.build = function() {
   // If a remote server wasn't specified, check for browsers we support
   // natively in node before falling back to using the java Selenium server.
   if (!url) {
-    var driver = createNativeDriver(this.getCapabilities());
+    var driver = createNativeDriver(this.getCapabilities(), this.flow_);
     if (driver) {
       return driver;
     }
@@ -103,7 +122,7 @@ Builder.prototype.build = function() {
   }
 
   var executor = executors.createExecutor(url);
-  return WebDriver.createSession(executor, this.getCapabilities());
+  return WebDriver.createSession(executor, this.getCapabilities(), this.flow_);
 };
 
 

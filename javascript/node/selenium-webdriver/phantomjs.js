@@ -101,9 +101,11 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a new PhantomJS WebDriver client.
  * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
  * @return {!webdriver.WebDriver} A new WebDriver instance.
  */
-function createDriver(opt_capabilities) {
+function createDriver(opt_capabilities, opt_flow) {
   var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
   var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
   var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
@@ -149,7 +151,8 @@ function createDriver(opt_capabilities) {
   });
 
   var executor = executors.createExecutor(service.start());
-  var driver = webdriver.WebDriver.createSession(executor, capabilities);
+  var driver = webdriver.WebDriver.createSession(
+      executor, capabilities, opt_flow);
   var boundQuit = driver.quit.bind(driver);
   driver.quit = function() {
     return boundQuit().thenFinally(service.kill.bind(service));

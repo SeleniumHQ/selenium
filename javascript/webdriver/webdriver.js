@@ -91,13 +91,17 @@ webdriver.WebDriver = function(session, executor, opt_flow) {
  * @param {!webdriver.CommandExecutor} executor Command executor to use when
  *     querying for session details.
  * @param {string} sessionId ID of the session to attach to.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under. Defaults to the
+ *     {@link webdriver.promise.controlFlow() currently active}  control flow.
  * @return {!webdriver.WebDriver} A new client for the specified session.
  */
-webdriver.WebDriver.attachToSession = function(executor, sessionId) {
+webdriver.WebDriver.attachToSession = function(executor, sessionId, opt_flow) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
           setParameter('sessionId', sessionId),
-      'WebDriver.attachToSession()');
+      'WebDriver.attachToSession()',
+      opt_flow);
 };
 
 
@@ -107,13 +111,19 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  *     session with.
  * @param {!webdriver.Capabilities} desiredCapabilities The desired
  *     capabilities for the new session.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under, including the initial session creation.
+ *     Defaults to the {@link webdriver.promise.controlFlow() currently active} 
+ *     control flow.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
-webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
+webdriver.WebDriver.createSession = function(
+    executor, desiredCapabilities, opt_flow) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.NEW_SESSION).
           setParameter('desiredCapabilities', desiredCapabilities),
-      'WebDriver.createSession()');
+      'WebDriver.createSession()',
+      opt_flow);
 };
 
 
@@ -126,11 +136,16 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  * @param {!webdriver.Command} command The command to send to fetch the session
  *     details.
  * @param {string} description A descriptive debug label for this action.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
+ *     commands should execute under. Defaults to the
+ *     {@link webdriver.promise.controlFlow() currently active} control flow.
  * @return {!webdriver.WebDriver} A new WebDriver client for the session.
  * @private
  */
-webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
-  var session = webdriver.promise.controlFlow().execute(function() {
+webdriver.WebDriver.acquireSession_ = function(
+    executor, command, description, opt_flow) {
+  var flow = opt_flow || webdriver.promise.controlFlow();
+  var session = flow.execute(function() {
     return webdriver.WebDriver.executeCommand_(executor, command).
         then(function(response) {
           bot.response.checkResponse(response);
@@ -138,7 +153,7 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
               response['value']);
         });
   }, description);
-  return new webdriver.WebDriver(session, executor);
+  return new webdriver.WebDriver(session, executor, flow);
 };
 
 
