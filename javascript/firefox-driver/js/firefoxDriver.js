@@ -879,7 +879,7 @@ FirefoxDriver.prototype.getAlert = function(respond) {
   fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
-          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
           respond.value = { message: 'No alert is present' };
         }
         respond.send();
@@ -892,7 +892,7 @@ FirefoxDriver.prototype.dismissAlert = function(respond) {
   fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
-          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
           respond.value = { message: 'No alert is present' };
         } else {
           fxdriver.modals.dismissAlert(self);
@@ -906,7 +906,7 @@ FirefoxDriver.prototype.acceptAlert = function(respond) {
   fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
-          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
           respond.value = { message: 'No alert is present' };
         } else {
           fxdriver.modals.acceptAlert(self);
@@ -923,7 +923,7 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
       if (present) {
         respond.value = fxdriver.modals.getText(driver);
       } else {
-        respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+        respond.status = bot.ErrorCode.NO_SUCH_ALERT;
         respond.value = { message: 'No alert is present' };
       }
       respond.send();
@@ -935,7 +935,7 @@ FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
   fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
-          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
           respond.value = { message: 'No alert is present' };
         } else {
           fxdriver.modals.setValue(parameters['text']);

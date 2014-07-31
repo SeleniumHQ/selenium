@@ -2101,7 +2101,7 @@ function testInterceptsAndTransformsUnhandledAlertErrors() {
   var testHelper = TestHelper.
       expectingSuccess().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
-      andReturnError(ECode.MODAL_DIALOG_OPENED, {
+      andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {
         'message': 'boom',
         'alert': {'text': 'hello'}
       }).
@@ -2125,7 +2125,7 @@ function testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse(
   var testHelper = TestHelper.
       expectingSuccess().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
-      andReturnError(ECode.MODAL_DIALOG_OPENED, {'message': 'boom'}).
+      andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {'message': 'boom'}).
       replayAll();
 
   var pair = callbackPair(null, function(e) {
@@ -2185,9 +2185,9 @@ function testWebElementsBelongToSameFlowAsParentDriver() {
 
 function testSwitchToAlertThatIsNotPresent() {
   var testHelper = TestHelper
-      .expectingFailure(expectedError(ECode.NO_MODAL_DIALOG_OPEN, 'no alert'))
+      .expectingFailure(expectedError(ECode.NO_SUCH_ALERT, 'no alert'))
       .expect(CName.GET_ALERT_TEXT)
-      .andReturnError(ECode.NO_MODAL_DIALOG_OPEN, {'message': 'no alert'})
+      .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
       .replayAll();
 
   var driver = testHelper.createDriver();

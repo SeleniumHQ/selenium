@@ -488,7 +488,7 @@ safaridriver.extension.commands.executeAsyncScript = function(session,
  * @see http://code.google.com/p/selenium/issues/detail?id=3862
  */
 safaridriver.extension.commands.handleNoAlertsPresent = function() {
-  throw new bot.Error(bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
+  throw new bot.Error(bot.ErrorCode.NO_SUCH_ALERT,
       'The SafariDriver does not support alert handling. To prevent tests ' +
           'from handing when an alert is opened, they are always immediately ' +
           'dismissed. For more information, see ' +

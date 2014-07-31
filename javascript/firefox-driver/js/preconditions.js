@@ -78,7 +78,7 @@ fxdriver.preconditions.writable = function(doc, parameters) {
  */
 fxdriver.preconditions.noAlertPresent = function(driver) {
   if (driver.modalOpen) {
-    return new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
+    return new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
         'A modal dialog, such as an alert, is open.');
   }
 };
@@ -91,7 +91,7 @@ fxdriver.preconditions.noAlertPresent = function(driver) {
  */
 fxdriver.preconditions.alertPresent = function(driver) {
   if (!driver.modalOpen) {
-    return new WebDriverError(bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
+    return new WebDriverError(bot.ErrorCode.NO_SUCH_ALERT,
         'A modal dialog, such as an alert, is not open.');
   }
 };

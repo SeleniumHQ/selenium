@@ -179,7 +179,7 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
         } else {
           errorMessage += ' The alert disappeared before it could be closed.';
         }
-        res.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
+        res.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
             errorMessage, {alert: {text: text}}));
       }, 2000);
     } else {

@@ -294,7 +294,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
       bot.response.checkResponse(response);
     } catch (ex) {
       var value = response['value'];
-      if (ex.code === bot.ErrorCode.MODAL_DIALOG_OPENED) {
+      if (ex.code === bot.ErrorCode.UNEXPECTED_ALERT_OPEN) {
         var text = value && value['alert'] ? value['alert']['text'] : '';
         throw new webdriver.UnhandledAlertError(ex.message, text,
             new webdriver.Alert(self, text));
@@ -1469,8 +1469,8 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
 
 /**
  * Schedules a command to change focus to the active alert dialog. This command
- * will return a {@link bot.ErrorCode.NO_MODAL_DIALOG_OPEN} error if a modal
- * dialog is not currently open.
+ * will return a {@link bot.ErrorCode.NO_SUCH_ALERT} error if an alert dialog
+ * is not currently open.
  * @return {!webdriver.AlertPromise} The open alert.
  */
 webdriver.WebDriver.TargetLocator.prototype.alert = function() {
@@ -2200,7 +2200,7 @@ goog.inherits(webdriver.AlertPromise, webdriver.Alert);
  * @extends {bot.Error}
  */
 webdriver.UnhandledAlertError = function(message, text, alert) {
-  goog.base(this, bot.ErrorCode.MODAL_DIALOG_OPENED, message);
+  goog.base(this, bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
 
   /** @private {string} */
   this.text_ = text;

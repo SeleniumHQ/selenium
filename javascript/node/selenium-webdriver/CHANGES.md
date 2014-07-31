@@ -8,6 +8,10 @@
 * For consistency with other language bindings, deprecated
     `UnhandledAlertError#getAlert` and added `#getAlertText`.
     `getAlert` will be removed in `2.45.0`.
+* FIXED: 7641: Deprecated `ErrorCode.NO_MODAL_DIALOG_OPEN` and
+    `ErrorCode.MODAL_DIALOG_OPENED` in favor of the new
+    `ErrorCode.NO_SUCH_ALERT` and `ErrorCode.UNEXPECTED_ALERT_OPEN`,
+    respecitvely.
 * FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
     timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
 * FIXED: 7470: Make it easier to create WebDriver instances in custom flows for

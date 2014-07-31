@@ -484,7 +484,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       }
       fxdriver.logging.error('Sending error from command ' +
         command.name + ' with alertText: ' + modalText);
-      response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
+      response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
           'Modal dialog present', {alert: {text: modalText}}));
       return;
     }

@@ -26,7 +26,7 @@ goog.require('bot.ErrorCode');
  */
 safaridriver.alert.createResponse = function(txt) {
   return {
-    'status': bot.ErrorCode.MODAL_DIALOG_OPENED,
+    'status': bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
     'value': {
       'message':
           'A modal dialog was opened. The SafariDriver does not support ' +
