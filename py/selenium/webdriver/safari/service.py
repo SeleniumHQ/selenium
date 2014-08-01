@@ -14,6 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from os import devnull
 import subprocess
 from subprocess import PIPE
 import time
@@ -25,7 +26,7 @@ class Service(object):
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, executable_path, port=0):
+    def __init__(self, executable_path, port=0, quiet=False):
         """
         Creates a new instance of the Service
 
@@ -37,6 +38,7 @@ class Service(object):
         self.path = executable_path
         if self.port == 0:
             self.port = utils.free_port()
+        self.quiet = quiet
 
     def start(self):
         """
@@ -46,8 +48,14 @@ class Service(object):
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
+        kwargs = dict()
+        if self.quiet:
+            devnull_out = open(devnull, 'w')
+            kwargs.update(stdout=devnull_out,
+                          stderr=devnull_out)
         try:
-            self.process = subprocess.Popen(["java", "-jar", self.path, "-port", "%s" % self.port])
+            self.process = subprocess.Popen(["java", "-jar", self.path, "-port", "%s" % self.port],
+                                            **kwargs)
         except:
             raise WebDriverException(
                 "SafariDriver executable needs to be available in the path.")
