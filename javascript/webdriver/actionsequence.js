@@ -105,7 +105,7 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
   } else {
     // The interactions API expect the element ID to be encoded as a simple
     // string, not the usual JSON object.
-    var id = /** @type {!webdriver.WebElement} */ (location).toWireValue().
+    var id = /** @type {!webdriver.WebElement} */ (location).getId().
         then(function(value) {
           return value['ELEMENT'];
         });

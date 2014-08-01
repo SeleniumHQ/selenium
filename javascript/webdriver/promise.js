@@ -75,7 +75,7 @@ webdriver.promise.Thenable = function() {};
  * Cancels the computation of this promise's value, rejecting the promise in the
  * process. This method is a no-op if the promise has alreayd been resolved.
  *
- * @param {*} reason The reason this promise is being cancelled. If not an
+ * @param {*=} opt_reason The reason this promise is being cancelled. If not an
  *     {@code Error}, one will be created using the value's string
  *     representation.
  */

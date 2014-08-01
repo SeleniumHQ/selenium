@@ -186,7 +186,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
               webdriver.WebDriver.toWireValue_));
     case 'object':
       if (obj instanceof webdriver.WebElement) {
-        return obj.getId_();
+        return obj.getId();
       }
       if (goog.isFunction(obj.toJSON)) {
         return webdriver.promise.fulfilled(obj.toJSON());
@@ -1403,7 +1403,7 @@ webdriver.WebDriver.TargetLocator.prototype.activeElement = function() {
   var id = this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET_ACTIVE_ELEMENT),
       'WebDriver.switchTo().activeElement()');
-  return new webdriver.WebElementPromise(driver, id);
+  return new webdriver.WebElementPromise(this.driver_, id);
 };
 
 
@@ -1583,7 +1583,7 @@ webdriver.WebElement.equals = function(a, b) {
   if (a == b) {
     return webdriver.promise.fulfilled(true);
   }
-  var ids = [a.getId_(), b.getId_()];
+  var ids = [a.getId(), b.getId()];
   return webdriver.promise.all(ids).then(function(ids) {
     // If the two element's have the same ID, they should be considered
     // equal. Otherwise, they may still be equivalent, but we'll need to
@@ -1613,10 +1613,9 @@ webdriver.WebElement.prototype.getDriver = function() {
  * @return {!webdriver.promise.Promise.<webdriver.WebElement.Id>} A promise
  *     that resolves to this element's JSON representation as defined by the
  *     WebDriver wire protocol.
- * @private
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
-webdriver.WebElement.prototype.getId_ = function() {
+webdriver.WebElement.prototype.getId = function() {
   return this.id_;
 };
 
@@ -1634,7 +1633,7 @@ webdriver.WebElement.prototype.getId_ = function() {
  * @private
  */
 webdriver.WebElement.prototype.schedule_ = function(command, description) {
-  command.setParameter('id', this.getId_());
+  command.setParameter('id', this.getId());
   return this.driver_.schedule(command, description);
 };
 
@@ -2034,8 +2033,7 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
  * @final
  */
 webdriver.WebElementPromise = function(driver, el) {
-  var unused = webdriver.promise.defer();
-  webdriver.WebElement.call(this, driver, unused.promise);
+  webdriver.WebElement.call(this, driver, {'ELEMENT': 'unused'});
 
   /** @override */
   this.cancel = goog.bind(el.cancel, el);
@@ -2057,9 +2055,9 @@ webdriver.WebElementPromise = function(driver, el) {
    * resolved.
    * @override
    */
-  this.getId_ = function() {
+  this.getId = function() {
     return el.then(function(el) {
-      return el.getId_();
+      return el.getId();
     });
   };
 };
