@@ -23,7 +23,7 @@ goog.provide('safaridriver.extension.commands');
 goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.LogDb');
@@ -35,10 +35,10 @@ goog.require('webdriver.promise');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
+safaridriver.extension.commands.LOG_ = goog.log.getLogger(
     'safaridriver.extension.commands');
 
 
@@ -192,7 +192,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
   function onLoad() {
     tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
     if (response.isPending()) {
-      safaridriver.extension.commands.LOG_.info(
+      goog.log.info(safaridriver.extension.commands.LOG_,
           'Page load finished; returning');
       tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
       response.fulfill();
@@ -224,7 +224,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
    */
   function onSuccess() {
     if (!waitForLoad && response.isPending()) {
-      safaridriver.extension.commands.LOG_.info(
+      goog.log.info(safaridriver.extension.commands.LOG_,
           'Not expecting a new page load; returning');
       response.fulfill();
     }
@@ -237,7 +237,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
    */
   function onFailure(e) {
     if (response.isPending()) {
-      safaridriver.extension.commands.LOG_.severe(
+      goog.log.error(safaridriver.extension.commands.LOG_,
           'Error while loading page; failing', e);
       tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
       response.reject(e);

@@ -17,7 +17,7 @@
 goog.provide('safaridriver.extension.TabManager');
 
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.extension.Tab');
 
 
@@ -50,9 +50,9 @@ safaridriver.extension.TabManager = function() {
 
   /**
    * The logger for this class.
-   * @private {!goog.debug.Logger}
+   * @private {goog.debug.Logger}
    */
-  this.log_ = goog.debug.Logger.getLogger('safaridriver.extension.TabManager');
+  this.log_ = goog.log.getLogger('safaridriver.extension.TabManager');
 
   safari.application.addEventListener(
       'open', goog.bind(this.onOpen_, this), true);
@@ -111,7 +111,7 @@ safaridriver.extension.TabManager.prototype.ignoreTab = function(tab) {
   this.ignoredTabs_.push(tab);
 
   if (this.commandTab_ && this.commandTab_.getBrowserTab() === tab) {
-    this.log_.info('Resetting command tab');
+    goog.log.info(this.log_, 'Resetting command tab');
     this.commandTab_ = null;
   }
 
@@ -125,12 +125,12 @@ safaridriver.extension.TabManager.prototype.ignoreTab = function(tab) {
  */
 safaridriver.extension.TabManager.prototype.setCommandTab = function(tab) {
   if (tab === this.commandTab_) {
-    this.log_.warning('Unnecessarily resetting the focused tab!');
+    goog.log.warning(this.log_, 'Unnecessarily resetting the focused tab!');
     return;
   }
 
   this.commandTab_ = tab;
-  this.log_.info('Set command tab to ' + tab.getId());
+  goog.log.info(this.log_, 'Set command tab to ' + tab.getId());
 
   var browserTab = tab.getBrowserTab();
   if (browserTab.browserWindow !== safari.application.activeBrowserWindow) {
@@ -152,13 +152,13 @@ safaridriver.extension.TabManager.prototype.onOpen_ = function(e) {
       goog.array.contains(this.ignoredTabs_, e.target)) {
     // Every window has at least one tab, so as far as we are concerned,
     // SafariBrowserTabs are windows.
-    this.log_.info('Ignoring open window event');
+    goog.log.info(this.log_, 'Ignoring open window event');
     return;
   }
 
   // getTab will assign one if the tab is new.
   var tab = this.getTab(/** @type {!SafariBrowserTab} */ (e.target));
-  this.log_.info('Tab opened: ' + tab.getId());
+  goog.log.info(this.log_, 'Tab opened: ' + tab.getId());
 };
 
 
@@ -168,7 +168,7 @@ safaridriver.extension.TabManager.prototype.onOpen_ = function(e) {
  */
 safaridriver.extension.TabManager.prototype.onClose_ = function(e) {
   if (e.target instanceof SafariBrowserWindow) {
-    this.log_.info('Ignoring close window event');
+    goog.log.info(this.log_, 'Ignoring close window event');
     return;
   }
 
@@ -178,12 +178,12 @@ safaridriver.extension.TabManager.prototype.onClose_ = function(e) {
   }
 
   if (this.commandTab_ && this.commandTab_.getBrowserTab() === e.target) {
-    this.log_.info(
+    goog.log.info(this.log_,
         'The command tab has been closed: ' + this.commandTab_.getId());
     this.commandTab_ = null;
   }
 
-  this.log_.info('Tab closed');
+  goog.log.info(this.log_, 'Tab closed');
   this.delete_(browserTab);
 };
 
@@ -202,7 +202,7 @@ safaridriver.extension.TabManager.prototype.getTab = function(idOrTab) {
   });
 
   if (!tab && !isString) {
-    this.log_.info('Registering new tab');
+    goog.log.info(this.log_, 'Registering new tab');
     tab = new safaridriver.extension.Tab(
         /** @type {!SafariBrowserTab} */ (idOrTab));
     this.tabs_.push(tab);
@@ -239,10 +239,10 @@ safaridriver.extension.TabManager.prototype.delete_ = function(browserTab) {
   });
 
   if (index < 0) {
-    this.log_.warning('Attempting to delete an unknown tab.');
+    goog.log.warning(this.log_, 'Attempting to delete an unknown tab.');
   } else {
     var tab = this.tabs_[index];
-    this.log_.info('Deleting entry for tab ' + tab.getId());
+    goog.log.info(this.log_, 'Deleting entry for tab ' + tab.getId());
     goog.array.removeAt(this.tabs_, index);
   }
 };

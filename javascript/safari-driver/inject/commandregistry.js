@@ -21,7 +21,7 @@ goog.provide('safaridriver.inject.CommandRegistry');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.inject.util');
 goog.require('webdriver.promise');
 
@@ -33,9 +33,8 @@ goog.require('webdriver.promise');
  */
 safaridriver.inject.CommandRegistry = function() {
 
-  /** @private {!goog.debug.Logger} */
-  this.log_ = goog.debug.Logger.getLogger(
-      'safaridriver.inject.CommandRegistry');
+  /** @private {goog.log.Logger} */
+  this.log_ = goog.log.getLogger('safaridriver.inject.CommandRegistry');
 
   /** @private {!Object.<!webdriver.CommandName, string>} */
   this.commandNameToModuleId_ = {};
@@ -105,7 +104,7 @@ safaridriver.inject.CommandRegistry.prototype.declareModule = function(
     moduleId, commands) {
   goog.asserts.assert(!this.modules_[moduleId],
       'The module ID %s has already been registered', moduleId);
-  this.log_.config('Declaring module: ' + moduleId);
+  goog.log.fine(this.log_, 'Declaring module: ' + moduleId);
 
   goog.array.forEach(commands, function(command) {
     var otherModule = this.commandNameToModuleId_[command];
@@ -149,7 +148,7 @@ safaridriver.inject.CommandRegistry.prototype.defineModule = function(
       'For module %s, not all declared commands were defined.' +
           '\nDeclared: %s\nDefined: %s', moduleId, module, defined);
 
-  this.log_.config('Defined module: ' + moduleId);
+  goog.log.fine(this.log_, 'Defined module: ' + moduleId);
   this.loadedModules_[moduleId] = true;
   return this;
 };

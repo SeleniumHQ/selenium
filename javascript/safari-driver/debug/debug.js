@@ -14,9 +14,9 @@
 
 goog.provide('safaridriver.debug');
 
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
@@ -30,10 +30,10 @@ goog.require('webdriver.logging');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.debug.LOG_ = goog.debug.Logger.getLogger('safaridriver.debug');
+safaridriver.debug.LOG_ = goog.log.getLogger('safaridriver.debug');
 
 
 /**
@@ -43,7 +43,8 @@ safaridriver.debug.init = function() {
   safaridriver.console.init();
 
   var messageTarget = new safaridriver.message.MessageTarget(safari.self);
-  messageTarget.on(safaridriver.message.Log.TYPE, safaridriver.debug.onLogEntry_);
+  messageTarget.on(
+      safaridriver.message.Log.TYPE, safaridriver.debug.onLogEntry_);
   messageTarget.setLogger(safaridriver.debug.LOG_);
 
   var driver = webdriver.WebDriver.createSession(

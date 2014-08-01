@@ -16,7 +16,7 @@
 goog.provide('safaridriver.message.MessageTarget');
 
 goog.require('bot.json');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
 goog.require('webdriver.EventEmitter');
@@ -40,9 +40,8 @@ safaridriver.message.MessageTarget = function(source, opt_consumeMessages) {
   /** @private {!(SafariEventTarget|EventTarget)} */
   this.source_ = source;
 
-  /** @private {!goog.debug.Logger} */
-  this.log_ = goog.debug.Logger.getLogger(
-      'safaridriver.message.MessageTarget');
+  /** @private {goog.debug.Logger} */
+  this.log_ = goog.log.getLogger('safaridriver.message.MessageTarget');
 
   /**
    * @private {function(this: safaridriver.message.MessageTarget,
@@ -62,14 +61,14 @@ goog.inherits(safaridriver.message.MessageTarget, webdriver.EventEmitter);
 
 
 /**
- * @param {(string|!goog.debug.Logger)} nameOrLogger The logger to use, or its
+ * @param {(string|goog.log.Logger)} nameOrLogger The logger to use, or its
  *     name.
  */
 safaridriver.message.MessageTarget.prototype.setLogger = function(
     nameOrLogger) {
   this.log_ = goog.isString(nameOrLogger) ?
-      goog.debug.Logger.getLogger(/** @type {string} */ (nameOrLogger)) :
-      /** @type {!goog.debug.Logger} */ (nameOrLogger);
+      goog.log.getLogger(/** @type {string} */ (nameOrLogger)) :
+      /** @type {goog.log.Logger} */ (nameOrLogger);
 };
 
 
@@ -92,7 +91,7 @@ safaridriver.message.MessageTarget.prototype.dispose = function() {
 safaridriver.message.MessageTarget.prototype.log = function(msg, opt_level,
     opt_error) {
   var level = opt_level || goog.debug.Logger.Level.INFO;
-  this.log_.log(level, msg, opt_error);
+  goog.log.log(this.log_, level, msg, opt_error);
 };
 
 

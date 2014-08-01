@@ -20,7 +20,7 @@
 
 goog.provide('safaridriver.extension.LogDb');
 
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('goog.object');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
@@ -35,8 +35,8 @@ goog.require('webdriver.promise');
  */
 safaridriver.extension.LogDb = function(opt_noReset) {
 
-  /** @private {!goog.debug.Logger} */
-  this.log_ = goog.debug.Logger.getLogger('safaridriver.extension.LogDb');
+  /** @private {goog.log.Logger} */
+  this.log_ = goog.log.getLogger('safaridriver.extension.LogDb');
 
   /**
    * Buffered log entries that have not been committed to the database yet.
@@ -158,7 +158,7 @@ safaridriver.extension.LogDb.prototype.transaction_ = function(
   var log = this.log_;
   var d = webdriver.promise.defer();
   var onError = function(error) {
-    log.warning('SQL transaction failed', error);
+    goog.log.warning(log, 'SQL transaction failed', error);
     d.fulfill();
   };
 
@@ -298,7 +298,8 @@ safaridriver.extension.LogDb.prototype.remove_ = function(
     // SQLError does not extend Error, so the closure compiler will not let
     // us pass it as the second parameter to this logging call. Work around
     // by adding the details to the failure message.
-    log.warning('Failed to prune entries from DB: (' + error.code + ') ' +
-                error.message);
+    goog.log.warning(log,
+        'Failed to prune entries from DB: (' + error.code + ') ' +
+        error.message);
   });
 };

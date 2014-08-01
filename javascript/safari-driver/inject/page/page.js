@@ -25,7 +25,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
+goog.require('goog.log');
 goog.require('safaridriver.dom');
 goog.require('safaridriver.inject.CommandRegistry');
 goog.require('safaridriver.inject.Encoder');
@@ -42,11 +42,10 @@ goog.require('webdriver.promise');
 
 
 /**
- * @private {!goog.debug.Logger}
+ * @private {goog.log.Logger}
  * @const
  */
-safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.inject.page');
+safaridriver.inject.page.LOG_ = goog.log.getLogger('safaridriver.inject.page');
 
 
 /**
@@ -67,7 +66,7 @@ safaridriver.inject.page.init = function() {
 
   safaridriver.inject.page.modules.init();
 
-  safaridriver.inject.page.LOG_.config(
+  goog.log.fine(safaridriver.inject.page.LOG_,
       'Loaded page script for ' + window.location);
 
   var messageTarget = new safaridriver.message.MessageTarget(window, true);
@@ -79,7 +78,7 @@ safaridriver.inject.page.init = function() {
       new safaridriver.inject.Encoder(messageTarget);
 
   var message = new safaridriver.message.Load(window !== window.top);
-  safaridriver.inject.page.LOG_.config('Sending ' + message);
+  goog.log.fine(safaridriver.inject.page.LOG_,'Sending ' + message);
   message.send(window);
 
   wrapDialogFunction('alert', safaridriver.inject.page.wrappedAlert_);
@@ -191,7 +190,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
     }
   }
 
-  safaridriver.inject.page.LOG_.config('Sending alert notification; ' +
+  goog.log.fine(safaridriver.inject.page.LOG_, 'Sending alert notification; ' +
       'type: ' + dialog.name + ', text: ' + alertText);
 
   var message = new safaridriver.message.Alert(alertText, blocksUiThread);
@@ -199,13 +198,13 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
 
   if (ignoreAlert == '1') {
     if (dialog !== safaridriver.inject.page.NativeDialog_.BEFOREUNLOAD) {
-      safaridriver.inject.page.LOG_.config('Invoking native alert');
+      goog.log.fine(safaridriver.inject.page.LOG_, 'Invoking native alert');
       return nativeFn.apply(window, args);
     }
     return null;  // Return and let onbeforeunload be called as usual.
   }
 
-  safaridriver.inject.page.LOG_.info('Dismissing unexpected alert');
+  goog.log.info(safaridriver.inject.page.LOG_, 'Dismissing unexpected alert');
   var response;
   switch (dialog.name) {
     case safaridriver.inject.page.NativeDialog_.BEFOREUNLOAD.name:
@@ -264,7 +263,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
       then(function(response) {
         var responseMessage = new safaridriver.message.Response(
             command.getId(), response);
-        safaridriver.inject.page.LOG_.config(
+        goog.log.fine(safaridriver.inject.page.LOG_,
             'Sending ' + command.getName() + ' response: ' + responseMessage);
         responseMessage.send(window);
       });
