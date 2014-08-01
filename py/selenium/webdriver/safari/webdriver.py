@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI):
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
         """
         Creates a new instance of the Safari driver.
 
@@ -51,7 +51,7 @@ class WebDriver(RemoteWebDriver):
             except:
                 raise Exception("No executable path given, please add one to Environment Variable \
                 'SELENIUM_SERVER_JAR'")
-        self.service = Service(executable_path, port=port)
+        self.service = Service(executable_path, port=port, quiet=quiet)
         self.service.start()
 
         RemoteWebDriver.__init__(self,
