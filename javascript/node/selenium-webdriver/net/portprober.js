@@ -60,7 +60,7 @@ function findSystemPortRange() {
 /**
  * Executes a command and returns its output if it succeeds.
  * @param {string} cmd The command to execute.
- * @return {!webdriver.promise.Promise<string>} A promise that will resolve
+ * @return {!webdriver.promise.Promise.<string>} A promise that will resolve
  *     with the command's stdout data.
  */
 function execute(cmd) {
@@ -78,7 +78,7 @@ function execute(cmd) {
 
 /**
  * Computes the ephemeral port range for a Unix-like system.
- * @return {!webdriver.promise.Promise<{min: number, max: number}>} A promise
+ * @return {!webdriver.promise.Promise.<{min: number, max: number}>} A promise
  *     that will resolve with the ephemeral port range on the current system.
  */
 function findUnixPortRange() {
@@ -105,7 +105,7 @@ function findUnixPortRange() {
 
 /**
  * Computes the ephemeral port range for a Windows system.
- * @return {!webdriver.promise.Promise<{min: number, max: number}>} A promise
+ * @return {!webdriver.promise.Promise.<{min: number, max: number}>} A promise
  *     that will resolve with the ephemeral port range on the current system.
  */
 function findWindowsPortRange() {
