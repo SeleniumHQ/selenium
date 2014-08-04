@@ -175,24 +175,24 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Adds arguments to be appended to the Chrome.exe command line.
         /// </summary>
-        /// <param name="arguments">An array of arguments to add.</param>
-        public void AddArguments(params string[] arguments)
+        /// <param name="argumentsToAdd">An array of arguments to add.</param>
+        public void AddArguments(params string[] argumentsToAdd)
         {
-            this.AddArguments(new List<string>(arguments));
+            this.AddArguments(new List<string>(argumentsToAdd));
         }
 
         /// <summary>
         /// Adds arguments to be appended to the Chrome.exe command line.
         /// </summary>
-        /// <param name="arguments">An <see cref="IEnumerable{T}"/> object of arguments to add.</param>
-        public void AddArguments(IEnumerable<string> arguments)
+        /// <param name="argumentsToAdd">An <see cref="IEnumerable{T}"/> object of arguments to add.</param>
+        public void AddArguments(IEnumerable<string> argumentsToAdd)
         {
-            if (arguments == null)
+            if (argumentsToAdd == null)
             {
                 throw new ArgumentNullException("arguments", "arguments must not be null");
             }
 
-            this.arguments.AddRange(arguments);
+            this.arguments.AddRange(argumentsToAdd);
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
         public ICapabilities ToCapabilities()
         {
-            Dictionary<string, object> chromeOptions = BuildChromeOptionsDictionary();
+            Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 
             DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
             capabilities.SetCapability(ChromeOptions.Capability, chromeOptions);

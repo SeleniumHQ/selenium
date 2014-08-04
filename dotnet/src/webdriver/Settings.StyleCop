@@ -1,10 +1,12 @@
 <StyleCopSettings Version="105">
   <GlobalSettings>
     <CollectionProperty Name="RecognizedWords">
+      <Value>chromedriver</Value>
       <Value>crx</Value>
       <Value>hixie</Value>
       <Value>hybi</Value>
       <Value>localhost</Value>
+      <Value>minidump</Value>
       <Value>mozillazine</Value>
       <Value>onone</Value>
       <Value>safariextz</Value>
@@ -29,6 +31,13 @@
         </Rule>
       </Rules>
       <AnalyzerSettings />
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+      <AnalyzerSettings>
+        <CollectionProperty Name="Hungarian">
+          <Value>ip</Value>
+        </CollectionProperty>
+      </AnalyzerSettings>
     </Analyzer>
   </Analyzers>
 </StyleCopSettings>

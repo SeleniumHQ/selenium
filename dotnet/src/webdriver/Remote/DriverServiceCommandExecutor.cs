@@ -58,6 +58,11 @@ namespace OpenQA.Selenium.Remote
             this.internalExecutor = new HttpCommandExecutor(driverService.ServiceUrl, commandTimeout, enableKeepAlive);
         }
 
+        /// <summary>
+        /// Executes a command
+        /// </summary>
+        /// <param name="commandToExecute">The command you wish to execute</param>
+        /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
             Response toReturn = null;

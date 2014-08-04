@@ -85,16 +85,6 @@ namespace OpenQA.Selenium.Firefox
             get { return this.timeout; }
             set { this.timeout = value; }
         }
-
-        /// <summary>
-        /// Gets all console output of the binary.
-        /// </summary>
-        /// <remarks>Output retrieval is non-destructive and non-blocking.</remarks>
-        [Obsolete("This property is largely unused, and will be removed in a future revision")]
-        public string ConsoleOutput
-        {
-            get { return string.Empty; }
-        } 
         #endregion
 
         #region Support properties

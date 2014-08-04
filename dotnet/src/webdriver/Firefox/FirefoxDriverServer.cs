@@ -16,14 +16,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Firefox.Internal;
-using System.Net.Sockets;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Globalization;
+using System.Net.Sockets;
+using System.Text;
+using OpenQA.Selenium.Firefox.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
 {

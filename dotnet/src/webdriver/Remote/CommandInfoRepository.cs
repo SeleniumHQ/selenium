@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Remote
     public sealed class CommandInfoRepository
     {
         #region Private members
-        private static readonly object lockObject = new object();
+        private static readonly object LockObject = new object();
 
         // Note this is marked volatile to force the runtime to allow
         // serialized access to the value.
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium.Remote
                 // at http://msdn.microsoft.com/en-us/library/ff650316.aspx
                 if (collectionInstance == null)
                 {
-                    lock (lockObject)
+                    lock (LockObject)
                     {
                         if (collectionInstance == null)
                         {

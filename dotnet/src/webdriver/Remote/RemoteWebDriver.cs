@@ -712,7 +712,7 @@ namespace OpenQA.Selenium.Remote
         public Screenshot GetScreenshot()
         {
             // Get the screenshot as base64.
-            Response screenshotResponse = Execute(DriverCommand.Screenshot, null);
+            Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
             string base64 = screenshotResponse.Value.ToString();
 
             // ... and convert it.
@@ -1013,10 +1013,10 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Converts the arguments to java script objects.
+        /// Converts the arguments to JavaScript objects.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        /// <returns></returns>
+        /// <returns>The list of the arguments converted to JavaScript objects.</returns>
         private static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
         {
             if (args == null)
