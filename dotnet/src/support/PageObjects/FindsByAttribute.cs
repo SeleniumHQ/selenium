@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// to indicate how to find the elements. This attribute can be used to decorate fields and properties
     /// in your Page Object classes. The <see cref="Type"/> of the field or property must be either
     /// <see cref="IWebElement"/> or IList{IWebElement}. Any other type will throw an
-    /// <see cref="ArgumentException"/> when <see cref="PageFactory.InitElements"/> is called.
+    /// <see cref="ArgumentException"/> when <see cref="PageFactory.InitElements(ISearchContext, object)"/> is called.
     /// </para>
     /// <para>
     /// <code>
@@ -152,6 +152,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns><see langword="true"/> if the first instance is greater than the second; otherwise, <see langword="false"/>.</returns>
         public static bool operator >(FindsByAttribute one, FindsByAttribute two)
         {
+            if (one == null)
+            {
+                throw new ArgumentNullException("one", "Object to compare cannot be null");
+            }
+
             return one.CompareTo(two) > 0;
         }
 
@@ -163,6 +168,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns><see langword="true"/> if the first instance is less than the second; otherwise, <see langword="false"/>.</returns>
         public static bool operator <(FindsByAttribute one, FindsByAttribute two)
         {
+            if (one == null)
+            {
+                throw new ArgumentNullException("one", "Object to compare cannot be null");
+            }
+
             return one.CompareTo(two) < 0;
         }
 

@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </summary>
     internal class WebElementProxy : IWebElement, ILocatable, IWrapsElement
     {
+        private readonly IElementLocatorFactory locatorFactory;
         private readonly ISearchContext searchContext;
         private readonly IEnumerable<By> bys;
         private readonly bool cache;
@@ -42,8 +43,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="searchContext">The driver used to search for elements.</param>
         /// <param name="bys">The list of methods by which to search for the element.</param>
         /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-        internal WebElementProxy(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
+        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// determines how elements are located.</param>
+        internal WebElementProxy(ISearchContext searchContext, IEnumerable<By> bys, bool cache, IElementLocatorFactory locatorFactory)
         {
+            this.locatorFactory = locatorFactory;
             this.searchContext = searchContext;
             this.bys = bys;
             this.cache = cache;
@@ -147,26 +151,12 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             get
             {
-                if (this.cache && this.cachedElement != null)
+                if (!this.cache || this.cachedElement == null)
                 {
-                    return this.cachedElement;
+                    this.cachedElement = this.locatorFactory.LocateElement(this.searchContext, this.bys);
                 }
 
-                string errorString = null;
-                foreach (var by in this.bys)
-                {
-                    try
-                    {
-                        this.cachedElement = this.searchContext.FindElement(by);
-                        return this.cachedElement;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        errorString = (errorString == null ? "Could not find element by: " : errorString + ", or: ") + by;
-                    }
-                }
-
-                throw new NoSuchElementException(errorString);
+                return this.cachedElement;
             }
         }
 

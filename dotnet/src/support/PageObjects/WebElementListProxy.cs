@@ -29,6 +29,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </summary>
     internal class WebElementListProxy : IList<IWebElement>
     {
+        private readonly IElementLocatorFactory locatorFactory;
         private readonly ISearchContext searchContext;
         private readonly IEnumerable<By> bys;
         private readonly bool cache;
@@ -40,8 +41,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="searchContext">The driver used to search for elements.</param>
         /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-        internal WebElementListProxy(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
+        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// determines how elements are located.</param>
+        internal WebElementListProxy(ISearchContext searchContext, IEnumerable<By> bys, bool cache, IElementLocatorFactory locatorFactory)
         {
+            this.locatorFactory = locatorFactory;
             this.searchContext = searchContext;
             this.bys = bys;
             this.cache = cache;
@@ -77,11 +81,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                 if (!this.cache || this.collection == null)
                 {
                     this.collection = new List<IWebElement>();
-                    foreach (var by in this.bys)
-                    {
-                        ReadOnlyCollection<IWebElement> list = this.searchContext.FindElements(by);
-                        this.collection.AddRange(list);
-                    }
+                    this.collection.AddRange(this.locatorFactory.LocateElements(this.searchContext, this.bys));
                 }
 
                 return this.collection;
