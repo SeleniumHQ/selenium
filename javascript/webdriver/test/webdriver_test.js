@@ -1328,7 +1328,7 @@ function testWebElement_resolvesBeforeCallbacksOnWireValueTrigger() {
     messages.push('element resolved');
   });
 
-  webdriver.promise.when(element.getId_(), function() {
+  webdriver.promise.when(element.getId(), function() {
     messages.push('wire value resolved');
   });
 
@@ -1822,7 +1822,7 @@ function testFindElements() {
     function assertTypeAndId(index) {
       assertTrue('Not a WebElement at index ' + index,
           elements[index] instanceof webdriver.WebElement);
-      elements[index].getId_().
+      elements[index].getId().
           then(callbacks[index] = callbackHelper(function(id) {
             webdriver.test.testutil.assertObjectEquals(json[index], id);
           }));
@@ -1864,7 +1864,7 @@ function testFindElements_byJs() {
         function assertTypeAndId(index) {
           assertTrue('Not a WebElement at index ' + index,
               elements[index] instanceof webdriver.WebElement);
-          elements[index].getId_().
+          elements[index].getId().
               then(callbacks[index] = callbackHelper(function(id) {
                 webdriver.test.testutil.assertObjectEquals(json[index], id);
               }));
@@ -1910,7 +1910,7 @@ function testFindElements_byJs_filtersOutNonWebElementResponses() {
         function assertTypeAndId(index, jsonIndex) {
           assertTrue('Not a WebElement at index ' + index,
               elements[index] instanceof webdriver.WebElement);
-          elements[index].getId_().
+          elements[index].getId().
               then(callbacks[index] = callbackHelper(function(id) {
                 webdriver.test.testutil.assertObjectEquals(json[jsonIndex], id);
               }));
@@ -1945,7 +1945,7 @@ function testFindElements_byJs_convertsSingleWebElementResponseToArray() {
       then(callback1 = callbackHelper(function(elements) {
         assertEquals(1, elements.length);
         assertTrue(elements[0] instanceof webdriver.WebElement);
-        elements[0].getId_().
+        elements[0].getId().
             then(callback2 = callbackHelper(function(id) {
               webdriver.test.testutil.assertObjectEquals(json, id);
             }));
