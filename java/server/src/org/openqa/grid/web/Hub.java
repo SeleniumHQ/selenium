@@ -164,12 +164,12 @@ public class Hub {
 
   public void start() throws Exception {
     initServer();
-    server.start();
     if (maxThread>0){
       QueuedThreadPool pool = new QueuedThreadPool();
       pool.setMaxThreads(maxThread);
       server.setThreadPool(pool);
     }
+    server.start();
   }
 
   public void stop() throws Exception {
