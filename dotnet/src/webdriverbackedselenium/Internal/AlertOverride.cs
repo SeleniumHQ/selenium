@@ -27,7 +27,9 @@ namespace Selenium.Internal
         public void ReplaceAlertMethod()
         {
             ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage) { " +
                 "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify([])); " +
                 "  window.alert = function(msg) { " +
                 "    var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
@@ -69,7 +71,9 @@ namespace Selenium.Internal
         public string GetNextAlert()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage) { " +
                 "  if (!('__webdriverAlerts' in window.localStorage)) { return null } " +
                 "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
                 "  if (! alerts) { return null } " +
@@ -101,7 +105,9 @@ namespace Selenium.Internal
         {
             bool alertPresent = false;
             object alertResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage) { " +
                 "  if (!('__webdriverAlerts' in window.localStorage)) { return false } " +
                 "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
                 "  return alerts && alerts.length > 0; " +
@@ -124,7 +130,9 @@ namespace Selenium.Internal
         public string GetNextConfirmation()
         {
             string result = (string)((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage) { " +
                 "  if (!('__webdriverConfirms' in window.localStorage)) { return null } " +
                 "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
                 "  if (! confirms) { return null } " +
@@ -154,7 +162,9 @@ namespace Selenium.Internal
         {
             bool confirmPresent = false;
             object confirmResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
-                "if (window.localStorage) { " +
+                "var canUseLocalStorage = false; " +
+                "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+                "if (canUseLocalStorage) { " +
                 "  if (!('__webdriverConfirms' in window.localStorage)) { return false } " +
                 "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
                 "  return confirms && confirms.length > 0; " +
