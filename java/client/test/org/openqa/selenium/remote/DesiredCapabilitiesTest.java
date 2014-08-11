@@ -24,11 +24,15 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.LoggingPreferences;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 @RunWith(JUnit4.class)
 public class DesiredCapabilitiesTest {
@@ -74,5 +78,19 @@ public class DesiredCapabilitiesTest {
 
     assertEquals("ie", origCapabilities.getCapability("Browser"));
     assertEquals("firefox", newCapabilities.getCapability("Browser"));
+  }
+
+  @Test
+  public void testExtractDebugLogLevelFromCapabilityMap() {
+    Map<String, Object> capabilitiesMap = new HashMap<String, Object>() {{
+      put(CapabilityType.LOGGING_PREFS, new HashMap<String, String>() {{
+        put("browser", "DEBUG");
+      }});
+    }};
+
+    DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
+    LoggingPreferences prefs =
+        (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
+    assertSame(Level.FINE, prefs.getLevel("browser"));
   }
 }

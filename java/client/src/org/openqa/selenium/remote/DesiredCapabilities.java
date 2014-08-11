@@ -26,13 +26,13 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 @SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
@@ -54,7 +54,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
       Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
 
       for (String logType : prefsMap.keySet()) {
-        prefs.enable(logType, Level.parse(prefsMap.get(logType)));
+        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
       capabilities.put(LOGGING_PREFS, prefs);
       // So it does not get added twice
