@@ -158,8 +158,9 @@ function TestEnvironment(browserName, server) {
 
   this.dispose = function() {
     if (driver) {
-      driver.quit();
+      var d = driver;
       driver = null;
+      return d.quit();
     }
   };
 
@@ -221,12 +222,12 @@ function suite(fn, opt_options) {
 
         testing.beforeEach(function() {
           if (env.autoCreateDriver) {
-            env.createDriver();
+            return env.createDriver().getSession();  // Catch start-up failures.
           }
         });
 
         testing.after(function() {
-          env.dispose();
+          return env.dispose();
         });
 
         fn(env);
