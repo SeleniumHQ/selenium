@@ -4,6 +4,7 @@
     `ControlFlow#wait`. For more information, see documentation on
     `webdriver.promise.consume`. Requires harmony support (run with
     `node --harmony-generators` in `v0.11.x`).
+* Added `Builder#setLoggingPreferences()`
 * Promise A+ compliance: a promise may no longer resolve to itself.
 * For consistency with other language bindings, deprecated
     `UnhandledAlertError#getAlert` and added `#getAlertText`.

@@ -115,6 +115,19 @@ webdriver.AbstractBuilder.prototype.getCapabilities = function() {
 
 
 /**
+ * Sets the logging preferences for the created session. Preferences may be
+ * changed by repeated calls, or by calling {@link #withCapabilities}.
+ * @param {!(webdriver.logging.Preferences|Object.<string, string>)} prefs The
+ *     desired logging preferences.
+ * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.
+ */
+webdriver.AbstractBuilder.prototype.setLoggingPreferences = function(prefs) {
+  this.capabilities_.set(webdriver.Capability.LOGGING_PREFS, prefs);
+  return this;
+};
+
+
+/**
  * Builds a new {@link webdriver.WebDriver} instance using this builder's
  * current configuration.
  * @return {!webdriver.WebDriver} A new WebDriver client.

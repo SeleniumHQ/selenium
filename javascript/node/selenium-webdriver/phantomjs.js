@@ -19,7 +19,6 @@ var fs = require('fs'),
     util = require('util');
 
 var webdriver = require('./index'),
-    LogLevel = webdriver.logging.LevelName,
     executors = require('./executors'),
     io = require('./io'),
     portprober = require('./net/portprober'),
@@ -85,15 +84,16 @@ function findExecutable(opt_exe) {
 
 /**
  * Maps WebDriver logging level name to those recognised by PhantomJS.
- * @type {!Object.<webdriver.logging.LevelName, string>}
+ * @type {!Object.<string, string>}
  * @const
  */
 var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
   var map = {};
-  map[LogLevel.ALL] = map[LogLevel.DEBUG] = 'DEBUG';
-  map[LogLevel.INFO] = 'INFO';
-  map[LogLevel.WARNING] = 'WARN';
-  map[LogLevel.SEVERE] = map[LogLevel.OFF] = 'ERROR';
+  map[webdriver.logging.Level.ALL.name] = 'DEBUG';
+  map[webdriver.logging.Level.DEBUG.name] = 'DEBUG';
+  map[webdriver.logging.Level.INFO.name] = 'INFO';
+  map[webdriver.logging.Level.WARNING.name] = 'WARN';
+  map[webdriver.logging.Level.SEVERE.name] = 'ERROR';
   return map;
 })();
 
@@ -111,6 +111,10 @@ function createDriver(opt_capabilities, opt_flow) {
   var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
 
   var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
+  if (logPrefs instanceof webdriver.logging.Preferences) {
+    logPrefs = logPrefs.toJSON();
+  }
+
   if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
     var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
         logPrefs[webdriver.logging.Type.DRIVER]];

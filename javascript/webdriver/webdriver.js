@@ -1360,7 +1360,8 @@ webdriver.WebDriver.Logs.prototype.get = function(type) {
         return goog.array.map(entries, function(entry) {
           if (!(entry instanceof webdriver.logging.Entry)) {
             return new webdriver.logging.Entry(
-                entry['level'], entry['message'], entry['timestamp']);
+                entry['level'], entry['message'], entry['timestamp'],
+                entry['type']);
           }
           return entry;
         });

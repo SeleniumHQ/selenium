@@ -28,6 +28,20 @@ function checkRecord(record, level, msg, time) {
   assertEquals('wrong time', time, record.timestamp);
 }
 
+function testPreferencesToJSON() {
+  var prefs = new webdriver.logging.Preferences();
+  assertObjectEquals({}, prefs.toJSON());
+
+  prefs.setLevel('foo', webdriver.logging.Level.DEBUG);
+  assertObjectEquals({'foo': 'DEBUG'}, prefs.toJSON());
+
+  prefs.setLevel('bar', webdriver.logging.Level.OFF);
+  prefs.setLevel('baz', webdriver.logging.Level.WARNING);
+  assertObjectEquals(
+      {'foo': 'DEBUG', 'bar': 'OFF', 'baz': 'WARNING'},
+      prefs.toJSON());
+}
+
 function testConvertingLogRecords() {
   checkRecord(
       convert(goog.debug.Logger.Level.SHOUT, 'foo bar', 'the.name', 1234),
