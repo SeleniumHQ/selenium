@@ -36,6 +36,7 @@ goog.require('fxdriver.utils');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.selection');
+goog.require('goog.log');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 
@@ -72,6 +73,12 @@ FirefoxDriver = function(server, enableNativeEvents, win, opt_pageLoadingStrateg
   this.modifierKeysState = Utils.newInstance('@googlecode.com/webdriver/modifierkeys;1', 'wdIModifierKeys');
   this.mouse.initialize(this.modifierKeysState);
 };
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+FirefoxDriver.LOG_ = fxdriver.logging.getLogger('fxdriver.FirefoxDriver');
 
 
 FirefoxDriver.prototype.__defineGetter__('id', function() {
@@ -114,7 +121,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   } catch (e) {
     var converted = e.QueryInterface(Components.interfaces['nsIException']);
     if ('NS_ERROR_MALFORMED_URI' == converted.name) {
-      fxdriver.logging.warning(converted.name);
+      goog.log.warning(FirefoxDriver.LOG_, converted.name);
       respond.sendError(new WebDriverError(
           bot.ErrorCode.UNKNOWN_ERROR,
           'Target URL '+url+' is not well-formed.'));
@@ -129,7 +136,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
-    fxdriver.logging.info('No load event expected');
+    goog.log.info(FirefoxDriver.LOG_, 'No load event expected');
     respond.send();
   }
 };
@@ -176,7 +183,7 @@ FirefoxDriver.prototype.close = function(respond) {
     notifyOfCloseWindow(browser.id);
     browser.contentWindow.close();
   } catch (e) {
-    fxdriver.logging.warning(e);
+    goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
   }
 
   // Send the response so the client doesn't get a connection refused socket
@@ -203,7 +210,8 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     }
 
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    fxdriver.logging.info('Window in design mode, falling back to sandbox: ' + doc.designMode);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Window in design mode, falling back to sandbox: ' + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -380,7 +388,8 @@ FirefoxDriver.annotateInvalidSelectorError_ = function(selector, ex) {
 
   try {
     var converted = ex.QueryInterface(Components.interfaces['nsIException']);
-    fxdriver.logging.info('Converted the exception: ' + converted.name);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Converted the exception: ' + converted.name);
     if ('NS_ERROR_DOM_SYNTAX_ERR' == converted.name) {
       return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
           'The given selector ' + selector +
@@ -580,16 +589,20 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 
   var newWindow = null;
   if (switchingToDefault) {
-    fxdriver.logging.info('Switching to default content (topmost frame)');
+    goog.log.info(FirefoxDriver.LOG_,
+        'Switching to default content (topmost frame)');
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {
-    fxdriver.logging.info('Switching to frame with name or ID: ' + parameters.id);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Switching to frame with name or ID: ' + parameters.id);
     newWindow = bot.frame.findFrameByNameOrId(parameters.id, currentWindow);
   } else if (goog.isNumber(parameters.id)) {
-    fxdriver.logging.info('Switching to frame by index: ' + parameters.id);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Switching to frame by index: ' + parameters.id);
     newWindow = bot.frame.findFrameByIndex(parameters.id, currentWindow);
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
-    fxdriver.logging.info('Switching to frame by element: ' + parameters.id['ELEMENT']);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Switching to frame by element: ' + parameters.id['ELEMENT']);
 
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
@@ -1032,9 +1045,11 @@ function getElementFromLocation(mouseLocation, doc) {
 
   if (mouseLocation.initialized) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
-    fxdriver.logging.info('Element from (' + locationX + ',' + locationY + ') :' + elementForNode);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Element from (' + locationX + ',' + locationY + ') :' + elementForNode);
   } else {
-    fxdriver.logging.info('Mouse coordinates were not set - using body');
+    goog.log.info(FirefoxDriver.LOG_,
+        'Mouse coordinates were not set - using body');
     elementForNode = doc.getElementsByTagName('body')[0];
   }
 
@@ -1102,14 +1117,16 @@ FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = coords.auxiliary || doc;
-    fxdriver.logging.info('Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
     var result = this.mouse.move(target, coords.x, coords.y);
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
   var nativeMouseMoveTo = function(coordinates, jsTimer) {
-    fxdriver.logging.info('Calling native move with: ' + coords.x + ', ' + coords.y);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Calling native move with: ' + coords.x + ', ' + coords.y);
 
     var elementForNode = null;
     var clickPoint_ownerDocumentPreScroll; //toX
@@ -1155,8 +1172,9 @@ FirefoxDriver.prototype.mouseMoveTo = function(respond, parameters) {
     if (nativeMouse && node) {
       var currentPosition = respond.session.getMousePosition();
       var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
-      fxdriver.logging.info('Moving from (' + currentPosition.x + ', ' + currentPosition.y + ') to (' +
-        clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y + ')');
+      goog.log.info(FirefoxDriver.LOG_,
+          'Moving from (' + currentPosition.x + ', ' + currentPosition.y + ') to (' +
+          clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y + ')');
       nativeMouse.mouseMove(node,
           currentPosition_windowHandle.x, currentPosition_windowHandle.y,
           mouseTarget_ownerDocument_windowHandle.x, mouseTarget_ownerDocument_windowHandle.y);
@@ -1195,7 +1213,8 @@ FirefoxDriver.prototype.mouseButtonDown = function(respond, parameters) {
 
   if (!this.enableNativeEvents) {
     var coords = fxdriver.events.buildCoordinates(parameters, doc);
-    fxdriver.logging.info('Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.down(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
@@ -1233,7 +1252,8 @@ FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
 
   if (!this.enableNativeEvents) {
     var coords = fxdriver.events.buildCoordinates(parameters, doc);
-    fxdriver.logging.info('Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
+    goog.log.info(FirefoxDriver.LOG_,
+        'Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.up(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
@@ -1253,8 +1273,9 @@ FirefoxDriver.prototype.mouseButtonUp = function(respond, parameters) {
     if (isMouseButtonPressed) {
       upX = currentPosition.viewPortXOffset;
       upY = currentPosition.viewPortYOffset;
-      fxdriver.logging.info('Button pressed. Using coordiantes with viewport offset: '
-          + upX + ', ' + upY);
+      goog.log.info(FirefoxDriver.LOG_,
+          'Button pressed. Using coordiantes with viewport offset: ' +
+          upX + ', ' + upY);
     }
     var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 

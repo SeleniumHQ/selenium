@@ -18,8 +18,10 @@
 
 goog.provide('wdSession');
 
-goog.require('fxdriver.moz');
 goog.require('fxdriver.logging');
+goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * An active FirefoxDriver session.
@@ -32,6 +34,13 @@ wdSession = function() {
    */
   this.wrappedJSObject = this;
 };
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+wdSession.LOG_ = fxdriver.logging.getLogger('fxdriver.wdSession');
 
 
 /**
@@ -202,7 +211,7 @@ wdSession.prototype.getWindow = function() {
       }
     }
   } catch (ex) {
-    fxdriver.logging.error(ex);
+    goog.log.error(wdSession.LOG_, 'Failed to get frame contentWindow', ex);
     // ignore exception and try other way
   }
 
@@ -212,7 +221,7 @@ wdSession.prototype.getWindow = function() {
         win = this.window_.get();
       }
     } catch (ex) {
-      fxdriver.logging.error(ex);
+      goog.log.error(wdSession.LOG_, 'Failed to get window', ex);
       // ignore exception and try other way
     }
   }
@@ -221,7 +230,7 @@ wdSession.prototype.getWindow = function() {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the main
     // content window. Note: this will cause problems in case the lost DOM
     // was under a frame.
-    fxdriver.logging.error("Lost DOM in window " + win);
+    goog.log.error(wdSession.LOG_, 'Lost DOM in window ' + win);
     win = this.chromeWindow_.getBrowser().contentWindow;
     this.setWindow(win);
   }
@@ -371,7 +380,7 @@ wdSession.prototype.getWaitForPageLoad = function() {
  */
 wdSession.prototype.setWaitForPageLoad = function(flag) {
   this.waitForPageLoad_ = flag;
-  fxdriver.logging.info("setWaitForPageLoad " + flag);
+  goog.log.info(wdSession.LOG_, "setWaitForPageLoad " + flag);
 };
 
 

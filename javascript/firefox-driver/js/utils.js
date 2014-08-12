@@ -28,6 +28,7 @@ goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('fxdriver.error');
 goog.require('goog.dom');
+goog.require('goog.log');
 goog.require('goog.string');
 goog.require('goog.style');
 
@@ -107,11 +108,18 @@ function notifyOfSwitchToWindow(windowId) {
   }
 }
 
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+Utils.LOG_ = fxdriver.logging.getLogger('fxdriver.Utils');
+
 Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
 
   if (!clazz) {
-    fxdriver.logging.warning('Unable to find class: ' + className);
+    goog.log.warning(Utils.LOG_, 'Unable to find class: ' + className);
     return undefined;
   }
   var iface = Components.interfaces[interfaceName];
@@ -119,8 +127,9 @@ Utils.newInstance = function(className, interfaceName) {
   try {
     return clazz.createInstance(iface);
   } catch (e) {
-    fxdriver.logging.warning('Cannot create: ' + className + ' from ' + interfaceName);
-    fxdriver.logging.warning(e);
+    goog.log.warning(Utils.LOG_,
+        'Cannot create: ' + className + ' from ' + interfaceName,
+        e);
     throw e;
   }
 };
@@ -199,8 +208,9 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
   } catch (e) {
-    fxdriver.logging.warning('Unable to find native component: ' + componentId);
-    fxdriver.logging.warning(e);
+    goog.log.warning(Utils.LOG_,
+        'Unable to find native component: ' + componentId,
+        e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
@@ -303,7 +313,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     return;
   }
 
-  fxdriver.logging.info('Doing sendKeys in a non-native way...');
+  goog.log.info(Utils.LOG_, 'Doing sendKeys in a non-native way...');
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -729,7 +739,8 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
     var rect = inBrowser.getBoundingClientRect();
     browserSpecificYOffset += rect.top;
     browserSpecificXOffset += rect.left;
-    fxdriver.logging.info('Browser-specific offset (X,Y): ' + browserSpecificXOffset
+    goog.log.info(Utils.LOG_,
+        'Browser-specific offset (X,Y): ' + browserSpecificXOffset
         + ', ' + browserSpecificYOffset);
   }
 
@@ -865,7 +876,7 @@ Utils.wrapResult = function(result, doc) {
         }
         return array;
       } catch (ignored) {
-        fxdriver.logging.warning(ignored);
+        goog.log.warning(Utils.LOG_, 'Error wrapping NodeList', ignored);
       }
 
       try {
@@ -874,12 +885,12 @@ Utils.wrapResult = function(result, doc) {
           try {
             return fxdriver.error.toJSON(result);
           } catch (ignored2) {
-            fxdriver.logging.info(ignored2);
+            goog.log.info(Utils.LOG_, 'Error', ignored2);
             return result.toString();
           }
         }
       } catch (ignored) {
-        fxdriver.logging.info(ignored);
+        goog.log.info(Utils.LOG_, 'Error', ignored);
       }
 
       var convertedObj = {};
@@ -895,7 +906,7 @@ Utils.wrapResult = function(result, doc) {
 
 
 Utils.loadUrl = function(url) {
-  fxdriver.logging.info('Loading: ' + url);
+  goog.log.info(Utils.LOG_, 'Loading: ' + url);
   var ioService = fxdriver.moz.getService('@mozilla.org/network/io-service;1', 'nsIIOService');
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
@@ -918,7 +929,7 @@ Utils.loadUrl = function(url) {
   scriptableStream.close();
   channelStream.close();
 
-  fxdriver.logging.info('Done reading: ' + url);
+  goog.log.info(Utils.LOG_, 'Done reading: ' + url);
   return text;
 };
 
@@ -945,7 +956,7 @@ Utils.installWindowCloseListener = function(respond) {
 
 
       if (target == source) {
-        fxdriver.logging.info('Window was closed.');
+        goog.log.info(Utils.LOG_, 'Window was closed.');
         respond.send();
       }
     }
@@ -960,7 +971,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   var currentWindow = respond.session.getWindow();
 
   var clickListener = new WebLoadingListener(browser, function(timedOut) {
-    fxdriver.logging.info('New page loading.');
+    goog.log.info(Utils.LOG_, 'New page loading.');
 
     var currentWindowGone;
 
@@ -979,8 +990,9 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     }
 
     if (currentWindowGone) {
-     fxdriver.logging.info('Detected page load in top window; changing session focus from ' +
-                           'frame to new top window.');
+      goog.log.info(Utils.LOG_,
+          'Detected page load in top window; changing session focus from ' +
+          'frame to new top window.');
      respond.session.setWindow(browser.contentWindow);
     }
     if (timedOut) {
@@ -1002,7 +1014,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
-      fxdriver.logging.info('Not loading document anymore.');
+      goog.log.info(Utils.LOG_, 'Not loading document anymore.');
       respond.send();
     }
   };
@@ -1011,7 +1023,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   if (contentWindow.closed) {
     // Nulls out the session; client will have to switch to another
     // window on their own.
-    fxdriver.logging.info('Content window closed.');
+    goog.log.info(Utils.LOG_, 'Content window closed.');
     respond.send();
     return;
   }
@@ -1036,7 +1048,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     var doneNativeEventWait = false;
 
     var callback = function() {
-      fxdriver.logging.info('Done native event wait.');
+      goog.log.info(Utils.LOG_, 'Done native event wait.');
       doneNativeEventWait = true;
     };
 
@@ -1044,7 +1056,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
 
     nativeEvents.hasUnhandledEvents(node, hasEvents);
 
-    fxdriver.logging.info('Pending native events: ' + hasEvents.value);
+    goog.log.info(Utils.LOG_, 'Pending native events: ' + hasEvents.value);
     var numEventsProcessed = 0;
     // Do it as long as the timeout function has not been called and the
     // page has not been unloaded. If the page has been unloaded, there is no
@@ -1055,15 +1067,17 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
       thread.processNextEvent(true);
       numEventsProcessed += 1;
     }
-    fxdriver.logging.info('Extra events processed: ' + numEventsProcessed +
-                 ' Page Unloaded: ' + pageUnloadedData.wasUnloaded);
+    goog.log.info(Utils.LOG_,
+        'Extra events processed: ' + numEventsProcessed +
+        ' Page Unloaded: ' + pageUnloadedData.wasUnloaded);
 
   } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
-  fxdriver.logging.info('Done main loop.');
+  goog.log.info(Utils.LOG_, 'Done main loop.');
 
   if (pageUnloadedData.wasUnloaded) {
-      fxdriver.logging.info('Page has been reloaded while waiting for native events to '
-          + 'be processed. Remaining events? ' + hasEvents.value);
+    goog.log.info(Utils.LOG_,
+        'Page has been reloaded while waiting for native events to ' +
+        'be processed. Remaining events? ' + hasEvents.value);
   } else {
     Utils.removePageUnloadEventListener(element, pageUnloadedData);
   }
@@ -1089,7 +1103,8 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     numExtraEventsProcessed += 1;
   }
 
-  fxdriver.logging.info('Done extra event loop, ' + numExtraEventsProcessed);
+  goog.log.info(Utils.LOG_,
+      'Done extra event loop, ' + numExtraEventsProcessed);
 };
 
 Utils.getPageUnloadedIndicator = function(element) {

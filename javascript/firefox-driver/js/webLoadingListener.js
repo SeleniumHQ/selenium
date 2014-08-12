@@ -20,9 +20,10 @@ goog.provide('WebLoadingListener');
 goog.provide('fxdriver.io');
 
 goog.require('fxdriver.Timer');
-goog.require('fxdriver.moz');
-
 goog.require('fxdriver.logging');
+goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * @param {string} current The URL the browser is currently on.
@@ -91,6 +92,13 @@ function PatientListener(browser, onComplete, opt_window) {
   this.win = opt_window;
   this.active = true;
 }
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+PatientListener.LOG_ = fxdriver.logging.getLogger('fxdriver.PatientListener');
+
 PatientListener.prototype = new DoNothing();
 
 
@@ -100,7 +108,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
   }
 
   if (flags & STATE_STOP) {
-    fxdriver.logging.info('request status is ' + request.status);
+    goog.log.info(PatientListener.LOG_, 'request status is ' + request.status);
     if (request.URI) {
       this.active = false;
 
@@ -124,6 +132,16 @@ function ImpatientListener(browser, onComplete, opt_window) {
   this.onComplete = onComplete;
   this.win = opt_window || null;
 }
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+ImpatientListener.LOG_ = fxdriver.logging.getLogger(
+    'fxdriver.ImpatientListener');
+
+
 ImpatientListener.prototype = new PatientListener();
 
 ImpatientListener.prototype.onProgressChange = function(webProgress) {
@@ -143,7 +161,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
   var readyState = this.win.document && this.win.document.readyState;
   var location = this.win.document.location;
 
-  fxdriver.logging.info('readyState is ' + readyState);
+  goog.log.info(ImpatientListener.LOG_, 'readyState is ' + readyState);
 
   if (('complete' == readyState || 'interactive' == readyState) &&
       (location != 'about:blank')) {
@@ -183,7 +201,8 @@ function buildHandler(browser, toCall, opt_window) {
     return new ImpatientListener(browser, toCall, opt_window);
   }
 
-  fxdriver.logging.warning('Unsupported page loading strategy: ' + strategy);
+  var log = fxdriver.logging.getLogger('fxdriver.WebLoadingListener');
+  goog.log.warning(log, 'Unsupported page loading strategy: ' + strategy);
   // Fall back to 'normal' strategy
   return new PatientListener(browser, toCall, opt_window);
 }

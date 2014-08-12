@@ -289,7 +289,7 @@ js_library(name = "logging",
     ":files",
     ":moz",
     ":prefs",
-    "//javascript/atoms:deps",
+    "//javascript/webdriver:logging_lib",
   ])
 
 js_library(name = "modals",

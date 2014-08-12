@@ -1,10 +1,10 @@
 // Spoof the prompt service. Interesting thread on mozillazine:
 // http://www.mail-archive.com/dev-tech-xpcom@lists.mozilla.org/msg00193.html
 
-goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('goog.array');
+goog.require('goog.log');
 
 
 var EXCLUDED_NAMES = [
@@ -100,7 +100,7 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 
 // Spoof implementation
 function DrivenPromptService() {
-  fxdriver.logging.info('Spoofing prompt service');
+  goog.log.info(DrivenPromptService.LOG_, 'Spoofing prompt service');
 
   // @mozilla.org/prompter;1
   var prompters = [
@@ -123,7 +123,7 @@ function DrivenPromptService() {
 
       try {
         var toReturn = service.QueryInterface(interfaceName);
-        fxdriver.logging.info('Found implementation at: ' + cids[i]);
+        goog.log.info(DrivenPromptService.LOG_, 'Found implementation at: ' + cids[i]);
         return toReturn;
       } catch (ignored) {}
     }
@@ -136,11 +136,11 @@ function DrivenPromptService() {
   var originalPrompter_ = findImplementation(CI.nsIPromptFactory, prompters);
 
   if (!originalPromptService_) {
-    fxdriver.logging.info('Unable to locate original prompt service');
+    goog.log.info(DrivenPromptService.LOG_, 'Unable to locate original prompt service');
   }
 
   if (!originalPrompter_) {
-    fxdriver.logging.info('Unable to locate original prompter');
+    goog.log.info(DrivenPromptService.LOG_, 'Unable to locate original prompter');
   }
 
   this.delegate_ = originalPrompter_ ? originalPrompter_ : originalPromptService_;
@@ -151,8 +151,14 @@ function DrivenPromptService() {
   this.QueryInterface = fxdriver.moz.queryInterface(this,
     [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
 
-  fxdriver.logging.info('Finished initializing spoofed prompt service');
+  goog.log.info(DrivenPromptService.LOG_, 'Finished initializing spoofed prompt service');
 }
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+DrivenPromptService.LOG_ = goog.log.getLogger('fxdriver.DrivenPromptService');
 
 // Constants from nsIPromtService.idl
 DrivenPromptService.prototype = {
@@ -323,7 +329,8 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
-  fxdriver.logging.info('Unregistering\n');
+  goog.log.info(goog.log.getLogger('fxdriver.PromptServiceSpoofModule'),
+                'Unregistering');
   aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
 };

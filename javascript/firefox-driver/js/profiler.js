@@ -17,6 +17,9 @@
 goog.provide('fxdriver.profiler');
 
 goog.require('fxdriver.logging');
+goog.require('webdriver.logging');
+
+
 
 /**
  * Logs a message to the profiler log.
@@ -24,6 +27,8 @@ goog.require('fxdriver.logging');
  * @param {string} message The message to log.
  */
 fxdriver.profiler.log = function(message) {
-  fxdriver.logging.log(fxdriver.logging.LogType.PROFILER,
-      fxdriver.logging.LogLevel.INFO, message);
+  fxdriver.logging.log(
+      fxdriver.logging.LogType.PROFILER,
+      webdriver.logging.Level.INFO,
+      message);
 };

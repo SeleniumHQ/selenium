@@ -24,9 +24,17 @@ goog.provide('fxdriver.modals');
 goog.require('WebDriverError');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.Timer');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
+goog.require('goog.log');
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+fxdriver.modals.LOG_ = goog.log.getLogger('fxdriver.modals');
+
 
 fxdriver.modals.isModalPresent = function(callback, timeout) {
     fxdriver.modaltimer = new fxdriver.Timer();
@@ -54,7 +62,8 @@ fxdriver.modals.dismissAlert = function(driver) {
   var button = fxdriver.modals.findButton_(modal, 'cancel');
 
   if (!button) {
-    fxdriver.logging.info('No cancel button Falling back to the accept button');
+    goog.log.info(fxdriver.modals.LOG_,
+        'No cancel button Falling back to the accept button');
     button = fxdriver.modals.findButton_(modal, 'accept');
   }
 
@@ -147,12 +156,13 @@ fxdriver.modals.findAssociatedDriver_ = function(window) {
   }
 
   // There's no meaningful way we can reach this.
-  fxdriver.logging.info('Unable to find the associated driver');
+  goog.log.info(fxdriver.modals.LOG_,
+      'Unable to find the associated driver');
   return undefined;
 };
 
 fxdriver.modals.signalOpenModal = function(parent, text) {
-  fxdriver.logging.info('signalOpenModal');
+  goog.log.info(fxdriver.modals.LOG_, 'signalOpenModal');
   // Try to grab the top level window
   var driver = fxdriver.modals.findAssociatedDriver_(parent);
   if (driver && driver.response_) {

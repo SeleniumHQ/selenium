@@ -24,6 +24,8 @@ goog.require('Utils');
 goog.require('WebElement');
 goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
+goog.require('goog.log');
+
 
 /**
  * @constructor
@@ -46,7 +48,7 @@ WebDriverServer = function() {
   try {
     this.server_ = Utils.newInstance('@mozilla.org/server/jshttp;1', 'nsIHttpServer');
   } catch (e) {
-    fxdriver.logging.warning(e);
+    goog.log.warning(WebDriverServer.LOG_, 'Failed to create HTTP server', e);
   }
 
   this.server_.registerGlobHandler('.*/hub/.*', { handle: function(request, response) {
@@ -56,10 +58,18 @@ WebDriverServer = function() {
 };
 
 
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+WebDriverServer.LOG_ = fxdriver.logging.getLogger('fxdriver.WebDriverServer');
+
+
 WebDriverServer.prototype.newDriver = function(window) {
   if (!this.enableNativeEvents) {
     this.enableNativeEvents = Utils.useNativeEvents();
-    fxdriver.logging.info('Using native events: ' + this.enableNativeEvents);
+    goog.log.info(WebDriverServer.LOG_,
+        'Using native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;

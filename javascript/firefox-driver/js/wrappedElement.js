@@ -31,8 +31,16 @@ goog.require('fxdriver.preconditions');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
+goog.require('goog.log');
 goog.require('goog.math.Coordinate');
 goog.require('webdriver.atoms.element');
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+WebElement.LOG_ = fxdriver.logging.getLogger('fxdriver.WebElement');
 
 
 WebElement.elementEquals = function(respond, parameters) {
@@ -81,7 +89,7 @@ WebElement.clickElement = function(respond, parameters) {
   var elementHalfHeight = (location.height ? Math.floor(location.height / 2) : 0);
 
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
-    fxdriver.logging.info('Using native events for click');
+    goog.log.info(WebElement.LOG_, 'Using native events for click');
 
     var inViewAfterScroll = Utils.scrollIntoView(
         unwrapped,
@@ -128,7 +136,7 @@ WebElement.clickElement = function(respond, parameters) {
       // the error returned from the native call indicates it's not
       // implemented.
 
-      fxdriver.logging.info('Detected error when clicking: ' + e.name);
+      goog.log.info(WebElement.LOG_, 'Detected error when clicking', e);
 
       if (e.name != 'NS_ERROR_NOT_IMPLEMENTED') {
         throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
@@ -138,7 +146,8 @@ WebElement.clickElement = function(respond, parameters) {
     }
   }
 
-  fxdriver.logging.info('Falling back to synthesized click');
+
+  goog.log.info(WebElement.LOG_, 'Falling back to synthesized click');
 
   // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
@@ -183,13 +192,13 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   var newDocument = goog.dom.getOwnerDocument(currentlyActive);
 
   if (currentlyActive != element || currentDocument != new XPCNativeWrapper(newDocument)) {
-    fxdriver.logging.info('Need to switch focus');
+    goog.log.info(WebElement.LOG_, 'Need to switch focus');
     alreadyFocused = false;
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
   } else {
-    fxdriver.logging.info('No need to switch focus');
+    goog.log.info(WebElement.LOG_, 'No need to switch focus');
   }
 
   var use = element;

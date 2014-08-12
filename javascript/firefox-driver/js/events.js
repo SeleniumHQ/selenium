@@ -19,7 +19,6 @@
 goog.provide('fxdriver.events');
 
 goog.require('Utils');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('goog.style');
 
@@ -34,7 +33,6 @@ goog.require('goog.style');
  *           QueryInterface: !Function}} The event coordinates.
  */
 fxdriver.events.buildCoordinates = function(parameters, doc) {
-  fxdriver.logging.info(parameters);
   var element = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
 
   var x = ('xoffset' in parameters ) ? parameters['xoffset'] : null;

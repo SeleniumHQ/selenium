@@ -29,14 +29,14 @@ fxdriver.prefs.PREFS_ = Components.classes['@mozilla.org/preferences-service;1']
  * If no value is stored the given default value is returned.
  *
  * @param {string} name The name of the preference.
- * @param {string} defaultValue The default value to use.
+ * @param {string=} opt_defaultValue The default value to use.
  * @return {string} The preference value or the default value.
  */
-fxdriver.prefs.getCharPref = function(name, defaultValue) {
+fxdriver.prefs.getCharPref = function(name, opt_defaultValue) {
   var value = fxdriver.prefs.PREFS_.prefHasUserValue(name) &&
       fxdriver.prefs.PREFS_.getCharPref(name);
   if (!value) {
-    value = defaultValue;
+    value = opt_defaultValue;
   }
   return value;
 };
@@ -72,7 +72,7 @@ fxdriver.prefs.getBoolPref = function(name, defaultValue) {
  * Stores the given boolean value for the given preference name.
  *
  * @param {string} name The preference name.
- * @param {string} value The value to store.
+ * @param {boolean} value The value to store.
  */
 fxdriver.prefs.setBoolPref = function(name, value) {
   fxdriver.prefs.PREFS_.setBoolPref(name, value);

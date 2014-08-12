@@ -31,6 +31,7 @@ goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.log');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 
@@ -53,6 +54,13 @@ SyntheticMouse = function() {
   // happened, when we fire events.
   this.viewPortOffset = new goog.math.Coordinate(0, 0);
 };
+
+
+/**
+ * @private {goog.log.Logger}
+ * @const
+ */
+SyntheticMouse.LOG_ = fxdriver.logging.getLogger('fxdriver.SyntheticMouse');
 
 
 SyntheticMouse.newResponse = function(status, message) {
@@ -98,7 +106,8 @@ SyntheticMouse.prototype.initialize = function(modifierKeys) {
 
 
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
-  fxdriver.logging.info('SyntheticMouse.move ' + target + ' ' + xOffset + ' ' + yOffset);
+  goog.log.info(SyntheticMouse.LOG_,
+      'SyntheticMouse.move ' + target + ' ' + xOffset + ' ' + yOffset);
   xOffset = xOffset || 0;
   yOffset = yOffset || 0;
 
@@ -132,13 +141,15 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
     var scrollOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
     xCompensate = (scrollOffset.x - this.viewPortOffset.x) * 2;
     yCompensate = (scrollOffset.y - this.viewPortOffset.y) * 2;
-    fxdriver.logging.info('xCompensate = ' + xCompensate + ' yCompensate = ' + yCompensate);
+    goog.log.info(SyntheticMouse.LOG_,
+        'xCompensate = ' + xCompensate + ' yCompensate = ' + yCompensate);
   }
 
   var coords =
       new goog.math.Coordinate(xOffset + xCompensate, yOffset + yCompensate);
 
-  fxdriver.logging.info('Calling mouse.move with: ' + coords.x + ', ' + coords.y + ', ' + element);
+  goog.log.info(SyntheticMouse.LOG_,
+      'Calling mouse.move with: ' + coords.x + ', ' + coords.y + ', ' + element);
   this.getMouse_().move(element, coords);
 
   this.lastElement = element;
@@ -149,7 +160,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
 
 SyntheticMouse.prototype.click = function(target) {
-  fxdriver.logging.info('SyntheticMouse.click ' + target);
+  goog.log.info(SyntheticMouse.LOG_, 'SyntheticMouse.click ' + target);
 
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
@@ -173,7 +184,8 @@ SyntheticMouse.prototype.click = function(target) {
     }
   }
 
-  fxdriver.logging.info('About to do a bot.action.click on ' + element);
+  goog.log.info(SyntheticMouse.LOG_,
+      'About to do a bot.action.click on ' + element);
   var keyboardState = new bot.Device.ModifiersState();
   if (this.modifierKeys !== undefined) {
     keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
@@ -190,7 +202,7 @@ SyntheticMouse.prototype.click = function(target) {
 };
 
 SyntheticMouse.prototype.contextClick = function(target) {
-  fxdriver.logging.info('SyntheticMouse.contextClick ' + target);
+  goog.log.info(SyntheticMouse.LOG_, 'SyntheticMouse.contextClick ' + target);
 
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
@@ -200,7 +212,8 @@ SyntheticMouse.prototype.contextClick = function(target) {
     return error;
   }
 
-  fxdriver.logging.info('About to do a bot.action.rightClick on ' + element);
+  goog.log.info(SyntheticMouse.LOG_,
+      'About to do a bot.action.rightClick on ' + element);
   bot.action.rightClick(element, this.lastMousePosition);
 
   this.lastElement = element;
@@ -209,7 +222,8 @@ SyntheticMouse.prototype.contextClick = function(target) {
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
-  fxdriver.logging.info('SyntheticMouse.doubleClick ' + target);
+  goog.log.info(SyntheticMouse.LOG_,
+      'SyntheticMouse.doubleClick ' + target);
 
   var element = target ? target : this.lastElement;
   var error = this.isElementShown(element);
@@ -217,7 +231,8 @@ SyntheticMouse.prototype.doubleClick = function(target) {
     return error;
   }
 
-  fxdriver.logging.info('About to do a bot.action.doubleClick on ' + element);
+  goog.log.info(SyntheticMouse.LOG_,
+      'About to do a bot.action.doubleClick on ' + element);
   bot.action.doubleClick(element, this.lastMousePosition);
 
   this.lastElement = element;
@@ -227,7 +242,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
 
 
 SyntheticMouse.prototype.down = function(coordinates) {
-  fxdriver.logging.info('SyntheticMouse.down ' + coordinates);
+  goog.log.info(SyntheticMouse.LOG_, 'SyntheticMouse.down ' + coordinates);
 
   var element = this.getElement_(coordinates);
 
@@ -255,7 +270,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
 
 
 SyntheticMouse.prototype.up = function(coordinates) {
-  fxdriver.logging.info('SyntheticMouse.up ' + coordinates);
+  goog.log.info(SyntheticMouse.LOG_, 'SyntheticMouse.up ' + coordinates);
 
   var element = this.getElement_(coordinates);
 
@@ -385,7 +400,9 @@ SyntheticMouse.EventEmitter.prototype.fireKeyboardEvent = function(target, type,
  * @protected
  */
 SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, args) {
-  fxdriver.logging.info('Calling fireMouseEvent ' + type + ' ' + args.clientX + ', ' + args.clientY + ', ' + target);
+  goog.log.info(SyntheticMouse.LOG_,
+      'Calling fireMouseEvent ' + type + ' ' + args.clientX +
+      ', ' + args.clientY + ', ' + target);
   if (type == 'click') {
     // A click event will be automatically fired as a result of a mousedown and mouseup in sequence
     return true;
@@ -401,7 +418,9 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
     // Firefox 3
     utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
   }
-  fxdriver.logging.info('Called fireMouseEvent ' + type + ' ' + args.clientX + ', ' + args.clientY + ', ' + target);
+  goog.log.info(SyntheticMouse.LOG_,
+      'Called fireMouseEvent ' + type + ' ' + args.clientX +
+      ', ' + args.clientY + ', ' + target);
   return true;
 };
 

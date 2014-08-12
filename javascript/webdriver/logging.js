@@ -35,15 +35,15 @@ webdriver.logging.LevelName = {
 
 /**
  * Logging levels.
- * @enum {{value: number, name: webdriver.logging.LevelName}}
+ * @enum {{value: number, name: string}}
  */
 webdriver.logging.Level = {
-  ALL: {value: Number.MIN_VALUE, name: webdriver.logging.LevelName.ALL},
-  DEBUG: {value: 700, name: webdriver.logging.LevelName.DEBUG},
-  INFO: {value: 800, name: webdriver.logging.LevelName.INFO},
-  WARNING: {value: 900, name: webdriver.logging.LevelName.WARNING},
-  SEVERE: {value: 1000, name: webdriver.logging.LevelName.SEVERE},
-  OFF: {value: Number.MAX_VALUE, name: webdriver.logging.LevelName.OFF}
+  ALL: {value: Number.MIN_VALUE, name: 'ALL'},
+  DEBUG: {value: 700, name: 'DEBUG'},
+  INFO: {value: 800, name: 'INFO'},
+  WARNING: {value: 900, name: 'WARNING'},
+  SEVERE: {value: 1000, name: 'SEVERE'},
+  OFF: {value: Number.MAX_VALUE, name: 'OFF'}
 };
 
 
