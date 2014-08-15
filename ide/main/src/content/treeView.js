@@ -126,6 +126,7 @@ objectExtend(TreeView.prototype, {
         setTextBox: function(id,value,disabled) {
             this.document.getElementById(id).value = value;
             this.document.getElementById(id).disabled = disabled;
+            this.document.getElementById(id).commandtype = this.currentCommand.type || "command"
         },
 
         updateTarget: function(value, disabled) {
@@ -329,6 +330,9 @@ objectExtend(TreeView.prototype, {
                     this.setTextBox("commandAction", command.command, false);
                     this.updateSeleniumTargets();
                     this.setTextBox("commandValue", this.encodeText(command.value), false);
+                    this.editor.showReference(command);
+                    this.editor.showUIReference(command.target);
+                    this.editor.showRollupReference(command);
                 } else if (command.type == 'comment') {
                     this.setTextBox("commandAction", command.comment, false);
                     this.updateTarget('', true);
@@ -336,9 +340,6 @@ objectExtend(TreeView.prototype, {
                 }
                 
                 this.selectRecordIndex(this.tree.currentIndex);
-                this.editor.showReference(command);
-                this.editor.showUIReference(command.target);
-                this.editor.showRollupReference(command);
             } else {
                 this.setTextBox("commandAction", '', true);
                 this.updateTarget('', true);
@@ -653,7 +654,7 @@ TreeView.UpdateCommandAction.prototype = {
 		if (this.command.type == 'command') {
 			this.oldValue = this.command[this.key];
 			this.command[this.key] = this.value;
-		} else if (this.command.type == 'comment' && this.key == 'command') {
+		} else if (this.command.type == 'comment') {
 			this.oldValue = this.command['comment'];
 			this.command['comment'] = this.value;
 		}
