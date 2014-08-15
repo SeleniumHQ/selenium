@@ -99,7 +99,10 @@ AutoCompleteResult.prototype = {
 	},
 	getLabelAt: function getLabelAt(index) {
 		return this.getValueAt(index);
-  },
+	},
+	getFinalCompleteValueAt: function(index) {
+		return this.getValueAt(index);
+	},
 	removeValueAt: function(rowIndex, removeFromDb) {
 	},
     QueryInterface: function (uuid) {
