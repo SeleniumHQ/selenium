@@ -63,6 +63,7 @@ function loadFromOptions(options) {
 function loadDefaultOptions() {
   if (confirm(Message("options.confirmLoadDefaultOptions"))) {
     loadFromOptions(Preferences.DEFAULT_OPTIONS);
+    validate()
     for (key in this.options) {
       if (/^formats\./.test(key)) {
         delete this.options[key];
