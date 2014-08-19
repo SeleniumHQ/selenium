@@ -16,7 +16,12 @@
 
 #include <string>
 #include <vector>
-#include "json.h"
+
+// Forward declaration of classes to avoid
+// circular include files.
+namespace Json {
+  class Value;
+} // namespace Json
 
 namespace webdriver {
 

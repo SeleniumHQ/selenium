@@ -30,7 +30,6 @@
 #define WINDOWS
 
 #include <windows.h>
-#include <atlstr.h>
 #else
 // TODO(JimEvans): Add non-Windows includes here
 #endif

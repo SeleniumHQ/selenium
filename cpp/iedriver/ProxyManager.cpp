@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <vector>
 #include <wininet.h>
+#include "json.h"
 #include "logging.h"
 #include "messages.h"
 

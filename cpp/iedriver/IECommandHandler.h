@@ -22,6 +22,7 @@
 #include "command.h"
 #include "Element.h"
 #include "response.h"
+#include "Script.h"
 
 #define BROWSER_NAME_CAPABILITY "browserName"
 #define BROWSER_VERSION_CAPABILITY "version"

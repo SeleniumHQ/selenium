@@ -15,6 +15,7 @@
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
 #include "logging.h"
+#include "Script.h"
 
 namespace webdriver {
 

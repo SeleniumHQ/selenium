@@ -16,14 +16,15 @@
 
 #include <vector>
 #include "DocumentHost.h"
-#include "ElementRepository.h"
-#include "json.h"
-#include "keycodes.h"
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 
 namespace webdriver {
+
+// Forward declaration of classes to avoid
+// circular include files.
+class ElementRepository;
 
 class InputManager {
  public:

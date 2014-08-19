@@ -13,8 +13,11 @@
 
 #include <ctime>
 #include "errorcodes.h"
+#include "ElementRepository.h"
 #include "InputManager.h"
 #include "interactions.h"
+#include "json.h"
+#include "keycodes.h"
 #include "logging.h"
 #include "Script.h"
 #include "Generated/atoms.h"

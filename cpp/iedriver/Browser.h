@@ -19,12 +19,14 @@
 #include <mshtml.h>
 #include <iostream>
 #include <string>
-#include "json.h"
-#include "BrowserFactory.h"
 #include "DocumentHost.h"
 #include "messages.h"
 
 namespace webdriver {
+
+// Forward declaration of classes to avoid
+// circular include files.
+class ElementRepository;
 
 class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DIID_DWebBrowserEvents2> {
  public:

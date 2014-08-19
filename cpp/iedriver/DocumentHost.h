@@ -15,11 +15,10 @@
 #define WEBDRIVER_IE_DOCUMENTHOST_H_
 
 #include <string>
+#include <map>
 #include <memory>
-#include "BrowserFactory.h"
 #include "ErrorCodes.h"
 #include "LocationInfo.h"
-#include "Script.h"
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
 

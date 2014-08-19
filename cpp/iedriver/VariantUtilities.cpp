@@ -13,6 +13,7 @@
 
 #include "VariantUtilities.h"
 #include "IECommandExecutor.h"
+#include "json.h"
 #include "logging.h"
 
 namespace webdriver {

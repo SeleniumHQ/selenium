@@ -15,20 +15,17 @@
 #define WEBDRIVER_IE_IECOMMANDEXECUTOR_H_
 
 #include <Objbase.h>
-#include <algorithm>
-#include <ctime>
 #include <map>
 #include <string>
-#include <vector>
 #include <unordered_map>
-#include "Browser.h"
+#include "BrowserFactory.h"
 #include "command.h"
 #include "command_types.h"
+#include "DocumentHost.h"
 #include "IECommandHandler.h"
 #include "Element.h"
 #include "ElementFinder.h"
 #include "ElementRepository.h"
-#include "HtmlDialog.h"
 #include "InputManager.h"
 #include "ProxyManager.h"
 #include "messages.h"

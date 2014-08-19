@@ -12,10 +12,12 @@
 // limitations under the License.
 
 #include "DocumentHost.h"
+#include "BrowserFactory.h"
 #include "Generated/cookies.h"
 #include "logging.h"
 #include "messages.h"
 #include "RegistryUtilities.h"
+#include "Script.h"
 
 namespace webdriver {
 

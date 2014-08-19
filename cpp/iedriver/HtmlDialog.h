@@ -20,7 +20,6 @@
 #include <mshtmdid.h>
 #include "DocumentHost.h"
 #include "messages.h"
-#include "BrowserFactory.h"
 
 namespace webdriver {
 

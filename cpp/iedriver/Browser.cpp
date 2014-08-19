@@ -14,7 +14,9 @@
 #include "Browser.h"
 #include "logging.h"
 #include <comutil.h>
+#include <ShlGuid.h>
 #include "Alert.h"
+#include "BrowserFactory.h"
 
 namespace webdriver {
 

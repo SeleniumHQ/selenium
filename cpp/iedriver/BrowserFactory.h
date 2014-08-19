@@ -14,15 +14,7 @@
 #ifndef WEBDRIVER_IE_BROWSERFACTORY_H_
 #define WEBDRIVER_IE_BROWSERFACTORY_H_
 
-#include <exdisp.h>
-#include <exdispid.h>
-#include <iepmapi.h>
-#include <shlguid.h>
-#include <oleacc.h>
-#include <sddl.h>
 #include <string>
-#include <sstream>
-#include <vector>
 
 #define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
 #define OLEACC_LIBRARY_NAME L"OLEACC.DLL"

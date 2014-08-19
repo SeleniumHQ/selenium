@@ -13,9 +13,14 @@
 
 #include "BrowserFactory.h"
 #include <ctime>
-#include <iostream>
-#include <WinInet.h>
+#include <vector>
+#include <exdispid.h>
+#include <iepmapi.h>
+#include <oleacc.h>
+#include <sddl.h>
+#include <shlguid.h>
 #include <shlobj.h>
+#include <WinInet.h>
 #include "logging.h"
 #include "psapi.h"
 #include "RegistryUtilities.h"

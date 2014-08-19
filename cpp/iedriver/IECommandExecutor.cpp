@@ -12,6 +12,9 @@
 // limitations under the License.
 
 #include "IECommandExecutor.h"
+#include <algorithm>
+#include <ctime>
+#include <vector>
 #include "logging.h"
 #include "CommandHandlers/AcceptAlertCommandHandler.h"
 #include "CommandHandlers/AddCookieCommandHandler.h"
@@ -74,6 +77,7 @@
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToParentFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
+#include "HtmlDialog.h"
 #include "StringUtilities.h"
 
 namespace webdriver {
