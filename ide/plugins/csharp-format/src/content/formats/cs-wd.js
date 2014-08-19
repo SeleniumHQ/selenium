@@ -508,7 +508,7 @@ WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'value') {
     return "new SelectElement(" + this.ref + ").SelectByValue(" + xlateArgument(selectLocator.string) + ")";
   }
-  return "new Select(" + this.ref + ").SelectByText(" + xlateArgument(selectLocator.string) + ")";
+  return "new SelectElement(" + this.ref + ").SelectByText(" + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {
