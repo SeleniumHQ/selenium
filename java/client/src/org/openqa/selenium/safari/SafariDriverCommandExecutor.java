@@ -112,7 +112,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     Stopwatch stopwatch = Stopwatch.createStarted();
     try {
       log.info("Waiting for SafariDriver to connect");
-      connection = server.getConnection(45, TimeUnit.SECONDS);
+      connection = server.getConnection(10, TimeUnit.SECONDS);
     } catch (InterruptedException ignored) {
       // Do nothing.
     }
