@@ -138,7 +138,6 @@
     <Compile Include="Firefox\FirefoxProfile.cs" />
     <Compile Include="Firefox\FirefoxProfileManager.cs" />
     <Compile Include="Firefox\FirefoxWebElement.cs" />
-    <Compile Include="Firefox\IExtensionConnection.cs" />
     <Compile Include="Firefox\Internal\Executable.cs" />
     <Compile Include="Firefox\Internal\ILock.cs" />
     <Compile Include="Firefox\Internal\IniFileReader.cs" />
