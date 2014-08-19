@@ -56,27 +56,12 @@ void Server::Initialize(const int port,
   this->PopulateCommandRepository();
 }
 
-void* Server::OnHttpEvent(enum mg_event event_raised,
-                          struct mg_connection* conn,
-                          const struct mg_request_info* request_info) {
-  LOG(TRACE) << "Entering Server::OnHttpEvent";
-
-  // Mongoose calls method with the following events:
-  // - MG_EVENT_LOG - on crying to log
-  // - MG_NEW_REQUEST - on processing new HTTP request
-  // - MG_HTTP_ERROR - on sending HTTP error
-  // - MG_REQUEST_COMPLETE - on request processing is completed (in last version of code)
-  int handler_result_code = 0;
-  if (event_raised == MG_NEW_REQUEST) {
-    handler_result_code = reinterpret_cast<Server*>(request_info->user_data)->
-        ProcessRequest(conn, request_info);
-  } else if (event_raised == MG_EVENT_LOG) {
-    LOG(WARN) << "Mongoose log event: " << request_info->log_message;
-  } else if (event_raised == MG_HTTP_ERROR) {
-    // do nothing due it will be reported as MG_EVENT_LOG with more info
-  }
-
-  return reinterpret_cast<void*>(handler_result_code);
+int Server::OnNewHttpRequest(struct mg_connection* conn) {
+  mg_context* context = mg_get_context(conn);
+  Server* current_server = reinterpret_cast<Server*>(mg_get_user_data(context));
+  mg_request_info* request_info = mg_get_request_info(conn);
+  int handler_result_code = current_server->ProcessRequest(conn, request_info);
+  return handler_result_code;
 }
 
 bool Server::Start() {
@@ -107,7 +92,9 @@ bool Server::Start() {
                             "access_control_list", acl.c_str(),
                             // "enable_keep_alive", "yes",
                             NULL };
-  context_ = mg_start(&OnHttpEvent, this, options);
+  mg_callbacks callbacks = {};
+  callbacks.begin_request = &OnNewHttpRequest;
+  context_ = mg_start(&callbacks, this, options);
   if (context_ == NULL) {
     LOG(WARN) << "Failed to start Mongoose";
     return false;

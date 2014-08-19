@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\jsoncpp.cpp">
+    <ClCompile Include="civetweb.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\json\json.h">
+    <ClInclude Include="civetweb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

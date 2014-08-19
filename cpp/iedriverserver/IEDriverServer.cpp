@@ -17,6 +17,7 @@
 #include "CommandLineArguments.h"
 #include <algorithm>
 #include <map>
+#include <iostream>
 #include <string>
 #include <vector>
 

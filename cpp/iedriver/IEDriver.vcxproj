@@ -92,7 +92,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -124,7 +124,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -152,7 +152,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -179,7 +179,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -200,8 +200,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\third_party\mongoose\mongoose.vcxproj">
-      <Project>{9aebd612-232d-40cb-be2c-f2b911fd6228}</Project>
+    <ProjectReference Include="..\..\third_party\civetweb\civetweb.vcxproj">
+      <Project>{231a8bed-6f2d-4688-a3bd-920310621bbf}</Project>
     </ProjectReference>
     <ProjectReference Include="..\webdriver-interactions\webdriver-interactions.vcxproj">
       <Project>{87fa39a1-958e-478a-8ab9-6d5e5aaa3886}</Project>

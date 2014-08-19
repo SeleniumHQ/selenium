@@ -38,7 +38,7 @@ void Command::Deserialize(const std::string& json) {
   if (!successful_parse) {
     // report to the user the failure and their locations in the document.
     LOG(WARN) << "Failed to parse configuration due "
-              << reader.getFormatedErrorMessages() << std::endl
+              << reader.getFormattedErrorMessages() << std::endl
               << "JSON command: '" << json << "'";
   }
 

@@ -81,7 +81,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -95,7 +95,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -111,7 +111,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -129,7 +129,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\civetweb;$(ProjectDir)..\webdriver-interactions</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -156,11 +156,11 @@
     <ClInclude Include="session.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\third_party\civetweb\civetweb.vcxproj">
+      <Project>{231a8bed-6f2d-4688-a3bd-920310621bbf}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\third_party\json-cpp\json-cpp.vcxproj">
       <Project>{320f3bbe-8223-4e7f-abee-18d3bd57b1fd}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\third_party\mongoose\mongoose.vcxproj">
-      <Project>{9aebd612-232d-40cb-be2c-f2b911fd6228}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

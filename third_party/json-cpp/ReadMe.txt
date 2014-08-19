@@ -1,30 +1,10 @@
-========================================================================
-    STATIC LIBRARY : JSON Project Overview
-========================================================================
+This code is from the JsonCpp project, which can be found at the following:
+https://github.com/open-source-parsers/jsoncpp.
 
-AppWizard has created this json-cpp library project for you.
+The code is released under the MIT license, as found in that project's
+LICENSE file (https://github.com/open-source-parsers/jsoncpp/blob/master/LICENSE).
 
-This file contains a summary of what you will find in each of the files that
-make up your json-cpp application.
-
-
-json-cpp.vcproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named JSON.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+To generate the source code included here, clone the project from the project's
+GitHub repository, and from the command line, run the "amalgamate.py" Python
+script. This will generate the source files in the "dist" directory. Copy
+json.h and jsoncpp.cpp, overwriting the existing files in this project.
