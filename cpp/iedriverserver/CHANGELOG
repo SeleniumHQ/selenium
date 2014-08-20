@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.42.0.2
+=========
+ * Updated json-cpp lib and replaced mongoose web server with civetweb. The
+   Mongoose project has changed its licensing to GPL. This change replaces
+   Mongoose with Civetweb, a fork of the Mongoose project at the last commit
+   under the previous license. Civetweb is licensed using the MIT license.
+   Additionally, the JsonCpp project has moved and changed owners. It now has
+   a much simpler method of source code incorporation into additional projects.
+   See the README.txt in third_party/json-cpp for information about how to
+   generate the code included here.
+
 v2.42.0.1
 =========
  * Implemented switchToParentFrame command.
