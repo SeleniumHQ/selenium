@@ -181,7 +181,7 @@ describe('chrome.Options', function() {
       var proxyPrefs = {};
       var loggingPrefs = {};
       var options = new chrome.Options().
-          setLoggingPreferences(loggingPrefs).
+          setLoggingPrefs(loggingPrefs).
           setProxy(proxyPrefs);
 
       var caps = options.toCapabilities();
@@ -199,9 +199,7 @@ test.suite(function(env) {
       var options = new chrome.Options().
           addArguments('user-agent=foo;bar');
 
-      var driver = env.builder().
-          setChromeOptions(options).
-          build();
+      var driver = env.driver = new chrome.Driver(options);
 
       driver.get(test.Pages.ajaxyPage);
 

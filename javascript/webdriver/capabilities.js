@@ -19,6 +19,7 @@
 goog.provide('webdriver.Browser');
 goog.provide('webdriver.Capabilities');
 goog.provide('webdriver.Capability');
+goog.provide('webdriver.ProxyConfig');
 
 
 
@@ -38,6 +39,23 @@ webdriver.Browser = {
   SAFARI: 'safari',
   HTMLUNIT: 'htmlunit'
 };
+
+
+
+/**
+ * Describes how a proxy should be configured for a WebDriver session.
+ * Proxy configuration object, as defined by the WebDriver wire protocol.
+ * @typedef {(
+ *     {proxyType: string}|
+ *     {proxyType: string,
+ *      proxyAutoconfigUrl: string}|
+ *     {proxyType: string,
+ *      ftpProxy: string,
+ *      httpProxy: string,
+ *      sslProxy: string,
+ *      noProxy: string})}
+ */
+webdriver.ProxyConfig;
 
 
 
@@ -63,6 +81,14 @@ webdriver.Capability = {
   BROWSER_NAME: 'browserName',
 
   /**
+   * Defines how elements should be scrolled into the viewport for interaction.
+   * This capability will be set to zero (0) if elements are aligned with the
+   * top of the viewport, or one (1) if aligned with the bottom. The default
+   * behavior is to align with the top of the viewport.
+   */
+  ELEMENT_SCROLL_BEHAVIOR: 'elementScrollBehavior',
+
+  /**
    * Whether the driver is capable of handling modal alerts (e.g. alert,
    * confirm, prompt). To define how a driver <i>should</i> handle alerts,
    * use {@link webdriver.Capability.UNEXPECTED_ALERT_BEHAVIOR}.
@@ -73,6 +99,11 @@ webdriver.Capability = {
    * Key for the logging driver logging preferences.
    */
   LOGGING_PREFS: 'loggingPrefs',
+
+  /**
+   * Whether this session generates native events when simulating user input.
+   */
+  NATIVE_EVENTS: 'nativeEvents',
 
   /**
    * Describes the platform the browser is running on. Will be one of
@@ -99,12 +130,6 @@ webdriver.Capability = {
 
   /** Whether the driver supports manipulating the app cache. */
   SUPPORTS_APPLICATION_CACHE: 'applicationCacheEnabled',
-
-  /**
-   * Whether the driver supports controlling the browser's internet
-   * connectivity.
-   */
-  SUPPORTS_BROWSER_CONNECTION: 'browserConnectionEnabled',
 
   /** Whether the driver supports locating elements with CSS selectors. */
   SUPPORTS_CSS_SELECTORS: 'cssSelectorsEnabled',
@@ -315,4 +340,60 @@ webdriver.Capabilities.prototype.get = function(key) {
  */
 webdriver.Capabilities.prototype.has = function(key) {
   return !!this.get(key);
+};
+
+
+/**
+ * Sets the logging preferences. Preferences may be specified as a
+ * {@link webdriver.logging.Preferences} instance, or a as a map of log-type to
+ * log-level.
+ * @param {!(webdriver.logging.Preferences|Object.<string, string>)} prefs The
+ *     logging preferences.
+ * @return {!webdriver.Capabilities} A self reference.
+ */
+webdriver.Capabilities.prototype.setLoggingPrefs = function(prefs) {
+  return this.set(webdriver.Capability.LOGGING_PREFS, prefs);
+};
+
+
+/**
+ * Sets the proxy configuration for this instance.
+ * @param {webdriver.ProxyConfig} proxy The desired proxy configuration.
+ * @return {!webdriver.Capabilities} A self reference.
+ */
+webdriver.Capabilities.prototype.setProxy = function(proxy) {
+  return this.set(webdriver.Capability.PROXY, proxy);
+};
+
+
+/**
+ * Sets whether native events should be used.
+ * @param {boolean} enabled Whether to enable native events.
+ * @return {!webdriver.Capabilities} A self reference.
+ */
+webdriver.Capabilities.prototype.setEnableNativeEvents = function(enabled) {
+  return this.set(webdriver.Capability.NATIVE_EVENTS, enabled);
+};
+
+
+/**
+ * Sets how elements should be scrolled into view for interaction.
+ * @param {number} behavior The desired scroll behavior: either 0 to align with
+ *     the top of the viewport or 1 to align with the bottom.
+ * @return {!webdriver.Capabilities} A self reference.
+ */
+webdriver.Capabilities.prototype.setScrollBehavior = function(behavior) {
+  return this.set(webdriver.Capability.ELEMENT_SCROLL_BEHAVIOR, behavior);
+};
+
+
+/**
+ * Sets the default action to take with an unexpected alert before returning
+ * an error.
+ * @param {string} beahvior The desired behavior; should be "accept", "dismiss",
+ *     or "ignore". Defaults to "dismiss".
+ * @return {!webdriver.Capabilities} A self reference.
+ */
+webdriver.Capabilities.prototype.setAlertBehavior = function(behavior) {
+  return this.set(webdriver.Capability.UNEXPECTED_ALERT_BEHAVIOR, behavior);
 };

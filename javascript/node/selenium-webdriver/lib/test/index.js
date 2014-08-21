@@ -54,7 +54,7 @@ var NATIVE_BROWSERS = [
 
 
 var browsersToTest = (function() {
-  var browsers = process.env['SELENIUM_BROWSER'] || Browser.CHROME;
+  var browsers = process.env['SELENIUM_BROWSERS'] || Browser.CHROME;
   browsers = browsers.split(',');
   browsers.forEach(function(browser) {
     if (browser === Browser.IOS) {
@@ -110,6 +110,10 @@ function TestEnvironment(browserName, server) {
 
   var driver;
   this.__defineGetter__('driver', function() { return driver; });
+  this.__defineSetter__('driver', function(d) {
+    if (driver) throw Error('Driver already created');
+    driver = d;
+  });
 
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);

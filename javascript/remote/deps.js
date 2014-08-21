@@ -30,7 +30,8 @@ goog.addDependency(
     [
       'goog.debug.ErrorHandler',
       'goog.events.EventWrapper',
-      'goog.testing.JsUnitException'
+      'goog.testing.JsUnitException',
+      'webdriver.logging.Preferences'
     ],
     // And symbols we require, which is always empty here.
     []);

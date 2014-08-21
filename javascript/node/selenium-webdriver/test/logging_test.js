@@ -38,7 +38,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.BROWSER, logging.Level.OFF);
 
       var driver = env.builder()
-          .setLoggingPreferences(prefs)
+          .setLoggingPrefs(prefs)
           .build();
 
       driver.get(dataUrl(
@@ -59,7 +59,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
 
       var driver = env.builder()
-          .setLoggingPreferences(prefs)
+          .setLoggingPrefs(prefs)
           .build();
 
       driver.get(dataUrl(
@@ -82,7 +82,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
       var driver = env.builder()
-          .setLoggingPreferences(prefs)
+          .setLoggingPrefs(prefs)
           .build();
 
       driver.get(dataUrl(
@@ -111,7 +111,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
       var driver = env.builder()
-          .setLoggingPreferences(prefs)
+          .setLoggingPrefs(prefs)
           .build();
 
       driver.get(dataUrl(
@@ -134,7 +134,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.DRIVER, logging.Level.SEVERE);
 
       var driver = env.builder()
-          .setLoggingPreferences(prefs)
+          .setLoggingPrefs(prefs)
           .build();
 
       driver.get(dataUrl(

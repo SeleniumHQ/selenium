@@ -4,7 +4,23 @@
     `ControlFlow#wait`. For more information, see documentation on
     `webdriver.promise.consume`. Requires harmony support (run with
     `node --harmony-generators` in `v0.11.x`).
-* Added `Builder#setLoggingPreferences()`
+* Various improvements to the `Builder` API. Notably, the `build()` function
+    will no longer default to attempting to use a server at
+    `http://localhost:4444/wd/hub` if it cannot start a browser directly -
+    you must specify the WebDriver server with `usingServer(url)`. You can
+    also set the target browser and WebDriver server through a pair of
+    environment variables. See the documentation on the `Builder` constructor
+    for more information.
+* For consistency with the other language bindings, added browser specific
+    classes that can be used to start a browser without the builder.
+
+        var webdriver = require('selenium-webdriver')
+            chrome = require('selenium-webdriver/chrome');
+
+        // The following are equivalent.
+        var driver1 = new webdriver.Builder().forBrowser('chrome').build();
+        var driver2 = new chrome.Driver();
+
 * Promise A+ compliance: a promise may no longer resolve to itself.
 * For consistency with other language bindings, deprecated
     `UnhandledAlertError#getAlert` and added `#getAlertText`.

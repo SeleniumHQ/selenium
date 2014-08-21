@@ -267,7 +267,7 @@ Options.fromCapabilities = function(capabilities) {
   }
 
   if (capabilities.has(webdriver.Capability.LOGGING_PREFS)) {
-    options.setLoggingPreferences(
+    options.setLoggingPrefs(
         capabilities.get(webdriver.Capability.LOGGING_PREFS));
   }
 
@@ -352,7 +352,7 @@ Options.prototype.setUserPreferences = function(prefs) {
  * @param {!webdriver.logging.Preferences} prefs The logging preferences.
  * @return {!Options} A self reference.
  */
-Options.prototype.setLoggingPreferences = function(prefs) {
+Options.prototype.setLoggingPrefs = function(prefs) {
   this.logPrefs_ = prefs;
   return this;
 };
@@ -384,7 +384,7 @@ Options.prototype.setChromeLogFile = function(path) {
 
 /**
  * Sets the proxy settings for the new session.
- * @param {ProxyConfig} proxy The proxy configuration to use.
+ * @param {webdriver.ProxyConfig} proxy The proxy configuration to use.
  * @return {!Options} A self reference.
  */
 Options.prototype.setProxy = function(proxy) {
@@ -447,29 +447,48 @@ Options.prototype.toJSON = function() {
  * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
  *     {@code null} to use the currently active flow.
  * @return {!webdriver.WebDriver} A new WebDriver instance.
+ * @deprecated Use {@link Driver new Driver()}.
  */
 function createDriver(opt_options, opt_service, opt_flow) {
+  return new Driver(opt_options, opt_service, opt_flow);
+}
+
+
+/**
+ * Creates a new WebDriver client for Chrome.
+ *
+ * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
+ *     options.
+ * @param {remote.DriverService=} opt_service The session to use; will use
+ *     the {@link getDefaultService default service} by default.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
+ * @constructor
+ * @extends {webdriver.WebDriver}
+ */
+var Driver = function(opt_config, opt_service, opt_flow) {
   var service = opt_service || getDefaultService();
   var executor = executors.createExecutor(service.start());
 
-  var options = opt_options || new Options();
-  if (opt_options instanceof webdriver.Capabilities) {
-    // Extract the Chrome-specific options so we do not send unnecessary
-    // data across the wire.
-    options = Options.fromCapabilities(options);
-  }
+  var capabilities =
+      opt_config instanceof Options ? opt_config.toCapabilities() :
+      (opt_config || webdriver.Capabilities.chrome());
 
-  return webdriver.WebDriver.createSession(
-      executor, options.toCapabilities(), opt_flow);
-}
+  var driver = webdriver.WebDriver.createSession(
+      executor, capabilities, opt_flow);
 
+  webdriver.WebDriver.call(
+      this, driver.getSession(), executor, driver.controlFlow());
+};
+util.inherits(Driver, webdriver.WebDriver);
 
 
 // PUBLIC API
 
 
-exports.ServiceBuilder = ServiceBuilder;
+exports.Driver = Driver;
 exports.Options = Options;
+exports.ServiceBuilder = ServiceBuilder;
 exports.createDriver = createDriver;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
