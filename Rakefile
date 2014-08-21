@@ -562,6 +562,39 @@ namespace :docs do
   end
 end
 
+namespace :node do
+  task :deploy => [
+    "//javascript/firefox-driver:webdriver",
+    "//javascript/webdriver:asserts_lib",
+    "//javascript/webdriver:webdriver_lib",
+    "//javascript/webdriver:unit_test_lib"
+  ] do
+    js = Javascript::BaseJs.new
+    # Get JS lib deps, excluding those need to build the FirefoxDriver.
+    deps = js.build_deps("", Rake::Task["//javascript/webdriver:asserts_lib"], [])
+    deps = js.build_deps("", Rake::Task["//javascript/webdriver:webdriver_lib"], deps)
+    deps = js.build_deps("", Rake::Task["//javascript/webdriver:unit_test_lib"], deps)
+    deps.uniq!
+
+    cmd =  "node javascript/node/deploy.js" <<
+        " --output=build/javascript/node/selenium-webdriver" <<
+        " --resource=COPYING:/COPYING" <<
+        " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
+        " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
+        " --resource=third_party/closure/LICENSE:goog/LICENSE" <<
+        " --resource=common/src/web/:test/data/" <<
+        " --exclude_resource=common/src/web/Bin" <<
+        " --exclude_resource=.gitignore" <<
+        " --root=javascript" <<
+        " --root=third_party/closure" <<
+        " --lib=third_party/closure/goog" <<
+        " --lib=" << deps.join(" --lib=") <<
+        " --src=javascript/node/selenium-webdriver"
+
+    sh cmd
+  end
+end
+
 namespace :safari do
   desc "Build the SafariDriver extension"
   task :extension => [ "//javascript/safari-driver:SafariDriver" ]

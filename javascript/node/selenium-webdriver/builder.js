@@ -64,6 +64,9 @@ var Builder = function() {
 
   /** @private {chrome.Options} */
   this.chromeOptions_ = null;
+
+  /** @private {firefox.Options} */
+  this.firefoxOptions_ = null;
 };
 
 
@@ -219,6 +222,21 @@ Builder.prototype.setChromeOptions = function(options) {
 
 
 /**
+ * Sets Firefox-specific options for drivers created by this builder. Any
+ * logging or proxy settings defined on the given options will take precedence
+ * over those set through {@link #setLoggingPrefs} and {@link #setProxy},
+ * respectively.
+ *
+ * @param {!firefox.Options} options The FirefoxDriver options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setFirefoxOptions = function(options) {
+  this.firefoxOptions_ = options;
+  return this;
+};
+
+
+/**
  * Sets the control flow that created drivers should execute actions in. If
  * the flow is never set, or is set to {@code null}, it will use the active
  * flow at the time {@link #build()} is called.
@@ -264,6 +282,10 @@ Builder.prototype.build = function() {
     capabilities.merge(this.chromeOptions_.toCapabilities());
   }
 
+  if (browser === Browser.FIREFOX && this.firefoxOptions_) {
+    capabilities.merge(this.firefoxOptions_.toCapabilities());
+  }
+
   // Check for a remote browser.
   var url = process.env.SELENIUM_REMOTE_URL || this.url_;
   if (url) {
@@ -278,6 +300,12 @@ Builder.prototype.build = function() {
       // index -> builder -> chrome -> index
       var chrome = require('./chrome');
       return new chrome.Driver(capabilities, null, this.flow_);
+
+    case Browser.FIREFOX:
+      // Requiring 'firefox' above would create a cycle:
+      // index -> builder -> firefox -> index
+      var firefox = require('./firefox');
+      return new firefox.Driver(capabilities, this.flow_);
 
     case Browser.PHANTOM_JS:
       // Requiring 'phantomjs' would create a cycle:

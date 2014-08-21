@@ -17,6 +17,7 @@
 
 var assert = require('assert'),
     fs = require('fs'),
+    path = require('path'),
     util = require('util');
 
 var promise = require('../..').promise,
@@ -25,8 +26,8 @@ var promise = require('../..').promise,
     build = require('./build');
 
 
-var DEV_MODE_JAR_PATH =
-    'build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar';
+var DEV_MODE_JAR_PATH = path.join(__dirname, '../../../../..',
+    'build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar');
 var SELENIUM_SERVER_JAR_ENV = 'SELENIUM_SERVER_JAR';
 var PROD_MODE_JAR_PATH = process.env[SELENIUM_SERVER_JAR_ENV];
 
@@ -59,7 +60,8 @@ function getProdModeJarPath() {
 function Server() {
   var jarPath = isDevMode ? DEV_MODE_JAR_PATH : getProdModeJarPath();
   RemoteServer.call(this, jarPath, {
-    port: 0
+    port: 0,
+    stdio: 'inherit'
   });
 }
 util.inherits(Server, RemoteServer);

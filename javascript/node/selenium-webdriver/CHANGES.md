@@ -1,5 +1,7 @@
 ## v2.43.0-dev
 
+* Added native support for Firefox - the Java Selenium server is no longer
+    required.
 * Added support for generator functions to `ControlFlow#execute` and
     `ControlFlow#wait`. For more information, see documentation on
     `webdriver.promise.consume`. Requires harmony support (run with

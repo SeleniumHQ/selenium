@@ -696,17 +696,21 @@ webdriver.promise.rejected = function(opt_reason) {
  * If the call fails, the returned promise will be rejected, otherwise it will
  * be resolved with the result.
  * @param {!Function} fn The function to wrap.
+ * @param {...?} var_args The arguments to apply to the function, excluding the
+ *     final callback.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     result of the provided function's callback.
  */
-webdriver.promise.checkedNodeCall = function(fn) {
+webdriver.promise.checkedNodeCall = function(fn, var_args) {
   var deferred = new webdriver.promise.Deferred(function() {
     throw Error('This Deferred may not be cancelled');
   });
   try {
-    fn(function(error, value) {
+    var args = goog.array.slice(arguments, 1);
+    args.push(function(error, value) {
       error ? deferred.reject(error) : deferred.fulfill(value);
     });
+    fn.apply(null, args);
   } catch (ex) {
     deferred.reject(ex);
   }
@@ -2204,14 +2208,14 @@ webdriver.promise.isGenerator = function(fn) {
  *   console.log(e.toString());  // Error: boom
  * });
  * </code></pre>
- * 
+ *
  * @param {!Function} generatorFn The generator function to execute.
  * @param {Object=} opt_self The object to use as "this" when invoking the
  *     initial generator.
  * @param {...*} var_args Any arguments to pass to the initial generator.
  * @return {!webdriver.promise.Promise.<?>} A promise that will resolve to the
  *     generator's final result.
- * @throws {TypeError} If the given function is not a generator. 
+ * @throws {TypeError} If the given function is not a generator.
  */
 webdriver.promise.consume = function(generatorFn, opt_self, var_args) {
   if (!webdriver.promise.isGenerator(generatorFn)) {

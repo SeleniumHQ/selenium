@@ -137,7 +137,12 @@ test.suite(function(env) {
           then(function() {
             throw Error('Should have timed out on page load');
           }, function(e) {
-            assert(e.code).equalTo(ErrorCode.SCRIPT_TIMEOUT);
+            // The FirefoxDriver returns TIMEOUT directly, where as the
+            // java server returns SCRIPT_TIMEOUT (bug?).
+            if (e.code !== ErrorCode.SCRIPT_TIMEOUT &&
+                e.code !== ErrorCode.TIMEOUT) {
+              throw Error('Unexpected error response: ' + e);
+            }
           });
     }).then(resetPageLoad, function(err) {
       resetPageLoad().thenFinally(function() {

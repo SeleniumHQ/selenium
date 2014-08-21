@@ -58,6 +58,13 @@ var Result = function(code, signal) {
 };
 
 
+/** @override */
+Result.prototype.toString = function() {
+  return 'Result(code=' + this.code + ', signal=' + this.signal + ')';
+};
+
+
+
 /**
  * Represents a command running in a sub-process.
  * @param {!promise.Promise.<!Result>} result The command result.

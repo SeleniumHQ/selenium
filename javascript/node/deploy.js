@@ -172,6 +172,9 @@ function processLibraryFiles(filePaths, contentRoots) {
 function copySrcs(srcDir, outputDirPath) {
   var filePaths = fs.readdirSync(srcDir);
   filePaths.forEach(function(filePath) {
+    if (filePath === 'node_modules') {
+      return;
+    }
     filePath = path.join(srcDir, filePath);
     if (fs.statSync(filePath).isDirectory()) {
       copySrcs(filePath, path.join(outputDirPath, path.basename(filePath)));
@@ -377,7 +380,11 @@ function generateDocs(outputDir, callback) {
     'readme': path.join(outputDir, 'README.md'),
     'language': 'ES5',
     'sources': sourceFiles,
-    'modules': moduleFiles
+    'modules': moduleFiles,
+    'excludes': [
+      path.join(outputDir, 'docs'),
+      path.join(outputDir, 'node_modules')
+    ]
   };
 
   var configFile = outputDir + '-docs.json';

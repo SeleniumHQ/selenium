@@ -21,10 +21,16 @@
     "engines": {
         "node": ">= 0.8.x"
     },
+    "dependencies": {
+        "adm-zip": "0.4.4",
+        "ncp": "0.6.0",
+        "tmp": "0.0.24",
+        "xml2js": "0.4.4"
+    },
     "devDependencies" : {
         "mocha" : "~1.10.0"
     },
     "scripts": {
-        "test": "node_modules/mocha/bin/mocha -R list --timeout=10000 --recursive test"
+        "test": "npm install && node_modules/mocha/bin/mocha -R list -t 120000 --recursive test"
     }
 }

@@ -17,8 +17,10 @@
 
 var assert = require('assert');
 
-var webdriver = require('../..'),
+var build = require('./build'),
+    webdriver = require('../..'),
     flow = webdriver.promise.controlFlow(),
+    _base = require('../../_base'),
     testing = require('../../testing'),
     fileserver = require('./fileserver'),
     seleniumserver = require('./seleniumserver');
@@ -39,6 +41,7 @@ var Browser = {
 
   // Browsers that should always be tested via the java Selenium server.
   REMOTE_CHROME: 'remote.chrome',
+  REMOTE_FIREFOX: 'remote.firefox',
   REMOTE_PHANTOMJS: 'remote.phantomjs'
 };
 
@@ -49,12 +52,13 @@ var Browser = {
  */
 var NATIVE_BROWSERS = [
   Browser.CHROME,
+  Browser.FIREFOX,
   Browser.PHANTOMJS
 ];
 
 
 var browsersToTest = (function() {
-  var browsers = process.env['SELENIUM_BROWSERS'] || Browser.CHROME;
+  var browsers = process.env['SELENIUM_BROWSERS'] || Browser.FIREFOX;
   browsers = browsers.split(',');
   browsers.forEach(function(browser) {
     if (browser === Browser.IOS) {
@@ -219,7 +223,11 @@ function suite(fn, opt_options) {
           if (!serverToUse) {
             serverToUse = seleniumServer = new seleniumserver.Server();
           }
-          testing.before(seleniumServer.start.bind(seleniumServer, 60 * 1000));
+          testing.before(function() {
+            // Starting the server may require a build, so disable timeouts.
+            this.timeout(0);
+            return seleniumServer.start(60 * 1000);
+          });
         }
 
         var env = new TestEnvironment(browser, serverToUse);
@@ -248,6 +256,12 @@ function suite(fn, opt_options) {
 
 testing.before(fileserver.start);
 testing.after(fileserver.stop);
+
+if (_base.isDevMode() && browsersToTest.indexOf(Browser.FIREFOX) != -1) {
+  testing.before(function() {
+    return build.of('//javascript/firefox-driver:webdriver').onlyOnce().go();
+  });
+}
 
 // Server is only started if required for a specific config.
 testing.after(function() {
