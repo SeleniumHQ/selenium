@@ -177,7 +177,8 @@ fxdriver.proxy.configure_ = function(proxy_config) {
         proxy_config));
   }
 
-  var type = fxdriver.proxy.TYPES_[proxy_config['proxyType']];
+  var type = fxdriver.proxy.TYPES_[
+      (proxy_config['proxyType'] || '').toUpperCase()];
 
   if (!type) {
     goog.log.info(fxdriver.proxy.LOG_,
