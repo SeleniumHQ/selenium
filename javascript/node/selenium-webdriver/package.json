@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.42.1",
+    "version": "2.43.0-dev",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
         "automation",
@@ -31,6 +31,6 @@
         "mocha" : "~1.10.0"
     },
     "scripts": {
-        "test": "npm install && node_modules/mocha/bin/mocha -R list -t 120000 --recursive test"
+        "test": "node_modules/.bin/mocha -t 600000 --recursive test"
     }
 }
