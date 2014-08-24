@@ -134,6 +134,10 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     return compareWith.compare(a, b);
   }
 
+  private static boolean isNullOrAny(Platform platform) {
+    return null == platform || Platform.ANY == platform;
+  }
+
   private static class CapabilityScorer<T> {
     final T scoreAgainst;
 
@@ -165,21 +169,13 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
           && (currentPlatform.is(desiredPlatform) || desiredPlatform.is(currentPlatform));
     }
 
-    private static boolean isNullOrAny(Platform p) {
-      return p == null || p.equals(Platform.ANY);
-    }
-
     @Override
     public int score(Platform value) {
-      if (!currentIsDesired) {
+      if (!currentIsDesired || isNullOrAny(value)) {
         return 0;
       }
 
-      if (value == null) {
-        value = Platform.ANY;
-      }
-
-      return scoreAgainst.is(value) ? 1 : -1;
+      return scoreAgainst.is(value) || value.is(scoreAgainst) ? 1 : -1;
     }
   }
 
@@ -191,11 +187,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
 
     @Override
     public int score(Platform value) {
-      if (value == null) {
-        value = Platform.ANY;
-      }
-
-      if (value.equals(Platform.ANY)) {
+      if (isNullOrAny(value)) {
         return 0;
       }
 
