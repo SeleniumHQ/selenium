@@ -218,7 +218,7 @@ bot.events.EventFactory_.prototype.create = function(target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (bot.userAgent.IE_DOC_PRE9) {
+  if (bot.userAgent.IE_DOC_PRE9 && doc.createEventObject) {
     event = doc.createEventObject();
   } else {
     event = doc.createEvent('HTMLEvents');
@@ -743,7 +743,7 @@ bot.events.fire = function(target, type, opt_args) {
     event['isTrusted'] = false;
   }
 
-  if (bot.userAgent.IE_DOC_PRE9) {
+  if (bot.userAgent.IE_DOC_PRE9 && target.fireEvent) {
     return target.fireEvent('on' + factory.type_, event);
   } else {
     return target.dispatchEvent(event);

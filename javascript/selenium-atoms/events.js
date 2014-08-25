@@ -61,7 +61,7 @@ core.events.getEventFactory_ = function(eventName) {
       var doc = goog.dom.getOwnerDocument(target);
       var event;
 
-      if (bot.userAgent.IE_DOC_PRE9) {
+      if (bot.userAgent.IE_DOC_PRE9 && doc.createEventObject) {
         event = doc.createEventObject();
       } else {
         event = doc.createEvent('HTMLEvents');
