@@ -390,7 +390,7 @@ webdriver.Capabilities.prototype.setScrollBehavior = function(behavior) {
 /**
  * Sets the default action to take with an unexpected alert before returning
  * an error.
- * @param {string} beahvior The desired behavior; should be "accept", "dismiss",
+ * @param {string} behavior The desired behavior; should be "accept", "dismiss",
  *     or "ignore". Defaults to "dismiss".
  * @return {!webdriver.Capabilities} A self reference.
  */
