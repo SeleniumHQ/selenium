@@ -564,6 +564,8 @@ end
 
 namespace :node do
   task :deploy => [
+    "//cpp:noblur",
+    "//cpp:noblur64",
     "//javascript/firefox-driver:webdriver",
     "//javascript/webdriver:asserts_lib",
     "//javascript/webdriver:webdriver_lib",
@@ -580,6 +582,8 @@ namespace :node do
         " --output=build/javascript/node/selenium-webdriver" <<
         " --resource=COPYING:/COPYING" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
+        " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
+        " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
         " --resource=third_party/closure/LICENSE:goog/LICENSE" <<
         " --resource=common/src/web/:test/data/" <<

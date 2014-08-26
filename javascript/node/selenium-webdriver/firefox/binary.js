@@ -30,12 +30,12 @@ var promise = require('..').promise,
 /** @const */
 var NO_FOCUS_LIB_X86 = _base.isDevMode() ?
     path.join(__dirname, '../../../../cpp/prebuilt/i386/libnoblur.so') :
-    path.join(__dirname, 'libnoblur.so') ;
+    path.join(__dirname, '../lib/firefox/i386/libnoblur.so') ;
 
 /** @const */
 var NO_FOCUS_LIB_AMD64 = _base.isDevMode() ?
     path.join(__dirname, '../../../../cpp/prebuilt/amd64/libnoblur64.so') :
-    path.join(__dirname, 'libnoblur64.so') ;
+    path.join(__dirname, '../lib/firefox/amd64/libnoblur64.so') ;
 
 var X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
 
