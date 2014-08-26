@@ -58,7 +58,8 @@ test.suite(function(env) {
         var options = new firefox.Options().setProfile(profile);
 
         var driver = env.driver = new firefox.Driver(options);
-        driver.get('data:text/html,<html><div>content</div></html>');
+        loadJetpackPage(driver,
+            'data:text/html;charset=UTF-8,<html><div>content</div></html>');
         assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
             .equalTo('Hello, world!');
       });
@@ -83,12 +84,24 @@ test.suite(function(env) {
         var options = new firefox.Options().setProfile(profile);
 
         var driver = env.driver = new firefox.Driver(options);
-        driver.get('data:text/html,<html><div>content</div></html>');
+
+        loadJetpackPage(driver,
+            'data:text/html;charset=UTF-8,<html><div>content</div></html>');
         assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
             .equalTo('Hello, world!');
         assert(driver.findElement({id: 'sample-extension-footer'}).getText())
             .equalTo('Goodbye');
       });
+
+      function loadJetpackPage(driver, url) {
+        // On linux the jetpack extension does not always run the first time
+        // we load a page. If this happens, just reload the page (a simple
+        // refresh doesn't appear to work).
+        driver.wait(function() {
+          driver.get(url);
+          return driver.isElementPresent({id: 'jetpack-sample-banner'});
+        }, 3000);
+      }
     });
   });
 }, {browsers: ['firefox']});

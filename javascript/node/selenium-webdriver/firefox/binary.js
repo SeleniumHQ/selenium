@@ -16,6 +16,7 @@
 'use strict';
 
 var child = require('child_process'),
+    fs = require('fs'),
     path = require('path'),
     util = require('util');
 
@@ -79,7 +80,7 @@ function findFirefox() {
   } else if (process.platform === 'win32') {
     foundBinary = defaultWindowsLocation();
   } else {
-    foundBinary = promise.fulfill(io.findInPath('firefox'));
+    foundBinary = promise.fulfilled(io.findInPath('firefox'));
   }
 
   return foundBinary = foundBinary.then(function(found) {
@@ -214,7 +215,7 @@ Binary.prototype.launch = function(profile) {
     if (process.platform === 'win32' || process.platform === 'darwin') {
       return firefox;
     }
-    return installNoFocusLibs().then(function(ldLibraryPath) {
+    return installNoFocusLibs(profile).then(function(ldLibraryPath) {
       env['LD_LIBRARY_PATH'] = ldLibraryPath + ':' + env['LD_LIBRARY_PATH'];
       env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
       return firefox;
