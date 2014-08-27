@@ -21,6 +21,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static java.util.Collections.list;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
@@ -203,9 +204,13 @@ public class DriverServlet extends HttpServlet {
 
   private static HttpRequest createInternalRequest(HttpServletRequest servletRequest)
       throws IOException {
+    String path = servletRequest.getPathInfo();
+    if (Strings.isNullOrEmpty(path)) {
+      path = "/";
+    }
     HttpRequest request = new HttpRequest(
         HttpMethod.valueOf(servletRequest.getMethod().toUpperCase()),
-        servletRequest.getPathInfo());
+        path);
 
     @SuppressWarnings("unchecked")
     Enumeration<String> headerNames = servletRequest.getHeaderNames();

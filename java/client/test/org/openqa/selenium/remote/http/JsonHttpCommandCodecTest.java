@@ -273,4 +273,68 @@ public class JsonHttpCommandCodecTest {
     assertThat(decoded.getSessionId(), is(original.getSessionId()));
     assertThat(decoded.getParameters(), is((Map) original.getParameters()));
   }
+
+  @Test
+  public void treatsEmptyPathAsRoot_recognizedCommand() {
+    codec.defineCommand("num", POST, "/");
+
+    byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
+    HttpRequest request = new HttpRequest(POST, "");
+    request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
+    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    request.setContent(data);
+
+    Command command = codec.decode(request);
+    assertThat(command.getName(), is("num"));
+  }
+
+  @Test
+  public void treatsNullPathAsRoot_recognizedCommand() {
+    codec.defineCommand("num", POST, "/");
+
+    byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
+    HttpRequest request = new HttpRequest(POST, null);
+    request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
+    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    request.setContent(data);
+
+    Command command = codec.decode(request);
+    assertThat(command.getName(), is("num"));
+  }
+
+  @Test
+  public void treatsEmptyPathAsRoot_unrecognizedCommand() {
+    codec.defineCommand("num", GET, "/");
+
+    byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
+    HttpRequest request = new HttpRequest(POST, "");
+    request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
+    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    request.setContent(data);
+
+    try {
+      codec.decode(request);
+      fail();
+    } catch (UnsupportedCommandException expected) {
+      // Do nothing.
+    }
+  }
+
+  @Test
+  public void treatsNullPathAsRoot_unrecognizedCommand() {
+    codec.defineCommand("num", GET, "/");
+
+    byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
+    HttpRequest request = new HttpRequest(POST, null);
+    request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
+    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    request.setContent(data);
+
+    try {
+      codec.decode(request);
+      fail();
+    } catch (UnsupportedCommandException expected) {
+      // Do nothing.
+    }
+  }
 }

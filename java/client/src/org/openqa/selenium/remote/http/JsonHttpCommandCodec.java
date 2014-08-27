@@ -12,6 +12,7 @@ import static org.openqa.selenium.remote.DriverCommand.*;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashBiMap;
@@ -207,7 +208,8 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
 
   @Override
   public Command decode(final HttpRequest encodedCommand) {
-    final String path = encodedCommand.getUri();
+    final String path = Strings.isNullOrEmpty(encodedCommand.getUri())
+                        ? "/" : encodedCommand.getUri();
     final ImmutableList<String> parts = ImmutableList.copyOf(PATH_SPLITTER.split(path));
     List<CommandSpec> matchingSpecs = FluentIterable.from(nameToSpec.inverse().keySet())
         .filter(new Predicate<CommandSpec>() {

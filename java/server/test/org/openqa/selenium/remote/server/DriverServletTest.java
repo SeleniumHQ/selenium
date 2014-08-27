@@ -172,6 +172,20 @@ public class DriverServletTest {
     assertTrue(value.getBoolean(CapabilityType.VERSION));
   }
 
+  @Test
+  public void handlesInvalidCommandsToRootOfDriverService()
+      throws IOException, ServletException, JSONException {
+    // Command path will be null in servlet API when request is to the context root (e.g. /wd/hub).
+    FakeHttpServletResponse response = sendCommand("POST", null, new JSONObject());
+    assertEquals(500, response.getStatus());
+
+    JSONObject jsonResponse = new JSONObject(response.getBody());
+    assertEquals(ErrorCodes.UNHANDLED_ERROR, jsonResponse.getInt("status"));
+
+    JSONObject value = jsonResponse.getJSONObject("value");
+    assertTrue(value.getString("message").startsWith("POST /"));
+  }
+
   private SessionId createSession() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("POST", "/session", null);
 
