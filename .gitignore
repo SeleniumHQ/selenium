@@ -21,6 +21,7 @@ javascript/node/selenium-webdriver/node_modules/
 .idea/workspace.xml
 .idea/dictionaries/
 .idea/scopes/
+.idea/qaplug_profiles.xml
 out
 cpp/IEDriver/sizzle.h
 third_party/gecko-*
