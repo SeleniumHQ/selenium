@@ -46,6 +46,7 @@ import java.util.Map;
 
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
+  public static final String ALLOWED_HOSTS_PREFERENCE = "webdriver_firefox_allowed_hosts";
 
   private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver_prefs.json";
 

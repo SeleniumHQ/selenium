@@ -92,6 +92,12 @@ WebDriverServer.prototype.startListening = function(port) {
 
   if (!this.isListening) {
     this.server_.start(port);
+    if (prefs.prefHasUserValue('webdriver_firefox_allowed_hosts')) {
+      var hosts = prefs.getCharPref('webdriver_firefox_allowed_hosts').split(',');
+      for (var i in hosts) {
+        this.server_.identity.add("http", hosts[i], port);
+      }
+    }
     this.isListening = true;
   }
 };
