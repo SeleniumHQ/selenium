@@ -2,7 +2,6 @@ package org.openqa.selenium.javascript;
 
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -38,9 +37,8 @@ public class ClosureTestStatement extends Statement {
     URL testUrl = filePathToUrlFn.apply(testPath);
     LOG.info("Running: " + testUrl);
     
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
-    
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
     WebDriver driver = driverSupplier.get();
 
     // Attempt to make the window as big as possible.
