@@ -50,9 +50,9 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities = Options().to_capabilities()
         else:
             if desired_capabilities is None:
-                desired_capabilities = options.to_capabilities()
+                desired_capabilities = chrome_options.to_capabilities()
             else:
-                desired_capabilities.update(options.to_capabilities())
+                desired_capabilities.update(chrome_options.to_capabilities())
 
         self.service = Service(executable_path, port=port,
             service_args=service_args, log_path=service_log_path)
