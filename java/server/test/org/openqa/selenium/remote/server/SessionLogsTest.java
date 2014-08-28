@@ -33,7 +33,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.junit.After;
@@ -108,7 +108,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   
   private static JSONObject getValueForPostRequest(URL serverUrl) throws Exception {
     String postRequest = serverUrl + "/logs";
-    HttpClient client = new DefaultHttpClient();
+    HttpClient client = HttpClientBuilder.create().build();
     HttpPost postCmd = new HttpPost(postRequest);
     HttpResponse response = client.execute(postCmd);
     HttpEntity entity = response.getEntity();

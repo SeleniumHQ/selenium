@@ -27,7 +27,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -152,7 +152,7 @@ public class AppServerTest {
   }
 
   private void assertUrlHasContentType(String url, String appcacheMimeType) {
-    HttpClient httpclient = new DefaultHttpClient();
+    HttpClient httpclient = HttpClientBuilder.create().build();
     HttpGet httpget = new HttpGet(url);
     HttpResponse response;
 
