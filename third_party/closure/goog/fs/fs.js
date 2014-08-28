@@ -129,7 +129,7 @@ goog.fs.revokeObjectUrl = function(url) {
 
 
 /**
- * @typedef {!{createObjectURL: (function(!Blob): string),
+ * @typedef {{createObjectURL: (function(!Blob): string),
  *            revokeObjectURL: function(string): void}}
  */
 goog.fs.UrlObject_;

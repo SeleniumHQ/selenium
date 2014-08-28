@@ -58,6 +58,7 @@ goog.ui.TwoThumbSlider = function(opt_domHelper) {
   this.rangeModel.setExtent(this.getMaximum() - this.getMinimum());
 };
 goog.inherits(goog.ui.TwoThumbSlider, goog.ui.SliderBase);
+goog.tagUnsealableClass(goog.ui.TwoThumbSlider);
 
 
 /**

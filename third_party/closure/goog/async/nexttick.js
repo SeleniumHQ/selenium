@@ -24,6 +24,7 @@ goog.provide('goog.async.throwException');
 
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.functions');
+goog.require('goog.labs.userAgent.browser');
 
 
 /**
@@ -41,8 +42,14 @@ goog.async.throwException = function(exception) {
 
 /**
  * Fires the provided callbacks as soon as possible after the current JS
- * execution context. setTimeout(…, 0) always takes at least 5ms for legacy
- * reasons.
+ * execution context. setTimeout(…, 0) takes at least 4ms when called from
+ * within another setTimeout(…, 0) for legacy reasons.
+ *
+ * This will not schedule the callback as a microtask (i.e. a task that can
+ * preempt user input or networking callbacks). It is meant to emulate what
+ * setTimeout(_, 0) would do if it were not throttled. If you desire microtask
+ * behavior, use {@see goog.Promise} instead.
+ *
  * @param {function(this:SCOPE)} callback Callback function to fire as soon as
  *     possible.
  * @param {SCOPE=} opt_context Object in whose scope to call the listener.
@@ -54,8 +61,17 @@ goog.async.nextTick = function(callback, opt_context) {
     cb = goog.bind(callback, opt_context);
   }
   cb = goog.async.nextTick.wrapCallback_(cb);
-  // Introduced and currently only supported by IE10.
-  if (goog.isFunction(goog.global.setImmediate)) {
+  // window.setImmediate was introduced and currently only supported by IE10+,
+  // but due to a bug in the implementation it is not guaranteed that
+  // setImmediate is faster than setTimeout nor that setImmediate N is before
+  // setImmediate N+1. That is why we do not use the native version if
+  // available. We do, however, call setImmediate if it is a normal function
+  // because that indicates that it has been replaced by goog.testing.MockClock
+  // which we do want to support.
+  // See
+  // http://connect.microsoft.com/IE/feedback/details/801823/setimmediate-and-messagechannel-are-broken-in-ie10
+  if (goog.isFunction(goog.global.setImmediate) && (!goog.global.Window ||
+      goog.global.Window.prototype.setImmediate != goog.global.setImmediate)) {
     goog.global.setImmediate(cb);
     return;
   }
@@ -83,24 +99,6 @@ goog.async.nextTick.setImmediate_;
  * @private
  */
 goog.async.nextTick.getSetImmediateEmulator_ = function() {
-  // If native Promises are available in the browser, just schedule the callback
-  // on a fulfilled promise, which is specified to be async, but as fast as
-  // possible.
-  if (goog.global.Promise && goog.global.Promise.resolve) {
-    var promise = goog.global.Promise.resolve();
-    return function(cb) {
-      promise.then(function() {
-        try {
-          cb();
-        } catch (e) {
-          // If there is an error in the callback, make sure it is reported,
-          // since there is no chance to attach an error-handler to the
-          // promise used here.
-          goog.async.throwException(e);
-        }
-      });
-    };
-  }
   // Create a private message channel and use it to postMessage empty messages
   // to ourselves.
   var Channel = goog.global['MessageChannel'];
@@ -122,8 +120,15 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       doc.open();
       doc.write('');
       doc.close();
+      // Do not post anything sensitive over this channel, as the workaround for
+      // pages with file: origin could allow that information to be modified or
+      // intercepted.
       var message = 'callImmediate' + Math.random();
-      var origin = win.location.protocol + '//' + win.location.host;
+      // The same origin policy rejects attempts to postMessage from file: urls
+      // unless the origin is '*'.
+      // TODO(b/16335441): Use '*' origin for data: and other similar protocols.
+      var origin = win.location.protocol == 'file:' ?
+          '*' : win.location.protocol + '//' + win.location.host;
       var onmessage = goog.bind(function(e) {
         // Validate origin and message to make sure that this message was
         // intended for us.
@@ -141,7 +146,13 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       };
     };
   }
-  if (typeof Channel !== 'undefined') {
+  if (typeof Channel !== 'undefined' &&
+      // Exclude all of IE due to
+      // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
+      // which allows starving postMessage with a busy setTimeout loop.
+      // This currently affects IE10 and IE11 which would otherwise be able
+      // to use the postMessage based fallbacks.
+      !goog.labs.userAgent.browser.isIE()) {
     var channel = new Channel();
     // Use a fifo linked list to call callbacks in the right order.
     var head = {};
@@ -160,7 +171,7 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       channel['port2'].postMessage(0);
     };
   }
-  // Implementation for IE6-8: Script elements fire an asynchronous
+  // Implementation for IE6+: Script elements fire an asynchronous
   // onreadystatechange event when inserted into the DOM.
   if (typeof document !== 'undefined' && 'onreadystatechange' in
       document.createElement('script')) {

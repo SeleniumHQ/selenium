@@ -81,16 +81,11 @@ goog.events.Listenable.addImplementation = function(cls) {
 
 /**
  * @param {Object} obj The object to check.
- * @return {boolean} Whether a given instance implements
- *     Listenable. The class/superclass of the instance must call
- *     addImplementation.
+ * @return {boolean} Whether a given instance implements Listenable. The
+ *     class/superclass of the instance must call addImplementation.
  */
 goog.events.Listenable.isImplementedBy = function(obj) {
-  try {
-    return !!(obj && obj[goog.events.Listenable.IMPLEMENTED_BY_PROP]);
-  } catch (e) {
-    return false;
-  }
+  return !!(obj && obj[goog.events.Listenable.IMPLEMENTED_BY_PROP]);
 };
 
 

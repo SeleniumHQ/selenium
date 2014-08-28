@@ -62,6 +62,9 @@ goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.Listenable');
 goog.require('goog.events.ListenerMap');
 
+goog.forwardDeclare('goog.debug.ErrorHandler');
+goog.forwardDeclare('goog.events.EventWrapper');
+
 
 /**
  * @typedef {number|goog.events.ListenableKey}
@@ -76,22 +79,9 @@ goog.events.ListenableType;
 
 
 /**
- * Container for storing event listeners and their proxies
- *
- * TODO(user): Remove this when all external usage is
- * purged. goog.events no longer use goog.events.listeners_ for
- * anything meaningful.
- *
- * @private {!Object.<goog.events.ListenableKey>}
- */
-goog.events.listeners_ = {};
-
-
-/**
  * Property name on a native event target for the listener map
  * associated with the event target.
- * @const
- * @private
+ * @private @const {string}
  */
 goog.events.LISTENER_MAP_PROP_ = 'closure_lm_' + ((Math.random() * 1e6) | 0);
 
@@ -499,27 +489,26 @@ goog.events.unlistenWithWrapper = function(src, wrapper, listener, opt_capt,
  * Removes all listeners from an object. You can also optionally
  * remove listeners of a particular type.
  *
- * @param {Object=} opt_obj Object to remove listeners from. Not
- *     specifying opt_obj is now DEPRECATED (it used to remove all
- *     registered listeners).
+ * @param {Object|undefined} obj Object to remove listeners from. Must be an
+ *     EventTarget or a goog.events.Listenable.
  * @param {string|!goog.events.EventId=} opt_type Type of event to remove.
  *     Default is all types.
  * @return {number} Number of listeners removed.
  */
-goog.events.removeAll = function(opt_obj, opt_type) {
-  // TODO(user): Change the type of opt_obj from Object= to
-  // !EventTarget|goog.events.Listenable). And replace this with an
-  // assertion.
-  if (!opt_obj) {
+goog.events.removeAll = function(obj, opt_type) {
+  // TODO(user): Change the type of obj to
+  // (!EventTarget|!goog.events.Listenable).
+
+  if (!obj) {
     return 0;
   }
 
-  if (goog.events.Listenable.isImplementedBy(opt_obj)) {
-    return opt_obj.removeAllListeners(opt_type);
+  if (goog.events.Listenable.isImplementedBy(obj)) {
+    return obj.removeAllListeners(opt_type);
   }
 
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (opt_obj));
+      /** @type {EventTarget} */ (obj));
   if (!listenerMap) {
     return 0;
   }
@@ -960,8 +949,7 @@ goog.events.getListenerMap_ = function(src) {
 /**
  * Expando property for listener function wrapper for Object with
  * handleEvent.
- * @const
- * @private
+ * @private @const {string}
  */
 goog.events.LISTENER_WRAPPER_PROP_ = '__closure_events_fn_' +
     ((Math.random() * 1e9) >>> 0);
@@ -984,10 +972,11 @@ goog.events.wrapListener = function(listener) {
 
   goog.asserts.assert(
       listener.handleEvent, 'An object listener must have handleEvent method.');
-  return listener[goog.events.LISTENER_WRAPPER_PROP_] ||
-      (listener[goog.events.LISTENER_WRAPPER_PROP_] = function(e) {
-        return listener.handleEvent(e);
-      });
+  if (!listener[goog.events.LISTENER_WRAPPER_PROP_]) {
+    listener[goog.events.LISTENER_WRAPPER_PROP_] =
+        function(e) { return listener.handleEvent(e); };
+  }
+  return listener[goog.events.LISTENER_WRAPPER_PROP_];
 };
 
 

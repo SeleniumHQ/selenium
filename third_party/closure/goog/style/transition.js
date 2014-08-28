@@ -22,8 +22,10 @@ goog.provide('goog.style.transition.Css3Property');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.safe');
 goog.require('goog.dom.vendor');
 goog.require('goog.functions');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 
@@ -102,11 +104,14 @@ goog.style.transition.isSupported = goog.functions.cacheReturnValue(function() {
   // We then detect whether those style properties are recognized and
   // available from js.
   var el = document.createElement('div');
-  var transition = 'transition:opacity 1s linear;';
+  var transition = 'opacity 1s linear';
   var vendorPrefix = goog.dom.vendor.getVendorPrefix();
-  var vendorTransition =
-      vendorPrefix ? vendorPrefix + '-' + transition : '';
-  el.innerHTML = '<div style="' + vendorTransition + transition + '">';
+  var style = {'transition': transition};
+  if (vendorPrefix) {
+    style[vendorPrefix + '-transition'] = transition;
+  }
+  goog.dom.safe.setInnerHtml(el,
+      goog.html.SafeHtml.create('div', {'style': style}));
 
   var testElement = /** @type {Element} */ (el.firstChild);
   goog.asserts.assert(testElement.nodeType == Node.ELEMENT_NODE);

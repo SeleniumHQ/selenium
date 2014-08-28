@@ -24,6 +24,7 @@
 goog.provide('goog.testing.MockClock');
 
 goog.require('goog.Disposable');
+goog.require('goog.async.run');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.events');
 goog.require('goog.testing.events.Event');
@@ -156,6 +157,13 @@ goog.testing.MockClock.prototype.install = function() {
     r.set(goog.global, 'setImmediate', goog.bind(this.setImmediate_, this));
     r.set(goog.global, 'clearTimeout', goog.bind(this.clearTimeout_, this));
     r.set(goog.global, 'clearInterval', goog.bind(this.clearInterval_, this));
+    // goog.Promise uses goog.async.run. In order to be able to test
+    // Promise-based code, we need to make sure that goog.async.run uses
+    // nextTick instead of native browser Promises. This means that it will
+    // default to setImmediate, which is replaced above. Note that we test for
+    // the presence of goog.async.run.forceNextTick to be resilient to the case
+    // where tests replace goog.async.run directly.
+    goog.async.run.forceNextTick && goog.async.run.forceNextTick();
 
     // Replace the requestAnimationFrame functions.
     this.replaceRequestAnimationFrame_();
@@ -358,6 +366,12 @@ goog.testing.MockClock.prototype.runFunctionsWithinRange_ = function(
  */
 goog.testing.MockClock.prototype.scheduleFunction_ = function(
     timeoutKey, funcToCall, millis, recurring) {
+  if (!goog.isFunction(funcToCall)) {
+    // Early error for debuggability rather than dying in the next .tick()
+    throw new TypeError('The provided callback must be a function, not a ' +
+        typeof funcToCall);
+  }
+
   var timeout = {
     runAtMillis: this.nowMillis_ + millis,
     funcToCall: funcToCall,

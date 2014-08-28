@@ -178,10 +178,14 @@ goog.ui.ButtonRenderer.prototype.getTooltip = function(element) {
  * @protected
  */
 goog.ui.ButtonRenderer.prototype.setTooltip = function(element, tooltip) {
-  // Don't set a title attribute if there isn't a tooltip. Blank title
-  // attributes can be interpreted incorrectly by screen readers.
-  if (element && tooltip) {
-    element.title = tooltip;
+  if (element) {
+    // Don't set a title attribute if there isn't a tooltip. Blank title
+    // attributes can be interpreted incorrectly by screen readers.
+    if (tooltip) {
+      element.title = tooltip;
+    } else {
+      element.removeAttribute('title');
+    }
   }
 };
 

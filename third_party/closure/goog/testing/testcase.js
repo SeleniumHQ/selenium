@@ -48,7 +48,7 @@ goog.require('goog.testing.stacktrace');
  *                      returns false.  Can be used to disable tests on browsers
  *                      where they aren't expected to pass.
  *
- * Use {@link #autoDiscoverTests}
+ * Use {@link #autoDiscoverLifecycle} and {@link #autoDiscoverTests}
  *
  * @param {string=} opt_name The name of the test case, defaults to
  *     'Untitled Test Case'.
@@ -326,7 +326,6 @@ goog.testing.TestCase.prototype.setTests = function(tests) {
 /**
  * Gets the tests.
  * @return {!Array.<goog.testing.TestCase.Test>} The test array.
- * @protected
  */
 goog.testing.TestCase.prototype.getTests = function() {
   return this.tests_;
@@ -634,13 +633,17 @@ goog.testing.TestCase.prototype.orderTests_ = function(tests) {
 
 
 /**
- * Gets the object with all globals.
+ * Gets list of objects that potentially contain test cases. For IE 8 and below,
+ * this is the global "this" (for properties set directly on the global this or
+ * window) and the RuntimeObject (for global variables and functions). For all
+ * other browsers, the array simply contains the global this.
+ *
  * @param {string=} opt_prefix An optional prefix. If specified, only get things
  *     under this prefix. Note that the prefix is only honored in IE, since it
  *     supports the RuntimeObject:
  *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
- *     TODO: Fix this method to honor the prefix in all browsers.
- * @return {Object} An object with all globals starting with the prefix.
+ *     TODO: Remove this option.
+ * @return {!Array.<!Object>} A list of objects that should be inspected.
  */
 goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
   return goog.testing.TestCase.getGlobals(opt_prefix);
@@ -648,13 +651,17 @@ goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
 
 
 /**
- * Gets the object with all globals.
+ * Gets list of objects that potentially contain test cases. For IE 8 and below,
+ * this is the global "this" (for properties set directly on the global this or
+ * window) and the RuntimeObject (for global variables and functions). For all
+ * other browsers, the array simply contains the global this.
+ *
  * @param {string=} opt_prefix An optional prefix. If specified, only get things
  *     under this prefix. Note that the prefix is only honored in IE, since it
  *     supports the RuntimeObject:
  *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
- *     TODO: Fix this method to honor the prefix in all browsers.
- * @return {Object} An object with all globals starting with the prefix.
+ *     TODO: Remove this option.
+ * @return {!Array.<!Object>} A list of objects that should be inspected.
  */
 goog.testing.TestCase.getGlobals = function(opt_prefix) {
   // Look in the global scope for most browsers, on IE we use the little known
@@ -662,7 +669,8 @@ goog.testing.TestCase.getGlobals = function(opt_prefix) {
   // via goog.global so that there isn't an aliasing that throws an exception
   // in Firefox.
   return typeof goog.global['RuntimeObject'] != 'undefined' ?
-      goog.global['RuntimeObject']((opt_prefix || '') + '*') : goog.global;
+      [goog.global['RuntimeObject']((opt_prefix || '') + '*'), goog.global] :
+      [goog.global];
 };
 
 
@@ -736,40 +744,11 @@ goog.testing.TestCase.prototype.createTestFromAutoDiscoveredFunction =
 
 
 /**
- * Adds any functions defined in the global scope that are prefixed with "test"
- * to the test case.  Also overrides setUp, tearDown, setUpPage, tearDownPage
- * and runTests if they are defined.
+ * Adds any functions defined in the global scope that correspond to
+ * lifecycle events for the test case. Overrides setUp, tearDown, setUpPage,
+ * tearDownPage and runTests if they are defined.
  */
-goog.testing.TestCase.prototype.autoDiscoverTests = function() {
-  var prefix = this.getAutoDiscoveryPrefix();
-  var testSource = this.getGlobals(prefix);
-
-  var foundTests = [];
-
-  for (var name in testSource) {
-
-    try {
-      var ref = testSource[name];
-    } catch (ex) {
-      // NOTE(brenneman): When running tests from a file:// URL on Firefox 3.5
-      // for Windows, any reference to goog.global.sessionStorage raises
-      // an "Operation is not supported" exception. Ignore any exceptions raised
-      // by simply accessing global properties.
-    }
-
-    if ((new RegExp('^' + prefix)).test(name) && goog.isFunction(ref)) {
-      foundTests.push(this.createTestFromAutoDiscoveredFunction(name, ref));
-    }
-  }
-
-  this.orderTests_(foundTests);
-
-  for (var i = 0; i < foundTests.length; i++) {
-    this.add(foundTests[i]);
-  }
-
-  this.log(this.getCount() + ' tests auto-discovered');
-
+goog.testing.TestCase.prototype.autoDiscoverLifecycle = function() {
   if (goog.global['setUp']) {
     this.setUp = goog.bind(goog.global['setUp'], goog.global);
   }
@@ -788,6 +767,53 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
   if (goog.global['shouldRunTests']) {
     this.shouldRunTests = goog.bind(goog.global['shouldRunTests'], goog.global);
   }
+};
+
+
+/**
+ * Adds any functions defined in the global scope that are prefixed with "test"
+ * to the test case.
+ */
+goog.testing.TestCase.prototype.autoDiscoverTests = function() {
+  var prefix = this.getAutoDiscoveryPrefix();
+  var testSources = this.getGlobals(prefix);
+
+  var foundTests = [];
+
+  for (var i = 0; i < testSources.length; i++) {
+    var testSource = testSources[i];
+    for (var name in testSource) {
+      if ((new RegExp('^' + prefix)).test(name)) {
+        var ref;
+        try {
+          ref = testSource[name];
+        } catch (ex) {
+          // NOTE(brenneman): When running tests from a file:// URL on Firefox
+          // 3.5 for Windows, any reference to goog.global.sessionStorage raises
+          // an "Operation is not supported" exception. Ignore any exceptions
+          // raised by simply accessing global properties.
+          ref = undefined;
+        }
+
+        if (goog.isFunction(ref)) {
+          foundTests.push(this.createTestFromAutoDiscoveredFunction(name, ref));
+        }
+      }
+    }
+  }
+
+  this.orderTests_(foundTests);
+
+  for (var i = 0; i < foundTests.length; i++) {
+    this.add(foundTests[i]);
+  }
+
+  this.log(this.getCount() + ' tests auto-discovered');
+
+  // TODO(user): Do this as a separate call. Unfortunately, a lot of projects
+  // currently override autoDiscoverTests and expect lifecycle events to be
+  // registered as a part of this call.
+  this.autoDiscoverLifecycle();
 };
 
 

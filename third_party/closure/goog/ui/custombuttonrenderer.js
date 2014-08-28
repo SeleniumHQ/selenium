@@ -104,7 +104,8 @@ goog.ui.CustomButtonRenderer.prototype.getAriaRole = function() {
  * @override
  */
 goog.ui.CustomButtonRenderer.prototype.getContentElement = function(element) {
-  return element && /** @type {Element} */ (element.firstChild.firstChild);
+  return element && element.firstChild &&
+      /** @type {Element} */ (element.firstChild.firstChild);
 };
 
 

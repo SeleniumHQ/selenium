@@ -204,6 +204,7 @@ goog.ui.DrilldownRow.prototype.canDecorate = function(node) {
  * @override
  */
 goog.ui.DrilldownRow.prototype.addChildAt = function(child, index, opt_render) {
+  goog.asserts.assertInstanceof(child, goog.ui.DrilldownRow);
   goog.ui.DrilldownRow.superClass_.addChildAt.call(this, child, index, false);
   child.setDisplayable_(this.isVisible_() && this.isExpanded());
   if (opt_render && !child.isInDocument()) {
@@ -241,9 +242,11 @@ goog.ui.DrilldownRow.prototype.render = function() {
     // The new child's TR node needs to go just after the last TR
     // of the part of the parent's subtree that is to the left
     // of this.  The subtree includes the parent.
+    goog.asserts.assertInstanceof(parent, goog.ui.DrilldownRow);
     var previous = parent.previousRenderedChild_(this);
     var row;
     if (previous) {
+      goog.asserts.assertInstanceof(previous, goog.ui.DrilldownRow);
       row = previous.lastRenderedLeaf_().getElement();
     } else {
       row = parent.getElement();

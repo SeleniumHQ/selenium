@@ -130,6 +130,14 @@ goog.ui.emoji.EmojiPicker.DEFAULT_TAB_LOCATION =
     goog.ui.TabPane.TabLocation.TOP;
 
 
+/** @private {goog.ui.emoji.Emoji} */
+goog.ui.emoji.EmojiPicker.prototype.selectedEmoji_;
+
+
+/** @private {goog.ui.emoji.EmojiPaletteRenderer} */
+goog.ui.emoji.EmojiPicker.prototype.renderer_;
+
+
 /**
  * Number of rows per grid of emoji.
  *

@@ -67,6 +67,7 @@ goog.ui.ComboBox = function(opt_domHelper, opt_menu, opt_labelInput) {
   this.setupMenu_();
 };
 goog.inherits(goog.ui.ComboBox, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.ComboBox);
 
 
 /**
@@ -212,7 +213,7 @@ goog.ui.ComboBox.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom('span',
       goog.getCssName('goog-combobox'), this.input_, this.button_));
   if (this.useDropdownArrow_) {
-    this.button_.innerHTML = '&#x25BC;';
+    goog.dom.setTextContent(this.button_, '\u25BC');
     goog.style.setUnselectable(this.button_, true /* unselectable */);
   }
   this.input_.setAttribute('label', this.defaultText_);
@@ -929,6 +930,7 @@ goog.ui.ComboBoxItem = function(content, opt_data, opt_domHelper,
   goog.ui.MenuItem.call(this, content, opt_data, opt_domHelper, opt_renderer);
 };
 goog.inherits(goog.ui.ComboBoxItem, goog.ui.MenuItem);
+goog.tagUnsealableClass(goog.ui.ComboBoxItem);
 
 
 // Register a decorator factory function for goog.ui.ComboBoxItems.

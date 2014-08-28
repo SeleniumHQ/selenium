@@ -1669,7 +1669,7 @@ goog.ui.ServerChart.EXTENDED_UPPER_BOUND =
  * Converts a single number to an encoded data value suitable for ChartServer.
  * The TEXT encoding is the number in decimal; the SIMPLE encoding is a single
  * character, and the EXTENDED encoding is two characters.  See
- * http://code.google.com/apis/chart/docs/data_formats.html for the detailed
+ * https://developers.google.com/chart/image/docs/data_formats for the detailed
  * specification of these encoding formats.
  *
  * @private

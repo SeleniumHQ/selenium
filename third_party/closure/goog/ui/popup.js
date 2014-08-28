@@ -78,6 +78,7 @@ goog.ui.Popup = function(opt_element, opt_position) {
   goog.ui.PopupBase.call(this, opt_element);
 };
 goog.inherits(goog.ui.Popup, goog.ui.PopupBase);
+goog.tagUnsealableClass(goog.ui.Popup);
 
 
 /**

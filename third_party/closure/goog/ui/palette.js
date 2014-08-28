@@ -74,6 +74,7 @@ goog.ui.Palette = function(items, opt_renderer, opt_domHelper) {
   this.lastHighlightedIndex_ = -1;
 };
 goog.inherits(goog.ui.Palette, goog.ui.Control);
+goog.tagUnsealableClass(goog.ui.Palette);
 
 
 /**
@@ -515,7 +516,6 @@ goog.ui.Palette.prototype.highlightIndex_ = function(index, highlight) {
 
 /** @override */
 goog.ui.Palette.prototype.setHighlighted = function(highlight) {
-  goog.ui.Palette.base(this, 'setHighlighted', highlight);
   if (highlight && this.highlightedIndex_ == -1) {
     // If there was a last highlighted index, use that. Otherwise, highlight the
     // first cell.
@@ -526,6 +526,9 @@ goog.ui.Palette.prototype.setHighlighted = function(highlight) {
   } else if (!highlight) {
     this.setHighlightedIndex(-1);
   }
+  // The highlight event should be fired once the component has updated its own
+  // state.
+  goog.ui.Palette.base(this, 'setHighlighted', highlight);
 };
 
 

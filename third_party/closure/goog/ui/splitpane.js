@@ -92,6 +92,7 @@ goog.ui.SplitPane = function(firstComponent, secondComponent, orientation,
   this.splitpaneHandle_ = null;
 };
 goog.inherits(goog.ui.SplitPane, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.SplitPane);
 
 
 /**
@@ -681,20 +682,6 @@ goog.ui.SplitPane.prototype.setFirstComponentSize = function(opt_size) {
 
 
 /**
- * Dummy object to work around compiler warning.
- * TODO(arv): Fix compiler or refactor to not depend on resize()
- * @private
- * @type {Object}
- */
-goog.ui.SplitPane.resizeWarningWorkaround_ = {
-  /**
-   * @param {goog.math.Size} size The new size.
-   */
-  resize: function(size) {}
-};
-
-
-/**
   * Set the size of the splitpane.  This is usually called by the controlling
   * application.  This will set the SplitPane BorderBoxSize.
   * @param {goog.math.Size} size The size to set the splitpane.
@@ -837,7 +824,7 @@ goog.ui.SplitPane.prototype.getRelativeTop_ = function(top) {
 
 /**
  * Handle the drag event. Move the containers.
- * @param {goog.events.Event} e The event.
+ * @param {!goog.fx.DragEvent} e The event.
  * @private
  */
 goog.ui.SplitPane.prototype.handleDrag_ = function(e) {
@@ -858,7 +845,7 @@ goog.ui.SplitPane.prototype.handleDrag_ = function(e) {
  * Handle the drag end event. If we're not doing continuous resize,
  * resize the component.  If we're doing continuous resize, the component
  * is already the correct size.
- * @param {goog.events.Event} e The event.
+ * @param {!goog.fx.DragEvent} e The event.
  * @private
  */
 goog.ui.SplitPane.prototype.handleDragEnd_ = function(e) {

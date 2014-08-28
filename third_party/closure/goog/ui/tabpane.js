@@ -100,6 +100,7 @@ goog.ui.TabPane = function(el, opt_tabLocation, opt_domHelper,
   this.create_();
 };
 goog.inherits(goog.ui.TabPane, goog.events.EventTarget);
+goog.tagUnsealableClass(goog.ui.TabPane);
 
 
 /**

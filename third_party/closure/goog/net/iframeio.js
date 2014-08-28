@@ -137,6 +137,7 @@ goog.provide('goog.net.IframeIo.IncrementalDataEvent');
 
 goog.require('goog.Timer');
 goog.require('goog.Uri');
+goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -145,6 +146,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.reflect');
@@ -458,15 +460,6 @@ goog.net.IframeIo.prototype.lastErrorCode_ = goog.net.ErrorCode.NO_ERROR;
 
 
 /**
- * Number of milliseconds after which an incomplete request will be aborted and
- * a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no timeout is set.
- * @type {number}
- * @private
- */
-goog.net.IframeIo.prototype.timeoutInterval_ = 0;
-
-
-/**
  * Window timeout ID used to cancel the timeout event handler if the request
  * completes successfully.
  * @type {?number}
@@ -507,6 +500,18 @@ goog.net.IframeIo.prototype.errorHandled_;
  * @private
  */
 goog.net.IframeIo.prototype.ignoreResponse_ = false;
+
+
+/** @private {Function} */
+goog.net.IframeIo.prototype.errorChecker_;
+
+
+/** @private {Object} */
+goog.net.IframeIo.prototype.lastCustomError_;
+
+
+/** @private {?string} */
+goog.net.IframeIo.prototype.lastContentHtml_;
 
 
 /**
@@ -619,7 +624,9 @@ goog.net.IframeIo.prototype.sendFromForm = function(form, opt_uri,
 goog.net.IframeIo.prototype.abort = function(opt_failureCode) {
   if (this.active_) {
     goog.log.info(this.logger_, 'Request aborted');
-    goog.events.removeAll(this.getRequestIframe());
+    var requestIframe = this.getRequestIframe();
+    goog.asserts.assert(requestIframe);
+    goog.events.removeAll(requestIframe);
     this.complete_ = false;
     this.active_ = false;
     this.success_ = false;
@@ -786,28 +793,6 @@ goog.net.IframeIo.prototype.setErrorChecker = function(fn) {
  */
 goog.net.IframeIo.prototype.getErrorChecker = function() {
   return this.errorChecker_;
-};
-
-
-/**
- * Returns the number of milliseconds after which an incomplete request will be
- * aborted, or 0 if no timeout is set.
- * @return {number} Timeout interval in milliseconds.
- */
-goog.net.IframeIo.prototype.getTimeoutInterval = function() {
-  return this.timeoutInterval_;
-};
-
-
-/**
- * Sets the number of milliseconds after which an incomplete request will be
- * aborted and a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no
- * timeout is set.
- * @param {number} ms Timeout interval in milliseconds; 0 means none.
- */
-goog.net.IframeIo.prototype.setTimeoutInterval = function(ms) {
-  // TODO (pupius) - never used - doesn't look like timeouts were implemented
-  this.timeoutInterval_ = Math.max(0, ms);
 };
 
 
@@ -1126,6 +1111,7 @@ goog.net.IframeIo.prototype.handleError_ = function(errorCode,
     this.complete_ = true;
     this.lastErrorCode_ = errorCode;
     if (errorCode == goog.net.ErrorCode.CUSTOM_ERROR) {
+      goog.asserts.assert(goog.isDef(opt_customError));
       this.lastCustomError_ = opt_customError;
     }
     this.dispatchEvent(goog.net.EventType.COMPLETE);

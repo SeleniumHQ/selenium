@@ -108,6 +108,38 @@ goog.net.CrossDomainRpc.RESPONSE_MARKER_ = 'xdrp';
 goog.net.CrossDomainRpc.useFallBackDummyResource_ = true;
 
 
+/** @type {Object} */
+goog.net.CrossDomainRpc.prototype.responseHeaders;
+
+
+/** @type {string} */
+goog.net.CrossDomainRpc.prototype.responseText;
+
+
+/** @type {number} */
+goog.net.CrossDomainRpc.prototype.status;
+
+
+/** @type {number} */
+goog.net.CrossDomainRpc.prototype.timeWaitedAfterResponseReady_;
+
+
+/** @private {boolean} */
+goog.net.CrossDomainRpc.prototype.responseTextIsJson_;
+
+
+/** @private {boolean} */
+goog.net.CrossDomainRpc.prototype.responseReady_;
+
+
+/** @private {!HTMLIFrameElement} */
+goog.net.CrossDomainRpc.prototype.requestFrame_;
+
+
+/** @private {goog.events.Key} */
+goog.net.CrossDomainRpc.prototype.loadListenerKey_;
+
+
 /**
  * Checks to see if we are executing inside a response iframe.  This is the
  * case when this page is used as a dummy resource to gain caller's domain.
@@ -375,7 +407,8 @@ goog.net.CrossDomainRpc.REQUEST_MARKER_ = 'xdrq';
 goog.net.CrossDomainRpc.prototype.sendRequest =
     function(uri, opt_method, opt_params, opt_headers) {
   // create request frame
-  var requestFrame = this.requestFrame_ = document.createElement('iframe');
+  var requestFrame = this.requestFrame_ = /** @type {!HTMLIFrameElement} */ (
+      document.createElement('iframe'));
   var requestId = goog.net.CrossDomainRpc.nextRequestId_++;
   requestFrame.id = goog.net.CrossDomainRpc.REQUEST_MARKER_ + '-' + requestId;
   if (!goog.net.CrossDomainRpc.debugMode_) {

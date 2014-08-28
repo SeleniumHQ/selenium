@@ -81,6 +81,7 @@ goog.ui.Menu = function(opt_domHelper, opt_renderer) {
   this.setFocusable(false);
 };
 goog.inherits(goog.ui.Menu, goog.ui.Container);
+goog.tagUnsealableClass(goog.ui.Menu);
 
 
 // TODO(robbyw): Remove this and all references to it.

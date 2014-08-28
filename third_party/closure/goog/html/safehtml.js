@@ -48,12 +48,12 @@ goog.require('goog.string.TypedString');
  * result in a Cross-Site-Scripting vulnerability.
  *
  * Instances of this type must be created via the factory methods
- * ({@code goog.html.SafeHtml.from}, {@code goog.html.SafeHtml.htmlEscape}), etc
- * and not by invoking its constructor.  The constructor intentionally takes no
- * parameters and the type is immutable; hence only a default instance
+ * ({@code goog.html.SafeHtml.create}, {@code goog.html.SafeHtml.htmlEscape}),
+ * etc and not by invoking its constructor.  The constructor intentionally
+ * takes no parameters and the type is immutable; hence only a default instance
  * corresponding to the empty string can be obtained via constructor invocation.
  *
- * @see goog.html.SafeHtml#from
+ * @see goog.html.SafeHtml#create
  * @see goog.html.SafeHtml#htmlEscape
  * @constructor
  * @final
@@ -119,9 +119,10 @@ goog.html.SafeHtml.prototype.implementsGoogStringTypedString = true;
  * <pre>
  * var fakeSafeHtml = new String('fake');
  * fakeSafeHtml.__proto__ = goog.html.SafeHtml.prototype;
- * var newSafeHtml = goog.html.SafeHtml.from(fakeSafeHtml);
+ * var newSafeHtml = goog.html.SafeHtml.htmlEscape(fakeSafeHtml);
  * // newSafeHtml is just an alias for fakeSafeHtml, it's passed through by
- * // goog.html.SafeHtml.from() as fakeSafeHtml instanceof goog.html.SafeHtml.
+ * // goog.html.SafeHtml.htmlEscape() as fakeSafeHtml
+ * // instanceof goog.html.SafeHtml.
  * </pre>
  *
  * @see goog.html.SafeHtml#unwrap
@@ -182,18 +183,11 @@ goog.html.SafeHtml.unwrap = function(safeHtml) {
 
 
 /**
- * Shorthand for union of types that can be sensibly converted to strings.
+ * Shorthand for union of types that can sensibly be converted to strings
+ * or might already be SafeHtml (as SafeHtml is a goog.string.TypedString).
  * @private
  * @typedef {string|number|boolean|!goog.string.TypedString|
  *           !goog.i18n.bidi.DirectionalString}
- */
-goog.html.SafeHtml.StringLike_;
-
-
-/**
- * Shorthand for union of types that can be sensibly converted to SafeHtml.
- * @private
- * @typedef {!goog.html.SafeHtml.StringLike_|!goog.html.SafeHtml}
  */
 goog.html.SafeHtml.TextOrHtml_;
 
@@ -207,33 +201,44 @@ goog.html.SafeHtml.TextOrHtml_;
  * Otherwise, the directionality of the resulting SafeHtml is unknown (i.e.,
  * {@code null}).
  *
- * @param {!goog.html.SafeHtml.StringLike_} text The string to escape.
- * @return {!goog.html.SafeHtml} The escaped string, wrapped as a SafeHtml.
+ * @param {!goog.html.SafeHtml.TextOrHtml_} textOrHtml The text to escape. If
+ *     the parameter is of type SafeHtml it is returned directly (no escaping
+ *     is done).
+ * @return {!goog.html.SafeHtml} The escaped text, wrapped as a SafeHtml.
  */
-goog.html.SafeHtml.htmlEscape = function(text) {
+goog.html.SafeHtml.htmlEscape = function(textOrHtml) {
+  if (textOrHtml instanceof goog.html.SafeHtml) {
+    return textOrHtml;
+  }
   var dir = null;
-  if (text.implementsGoogI18nBidiDirectionalString) {
-    dir = text.getDirection();
+  if (textOrHtml.implementsGoogI18nBidiDirectionalString) {
+    dir = textOrHtml.getDirection();
   }
   var textAsString;
-  if (text.implementsGoogStringTypedString) {
-    textAsString = text.getTypedStringValue();
+  if (textOrHtml.implementsGoogStringTypedString) {
+    textAsString = textOrHtml.getTypedStringValue();
   } else {
-    textAsString = String(text);
+    textAsString = String(textOrHtml);
   }
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_(
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       goog.string.htmlEscape(textAsString), dir);
 };
 
 
 /**
- * Returns HTML-escaped text as a SafeHtml object with newlines changed to <br>.
- * @param {!goog.html.SafeHtml.StringLike_} text The string to escape.
- * @return {!goog.html.SafeHtml} The escaped string, wrapped as a SafeHtml.
+ * Returns HTML-escaped text as a SafeHtml object, with newlines changed to
+ * &lt;br&gt;.
+ * @param {!goog.html.SafeHtml.TextOrHtml_} textOrHtml The text to escape. If
+ *     the parameter is of type SafeHtml it is returned directly (no escaping
+ *     is done).
+ * @return {!goog.html.SafeHtml} The escaped text, wrapped as a SafeHtml.
  */
-goog.html.SafeHtml.htmlEscapePreservingNewlines = function(text) {
-  var html = goog.html.SafeHtml.htmlEscape(text);
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_(
+goog.html.SafeHtml.htmlEscapePreservingNewlines = function(textOrHtml) {
+  if (textOrHtml instanceof goog.html.SafeHtml) {
+    return textOrHtml;
+  }
+  var html = goog.html.SafeHtml.htmlEscape(textOrHtml);
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       goog.string.newLineToBr(goog.html.SafeHtml.unwrap(html)),
       html.getDirection());
 };
@@ -251,19 +256,9 @@ goog.html.SafeHtml.htmlEscapePreservingNewlines = function(text) {
  * @param {!goog.html.SafeHtml.TextOrHtml_} textOrHtml The text or SafeHtml to
  *     coerce.
  * @return {!goog.html.SafeHtml} The resulting SafeHtml object.
+ * @deprecated Use goog.html.SafeHtml.htmlEscape.
  */
-goog.html.SafeHtml.from = function(textOrHtml) {
-  if (textOrHtml instanceof goog.html.SafeHtml) {
-    return textOrHtml;
-  } else if (textOrHtml.implementsGoogI18nBidiDirectionalString) {
-    // Do not coerce to string, to preserve directionality.
-    return goog.html.SafeHtml.htmlEscape(textOrHtml);
-  } else if (textOrHtml.implementsGoogStringTypedString) {
-    return goog.html.SafeHtml.htmlEscape(textOrHtml.getTypedStringValue());
-  } else {
-    return goog.html.SafeHtml.htmlEscape(String(textOrHtml));
-  }
-};
+goog.html.SafeHtml.from = goog.html.SafeHtml.htmlEscape;
 
 
 /**
@@ -276,8 +271,7 @@ goog.html.SafeHtml.VALID_NAMES_IN_TAG_ = /^[a-zA-Z0-9-]+$/;
 /**
  * Set of attributes containing URL as defined at
  * http://www.w3.org/TR/html5/index.html#attributes-1.
- * @const
- * @private
+ * @private @const {Object.<string,boolean>}
  */
 goog.html.SafeHtml.URL_ATTRIBUTES_ = goog.object.createSet('action', 'cite',
     'data', 'formaction', 'href', 'manifest', 'poster', 'src');
@@ -286,8 +280,7 @@ goog.html.SafeHtml.URL_ATTRIBUTES_ = goog.object.createSet('action', 'cite',
 // TODO(user): Perhaps add <template> used by Polymer?
 /**
  * Set of tag names that are too dangerous.
- * @const
- * @private
+ * @private @const {Object.<string,boolean>}
  */
 goog.html.SafeHtml.NOT_ALLOWED_TAG_NAMES_ = goog.object.createSet('link',
     'script', 'style');
@@ -295,7 +288,8 @@ goog.html.SafeHtml.NOT_ALLOWED_TAG_NAMES_ = goog.object.createSet('link',
 
 /**
  * @private
- * @typedef {string|goog.string.Const|goog.html.SafeUrl|goog.html.SafeStyle}
+ * @typedef {string|number|goog.string.Const|goog.html.SafeUrl|
+ *     goog.html.SafeStyle|goog.html.SafeStyle.PropertyMap}
  */
 goog.html.SafeHtml.AttributeValue_;
 
@@ -303,6 +297,24 @@ goog.html.SafeHtml.AttributeValue_;
 /**
  * Creates a SafeHtml content consisting of a tag with optional attributes and
  * optional content.
+ *
+ * For convenience tag names and attribute names are accepted as regular
+ * strings, instead of goog.string.Const. Nevertheless, you should not pass
+ * user-controlled values to these parameters. Note that these parameters are
+ * syntactically validated at runtime, and invalid values will result in
+ * an exception.
+ *
+ * Example usage:
+ *
+ * goog.html.SafeHtml.create('br');
+ * goog.html.SafeHtml.create('div', {'class': 'a'});
+ * goog.html.SafeHtml.create('p', {}, 'a');
+ * goog.html.SafeHtml.create('p', {}, goog.html.SafeHtml.create('br'));
+ *
+ * goog.html.SafeHtml.create('span', {
+ *   'style': {'margin': '0'}
+ * });
+ *
  * @param {string} tagName The name of the tag. Only tag names consisting of
  *     [a-zA-Z0-9-] are allowed. <link>, <script> and <style> tags are not
  *     supported.
@@ -310,9 +322,10 @@ goog.html.SafeHtml.AttributeValue_;
  *     opt_attributes Mapping from attribute names to their values. Only
  *     attribute names consisting of [a-zA-Z0-9-] are allowed. Attributes with
  *     a special meaning (e.g. on*) require goog.string.Const value, attributes
- *     containing URL require goog.string.Const or goog.html.SafeUrl. Value of
- *     null or undefined causes the attribute to be omitted. Values are
- *     HTML-escaped before usage.
+ *     containing URL require goog.string.Const or goog.html.SafeUrl. The
+ *     "style" attribute accepts goog.html.SafeStyle or a map which will be
+ *     passed to goog.html.SafeStyle.create. Value of null or undefined causes
+ *     the attribute to be omitted. Values are HTML-escaped before usage.
  * @param {!goog.html.SafeHtml.TextOrHtml_|
  *     !Array.<!goog.html.SafeHtml.TextOrHtml_>=} opt_content Content to put
  *     inside the tag. This must be empty for void tags like <br>. Array
@@ -344,6 +357,8 @@ goog.html.SafeHtml.create = function(tagName, opt_attributes, opt_content) {
       if (value instanceof goog.string.Const) {
         // If it's goog.string.Const, allow any valid attribute name.
         value = goog.string.Const.unwrap(value);
+      } else if (name.toLowerCase() == 'style') {
+        value = goog.html.SafeHtml.getStyleValue_(value);
       } else if (/^on/i.test(name)) {
         // TODO(user): Disallow more attributes with a special meaning.
         throw Error('Attribute "' + name +
@@ -355,14 +370,11 @@ goog.html.SafeHtml.create = function(tagName, opt_attributes, opt_content) {
         throw Error('Attribute "' + name +
             '" requires goog.string.Const or goog.html.SafeUrl value, "' +
             value + '" given.');
-      } else if (value instanceof goog.html.SafeStyle) {
-        // TODO(user): Allow "style" only with SafeStyle when it supports
-        // dynamic construction.
-        goog.asserts.assert(name.toLowerCase() == 'style',
-            'goog.html.SafeStyle is only supported in "style" attribute.');
-        value = goog.html.SafeStyle.unwrap(value);
       }
-      result += ' ' + name + '="' + goog.string.htmlEscape(value) + '"';
+      goog.asserts.assert(goog.isString(value) || goog.isNumber(value),
+          'String or number value expected, got ' +
+          (typeof value) + ' with value: ' + value);
+      result += ' ' + name + '="' + goog.string.htmlEscape(String(value)) + '"';
     }
   }
 
@@ -394,8 +406,29 @@ goog.html.SafeHtml.create = function(tagName, opt_attributes, opt_content) {
     }
   }
 
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_(
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       result, dir);
+};
+
+
+/**
+ * Gets value allowed in "style" attribute.
+ * @param {goog.html.SafeHtml.AttributeValue_} value It could be SafeStyle or a
+ *     map which will be passed to goog.html.SafeStyle.create.
+ * @return {string} Unwrapped value.
+ * @throws {Error} If string value is given.
+ * @private
+ */
+goog.html.SafeHtml.getStyleValue_ = function(value) {
+  if (!goog.isObject(value)) {
+    throw Error('The "style" attribute requires goog.html.SafeStyle or map ' +
+        'of style properties, ' + (typeof value) + ' given: ' + value);
+  }
+  if (!(value instanceof goog.html.SafeStyle)) {
+    // Process the property bag into a style object.
+    value = goog.html.SafeStyle.create(value);
+  }
+  return goog.html.SafeStyle.unwrap(value);
 };
 
 
@@ -436,7 +469,7 @@ goog.html.SafeHtml.concat = function(var_args) {
     if (goog.isArray(argument)) {
       goog.array.forEach(argument, addArgument);
     } else {
-      var html = goog.html.SafeHtml.from(argument);
+      var html = goog.html.SafeHtml.htmlEscape(argument);
       content += goog.html.SafeHtml.unwrap(html);
       var htmlDir = html.getDirection();
       if (dir == goog.i18n.bidi.Dir.NEUTRAL) {
@@ -448,7 +481,7 @@ goog.html.SafeHtml.concat = function(var_args) {
   };
 
   goog.array.forEach(arguments, addArgument);
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_(
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       content, dir);
 };
 
@@ -479,20 +512,15 @@ goog.html.SafeHtml.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
 
 
 /**
- * Utility method to create SafeHtml instances.
- *
- * This function is considered "package private", i.e. calls (using "suppress
- * visibility") from other files within this package are considered acceptable.
- * DO NOT call this function from outside the goog.html package; use appropriate
- * wrappers instead.
+ * Package-internal utility method to create SafeHtml instances.
  *
  * @param {string} html The string to initialize the SafeHtml object with.
  * @param {?goog.i18n.bidi.Dir} dir The directionality of the SafeHtml to be
  *     constructed, or null if unknown.
  * @return {!goog.html.SafeHtml} The initialized SafeHtml object.
- * @private
+ * @package
  */
-goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_ = function(
+goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse = function(
     html, dir) {
   var safeHtml = new goog.html.SafeHtml();
   safeHtml.privateDoNotAccessOrElseSafeHtmlWrappedValue_ = html;
@@ -505,4 +533,6 @@ goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_ = function(
  * A SafeHtml instance corresponding to the empty string.
  * @const {!goog.html.SafeHtml}
  */
-goog.html.SafeHtml.EMPTY = goog.html.SafeHtml.htmlEscape('');
+goog.html.SafeHtml.EMPTY =
+    goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
+        '', goog.i18n.bidi.Dir.NEUTRAL);

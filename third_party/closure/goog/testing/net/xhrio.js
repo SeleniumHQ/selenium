@@ -72,7 +72,7 @@ goog.testing.net.XhrIo.ResponseType = goog.net.XhrIo.ResponseType;
  * All non-disposed instances of goog.testing.net.XhrIo created
  * by {@link goog.testing.net.XhrIo.send} are in this Array.
  * @see goog.testing.net.XhrIo.cleanup
- * @type {Array.<goog.testing.net.XhrIo>}
+ * @type {!Array.<!goog.testing.net.XhrIo>}
  * @private
  */
 goog.testing.net.XhrIo.sendInstances_ = [];
@@ -81,7 +81,8 @@ goog.testing.net.XhrIo.sendInstances_ = [];
 /**
  * Returns an Array containing all non-disposed instances of
  * goog.testing.net.XhrIo created by {@link goog.testing.net.XhrIo.send}.
- * @return {Array} Array of goog.testing.net.XhrIo instances.
+ * @return {!Array.<!goog.testing.net.XhrIo>} Array of goog.testing.net.XhrIo
+ *     instances.
  */
 goog.testing.net.XhrIo.getSendInstances = function() {
   return goog.testing.net.XhrIo.sendInstances_;
@@ -112,10 +113,14 @@ goog.testing.net.XhrIo.cleanup = function() {
  *     request.
  * @param {number=} opt_timeoutInterval Number of milliseconds after which an
  *     incomplete request will be aborted; 0 means no timeout is set.
+ * @param {boolean=} opt_withCredentials Whether to send credentials with the
+ *     request. Default to false. See {@link goog.net.XhrIo#setWithCredentials}.
+ * @return {!goog.testing.net.XhrIo} The mocked sent XhrIo.
  */
 goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
                                        opt_content, opt_headers,
-                                       opt_timeoutInterval) {
+                                       opt_timeoutInterval,
+                                       opt_withCredentials) {
   var x = new goog.testing.net.XhrIo();
   goog.testing.net.XhrIo.sendInstances_.push(x);
   if (opt_callback) {
@@ -127,7 +132,10 @@ goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
   if (opt_timeoutInterval) {
     x.setTimeoutInterval(opt_timeoutInterval);
   }
+  x.setWithCredentials(Boolean(opt_withCredentials));
   x.send(url, opt_method, opt_content, opt_headers);
+
+  return x;
 };
 
 
@@ -135,7 +143,7 @@ goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
  * Disposes of the specified goog.testing.net.XhrIo created by
  * {@link goog.testing.net.XhrIo.send} and removes it from
  * {@link goog.testing.net.XhrIo.pendingStaticSendInstances_}.
- * @param {goog.testing.net.XhrIo} XhrIo An XhrIo created by
+ * @param {!goog.testing.net.XhrIo} XhrIo An XhrIo created by
  *     {@link goog.testing.net.XhrIo.send}.
  * @private
  */
@@ -213,7 +221,7 @@ goog.testing.net.XhrIo.prototype.lastError_ = '';
 
 /**
  * The response object.
- * @type {string|Document}
+ * @type {string|Document|ArrayBuffer}
  * @private
  */
 goog.testing.net.XhrIo.prototype.response_ = '';
@@ -461,7 +469,7 @@ goog.testing.net.XhrIo.prototype.simulatePartialResponse =
 /**
  * Simulates receiving a response.
  * @param {number} statusCode Simulated status code.
- * @param {string|Document|null} response Simulated response.
+ * @param {string|Document|ArrayBuffer|null} response Simulated response.
  * @param {Object=} opt_headers Simulated response headers.
  */
 goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
@@ -621,8 +629,14 @@ goog.testing.net.XhrIo.prototype.getLastRequestHeaders = function() {
  * @return {string} Result from the server.
  */
 goog.testing.net.XhrIo.prototype.getResponseText = function() {
-  return goog.isString(this.response_) ? this.response_ :
-         goog.dom.xml.serialize(this.response_);
+  if (goog.isString(this.response_)) {
+    return this.response_;
+  } else if (goog.global['ArrayBuffer'] &&
+      this.response_ instanceof ArrayBuffer) {
+    return '';
+  } else {
+    return goog.dom.xml.serialize(/** @type {Document} */ (this.response_));
+  }
 };
 
 
@@ -662,7 +676,9 @@ goog.testing.net.XhrIo.prototype.getResponseJson = function(opt_xssiPrefix) {
 goog.testing.net.XhrIo.prototype.getResponseXml = function() {
   // NOTE(user): I haven't found out how to check in Internet Explorer
   // whether the response is XML document, so I do it the other way around.
-  return goog.isString(this.response_) ? null : this.response_;
+  return goog.isString(this.response_) ||
+      (goog.global['ArrayBuffer'] && this.response_ instanceof ArrayBuffer) ?
+      null : /** @type {Document} */ (this.response_);
 };
 
 

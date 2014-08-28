@@ -16,7 +16,7 @@ goog.provide('remote.ui.OpenScriptDialog');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.LabelInput');
@@ -61,7 +61,7 @@ remote.ui.OpenScriptDialog.prototype.createContentDom = function() {
   }, 'WebDriverJS');
 
   this.input_.createDom();
-  goog.dom.classes.add(this.input_.getElement(), 'url-input');
+  goog.dom.classlist.add(this.input_.getElement(), 'url-input');
 
   var dom = this.getDomHelper();
   return dom.createDom(goog.dom.TagName.DIV, null,

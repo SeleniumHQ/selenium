@@ -292,8 +292,9 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
 
   // TODO(user): Make this work with multiple test cases (b/8603638).
   var runAgainLink = document.createElement('a');
-  runAgainLink.style.display = 'block';
+  runAgainLink.style.display = 'inline-block';
   runAgainLink.style.fontSize = 'small';
+  runAgainLink.style.marginBottom = '16px';
   runAgainLink.href = '';
   runAgainLink.onclick = goog.bind(function() {
     this.execute();
@@ -329,46 +330,47 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       div.appendChild(document.createTextNode(line));
     }
 
-    if (isFailOrError) {
-      var testNameMatch = /(\S+) (\[[^\]]*] )?: (FAILED|ERROR)/.exec(line);
-      if (testNameMatch) {
-        // Build a URL to run the test individually.  If this test was already
-        // part of another subset test, we need to overwrite the old runTests
-        // query parameter.  We also need to do this without bringing in any
-        // extra dependencies, otherwise we could mask missing dependency bugs.
-        var newSearch = 'runTests=' + testNameMatch[1];
-        var search = window.location.search;
-        if (search) {
-          var oldTests = /runTests=([^&]*)/.exec(search);
-          if (oldTests) {
-            newSearch = search.substr(0, oldTests.index) +
-                        newSearch +
-                        search.substr(oldTests.index + oldTests[0].length);
-          } else {
-            newSearch = search + '&' + newSearch;
-          }
+    var testNameMatch =
+        /(\S+) (\[[^\]]*] )?: (FAILED|ERROR|PASSED)/.exec(line);
+    if (testNameMatch) {
+      // Build a URL to run the test individually.  If this test was already
+      // part of another subset test, we need to overwrite the old runTests
+      // query parameter.  We also need to do this without bringing in any
+      // extra dependencies, otherwise we could mask missing dependency bugs.
+      var newSearch = 'runTests=' + testNameMatch[1];
+      var search = window.location.search;
+      if (search) {
+        var oldTests = /runTests=([^&]*)/.exec(search);
+        if (oldTests) {
+          newSearch = search.substr(0, oldTests.index) +
+                      newSearch +
+                      search.substr(oldTests.index + oldTests[0].length);
         } else {
-          newSearch = '?' + newSearch;
+          newSearch = search + '&' + newSearch;
         }
-        var href = window.location.href;
-        var hash = window.location.hash;
-        if (hash && hash.charAt(0) != '#') {
-          hash = '#' + hash;
-        }
-        href = href.split('#')[0].split('?')[0] + newSearch + hash;
-
-        // Add the link.
-        var a = document.createElement('A');
-        a.innerHTML = '(run individually)';
-        a.style.fontSize = '0.8em';
-        a.href = href;
-        div.appendChild(document.createTextNode(' '));
-        div.appendChild(a);
+      } else {
+        newSearch = '?' + newSearch;
       }
+      var href = window.location.href;
+      var hash = window.location.hash;
+      if (hash && hash.charAt(0) != '#') {
+        hash = '#' + hash;
+      }
+      href = href.split('#')[0].split('?')[0] + newSearch + hash;
+
+      // Add the link.
+      var a = document.createElement('A');
+      a.innerHTML = '(run individually)';
+      a.style.fontSize = '0.8em';
+      a.style.color = '#888';
+      a.href = href;
+      div.appendChild(document.createTextNode(' '));
+      div.appendChild(a);
     }
 
     div.style.color = color;
     div.style.font = 'normal 100% monospace';
+    div.style.wordWrap = 'break-word';
     if (i == 0) {
       // Highlight the first line as a header that indicates the test outcome.
       div.style.padding = '20px';

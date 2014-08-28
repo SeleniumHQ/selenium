@@ -183,6 +183,7 @@ goog.ui.BaseRoundedPanel = function(radius,
   this.corners_ = opt_corners || goog.ui.RoundedPanel.Corner.NONE;
 };
 goog.inherits(goog.ui.BaseRoundedPanel, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.BaseRoundedPanel);
 
 
 /**

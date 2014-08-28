@@ -44,7 +44,7 @@ goog.require('goog.ui.registry');
  *     should contain at least one {@link goog.ui.ColorPalette} if present.
  * @param {goog.ui.MenuButtonRenderer=} opt_renderer Button renderer;
  *     defaults to {@link goog.ui.ColorMenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.MenuButton}
@@ -105,7 +105,7 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
  * containing default color palettes.
  * @param {Array.<goog.ui.Control>=} opt_extraItems Optional extra menu items to
  *     add before the color palettes.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {!goog.ui.Menu} Color menu.
  */

@@ -274,6 +274,14 @@ goog.crypt.base64.init_ = function() {
           goog.crypt.base64.ENCODED_VALS_WEBSAFE.charAt(i);
       goog.crypt.base64.charToByteMapWebSafe_[
           goog.crypt.base64.byteToCharMapWebSafe_[i]] = i;
+
+      // Be forgiving when decoding and correctly decode both encodings.
+      if (i >= goog.crypt.base64.ENCODED_VALS_BASE.length) {
+        goog.crypt.base64.charToByteMap_[
+            goog.crypt.base64.ENCODED_VALS_WEBSAFE.charAt(i)] = i;
+        goog.crypt.base64.charToByteMapWebSafe_[
+            goog.crypt.base64.ENCODED_VALS.charAt(i)] = i;
+      }
     }
   }
 };

@@ -28,15 +28,60 @@ goog.require('goog.testing.watchers');
  * @template THIS
  */
 goog.async.run = function(callback, opt_context) {
+  if (!goog.async.run.schedule_) {
+    goog.async.run.initializeRunner_();
+  }
   if (!goog.async.run.workQueueScheduled_) {
     // Nothing is currently scheduled, schedule it now.
-    goog.async.nextTick(goog.async.run.processWorkQueue);
+    goog.async.run.schedule_();
     goog.async.run.workQueueScheduled_ = true;
   }
 
   goog.async.run.workQueue_.push(
       new goog.async.run.WorkItem_(callback, opt_context));
 };
+
+
+/**
+ * Initializes the function to use to process the work queue.
+ * @private
+ */
+goog.async.run.initializeRunner_ = function() {
+  // If native Promises are available in the browser, just schedule the callback
+  // on a fulfilled promise, which is specified to be async, but as fast as
+  // possible.
+  if (goog.global.Promise && goog.global.Promise.resolve) {
+    var promise = goog.global.Promise.resolve();
+    goog.async.run.schedule_ = function() {
+      promise.then(goog.async.run.processWorkQueue);
+    };
+  } else {
+    goog.async.run.schedule_ = function() {
+      goog.async.nextTick(goog.async.run.processWorkQueue);
+    };
+  }
+};
+
+
+/**
+ * Forces goog.async.run to use nextTick instead of Promise.
+ *
+ * This should only be done in unit tests. It's useful because MockClock
+ * replaces nextTick, but not the browser Promise implementation, so it allows
+ * Promise-based code to be tested with MockClock.
+ */
+goog.async.run.forceNextTick = function() {
+  goog.async.run.schedule_ = function() {
+    goog.async.nextTick(goog.async.run.processWorkQueue);
+  };
+};
+
+
+/**
+ * The function used to schedule work asynchronousely.
+ * @private {function()}
+ */
+goog.async.run.schedule_;
 
 
 /** @private {boolean} */

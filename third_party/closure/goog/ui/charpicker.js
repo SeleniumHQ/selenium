@@ -199,6 +199,29 @@ goog.ui.CharPicker.prototype.submenu_ = null;
 goog.ui.CharPicker.prototype.submenubutton_ = null;
 
 
+/** @type {number} */
+goog.ui.CharPicker.prototype.itempos;
+
+
+/** @type {!Array.<string>} */
+goog.ui.CharPicker.prototype.items;
+
+
+/** @private {!goog.events.KeyHandler} */
+goog.ui.CharPicker.prototype.keyHandler_;
+
+
+/**
+ * Category index used to index the data tables.
+ * @type {number}
+ */
+goog.ui.CharPicker.prototype.category;
+
+
+/** @private {Element} */
+goog.ui.CharPicker.prototype.stick_ = null;
+
+
 /**
  * The element representing the number of rows visible in the grid.
  * This along with goog.ui.CharPicker.stick_ would help to create a scrollbar
@@ -243,8 +266,7 @@ goog.ui.CharPicker.prototype.input_ = null;
 
 /**
  * OK button for entering hex value of the character.
- * @type {goog.ui.Component}
- * @private
+ * @private {goog.ui.Button}
  */
 goog.ui.CharPicker.prototype.okbutton_ = null;
 
@@ -805,7 +827,9 @@ goog.ui.CharPicker.prototype.modifyGridWithItems_ = function(grid, items,
   for (var buttonpos = 0, itempos = start;
        buttonpos < grid.buttoncount && itempos < items.length;
        buttonpos++, itempos++) {
-    this.modifyCharNode_(grid.getChildAt(buttonpos), items[itempos]);
+    this.modifyCharNode_(
+        /** @type {!goog.ui.Button} */ (grid.getChildAt(buttonpos)),
+        items[itempos]);
   }
 
   for (; buttonpos < grid.buttoncount; buttonpos++) {
@@ -845,7 +869,7 @@ goog.ui.CharPicker.prototype.populateGridWithButtons_ = function(grid) {
 
 /**
  * Updates the grid cell with new character.
- * @param {goog.ui.Component} button This button is proped up for new character.
+ * @param {goog.ui.Button} button This button is popped up for new character.
  * @param {string} ch Character to be displayed by the button.
  * @private
  */

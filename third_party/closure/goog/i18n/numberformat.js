@@ -542,7 +542,7 @@ goog.i18n.NumberFormat.prototype.roundNumber_ = function(number) {
   var power = Math.pow(10, this.maximumFractionDigits_);
   var shiftedNumber = this.significantDigits_ <= 0 ?
       Math.round(number * power) :
-      Math.floor(this.roundToSignificantDigits_(
+      Math.round(this.roundToSignificantDigits_(
           number * power,
           this.significantDigits_,
           this.maximumFractionDigits_));

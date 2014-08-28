@@ -85,10 +85,10 @@ goog.ui.FormPost.prototype.setParameters_ = function(form, parameters) {
     value = parameters[name];
     if (goog.isArrayLike(value)) {
       goog.array.forEach(value, goog.bind(function(innerValue) {
-        html.push(this.createInput_(name, innerValue));
+        html.push(this.createInput_(name, String(innerValue)));
       }, this));
     } else {
-      html.push(this.createInput_(name, value));
+      html.push(this.createInput_(name, String(value)));
     }
   }
   goog.dom.safe.setInnerHtml(form, goog.html.SafeHtml.concat(html));

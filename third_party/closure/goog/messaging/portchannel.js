@@ -40,6 +40,7 @@ goog.require('goog.messaging.AbstractChannel');
 goog.require('goog.messaging.DeferredChannel');
 goog.require('goog.object');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 
@@ -140,7 +141,7 @@ goog.messaging.PortChannel.forEmbeddedWindow = function(
 
     var msg = {};
     msg[goog.messaging.PortChannel.FLAG] = true;
-    window.postMessage(msg, [channel.port2], peerOrigin);
+    window.postMessage(msg, peerOrigin, [channel.port2]);
   });
 
   return new goog.messaging.DeferredChannel(deferred);

@@ -140,6 +140,7 @@ goog.ui.KeyboardShortcutHandler = function(keyTarget) {
   this.initializeKeyListener(keyTarget);
 };
 goog.inherits(goog.ui.KeyboardShortcutHandler, goog.events.EventTarget);
+goog.tagUnsealableClass(goog.ui.KeyboardShortcutHandler);
 
 
 /**

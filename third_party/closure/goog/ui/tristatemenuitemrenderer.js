@@ -56,7 +56,8 @@ goog.ui.TriStateMenuItemRenderer.CSS_CLASS =
  * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
  * menu item to checkable based on whether the element to be decorated has
  * extra styling indicating that it should be.
- * @param {goog.ui.Control} item goog.ui.MenuItem to decorate the element.
+ * @param {goog.ui.Control} item goog.ui.TriStateMenuItem to decorate
+ *     the element.
  * @param {Element} element Element to decorate.
  * @return {!Element} Decorated element.
  * @override

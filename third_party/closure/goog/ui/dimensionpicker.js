@@ -215,15 +215,28 @@ goog.ui.DimensionPicker.prototype.handleKeyEvent = function(e) {
       rows--;
       break;
     case goog.events.KeyCodes.LEFT:
-      if (columns == 1) {
-        // Delegate to parent.
-        return false;
+      if (this.isRightToLeft()) {
+        columns++;
       } else {
-        columns--;
+        if (columns == 1) {
+          // Delegate to parent.
+          return false;
+        } else {
+          columns--;
+        }
       }
       break;
     case goog.events.KeyCodes.RIGHT:
-      columns++;
+      if (this.isRightToLeft()) {
+        if (columns == 1) {
+          // Delegate to parent.
+          return false;
+        } else {
+          columns--;
+        }
+      } else {
+        columns++;
+      }
       break;
     default:
       return goog.ui.DimensionPicker.superClass_.handleKeyEvent.call(this, e);

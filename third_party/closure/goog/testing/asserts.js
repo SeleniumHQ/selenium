@@ -1179,11 +1179,6 @@ var standardizeCSSValue = function(propertyName, value) {
  * @param {string=} opt_message A description of the exception.
  */
 goog.testing.asserts.raiseException = function(comment, opt_message) {
-  if (goog.global['CLOSURE_INSPECTOR___'] &&
-      goog.global['CLOSURE_INSPECTOR___']['supportsJSUnit']) {
-    goog.global['CLOSURE_INSPECTOR___']['jsUnitFailure'](comment, opt_message);
-  }
-
   throw new goog.testing.JsUnitException(comment, opt_message);
 };
 

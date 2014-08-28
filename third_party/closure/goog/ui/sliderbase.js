@@ -109,6 +109,7 @@ goog.ui.SliderBase = function(opt_domHelper, opt_labelFn) {
       this.handleRangeModelChange, false, this);
 };
 goog.inherits(goog.ui.SliderBase, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.SliderBase);
 
 
 /**
@@ -156,6 +157,22 @@ goog.ui.SliderBase.Orientation = {
  */
 goog.ui.SliderBase.prototype.orientation_ =
     goog.ui.SliderBase.Orientation.HORIZONTAL;
+
+
+/** @private {goog.fx.AnimationParallelQueue} */
+goog.ui.SliderBase.prototype.currentAnimation_;
+
+
+/** @private {!goog.Timer} */
+goog.ui.SliderBase.prototype.incTimer_;
+
+
+/** @private {boolean} */
+goog.ui.SliderBase.prototype.incrementing_;
+
+
+/** @private {number} */
+goog.ui.SliderBase.prototype.lastMousePosition_;
 
 
 /**

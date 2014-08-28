@@ -68,8 +68,7 @@ goog.fx.dom.PredefinedEffect = function(element, start, end, time, opt_acc) {
   /**
    * Whether the element is rendered right-to-left. We cache this here for
    * efficiency.
-   * @type {boolean|undefined}
-   * @private
+   * @private {boolean|undefined}
    */
   this.rightToLeft_;
 };
@@ -81,14 +80,6 @@ goog.inherits(goog.fx.dom.PredefinedEffect, goog.fx.Animation);
  * @protected
  */
 goog.fx.dom.PredefinedEffect.prototype.updateStyle = goog.nullFunction;
-
-
-/**
- * Whether the element is rendered right-to-left. We initialize this lazily.
- * @type {boolean|undefined}
- * @private
- */
-goog.fx.dom.PredefinedEffect.prototype.rightToLeft_;
 
 
 /**

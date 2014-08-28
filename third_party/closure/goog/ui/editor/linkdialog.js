@@ -24,6 +24,7 @@ goog.provide('goog.ui.editor.LinkDialog.OkEvent');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Link');
 goog.require('goog.editor.focus');
@@ -32,7 +33,9 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.string');
+goog.require('goog.string.Unicode');
 goog.require('goog.style');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.Component');
@@ -146,7 +149,7 @@ goog.inherits(goog.ui.editor.LinkDialog.BeforeTestLinkEvent, goog.events.Event);
 
 /**
  * Optional warning to show about email addresses.
- * @type {string|undefined}
+ * @type {goog.html.SafeHtml}
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.emailWarning_;
@@ -183,8 +186,8 @@ goog.ui.editor.LinkDialog.prototype.showRelNoFollow_ = false;
 /**
  * Sets the warning message to show to users about including email addresses on
  * public web pages.
- * @param {string} emailWarning Warning message to show users about including
- *     email addresses on the web.
+ * @param {!goog.html.SafeHtml} emailWarning Warning message to show users about
+ *     including email addresses on the web.
  */
 goog.ui.editor.LinkDialog.prototype.setEmailWarning = function(
     emailWarning) {
@@ -525,9 +528,15 @@ goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
   table.style.fontSize = '10pt';
   // Build the text to display input.
   var textToDisplayDiv = this.dom.createDom(goog.dom.TagName.DIV);
-  table.rows[0].cells[0].innerHTML = '<span style="position: relative;' +
-      ' bottom: 2px; padding-right: 1px; white-space: nowrap;">' +
-      goog.ui.editor.messages.MSG_TEXT_TO_DISPLAY + '&nbsp;</span>';
+  var html = goog.html.SafeHtml.create('span', {
+    'style': {
+      'position': 'relative',
+      'bottom': '2px',
+      'padding-right': '1px',
+      'white-space': 'nowrap'
+    }
+  }, [goog.ui.editor.messages.MSG_TEXT_TO_DISPLAY, goog.string.Unicode.NBSP]);
+  goog.dom.safe.setInnerHtml(table.rows[0].cells[0], html);
   this.textToDisplayInput_ = /** @type {HTMLInputElement} */(
       this.dom.createDom(goog.dom.TagName.INPUT,
           {id: goog.ui.editor.LinkDialog.Id_.TEXT_TO_DISPLAY}));
@@ -596,8 +605,9 @@ goog.ui.editor.LinkDialog.prototype.buildRelNoFollowDiv_ = function() {
 goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
   var onTheWebDiv = this.dom.createElement(goog.dom.TagName.DIV);
 
-  var headingDiv = this.dom.createDom(goog.dom.TagName.DIV,
-      {innerHTML: '<b>' + goog.ui.editor.messages.MSG_WHAT_URL + '</b>'});
+  var headingDiv = this.dom.createDom(goog.dom.TagName.DIV, {},
+      this.dom.createDom(goog.dom.TagName.B, {},
+          goog.ui.editor.messages.MSG_WHAT_URL));
   var urlInput = this.dom.createDom(goog.dom.TagName.INPUT,
       {
         id: goog.ui.editor.LinkDialog.Id_.ON_WEB_INPUT,
@@ -633,10 +643,9 @@ goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
 
   // Build the "On the web" explanation text div.
   var explanationDiv = this.dom.createDom(goog.dom.TagName.DIV,
-      {
-        className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
-        innerHTML: goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION
-      });
+      goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_);
+  goog.dom.safe.setInnerHtml(explanationDiv,
+      goog.ui.editor.messages.getTrLinkExplanationSafeHtml());
   onTheWebDiv.appendChild(headingDiv);
   onTheWebDiv.appendChild(inputDiv);
   onTheWebDiv.appendChild(explanationDiv);
@@ -653,8 +662,9 @@ goog.ui.editor.LinkDialog.prototype.buildTabOnTheWeb_ = function() {
 goog.ui.editor.LinkDialog.prototype.buildTabEmailAddress_ = function() {
   var emailTab = this.dom.createDom(goog.dom.TagName.DIV);
 
-  var headingDiv = this.dom.createDom(goog.dom.TagName.DIV,
-      {innerHTML: '<b>' + goog.ui.editor.messages.MSG_WHAT_EMAIL + '</b>'});
+  var headingDiv = this.dom.createDom(goog.dom.TagName.DIV, {},
+      this.dom.createDom(goog.dom.TagName.B, {},
+          goog.ui.editor.messages.MSG_WHAT_EMAIL));
   goog.dom.appendChild(emailTab, headingDiv);
   var emailInput = this.dom.createDom(goog.dom.TagName.INPUT,
       {
@@ -685,10 +695,8 @@ goog.ui.editor.LinkDialog.prototype.buildTabEmailAddress_ = function() {
 
   if (this.emailWarning_) {
     var explanationDiv = this.dom.createDom(goog.dom.TagName.DIV,
-        {
-          className: goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_,
-          innerHTML: this.emailWarning_
-        });
+        goog.ui.editor.LinkDialog.EXPLANATION_TEXT_CLASSNAME_);
+    goog.dom.safe.setInnerHtml(explanationDiv, this.emailWarning_);
     goog.dom.appendChild(emailTab, explanationDiv);
   }
   return emailTab;

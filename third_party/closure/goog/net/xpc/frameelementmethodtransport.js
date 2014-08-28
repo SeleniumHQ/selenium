@@ -88,6 +88,18 @@ goog.net.xpc.FrameElementMethodTransport.prototype.transportType =
     goog.net.xpc.TransportTypes.FRAME_ELEMENT_METHOD;
 
 
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetupCb_;
+
+
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.outgoing_;
+
+
+/** @private */
+goog.net.xpc.FrameElementMethodTransport.prototype.iframeElm_;
+
+
 /**
  * Flag used to enforce asynchronous messaging semantics.
  * @type {boolean}

@@ -78,6 +78,7 @@ goog.ui.PopupMenu = function(opt_domHelper, opt_renderer) {
   this.targets_ = new goog.structs.Map();
 };
 goog.inherits(goog.ui.PopupMenu, goog.ui.Menu);
+goog.tagUnsealableClass(goog.ui.PopupMenu);
 
 
 /**

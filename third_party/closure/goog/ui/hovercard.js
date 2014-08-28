@@ -118,6 +118,7 @@ goog.ui.HoverCard = function(isAnchor, opt_checkDescendants, opt_domHelper,
                      this.handleTriggerMouseOver_, false, this);
 };
 goog.inherits(goog.ui.HoverCard, goog.ui.AdvancedTooltip);
+goog.tagUnsealableClass(goog.ui.HoverCard);
 
 
 /**

@@ -792,7 +792,6 @@ goog.ui.Gauge.prototype.draw_ = function() {
   // Draw the needle and the value label. Stop animation when doing
   // full redraw and jump to the final value position.
   this.stopAnimation_();
-  this.valuePosition_ = this.valueToRangePosition_(this.value);
   this.needleRadius_ = r;
   this.drawValue_();
 };

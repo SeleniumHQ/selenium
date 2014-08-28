@@ -36,7 +36,7 @@ goog.require('goog.ui.registry');
  *     display as the tab's caption (if any).
  * @param {goog.ui.TabRenderer=} opt_renderer Optional renderer used to render
  *     or decorate the tab.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Control}
@@ -55,6 +55,7 @@ goog.ui.Tab = function(content, opt_renderer, opt_domHelper) {
       true);
 };
 goog.inherits(goog.ui.Tab, goog.ui.Control);
+goog.tagUnsealableClass(goog.ui.Tab);
 
 
 /**

@@ -104,7 +104,7 @@ goog.ui.HsvaPalette.prototype.getAlpha = function() {
  * @param {number} alpha The selected alpha value, in [0, 1].
  */
 goog.ui.HsvaPalette.prototype.setAlpha = function(alpha) {
-  this.setColorAlphaHelper_(this.color_, alpha);
+  this.setColorAlphaHelper_(this.color, alpha);
 };
 
 
@@ -126,7 +126,7 @@ goog.ui.HsvaPalette.prototype.setColor = function(color) {
  */
 goog.ui.HsvaPalette.prototype.getColorRgbaHex = function() {
   var alphaHex = Math.floor(this.alpha_ * 255).toString(16);
-  return this.color_ + (alphaHex.length == 1 ? '0' + alphaHex : alphaHex);
+  return this.color + (alphaHex.length == 1 ? '0' + alphaHex : alphaHex);
 };
 
 
@@ -149,10 +149,10 @@ goog.ui.HsvaPalette.prototype.setColorRgbaHex = function(color) {
  * @private
  */
 goog.ui.HsvaPalette.prototype.setColorAlphaHelper_ = function(color, alpha) {
-  var colorChange = this.color_ != color;
+  var colorChange = this.color != color;
   var alphaChange = this.alpha_ != alpha;
   this.alpha_ = alpha;
-  this.color_ = color;
+  this.color = color;
   if (colorChange) {
     // This is to prevent multiple event dispatches.
     this.setColorInternal(color);
@@ -201,7 +201,7 @@ goog.ui.HsvaPalette.prototype.updateUi = function() {
         Math.floor(this.aHandleEl_.offsetHeight / 2) +
         this.aImageEl_.offsetHeight * ((255 - a) / 255);
     this.aHandleEl_.style.top = top + 'px';
-    this.aImageEl_.style.backgroundColor = this.color_;
+    this.aImageEl_.style.backgroundColor = this.color;
     goog.style.setOpacity(this.swatchElement, a / 255);
   }
 };
@@ -209,7 +209,7 @@ goog.ui.HsvaPalette.prototype.updateUi = function() {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.updateInput = function() {
-  if (!goog.array.equals([this.color_, this.alpha_],
+  if (!goog.array.equals([this.color, this.alpha_],
       goog.ui.HsvaPalette.parseUserInput_(this.inputElement.value))) {
     this.inputElement.value = this.getColorRgbaHex();
   }

@@ -117,6 +117,40 @@ goog.math.Path.segmentArgCounts_ = (function() {
 
 
 /**
+ * Returns an array of the segment types in this path, in the order of their
+ * appearance. Adjacent segments of the same type are collapsed into a single
+ * entry in the array. The returned array is a copy; modifications are not
+ * reflected in the Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentTypes = function() {
+  return this.segments_.concat();
+};
+
+
+/**
+ * Returns an array of the number of times each segment type repeats in this
+ * path, in order. The returned array is a copy; modifications are not reflected
+ * in the Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentCounts = function() {
+  return this.count_.concat();
+};
+
+
+/**
+ * Returns an array of all arguments for the segments of this path object, in
+ * order. The returned array is a copy; modifications are not reflected in the
+ * Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentArgs = function() {
+  return this.arguments_.concat();
+};
+
+
+/**
  * Returns the number of points for a segment type.
  *
  * @param {number} segment The segment type.

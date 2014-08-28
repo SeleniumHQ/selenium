@@ -36,7 +36,7 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.MenuButtonRenderer=} opt_renderer Renderer used to
  *     render or decorate the control; defaults to
  *     {@link goog.ui.ToolbarMenuButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Select}

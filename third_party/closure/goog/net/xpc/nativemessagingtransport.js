@@ -237,7 +237,7 @@ goog.net.xpc.NativeMessagingTransport.activeCount_ = {};
  * @type {number}
  * @private
  */
-goog.net.xpc.NativeMessagingTransport.sendTimerId_ = 0;
+goog.net.xpc.NativeMessagingTransport.prototype.sendTimerId_ = 0;
 
 
 /**
@@ -318,7 +318,8 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   //  - channel has become stale (e.g. caching iframes and back clicks)
   var channel = goog.net.xpc.channels[channelName];
   if (channel) {
-    channel.xpcDeliver(service, payload, msgEvt.getBrowserEvent().origin);
+    channel.xpcDeliver(service, payload,
+        /** @type {!MessageEvent} */ (msgEvt.getBrowserEvent()).origin);
     return true;
   }
 

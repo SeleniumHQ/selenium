@@ -20,7 +20,9 @@
 goog.provide('goog.net.xpc.IframeRelayTransport');
 
 goog.require('goog.dom');
+goog.require('goog.dom.safe');
 goog.require('goog.events');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.log');
 goog.require('goog.log.Level');
 goog.require('goog.net.xpc');
@@ -28,6 +30,7 @@ goog.require('goog.net.xpc.CfgFields');
 goog.require('goog.net.xpc.Transport');
 goog.require('goog.net.xpc.TransportTypes');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.userAgent');
 
 
@@ -335,7 +338,9 @@ goog.net.xpc.IframeRelayTransport.prototype.send_ =
   // handler is not triggered
   if (goog.userAgent.IE) {
     var div = this.getWindow().document.createElement('div');
-    div.innerHTML = '<iframe onload="this.xpcOnload()"></iframe>';
+    goog.dom.safe.setInnerHtml(div, goog.html.SafeHtml.create('iframe', {
+      'onload': goog.string.Const.from('this.xpcOnload()')
+    }));
     var ifr = div.childNodes[0];
     div = null;
     ifr['xpcOnload'] = goog.net.xpc.IframeRelayTransport.iframeLoadHandler_;

@@ -108,9 +108,11 @@ goog.style.bidi.getOffsetStart = function(element) {
     // the border width from the actual distance.  So we need to add it back.
     var borderWidths = goog.style.getBorderBox(bestParent);
     offsetLeftForReal += borderWidths.left;
-  } else if (goog.userAgent.isDocumentModeOrHigher(8)) {
-    // When calculating an element's offsetLeft, IE8-Standards Mode erroneously
-    // adds the border width to the actual distance.  So we need to subtract it.
+  } else if (goog.userAgent.isDocumentModeOrHigher(8) &&
+             !goog.userAgent.isDocumentModeOrHigher(9)) {
+    // When calculating an element's offsetLeft, IE8/9-Standards Mode
+    // erroneously adds the border width to the actual distance.  So we need to
+    // subtract it.
     var borderWidths = goog.style.getBorderBox(bestParent);
     offsetLeftForReal -= borderWidths.left;
   }

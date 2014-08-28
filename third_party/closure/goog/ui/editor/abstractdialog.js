@@ -28,6 +28,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.events.EventTarget');
 goog.require('goog.string');
 goog.require('goog.ui.Dialog');
+goog.require('goog.ui.PopupBase');
 
 
 // *** Public interface ***************************************************** //
@@ -56,7 +57,7 @@ goog.ui.editor.AbstractDialog.prototype.show = function() {
   // Lazily create the wrapped dialog to be shown.
   if (!this.dialogInternal_) {
     this.dialogInternal_ = this.createDialogControl();
-    this.dialogInternal_.listen(goog.ui.Dialog.EventType.AFTER_HIDE,
+    this.dialogInternal_.listen(goog.ui.PopupBase.EventType.HIDE,
         this.handleAfterHide_, false, this);
   }
 

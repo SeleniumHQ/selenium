@@ -26,7 +26,6 @@
 goog.provide('goog.events.EventTarget');
 
 goog.require('goog.Disposable');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -83,6 +82,17 @@ goog.events.EventTarget = function() {
    * @private {!Object}
    */
   this.actualEventTarget_ = this;
+
+  /**
+   * Parent event target, used during event bubbling.
+   *
+   * TODO(user): Change this to goog.events.Listenable. This
+   * currently breaks people who expect getParentEventTarget to return
+   * goog.events.EventTarget.
+   *
+   * @private {goog.events.EventTarget}
+   */
+  this.parentEventTarget_ = null;
 };
 goog.inherits(goog.events.EventTarget, goog.Disposable);
 goog.events.Listenable.addImplementation(goog.events.EventTarget);
@@ -95,19 +105,6 @@ goog.events.Listenable.addImplementation(goog.events.EventTarget);
  * @private
  */
 goog.events.EventTarget.MAX_ANCESTORS_ = 1000;
-
-
-/**
- * Parent event target, used during event bubbling.
- *
- * TODO(user): Change this to goog.events.Listenable. This
- * currently breaks people who expect getParentEventTarget to return
- * goog.events.EventTarget.
- *
- * @type {goog.events.EventTarget}
- * @private
- */
-goog.events.EventTarget.prototype.parentEventTarget_ = null;
 
 
 /**
@@ -272,7 +269,7 @@ goog.events.EventTarget.prototype.fireListeners = function(
   if (!listenerArray) {
     return true;
   }
-  listenerArray = goog.array.clone(listenerArray);
+  listenerArray = listenerArray.concat();
 
   var rv = true;
   for (var i = 0; i < listenerArray.length; ++i) {

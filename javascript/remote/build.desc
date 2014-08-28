@@ -33,7 +33,6 @@ js_binary(name = "clientbin",
     "--third_party=false",
 
     "--compilation_level=ADVANCED_OPTIMIZATIONS",
-    "--create_name_map_files=true"
   ])
 
 export_file(name = "hub",

@@ -72,6 +72,15 @@ goog.ui.HsvPalette = function(opt_domHelper, opt_color, opt_class) {
 goog.inherits(goog.ui.HsvPalette, goog.ui.Component);
 // TODO(user): Make this inherit from goog.ui.Control and split this into
 // a control and a renderer.
+goog.tagUnsealableClass(goog.ui.HsvPalette);
+
+
+/**
+ * @desc Label for an input field where a user can enter a hexadecimal color
+ * specification, such as #ff0000 for red.
+ * @private
+ */
+goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_ = goog.getMsg('Hex color');
 
 
 /**
@@ -146,12 +155,23 @@ goog.ui.HsvPalette.prototype.mouseMoveListener;
 goog.ui.HsvPalette.prototype.mouseUpListener;
 
 
+/** @private {!goog.color.Hsv} */
+goog.ui.HsvPalette.prototype.hsv_;
+
+
+/**
+ * Hex representation of the color.
+ * @protected {string}
+ */
+goog.ui.HsvPalette.prototype.color;
+
+
 /**
  * Gets the color that is currently selected in this color picker.
  * @return {string} The string of the selected color.
  */
 goog.ui.HsvPalette.prototype.getColor = function() {
-  return this.color_;
+  return this.color;
 };
 
 
@@ -177,8 +197,8 @@ goog.ui.HsvPalette.prototype.updateInput = function() {
   } catch (e) {
     // ignore
   }
-  if (this.color_ != parsed) {
-    this.inputElement.value = this.color_;
+  if (this.color != parsed) {
+    this.inputElement.value = this.color;
   }
 };
 
@@ -188,7 +208,7 @@ goog.ui.HsvPalette.prototype.updateInput = function() {
  * @param {string} color The selected color.
  */
 goog.ui.HsvPalette.prototype.setColor = function(color) {
-  if (color != this.color_) {
+  if (color != this.color) {
     this.setColorInternal(color);
     this.updateUi();
     this.dispatchEvent(goog.ui.Component.EventType.ACTION);
@@ -209,7 +229,7 @@ goog.ui.HsvPalette.prototype.setColorInternal = function(color) {
   // incorrect.
   // TODO(user): Fix this, see http://1324469 .
   this.hsv_[0] = this.hsv_[0] / 360;
-  this.color_ = rgbHex;
+  this.color = rgbHex;
 };
 
 
@@ -247,7 +267,7 @@ goog.ui.HsvPalette.prototype.setHsv_ = function(opt_hue,
   // Hue is multiplied by 360 because the documentation for goog.color is
   // currently incorrect.
   // TODO(user): Fix this, see http://1324469 .
-  this.color_ = goog.color.hsvArrayToHex([
+  this.color = goog.color.hsvArrayToHex([
     this.hsv_[0] * 360,
     this.hsv_[1],
     this.hsv_[2]
@@ -296,6 +316,7 @@ goog.ui.HsvPalette.prototype.createDom = function() {
 
   this.inputElement = dom.createDom('input', {
     'class': goog.getCssName(this.className, 'input'),
+    'aria-label': goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_,
     'type': 'text', 'dir': 'ltr'
   });
 
@@ -403,7 +424,7 @@ goog.ui.HsvPalette.prototype.updateUi = function() {
     goog.style.setStyle(this.valueBackgroundImageElement, 'background-color',
         goog.color.hsvToHex(this.hsv_[0] * 360, this.hsv_[1], 255));
 
-    goog.style.setStyle(this.swatchElement, 'background-color', this.color_);
+    goog.style.setStyle(this.swatchElement, 'background-color', this.color);
     goog.style.setStyle(this.swatchElement, 'color',
                         (this.hsv_[2] > 255 / 2) ? '#000' : '#fff');
     this.updateInput();

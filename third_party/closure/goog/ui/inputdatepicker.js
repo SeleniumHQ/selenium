@@ -58,6 +58,7 @@ goog.ui.InputDatePicker = function(
   this.popupDatePicker_.setAllowAutoFocus(false);
 };
 goog.inherits(goog.ui.InputDatePicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.InputDatePicker);
 
 
 /**

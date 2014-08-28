@@ -68,6 +68,7 @@ goog.ui.Container = function(opt_orientation, opt_renderer, opt_domHelper) {
   this.orientation_ = opt_orientation || this.renderer_.getDefaultOrientation();
 };
 goog.inherits(goog.ui.Container, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.Container);
 
 
 /**
@@ -881,6 +882,8 @@ goog.ui.Container.prototype.getChildAt;
  * @override
  */
 goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
+  goog.asserts.assertInstanceof(control, goog.ui.Control);
+
   // Make sure the child control dispatches HIGHLIGHT, UNHIGHLIGHT, OPEN, and
   // CLOSE events, and that it doesn't steal keyboard focus.
   control.setDispatchTransitionEvents(goog.ui.Component.State.HOVER, true);
@@ -892,6 +895,9 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
   // Disable mouse event handling by child controls.
   control.setHandleMouseEvents(false);
 
+  var srcIndex = (control.getParent() == this) ?
+      this.indexOfChild(control) : -1;
+
   // Let the superclass implementation do the work.
   goog.ui.Container.superClass_.addChildAt.call(this, control, index,
       opt_render);
@@ -900,9 +906,33 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
     this.registerChildId_(control);
   }
 
-  // Update the highlight index, if needed.
-  if (index <= this.highlightedIndex_) {
+  this.updateHighlightedIndex_(srcIndex, index);
+};
+
+
+/**
+ * Updates the highlighted index when children are added or moved.
+ * @param {number} fromIndex Index of the child before it was moved, or -1 if
+ *     the child was added.
+ * @param {number} toIndex Index of the child after it was moved or added.
+ * @private
+ */
+goog.ui.Container.prototype.updateHighlightedIndex_ = function(
+    fromIndex, toIndex) {
+  if (fromIndex == -1) {
+    fromIndex = this.getChildCount();
+  }
+  if (fromIndex == this.highlightedIndex_) {
+    // The highlighted element itself was moved.
+    this.highlightedIndex_ = Math.min(this.getChildCount() - 1, toIndex);
+  } else if (fromIndex > this.highlightedIndex_ &&
+      toIndex <= this.highlightedIndex_) {
+    // The control was added or moved behind the highlighted index.
     this.highlightedIndex_++;
+  } else if (fromIndex < this.highlightedIndex_ &&
+      toIndex > this.highlightedIndex_) {
+    // The control was moved from before to behind the highlighted index.
+    this.highlightedIndex_--;
   }
 };
 
@@ -921,6 +951,7 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
  */
 goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
   control = goog.isString(control) ? this.getChild(control) : control;
+  goog.asserts.assertInstanceof(control, goog.ui.Control);
 
   if (control) {
     var index = this.indexOfChild(control);

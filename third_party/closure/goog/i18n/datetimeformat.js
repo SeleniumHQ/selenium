@@ -236,7 +236,7 @@ goog.i18n.DateTimeFormat.prototype.format = function(date, opt_timeZone) {
   // because of timeZone offset change, move 1 day forward or backward.
   if (opt_timeZone &&
       dateForDate.getTimezoneOffset() != date.getTimezoneOffset()) {
-    diff += diff > 0 ? -24 * 60 * 60000 : 24 * 60 * 60000;
+    diff += diff > 0 ? -goog.date.MS_PER_DAY : goog.date.MS_PER_DAY;
     dateForTime = new Date(date.getTime() + diff);
   }
 

@@ -20,8 +20,9 @@ goog.provide('goog.net.HttpStatus');
 
 
 /**
- * HTTP Status Codes defined in RFC 2616.
+ * HTTP Status Codes defined in RFC 2616 and RFC 6585.
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+ * @see http://tools.ietf.org/html/rfc6585
  * @enum {number}
  */
 goog.net.HttpStatus = {
@@ -66,6 +67,9 @@ goog.net.HttpStatus = {
   UNSUPPORTED_MEDIA_TYPE: 415,
   REQUEST_RANGE_NOT_SATISFIABLE: 416,
   EXPECTATION_FAILED: 417,
+  PRECONDITION_REQUIRED: 428,
+  TOO_MANY_REQUESTS: 429,
+  REQUEST_HEADER_FIELDS_TOO_LARGE: 431,
 
   // Server Error 5xx
   INTERNAL_SERVER_ERROR: 500,
@@ -74,6 +78,7 @@ goog.net.HttpStatus = {
   SERVICE_UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
   HTTP_VERSION_NOT_SUPPORTED: 505,
+  NETWORK_AUTHENTICATION_REQUIRED: 511,
 
   /*
    * IE returns this code for 204 due to its use of URLMon, which returns this

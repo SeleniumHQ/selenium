@@ -57,6 +57,7 @@ goog.ui.AttachableMenu = function(opt_element) {
   goog.ui.MenuBase.call(this, opt_element);
 };
 goog.inherits(goog.ui.AttachableMenu, goog.ui.MenuBase);
+goog.tagUnsealableClass(goog.ui.AttachableMenu);
 
 
 /**

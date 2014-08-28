@@ -79,6 +79,7 @@ goog.ui.Control = function(opt_content, opt_renderer, opt_domHelper) {
   this.setContentInternal(goog.isDef(opt_content) ? opt_content : null);
 };
 goog.inherits(goog.ui.Control, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.Control);
 
 
 // Renderer registry.
@@ -823,7 +824,7 @@ goog.ui.Control.prototype.setEnabled = function(enable) {
     if (this.isVisible()) {
       this.renderer_.setFocusable(this, enable);
     }
-    this.setState(goog.ui.Component.State.DISABLED, !enable);
+    this.setState(goog.ui.Component.State.DISABLED, !enable, true);
   }
 };
 
@@ -995,8 +996,13 @@ goog.ui.Control.prototype.hasState = function(state) {
  * transition events; use advisedly.
  * @param {goog.ui.Component.State} state State to set or clear.
  * @param {boolean} enable Whether to set or clear the state (if supported).
+ * @param {boolean=} opt_calledFrom Prevents looping with setEnabled.
  */
-goog.ui.Control.prototype.setState = function(state, enable) {
+goog.ui.Control.prototype.setState = function(state, enable, opt_calledFrom) {
+  if (!opt_calledFrom && state == goog.ui.Component.State.DISABLED) {
+    this.setEnabled(!enable);
+    return;
+  }
   if (this.isSupportedState(state) && enable != this.hasState(state)) {
     // Delegate actual styling to the renderer, since it is DOM-specific.
     this.renderer_.setState(this, state, enable);

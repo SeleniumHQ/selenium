@@ -204,7 +204,7 @@ goog.define('goog.async.Deferred.STRICT_ERRORS', false);
  * @define {boolean} Whether to attempt to make stack traces long.  Defaults to
  * the value of goog.DEBUG.
  */
-goog.define('goog.async.Deferred.LONG_STACK_TRACES', goog.DEBUG);
+goog.define('goog.async.Deferred.LONG_STACK_TRACES', false);
 
 
 /**

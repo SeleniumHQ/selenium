@@ -74,7 +74,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.currentLink_;
 
 /**
  * Optional warning to show about email addresses.
- * @type {string|undefined}
+ * @type {goog.html.SafeHtml}
  * @private
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.emailWarning_;
@@ -213,8 +213,8 @@ goog.editor.plugins.LinkDialogPlugin.prototype.stopReferrerLeaks = function() {
 /**
  * Sets the warning message to show to users about including email addresses on
  * public web pages.
- * @param {string} emailWarning Warning message to show users about including
- *     email addresses on the web.
+ * @param {!goog.html.SafeHtml} emailWarning Warning message to show users about
+ *     including email addresses on the web.
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.setEmailWarning = function(
     emailWarning) {

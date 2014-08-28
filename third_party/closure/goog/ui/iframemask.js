@@ -77,6 +77,7 @@ goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
   this.iframePool_ = opt_iframePool;
 };
 goog.inherits(goog.ui.IframeMask, goog.Disposable);
+goog.tagUnsealableClass(goog.ui.IframeMask);
 
 
 /**

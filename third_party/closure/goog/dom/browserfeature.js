@@ -63,5 +63,10 @@ goog.dom.BrowserFeature = {
    * innerHTML.
    * MSDN: http://msdn.microsoft.com/en-us/library/ms533897(VS.85).aspx#1
    */
-  INNER_HTML_NEEDS_SCOPED_ELEMENT: goog.userAgent.IE
+  INNER_HTML_NEEDS_SCOPED_ELEMENT: goog.userAgent.IE,
+
+  /**
+   * Whether we use legacy IE range API.
+   */
+  LEGACY_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)
 };

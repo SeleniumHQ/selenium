@@ -60,8 +60,6 @@ js_binary(
 
         "--output_wrapper='%output%;window.onload = init;'",
         "--third_party=false",
-
-        "--create_name_map_files=true"
     ])
 
 # Binary for the debug/logging window.
@@ -217,7 +215,6 @@ js_module_binary(
         "--third_party=false",
 
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--create_name_map_files=true"
     ])
 
 
@@ -276,7 +273,6 @@ js_module_binary(
         "--third_party=false",
 
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--create_name_map_files=true"
     ])
 
 

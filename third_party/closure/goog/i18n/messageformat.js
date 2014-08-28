@@ -278,7 +278,7 @@ goog.i18n.MessageFormat.prototype.formatBlock_ = function(
                                        result);
         break;
       default:
-        goog.asserts.fail('Unrecognized block type.');
+        goog.asserts.fail('Unrecognized block type: ' + parsedPattern[i].type);
     }
   }
 };
@@ -608,7 +608,8 @@ goog.i18n.MessageFormat.prototype.parseBlock_ = function(pattern) {
           block.value = parts[i].value;
           break;
         default:
-          goog.asserts.fail('Unknown block type.');
+          goog.asserts.fail(
+              'Unknown block type for pattern: ' + parts[i].value);
       }
     } else {
       goog.asserts.fail('Unknown part of the pattern.');

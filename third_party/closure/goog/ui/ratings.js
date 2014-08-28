@@ -100,6 +100,7 @@ goog.ui.Ratings = function(opt_ratings, opt_domHelper) {
   this.attachedFormField_ = null;
 };
 goog.inherits(goog.ui.Ratings, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.Ratings);
 
 
 /**
@@ -212,7 +213,6 @@ goog.ui.Ratings.prototype.exitDocument = function() {
 goog.ui.Ratings.prototype.disposeInternal = function() {
   goog.ui.Ratings.superClass_.disposeInternal.call(this);
   this.ratings_.length = 0;
-  this.rendered_ = false;
 };
 
 

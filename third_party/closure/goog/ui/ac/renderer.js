@@ -266,6 +266,13 @@ goog.ui.ac.Renderer.prototype.widthProvider_;
 
 
 /**
+ * A flag used to make sure we highlight only one match in the rendered row.
+ * @private {boolean}
+ */
+goog.ui.ac.Renderer.prototype.wasHighlightedAtLeastOnce_;
+
+
+/**
  * The delay before mouseover events are registered, in milliseconds
  * @type {number}
  * @const
@@ -776,6 +783,8 @@ goog.ui.ac.Renderer.prototype.renderRowContents_ =
 /**
  * Goes through a node and all of its child nodes, replacing HTML text that
  * matches a token with <b>token</b>.
+ * The replacement will happen on the first match or all matches depending on
+ * this.highlightAllTokens_ value.
  *
  * @param {Node} node Node to match.
  * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
@@ -784,10 +793,26 @@ goog.ui.ac.Renderer.prototype.renderRowContents_ =
  *     word, in whatever order and however many times, will be highlighted.
  * @private
  */
+goog.ui.ac.Renderer.prototype.startHiliteMatchingText_ =
+    function(node, tokenOrArray) {
+  this.wasHighlightedAtLeastOnce_ = false;
+  this.hiliteMatchingText_(node, tokenOrArray);
+};
+
+
+/**
+ * @param {Node} node Node to match.
+ * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
+ *     to match.
+ * @private
+ */
 goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
     function(node, tokenOrArray) {
-  if (node.nodeType == goog.dom.NodeType.TEXT) {
+  if (!this.highlightAllTokens_ && this.wasHighlightedAtLeastOnce_) {
+    return;
+  }
 
+  if (node.nodeType == goog.dom.NodeType.TEXT) {
     var rest = null;
     if (goog.isArray(tokenOrArray) &&
         tokenOrArray.length > 1 &&
@@ -857,6 +882,8 @@ goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
       // Append the remaining text nodes to the end.
       var remainingTextNodes = goog.array.slice(textNodes, maxNumToBold * 2);
       node.nodeValue = remainingTextNodes.join('');
+
+      this.wasHighlightedAtLeastOnce_ = true;
     } else if (rest) {
       this.hiliteMatchingText_(node, rest);
     }
@@ -953,7 +980,7 @@ goog.ui.ac.Renderer.prototype.renderRowHtml = function(row, token) {
   }
 
   if (token && this.useStandardHighlighting_) {
-    this.hiliteMatchingText_(elem, token);
+    this.startHiliteMatchingText_(elem, token);
   }
 
   goog.dom.classlist.add(elem, this.rowClassName);

@@ -15,7 +15,7 @@
 /**
  * @fileoverview goog.dom.animationFrame permits work to be done in-sync with
  * the render refresh rate of the browser and to divide work up globally based
- * on whether the intent is not measure or to mutate the DOM. The latter avoids
+ * on whether the intent is to measure or to mutate the DOM. The latter avoids
  * repeated style recalculation which can be really slow.
  *
  * Goals of the API:
@@ -25,7 +25,7 @@
  *       events fire that trigger the same work.
  *   <li>Make it easy to do all work in two phases to avoid repeated style
  *       recalculation caused by interleaved reads and writes.
- *   <li> Avoid creating closures per schedule operation.
+ *   <li>Avoid creating closures per schedule operation.
  * </ul>
  *
  *
@@ -141,7 +141,7 @@ goog.dom.animationFrame.taskId_ = 0;
  * other functions scheduled under this key and the function under "mutate" will
  * run after that.
  *
- * @param {!{
+ * @param {{
  *   measure: (function(this:THIS, !goog.dom.animationFrame.State)|undefined),
  *   mutate: (function(this:THIS, !goog.dom.animationFrame.State)|undefined)
  * }} spec

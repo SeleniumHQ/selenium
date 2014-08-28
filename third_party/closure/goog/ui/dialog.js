@@ -99,6 +99,7 @@ goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
   this.buttons_ = goog.ui.Dialog.ButtonSet.createOkCancel();
 };
 goog.inherits(goog.ui.Dialog, goog.ui.ModalPopup);
+goog.tagUnsealableClass(goog.ui.Dialog);
 
 
 /**
@@ -546,7 +547,7 @@ goog.ui.Dialog.prototype.getDraggable = function() {
 /**
  * Enables or disables dragging.
  * @param {boolean} enabled Whether to enable it.
- * @private.
+ * @private
  */
 goog.ui.Dialog.prototype.setDraggingEnabled_ = function(enabled) {
   // This isn't ideal, but the quickest and easiest way to append
@@ -788,14 +789,20 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
 };
 
 
-/** @override */
+/**
+ * @override
+ * @suppress {deprecated} AFTER_SHOW is deprecated earlier in this file.
+ */
 goog.ui.Dialog.prototype.onShow = function() {
   goog.ui.Dialog.base(this, 'onShow');
   this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_SHOW);
 };
 
 
-/** @override */
+/**
+ * @override
+ * @suppress {deprecated} AFTER_HIDE is deprecated earlier in this file.
+ */
 goog.ui.Dialog.prototype.onHide = function() {
   goog.ui.Dialog.base(this, 'onHide');
   this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_HIDE);
@@ -1151,6 +1158,7 @@ goog.ui.Dialog.ButtonSet = function(opt_domHelper) {
   goog.structs.Map.call(this);
 };
 goog.inherits(goog.ui.Dialog.ButtonSet, goog.structs.Map);
+goog.tagUnsealableClass(goog.ui.Dialog.ButtonSet);
 
 
 /**
@@ -1220,7 +1228,7 @@ goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
  * Adds a button (an object with a key and caption) to this button set. Buttons
  * will be displayed in the order they are added.
  * @see goog.ui.Dialog.DefaultButtons
- * @param {!{key: string, caption: string}} button The button key and caption.
+ * @param {{key: string, caption: string}} button The button key and caption.
  * @param {boolean=} opt_isDefault Whether this button is the default button.
  *     Dialog will dispatch for this button if enter is pressed.
  * @param {boolean=} opt_isCancel Whether this button has the same behavior as
@@ -1483,7 +1491,7 @@ goog.ui.Dialog.DefaultButtonCaptions = {
 
 /**
  * The standard buttons (keys associated with captions).
- * @enum {!{key: string, caption: string}}
+ * @enum {{key: string, caption: string}}
  */
 goog.ui.Dialog.ButtonSet.DefaultButtons = {
   OK: {

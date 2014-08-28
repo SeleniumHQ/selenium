@@ -247,9 +247,9 @@ goog.net.xpc.CrossPageChannel.prototype.setPeerWindowObject =
 
 /**
  * Returns the window object the foreign document resides in.
- * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {Object} The window object of the peer.
+ * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.getPeerWindowObject = function() {
   return this.peerWindowObject_;
@@ -258,9 +258,9 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerWindowObject = function() {
 
 /**
  * Determines whether the peer window is available (e.g. not closed).
- * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {boolean} Whether the peer window is available.
+ * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.isPeerAvailable = function() {
   // NOTE(user): This check is not reliable in IE, where a document in an
@@ -549,6 +549,13 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerUri = function(opt_addCfgParam) {
 goog.net.xpc.CrossPageChannel.prototype.connect = function(opt_connectCb) {
   this.connectCb_ = opt_connectCb || goog.nullFunction;
 
+  // If this channel was previously closed, transition back to the NOT_CONNECTED
+  // state to ensure that the connection can proceed (xpcDeliver blocks
+  // transport messages while the connection state is CLOSED).
+  if (this.state_ == goog.net.xpc.ChannelStates.CLOSED) {
+    this.state_ = goog.net.xpc.ChannelStates.NOT_CONNECTED;
+  }
+
   // If we know of a peer window whose creation has been requested but is not
   // complete, peerWindowDeferred_ will be non-null, and we should block on it.
   if (this.peerWindowDeferred_) {
@@ -690,14 +697,13 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
  * avoid name conflict with {@code deliver} function in superclass
  * goog.messaging.AbstractChannel.
  *
- * Package private. Do not call from outside goog.net.xpc.
- *
  * @param {string} serviceName The name of the port.
  * @param {string} payload The payload.
  * @param {string=} opt_origin An optional origin for the message, where the
  *     underlying transport makes that available.  If this is specified, and
  *     the PEER_HOSTNAME parameter was provided, they must match or the message
  *     will be rejected.
+ * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
     serviceName, payload, opt_origin) {
@@ -721,9 +727,15 @@ goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
     return;
   }
 
-  if (this.isDisposed()) {
+  // If there is another channel still open, the native transport's global
+  // postMessage listener will still be active.  This will mean that messages
+  // being sent to the now-closed channel will still be received and delivered,
+  // such as transport service traffic from its previous correspondent in the
+  // other frame.  Ensure these messages don't cause exceptions.
+  // Example: http://b/12419303
+  if (this.isDisposed() || this.state_ == goog.net.xpc.ChannelStates.CLOSED) {
     goog.log.warning(goog.net.xpc.logger,
-        'CrossPageChannel::xpcDeliver(): Disposed.');
+        'CrossPageChannel::xpcDeliver(): Channel closed.');
   } else if (!serviceName ||
       serviceName == goog.net.xpc.TRANSPORT_SERVICE_) {
     this.transport_.transportServiceHandler(payload);

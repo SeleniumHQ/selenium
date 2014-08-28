@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Collection of unitility functions for Unicode character.
+ * @fileoverview Collection of utility functions for Unicode character.
  *
  */
 

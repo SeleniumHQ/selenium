@@ -146,6 +146,13 @@ goog.ui.ac.InputHandler = function(opt_separators, opt_literals,
   this.literals_ = opt_literals || '';
 
   /**
+   * Whether to prevent highlighted item selection when tab is pressed.
+   * @type {boolean}
+   * @private
+   */
+  this.preventSelectionOnTab_ = false;
+
+  /**
    * Whether to prevent the default behavior (moving focus to another element)
    * when tab is pressed.  This occurs by default only for multi-value mode.
    * @type {boolean}
@@ -692,6 +699,16 @@ goog.ui.ac.InputHandler.prototype.setPreventDefaultOnTab = function(newValue) {
 
 
 /**
+ * Sets whether we will prevent highlighted item selection on TAB.
+ * @param {boolean} newValue Whether to prevent selection on TAB.
+ */
+goog.ui.ac.InputHandler.prototype.setPreventSelectionOnTab =
+    function(newValue) {
+  this.preventSelectionOnTab_ = newValue;
+};
+
+
+/**
  * Sets whether separators perform autocomplete.
  * @param {boolean} newValue Whether to autocomplete on separators.
  */
@@ -805,7 +822,7 @@ goog.ui.ac.InputHandler.prototype.handleKeyEvent = function(e) {
     // action is also prevented if the input is a multi input, to prevent the
     // user tabbing out of the field.
     case goog.events.KeyCodes.TAB:
-      if (this.ac_.isOpen() && !e.shiftKey) {
+      if (this.ac_.isOpen() && !e.shiftKey && !this.preventSelectionOnTab_) {
         // Ensure the menu is up to date before completing.
         this.update();
         if (this.ac_.selectHilited() && this.preventDefaultOnTab_) {

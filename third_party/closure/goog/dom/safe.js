@@ -54,6 +54,16 @@ goog.dom.safe.setInnerHtml = function(elem, html) {
 
 
 /**
+ * Assigns known-safe HTML to an element's outerHTML property.
+ * @param {!Element} elem The element whose outerHTML is to be assigned to.
+ * @param {!goog.html.SafeHtml} html The known-safe HTML to assign.
+ */
+goog.dom.safe.setOuterHtml = function(elem, html) {
+  elem.outerHTML = goog.html.SafeHtml.unwrap(html);
+};
+
+
+/**
  * Writes known-safe HTML to a document.
  * @param {!Document} doc The document to be written to.
  * @param {!goog.html.SafeHtml} html The known-safe HTML to assign.

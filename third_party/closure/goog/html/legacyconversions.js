@@ -109,8 +109,8 @@ goog.define('goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS', true);
  */
 goog.html.legacyconversions.safeHtmlFromString = function(html) {
   goog.html.legacyconversions.throwIfConversionDisallowed_();
-  return goog.html.legacyconversions.
-      createSafeHtmlSecurityPrivateDoNotAccessOrElse_(html);
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
+      html, null /* dir */);
 };
 
 
@@ -127,8 +127,8 @@ goog.html.legacyconversions.safeHtmlFromString = function(html) {
  */
 goog.html.legacyconversions.trustedResourceUrlFromString = function(url) {
   goog.html.legacyconversions.throwIfConversionDisallowed_();
-  return goog.html.legacyconversions.
-      createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse_(url);
+  return goog.html.TrustedResourceUrl.
+      createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
 };
 
 
@@ -145,8 +145,7 @@ goog.html.legacyconversions.trustedResourceUrlFromString = function(url) {
  */
 goog.html.legacyconversions.safeUrlFromString = function(url) {
   goog.html.legacyconversions.throwIfConversionDisallowed_();
-  return goog.html.legacyconversions.
-      createSafeUrlSecurityPrivateDoNotAccessOrElse_(url);
+  return goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse(url);
 };
 
 
@@ -165,60 +164,6 @@ goog.html.legacyconversions.reportCallback_ = goog.nullFunction;
  */
 goog.html.legacyconversions.setReportCallback = function(callback) {
   goog.html.legacyconversions.reportCallback_ = callback;
-};
-
-
-/**
- * Internal wrapper for the package-private
- * goog.html.SafeHtml.createSafeHtml... function.
- * @param {string} html A string to be converted to SafeHtml.
- * @return {!goog.html.SafeHtml}
- * @private
- * @suppress {visibility} For access to SafeHtml.create...  Note that this
- *     use is appropriate since this method is intended to be "package private"
- *     within goog.html.  DO NOT call SafeHtml.create... from outside this
- *     package; use appropriate wrappers instead.
- */
-goog.html.legacyconversions.createSafeHtmlSecurityPrivateDoNotAccessOrElse_ =
-    function(html) {
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse_(
-      html, null);
-};
-
-
-/**
- * Internal wrapper for the package-private
- * goog.html.TrustedResourceUrl.createTrustedResourceUrl... function.
- * @param {string} url A string to be converted to TrustedResourceUrl.
- * @return {!goog.html.TrustedResourceUrl}
- * @private
- * @suppress {visibility} For access to TrustedResourceUrl.create...  Note that
- *     this use is appropriate since this method is intended to be
- *     "package private" within goog.html.  DO NOT call
- *     TrustedResourceUrl.create... from outside this package; use appropriate
- *     wrappers instead.
- */
-goog.html.legacyconversions.
-    createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse_ = function(url) {
-  return goog.html.TrustedResourceUrl
-      .createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse_(url);
-};
-
-
-/**
- * Internal wrapper for the package-private goog.html.SafeUrl.createSafeUrl...
- * function.
- * @param {string} url A string to be converted to TrustedResourceUrl.
- * @return {!goog.html.SafeUrl}
- * @private
- * @suppress {visibility} For access to SafeUrl.create...  Note that this use
- *     is appropriate since this method is intended to be "package private"
- *     within goog.html.  DO NOT call SafeUrl.create... from outside this
- *     package; use appropriate wrappers instead.
- */
-goog.html.legacyconversions.createSafeUrlSecurityPrivateDoNotAccessOrElse_ =
-    function(url) {
-  return goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse_(url);
 };
 
 

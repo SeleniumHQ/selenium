@@ -37,24 +37,31 @@ goog.testing.benchmark.run_ = function() {
   var prefix = 'benchmark';
 
   // First, get the functions.
-  var testSource = goog.testing.TestCase.getGlobals(prefix);
+  var testSources = goog.testing.TestCase.getGlobals();
 
   var benchmarks = {};
   var names = [];
 
-  for (var name in testSource) {
-    try {
-      var ref = testSource[name];
-    } catch (ex) {
-      // NOTE(brenneman): When running tests from a file:// URL on Firefox 3.5
-      // for Windows, any reference to window.sessionStorage raises
-      // an "Operation is not supported" exception. Ignore any exceptions raised
-      // by simply accessing global properties.
-    }
+  for (var i = 0; i < testSources.length; i++) {
+    var testSource = testSources[i];
+    for (var name in testSource) {
+      if ((new RegExp('^' + prefix)).test(name)) {
+        var ref;
+        try {
+          ref = testSource[name];
+        } catch (ex) {
+          // NOTE(brenneman): When running tests from a file:// URL on Firefox
+          // 3.5 for Windows, any reference to window.sessionStorage raises
+          // an "Operation is not supported" exception. Ignore any exceptions
+          // raised by simply accessing global properties.
+          ref = undefined;
+        }
 
-    if ((new RegExp('^' + prefix)).test(name) && goog.isFunction(ref)) {
-      benchmarks[name] = ref;
-      names.push(name);
+        if (goog.isFunction(ref)) {
+          benchmarks[name] = ref;
+          names.push(name);
+        }
+      }
     }
   }
 

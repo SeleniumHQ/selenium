@@ -35,7 +35,8 @@ goog.labs.userAgent.device.isMobile = function() {
   return !goog.labs.userAgent.device.isTablet() &&
       (goog.labs.userAgent.util.matchUserAgent('iPod') ||
        goog.labs.userAgent.util.matchUserAgent('iPhone') ||
-       goog.labs.userAgent.util.matchUserAgent('Android'));
+       goog.labs.userAgent.util.matchUserAgent('Android') ||
+       goog.labs.userAgent.util.matchUserAgent('IEMobile'));
 };
 
 

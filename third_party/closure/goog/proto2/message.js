@@ -456,6 +456,7 @@ goog.proto2.Message.prototype.mergeFrom = function(message) {
  *     the known fields.
  */
 goog.proto2.Message.prototype.clone = function() {
+  /** @type {!goog.proto2.Message} */
   var clone = new this.constructor;
   clone.copyFrom(this);
   return clone;
@@ -567,8 +568,10 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
 
   if (this.fields_[tag].isRepeated()) {
     var index = opt_index || 0;
-    goog.asserts.assert(index >= 0 && index < value.length,
-        'Given index is out of bounds');
+    goog.asserts.assert(
+        index >= 0 && index < value.length,
+        'Given index %s is out of bounds.  Repeated field length: %s',
+        index, value.length);
     return value[index];
   }
 

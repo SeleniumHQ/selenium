@@ -417,7 +417,6 @@ goog.ui.DragDropDetector.prototype.switchToIframe_ = function(e) {
   // This is only called on IE.
   if (this.isCoveringScreen_) {
     goog.style.setElementShown(this.textInput_, false);
-    this.isShowingInput_ = false;
   }
 };
 

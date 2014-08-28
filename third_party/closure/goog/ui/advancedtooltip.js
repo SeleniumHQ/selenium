@@ -47,6 +47,7 @@ goog.ui.AdvancedTooltip = function(opt_el, opt_str, opt_domHelper) {
   goog.ui.Tooltip.call(this, opt_el, opt_str, opt_domHelper);
 };
 goog.inherits(goog.ui.AdvancedTooltip, goog.ui.Tooltip);
+goog.tagUnsealableClass(goog.ui.AdvancedTooltip);
 
 
 /**

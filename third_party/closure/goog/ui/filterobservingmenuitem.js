@@ -48,6 +48,7 @@ goog.ui.FilterObservingMenuItem = function(content, opt_model, opt_domHelper,
       opt_renderer || new goog.ui.FilterObservingMenuItemRenderer());
 };
 goog.inherits(goog.ui.FilterObservingMenuItem, goog.ui.MenuItem);
+goog.tagUnsealableClass(goog.ui.FilterObservingMenuItem);
 
 
 /**

@@ -138,6 +138,62 @@ goog.net.xpc.IframePollingTransport.prototype.initialized_ = false;
 goog.net.xpc.IframePollingTransport.prototype.reconnectFrame_ = null;
 
 
+/** @private {goog.net.xpc.IframePollingTransport.Receiver} */
+goog.net.xpc.IframePollingTransport.prototype.ackReceiver_;
+
+
+/** @private {goog.net.xpc.IframePollingTransport.Sender} */
+goog.net.xpc.IframePollingTransport.prototype.ackSender_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.ackIframeElm_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.ackWinObj_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresentCb_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.deliveryQueue_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgIframeElm_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgReceiver_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgSender_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgWinObj_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.rcvdConnectionSetupAck_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetupAck_;
+
+
+/** @private {boolean} */
+goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetup_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.parts_;
+
+
 /**
  * The string used to prefix all iframe names and IDs.
  * @type {string}

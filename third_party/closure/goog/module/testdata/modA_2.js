@@ -19,6 +19,8 @@
 
 goog.provide('goog.module.testdata.modA_2');
 
+goog.setTestOnly('goog.module.testdata.modA_2');
+
 goog.require('goog.module.ModuleManager');
 
 if (window.modA2Loaded) throw Error('modA_2 loaded twice');

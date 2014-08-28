@@ -21,6 +21,8 @@ goog.provide('goog.module.ModuleInfo');
 
 goog.require('goog.Disposable');
 goog.require('goog.functions');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 goog.require('goog.module.BaseModule');
 goog.require('goog.module.ModuleLoadCallback');
 

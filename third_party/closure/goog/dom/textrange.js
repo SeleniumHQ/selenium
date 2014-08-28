@@ -111,8 +111,9 @@ goog.dom.TextRange.createFromNodeContents = function(node, opt_isReversed) {
 goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
     focusNode, focusOffset) {
   var range = new goog.dom.TextRange();
-  range.isReversed_ = goog.dom.Range.isReversed(anchorNode, anchorOffset,
-      focusNode, focusOffset);
+  range.isReversed_ = /** @suppress {missingRequire} */ (
+      goog.dom.Range.isReversed(anchorNode, anchorOffset,
+                                focusNode, focusOffset));
 
   // Avoid selecting terminal elements directly
   if (goog.dom.isElement(anchorNode) && !goog.dom.canHaveChildren(anchorNode)) {
@@ -212,7 +213,8 @@ goog.dom.TextRange.prototype.isReversed_ = false;
  */
 goog.dom.TextRange.prototype.clone = function() {
   var range = new goog.dom.TextRange();
-  range.browserRangeWrapper_ = this.browserRangeWrapper_;
+  range.browserRangeWrapper_ =
+      this.browserRangeWrapper_ && this.browserRangeWrapper_.clone();
   range.startNode_ = this.startNode_;
   range.startOffset_ = this.startOffset_;
   range.endNode_ = this.endNode_;
@@ -581,6 +583,8 @@ goog.dom.TextRange.prototype.collapse = function(toAnchor) {
  * @private
  */
 goog.dom.DomSavedTextRange_ = function(range) {
+  goog.dom.DomSavedTextRange_.base(this, 'constructor');
+
   /**
    * The anchor node.
    * @type {Node}
@@ -617,8 +621,9 @@ goog.inherits(goog.dom.DomSavedTextRange_, goog.dom.SavedRange);
  * @override
  */
 goog.dom.DomSavedTextRange_.prototype.restoreInternal = function() {
-  return goog.dom.Range.createFromNodes(this.anchorNode_, this.anchorOffset_,
-      this.focusNode_, this.focusOffset_);
+  return /** @suppress {missingRequire} */ (
+      goog.dom.Range.createFromNodes(this.anchorNode_, this.anchorOffset_,
+                                     this.focusNode_, this.focusOffset_));
 };
 
 

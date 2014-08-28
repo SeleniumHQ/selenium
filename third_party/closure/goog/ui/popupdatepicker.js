@@ -49,6 +49,7 @@ goog.ui.PopupDatePicker = function(opt_datePicker, opt_domHelper) {
   this.datePicker_ = opt_datePicker || new goog.ui.DatePicker();
 };
 goog.inherits(goog.ui.PopupDatePicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.PopupDatePicker);
 
 
 /**

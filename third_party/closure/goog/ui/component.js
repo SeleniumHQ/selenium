@@ -46,10 +46,100 @@ goog.require('goog.ui.IdGenerator');
  */
 goog.ui.Component = function(opt_domHelper) {
   goog.events.EventTarget.call(this);
+  /**
+   * DomHelper used to interact with the document, allowing components to be
+   * created in a different window.
+   * @protected {!goog.dom.DomHelper}
+   * @suppress {underscore|visibility}
+   */
   this.dom_ = opt_domHelper || goog.dom.getDomHelper();
 
-  // Set the default right to left value.
+  /**
+   * Whether the component is rendered right-to-left.  Right-to-left is set
+   * lazily when {@link #isRightToLeft} is called the first time, unless it has
+   * been set by calling {@link #setRightToLeft} explicitly.
+   * @private {?boolean}
+   */
   this.rightToLeft_ = goog.ui.Component.defaultRightToLeft_;
+
+  /**
+   * Unique ID of the component, lazily initialized in {@link
+   * goog.ui.Component#getId} if needed.  This property is strictly private and
+   * must not be accessed directly outside of this class!
+   * @private {?string}
+   */
+  this.id_ = null;
+
+  /**
+   * Whether the component is in the document.
+   * @private {boolean}
+   */
+  this.inDocument_ = false;
+
+  // TODO(attila): Stop referring to this private field in subclasses.
+  /**
+   * The DOM element for the component.
+   * @private {Element}
+   */
+  this.element_ = null;
+
+  /**
+   * Event handler.
+   * TODO(user): rename it to handler_ after all component subclasses in
+   * inside Google have been cleaned up.
+   * Code search: http://go/component_code_search
+   * @private {goog.events.EventHandler|undefined}
+   */
+  this.googUiComponentHandler_ = void 0;
+
+  /**
+   * Arbitrary data object associated with the component.  Such as meta-data.
+   * @private {*}
+   */
+  this.model_ = null;
+
+  /**
+   * Parent component to which events will be propagated.  This property is
+   * strictly private and must not be accessed directly outside of this class!
+   * @private {goog.ui.Component?}
+   */
+  this.parent_ = null;
+
+  /**
+   * Array of child components.  Lazily initialized on first use.  Must be kept
+   * in sync with {@code childIndex_}.  This property is strictly private and
+   * must not be accessed directly outside of this class!
+   * @private {Array.<goog.ui.Component>?}
+   */
+  this.children_ = null;
+
+  /**
+   * Map of child component IDs to child components.  Used for constant-time
+   * random access to child components by ID.  Lazily initialized on first use.
+   * Must be kept in sync with {@code children_}.  This property is strictly
+   * private and must not be accessed directly outside of this class!
+   *
+   * We use a plain Object, not a {@link goog.structs.Map}, for simplicity.
+   * This means components can't have children with IDs such as 'constructor' or
+   * 'valueOf', but this shouldn't really be an issue in practice, and if it is,
+   * we can always fix it later without changing the API.
+   *
+   * @private {Object}
+   */
+  this.childIndex_ = null;
+
+  /**
+   * Flag used to keep track of whether a component decorated an already
+   * existing element or whether it created the DOM itself.
+   *
+   * If an element is decorated, dispose will leave the node in the document.
+   * It is up to the app to remove the node.
+   *
+   * If an element was rendered, dispose will remove the node automatically.
+   *
+   * @private {boolean}
+   */
+  this.wasDecorated_ = false;
 };
 goog.inherits(goog.ui.Component, goog.events.EventTarget);
 
@@ -337,123 +427,6 @@ goog.ui.Component.getStateTransitionEvent = function(state, isEntering) {
 goog.ui.Component.setDefaultRightToLeft = function(rightToLeft) {
   goog.ui.Component.defaultRightToLeft_ = rightToLeft;
 };
-
-
-/**
- * Unique ID of the component, lazily initialized in {@link
- * goog.ui.Component#getId} if needed.  This property is strictly private and
- * must not be accessed directly outside of this class!
- * @type {?string}
- * @private
- */
-goog.ui.Component.prototype.id_ = null;
-
-
-/**
- * DomHelper used to interact with the document, allowing components to be
- * created in a different window.
- * @type {!goog.dom.DomHelper}
- * @protected
- * @suppress {underscore|visibility}
- */
-goog.ui.Component.prototype.dom_;
-
-
-/**
- * Whether the component is in the document.
- * @type {boolean}
- * @private
- */
-goog.ui.Component.prototype.inDocument_ = false;
-
-
-// TODO(attila): Stop referring to this private field in subclasses.
-/**
- * The DOM element for the component.
- * @type {Element}
- * @private
- */
-goog.ui.Component.prototype.element_ = null;
-
-
-/**
- * Event handler.
- * TODO(user): rename it to handler_ after all component subclasses in
- * inside Google have been cleaned up.
- * Code search: http://go/component_code_search
- * @type {goog.events.EventHandler}
- * @private
- */
-goog.ui.Component.prototype.googUiComponentHandler_;
-
-
-/**
- * Whether the component is rendered right-to-left.  Right-to-left is set
- * lazily when {@link #isRightToLeft} is called the first time, unless it has
- * been set by calling {@link #setRightToLeft} explicitly.
- * @type {?boolean}
- * @private
- */
-goog.ui.Component.prototype.rightToLeft_ = null;
-
-
-/**
- * Arbitrary data object associated with the component.  Such as meta-data.
- * @type {*}
- * @private
- */
-goog.ui.Component.prototype.model_ = null;
-
-
-/**
- * Parent component to which events will be propagated.  This property is
- * strictly private and must not be accessed directly outside of this class!
- * @type {goog.ui.Component?}
- * @private
- */
-goog.ui.Component.prototype.parent_ = null;
-
-
-/**
- * Array of child components.  Lazily initialized on first use.  Must be kept in
- * sync with {@code childIndex_}.  This property is strictly private and must
- * not be accessed directly outside of this class!
- * @type {Array.<goog.ui.Component>?}
- * @private
- */
-goog.ui.Component.prototype.children_ = null;
-
-
-/**
- * Map of child component IDs to child components.  Used for constant-time
- * random access to child components by ID.  Lazily initialized on first use.
- * Must be kept in sync with {@code children_}.  This property is strictly
- * private and must not be accessed directly outside of this class!
- *
- * We use a plain Object, not a {@link goog.structs.Map}, for simplicity.
- * This means components can't have children with IDs such as 'constructor' or
- * 'valueOf', but this shouldn't really be an issue in practice, and if it is,
- * we can always fix it later without changing the API.
- *
- * @type {Object}
- * @private
- */
-goog.ui.Component.prototype.childIndex_ = null;
-
-
-/**
- * Flag used to keep track of whether a component decorated an already existing
- * element or whether it created the DOM itself.
- *
- * If an element is decorated, dispose will leave the node in the document.
- * It is up to the app to remove the node.
- *
- * If an element was rendered, dispose will remove the node automatically.
- *
- * @type {boolean}
- * @private
- */
-goog.ui.Component.prototype.wasDecorated_ = false;
 
 
 /**

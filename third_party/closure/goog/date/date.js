@@ -134,6 +134,13 @@ goog.date.splitDurationRegex_ = new RegExp(
 
 
 /**
+ * Number of milliseconds in a day.
+ * @type {number}
+ */
+goog.date.MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+
+/**
  * Returns whether the given year is a leap year.
  *
  * @param {number} year Year part of date.
@@ -242,9 +249,6 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   // Default to Monday for first day of the week as per ISO 8601.
   var firstday = opt_firstDayOfWeek || goog.date.weekDay.MON;
 
-  // 1 day in milliseconds.
-  var ONE_DAY = 24 * 60 * 60 * 1000;
-
   // The d.getDay() has to be converted first to ISO weekday (Monday=0).
   var isoday = (d.getDay() + 6) % 7;
 
@@ -257,13 +261,15 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   // Unix timestamp of the midnight of the cutoff day in the week of 'd'.
   // There might be +-1 hour shift in the result due to the daylight saving,
   // but it doesn't affect the year.
-  var cutoffSameWeek = d.valueOf() + (cutoffpos - daypos) * ONE_DAY;
+  var cutoffSameWeek = d.valueOf() +
+      (cutoffpos - daypos) * goog.date.MS_PER_DAY;
 
   // Unix timestamp of January 1 in the year of 'cutoffSameWeek'.
   var jan1 = new Date(new Date(cutoffSameWeek).getFullYear(), 0, 1).valueOf();
 
   // Number of week. The round() eliminates the effect of daylight saving.
-  return Math.floor(Math.round((cutoffSameWeek - jan1) / ONE_DAY) / 7) + 1;
+  return Math.floor(Math.round(
+      (cutoffSameWeek - jan1) / goog.date.MS_PER_DAY) / 7) + 1;
 };
 
 

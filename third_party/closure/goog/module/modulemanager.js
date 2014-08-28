@@ -29,6 +29,8 @@ goog.require('goog.debug.Trace');
 /** @suppress {extraRequire} */
 goog.require('goog.dispose');
 goog.require('goog.log');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
 goog.require('goog.object');

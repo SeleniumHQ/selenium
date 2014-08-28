@@ -159,6 +159,9 @@ _.postJson = function(url, data, opt_options) {
  * Sends a request, returning a promise that will be resolved
  * with the XHR object once the request completes.
  *
+ * If content type hasn't been set in opt_options headers, and hasn't been
+ * explicitly set to null, default to form-urlencoded/UTF8 for POSTs.
+ *
  * @param {string} method The HTTP method for the request.
  * @param {string} url The URL to request.
  * @param {_.PostData} data The body of the post request.
@@ -183,7 +186,7 @@ _.send = function(method, url, data, opt_options) {
     // So sad that IE doesn't support onload and onerror.
     xhr.onreadystatechange = function() {
       if (xhr.readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
-        window.clearTimeout(timer);
+        goog.global.clearTimeout(timer);
         // Note: When developing locally, XHRs to file:// schemes return
         // a status code of 0. We mark that case as a success too.
         if (HttpStatus.isSuccess(xhr.status) ||
@@ -199,18 +202,21 @@ _.send = function(method, url, data, opt_options) {
     };
 
     // Set the headers.
-    var contentTypeIsSet = false;
+    var contentType;
     if (options.headers) {
       for (var key in options.headers) {
-        xhr.setRequestHeader(key, options.headers[key]);
+        var value = options.headers[key];
+        if (goog.isDefAndNotNull(value)) {
+          xhr.setRequestHeader(key, value);
+        }
       }
-      contentTypeIsSet = _.CONTENT_TYPE_HEADER in options.headers;
+      contentType = options.headers[_.CONTENT_TYPE_HEADER];
     }
 
-    // If a content type hasn't been set, default to form-urlencoded/UTF8 for
-    // POSTs.  This is because some proxies have been known to reject posts
-    // without a content-type.
-    if (method == 'POST' && !contentTypeIsSet) {
+    // If a content type hasn't been set, and hasn't been explicitly set to
+    // null, default to form-urlencoded/UTF8 for POSTs.  This is because some
+    // proxies have been known to reject posts without a content-type.
+    if (method == 'POST' && contentType === undefined) {
       xhr.setRequestHeader(_.CONTENT_TYPE_HEADER, _.FORM_CONTENT_TYPE);
     }
 
@@ -229,7 +235,7 @@ _.send = function(method, url, data, opt_options) {
 
     // Handle timeouts, if requested.
     if (options.timeoutMs > 0) {
-      timer = window.setTimeout(function() {
+      timer = goog.global.setTimeout(function() {
         // Clear event listener before aborting so the errback will not be
         // called twice.
         xhr.onreadystatechange = goog.nullFunction;
@@ -245,7 +251,7 @@ _.send = function(method, url, data, opt_options) {
       // XMLHttpRequest.send is known to throw on some versions of FF,
       // for example if a cross-origin request is disallowed.
       xhr.onreadystatechange = goog.nullFunction;
-      window.clearTimeout(timer);
+      goog.global.clearTimeout(timer);
       reject(new _.Error('Error sending XHR: ' + e.message, url, xhr));
     }
   });

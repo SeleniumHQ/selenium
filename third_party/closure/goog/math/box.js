@@ -27,6 +27,9 @@ goog.require('goog.math.Coordinate');
  * Class for representing a box. A box is specified as a top, right, bottom,
  * and left. A box is useful for representing margins and padding.
  *
+ * This class assumes 'screen coordinates': larger Y coordinates are further
+ * from the top of the screen.
+ *
  * @param {number} top Top.
  * @param {number} right Right.
  * @param {number} bottom Bottom.
@@ -77,6 +80,22 @@ goog.math.Box.boundingBox = function(var_args) {
     box.left = Math.min(box.left, coord.x);
   }
   return box;
+};
+
+
+/**
+ * @return {number} width The width of this Box.
+ */
+goog.math.Box.prototype.getWidth = function() {
+  return this.right - this.left;
+};
+
+
+/**
+ * @return {number} height The height of this Box.
+ */
+goog.math.Box.prototype.getHeight = function() {
+  return this.bottom - this.top;
 };
 
 

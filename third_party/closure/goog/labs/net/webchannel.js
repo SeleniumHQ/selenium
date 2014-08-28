@@ -36,6 +36,16 @@
  * Client-to-client messaging via WebRTC based transport may also be support
  * via the same WebChannel API in future.
  *
+ * Note that we have no immediate plan to move this API out of labs. While
+ * the implementation is production ready, the API is subject to change
+ * (addition):
+ * 1. Completely new W3C APIs for Web messaging may emerge in near future.
+ * 2. New programming models for cloud (on the server-side) may require
+ *    new APIs to be defined.
+ * 3. WebRTC DataChannel alignment
+ * Lastly, we also want to white-list all internal use cases. As a general rule,
+ * we expect most applications to rely on stateless/RPC services.
+ *
  */
 
 goog.provide('goog.net.WebChannel');

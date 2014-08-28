@@ -36,7 +36,7 @@ goog.promise.Resolver.prototype.promise;
 
 /**
  * Resolves this resolver with the specified value.
- * @const {function((TYPE|goog.Promise.<TYPE>|Thenable))}
+ * @const {function((TYPE|goog.Promise.<TYPE>|Thenable)=)}
  */
 goog.promise.Resolver.prototype.resolve;
 

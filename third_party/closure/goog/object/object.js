@@ -18,6 +18,8 @@
 
 goog.provide('goog.object');
 
+goog.require('goog.array');
+
 
 /**
  * Calls a function for each element in an object/map/hash.
@@ -430,6 +432,27 @@ goog.object.set = function(obj, key, value) {
  */
 goog.object.setIfUndefined = function(obj, key, value) {
   return key in obj ? obj[key] : (obj[key] = value);
+};
+
+
+/**
+ * Compares two objects for equality using === on the values.
+ *
+ * @param {!Object.<K,V>} a
+ * @param {!Object.<K,V>} b
+ * @return {boolean}
+ * @template K,V
+ */
+goog.object.equals = function(a, b) {
+  if (!goog.array.equals(goog.object.getKeys(a), goog.object.getKeys(b))) {
+    return false;
+  }
+  for (var k in a) {
+    if (a[k] !== b[k]) {
+      return false;
+    }
+  }
+  return true;
 };
 
 

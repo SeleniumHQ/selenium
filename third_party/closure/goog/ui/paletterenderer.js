@@ -332,8 +332,14 @@ goog.ui.PaletteRenderer.prototype.highlightCell = function(palette,
         goog.getCssName(this.getCssClass(), 'cell-hover'), highlight);
     // See http://www.w3.org/TR/2006/WD-aria-state-20061220/#activedescendent
     // for an explanation of the activedescendent.
-    goog.a11y.aria.setState(palette.getElementStrict(),
-        goog.a11y.aria.State.ACTIVEDESCENDANT, cell.id);
+    if (highlight) {
+      goog.a11y.aria.setState(palette.getElementStrict(),
+          goog.a11y.aria.State.ACTIVEDESCENDANT, cell.id);
+    } else if (cell.id == goog.a11y.aria.getState(palette.getElementStrict(),
+        goog.a11y.aria.State.ACTIVEDESCENDANT)) {
+      goog.a11y.aria.removeState(palette.getElementStrict(),
+          goog.a11y.aria.State.ACTIVEDESCENDANT);
+    }
   }
 };
 

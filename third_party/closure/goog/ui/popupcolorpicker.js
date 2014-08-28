@@ -50,6 +50,7 @@ goog.ui.PopupColorPicker = function(opt_domHelper, opt_colorPicker) {
   }
 };
 goog.inherits(goog.ui.PopupColorPicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.PopupColorPicker);
 
 
 /**
@@ -100,6 +101,10 @@ goog.ui.PopupColorPicker.prototype.popupCorner_ =
  * @private
  */
 goog.ui.PopupColorPicker.prototype.lastTarget_ = null;
+
+
+/** @private {boolean} */
+goog.ui.PopupColorPicker.prototype.rememberSelection_;
 
 
 /**

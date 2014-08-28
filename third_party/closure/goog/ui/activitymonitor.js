@@ -101,6 +101,7 @@ goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
 
 };
 goog.inherits(goog.ui.ActivityMonitor, goog.events.EventTarget);
+goog.tagUnsealableClass(goog.ui.ActivityMonitor);
 
 
 /**

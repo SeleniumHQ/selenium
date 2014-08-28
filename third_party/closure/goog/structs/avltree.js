@@ -29,6 +29,7 @@
  * - remove                 O(logn)
  * - clear                  O(1)
  * - contains               O(logn)
+ * - indexOf                O(logn)
  * - getCount               O(1)
  * - getMinimum             O(1), or O(logn) when optional root is specified
  * - getMaximum             O(1), or O(logn) when optional root is specified
@@ -149,7 +150,8 @@ goog.structs.AvlTree.prototype.add = function(value) {
   // Depth traverse the tree and insert the value if we reach a null node
   this.traverse_(function(node) {
     var retNode = null;
-    if (this.comparator_(node.value, value) > 0) {
+    var comparison = this.comparator_(node.value, value);
+    if (comparison > 0) {
       retNode = node.left;
       if (node.left == null) {
         newNode = new goog.structs.AvlTree.Node(value, node);
@@ -158,7 +160,7 @@ goog.structs.AvlTree.prototype.add = function(value) {
           this.minNode_ = newNode;
         }
       }
-    } else if (this.comparator_(node.value, value) < 0) {
+    } else if (comparison < 0) {
       retNode = node.right;
       if (node.right == null) {
         newNode = new goog.structs.AvlTree.Node(value, node);
@@ -204,9 +206,10 @@ goog.structs.AvlTree.prototype.remove = function(value) {
   // Depth traverse the tree and remove the value if we find it
   this.traverse_(function(node) {
     var retNode = null;
-    if (this.comparator_(node.value, value) > 0) {
+    var comparison = this.comparator_(node.value, value);
+    if (comparison > 0) {
       retNode = node.left;
-    } else if (this.comparator_(node.value, value) < 0) {
+    } else if (comparison < 0) {
       retNode = node.right;
     } else {
       retValue = node.value;
@@ -245,9 +248,10 @@ goog.structs.AvlTree.prototype.contains = function(value) {
   // Depth traverse the tree and set isContained if we find the node
   this.traverse_(function(node) {
     var retNode = null;
-    if (this.comparator_(node.value, value) > 0) {
+    var comparison = this.comparator_(node.value, value);
+    if (comparison > 0) {
       retNode = node.left;
-    } else if (this.comparator_(node.value, value) < 0) {
+    } else if (comparison < 0) {
       retNode = node.right;
     } else {
       isContained = true;
@@ -257,6 +261,51 @@ goog.structs.AvlTree.prototype.contains = function(value) {
 
   // Return true if the value is contained in the tree, false otherwise
   return isContained;
+};
+
+
+/**
+ * Returns the index (in an in-order traversal) of the node in the tree with
+ * the specified value. For example, the minimum value in the tree will
+ * return an index of 0 and the maximum will return an index of n - 1 (where
+ * n is the number of nodes in the tree).  If the value is not found then -1
+ * is returned.
+ *
+ * @param {T} value Value in the tree whose in-order index is returned.
+ * @return {!number} The in-order index of the given value in the
+ *     tree or -1 if the value is not found.
+ */
+goog.structs.AvlTree.prototype.indexOf = function(value) {
+  // Assume the value is not in the tree and set this value if it is found
+  var retIndex = -1;
+  var currIndex = 0;
+
+  // Depth traverse the tree and set retIndex if we find the node
+  this.traverse_(function(node) {
+    var comparison = this.comparator_(node.value, value);
+    if (comparison > 0) {
+      // The value is less than this node, so recurse into the left subtree.
+      return node.left;
+    }
+
+    if (node.left) {
+      // The value is greater than all of the nodes in the left subtree.
+      currIndex += node.left.count;
+    }
+
+    if (comparison < 0) {
+      // The value is also greater than this node.
+      currIndex++;
+      // Recurse into the right subtree.
+      return node.right;
+    }
+    // We found the node, so stop traversing the tree.
+    retIndex = currIndex;
+    return null;
+  });
+
+  // Return index if the value is contained in the tree, -1 otherwise
+  return retIndex;
 };
 
 
@@ -356,16 +405,20 @@ goog.structs.AvlTree.prototype.inOrderTraverse =
   if (opt_startValue) {
     this.traverse_(function(node) {
       var retNode = null;
-      if (this.comparator_(node.value, opt_startValue) > 0) {
+      var comparison = this.comparator_(node.value, opt_startValue);
+      if (comparison > 0) {
         retNode = node.left;
         startNode = node;
-      } else if (this.comparator_(node.value, opt_startValue) < 0) {
+      } else if (comparison < 0) {
         retNode = node.right;
       } else {
         startNode = node;
       }
       return retNode; // If null, we'll stop traversing the tree
     });
+    if (!startNode) {
+      return;
+    }
   } else {
     startNode = this.getMinNode_();
   }
@@ -413,9 +466,10 @@ goog.structs.AvlTree.prototype.reverseOrderTraverse =
   if (opt_startValue) {
     this.traverse_(goog.bind(function(node) {
       var retNode = null;
-      if (this.comparator_(node.value, opt_startValue) > 0) {
+      var comparison = this.comparator_(node.value, opt_startValue);
+      if (comparison > 0) {
         retNode = node.left;
-      } else if (this.comparator_(node.value, opt_startValue) < 0) {
+      } else if (comparison < 0) {
         retNode = node.right;
         startNode = node;
       } else {
@@ -423,6 +477,9 @@ goog.structs.AvlTree.prototype.reverseOrderTraverse =
       }
       return retNode; // If null, we'll stop traversing the tree
     }, this));
+    if (!startNode) {
+      return;
+    }
   } else {
     startNode = this.getMaxNode_();
   }

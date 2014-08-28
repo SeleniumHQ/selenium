@@ -246,8 +246,10 @@ goog.editor.plugins.LinkBubble.prototype.execCommandInternal =
  */
 goog.editor.plugins.LinkBubble.prototype.updateLink_ = function() {
   var targetEl = this.getTargetElement();
-  this.closeBubble();
-  this.createBubble(targetEl);
+  if (targetEl) {
+    this.closeBubble();
+    this.createBubble(targetEl);
+  }
 };
 
 

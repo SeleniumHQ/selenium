@@ -118,6 +118,7 @@ goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
   this.disposeSecond_ = true;
 };
 goog.inherits(goog.ui.SplitBehavior, goog.Disposable);
+goog.tagUnsealableClass(goog.ui.SplitBehavior);
 
 
 /**
@@ -339,4 +340,3 @@ goog.ui.registry.setDecoratorByClassName(goog.ui.SplitBehavior.CSS_CLASS,
     function() {
       return new goog.ui.SplitBehavior(null, null);
     });
-

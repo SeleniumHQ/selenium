@@ -96,6 +96,7 @@ goog.ui.Bubble = function(message, opt_config, opt_domHelper) {
 
 };
 goog.inherits(goog.ui.Bubble, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.Bubble);
 
 
 /**
@@ -109,7 +110,7 @@ goog.ui.Bubble.prototype.timeout_ = null;
 
 /**
  * Key returned by the bubble timer.
- * @type {number}
+ * @type {?number}
  * @private
  */
 goog.ui.Bubble.prototype.timerId_ = 0;
@@ -278,7 +279,7 @@ goog.ui.Bubble.prototype.unconfigureElement_ = function() {
   }
   if (this.timerId_) {
     goog.Timer.clear(this.timerId_);
-    this.timerId = null;
+    this.timerId_ = null;
   }
 
   var element = this.getElement();

@@ -60,6 +60,13 @@ goog.events.InputHandler = function(element) {
   goog.events.InputHandler.base(this, 'constructor');
 
   /**
+   * Id of a timer used to postpone firing input event in emulation mode.
+   * @type {?number}
+   * @private
+   */
+  this.timer_ = null;
+
+  /**
    * The element that you want to listen for input events on.
    * @type {Element}
    * @private
@@ -109,14 +116,6 @@ goog.inherits(goog.events.InputHandler, goog.events.EventTarget);
 goog.events.InputHandler.EventType = {
   INPUT: 'input'
 };
-
-
-/**
- * Id of a timer used to postpone firing input event in emulation mode.
- * @type {?number}
- * @private
- */
-goog.events.InputHandler.prototype.timer_ = null;
 
 
 /**

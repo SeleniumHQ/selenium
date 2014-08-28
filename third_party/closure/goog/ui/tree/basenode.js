@@ -34,6 +34,7 @@ goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.html.SafeHtml');
+goog.require('goog.html.SafeStyle');
 goog.require('goog.html.legacyconversions');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
@@ -47,7 +48,7 @@ goog.require('goog.ui.Component');
  *
  * @param {string|!goog.html.SafeHtml} html The html content of the node label.
  * @param {Object=} opt_config The configuration for the tree. See
- *    {@link goog.ui.tree.TreeControl.defaultConfig}. If not specified the
+ *    {@link goog.ui.tree.BaseNode.defaultConfig}. If not specified the
  *    default config will be used.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
@@ -61,7 +62,7 @@ goog.ui.tree.BaseNode = function(html, opt_config, opt_domHelper) {
    * @type {Object}
    * @private
    */
-  this.config_ = opt_config || goog.ui.tree.TreeControl.defaultConfig;
+  this.config_ = opt_config || goog.ui.tree.BaseNode.defaultConfig;
 
   /**
    * HTML content of the node label.
@@ -853,10 +854,12 @@ goog.ui.tree.BaseNode.prototype.getPixelIndent_ = function() {
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getRowSafeHtml = function() {
-  var paddingKey = 'padding-' + (this.isRightToLeft() ? 'right:' : 'left:');
+  var style = {};
+  style['padding-' + (this.isRightToLeft() ? 'right' : 'left')] =
+      this.getPixelIndent_() + 'px';
   var attributes = {
     'class': this.getRowClassName(),
-    'style': paddingKey + this.getPixelIndent_() + 'px'
+    'style': style
   };
   var content = [
     this.getExpandIconSafeHtml(),
@@ -952,7 +955,7 @@ goog.ui.tree.BaseNode.prototype.setAfterLabelSafeHtml = function(html) {
  */
 goog.ui.tree.BaseNode.prototype.getIconSafeHtml = function() {
   return goog.html.SafeHtml.create('span', {
-    'style': 'display:inline-block',
+    'style': {'display': 'inline-block'},
     'class': this.getCalculatedIconClass()
   });
 };
@@ -972,7 +975,7 @@ goog.ui.tree.BaseNode.prototype.getCalculatedIconClass = goog.abstractMethod;
 goog.ui.tree.BaseNode.prototype.getExpandIconSafeHtml = function() {
   return goog.html.SafeHtml.create('span', {
     'type': 'expand',
-    'style': 'display:inline-block',
+    'style': {'display': 'inline-block'},
     'class': this.getExpandIconClass()
   });
 };
@@ -1059,19 +1062,21 @@ goog.ui.tree.BaseNode.prototype.getExpandIconClass = function() {
 
 
 /**
- * @return {string} The line style.
+ * @return {!goog.html.SafeStyle} The line style.
  */
 goog.ui.tree.BaseNode.prototype.getLineStyle = function() {
   var nonEmptyAndExpanded = this.getExpanded() && this.hasChildren();
-  return 'background-position:' + this.getLineStyle2() + ';' +
-      (nonEmptyAndExpanded ? '' : 'display:none;');
+  return goog.html.SafeStyle.create({
+    'background-position': this.getBackgroundPosition(),
+    'display': nonEmptyAndExpanded ? null : 'none'
+  });
 };
 
 
 /**
- * @return {string} The line style.
+ * @return {string} The background position style value.
  */
-goog.ui.tree.BaseNode.prototype.getLineStyle2 = function() {
+goog.ui.tree.BaseNode.prototype.getBackgroundPosition = function() {
   return (this.isLastSibling() ? '-100' :
           (this.getDepth() - 1) * this.config_.indentWidth) + 'px 0';
 };
@@ -1304,7 +1309,7 @@ goog.ui.tree.BaseNode.prototype.updateExpandIcon = function() {
   }
   var cel = this.getChildrenElement();
   if (cel) {
-    cel.style.backgroundPosition = this.getLineStyle2();
+    cel.style.backgroundPosition = this.getBackgroundPosition();
   }
 };
 
@@ -1497,6 +1502,10 @@ goog.ui.tree.BaseNode.prototype.getPreviousShownNode = function() {
   if (!tree.getShowRootNode() && parent == tree) {
     return null;
   }
+  // The root is the first node.
+  if (this == tree) {
+    return null;
+  }
   return /** @type {goog.ui.tree.BaseNode} */ (parent);
 };
 
@@ -1539,4 +1548,37 @@ goog.ui.tree.BaseNode.prototype.setTreeInternal = function(tree) {
       child.setTreeInternal(tree);
     });
   }
+};
+
+
+/**
+ * A default configuration for the tree.
+ */
+goog.ui.tree.BaseNode.defaultConfig = {
+  indentWidth: 19,
+  cssRoot: goog.getCssName('goog-tree-root') + ' ' +
+      goog.getCssName('goog-tree-item'),
+  cssHideRoot: goog.getCssName('goog-tree-hide-root'),
+  cssItem: goog.getCssName('goog-tree-item'),
+  cssChildren: goog.getCssName('goog-tree-children'),
+  cssChildrenNoLines: goog.getCssName('goog-tree-children-nolines'),
+  cssTreeRow: goog.getCssName('goog-tree-row'),
+  cssItemLabel: goog.getCssName('goog-tree-item-label'),
+  cssTreeIcon: goog.getCssName('goog-tree-icon'),
+  cssExpandTreeIcon: goog.getCssName('goog-tree-expand-icon'),
+  cssExpandTreeIconPlus: goog.getCssName('goog-tree-expand-icon-plus'),
+  cssExpandTreeIconMinus: goog.getCssName('goog-tree-expand-icon-minus'),
+  cssExpandTreeIconTPlus: goog.getCssName('goog-tree-expand-icon-tplus'),
+  cssExpandTreeIconTMinus: goog.getCssName('goog-tree-expand-icon-tminus'),
+  cssExpandTreeIconLPlus: goog.getCssName('goog-tree-expand-icon-lplus'),
+  cssExpandTreeIconLMinus: goog.getCssName('goog-tree-expand-icon-lminus'),
+  cssExpandTreeIconT: goog.getCssName('goog-tree-expand-icon-t'),
+  cssExpandTreeIconL: goog.getCssName('goog-tree-expand-icon-l'),
+  cssExpandTreeIconBlank: goog.getCssName('goog-tree-expand-icon-blank'),
+  cssExpandedFolderIcon: goog.getCssName('goog-tree-expanded-folder-icon'),
+  cssCollapsedFolderIcon: goog.getCssName('goog-tree-collapsed-folder-icon'),
+  cssFileIcon: goog.getCssName('goog-tree-file-icon'),
+  cssExpandedRootIcon: goog.getCssName('goog-tree-expanded-folder-icon'),
+  cssCollapsedRootIcon: goog.getCssName('goog-tree-collapsed-folder-icon'),
+  cssSelectedRow: goog.getCssName('selected')
 };

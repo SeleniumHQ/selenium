@@ -275,7 +275,7 @@ goog.graphics.VmlGraphics.prototype.append_ = function(element, opt_group) {
  */
 goog.graphics.VmlGraphics.prototype.setElementFill = function(element, fill) {
   var vmlElement = element.getElement();
-  this.removeFill(vmlElement);
+  goog.graphics.VmlGraphics.removeFill_(vmlElement);
   if (fill instanceof goog.graphics.SolidFill) {
     // NOTE(arv): VML does not understand 'transparent' so hard code support
     // for it.
@@ -339,19 +339,13 @@ goog.graphics.VmlGraphics.prototype.setElementStroke = function(element,
     }
 
     var strokeElement = vmlElement.getElementsByTagName('stroke')[0];
-    if (width < 1) {
+    if (!strokeElement) {
       strokeElement = strokeElement || this.createVmlElement('stroke');
-      strokeElement.opacity = width;
-      strokeElement.weight = '1px';
-      strokeElement.color = stroke.getColor();
       vmlElement.appendChild(strokeElement);
-    } else {
-      if (strokeElement) {
-        vmlElement.removeChild(strokeElement);
-      }
-      vmlElement.strokecolor = stroke.getColor();
-      vmlElement.strokeweight = width + 'px';
     }
+    strokeElement.opacity = stroke.getOpacity();
+    strokeElement.weight = width + 'px';
+    strokeElement.color = stroke.getColor();
   } else {
     vmlElement.stroked = false;
   }
@@ -360,8 +354,10 @@ goog.graphics.VmlGraphics.prototype.setElementStroke = function(element,
 
 
 /**
- * Set the transformation of an element.
- * @param {goog.graphics.Element} element The element wrapper.
+ * Set the translation and rotation of an element.
+ *
+ * If a more general affine transform is needed than this provides
+ * (e.g. skew and scale) then use setElementAffineTransform.
  * @param {number} x The x coordinate of the translation transform.
  * @param {number} y The y coordinate of the translation transform.
  * @param {number} angle The angle of the rotation transform.
@@ -384,18 +380,61 @@ goog.graphics.VmlGraphics.prototype.setElementTransform = function(element, x,
 
 
 /**
+ * Set the transformation of an element.
+ * @param {!goog.graphics.Element} element The element wrapper.
+ * @param {!goog.graphics.AffineTransform} affineTransform The
+ *     transformation applied to this element.
+ * @override
+ */
+goog.graphics.VmlGraphics.prototype.setElementAffineTransform = function(
+    element, affineTransform) {
+  var t = affineTransform;
+  var vmlElement = element.getElement();
+  goog.graphics.VmlGraphics.removeSkew_(vmlElement);
+  var skewNode = this.createVmlElement('skew');
+  skewNode.on = 'true';
+  // Move the transform origin to 0px,0px of the graphics.
+  // In VML, 0,0 means the center of the element, -0.5,-0.5 left top conner of
+  // it.
+  skewNode.origin =
+      (-vmlElement.style.pixelLeft / vmlElement.style.pixelWidth - 0.5) + ',' +
+      (-vmlElement.style.pixelTop / vmlElement.style.pixelHeight - 0.5);
+  skewNode.offset = t.getTranslateX().toFixed(1) + 'px,' +
+                    t.getTranslateY().toFixed(1) + 'px';
+  skewNode.matrix = [t.getScaleX().toFixed(6), t.getShearX().toFixed(6),
+                     t.getShearY().toFixed(6), t.getScaleY().toFixed(6),
+                     0, 0].join(',');
+  vmlElement.appendChild(skewNode);
+  this.updateGraphics_();
+};
+
+
+/**
+ * Removes the skew information from a dom element.
+ * @param {Element} element DOM element.
+ * @private
+ */
+goog.graphics.VmlGraphics.removeSkew_ = function(element) {
+  goog.array.forEach(element.childNodes, function(child) {
+    if (child.tagName == 'skew') {
+      element.removeChild(child);
+    }
+  });
+};
+
+
+/**
  * Removes the fill information from a dom element.
  * @param {Element} element DOM element.
+ * @private
  */
-goog.graphics.VmlGraphics.prototype.removeFill = function(element) {
+goog.graphics.VmlGraphics.removeFill_ = function(element) {
   element.fillcolor = '';
-  var v = element.childNodes.length;
-  for (var i = 0; i < element.childNodes.length; i++) {
-    var child = element.childNodes[i];
+  goog.array.forEach(element.childNodes, function(child) {
     if (child.tagName == 'fill') {
       element.removeChild(child);
     }
-  }
+  });
 };
 
 

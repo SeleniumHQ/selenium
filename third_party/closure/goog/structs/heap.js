@@ -144,7 +144,7 @@ goog.structs.Heap.prototype.peek = function() {
 
 /**
  * Retrieves but does not remove the key of the root node of this heap.
- * @return {V} The key at the root of the heap. Returns undefined if the
+ * @return {K} The key at the root of the heap. Returns undefined if the
  *     heap is empty.
  */
 goog.structs.Heap.prototype.peekKey = function() {

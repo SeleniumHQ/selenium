@@ -58,6 +58,8 @@ goog.require('goog.structs.Map');
 goog.require('goog.uri.utils');
 goog.require('goog.userAgent');
 
+goog.forwardDeclare('goog.Uri');
+
 
 
 /**
@@ -298,6 +300,7 @@ goog.net.XhrIo.sendInstances_ = [];
  *     incomplete request will be aborted; 0 means no timeout is set.
  * @param {boolean=} opt_withCredentials Whether to send credentials with the
  *     request. Default to false. See {@link goog.net.XhrIo#setWithCredentials}.
+ * @return {!goog.net.XhrIo} The sent XhrIo.
  */
 goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
                                opt_headers, opt_timeoutInterval,
@@ -315,6 +318,7 @@ goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
     x.setWithCredentials(opt_withCredentials);
   }
   x.send(url, opt_method, opt_content, opt_headers);
+  return x;
 };
 
 

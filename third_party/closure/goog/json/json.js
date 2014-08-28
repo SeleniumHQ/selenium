@@ -38,9 +38,8 @@ goog.define('goog.json.USE_NATIVE_JSON', false);
  * not using any invalid characters
  * @param {string} s The string to test.
  * @return {boolean} True if the input is a valid JSON string.
- * @private
  */
-goog.json.isValid_ = function(s) {
+goog.json.isValid = function(s) {
   // All empty whitespace is not valid.
   if (/^\s*$/.test(s)) {
     return false;
@@ -97,7 +96,7 @@ goog.json.parse = goog.json.USE_NATIVE_JSON ?
     /** @type {function(*):Object} */ (goog.global['JSON']['parse']) :
     function(s) {
       var o = String(s);
-      if (goog.json.isValid_(o)) {
+      if (goog.json.isValid(o)) {
         /** @preserveTry */
         try {
           return /** @type {Object} */ (eval('(' + o + ')'));

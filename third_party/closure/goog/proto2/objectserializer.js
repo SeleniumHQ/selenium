@@ -21,6 +21,7 @@
 goog.provide('goog.proto2.ObjectSerializer');
 
 goog.require('goog.asserts');
+goog.require('goog.proto2.FieldDescriptor');
 goog.require('goog.proto2.Serializer');
 goog.require('goog.string');
 
@@ -104,6 +105,22 @@ goog.proto2.ObjectSerializer.prototype.serialize = function(message) {
   });
 
   return objectValue;
+};
+
+
+/** @override */
+goog.proto2.ObjectSerializer.prototype.getDeserializedValue =
+    function(field, value) {
+
+  // Gracefully handle the case where a boolean is represented by 0/1.
+  // Some serialization libraries, such as GWT, can use this notation.
+  if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL &&
+      goog.isNumber(value)) {
+    return Boolean(value);
+  }
+
+  return goog.proto2.ObjectSerializer.base(
+      this, 'getDeserializedValue', field, value);
 };
 
 

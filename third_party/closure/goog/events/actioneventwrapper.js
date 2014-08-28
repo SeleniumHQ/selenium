@@ -21,6 +21,7 @@ goog.provide('goog.events.actionEventWrapper');
 
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
+goog.require('goog.dom');
 goog.require('goog.events');
 /** @suppress {extraRequire} */
 goog.require('goog.events.EventHandler');
@@ -83,6 +84,8 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {
   var callback = function(e) {
     var listenerFn = goog.events.wrapListener(listener);
+    var role = goog.dom.isElement(e.target) ?
+        goog.a11y.aria.getRole(/** @type {!Element} */ (e.target)) : null;
     if (e.type == goog.events.EventType.CLICK && e.isMouseActionButton()) {
       listenerFn.call(opt_scope, e);
     } else if ((e.keyCode == goog.events.KeyCodes.ENTER ||
@@ -93,8 +96,8 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
       listenerFn.call(opt_scope, e);
     } else if (e.keyCode == goog.events.KeyCodes.SPACE &&
         e.type == goog.events.EventType.KEYUP &&
-        goog.a11y.aria.getRole(/** @type {!Element} */ (e.target)) ==
-            goog.a11y.aria.Role.BUTTON) {
+        (role == goog.a11y.aria.Role.BUTTON ||
+            role == goog.a11y.aria.Role.TAB)) {
       listenerFn.call(opt_scope, e);
       e.preventDefault();
     }

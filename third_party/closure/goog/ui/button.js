@@ -42,7 +42,7 @@ goog.require('goog.ui.registry');
  *     structure to display as the button's caption (if any).
  * @param {goog.ui.ButtonRenderer=} opt_renderer Renderer used to render or
  *     decorate the button; defaults to {@link goog.ui.NativeButtonRenderer}.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.Control}
@@ -52,6 +52,7 @@ goog.ui.Button = function(opt_content, opt_renderer, opt_domHelper) {
       goog.ui.NativeButtonRenderer.getInstance(), opt_domHelper);
 };
 goog.inherits(goog.ui.Button, goog.ui.Control);
+goog.tagUnsealableClass(goog.ui.Button);
 
 
 /**

@@ -96,7 +96,7 @@ goog.dom.dataset.remove = function(element, key) {
  *
  * @param {Element} element DOM node to get the custom data attribute from.
  * @param {string} key Key for the custom data attribute.
- * @return {boolean} Whether the attibute exists.
+ * @return {boolean} Whether the attribute exists.
  */
 goog.dom.dataset.has = function(element, key) {
   if (element.dataset) {

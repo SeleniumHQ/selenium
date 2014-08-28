@@ -88,8 +88,14 @@ goog.cssom.getAllCssStyleRules = function(opt_styleSheet) {
 goog.cssom.getCssRulesFromStyleSheet = function(styleSheet) {
   var cssRuleList = null;
   try {
-    // IE is .rules, W3c is cssRules.
-    cssRuleList = styleSheet.rules || styleSheet.cssRules;
+    // Select cssRules unless it isn't present.  For pre-IE9 IE, use the rules
+    // collection instead.
+    // It's important to be consistent in using only the W3C or IE apis on
+    // IE9+ where both are present to ensure that there is no indexing
+    // mismatches - the collections are subtly different in what the include or
+    // exclude which can lead to one collection being longer than the other
+    // depending on the page's construction.
+    cssRuleList = styleSheet.cssRules /* W3C */ || styleSheet.rules /* IE */;
   } catch (e) {
     // This can happen if we try to access the CSSOM before it's "ready".
     if (e.code == 15) {
@@ -294,15 +300,7 @@ goog.cssom.addCssRule = function(cssStyleSheet, cssText, opt_index) {
   if (index < 0 || index == undefined) {
     // If no index specified, insert at the end of the current list
     // of rules.
-
-    // Select cssRules unless it isn't present.  For pre-IE9 IE, use the rules
-    // collection instead.
-    // It's important to be consistent in using only the W3C or IE apis on
-    // IE9+ where both are present to ensure that there is no indexing
-    // mismatches - the collections are subtly different in what the include or
-    // exclude which can lead to one collection being longer than the other
-    // depending on the page's construction.
-    var rules = cssStyleSheet.cssRules || cssStyleSheet.rules;
+    var rules = goog.cssom.getCssRulesFromStyleSheet(cssStyleSheet);
     index = rules.length;
   }
   if (cssStyleSheet.insertRule) {

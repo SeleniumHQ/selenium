@@ -261,6 +261,7 @@ goog.graphics.SvgGraphics.prototype.setElementStroke = function(element,
   var svgElement = element.getElement();
   if (stroke) {
     svgElement.setAttribute('stroke', stroke.getColor());
+    svgElement.setAttribute('stroke-opacity', stroke.getOpacity());
 
     var width = stroke.getWidth();
     if (goog.isString(width) && width.indexOf('px') != -1) {
@@ -276,7 +277,10 @@ goog.graphics.SvgGraphics.prototype.setElementStroke = function(element,
 
 
 /**
- * Set the transformation of an element.
+ * Set the translation and rotation of an element.
+ *
+ * If a more general affine transform is needed than this provides
+ * (e.g. skew and scale) then use setElementAffineTransform.
  * @param {goog.graphics.Element} element The element wrapper.
  * @param {number} x The x coordinate of the translation transform.
  * @param {number} y The y coordinate of the translation transform.
@@ -289,6 +293,22 @@ goog.graphics.SvgGraphics.prototype.setElementTransform = function(element, x,
     y, angle, centerX, centerY) {
   element.getElement().setAttribute('transform', 'translate(' + x + ',' + y +
       ') rotate(' + angle + ' ' + centerX + ' ' + centerY + ')');
+};
+
+
+/**
+ * Set the transformation of an element.
+ * @param {goog.graphics.Element} element The element wrapper.
+ * @param {!goog.graphics.AffineTransform} affineTransform The
+ *     transformation applied to this element.
+ * @override
+ */
+goog.graphics.SvgGraphics.prototype.setElementAffineTransform = function(
+    element, affineTransform) {
+  var t = affineTransform;
+  var substr = [t.getScaleX(), t.getShearY(), t.getShearX(), t.getScaleY(),
+                t.getTranslateX(), t.getTranslateY()].join(',');
+  element.getElement().setAttribute('transform', 'matrix(' + substr + ')');
 };
 
 

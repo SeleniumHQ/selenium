@@ -78,6 +78,20 @@ goog.asserts.AssertionError.prototype.name = 'AssertionError';
 
 
 /**
+ * The default error handler.
+ * @param {!goog.asserts.AssertionError} e The exception to be handled.
+ */
+goog.asserts.DEFAULT_ERROR_HANDLER = function(e) { throw e; };
+
+
+/**
+ * The handler responsible for throwing or logging assertion errors.
+ * @private {function(!goog.asserts.AssertionError)}
+ */
+goog.asserts.errorHandler_ = goog.asserts.DEFAULT_ERROR_HANDLER;
+
+
+/**
  * Throws an exception with the given message and "Assertion failed" prefixed
  * onto it.
  * @param {string} defaultMessage The message to use if givenMessage is empty.
@@ -101,7 +115,21 @@ goog.asserts.doAssertFailure_ =
   // a stack trace is added to var message above. With this, a stack trace is
   // not added until this line (it causes the extra garbage to be added after
   // the assertion message instead of in the middle of it).
-  throw new goog.asserts.AssertionError('' + message, args || []);
+  var e = new goog.asserts.AssertionError('' + message, args || []);
+  goog.asserts.errorHandler_(e);
+};
+
+
+/**
+ * Sets a custom error handler that can be used to customize the behavior of
+ * assertion failures, for example by turning all assertion failures into log
+ * messages.
+ * @param {function(goog.asserts.AssertionError)} errorHandler
+ */
+goog.asserts.setErrorHandler = function(errorHandler) {
+  if (goog.asserts.ENABLE_ASSERTS) {
+    goog.asserts.errorHandler_ = errorHandler;
+  }
 };
 
 
@@ -144,9 +172,9 @@ goog.asserts.assert = function(condition, opt_message, var_args) {
  */
 goog.asserts.fail = function(opt_message, var_args) {
   if (goog.asserts.ENABLE_ASSERTS) {
-    throw new goog.asserts.AssertionError(
+    goog.asserts.errorHandler_(new goog.asserts.AssertionError(
         'Failure' + (opt_message ? ': ' + opt_message : ''),
-        Array.prototype.slice.call(arguments, 1));
+        Array.prototype.slice.call(arguments, 1)));
   }
 };
 

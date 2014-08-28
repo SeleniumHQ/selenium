@@ -264,12 +264,17 @@ goog.testing.MockClassFactory.PROTOTYPE_FIELDS_ = [
  */
 goog.testing.MockClassFactory.prototype.getClassName_ = function(namespace,
     classToMock) {
+  var namespaces;
   if (namespace === goog.global) {
-    namespace = goog.testing.TestCase.getGlobals();
+    namespaces = goog.testing.TestCase.getGlobals();
+  } else {
+    namespaces = [namespace];
   }
-  for (var prop in namespace) {
-    if (namespace[prop] === classToMock) {
-      return prop;
+  for (var i = 0; i < namespaces.length; i++) {
+    for (var prop in namespaces[i]) {
+      if (namespaces[i][prop] === classToMock) {
+        return prop;
+      }
     }
   }
 
