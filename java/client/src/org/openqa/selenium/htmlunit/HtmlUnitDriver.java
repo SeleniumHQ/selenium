@@ -1395,7 +1395,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       CookieManager cookieManager = getWebClient().getCookieManager();
 
       URL url = getRawUrl();
-      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = cookieManager.getCookies(url);
+      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
       for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
         if (name.equals(cookie.getName())) {
           cookieManager.removeCookie(cookie);
@@ -1423,7 +1423,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
 
       return ImmutableSet.copyOf(Collections2.transform(
-          getWebClient().getCookieManager().getCookies(url),
+          getWebClient().getCookies(url),
           htmlUnitCookieToSeleniumCookieTransformer));
     }
 
