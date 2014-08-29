@@ -57,8 +57,8 @@ module Selenium
 
       begin
         open(download_file_name, "wb") do |destination|
-          net_http.start("selenium.googlecode.com") do |http|
-            resp = http.request_get("/files/#{download_file_name}") do |response|
+          net_http.start("selenium-release.storage.googleapis.com") do |http|
+            resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
               total = response.content_length
               progress = 0
               segment_count = 0
@@ -95,9 +95,11 @@ module Selenium
     #
 
     def self.latest
-      net_http.start("code.google.com") do |http|
-        resp = http.get("/p/selenium/downloads/list")
-        resp.body.to_s[/selenium-server-standalone-(\d+.\d+.\d+).jar/, 1]
+      require 'rexml/document'
+      net_http.start("selenium-release.storage.googleapis.com") do |http|
+        REXML::Document.new(http.get("/").body).root.get_elements("//Contents/Key").map { |e|
+          e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
+        }.compact.max
       end
     end
 

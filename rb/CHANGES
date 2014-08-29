@@ -6,6 +6,7 @@
   - Make sure the browser process is properly killed if silent startup hangs (#7392)
 * Loosen websocket dependency to ~> 1.0
 * Add support for `switch_to.parent_frame` (thanks abotalov)
+* Fix download location for Selenium::Server.{latest,get} (#7049 - thanks marekj)
 
 2.42.0 (2014-05-23)
 ===================

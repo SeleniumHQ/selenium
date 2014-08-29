@@ -57,7 +57,7 @@ describe Selenium::Server do
     required_version = '10.2.0'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-    stub_request(:get, "http://selenium.googlecode.com/files/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar").to_return(:body => "this is pretending to be a jar file for testing purposes")
 
     begin
       actual_download_file_name = Selenium::Server.download(required_version)
@@ -100,18 +100,19 @@ describe Selenium::Server do
   end
 
   it "should know what the latest version available is" do
-    latest_version = '10.2.0'
-    stub_request(:get, "http://code.google.com/p/selenium/downloads/list").to_return(:body => "web page containing jar selenium-server-standalone-#{latest_version}.jar")
+    latest_version = '2.42.2'
+    example_xml ="<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/").to_return(:body => example_xml)
 
     Selenium::Server.latest.should == latest_version
   end
 
   it "should download the latest version if that has been specified" do
-    required_version = '10.6.0'
+    required_version, minor_version = '2.42.2', '2.42'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
     Selenium::Server.should_receive(:latest).and_return required_version
-    stub_request(:get, "http://selenium.googlecode.com/files/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
+    stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
 
     begin
       actual_download_file_name = Selenium::Server.download(:latest)
