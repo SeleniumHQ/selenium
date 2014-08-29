@@ -70,7 +70,7 @@ module Selenium
         proxy_json = Proxy.new(:auto_detect => true).as_json
 
         proxy_json['proxyType'].should == "AUTODETECT"
-        proxy_json['autodetect'].should be_true
+        proxy_json['autodetect'].should be true
       end
 
       it "should only add settings that are not nil" do

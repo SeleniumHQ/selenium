@@ -31,7 +31,7 @@ module Selenium
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new(:browser_name => 'foo')
 
-          http.should_receive(:call).with do |verb, post, payload|
+          expect(http).to receive(:call) do |verb, post, payload|
             payload[:desiredCapabilities].should == custom_caps
             resp
           end

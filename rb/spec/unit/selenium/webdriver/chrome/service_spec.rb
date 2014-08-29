@@ -17,9 +17,11 @@ module Selenium
           Platform.stub(:assert_executable).with("/some/path")
           Chrome.driver_path = "/some/path"
 
-          ChildProcess.should_receive(:build).
-                       with { |*args| args.first.should == "/some/path" }.
-                       and_return(mock_process)
+          expect(ChildProcess).to receive(:build) do |*args|
+            args.first.should == "/some/path"
+            mock_process
+          end
+
 
           Service.default_service
         end

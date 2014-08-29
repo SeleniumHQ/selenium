@@ -150,7 +150,7 @@ module Selenium::WebDriver::DriverExtensions
           driver.touch.single_tap(e).perform
 
           same_page = driver.execute_script "return document.latch"
-          same_page.should be_true
+          same_page.should be true
         end
       end
 

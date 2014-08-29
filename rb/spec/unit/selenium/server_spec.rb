@@ -140,7 +140,7 @@ describe Selenium::Server do
     server = Selenium::Server.new("selenium-server-test.jar")
     server.port.should == 4444
     server.timeout.should == 30
-    server.background.should be_false
+    server.background.should be false
     server.log.should be_nil
 
     server.port = 1234

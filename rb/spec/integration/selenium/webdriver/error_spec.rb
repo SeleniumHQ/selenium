@@ -23,7 +23,7 @@ describe Selenium::WebDriver::Error do
         rescued = true
       end
 
-      rescued.should be_true
+      rescued.should be true
       ex.backtrace.first.should include("[remote server]")
     end
   end

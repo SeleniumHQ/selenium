@@ -14,7 +14,7 @@ describe "Screenshot" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_click_page1.html"
     page.capture_screenshot tempfile
 
-    File.exists?(tempfile).should be_true
+    File.exists?(tempfile).should be true
     File.open(tempfile, "rb") do |io|
       magic = io.read(4)
       magic.should == "\211PNG"

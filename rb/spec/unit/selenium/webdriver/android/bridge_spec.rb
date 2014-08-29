@@ -28,7 +28,7 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['foo'] = 'bar'
 
-          http.should_receive(:call).with do |_, _, payload|
+          expect(http).to receive(:call) do |_, _, payload|
             payload[:desiredCapabilities]['foo'].should == 'bar'
             resp
           end

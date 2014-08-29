@@ -98,7 +98,7 @@ module Selenium
           a.merge!(b)
 
           a.browser_name.should == "htmlunit"
-          a.javascript_enabled.should be_false
+          a.javascript_enabled.should be false
         end
 
         it "can be serialized and deserialized to JSON" do

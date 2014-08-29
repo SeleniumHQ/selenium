@@ -29,7 +29,7 @@ describe "Driver" do
 
       begin
         driver.save_screenshot path
-        File.exist?(path).should be_true # sic
+        File.exist?(path).should be true # sic
         File.size(path).should > 0
       ensure
         File.delete(path) if File.exist?(path)
@@ -126,7 +126,7 @@ describe "Driver" do
   describe "many elements" do
     it "should find by class name" do
       driver.navigate.to url_for("xhtmlTest.html")
-      driver.find_elements(:class, "nameC").should have(2).things
+      expect(driver.find_elements(:class, "nameC").size).to eq(2)
     end
 
     it "should find by css selector" do
@@ -138,7 +138,7 @@ describe "Driver" do
       driver.navigate.to url_for("nestedElements.html")
       element = driver.find_element(:name, "form2")
       children = element.find_elements(:name, "selectomatic")
-      children.should have(2).items
+      expect(children.size).to eq(2)
     end
   end
 

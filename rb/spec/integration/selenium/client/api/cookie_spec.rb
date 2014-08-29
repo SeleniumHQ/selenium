@@ -20,17 +20,17 @@ describe "Cookie Handling" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path1/cookie1.html"
     page.cookies.should =~ /addedCookieForPath1=new value1/
 
-    page.cookie?("addedCookieForPath1").should be_true
+    page.cookie?("addedCookieForPath1").should be true
     page.cookie("addedCookieForPath1").should eql("new value1")
-    page.cookie?("testCookie").should be_false
-    page.cookie?("addedCookieForPath2").should be_false
+    page.cookie?("testCookie").should be false
+    page.cookie?("addedCookieForPath2").should be false
 
     page.delete_cookie "addedCookieForPath1", "/selenium-server/org/openqa/selenium/tests/html/path1/"
     page.cookies.should be_empty
 
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path2/cookie2.html"
     page.cookie("addedCookieForPath2").should eql("new value2")
-    page.cookie?("addedCookieForPath1").should be_false
+    page.cookie?("addedCookieForPath1").should be false
 
     page.delete_cookie "addedCookieForPath2", "/selenium-server/org/openqa/selenium/tests/html/path2/"
     page.delete_cookie "addedCookieForPath2"

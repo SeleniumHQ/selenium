@@ -31,12 +31,12 @@ module Selenium
 
         it 'should start without custom extension by default' do
           driver = create_driver
-          custom_extension_installed?(driver).should be_false
+          custom_extension_installed?(driver).should be false
         end
 
         it 'should start with custom extension if requested' do
           driver = create_driver(true)
-          custom_extension_installed?(driver).should be_true
+          custom_extension_installed?(driver).should be true
         end
       end
 

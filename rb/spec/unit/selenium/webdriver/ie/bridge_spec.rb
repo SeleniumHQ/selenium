@@ -27,13 +27,13 @@ module Selenium
             :http_client => http
           )
 
-          caps['ignoreProtectedModeSettings'].should be_true
+          caps['ignoreProtectedModeSettings'].should be true
         end
 
         it "has native events enabled by default" do
           Bridge.new(:http_client => http)
 
-          caps['nativeEvents'].should be_true
+          caps['nativeEvents'].should be true
         end
 
         it "can disable native events" do
@@ -42,7 +42,7 @@ module Selenium
             :http_client => http
           )
 
-          caps['nativeEvents'].should be_false
+          caps['nativeEvents'].should be false
         end
 
         it 'sets the server log level and log file' do
@@ -60,8 +60,8 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = true
 
-          http.should_receive(:call).with do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+          expect(http).to receive(:call) do |_, _, payload|
+            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be true
             resp
           end
 
@@ -72,8 +72,8 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = false
 
-          http.should_receive(:call).with do |_, _, payload|
-            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+          expect(http).to receive(:call) do |_, _, payload|
+            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be true
             resp
           end
 

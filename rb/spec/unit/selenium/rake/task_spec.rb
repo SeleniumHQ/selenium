@@ -26,8 +26,8 @@ describe Selenium::Rake::ServerTask do
 
     task.port.should == 4444
     task.timeout.should == 30
-    task.background.should be_true
-    task.log.should be_true
+    task.background.should be true
+    task.log.should be true
     task.opts.should == []
   end
 
@@ -55,8 +55,8 @@ describe Selenium::Rake::ServerTask do
 
     task.port.should == 5555
     task.timeout.should == 120
-    task.background.should be_false
-    task.log.should be_false
+    task.background.should be false
+    task.log.should be false
     task.opts.should == ["-some", "args"]
   end
 

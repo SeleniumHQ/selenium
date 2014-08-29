@@ -21,8 +21,8 @@ module Selenium
         it "sets the nativeEvents capability" do
           Bridge.new(:http_client => http, :native_events => true)
 
-          caps['chromeOptions']['nativeEvents'].should be_true
-          caps['chrome.nativeEvents'].should be_true
+          caps['chromeOptions']['nativeEvents'].should be true
+          caps['chrome.nativeEvents'].should be true
         end
 
         it "sets the args capability" do
@@ -42,15 +42,15 @@ module Selenium
         it "sets the chrome.verbose capability" do
           Bridge.new(:http_client => http, :verbose => true)
 
-          caps['chromeOptions']['verbose'].should be_true
-          caps['chrome.verbose'].should be_true
+          caps['chromeOptions']['verbose'].should be true
+          caps['chrome.verbose'].should be true
         end
 
         it "sets the chrome.detach capability" do
           Bridge.new(:http_client => http) # true by default
 
-          caps['chromeOptions']['detach'].should be_true
-          caps['chrome.detach'].should be_true
+          caps['chromeOptions']['detach'].should be true
+          caps['chrome.detach'].should be true
         end
 
         it "sets the prefs capability" do
@@ -63,15 +63,15 @@ module Selenium
         it "lets the user override chrome.detach" do
           Bridge.new(:http_client => http, :detach => false)
 
-          caps['chromeOptions']['detach'].should be_false
-          caps['chrome.detach'].should be_false
+          caps['chromeOptions']['detach'].should be false
+          caps['chrome.detach'].should be false
         end
 
         it "lets the user override chrome.noWebsiteTestingDefaults" do
           Bridge.new(:http_client => http, :no_website_testing_defaults => true)
 
-          caps['chromeOptions']['noWebsiteTestingDefaults'].should be_true
-          caps['chrome.noWebsiteTestingDefaults'].should be_true
+          caps['chromeOptions']['noWebsiteTestingDefaults'].should be true
+          caps['chrome.noWebsiteTestingDefaults'].should be true
         end
 
         it "uses the user-provided server URL if given" do
@@ -105,7 +105,7 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['chromeOptions'] = {'foo' => 'bar'}
 
-          http.should_receive(:call).with do |_, _, payload|
+          expect(http).to receive(:call) do |_, _, payload|
             payload[:desiredCapabilities]['chromeOptions'].should include('foo' => 'bar')
             resp
           end
@@ -117,7 +117,7 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['chromeOptions'] = {'args' => %w[foo bar]}
 
-          http.should_receive(:call).with do |_, _, payload|
+          expect(http).to receive(:call) do |_, _, payload|
             payload[:desiredCapabilities]['chromeOptions']['args'].should == ['baz']
             resp
           end

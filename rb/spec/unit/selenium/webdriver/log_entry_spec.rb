@@ -4,7 +4,7 @@ module Selenium
   module WebDriver
     describe LogEntry do
       it 'has specs' do
-        pending
+        skip
       end
     end
   end

@@ -37,7 +37,7 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['foo'] = 'bar'
 
-          server.should_receive(:send).with do |payload|
+          expect(server).to receive(:send) do |payload|
             payload[:command][:parameters][:desiredCapabilities]['foo'].should == 'bar'
           end
 
@@ -48,7 +48,7 @@ module Selenium
           custom_caps = Remote::Capabilities.new
           custom_caps['cleanSession'] = false
 
-          server.should_receive(:send).with do |payload|
+          expect(server).to receive(:send) do |payload|
             payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession'].should == true
           end
 

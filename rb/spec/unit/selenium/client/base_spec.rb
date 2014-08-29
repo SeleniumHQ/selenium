@@ -49,12 +49,12 @@ describe Selenium::Client::Base do
     it "sets highlight_located_element_by_default" do
       client = BaseClient.new :highlight_located_element => true
 
-      client.highlight_located_element_by_default.should be_true
+      client.highlight_located_element_by_default.should be true
     end
 
     it "sets highlight_located_element_by_default to false by default" do
       client = BaseClient.new :host => :a_host
-      client.highlight_located_element_by_default.should be_false
+      client.highlight_located_element_by_default.should be false
     end
   end
 
@@ -74,7 +74,7 @@ describe Selenium::Client::Base do
     end
 
     it "sets highlight_located_element_by_default to false by default" do
-      BaseClient.new.highlight_located_element_by_default.should be_false
+      BaseClient.new.highlight_located_element_by_default.should be false
     end
   end
 
@@ -172,7 +172,7 @@ describe Selenium::Client::Base do
 
       client.start_new_browser_session
 
-      client.session_started?.should be_true
+      client.session_started?.should be true
     end
 
     it "returns false when session has been stopped" do
@@ -184,54 +184,54 @@ describe Selenium::Client::Base do
       client.start_new_browser_session
       client.stop
 
-      client.session_started?.should be_false
+      client.session_started?.should be false
     end
   end
 
   describe "chrome_backend?" do
     it "returns true when the browser string is *firefox" do
       client = BaseClient.new :host, 24, "*firefox", :url
-      client.chrome_backend?.should be_true
+      client.chrome_backend?.should be true
     end
 
     it "returns false when the browser string is *iexplore" do
       client = BaseClient.new :host, 24, "*iexplore", :url
-      client.chrome_backend?.should be_false
+      client.chrome_backend?.should be false
     end
 
     it "returns false when the browser string is *safari" do
       client = BaseClient.new :host, 24, "*safari", :url
-      client.chrome_backend?.should be_false
+      client.chrome_backend?.should be false
     end
 
     it "returns false when the browser string is *opera" do
       client = BaseClient.new :host, 24, "*opera", :url
-      client.chrome_backend?.should be_false
+      client.chrome_backend?.should be false
     end
 
     it "returns true when the browser string is *chrome" do
       client = BaseClient.new :host, 24, "*chrome", :url
-      client.chrome_backend?.should be_true
+      client.chrome_backend?.should be true
     end
 
     it "returns true when the browser string is *firefox2" do
       client = BaseClient.new :host, 24, "*firefox2", :url
-      client.chrome_backend?.should be_true
+      client.chrome_backend?.should be true
     end
 
     it "returns true when the browser string is *firefox3" do
       client = BaseClient.new :host, 24, "*firefox3", :url
-      client.chrome_backend?.should be_true
+      client.chrome_backend?.should be true
     end
 
     it "returns false when the browser string is *firefoxproxy" do
       client = BaseClient.new :host, 24, "*firefoxproxy", :url
-      client.chrome_backend?.should be_false
+      client.chrome_backend?.should be false
     end
 
     it "returns false when the browser string is *pifirefox" do
       client = BaseClient.new :host, 24, "*pifirefox", :url
-      client.chrome_backend?.should be_false
+      client.chrome_backend?.should be false
     end
   end
 

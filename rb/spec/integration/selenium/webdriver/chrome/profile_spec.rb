@@ -21,7 +21,7 @@ module Selenium
           profile['foo.boolean'] = true
 
           new_profile = Profile.from_json(profile.to_json)
-          new_profile['foo.boolean'].should be_true
+          new_profile['foo.boolean'].should be true
         end
 
         it "adds an extension" do

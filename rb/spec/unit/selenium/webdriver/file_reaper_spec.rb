@@ -13,7 +13,7 @@ module Selenium
         tmp_file.should exist
 
         FileReaper << tmp_file.to_s
-        FileReaper.reap!.should be_true
+        FileReaper.reap!.should be true
 
         tmp_file.should_not exist
       end
@@ -32,7 +32,7 @@ module Selenium
         FileReaper.reap = false
         FileReaper << tmp_file.to_s
 
-        FileReaper.reap!.should be_false
+        FileReaper.reap!.should be false
 
         tmp_file.should exist
       end

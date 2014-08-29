@@ -8,7 +8,7 @@ describe "Window Selection" do
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
     page.title.should =~ /Select Window Popup/
     page.all_window_names.size.should eql(2)
-    page.all_window_names.include?("myPopupWindow").should be_true
+    page.all_window_names.include?("myPopupWindow").should be true
 
     page.close
     page.select_window "null"

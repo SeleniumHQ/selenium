@@ -8,7 +8,7 @@ module Selenium
 
       it 'should wait until the returned value is true' do
         returned = true
-        wait.until { returned = !returned }.should be_true
+        wait.until { returned = !returned }.should be true
       end
 
       it 'should raise a TimeOutError if the the timer runs out' do
@@ -28,7 +28,7 @@ module Selenium
           end
         }
 
-        wait.until(&block).should be_true
+        wait.until(&block).should be true
       end
 
       it "will use the message from any NoSuchElementError raised while waiting" do
