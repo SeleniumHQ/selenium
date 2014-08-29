@@ -189,7 +189,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.find_element(:id => "alert").click
         wait_for_alert
 
-        lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /: "cheese"/)
+        lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError, /cheese/)
 
         driver.title.should == "Testing Alerts" # :chrome does not auto-dismiss the alert
       end
