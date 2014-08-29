@@ -180,7 +180,7 @@ class RubyMappings
 
     def define_gem_install_task(dir, args)
       desc 'Install gem dependencies for the current Ruby'
-      task "//#{dir}:install-gems" do
+      task "//#{dir}:bundle" do
         ENV['BUNDLE_GEMFILE'] = 'rb/Gemfile'
         sh "bundle", "install"
       end
