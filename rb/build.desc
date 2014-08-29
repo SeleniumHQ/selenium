@@ -1,7 +1,5 @@
 rubygem(
-  version = "2.43.0.dev",
-  name = "selenium-webdriver",
-  dir = "build/rb",
+  gemspec = "build/rb/selenium-webdriver.gemspec",
   deps = [
     "//rb:android",
     "//rb:chrome",
@@ -15,32 +13,7 @@ rubygem(
     "//rb:remote",
     "//rb:rc-client",
     "//rb:safari"
-  ],
-  gemdeps = [
-    { "multi_json"   : "~> 1.0"   },
-    { "rubyzip"      : "~> 1.0"   },
-    { "childprocess" : ">= 0.5.0" },
-    { "websocket"    : "~> 1.0" }
-  ],
-  devdeps = [
-    { "rspec"       : "~> 2.0"   },
-    { "rack"        : "~> 1.0"   },
-    { "ci_reporter" : "~> 1.6.2" },
-    { "webmock"     : "~> 1.7.5" }
-  ],
-  summary = "The next generation developer focused tool for automated testing of webapps",
-  description = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application.",
-  author = ["Jari Bakken"],
-  email = "jari.bakken@gmail.com",
-  homepage = "http://selenium.googlecode.com",
-  license = "Apache",
-  files = [
-    "lib/**/*",
-    "CHANGES",
-    "README.md",
-    "COPYING"
-  ],
-  required_ruby_version = ">= 1.9.2"
+  ]
 )
 
 rubydocs(
@@ -60,12 +33,15 @@ ruby_library(name = "common",
     "lib/selenium/server.rb",
     "lib/selenium/rake/server_task.rb",
     "lib/selenium-webdriver.rb",
+    "selenium-webdriver.gemspec",
+    "Gemfile",
     "CHANGES",
     "README.md"
   ],
   resources = [
     { "../COPYING" : "rb/COPYING" }
-  ]
+  ],
+  deps = [ "//java/client/test/org/openqa/selenium/environment" ]
 )
 
 ruby_library(name = "support",
