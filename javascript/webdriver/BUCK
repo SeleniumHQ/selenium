@@ -7,7 +7,6 @@ js_library(name = 'base-lib',
     'stacktrace.js',
   ],
   deps = [
-#    '//javascript/atoms:error_lib',
     '//third_party/closure:closure',
   ],
 )
@@ -15,6 +14,18 @@ js_library(name = 'base-lib',
 js_library(name = 'key',
   srcs = [
     'key.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+js_library(name = 'logging',
+  srcs = [
+    'logging.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
   ],
   visibility = [
     '//javascript/...',

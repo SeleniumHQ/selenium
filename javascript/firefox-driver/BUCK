@@ -34,14 +34,8 @@ mozilla_extension(name = "webdriver",
     "//cpp:native-keyboard-xpt",
     "//cpp:native-ime-xpt",
   ],
-  resources = [
-    ':js-resources',
-    ':platform-resources',
-#    { "//cpp/webdriver-firefox:previous_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll" },
-#    { "//cpp/webdriver-firefox:latest_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll" },
-#    { "//cpp/webdriver-firefox:previous" : "platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll" },
-#    { "//cpp/webdriver-firefox:latest" : "platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll" },
-#    { "//cpp:imehandler_dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
+  platforms = [
+    ':win-platform',
 #    { "//cpp:webdriver_firefox_esr_previous" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so" },
 #    { "//cpp:webdriver_firefox_esr_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so" },
 #    { "//cpp:webdriver_firefox_esr_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so" },
@@ -50,10 +44,9 @@ mozilla_extension(name = "webdriver",
 #    { "//cpp:webdriver_firefox_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so" },
 #    { "//cpp:webdriver_firefox_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so" },
 #    { "//cpp:webdriver_firefox_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so" },
-#    { ":web-element-cache" : "resource/modules/web-element-cache.js" },
-#    { "js/timer.js" : "resource/modules/timer.js" },
-#    { "js/evaluate.js" : "resource/evaluate.js" },
-#    { "js/json2.js" : "resource/json2.js" },
+  ],
+  resources = [
+    ':js-resources',
   ],
   chrome = "extension/chrome.manifest",
   install = "extension/install.rdf",
@@ -62,38 +55,47 @@ mozilla_extension(name = "webdriver",
   ]
 )
 
-# The following genrules grossly abuse how buck is meant to work, since they create a directory as
-# their output rather than a single file.
-# TODO(simon): Fix this nonsense.
-
-genrule(name = 'js-resources',
-  out = 'resource',
-  bash = 'rm -rf $OUT && mkdir -p $TMP/resource/modules &&\
-    cp $(location :web-element-cache) $TMP/resource/modules/web-element-cache.js &&\
-    cp $SRCDIR/js/timer.js $TMP/resource/modules/timer.js &&\
-    cp $SRCDIR/js/evaluate.js $TMP/resource/evaluate.js &&\
-    cp $SRCDIR/js/json2.js $TMP/resource/json2.js &&\
-    mv $TMP $OUT',
+# There has to be less attractive way of creating a zip. Ho hum.
+zip(name = 'js-resources',
+  out = 'js-resources.src.zip',
   srcs = [
-    'js/evaluate.js',
-    'js/json2.js',
-    'js/timer.js',
+    ':evaluate.js',
+    ':json2.js',
+    ':modules',
   ],
-  deps = [
+)
+
+folder(name = 'modules',
+  srcs = [
+    ':timer.js',
     ':web-element-cache',
   ],
 )
 
-genrule(name = 'platform-resources',
-  out = 'platform',
-  bash = 'rm -rf $OUT && mkdir -p $TMP/platform/WINNT_x86-msvc/components && \
-      cp $(location //cpp/webdriver-firefox:previous-esr) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll &&\
-      cp $(location //cpp/webdriver-firefox:latest-esr) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll &&\
-      cp $(location //cpp/webdriver-firefox:previous) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll &&\
-      cp $(location //cpp/webdriver-firefox:latest) $TMP/platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll &&\
-      cp $(location //cpp:imehandler-dll) $TMP/platform/WINNT_x86-msvc/components/imehandler.dll &&\
-      mv $TMP $OUT',
-  deps = [
+export_file(name = 'evaluate.js',
+  src = 'js/evaluate.js',
+)
+
+export_file(name = 'json2.js',
+  src = 'js/json2.js',
+)
+
+folder(name = 'win-platform',
+  srcs = [
+    ':winnt-x86-msvc',
+  ],
+)
+
+folder(name = 'winnt-x86-msvc',
+  out = 'WINNT_x86-msvc',
+  srcs = [
+    ':win-components',
+  ],
+)
+
+folder(name = 'win-components',
+  out = 'components',
+  srcs = [
     '//cpp:imehandler-dll',
     '//cpp/webdriver-firefox:previous-esr',
     '//cpp/webdriver-firefox:latest-esr',
@@ -423,6 +425,7 @@ js_library(name = 'logging',
   deps = [
     ':files',
     ':prefs',
+    '//javascript/webdriver:logging',
     '//third_party/closure:closure',
   ],
 )
@@ -507,13 +510,15 @@ js_library(name = 'screenshooter',
   ],
 )
 
-
 js_library(name = 'timer',
   srcs = [
-    'js/timer.js',
+    ':timer.js',
   ],
 )
 
+export_file(name = 'timer.js',
+  src = 'js/timer.js',
+)
 
 js_library(name = 'utils',
   srcs = [

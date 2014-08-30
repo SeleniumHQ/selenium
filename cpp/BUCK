@@ -24,6 +24,6 @@ mozilla_xpt(name = 'native-ime-xpt',
 
 export_file(name = "imehandler-dll",
   src = "prebuilt/Win32/Release/imehandler.dll",
-  visibility = [ '//javascript/firefox-driver:platform-resources' ],
+  visibility = [ '//javascript/firefox-driver:win-components' ],
 )
 
