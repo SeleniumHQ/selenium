@@ -1553,7 +1553,8 @@ webdriver.WebElement = function(driver, id) {
   this.driver_ = driver;
 
   /** @private {!webdriver.promise.Promise.<webdriver.WebElement.Id>} */
-  this.id_ = webdriver.promise.fulfilled(id);
+  this.id_ = id instanceof webdriver.promise.Promise ?
+      id : webdriver.promise.fulfilled(id);
 };
 
 
