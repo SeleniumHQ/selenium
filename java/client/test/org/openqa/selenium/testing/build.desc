@@ -20,18 +20,6 @@ java_library(name = "annotations",
     "//java/client/src/org/openqa/selenium:base",
   ])
 
-java_library(name = "tests",
-  srcs = [
-    "IgnoreComparitorUnitTest.java",
-  ],
-  deps = [
-    ":junit",
-    ":junit_4",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/junit",
-    "//third_party/java/mockito",
-  ])
-
 java_library(name = "dev_mode",
   srcs = [
     "DevMode.java",
@@ -48,7 +36,6 @@ java_library(name = "util",
 
 java_library(name = "junit",
   srcs = [
-    "IgnoreComparator.java",
     "IgnoredTestCallback.java",
   ],
   deps = [

@@ -10,6 +10,7 @@
 [test]
   # Maximum timeout of 1 minute per test.
   timeout = 60000
+  run_transitive = false
 
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome

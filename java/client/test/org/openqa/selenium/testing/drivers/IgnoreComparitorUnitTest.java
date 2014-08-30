@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.testing;
+package org.openqa.selenium.testing.drivers;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +30,9 @@ import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Ignore.Driver;
+import org.openqa.selenium.testing.drivers.IgnoreComparator;
 
 import java.util.Set;
 

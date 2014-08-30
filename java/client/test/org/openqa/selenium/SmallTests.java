@@ -32,7 +32,7 @@ import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
 import org.openqa.selenium.os.CommandLineTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
-import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
+import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

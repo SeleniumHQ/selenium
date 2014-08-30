@@ -1,0 +1,6 @@
+prebuilt_jar(name = 'ini4j',
+  binary_jar = 'ini4j-0.5.2.jar',
+  visibility = [
+    '//third_party/java/opera-driver:opera-driver',
+  ],
+)

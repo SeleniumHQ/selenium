@@ -27,5 +27,4 @@ import org.junit.runners.Suite;
     org.openqa.selenium.v1.internal.seleniumemulation.SmallTests.class
 })
 public class SmallTests {
-
 }

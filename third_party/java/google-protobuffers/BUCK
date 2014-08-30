@@ -1,0 +1,7 @@
+
+prebuilt_jar(name = 'google-protobuffers',
+  binary_jar = 'protobuf-java-2.4.1.jar',
+  visibility = [
+    '//third_party/java/opera-driver:opera-driver',
+  ],
+)

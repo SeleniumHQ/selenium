@@ -1,0 +1,11 @@
+prebuilt_jar(name = 'webbit',
+  binary_jar = 'webbit-0.4.15.jar',
+  deps = [
+    '//third_party/java/netty:netty',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/environment:environment',
+    '//java/client/test/org/openqa/selenium:tests',
+  ],
+)
+

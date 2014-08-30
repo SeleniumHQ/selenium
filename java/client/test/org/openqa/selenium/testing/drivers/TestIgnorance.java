@@ -44,7 +44,6 @@ import com.google.common.collect.Sets;
 import org.junit.runners.model.FrameworkMethod;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;

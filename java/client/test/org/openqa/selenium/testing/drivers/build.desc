@@ -7,6 +7,7 @@ java_library(name = "drivers",
     "BrowserToCapabilities.java",
     "Firebug.java",
     "LocallyBuiltInternetExplorerDriver.java",
+    "IgnoreComparator.java",
     "SauceDriver.java",
     "SynthesizedFirefoxDriver.java",
     "TestChromeDriver.java",
@@ -41,4 +42,17 @@ java_library(name = "test_selenium_server",
     "//java/client/test/org/openqa/selenium:build",
     "//java/server/src/org/openqa/grid/selenium:selenium",
     "//java/server/src/org/openqa/grid/selenium:selenium:classpath",
+  ])
+
+java_library(name = "tests",
+  srcs = [
+    "IgnoreComparitorUnitTest.java",
+  ],
+  deps = [
+    ":drivers",
+    "//java/client/src/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium/testing:annotations",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])

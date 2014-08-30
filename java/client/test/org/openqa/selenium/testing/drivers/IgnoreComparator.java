@@ -16,17 +16,18 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.testing;
+package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Ignore.Driver;
 
 import java.util.Set;
 
 public class IgnoreComparator {
-  private Set<Ignore.Driver> ignored = Sets.newHashSet();
+  private Set<Driver> ignored = Sets.newHashSet();
   private Platform currentPlatform = Platform.getCurrent();
 
   // TODO(simon): reduce visibility

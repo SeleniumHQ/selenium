@@ -1,0 +1,15 @@
+prebuilt_jar(name = 'opera-driver',
+  binary_jar = 'operadriver-1.5.jar',
+  deps = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/support:support',
+    '//third_party/java/commons-exec:commons-exec',
+    '//third_party/java/commons-jxpath:commons-jxpath',
+    '//third_party/java/google-protobuffers:google-protobuffers',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/ini4j:ini4j',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+  ],
+)

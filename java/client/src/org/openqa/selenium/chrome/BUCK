@@ -12,4 +12,5 @@ java_library(
     '//third_party/java/guava-libraries:guava-libraries',
     '//third_party/java/json:json',
   ],
+  visibility = [ 'PUBLIC' ],
 )

@@ -12,5 +12,6 @@ java_library(name = 'proxies',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/test/org/openqa/selenium:tests',
   ],
 )

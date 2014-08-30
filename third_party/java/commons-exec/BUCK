@@ -3,5 +3,6 @@ prebuilt_jar(
   binary_jar = 'commons-exec-1.1.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/os:os',
+    '//third_party/java/opera-driver:opera-driver',
   ],
 )
