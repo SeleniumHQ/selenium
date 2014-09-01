@@ -133,6 +133,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     this.element = element;
   }
 
+  @Override
   public void click() {
     try {
       verifyCanInteractWithElement();
@@ -165,6 +166,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   }
 
+  @Override
   public void submit() {
     try {
       if (element instanceof HtmlForm) {
@@ -218,9 +220,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
           parent.executeScript("arguments[0].submit()", form);
         }
         return;
-      } else {
-        throw new WebDriverException("Cannot locate element used to submit form");
       }
+      throw new WebDriverException("Cannot locate element used to submit form");
     }
     try {
       submit.click();
@@ -250,6 +251,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return submit == null;
   }
 
+  @Override
   public void clear() {
     assertElementNotStale();
 
@@ -280,6 +282,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
+      @Override
       public Boolean call() throws Exception {
         return isDisplayed();
       }
@@ -334,6 +337,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     keyboard.performSingleKeyAction(getElement(), modifierKey, eventDescription);
   }
 
+  @Override
   public void sendKeys(CharSequence... value) {
     verifyCanInteractWithElement();
 
@@ -353,11 +357,13 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return element instanceof HtmlInput;
   }
 
+  @Override
   public String getTagName() {
     assertElementNotStale();
     return element.getNodeName();
   }
 
+  @Override
   public String getAttribute(String name) {
     assertElementNotStale();
 
@@ -455,6 +461,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return condition ? "true" : null;
   }
 
+  @Override
   public boolean isSelected() {
     assertElementNotStale();
 
@@ -468,12 +475,14 @@ public class HtmlUnitWebElement implements WrapsDriver,
         "Unable to determine if element is selected. Tag name is: " + element.getTagName());
   }
 
+  @Override
   public boolean isEnabled() {
     assertElementNotStale();
 
     return !element.hasAttribute("disabled");
   }
 
+  @Override
   public boolean isDisplayed() {
     assertElementNotStale();
 
@@ -484,6 +493,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
   }
 
+  @Override
   public Point getLocation() {
     assertElementNotStale();
 
@@ -494,6 +504,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
+  @Override
   public Dimension getSize() {
     assertElementNotStale();
 
@@ -515,6 +526,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   // This isn't very pretty. Sorry.
+  @Override
   public String getText() {
     assertElementNotStale();
 
@@ -636,34 +648,40 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return elements;
   }
 
+  @Override
   public WebElement findElement(By by) {
     assertElementNotStale();
     return parent.findElement(by, this);
   }
 
+  @Override
   public List<WebElement> findElements(By by) {
     assertElementNotStale();
     return parent.findElements(by, this);
   }
 
+  @Override
   public WebElement findElementById(String id) {
     assertElementNotStale();
 
     return findElementByXPath(".//*[@id = '" + id + "']");
   }
 
+  @Override
   public List<WebElement> findElementsById(String id) {
     assertElementNotStale();
 
     return findElementsByXPath(".//*[@id = '" + id + "']");
   }
 
+  @Override
   public List<WebElement> findElementsByCssSelector(String using) {
     List<WebElement> allElements = parent.findElementsByCssSelector(using);
 
     return findChildNodes(allElements);
   }
 
+  @Override
   public WebElement findElementByCssSelector(String using) {
     List<WebElement> allElements = parent.findElementsByCssSelector(using);
 
@@ -689,6 +707,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return toReturn;
   }
 
+  @Override
   public WebElement findElementByXPath(String xpathExpr) {
     assertElementNotStale();
 
@@ -713,6 +732,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
   }
 
+  @Override
   public List<WebElement> findElementsByXPath(String xpathExpr) {
     assertElementNotStale();
 
@@ -742,6 +762,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return webElements;
   }
 
+  @Override
   public WebElement findElementByLinkText(String linkText) {
     assertElementNotStale();
 
@@ -752,6 +773,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return elements.get(0);
   }
 
+  @Override
   public List<WebElement> findElementsByLinkText(String linkText) {
     assertElementNotStale();
 
@@ -766,6 +788,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return webElements;
   }
 
+  @Override
   public WebElement findElementByPartialLinkText(String linkText) {
     assertElementNotStale();
 
@@ -777,6 +800,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return elements.size() > 0 ? elements.get(0) : null;
   }
 
+  @Override
   public List<WebElement> findElementsByPartialLinkText(String linkText) {
     assertElementNotStale();
 
@@ -791,6 +815,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return webElements;
   }
 
+  @Override
   public WebElement findElementByTagName(String name) {
     assertElementNotStale();
 
@@ -801,6 +826,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return elements.get(0);
   }
 
+  @Override
   public List<WebElement> findElementsByTagName(String name) {
     assertElementNotStale();
 
@@ -847,6 +873,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     parent.assertElementNotStale(element);
   }
 
+  @Override
   public String getCssValue(String propertyName) {
     assertElementNotStale();
 
@@ -917,25 +944,31 @@ public class HtmlUnitWebElement implements WrapsDriver,
    * 
    * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
    */
+  @Override
   public WebDriver getWrappedDriver() {
     return parent;
   }
 
+  @Override
   public Coordinates getCoordinates() {
     return new Coordinates() {
 
+      @Override
       public Point onScreen() {
         throw new UnsupportedOperationException("Not displayed, no screen location.");
       }
 
+      @Override
       public Point inViewPort() {
         return getLocation();
       }
 
+      @Override
       public Point onPage() {
         return getLocation();
       }
 
+      @Override
       public Object getAuxiliary() {
         return getElement();
       }

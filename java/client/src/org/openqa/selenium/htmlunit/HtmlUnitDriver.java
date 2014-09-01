@@ -148,10 +148,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
 
     webClient.addWebWindowListener(new WebWindowListener() {
+      @Override
       public void webWindowOpened(WebWindowEvent webWindowEvent) {
         // Ignore
       }
 
+      @Override
       public void webWindowContentChanged(WebWindowEvent event) {
         if (event.getWebWindow() != currentWindow) {
           return;
@@ -161,6 +163,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         switchToDefaultContentOfWindow(currentWindow);
       }
 
+      @Override
       public void webWindowClosed(WebWindowEvent event) {
         // Check if the event window refers to us or one of our parent windows
         // setup the currentWindow appropriately if necessary
@@ -638,6 +641,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     final Object[] parameters = new Object[args.length];
     final ContextAction action = new ContextAction() {
+      @Override
       public Object run(final Context context) {
         for (int i = 0; i < args.length; i++) {
           parameters[i] = parseArgumentIntoJavascriptParameter(context, scope, args[i]);
@@ -799,10 +803,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       final NativeArray array = (NativeArray) value;
 
       JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+        @Override
         public int getLength() {
           return (int) array.getLength();
         }
 
+        @Override
         public Object item(int index) {
           return array.get(index);
         }
@@ -815,10 +821,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       final HTMLCollection array = (HTMLCollection) value;
 
       JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+        @Override
         public int getLength() {
           return array.getLength();
         }
 
+        @Override
         public Object item(int index) {
           return array.get(index);
         }
@@ -1485,6 +1493,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =
         new com.google.common.base.Function<com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie>() {
+          @Override
           public org.openqa.selenium.Cookie apply(com.gargoylesoftware.htmlunit.util.Cookie c) {
             return new Cookie.Builder(c.getName(), c.getValue())
                 .domain(c.getDomain())
@@ -1613,6 +1622,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   WebElement findElement(final By locator, final SearchContext context) {
     return implicitlyWaitFor(new Callable<WebElement>() {
 
+      @Override
       public WebElement call() throws Exception {
         return locator.findElement(context);
       }
