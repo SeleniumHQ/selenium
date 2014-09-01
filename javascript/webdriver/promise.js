@@ -661,7 +661,7 @@ webdriver.promise.defer = function(opt_canceller) {
 
 /**
  * Creates a promise that has been resolved with the given value.
- * @param {T=} opt_value The resolved value.
+ * @param {(webdriver.promise.Promise.<T>|T)=} opt_value The resolved value.
  * @return {!webdriver.promise.Promise.<T>} The resolved promise.
  * @template T
  */
