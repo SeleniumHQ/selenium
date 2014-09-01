@@ -1542,7 +1542,7 @@ webdriver.Key.chord = function(var_args) {
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
- * @param {(!webdriver.promise.Promise.<webdriver.WebElement.Id>|
+ * @param {!(webdriver.promise.Promise.<webdriver.WebElement.Id>|
  *           webdriver.WebElement.Id)} id The server-assigned opaque ID for the
  *     underlying DOM element.
  * @constructor
@@ -1553,8 +1553,7 @@ webdriver.WebElement = function(driver, id) {
   this.driver_ = driver;
 
   /** @private {!webdriver.promise.Promise.<webdriver.WebElement.Id>} */
-  this.id_ = id instanceof webdriver.promise.Promise ?
-      id : webdriver.promise.fulfilled(id);
+  this.id_ = webdriver.promise.fulfilled(id);
 };
 
 
