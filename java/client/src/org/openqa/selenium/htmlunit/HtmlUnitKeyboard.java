@@ -16,9 +16,12 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import java.io.IOException;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Keyboard;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
@@ -27,13 +30,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.KeyboardEvent;
 
-import java.io.IOException;
-
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
  * 
  */
-public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
+public class HtmlUnitKeyboard implements Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
 
@@ -50,6 +51,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     return (HtmlUnitWebElement) sendToElement;
   }
 
+  @Override
   public void sendKeys(CharSequence... keysToSend) {
     WebElement toElement = parent.switchTo().activeElement();
 
@@ -84,6 +86,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     }
   }
 
+  @Override
   public void pressKey(CharSequence keyToPress) {
     WebElement toElement = parent.switchTo().activeElement();
 
@@ -92,6 +95,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     htmlElement.sendKeyDownEvent(keyToPress);
   }
 
+  @Override
   public void releaseKey(CharSequence keyToRelease) {
     WebElement toElement = parent.switchTo().activeElement();
 
