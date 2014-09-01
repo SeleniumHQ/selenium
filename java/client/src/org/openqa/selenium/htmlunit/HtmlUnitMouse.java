@@ -16,7 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import com.google.common.base.Preconditions;
+import java.io.IOException;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
@@ -27,8 +27,7 @@ import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
-
-import java.io.IOException;
+import com.google.common.base.Preconditions;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.

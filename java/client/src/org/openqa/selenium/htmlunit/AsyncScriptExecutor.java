@@ -17,20 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
+
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import net.sourceforge.htmlunit.corejs.javascript.Function;
-import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Injects an asynchronous script into the current page for execution. The script should signla that
+ * Injects an asynchronous script into the current page for execution. The script should signal that
  * it is finished by invoking the callback function, which will always be the last argument passed
  * to the injected script.
  */
