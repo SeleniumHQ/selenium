@@ -210,6 +210,20 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
+  @Ignore(value = {ANDROID, CHROME, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @Test
+  public void testGetCookiesInAFrame() {
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
+    Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
+    driver.manage().addCookie(cookie1);
+
+    driver.get(domainHelper.getUrlForFirstValidHostname("frameWithAnimals.html"));
+    assertCookieIsNotPresentWithName(cookie1.getName());
+
+    driver.switchTo().frame("iframe1");
+    assertCookieIsPresentWithName(cookie1.getName());
+  }
+
   @Ignore({CHROME, OPERA})
   @Test
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
