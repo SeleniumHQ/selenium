@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.remote.server.handler.UploadFileTest;
 import org.openqa.selenium.remote.server.handler.html5.UtilsTest;
+import org.openqa.selenium.remote.server.handler.interactions.SendKeyToActiveElementTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
 
@@ -35,6 +36,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     RemoteWebDriverScreenshotTest.class,
     RemoteWebDriverTest.class,
     ResultConfigTest.class,
+    SendKeyToActiveElementTest.class,
     SessionCleanerTest.class,
     SessionLogsTest.class,
     UploadFileTest.class,

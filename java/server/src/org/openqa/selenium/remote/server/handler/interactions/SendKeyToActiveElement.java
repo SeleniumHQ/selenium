@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2014 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendKeyToActiveElement extends WebDriverHandler<Void> implements JsonParametersAware {
+
   private final List<CharSequence> keys = new CopyOnWriteArrayList<CharSequence>();
 
   public SendKeyToActiveElement(Session session) {
@@ -37,7 +38,7 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
   @SuppressWarnings({"unchecked"})
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    //TODO: merge this code with the code in the SendKeys handler.
+    // TODO: merge this code with the code in the SendKeys handler.
     List<String> rawKeys = (List<String>) allParameters.get("value");
     List<String> temp = new ArrayList<String>();
     for (String key : rawKeys) {
@@ -58,6 +59,6 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
 
   @Override
   public String toString() {
-    return String.format("[send keys to active: %s]", keys.toArray());
+    return String.format("[send keys to active: %s]", keys);
   }
 }

@@ -102,6 +102,7 @@ public class HttpClientFactory {
 
     RequestConfig requestConfig = RequestConfig.copy(createRequestConfig())
         .setConnectTimeout(connection_timeout > 0 ? connection_timeout : 120 * 1000)
+        .setSocketTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
         .build();
 
     return HttpClientBuilder.create()
@@ -124,6 +125,7 @@ public class HttpClientFactory {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
         .setConnectTimeout(120 * 1000)
+        .setSocketTimeout(TIMEOUT_THREE_HOURS)
         .build();
   }
 

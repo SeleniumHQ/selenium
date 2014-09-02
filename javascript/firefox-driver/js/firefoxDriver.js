@@ -698,10 +698,10 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   }
 
   if (!cookie.domain) {
-    var location = respond.session.getBrowser().contentWindow.location;
+    var location = respond.session.getWindow().location;
     cookie.domain = location.hostname;
   } else {
-    var currLocation = respond.session.getBrowser().contentWindow.location;
+    var currLocation = respond.session.getWindow().location;
     var currDomain = currLocation.host;
     if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
       throw new WebDriverError(bot.ErrorCode.INVALID_COOKIE_DOMAIN,
@@ -761,8 +761,7 @@ function getVisibleCookies(location) {
 
 FirefoxDriver.prototype.getCookies = function(respond) {
   var toReturn = [];
-  var cookies = getVisibleCookies(respond.session.getBrowser().
-      contentWindow.location);
+  var cookies = getVisibleCookies(respond.session.getWindow().location);
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
     var expires = cookie.expires;
@@ -792,8 +791,7 @@ FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
   var toDelete = parameters.name;
   var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
 
-  var cookies = getVisibleCookies(respond.session.getBrowser().
-      contentWindow.location);
+  var cookies = getVisibleCookies(respond.session.getWindow().location);
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
     if (cookie.name == toDelete) {
@@ -807,8 +805,7 @@ FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
 
 FirefoxDriver.prototype.deleteAllCookies = function(respond) {
   var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
-  var cookies = getVisibleCookies(respond.session.getBrowser().
-      contentWindow.location);
+  var cookies = getVisibleCookies(respond.session.getWindow().location);
 
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
