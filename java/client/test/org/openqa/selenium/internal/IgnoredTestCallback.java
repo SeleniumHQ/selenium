@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.testing;
+package org.openqa.selenium.internal;
 
 import java.lang.reflect.Method;
 

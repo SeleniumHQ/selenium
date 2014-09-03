@@ -13,7 +13,7 @@ java_library(name = 'environment',
     '//third_party/java/webbit:webbit',
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium:helpers',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//java/client/test/...',
+    '//java/server/test/...',
   ],
 )

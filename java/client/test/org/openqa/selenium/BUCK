@@ -10,6 +10,19 @@ java_test(name = 'SmallTests',
   ],
 )
 
+java_test(name = 'LargeTests',
+  srcs = [
+    'StandardSeleniumTests.java',
+  ],
+  deps = [
+    ':tests',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/test/org/openqa/selenium/environment:environment',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//third_party/java/junit:junit',
+  ],
+)
+
 java_library(name = 'annotations',
   srcs = [
     'NeedsFreshDriver.java',
@@ -61,8 +74,9 @@ java_library(name = 'helpers',
 java_library(name = 'tests',
   srcs = glob([
     '*Test.java',
+    'html5/*.java',
     'internal/*Test.java',
-    'interactions/*Test.java',
+    'interactions/*.java',
     'interactions/touch/*Test.java',
     'io/*Test.java',
     'logging/*.java',
@@ -70,12 +84,14 @@ java_library(name = 'tests',
     'os/*Test.java',]) +
   [
     'Messages.java',
-    'interactions/StubInputDeviceDriver.java',
     'interactions/touch/TouchTestBase.java',
     'net/StubNetworkInterfaceProvider.java',
   ],
   resources = [
     'messages.properties',
+  ],
+  exported_deps = [
+    '//java/client/test/org/openqa/selenium/support:tests',
   ],
   deps = [
     ':doubles',
@@ -96,5 +112,30 @@ java_library(name = 'tests',
     '//third_party/java/junit:junit',
     '//third_party/java/mockito:mockito',
     '//third_party/java/webbit:webbit',
+  ],
+)
+
+java_binary(name = 'dump-ignores',
+  main_class = 'org.openqa.selenium.internal.IgnoredTestPrinter',
+  deps = [
+    ':ignored-test-printer',
+  ],
+)
+
+java_library(name = 'ignored-test-printer',
+  srcs = [
+    'internal/IgnoreCollector.java',
+    'internal/IgnoredTestCallback.java',
+    'internal/IgnoredTestPrinter.java',
+  ],
+  deps = [
+    ':LargeTests',
+    '//java/client/src/org/openqa/selenium:platform',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//java/client/test/org/openqa/selenium/testing/drivers:browser',
+    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/json:json',
+    '//third_party/java/junit:junit',
   ],
 )
