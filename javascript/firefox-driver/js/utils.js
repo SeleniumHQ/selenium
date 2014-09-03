@@ -167,7 +167,7 @@ Utils.getActiveElement = function(doc) {
 
 Utils.addToKnownElements = function(element) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.put(element);
 };
@@ -175,7 +175,7 @@ Utils.addToKnownElements = function(element) {
 
 Utils.getElementAt = function(index, currentDoc) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.get(index, currentDoc);
 };

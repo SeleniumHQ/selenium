@@ -39,24 +39,12 @@ java_library(name = 'annotations',
   ],
 )
 
-java_library(name = 'doubles',
-  srcs = [
-    'StubDriver.java',
-    'StubElement.java',
-  ],
-  deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-  ],
-  visibility = [
-    '//java/client/test/...',
-    '//java/server/test/...',
-  ],
-)
-
 java_library(name = 'helpers',
   srcs = [
     'Build.java',
     'Pages.java',
+    'ParallelTestRunner.java',
+    'StubDriver.java',
     'StubElement.java',
     'StubRenderedWebElement.java',
     'WaitingConditions.java',
@@ -98,7 +86,6 @@ java_library(name = 'tests',
     '//java/client/test/org/openqa/selenium/support:tests',
   ],
   deps = [
-    ':doubles',
     ':helpers',
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/browserlaunchers:proxies',

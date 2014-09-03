@@ -22,6 +22,7 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.drivers.Firebug;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -126,7 +127,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(FirefoxProfileTest.class, FIREBUG_RESOURCE_PATH);
+    profile.addExtension(Firebug.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
