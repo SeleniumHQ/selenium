@@ -41,7 +41,7 @@ java_library(name = 'drivers',
   ],
 )
 
-java_library(name = 'SmallTests',
+java_library(name = 'small-tests',
   srcs = [
     'IgnoreComparitorUnitTest.java',
   ],
@@ -54,6 +54,6 @@ java_library(name = 'SmallTests',
     '//third_party/java/mockito:mockito',
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium:SmallTests',
+    '//java/client/test/org/openqa/selenium:small-tests',
   ]
 )

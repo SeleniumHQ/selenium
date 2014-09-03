@@ -12,7 +12,7 @@ java_test(name = 'LargeTests',
   ],
 )
 
-java_test(name = 'SmallTests',
+java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
@@ -21,7 +21,7 @@ java_test(name = 'SmallTests',
     '//third_party/java/junit:junit',
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium/v1:SmallTests',
+    '//java/client/test/org/openqa/selenium/v1:small-tests',
   ],
 )
 

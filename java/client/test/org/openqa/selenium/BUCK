@@ -1,16 +1,17 @@
-java_test(name = 'SmallTests',
+java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
   deps = [
     ':tests',
-    '//java/client/test/org/openqa/selenium/testing/drivers:SmallTests',
-    '//java/client/test/org/openqa/selenium/v1:SmallTests',
+    '//java/client/test/org/openqa/selenium/support:small-tests',
+    '//java/client/test/org/openqa/selenium/testing/drivers:small-tests',
+    '//java/client/test/org/openqa/selenium/v1:small-tests',
     '//third_party/java/junit:junit',
   ],
 )
 
-java_test(name = 'LargeTests',
+java_test(name = 'large-tests',
   srcs = [
     'StandardSeleniumTests.java',
   ],
@@ -20,6 +21,9 @@ java_test(name = 'LargeTests',
     '//java/client/test/org/openqa/selenium/environment:environment',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//third_party/java/junit:junit',
+  ],
+  visibility = [
+    '//java/client/test/...',
   ],
 )
 
@@ -113,6 +117,9 @@ java_library(name = 'tests',
     '//third_party/java/mockito:mockito',
     '//third_party/java/webbit:webbit',
   ],
+  visibility = [
+    '//java/client/test/...',
+  ],
 )
 
 java_binary(name = 'dump-ignores',
@@ -129,7 +136,7 @@ java_library(name = 'ignored-test-printer',
     'internal/IgnoredTestPrinter.java',
   ],
   deps = [
-    ':LargeTests',
+    ':large-tests',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/client/test/org/openqa/selenium/testing/drivers:browser',

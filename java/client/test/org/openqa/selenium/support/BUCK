@@ -1,11 +1,13 @@
 java_test(name = 'small-tests',
   srcs = [
-    'SmallTests',
+    'SmallTests.java',
   ],
   deps = [
     ':tests',
+    '//third_party/java/junit:junit',
   ],
   visibility = [
+    '//java/client/test/org/openqa/selenium:small-tests',
   ],
 )
 

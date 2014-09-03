@@ -14,16 +14,16 @@ java_library(name = 'tests',
   ],
 )
 
-java_test(name = 'SmallTests',
+java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
   deps = [
     ':tests',
-    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:SmallTests',
+    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:small-tests',
     '//third_party/java/junit:junit',
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium:SmallTests',
+    '//java/client/test/org/openqa/selenium:small-tests',
   ],
 )
