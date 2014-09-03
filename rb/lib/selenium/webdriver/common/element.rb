@@ -133,7 +133,7 @@ module Selenium
       #
       # Note that the events fired by this event may not be as you'd expect.  In particular, we don't
       # fire any keyboard or mouse events.  If you want to ensure keyboard events are
-      # fired, consider using #send_keys with the backspace key. To ensure you get a change event, 
+      # fired, consider using #send_keys with the backspace key. To ensure you get a change event,
       # consider following with a call to #send_keys with the tab key.
       #
 
@@ -169,6 +169,26 @@ module Selenium
 
       def displayed?
         bridge.isElementDisplayed @id
+      end
+
+      #
+      # Is the element invisible or not present on the page?
+      #
+      # @return [Boolean]
+      #
+
+      def not_present?
+        begin
+          dis = @id.displayed?
+        rescue Selenium::WebDriver::Error::NoSuchElementError
+          return true
+        else # if element is in DOM
+          if dis # visible element in DOM
+            return false
+          else # invisible element in DOM
+            return true
+          end
+        end
       end
 
       #
