@@ -590,8 +590,19 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     try {
       new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
     } catch (ParseException e) {
-      assertTrue(false);
+      fail();
     }
   }
 
+  @JavascriptEnabled
+  @Test(timeout = 10000)
+  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  public void shouldReturnDocumentElementIfDocumentIsReturned() {
+    driver.get(pages.simpleTestPage);
+
+    Object value = executeScript("return document");
+
+    assertTrue(value instanceof WebElement);
+    assertTrue(((WebElement) value).getText().contains("A single line of text"));
+  }
 }

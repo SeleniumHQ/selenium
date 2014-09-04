@@ -868,6 +868,11 @@ Utils.wrapResult = function(result, doc) {
         return array;
       }
 
+      // Document. Grab the document element.
+      if (result.nodeType == 9) {
+        return Utils.wrapResult(result.documentElement);
+      }
+
       try {
         var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
         var array = [];
