@@ -62,7 +62,6 @@ public class InputKeysContainer {
     return -1;
   }
 
-
   @Override
   public String toString() {
     String toReturn = builder.toString();

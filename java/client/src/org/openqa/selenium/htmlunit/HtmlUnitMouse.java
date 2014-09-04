@@ -16,24 +16,24 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import com.google.common.base.Preconditions;
+import java.io.IOException;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
-
-import java.io.IOException;
+import com.google.common.base.Preconditions;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
  * 
  */
-public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
+public class HtmlUnitMouse implements Mouse {
   private final HtmlUnitDriver parent;
   private final HtmlUnitKeyboard keyboard;
   private HtmlElement currentActiveElement = null;
@@ -56,7 +56,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     return currentActiveElement;
   }
 
-
+  @Override
   public void click(Coordinates elementCoordinates) {
     HtmlElement element = getElementForOperation(elementCoordinates);
 
@@ -116,6 +116,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     click(where);
   }
 
+  @Override
   public void doubleClick(Coordinates elementCoordinates) {
     HtmlElement element = getElementForOperation(elementCoordinates);
 
@@ -132,6 +133,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     }
   }
 
+  @Override
   public void contextClick(Coordinates elementCoordinates) {
     HtmlElement element = getElementForOperation(elementCoordinates);
 
@@ -143,6 +145,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     updateActiveElement(element);
   }
 
+  @Override
   public void mouseDown(Coordinates elementCoordinates) {
     HtmlElement element = getElementForOperation(elementCoordinates);
 
@@ -155,6 +158,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     updateActiveElement(element);
   }
 
+  @Override
   public void mouseUp(Coordinates elementCoordinates) {
     HtmlElement element = getElementForOperation(elementCoordinates);
 
@@ -167,6 +171,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
     updateActiveElement(element);
   }
 
+  @Override
   public void mouseMove(Coordinates elementCoordinates) {
     Preconditions.checkNotNull(elementCoordinates);
     HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliary();
@@ -185,7 +190,7 @@ public class HtmlUnitMouse implements org.openqa.selenium.interactions.Mouse {
         MouseEvent.BUTTON_LEFT);
   }
 
-
+  @Override
   public void mouseMove(Coordinates where, long xOffset, long yOffset) {
     throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
   }
