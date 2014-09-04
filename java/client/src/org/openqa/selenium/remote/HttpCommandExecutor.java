@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
@@ -116,9 +117,21 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         host, remoteServer.getPort(), remoteServer.getProtocol());
 
     for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-      CommandInfo info = entry.getValue();
-      commandCodec.defineCommand(entry.getKey(), info.getMethod(), info.getUrl());
+      defineCommand(entry.getKey(), entry.getValue());
     }
+  }
+
+  /**
+   * It may be useful to extend the commands understood by this {@code HttpCommandExecutor} at run
+   * time, and this can be achieved via this method. Note, this is protected, and expected usage is
+   * for subclasses only to call this.
+   *
+   * @param commandName The name of the command to use.
+   */
+  protected void defineCommand(String commandName, CommandInfo info) {
+    Preconditions.checkNotNull(commandName);
+    Preconditions.checkNotNull(info);
+    commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
   public void setLocalLogs(LocalLogs logs) {
