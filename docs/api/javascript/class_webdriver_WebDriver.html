@@ -79,7 +79,7 @@
      'var callback = arguments[arguments.length - 1];' +
      'mailClient.getComposeWindowWidget().onload(callback);');
  driver.switchTo().frame('composeWidget');
- driver.findElement(By.id('to')).sendKEys('dog@example.com');
+ driver.findElement(By.id('to')).sendKeys('dog@example.com');
  </pre></code>
 
  Example #3: Injecting a XMLHttpRequest and waiting for the result. In this
