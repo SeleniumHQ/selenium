@@ -30,14 +30,15 @@ import java.util.List;
  */
 public interface WebElement extends SearchContext {
   /**
-   * Click this element. If this causes a new page to load, this method will attempt to block until 
-   * the page has loaded. At this point, you should discard all references to this element and any 
-   * further operations performed on this element will throw a StaleElementReferenceException unless
-   * you know the element and the page will still be present. If click() causes a new page to be 
-   * loaded via an event or is done by sending a native event then the method will *not* wait for
-   * it to be loaded and the caller should verify that a new page has been loaded.
+   * Click this element. If this causes a new page to load, you
+   * should discard all references to this element and any further operations
+   * performed on this element will throw a StaleElementReferenceException
    * <p/>
-   * There are some preconditions for an element to be clicked.  The element must be visible and 
+   * Note that if click() is done by sending a native event (which is the default
+   * on most browsers/platforms) then the method will *not* wait for the next page
+   * to load and the caller should verify that themselves.
+   * <p/>
+   * There are some preconditions for an element to be clicked.  The element must be visible and
    * it must have a height and width greater then 0.
    *
    * @throws StaleElementReferenceException If the element no longer exists as initially defined
