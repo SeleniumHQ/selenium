@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
@@ -31,7 +32,15 @@ public class LocatingElementHandler implements InvocationHandler {
   }
 
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
-    WebElement element = locator.findElement();
+    WebElement element;
+    try {
+      element = locator.findElement();
+    } catch (NoSuchElementException e) {
+      if ("toString".equals(method.getName())) {
+        return "Proxy element for: " + locator.toString();
+      }
+      else throw e;
+    }
 
     if ("getWrappedElement".equals(method.getName())) {
       return element;

@@ -65,7 +65,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * @param timeOutInSeconds The timeout in seconds when an expectation is
    * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms called.
    */
-  protected WebDriverWait(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds,
+  public WebDriverWait(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds,
       long sleepTimeOut) {
     super(driver, clock, sleeper);
     withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
