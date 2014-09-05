@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
+Portions copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,17 +30,23 @@ import java.util.List;
  */
 public interface WebElement extends SearchContext {
   /**
-   * Click this element. If this causes a new page to load, this method will attempt to block until 
-   * the page has loaded. At this point, you should discard all references to this element and any 
-   * further operations performed on this element will throw a StaleElementReferenceException unless
-   * you know the element and the page will still be present. If click() causes a new page to be 
-   * loaded via an event or is done by sending a native event then the method will *not* wait for
-   * it to be loaded and the caller should verify that a new page has been loaded.
-   * <p>
-   * There are some preconditions for an element to be clicked.  The element must be visible and 
-   * it must have a height and width greater then 0.
+   * Click this element. If this causes a new page to load, you
+   * should discard all references to this element and any further
+   * operations performed on this element will throw a
+   * StaleElementReferenceException.
    *
-   * @throws StaleElementReferenceException If the element no longer exists as initially defined
+   * Note that if click() is done by sending a native event (which is
+   * the default on most browsers/platforms) then the method will
+   * _not_ wait for the next page to load and the caller should verify
+   * that themselves.
+
+   *
+   * There are some preconditions for an element to be clicked. The
+   * element must be visible and it must have a height and width
+   * greater then 0.
+   *
+   * @throws StaleElementReferenceException If the element no
+   *     longer exists as initially defined
    */
   void click();
 
