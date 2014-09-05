@@ -34,6 +34,7 @@ namespace OpenQA.Selenium.IE
         private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
+        private InternetExplorerDriverEngine engineImplementation = InternetExplorerDriverEngine.Legacy;
         private string host = string.Empty;
         private string logFile = string.Empty;
         private string libraryExtractionPath = string.Empty;
@@ -77,6 +78,15 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the engine implementation to be used by the IEDriverServer.
+        /// </summary>
+        public InternetExplorerDriverEngine EngineImplementation
+        {
+            get { return this.engineImplementation; }
+            set { this.engineImplementation = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the path to which the supporting library of the IEDriverServer.exe is extracted.
         /// Defaults to the temp directory if this property is not set.
         /// </summary>
@@ -117,6 +127,11 @@ namespace OpenQA.Selenium.IE
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-level={0}", this.loggingLevel.ToString().ToUpperInvariant()));
+                }
+
+                if (this.engineImplementation != InternetExplorerDriverEngine.Legacy)
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -implementation={0}", this.engineImplementation.ToString().ToUpperInvariant()));
                 }
 
                 if (this.SuppressInitialDiagnosticInformation)

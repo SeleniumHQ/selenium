@@ -29,7 +29,6 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     public class ReturnedCookie : Cookie
     {
-        private string currentHost;
         private bool isSecure;
 
         /// <summary>
@@ -42,30 +41,13 @@ namespace OpenQA.Selenium.Internal
         /// <param name="path">The path of the cookie.</param>
         /// <param name="expiry">The expiration date of the cookie.</param>
         /// <param name="isSecure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
-        /// <param name="currentUrl">The current <see cref="Uri"/> the browser is viewing.</param>
         /// <exception cref="ArgumentException">If the name is <see langword="null"/> or an empty string,
         /// or if it contains a semi-colon.</exception>
         /// <exception cref="ArgumentNullException">If the value or currentUrl is <see langword="null"/>.</exception>
-        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, Uri currentUrl)
+        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure)
             : base(name, value, domain, path, expiry)
         {
             this.isSecure = isSecure;
-            if (currentUrl != null)
-            {
-                this.currentHost = currentUrl.Host;
-            }
-            else
-            {
-                throw new ArgumentNullException("currentUrl", "Current URL of ReturnedCookie cannot be null");
-            }
-        }
-
-        /// <summary>
-        /// Gets the current URL the browser is viewing.
-        /// </summary>
-        public string CurrentHost
-        {
-            get { return this.currentHost; }
         }
 
         /// <summary>

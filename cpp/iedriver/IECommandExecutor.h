@@ -39,15 +39,7 @@
 #define ACCEPT_UNEXPECTED_ALERTS "accept"
 #define DISMISS_UNEXPECTED_ALERTS "dismiss"
 
-#define EVENT_NAME L"WD_START_EVENT"
-
 namespace webdriver {
-
-// Structure to be used for comunication between threads
-struct IECommandExecutorThreadContext {
-  HWND hwnd;
-  int port;
-};
 
 // We use a CWindowImpl (creating a hidden window) here because we
 // want to synchronize access to the command handler. For that we

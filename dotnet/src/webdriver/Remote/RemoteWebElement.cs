@@ -294,9 +294,12 @@ namespace OpenQA.Selenium.Remote
             // SendKeys. In JSON, these are serialized as an array of strings, with a
             // single character to each element of the array. Thus, we must use ToCharArray()
             // to get the same effect.
+            // TODO: Remove either "keysToSend" or "value" property, whichever is not the
+            // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
             parameters.Add("value", new object[] { text });
+            parameters.Add("keysToSend", text.ToCharArray());
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
 

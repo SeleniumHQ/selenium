@@ -41,6 +41,8 @@ class Response {
   void SetErrorResponse(const int error_code, const std::string& message);
 
  private:
+  int ConvertStatusToCode(const std::string& status_string);
+
   // The status code of the response, indicating success or failure.
   int status_code_;
   // The ID of the session on which the command was executed.

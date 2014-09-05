@@ -32,7 +32,7 @@ class Session {
   virtual bool ExecuteCommand(const std::string& serialized_command,
                               std::string* serialized_response) = 0;
 
-  std::string session_id(void) const { return this->session_id_; }
+  //std::string session_id(void) const { return this->session_id_; }
 
  protected:
   void set_session_id(const std::string& id) { this->session_id_ = id; }

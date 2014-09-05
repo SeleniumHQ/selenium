@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <ctime>
 #include <vector>
+#include "CommandExecutor.h"
 #include "logging.h"
 #include "CommandHandlers/AcceptAlertCommandHandler.h"
 #include "CommandHandlers/AddCookieCommandHandler.h"
