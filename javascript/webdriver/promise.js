@@ -423,22 +423,13 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
     }
 
     if (!handled && state == webdriver.promise.Deferred.State_.REJECTED) {
-      pendingRejectionKey = propagateError(value);
+      flow.pendingRejections_ += 1;
+      pendingRejectionKey = flow.timer.setTimeout(function() {
+        pendingRejectionKey = null;
+        flow.pendingRejections_ -= 1;
+        flow.abortFrame_(value);
+      }, 0);
     }
-  }
-
-  /**
-   * Propagates an unhandled rejection to the parent ControlFlow in a
-   * future turn of the JavaScript event loop.
-   * @param {*} error The error value to report.
-   * @return {number} The key for the registered timeout.
-   */
-  function propagateError(error) {
-    flow.pendingRejections_ += 1;
-    return flow.timer.setTimeout(function() {
-      flow.pendingRejections_ -= 1;
-      flow.abortFrame_(error);
-    }, 0);
   }
 
   /**
@@ -485,9 +476,10 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
     // The moment a listener is registered, we consider this deferred to be
     // handled; the callback must handle any rejection errors.
     handled = true;
-    if (pendingRejectionKey) {
+    if (pendingRejectionKey !== null) {
       flow.pendingRejections_ -= 1;
       flow.timer.clearTimeout(pendingRejectionKey);
+      pendingRejectionKey = null;
     }
 
     var deferred = new webdriver.promise.Deferred(cancel, flow);
