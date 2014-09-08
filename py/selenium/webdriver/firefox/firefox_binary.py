@@ -112,9 +112,9 @@ class FirefoxBinary(object):
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         except ImportError:
-            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex
         keys = (
            r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
@@ -127,7 +127,12 @@ class FirefoxBinary(object):
                 command = QueryValue(key, "")
                 break
             except OSError:
-                pass
+                try:
+                    key = OpenKey(HKEY_CURRENT_USER, path)
+                    command = QueryValue(key, "")
+                    break
+                except OSError:
+                    pass
         else:
             return ""
 
