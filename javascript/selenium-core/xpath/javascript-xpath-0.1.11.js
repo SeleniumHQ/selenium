@@ -308,7 +308,7 @@ BaseExprHasPredicates.parsePredicates = function(lexer, expr) {
     }
 };
 
-BaseExprHasPredicates.prototyps = new BaseExpr();
+BaseExprHasPredicates.prototype = new BaseExpr();
 
 BaseExprHasPredicates.prototype.evaluatePredicates = function(nodeset, start) {
     var predicates, predicate, nodes, node, nodeset, position, reverse;
