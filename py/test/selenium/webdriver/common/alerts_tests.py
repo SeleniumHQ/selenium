@@ -20,6 +20,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 
 import unittest
 
@@ -214,6 +215,18 @@ class AlertsTest(unittest.TestCase):
         alert.accept()
         self.assertEqual("cheese", value)
     
+    def testUnexpectedAlertPresentExceptionContainsAlertText(self):
+        self._loadPage("alerts")
+        self.driver.find_element(by=By.ID, value="alert").click()
+        alert = self._waitForAlert()
+        value = alert.text
+        try:
+            self._loadPage("simpleTest")
+            raise Exception("UnexpectedAlertPresentException should have been thrown")
+        except UnexpectedAlertPresentException as uape:
+            self.assertEquals(value, uape.alert_text)
+            self.assertTrue(str(uape).startswith("Alert Text: %s" % value))
+
     def _waitForAlert(self):
         return WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 
