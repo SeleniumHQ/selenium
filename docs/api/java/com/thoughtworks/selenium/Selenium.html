@@ -88,8 +88,12 @@
 <dd><a href="../../../com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a>, <a href="../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverBackedSelenium</a></dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.</i></div>
+</div>
 <br>
-<pre>public interface <span class="strong">Selenium</span></pre>
+<pre>@Deprecated
+public interface <span class="strong">Selenium</span></pre>
 <div class="block">Defines an object that runs Selenium commands.
  
  <h3><a name="locators"></a>Element Locators</h3>
@@ -253,6 +257,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#addCustomRequestHeader(java.lang.String, java.lang.String)">addCustomRequestHeader</a></strong>(java.lang.String&nbsp;key,
                       java.lang.String&nbsp;value)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Tells the Selenium server to add the specificed key and value as a custom outgoing request
  header.</div>
 </td>
@@ -261,6 +266,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#addLocationStrategy(java.lang.String, java.lang.String)">addLocationStrategy</a></strong>(java.lang.String&nbsp;strategyName,
                    java.lang.String&nbsp;functionDefinition)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Defines a new function for Selenium to locate elements on the page.</div>
 </td>
 </tr>
@@ -268,6 +274,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#addScript(java.lang.String, java.lang.String)">addScript</a></strong>(java.lang.String&nbsp;scriptContent,
          java.lang.String&nbsp;scriptTagId)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Loads script content into a new script tag in the Selenium document.</div>
 </td>
 </tr>
@@ -275,6 +282,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#addSelection(java.lang.String, java.lang.String)">addSelection</a></strong>(java.lang.String&nbsp;locator,
             java.lang.String&nbsp;optionLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Add a selection to the set of selected options in a multi-select element using an option
  locator.</div>
 </td>
@@ -282,6 +290,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#allowNativeXpath(java.lang.String)">allowNativeXpath</a></strong>(java.lang.String&nbsp;allow)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Specifies whether Selenium should use the native in-browser implementation of XPath (if any
  native version is available); if you pass "false" to this function, we will always use our
  pure-JavaScript xpath library.</div>
@@ -290,18 +299,21 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#altKeyDown()">altKeyDown</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Press the alt key and hold it down until doAltUp() is called or a new page is loaded.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#altKeyUp()">altKeyUp</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Release the alt key.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#answerOnNextPrompt(java.lang.String)">answerOnNextPrompt</a></strong>(java.lang.String&nbsp;answer)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Instructs Selenium to return the specified answer string in response to the next JavaScript
  prompt [window.prompt()].</div>
 </td>
@@ -310,6 +322,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#assignId(java.lang.String, java.lang.String)">assignId</a></strong>(java.lang.String&nbsp;locator,
         java.lang.String&nbsp;identifier)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Temporarily sets the "id" attribute of the specified element, so you can locate it in the
  future using its ID rather than a slow/complicated XPath.</div>
 </td>
@@ -318,6 +331,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#attachFile(java.lang.String, java.lang.String)">attachFile</a></strong>(java.lang.String&nbsp;fieldLocator,
           java.lang.String&nbsp;fileLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Sets a file input (upload) field to the file listed in fileLocator</div>
 </td>
 </tr>
@@ -325,18 +339,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#captureEntirePageScreenshot(java.lang.String, java.lang.String)">captureEntirePageScreenshot</a></strong>(java.lang.String&nbsp;filename,
                            java.lang.String&nbsp;kwargs)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Saves the entire contents of the current window canvas to a PNG file.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#captureEntirePageScreenshotToString(java.lang.String)">captureEntirePageScreenshotToString</a></strong>(java.lang.String&nbsp;kwargs)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Downloads a screenshot of the browser current window canvas to a based 64 encoded PNG file.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#captureNetworkTraffic(java.lang.String)">captureNetworkTraffic</a></strong>(java.lang.String&nbsp;type)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the network traffic seen by the browser, including headers, AJAX requests, status
  codes, and timings.</div>
 </td>
@@ -344,24 +361,28 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#captureScreenshot(java.lang.String)">captureScreenshot</a></strong>(java.lang.String&nbsp;filename)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Captures a PNG screenshot to the specified file.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#captureScreenshotToString()">captureScreenshotToString</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Capture a PNG screenshot.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#check(java.lang.String)">check</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Check a toggle-button (checkbox/radio)</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#chooseCancelOnNextConfirmation()">chooseCancelOnNextConfirmation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">
  By default, Selenium's overridden window.confirm() function will return true, as if the user
  had manually clicked OK; after running this command, the next call to confirm() will return
@@ -371,6 +392,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#chooseOkOnNextConfirmation()">chooseOkOnNextConfirmation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">
  Undo the effect of calling chooseCancelOnNextConfirmation.</div>
 </td>
@@ -378,6 +400,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#click(java.lang.String)">click</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Clicks on a link, button, checkbox or radio button.</div>
 </td>
 </tr>
@@ -385,18 +408,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#clickAt(java.lang.String, java.lang.String)">clickAt</a></strong>(java.lang.String&nbsp;locator,
        java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Clicks on a link, button, checkbox or radio button.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#close()">close</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the user clicking the "close" button in the titlebar of a popup window or tab.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#contextMenu(java.lang.String)">contextMenu</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates opening the context menu for the specified element (as might happen if the user
  "right-clicked" on the element).</div>
 </td>
@@ -405,6 +431,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#contextMenuAt(java.lang.String, java.lang.String)">contextMenuAt</a></strong>(java.lang.String&nbsp;locator,
              java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates opening the context menu for the specified element (as might happen if the user
  "right-clicked" on the element).</div>
 </td>
@@ -412,12 +439,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#controlKeyDown()">controlKeyDown</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Press the control key and hold it down until doControlUp() is called or a new page is loaded.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#controlKeyUp()">controlKeyUp</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Release the control key.</div>
 </td>
 </tr>
@@ -425,6 +454,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#createCookie(java.lang.String, java.lang.String)">createCookie</a></strong>(java.lang.String&nbsp;nameValuePair,
             java.lang.String&nbsp;optionsString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Create a new cookie whose path and domain are same with those of current page under test,
  unless you specified a path for this cookie explicitly.</div>
 </td>
@@ -432,6 +462,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#deleteAllVisibleCookies()">deleteAllVisibleCookies</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Calls deleteCookie with recurse=true on all cookies visible to the current page.</div>
 </td>
 </tr>
@@ -439,18 +470,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#deleteCookie(java.lang.String, java.lang.String)">deleteCookie</a></strong>(java.lang.String&nbsp;name,
             java.lang.String&nbsp;optionsString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Delete a named cookie with specified path and domain.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#deselectPopUp()">deselectPopUp</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Selects the main window.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#doubleClick(java.lang.String)">doubleClick</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Double clicks on a link, button, checkbox or radio button.</div>
 </td>
 </tr>
@@ -458,6 +492,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#doubleClickAt(java.lang.String, java.lang.String)">doubleClickAt</a></strong>(java.lang.String&nbsp;locator,
              java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Doubleclicks on a link, button, checkbox or radio button.</div>
 </td>
 </tr>
@@ -465,6 +500,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#dragAndDrop(java.lang.String, java.lang.String)">dragAndDrop</a></strong>(java.lang.String&nbsp;locator,
            java.lang.String&nbsp;movementsString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Drags an element a certain distance and then drops it</div>
 </td>
 </tr>
@@ -472,6 +508,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#dragAndDropToObject(java.lang.String, java.lang.String)">dragAndDropToObject</a></strong>(java.lang.String&nbsp;locatorOfObjectToBeDragged,
                    java.lang.String&nbsp;locatorOfDragDestinationObject)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Drags an element and drops it on another element</div>
 </td>
 </tr>
@@ -479,6 +516,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#dragdrop(java.lang.String, java.lang.String)">dragdrop</a></strong>(java.lang.String&nbsp;locator,
         java.lang.String&nbsp;movementsString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">deprecated - use dragAndDrop instead</div>
 </td>
 </tr>
@@ -486,12 +524,14 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#fireEvent(java.lang.String, java.lang.String)">fireEvent</a></strong>(java.lang.String&nbsp;locator,
          java.lang.String&nbsp;eventName)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Explicitly simulate an event, to trigger the corresponding "on<em>event</em>" handler.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#focus(java.lang.String)">focus</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Move the focus to the specified element; for example, if the element is an input field, move
  the cursor to that field.</div>
 </td>
@@ -499,6 +539,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAlert()">getAlert</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript alert generated during the previous action, or fail if
  there were no alerts.</div>
 </td>
@@ -506,72 +547,84 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllButtons()">getAllButtons</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the IDs of all buttons on the page.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllFields()">getAllFields</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the IDs of all input fields on the page.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllLinks()">getAllLinks</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the IDs of all links on the page.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllWindowIds()">getAllWindowIds</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the IDs of all windows that the browser knows about.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllWindowNames()">getAllWindowNames</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the names of all windows that the browser knows about.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAllWindowTitles()">getAllWindowTitles</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the titles of all windows that the browser knows about.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAttribute(java.lang.String)">getAttribute</a></strong>(java.lang.String&nbsp;attributeLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the value of an element attribute.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getAttributeFromAllWindows(java.lang.String)">getAttributeFromAllWindows</a></strong>(java.lang.String&nbsp;attributeName)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns every instance of some attribute from all known windows.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getBodyText()">getBodyText</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the entire text of the page.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getConfirmation()">getConfirmation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript confirmation dialog generated during the previous action.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getCookie()">getCookie</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Return all cookies of the current page under test.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getCookieByName(java.lang.String)">getCookieByName</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the value of the cookie with the specified name, or throws an error if the cookie is
  not present.</div>
 </td>
@@ -579,12 +632,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getCssCount(java.lang.String)">getCssCount</a></strong>(java.lang.String&nbsp;css)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the number of nodes that match the specified css selector, eg.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getCursorPosition(java.lang.String)">getCursorPosition</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the text cursor position in the given input element or textarea; beware, this may not
  work perfectly on all browsers.</div>
 </td>
@@ -592,66 +647,77 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getElementHeight(java.lang.String)">getElementHeight</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the height of an element</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getElementIndex(java.lang.String)">getElementIndex</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Get the relative index of an element to its parent (starting from 0).</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getElementPositionLeft(java.lang.String)">getElementPositionLeft</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the horizontal position of an element</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getElementPositionTop(java.lang.String)">getElementPositionTop</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the vertical position of an element</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getElementWidth(java.lang.String)">getElementWidth</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the width of an element</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getEval(java.lang.String)">getEval</a></strong>(java.lang.String&nbsp;script)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the result of evaluating the specified JavaScript snippet.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getExpression(java.lang.String)">getExpression</a></strong>(java.lang.String&nbsp;expression)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the specified expression.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getHtmlSource()">getHtmlSource</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the entire HTML source between the opening and closing "html" tags.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getLocation()">getLocation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the absolute URL of the current page.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getLog()">getLog</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Get RC logs associated with this session.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getMouseSpeed()">getMouseSpeed</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the number of pixels between "mousemove" events during dragAndDrop commands
  (default=10).</div>
 </td>
@@ -659,6 +725,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getPrompt()">getPrompt</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript question prompt dialog generated during the previous
  action.</div>
 </td>
@@ -666,12 +733,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedId(java.lang.String)">getSelectedId</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets option element ID for selected option in the specified select element.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedIds(java.lang.String)">getSelectedIds</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets all option element IDs for selected options in the specified select or multi-select
  element.</div>
 </td>
@@ -679,6 +748,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedIndex(java.lang.String)">getSelectedIndex</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets option index (option number, starting at 0) for selected option in the specified select
  element.</div>
 </td>
@@ -686,6 +756,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedIndexes(java.lang.String)">getSelectedIndexes</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets all option indexes (option number, starting at 0) for selected options in the specified
  select or multi-select element.</div>
 </td>
@@ -693,12 +764,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedLabel(java.lang.String)">getSelectedLabel</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets option label (visible text) for selected option in the specified select element.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedLabels(java.lang.String)">getSelectedLabels</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets all option labels (visible text) for selected options in the specified select or
  multi-select element.</div>
 </td>
@@ -706,12 +779,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedValue(java.lang.String)">getSelectedValue</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets option value (value attribute) for selected option in the specified select element.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectedValues(java.lang.String)">getSelectedValues</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets all option values (value attributes) for selected options in the specified select or
  multi-select element.</div>
 </td>
@@ -719,12 +794,14 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSelectOptions(java.lang.String)">getSelectOptions</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets all option labels in the specified select drop-down.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getSpeed()">getSpeed</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Get execution speed (i.e., get the millisecond length of the delay following each selenium
  operation).</div>
 </td>
@@ -732,24 +809,28 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getTable(java.lang.String)">getTable</a></strong>(java.lang.String&nbsp;tableCellAddress)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the text from a cell of a table.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getText(java.lang.String)">getText</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the text of an element.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getTitle()">getTitle</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the title of the current page.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getValue(java.lang.String)">getValue</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the (whitespace-trimmed) value of an input field (or anything else with a value
  parameter).</div>
 </td>
@@ -758,6 +839,7 @@
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getWhetherThisFrameMatchFrameExpression(java.lang.String, java.lang.String)">getWhetherThisFrameMatchFrameExpression</a></strong>(java.lang.String&nbsp;currentFrameString,
                                        java.lang.String&nbsp;target)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Determine whether current/locator identify the frame containing this running code.</div>
 </td>
 </tr>
@@ -765,6 +847,7 @@
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getWhetherThisWindowMatchWindowExpression(java.lang.String, java.lang.String)">getWhetherThisWindowMatchWindowExpression</a></strong>(java.lang.String&nbsp;currentWindowString,
                                          java.lang.String&nbsp;target)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Determine whether currentWindowString plus target identify the window containing this running
  code.</div>
 </td>
@@ -772,60 +855,70 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#getXpathCount(java.lang.String)">getXpathCount</a></strong>(java.lang.String&nbsp;xpath)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns the number of nodes that match the specified xpath, eg.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#goBack()">goBack</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the user clicking the "back" button on their browser.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#highlight(java.lang.String)">highlight</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Briefly changes the backgroundColor of the specified element yellow.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#ignoreAttributesWithoutValue(java.lang.String)">ignoreAttributesWithoutValue</a></strong>(java.lang.String&nbsp;ignore)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Specifies whether Selenium will ignore xpath attributes that have no value, i.e.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isAlertPresent()">isAlertPresent</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Has an alert occurred?</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isChecked(java.lang.String)">isChecked</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets whether a toggle-button (checkbox/radio) is checked.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isConfirmationPresent()">isConfirmationPresent</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Has confirm() been called?</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isCookiePresent(java.lang.String)">isCookiePresent</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Returns true if a cookie with the specified name is present, or false otherwise.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isEditable(java.lang.String)">isEditable</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Determines whether the specified input element is editable, ie hasn't been disabled.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isElementPresent(java.lang.String)">isElementPresent</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Verifies that the specified element is somewhere on the page.</div>
 </td>
 </tr>
@@ -833,24 +926,28 @@
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isOrdered(java.lang.String, java.lang.String)">isOrdered</a></strong>(java.lang.String&nbsp;locator1,
          java.lang.String&nbsp;locator2)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Check if these two elements have same parent and are ordered siblings in the DOM.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isPromptPresent()">isPromptPresent</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Has a prompt occurred?</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isSomethingSelected(java.lang.String)">isSomethingSelected</a></strong>(java.lang.String&nbsp;selectLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Determines whether some option in a drop-down menu is selected.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isTextPresent(java.lang.String)">isTextPresent</a></strong>(java.lang.String&nbsp;pattern)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Verifies that the specified text pattern appears somewhere on the rendered page shown to the
  user.</div>
 </td>
@@ -858,6 +955,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#isVisible(java.lang.String)">isVisible</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Determines if the specified element is visible.</div>
 </td>
 </tr>
@@ -865,12 +963,14 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyDown(java.lang.String, java.lang.String)">keyDown</a></strong>(java.lang.String&nbsp;locator,
        java.lang.String&nbsp;keySequence)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing a key (without releasing it yet).</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyDownNative(java.lang.String)">keyDownNative</a></strong>(java.lang.String&nbsp;keycode)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing a key (without releasing it yet) by sending a native operating system
  keystroke.</div>
 </td>
@@ -879,12 +979,14 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyPress(java.lang.String, java.lang.String)">keyPress</a></strong>(java.lang.String&nbsp;locator,
         java.lang.String&nbsp;keySequence)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing and releasing a key.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyPressNative(java.lang.String)">keyPressNative</a></strong>(java.lang.String&nbsp;keycode)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing and releasing a key by sending a native operating system keystroke.</div>
 </td>
 </tr>
@@ -892,30 +994,35 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyUp(java.lang.String, java.lang.String)">keyUp</a></strong>(java.lang.String&nbsp;locator,
      java.lang.String&nbsp;keySequence)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user releasing a key.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#keyUpNative(java.lang.String)">keyUpNative</a></strong>(java.lang.String&nbsp;keycode)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user releasing a key by sending a native operating system keystroke.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#metaKeyDown()">metaKeyDown</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#metaKeyUp()">metaKeyUp</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Release the meta key.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseDown(java.lang.String)">mouseDown</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the left mouse button (without releasing it yet) on the specified
  element.</div>
 </td>
@@ -924,6 +1031,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseDownAt(java.lang.String, java.lang.String)">mouseDownAt</a></strong>(java.lang.String&nbsp;locator,
            java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the left mouse button (without releasing it yet) at the specified
  location.</div>
 </td>
@@ -931,6 +1039,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseDownRight(java.lang.String)">mouseDownRight</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the right mouse button (without releasing it yet) on the specified
  element.</div>
 </td>
@@ -939,6 +1048,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseDownRightAt(java.lang.String, java.lang.String)">mouseDownRightAt</a></strong>(java.lang.String&nbsp;locator,
                 java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the right mouse button (without releasing it yet) at the specified
  location.</div>
 </td>
@@ -946,6 +1056,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseMove(java.lang.String)">mouseMove</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the mouse button (without releasing it yet) on the specified element.</div>
 </td>
 </tr>
@@ -953,24 +1064,28 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseMoveAt(java.lang.String, java.lang.String)">mouseMoveAt</a></strong>(java.lang.String&nbsp;locator,
            java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user pressing the mouse button (without releasing it yet) on the specified element.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseOut(java.lang.String)">mouseOut</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user moving the mouse pointer away from the specified element.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseOver(java.lang.String)">mouseOver</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates a user hovering a mouse over the specified element.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseUp(java.lang.String)">mouseUp</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the mouse button (i.e., stops holding
  the button down) on the specified element.</div>
 </td>
@@ -979,6 +1094,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseUpAt(java.lang.String, java.lang.String)">mouseUpAt</a></strong>(java.lang.String&nbsp;locator,
          java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the mouse button (i.e., stops holding
  the button down) at the specified location.</div>
 </td>
@@ -986,6 +1102,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseUpRight(java.lang.String)">mouseUpRight</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the right mouse button (i.e., stops
  holding the button down) on the specified element.</div>
 </td>
@@ -994,6 +1111,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#mouseUpRightAt(java.lang.String, java.lang.String)">mouseUpRightAt</a></strong>(java.lang.String&nbsp;locator,
               java.lang.String&nbsp;coordString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the right mouse button (i.e., stops
  holding the button down) at the specified location.</div>
 </td>
@@ -1001,6 +1119,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#open(java.lang.String)">open</a></strong>(java.lang.String&nbsp;url)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Opens an URL in the test frame.</div>
 </td>
 </tr>
@@ -1008,6 +1127,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#open(java.lang.String, java.lang.String)">open</a></strong>(java.lang.String&nbsp;url,
     java.lang.String&nbsp;ignoreResponseCode)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Opens an URL in the test frame.</div>
 </td>
 </tr>
@@ -1015,24 +1135,28 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#openWindow(java.lang.String, java.lang.String)">openWindow</a></strong>(java.lang.String&nbsp;url,
           java.lang.String&nbsp;windowID)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Opens a popup window (if a window with that ID isn't already open).</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#refresh()">refresh</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates the user clicking the "Refresh" button on their browser.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#removeAllSelections(java.lang.String)">removeAllSelections</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Unselects all of the selected options in a multi-select element.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#removeScript(java.lang.String)">removeScript</a></strong>(java.lang.String&nbsp;scriptTagId)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Removes a script tag from the Selenium document identified by the given id.</div>
 </td>
 </tr>
@@ -1040,6 +1164,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#removeSelection(java.lang.String, java.lang.String)">removeSelection</a></strong>(java.lang.String&nbsp;locator,
                java.lang.String&nbsp;optionLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Remove a selection from the set of selected options in a multi-select element using an option
  locator.</div>
 </td>
@@ -1047,6 +1172,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#retrieveLastRemoteControlLogs()">retrieveLastRemoteControlLogs</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Retrieve the last messages logged on a specific remote control.</div>
 </td>
 </tr>
@@ -1054,6 +1180,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#rollup(java.lang.String, java.lang.String)">rollup</a></strong>(java.lang.String&nbsp;rollupName,
       java.lang.String&nbsp;kwargs)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Executes a command rollup, which is a series of commands with a unique name, and optionally
  arguments that control the generation of the set of commands.</div>
 </td>
@@ -1061,6 +1188,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#runScript(java.lang.String)">runScript</a></strong>(java.lang.String&nbsp;script)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Creates a new "script" tag in the body of the current test window, and adds the specified text
  into the body of the command.</div>
 </td>
@@ -1069,18 +1197,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#select(java.lang.String, java.lang.String)">select</a></strong>(java.lang.String&nbsp;selectLocator,
       java.lang.String&nbsp;optionLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Select an option from a drop-down using an option locator.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#selectFrame(java.lang.String)">selectFrame</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Selects a frame within the current window.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#selectPopUp(java.lang.String)">selectPopUp</a></strong>(java.lang.String&nbsp;windowID)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simplifies the process of selecting a popup window (and does not offer functionality beyond
  what <code>selectWindow()</code> already provides).</div>
 </td>
@@ -1088,6 +1219,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#selectWindow(java.lang.String)">selectWindow</a></strong>(java.lang.String&nbsp;windowID)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Selects a popup window using a window locator; once a popup window has been selected, all
  commands go to that window.</div>
 </td>
@@ -1095,6 +1227,7 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setBrowserLogLevel(java.lang.String)">setBrowserLogLevel</a></strong>(java.lang.String&nbsp;logLevel)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Sets the threshold for browser-side logging messages; log messages beneath this threshold will
  be discarded.</div>
 </td>
@@ -1102,6 +1235,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setContext(java.lang.String)">setContext</a></strong>(java.lang.String&nbsp;context)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Writes a message to the status bar and adds a note to the browser-side log.</div>
 </td>
 </tr>
@@ -1109,18 +1243,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setCursorPosition(java.lang.String, java.lang.String)">setCursorPosition</a></strong>(java.lang.String&nbsp;locator,
                  java.lang.String&nbsp;position)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Moves the text cursor to the specified position in the given input element or textarea.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setExtensionJs(java.lang.String)">setExtensionJs</a></strong>(java.lang.String&nbsp;extensionJs)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Sets the per-session extension Javascript</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setMouseSpeed(java.lang.String)">setMouseSpeed</a></strong>(java.lang.String&nbsp;pixels)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Configure the number of pixels between "mousemove" events during dragAndDrop commands
  (default=10).</div>
 </td>
@@ -1128,6 +1265,7 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setSpeed(java.lang.String)">setSpeed</a></strong>(java.lang.String&nbsp;value)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Set execution speed (i.e., set the millisecond length of a delay which will follow each
  selenium operation).</div>
 </td>
@@ -1135,24 +1273,28 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#setTimeout(java.lang.String)">setTimeout</a></strong>(java.lang.String&nbsp;timeout)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Specifies the amount of time that Selenium will wait for actions to complete.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#shiftKeyDown()">shiftKeyDown</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#shiftKeyUp()">shiftKeyUp</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Release the shift key.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#showContextualBanner()">showContextualBanner</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
  where those two are derived from the caller The method name will be unCamelCased with the
  insertion of spaces at word boundaries</div>
@@ -1162,6 +1304,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#showContextualBanner(java.lang.String, java.lang.String)">showContextualBanner</a></strong>(java.lang.String&nbsp;className,
                     java.lang.String&nbsp;methodName)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
  The method name will be unCamelCased with the insertion of spaces at word boundaries</div>
 </td>
@@ -1169,36 +1312,42 @@
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#shutDownSeleniumServer()">shutDownSeleniumServer</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Kills the running Selenium Server and all browser sessions.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#start()">start</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Launches the browser with a new Selenium session</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#start(java.lang.Object)">start</a></strong>(java.lang.Object&nbsp;optionsObject)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Starts a new Selenium testing session with a configuration options object</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#start(java.lang.String)">start</a></strong>(java.lang.String&nbsp;optionsString)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Starts a new Selenium testing session with a String, representing a configuration</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#stop()">stop</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Ends the test session, killing the browser</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#submit(java.lang.String)">submit</a></strong>(java.lang.String&nbsp;formLocator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Submit the specified form.</div>
 </td>
 </tr>
@@ -1206,6 +1355,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#type(java.lang.String, java.lang.String)">type</a></strong>(java.lang.String&nbsp;locator,
     java.lang.String&nbsp;value)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Sets the value of an input field, as though you typed it in.</div>
 </td>
 </tr>
@@ -1213,18 +1363,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#typeKeys(java.lang.String, java.lang.String)">typeKeys</a></strong>(java.lang.String&nbsp;locator,
         java.lang.String&nbsp;value)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Simulates keystroke events on the specified element, as though you typed the value key-by-key.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#uncheck(java.lang.String)">uncheck</a></strong>(java.lang.String&nbsp;locator)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Uncheck a toggle-button (checkbox/radio)</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#useXpathLibrary(java.lang.String)">useXpathLibrary</a></strong>(java.lang.String&nbsp;libraryName)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Allows choice of one of the available libraries.</div>
 </td>
 </tr>
@@ -1232,6 +1385,7 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#waitForCondition(java.lang.String, java.lang.String)">waitForCondition</a></strong>(java.lang.String&nbsp;script,
                 java.lang.String&nbsp;timeout)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Runs the specified JavaScript snippet repeatedly until it evaluates to "true".</div>
 </td>
 </tr>
@@ -1239,12 +1393,14 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#waitForFrameToLoad(java.lang.String, java.lang.String)">waitForFrameToLoad</a></strong>(java.lang.String&nbsp;frameAddress,
                   java.lang.String&nbsp;timeout)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Waits for a new frame to load.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#waitForPageToLoad(java.lang.String)">waitForPageToLoad</a></strong>(java.lang.String&nbsp;timeout)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Waits for a new page to load.</div>
 </td>
 </tr>
@@ -1252,18 +1408,21 @@
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#waitForPopUp(java.lang.String, java.lang.String)">waitForPopUp</a></strong>(java.lang.String&nbsp;windowID,
             java.lang.String&nbsp;timeout)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Waits for a popup window to appear and load up.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#windowFocus()">windowFocus</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gives focus to the currently selected window</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/Selenium.html#windowMaximize()">windowMaximize</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Resize currently selected window to take up the entire screen</div>
 </td>
 </tr>
@@ -1289,6 +1448,7 @@
 <li class="blockList">
 <h4>setExtensionJs</h4>
 <pre>void&nbsp;setExtensionJs(java.lang.String&nbsp;extensionJs)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the per-session extension Javascript</div>
 </li>
 </ul>
@@ -1299,6 +1459,7 @@
 <li class="blockList">
 <h4>start</h4>
 <pre>void&nbsp;start()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Launches the browser with a new Selenium session</div>
 </li>
 </ul>
@@ -1309,6 +1470,7 @@
 <li class="blockList">
 <h4>start</h4>
 <pre>void&nbsp;start(java.lang.String&nbsp;optionsString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Starts a new Selenium testing session with a String, representing a configuration</div>
 </li>
 </ul>
@@ -1319,6 +1481,7 @@
 <li class="blockList">
 <h4>start</h4>
 <pre>void&nbsp;start(java.lang.Object&nbsp;optionsObject)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Starts a new Selenium testing session with a configuration options object</div>
 </li>
 </ul>
@@ -1329,6 +1492,7 @@
 <li class="blockList">
 <h4>stop</h4>
 <pre>void&nbsp;stop()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Ends the test session, killing the browser</div>
 </li>
 </ul>
@@ -1339,6 +1503,7 @@
 <li class="blockList">
 <h4>showContextualBanner</h4>
 <pre>void&nbsp;showContextualBanner()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
  where those two are derived from the caller The method name will be unCamelCased with the
  insertion of spaces at word boundaries</div>
@@ -1352,6 +1517,7 @@
 <h4>showContextualBanner</h4>
 <pre>void&nbsp;showContextualBanner(java.lang.String&nbsp;className,
                         java.lang.String&nbsp;methodName)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
  The method name will be unCamelCased with the insertion of spaces at word boundaries</div>
 </li>
@@ -1363,6 +1529,7 @@
 <li class="blockList">
 <h4>click</h4>
 <pre>void&nbsp;click(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Clicks on a link, button, checkbox or radio button. If the click action causes a new page to
  load (like a link usually does), call waitForPageToLoad.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd></dl>
@@ -1375,6 +1542,7 @@
 <li class="blockList">
 <h4>doubleClick</h4>
 <pre>void&nbsp;doubleClick(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Double clicks on a link, button, checkbox or radio button. If the double click action causes a
  new page to load (like a link usually does), call waitForPageToLoad.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd></dl>
@@ -1387,6 +1555,7 @@
 <li class="blockList">
 <h4>contextMenu</h4>
 <pre>void&nbsp;contextMenu(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates opening the context menu for the specified element (as might happen if the user
  "right-clicked" on the element).</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd></dl>
@@ -1400,6 +1569,7 @@
 <h4>clickAt</h4>
 <pre>void&nbsp;clickAt(java.lang.String&nbsp;locator,
            java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Clicks on a link, button, checkbox or radio button. If the click action causes a new page to
  load (like a link usually does), call waitForPageToLoad.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1414,6 +1584,7 @@
 <h4>doubleClickAt</h4>
 <pre>void&nbsp;doubleClickAt(java.lang.String&nbsp;locator,
                  java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Doubleclicks on a link, button, checkbox or radio button. If the action causes a new page to
  load (like a link usually does), call waitForPageToLoad.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1428,6 +1599,7 @@
 <h4>contextMenuAt</h4>
 <pre>void&nbsp;contextMenuAt(java.lang.String&nbsp;locator,
                  java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates opening the context menu for the specified element (as might happen if the user
  "right-clicked" on the element).</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1442,6 +1614,7 @@
 <h4>fireEvent</h4>
 <pre>void&nbsp;fireEvent(java.lang.String&nbsp;locator,
              java.lang.String&nbsp;eventName)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Explicitly simulate an event, to trigger the corresponding "on<em>event</em>" handler.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>eventName</code> - the event name, e.g. "focus" or "blur"</dd></dl>
 </li>
@@ -1453,6 +1626,7 @@
 <li class="blockList">
 <h4>focus</h4>
 <pre>void&nbsp;focus(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Move the focus to the specified element; for example, if the element is an input field, move
  the cursor to that field.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
@@ -1466,6 +1640,7 @@
 <h4>keyPress</h4>
 <pre>void&nbsp;keyPress(java.lang.String&nbsp;locator,
             java.lang.String&nbsp;keySequence)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing and releasing a key.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>keySequence</code> - Either be a string(
         "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
@@ -1479,6 +1654,7 @@
 <li class="blockList">
 <h4>shiftKeyDown</h4>
 <pre>void&nbsp;shiftKeyDown()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.</div>
 </li>
 </ul>
@@ -1489,6 +1665,7 @@
 <li class="blockList">
 <h4>shiftKeyUp</h4>
 <pre>void&nbsp;shiftKeyUp()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Release the shift key.</div>
 </li>
 </ul>
@@ -1499,6 +1676,7 @@
 <li class="blockList">
 <h4>metaKeyDown</h4>
 <pre>void&nbsp;metaKeyDown()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.</div>
 </li>
 </ul>
@@ -1509,6 +1687,7 @@
 <li class="blockList">
 <h4>metaKeyUp</h4>
 <pre>void&nbsp;metaKeyUp()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Release the meta key.</div>
 </li>
 </ul>
@@ -1519,6 +1698,7 @@
 <li class="blockList">
 <h4>altKeyDown</h4>
 <pre>void&nbsp;altKeyDown()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Press the alt key and hold it down until doAltUp() is called or a new page is loaded.</div>
 </li>
 </ul>
@@ -1529,6 +1709,7 @@
 <li class="blockList">
 <h4>altKeyUp</h4>
 <pre>void&nbsp;altKeyUp()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Release the alt key.</div>
 </li>
 </ul>
@@ -1539,6 +1720,7 @@
 <li class="blockList">
 <h4>controlKeyDown</h4>
 <pre>void&nbsp;controlKeyDown()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Press the control key and hold it down until doControlUp() is called or a new page is loaded.</div>
 </li>
 </ul>
@@ -1549,6 +1731,7 @@
 <li class="blockList">
 <h4>controlKeyUp</h4>
 <pre>void&nbsp;controlKeyUp()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Release the control key.</div>
 </li>
 </ul>
@@ -1560,6 +1743,7 @@
 <h4>keyDown</h4>
 <pre>void&nbsp;keyDown(java.lang.String&nbsp;locator,
            java.lang.String&nbsp;keySequence)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing a key (without releasing it yet).</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>keySequence</code> - Either be a string(
         "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
@@ -1574,6 +1758,7 @@
 <h4>keyUp</h4>
 <pre>void&nbsp;keyUp(java.lang.String&nbsp;locator,
          java.lang.String&nbsp;keySequence)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user releasing a key.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>keySequence</code> - Either be a string(
         "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
@@ -1587,6 +1772,7 @@
 <li class="blockList">
 <h4>mouseOver</h4>
 <pre>void&nbsp;mouseOver(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user hovering a mouse over the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -1598,6 +1784,7 @@
 <li class="blockList">
 <h4>mouseOut</h4>
 <pre>void&nbsp;mouseOut(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user moving the mouse pointer away from the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -1609,6 +1796,7 @@
 <li class="blockList">
 <h4>mouseDown</h4>
 <pre>void&nbsp;mouseDown(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the left mouse button (without releasing it yet) on the specified
  element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
@@ -1621,6 +1809,7 @@
 <li class="blockList">
 <h4>mouseDownRight</h4>
 <pre>void&nbsp;mouseDownRight(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the right mouse button (without releasing it yet) on the specified
  element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
@@ -1634,6 +1823,7 @@
 <h4>mouseDownAt</h4>
 <pre>void&nbsp;mouseDownAt(java.lang.String&nbsp;locator,
                java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the left mouse button (without releasing it yet) at the specified
  location.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1648,6 +1838,7 @@
 <h4>mouseDownRightAt</h4>
 <pre>void&nbsp;mouseDownRightAt(java.lang.String&nbsp;locator,
                     java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the right mouse button (without releasing it yet) at the specified
  location.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1661,6 +1852,7 @@
 <li class="blockList">
 <h4>mouseUp</h4>
 <pre>void&nbsp;mouseUp(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the mouse button (i.e., stops holding
  the button down) on the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
@@ -1673,6 +1865,7 @@
 <li class="blockList">
 <h4>mouseUpRight</h4>
 <pre>void&nbsp;mouseUpRight(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the right mouse button (i.e., stops
  holding the button down) on the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
@@ -1686,6 +1879,7 @@
 <h4>mouseUpAt</h4>
 <pre>void&nbsp;mouseUpAt(java.lang.String&nbsp;locator,
              java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the mouse button (i.e., stops holding
  the button down) at the specified location.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1700,6 +1894,7 @@
 <h4>mouseUpRightAt</h4>
 <pre>void&nbsp;mouseUpRightAt(java.lang.String&nbsp;locator,
                   java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the event that occurs when the user releases the right mouse button (i.e., stops
  holding the button down) at the specified location.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
@@ -1713,6 +1908,7 @@
 <li class="blockList">
 <h4>mouseMove</h4>
 <pre>void&nbsp;mouseMove(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the mouse button (without releasing it yet) on the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -1725,6 +1921,7 @@
 <h4>mouseMoveAt</h4>
 <pre>void&nbsp;mouseMoveAt(java.lang.String&nbsp;locator,
                java.lang.String&nbsp;coordString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing the mouse button (without releasing it yet) on the specified element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd><dd><code>coordString</code> - specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
         element returned by the locator.</dd></dl>
@@ -1738,6 +1935,7 @@
 <h4>type</h4>
 <pre>void&nbsp;type(java.lang.String&nbsp;locator,
         java.lang.String&nbsp;value)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the value of an input field, as though you typed it in.
  
  <p>
@@ -1755,6 +1953,7 @@
 <h4>typeKeys</h4>
 <pre>void&nbsp;typeKeys(java.lang.String&nbsp;locator,
             java.lang.String&nbsp;value)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates keystroke events on the specified element, as though you typed the value key-by-key.
  
  <p>
@@ -1782,6 +1981,7 @@
 <li class="blockList">
 <h4>setSpeed</h4>
 <pre>void&nbsp;setSpeed(java.lang.String&nbsp;value)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Set execution speed (i.e., set the millisecond length of a delay which will follow each
  selenium operation). By default, there is no such delay, i.e., the delay is 0 milliseconds.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - the number of milliseconds to pause after operation</dd></dl>
@@ -1794,6 +1994,7 @@
 <li class="blockList">
 <h4>getSpeed</h4>
 <pre>java.lang.String&nbsp;getSpeed()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Get execution speed (i.e., get the millisecond length of the delay following each selenium
  operation). By default, there is no such delay, i.e., the delay is 0 milliseconds.
  
@@ -1808,6 +2009,7 @@
 <li class="blockList">
 <h4>getLog</h4>
 <pre>java.lang.String&nbsp;getLog()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Get RC logs associated with this session.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the remote control logs associated with this session</dd></dl>
 </li>
@@ -1819,6 +2021,7 @@
 <li class="blockList">
 <h4>check</h4>
 <pre>void&nbsp;check(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Check a toggle-button (checkbox/radio)</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -1830,6 +2033,7 @@
 <li class="blockList">
 <h4>uncheck</h4>
 <pre>void&nbsp;uncheck(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Uncheck a toggle-button (checkbox/radio)</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -1842,6 +2046,7 @@
 <h4>select</h4>
 <pre>void&nbsp;select(java.lang.String&nbsp;selectLocator,
           java.lang.String&nbsp;optionLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Select an option from a drop-down using an option locator.
  
  <p>
@@ -1890,6 +2095,7 @@
 <h4>addSelection</h4>
 <pre>void&nbsp;addSelection(java.lang.String&nbsp;locator,
                 java.lang.String&nbsp;optionLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Add a selection to the set of selected options in a multi-select element using an option
  locator.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> identifying a multi-select box</dd><dd><code>optionLocator</code> - an option locator (a label by default)</dd></dl>
@@ -1903,6 +2109,7 @@
 <h4>removeSelection</h4>
 <pre>void&nbsp;removeSelection(java.lang.String&nbsp;locator,
                    java.lang.String&nbsp;optionLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Remove a selection from the set of selected options in a multi-select element using an option
  locator.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> identifying a multi-select box</dd><dd><code>optionLocator</code> - an option locator (a label by default)</dd></dl>
@@ -1915,6 +2122,7 @@
 <li class="blockList">
 <h4>removeAllSelections</h4>
 <pre>void&nbsp;removeAllSelections(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Unselects all of the selected options in a multi-select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> identifying a multi-select box</dd></dl>
 </li>
@@ -1926,6 +2134,7 @@
 <li class="blockList">
 <h4>submit</h4>
 <pre>void&nbsp;submit(java.lang.String&nbsp;formLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Submit the specified form. This is particularly useful for forms without submit buttons, e.g.
  single-input "Search" forms.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>formLocator</code> - an <a href="#locators">element locator</a> for the form you want to submit</dd></dl>
@@ -1939,6 +2148,7 @@
 <h4>open</h4>
 <pre>void&nbsp;open(java.lang.String&nbsp;url,
         java.lang.String&nbsp;ignoreResponseCode)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Opens an URL in the test frame. This accepts both relative and absolute URLs.
  
  The "open" command waits for the page to load before proceeding, ie. the "AndWait" suffix is
@@ -1957,6 +2167,7 @@
 <li class="blockList">
 <h4>open</h4>
 <pre>void&nbsp;open(java.lang.String&nbsp;url)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Opens an URL in the test frame. This accepts both relative and absolute URLs.
  
  The "open" command waits for the page to load before proceeding, ie. the "AndWait" suffix is
@@ -1976,6 +2187,7 @@
 <h4>openWindow</h4>
 <pre>void&nbsp;openWindow(java.lang.String&nbsp;url,
               java.lang.String&nbsp;windowID)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Opens a popup window (if a window with that ID isn't already open). After opening the window,
  you'll need to select it using the selectWindow command.
  
@@ -1996,6 +2208,7 @@
 <li class="blockList">
 <h4>selectWindow</h4>
 <pre>void&nbsp;selectWindow(java.lang.String&nbsp;windowID)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Selects a popup window using a window locator; once a popup window has been selected, all
  commands go to that window. To select the main window again, use null as the target.
  
@@ -2060,6 +2273,7 @@
 <li class="blockList">
 <h4>selectPopUp</h4>
 <pre>void&nbsp;selectPopUp(java.lang.String&nbsp;windowID)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simplifies the process of selecting a popup window (and does not offer functionality beyond
  what <code>selectWindow()</code> already provides).
  <ul>
@@ -2083,6 +2297,7 @@
 <li class="blockList">
 <h4>deselectPopUp</h4>
 <pre>void&nbsp;deselectPopUp()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Selects the main window. Functionally equivalent to using <code>selectWindow()</code> and
  specifying no value for <code>windowID</code>.</div>
 </li>
@@ -2094,6 +2309,7 @@
 <li class="blockList">
 <h4>selectFrame</h4>
 <pre>void&nbsp;selectFrame(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Selects a frame within the current window. (You may invoke this command multiple times to
  select nested frames.) To select the parent frame, use "relative=parent" as a locator; to
  select the top frame, use "relative=top". You can also select a frame by its 0-based index
@@ -2114,6 +2330,7 @@
 <h4>getWhetherThisFrameMatchFrameExpression</h4>
 <pre>boolean&nbsp;getWhetherThisFrameMatchFrameExpression(java.lang.String&nbsp;currentFrameString,
                                               java.lang.String&nbsp;target)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Determine whether current/locator identify the frame containing this running code.
  
  <p>
@@ -2134,6 +2351,7 @@
 <h4>getWhetherThisWindowMatchWindowExpression</h4>
 <pre>boolean&nbsp;getWhetherThisWindowMatchWindowExpression(java.lang.String&nbsp;currentWindowString,
                                                 java.lang.String&nbsp;target)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Determine whether currentWindowString plus target identify the window containing this running
  code.
  
@@ -2155,6 +2373,7 @@
 <h4>waitForPopUp</h4>
 <pre>void&nbsp;waitForPopUp(java.lang.String&nbsp;windowID,
                 java.lang.String&nbsp;timeout)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Waits for a popup window to appear and load up.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>windowID</code> - the JavaScript window "name" of the window that will appear (not the text of
         the title bar) If unspecified, or specified as "null", this command will wait for the
@@ -2171,6 +2390,7 @@
 <li class="blockList">
 <h4>chooseCancelOnNextConfirmation</h4>
 <pre>void&nbsp;chooseCancelOnNextConfirmation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><p>
  By default, Selenium's overridden window.confirm() function will return true, as if the user
  had manually clicked OK; after running this command, the next call to confirm() will return
@@ -2191,6 +2411,7 @@
 <li class="blockList">
 <h4>chooseOkOnNextConfirmation</h4>
 <pre>void&nbsp;chooseOkOnNextConfirmation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><p>
  Undo the effect of calling chooseCancelOnNextConfirmation. Note that Selenium's overridden
  window.confirm() function will normally automatically return true, as if the user had manually
@@ -2212,6 +2433,7 @@
 <li class="blockList">
 <h4>answerOnNextPrompt</h4>
 <pre>void&nbsp;answerOnNextPrompt(java.lang.String&nbsp;answer)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Instructs Selenium to return the specified answer string in response to the next JavaScript
  prompt [window.prompt()].</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>answer</code> - the answer to give in response to the prompt pop-up</dd></dl>
@@ -2224,6 +2446,7 @@
 <li class="blockList">
 <h4>goBack</h4>
 <pre>void&nbsp;goBack()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the user clicking the "back" button on their browser.</div>
 </li>
 </ul>
@@ -2234,6 +2457,7 @@
 <li class="blockList">
 <h4>refresh</h4>
 <pre>void&nbsp;refresh()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the user clicking the "Refresh" button on their browser.</div>
 </li>
 </ul>
@@ -2244,6 +2468,7 @@
 <li class="blockList">
 <h4>close</h4>
 <pre>void&nbsp;close()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates the user clicking the "close" button in the titlebar of a popup window or tab.</div>
 </li>
 </ul>
@@ -2254,6 +2479,7 @@
 <li class="blockList">
 <h4>isAlertPresent</h4>
 <pre>boolean&nbsp;isAlertPresent()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Has an alert occurred?
  
  <p>
@@ -2269,6 +2495,7 @@
 <li class="blockList">
 <h4>isPromptPresent</h4>
 <pre>boolean&nbsp;isPromptPresent()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Has a prompt occurred?
  
  <p>
@@ -2284,6 +2511,7 @@
 <li class="blockList">
 <h4>isConfirmationPresent</h4>
 <pre>boolean&nbsp;isConfirmationPresent()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Has confirm() been called?
  
  <p>
@@ -2299,6 +2527,7 @@
 <li class="blockList">
 <h4>getAlert</h4>
 <pre>java.lang.String&nbsp;getAlert()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript alert generated during the previous action, or fail if
  there were no alerts.
  
@@ -2324,6 +2553,7 @@
 <li class="blockList">
 <h4>getConfirmation</h4>
 <pre>java.lang.String&nbsp;getConfirmation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript confirmation dialog generated during the previous action.
  
  <p>
@@ -2352,6 +2582,7 @@
 <li class="blockList">
 <h4>getPrompt</h4>
 <pre>java.lang.String&nbsp;getPrompt()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the message of a JavaScript question prompt dialog generated during the previous
  action.
  
@@ -2377,6 +2608,7 @@
 <li class="blockList">
 <h4>getLocation</h4>
 <pre>java.lang.String&nbsp;getLocation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the absolute URL of the current page.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the absolute URL of the current page</dd></dl>
 </li>
@@ -2388,6 +2620,7 @@
 <li class="blockList">
 <h4>getTitle</h4>
 <pre>java.lang.String&nbsp;getTitle()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the title of the current page.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the title of the current page</dd></dl>
 </li>
@@ -2399,6 +2632,7 @@
 <li class="blockList">
 <h4>getBodyText</h4>
 <pre>java.lang.String&nbsp;getBodyText()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the entire text of the page.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the entire text of the page</dd></dl>
 </li>
@@ -2410,6 +2644,7 @@
 <li class="blockList">
 <h4>getValue</h4>
 <pre>java.lang.String&nbsp;getValue(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the (whitespace-trimmed) value of an input field (or anything else with a value
  parameter). For checkbox/radio elements, the value will be "on" or "off" depending on whether
  the element is checked or not.</div>
@@ -2424,6 +2659,7 @@
 <li class="blockList">
 <h4>getText</h4>
 <pre>java.lang.String&nbsp;getText(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the text of an element. This works for any element that contains text. This command uses
  either the textContent (Mozilla-like browsers) or the innerText (IE-like browsers) of the
  element, which is the rendered text shown to the user.</div>
@@ -2438,6 +2674,7 @@
 <li class="blockList">
 <h4>highlight</h4>
 <pre>void&nbsp;highlight(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Briefly changes the backgroundColor of the specified element yellow. Useful for debugging.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd></dl>
 </li>
@@ -2449,6 +2686,7 @@
 <li class="blockList">
 <h4>getEval</h4>
 <pre>java.lang.String&nbsp;getEval(java.lang.String&nbsp;script)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the result of evaluating the specified JavaScript snippet. The snippet may have multiple
  lines, but only the result of the last line will be returned.
  
@@ -2472,6 +2710,7 @@
 <li class="blockList">
 <h4>isChecked</h4>
 <pre>boolean&nbsp;isChecked(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets whether a toggle-button (checkbox/radio) is checked. Fails if the specified element
  doesn't exist or isn't a toggle-button.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to a checkbox or radio
@@ -2486,6 +2725,7 @@
 <li class="blockList">
 <h4>getTable</h4>
 <pre>java.lang.String&nbsp;getTable(java.lang.String&nbsp;tableCellAddress)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the text from a cell of a table. The cellAddress syntax tableLocator.row.column, where row
  and column start at 0.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>tableCellAddress</code> - a cell address, e.g. "foo.1.4"</dd>
@@ -2499,6 +2739,7 @@
 <li class="blockList">
 <h4>getSelectedLabels</h4>
 <pre>java.lang.String[]&nbsp;getSelectedLabels(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets all option labels (visible text) for selected options in the specified select or
  multi-select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
@@ -2512,6 +2753,7 @@
 <li class="blockList">
 <h4>getSelectedLabel</h4>
 <pre>java.lang.String&nbsp;getSelectedLabel(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets option label (visible text) for selected option in the specified select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the selected option label in the specified select drop-down</dd></dl>
@@ -2524,6 +2766,7 @@
 <li class="blockList">
 <h4>getSelectedValues</h4>
 <pre>java.lang.String[]&nbsp;getSelectedValues(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets all option values (value attributes) for selected options in the specified select or
  multi-select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
@@ -2537,6 +2780,7 @@
 <li class="blockList">
 <h4>getSelectedValue</h4>
 <pre>java.lang.String&nbsp;getSelectedValue(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets option value (value attribute) for selected option in the specified select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the selected option value in the specified select drop-down</dd></dl>
@@ -2549,6 +2793,7 @@
 <li class="blockList">
 <h4>getSelectedIndexes</h4>
 <pre>java.lang.String[]&nbsp;getSelectedIndexes(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets all option indexes (option number, starting at 0) for selected options in the specified
  select or multi-select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
@@ -2562,6 +2807,7 @@
 <li class="blockList">
 <h4>getSelectedIndex</h4>
 <pre>java.lang.String&nbsp;getSelectedIndex(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets option index (option number, starting at 0) for selected option in the specified select
  element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
@@ -2575,6 +2821,7 @@
 <li class="blockList">
 <h4>getSelectedIds</h4>
 <pre>java.lang.String[]&nbsp;getSelectedIds(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets all option element IDs for selected options in the specified select or multi-select
  element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
@@ -2588,6 +2835,7 @@
 <li class="blockList">
 <h4>getSelectedId</h4>
 <pre>java.lang.String&nbsp;getSelectedId(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets option element ID for selected option in the specified select element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the selected option ID in the specified select drop-down</dd></dl>
@@ -2600,6 +2848,7 @@
 <li class="blockList">
 <h4>isSomethingSelected</h4>
 <pre>boolean&nbsp;isSomethingSelected(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Determines whether some option in a drop-down menu is selected.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
 <dt><span class="strong">Returns:</span></dt><dd>true if some option has been selected, false otherwise</dd></dl>
@@ -2612,6 +2861,7 @@
 <li class="blockList">
 <h4>getSelectOptions</h4>
 <pre>java.lang.String[]&nbsp;getSelectOptions(java.lang.String&nbsp;selectLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets all option labels in the specified select drop-down.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>selectLocator</code> - an <a href="#locators">element locator</a> identifying a drop-down menu</dd>
 <dt><span class="strong">Returns:</span></dt><dd>an array of all option labels in the specified select drop-down</dd></dl>
@@ -2624,6 +2874,7 @@
 <li class="blockList">
 <h4>getAttribute</h4>
 <pre>java.lang.String&nbsp;getAttribute(java.lang.String&nbsp;attributeLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the value of an element attribute. The value of the attribute may differ across browsers
  (this is the case for the "style" attribute, for example).</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>attributeLocator</code> - an element locator followed by an @ sign and then the name of the
@@ -2638,6 +2889,7 @@
 <li class="blockList">
 <h4>isTextPresent</h4>
 <pre>boolean&nbsp;isTextPresent(java.lang.String&nbsp;pattern)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Verifies that the specified text pattern appears somewhere on the rendered page shown to the
  user.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>pattern</code> - a <a href="#patterns">pattern</a> to match with the text of the page</dd>
@@ -2651,6 +2903,7 @@
 <li class="blockList">
 <h4>isElementPresent</h4>
 <pre>boolean&nbsp;isElementPresent(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Verifies that the specified element is somewhere on the page.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd>
 <dt><span class="strong">Returns:</span></dt><dd>true if the element is present, false otherwise</dd></dl>
@@ -2663,6 +2916,7 @@
 <li class="blockList">
 <h4>isVisible</h4>
 <pre>boolean&nbsp;isVisible(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Determines if the specified element is visible. An element can be rendered invisible by setting
  the CSS "visibility" property to "hidden", or the "display" property to "none", either for the
  element itself or one if its ancestors. This method will fail if the element is not present.</div>
@@ -2677,6 +2931,7 @@
 <li class="blockList">
 <h4>isEditable</h4>
 <pre>boolean&nbsp;isEditable(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Determines whether the specified input element is editable, ie hasn't been disabled. This
  method will fail if the specified element isn't an input element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a></dd>
@@ -2690,6 +2945,7 @@
 <li class="blockList">
 <h4>getAllButtons</h4>
 <pre>java.lang.String[]&nbsp;getAllButtons()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the IDs of all buttons on the page.
  
  <p>
@@ -2705,6 +2961,7 @@
 <li class="blockList">
 <h4>getAllLinks</h4>
 <pre>java.lang.String[]&nbsp;getAllLinks()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the IDs of all links on the page.
  
  <p>
@@ -2720,6 +2977,7 @@
 <li class="blockList">
 <h4>getAllFields</h4>
 <pre>java.lang.String[]&nbsp;getAllFields()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the IDs of all input fields on the page.
  
  <p>
@@ -2735,6 +2993,7 @@
 <li class="blockList">
 <h4>getAttributeFromAllWindows</h4>
 <pre>java.lang.String[]&nbsp;getAttributeFromAllWindows(java.lang.String&nbsp;attributeName)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns every instance of some attribute from all known windows.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>attributeName</code> - name of an attribute on the windows</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the set of values of this attribute from all known windows.</dd></dl>
@@ -2748,6 +3007,7 @@
 <h4>dragdrop</h4>
 <pre>void&nbsp;dragdrop(java.lang.String&nbsp;locator,
             java.lang.String&nbsp;movementsString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">deprecated - use dragAndDrop instead</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd><dd><code>movementsString</code> - offset in pixels from the current location to which the element should
         be moved, e.g., "+70,-300"</dd></dl>
@@ -2760,6 +3020,7 @@
 <li class="blockList">
 <h4>setMouseSpeed</h4>
 <pre>void&nbsp;setMouseSpeed(java.lang.String&nbsp;pixels)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Configure the number of pixels between "mousemove" events during dragAndDrop commands
  (default=10).
  <p>
@@ -2781,6 +3042,7 @@
 <li class="blockList">
 <h4>getMouseSpeed</h4>
 <pre>java.lang.Number&nbsp;getMouseSpeed()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the number of pixels between "mousemove" events during dragAndDrop commands
  (default=10).</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the number of pixels between "mousemove" events during dragAndDrop commands
@@ -2795,6 +3057,7 @@
 <h4>dragAndDrop</h4>
 <pre>void&nbsp;dragAndDrop(java.lang.String&nbsp;locator,
                java.lang.String&nbsp;movementsString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Drags an element a certain distance and then drops it</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an element locator</dd><dd><code>movementsString</code> - offset in pixels from the current location to which the element should
         be moved, e.g., "+70,-300"</dd></dl>
@@ -2808,6 +3071,7 @@
 <h4>dragAndDropToObject</h4>
 <pre>void&nbsp;dragAndDropToObject(java.lang.String&nbsp;locatorOfObjectToBeDragged,
                        java.lang.String&nbsp;locatorOfDragDestinationObject)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Drags an element and drops it on another element</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locatorOfObjectToBeDragged</code> - an element to be dragged</dd><dd><code>locatorOfDragDestinationObject</code> - an element whose location (i.e., whose center-most pixel)
         will be the point where locatorOfObjectToBeDragged is dropped</dd></dl>
@@ -2820,6 +3084,7 @@
 <li class="blockList">
 <h4>windowFocus</h4>
 <pre>void&nbsp;windowFocus()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Gives focus to the currently selected window</div>
 </li>
 </ul>
@@ -2830,6 +3095,7 @@
 <li class="blockList">
 <h4>windowMaximize</h4>
 <pre>void&nbsp;windowMaximize()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Resize currently selected window to take up the entire screen</div>
 </li>
 </ul>
@@ -2840,6 +3106,7 @@
 <li class="blockList">
 <h4>getAllWindowIds</h4>
 <pre>java.lang.String[]&nbsp;getAllWindowIds()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the IDs of all windows that the browser knows about.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the IDs of all windows that the browser knows about.</dd></dl>
 </li>
@@ -2851,6 +3118,7 @@
 <li class="blockList">
 <h4>getAllWindowNames</h4>
 <pre>java.lang.String[]&nbsp;getAllWindowNames()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the names of all windows that the browser knows about.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the names of all windows that the browser knows about.</dd></dl>
 </li>
@@ -2862,6 +3130,7 @@
 <li class="blockList">
 <h4>getAllWindowTitles</h4>
 <pre>java.lang.String[]&nbsp;getAllWindowTitles()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the titles of all windows that the browser knows about.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the titles of all windows that the browser knows about.</dd></dl>
 </li>
@@ -2873,6 +3142,7 @@
 <li class="blockList">
 <h4>getHtmlSource</h4>
 <pre>java.lang.String&nbsp;getHtmlSource()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the entire HTML source between the opening and closing "html" tags.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the entire HTML source</dd></dl>
 </li>
@@ -2885,6 +3155,7 @@
 <h4>setCursorPosition</h4>
 <pre>void&nbsp;setCursorPosition(java.lang.String&nbsp;locator,
                      java.lang.String&nbsp;position)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Moves the text cursor to the specified position in the given input element or textarea. This
  method will fail if the specified element isn't an input element or textarea.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an input element or
@@ -2900,6 +3171,7 @@
 <li class="blockList">
 <h4>getElementIndex</h4>
 <pre>java.lang.Number&nbsp;getElementIndex(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Get the relative index of an element to its parent (starting from 0). The comment node and
  empty text node will be ignored.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an element</dd>
@@ -2914,6 +3186,7 @@
 <h4>isOrdered</h4>
 <pre>boolean&nbsp;isOrdered(java.lang.String&nbsp;locator1,
                 java.lang.String&nbsp;locator2)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Check if these two elements have same parent and are ordered siblings in the DOM. Two same
  elements will not be considered ordered.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator1</code> - an <a href="#locators">element locator</a> pointing to the first element</dd><dd><code>locator2</code> - an <a href="#locators">element locator</a> pointing to the second element</dd>
@@ -2927,6 +3200,7 @@
 <li class="blockList">
 <h4>getElementPositionLeft</h4>
 <pre>java.lang.Number&nbsp;getElementPositionLeft(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the horizontal position of an element</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an element OR an element
         itself</dd>
@@ -2940,6 +3214,7 @@
 <li class="blockList">
 <h4>getElementPositionTop</h4>
 <pre>java.lang.Number&nbsp;getElementPositionTop(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the vertical position of an element</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an element OR an element
         itself</dd>
@@ -2953,6 +3228,7 @@
 <li class="blockList">
 <h4>getElementWidth</h4>
 <pre>java.lang.Number&nbsp;getElementWidth(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the width of an element</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an element</dd>
 <dt><span class="strong">Returns:</span></dt><dd>width of an element in pixels</dd></dl>
@@ -2965,6 +3241,7 @@
 <li class="blockList">
 <h4>getElementHeight</h4>
 <pre>java.lang.Number&nbsp;getElementHeight(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the height of an element</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - an <a href="#locators">element locator</a> pointing to an element</dd>
 <dt><span class="strong">Returns:</span></dt><dd>height of an element in pixels</dd></dl>
@@ -2977,6 +3254,7 @@
 <li class="blockList">
 <h4>getCursorPosition</h4>
 <pre>java.lang.Number&nbsp;getCursorPosition(java.lang.String&nbsp;locator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieves the text cursor position in the given input element or textarea; beware, this may not
  work perfectly on all browsers.
  
@@ -2999,6 +3277,7 @@
 <li class="blockList">
 <h4>getExpression</h4>
 <pre>java.lang.String&nbsp;getExpression(java.lang.String&nbsp;expression)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the specified expression.
  
  <p>
@@ -3016,6 +3295,7 @@
 <li class="blockList">
 <h4>getXpathCount</h4>
 <pre>java.lang.Number&nbsp;getXpathCount(java.lang.String&nbsp;xpath)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the number of nodes that match the specified xpath, eg. "//table" would give the number
  of tables.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>xpath</code> - the xpath expression to evaluate. do NOT wrap this expression in a 'count()'
@@ -3030,6 +3310,7 @@
 <li class="blockList">
 <h4>getCssCount</h4>
 <pre>java.lang.Number&nbsp;getCssCount(java.lang.String&nbsp;css)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the number of nodes that match the specified css selector, eg. "css=table" would give
  the number of tables.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>css</code> - the css selector to evaluate. do NOT wrap this expression in a 'count()' function;
@@ -3045,6 +3326,7 @@
 <h4>assignId</h4>
 <pre>void&nbsp;assignId(java.lang.String&nbsp;locator,
             java.lang.String&nbsp;identifier)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Temporarily sets the "id" attribute of the specified element, so you can locate it in the
  future using its ID rather than a slow/complicated XPath. This ID will disappear once the page
  is reloaded.</div>
@@ -3058,6 +3340,7 @@
 <li class="blockList">
 <h4>allowNativeXpath</h4>
 <pre>void&nbsp;allowNativeXpath(java.lang.String&nbsp;allow)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Specifies whether Selenium should use the native in-browser implementation of XPath (if any
  native version is available); if you pass "false" to this function, we will always use our
  pure-JavaScript xpath library. Using the pure-JS xpath library can improve the consistency of
@@ -3074,6 +3357,7 @@
 <li class="blockList">
 <h4>ignoreAttributesWithoutValue</h4>
 <pre>void&nbsp;ignoreAttributesWithoutValue(java.lang.String&nbsp;ignore)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Specifies whether Selenium will ignore xpath attributes that have no value, i.e. are the empty
  string, when using the non-native xpath evaluation engine. You'd want to do this for
  performance reasons in IE. However, this could break certain xpaths, for example an xpath that
@@ -3094,6 +3378,7 @@
 <h4>waitForCondition</h4>
 <pre>void&nbsp;waitForCondition(java.lang.String&nbsp;script,
                     java.lang.String&nbsp;timeout)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Runs the specified JavaScript snippet repeatedly until it evaluates to "true". The snippet may
  have multiple lines, but only the result of the last line will be considered.
  
@@ -3112,6 +3397,7 @@
 <li class="blockList">
 <h4>setTimeout</h4>
 <pre>void&nbsp;setTimeout(java.lang.String&nbsp;timeout)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Specifies the amount of time that Selenium will wait for actions to complete.
  
  <p>
@@ -3128,6 +3414,7 @@
 <li class="blockList">
 <h4>waitForPageToLoad</h4>
 <pre>void&nbsp;waitForPageToLoad(java.lang.String&nbsp;timeout)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Waits for a new page to load.
  
  <p>
@@ -3151,6 +3438,7 @@
 <h4>waitForFrameToLoad</h4>
 <pre>void&nbsp;waitForFrameToLoad(java.lang.String&nbsp;frameAddress,
                       java.lang.String&nbsp;timeout)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Waits for a new frame to load.
  
  <p>
@@ -3169,6 +3457,7 @@
 <li class="blockList">
 <h4>getCookie</h4>
 <pre>java.lang.String&nbsp;getCookie()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Return all cookies of the current page under test.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>all cookies of the current page under test</dd></dl>
 </li>
@@ -3180,6 +3469,7 @@
 <li class="blockList">
 <h4>getCookieByName</h4>
 <pre>java.lang.String&nbsp;getCookieByName(java.lang.String&nbsp;name)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the value of the cookie with the specified name, or throws an error if the cookie is
  not present.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - the name of the cookie</dd>
@@ -3193,6 +3483,7 @@
 <li class="blockList">
 <h4>isCookiePresent</h4>
 <pre>boolean&nbsp;isCookiePresent(java.lang.String&nbsp;name)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns true if a cookie with the specified name is present, or false otherwise.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - the name of the cookie</dd>
 <dt><span class="strong">Returns:</span></dt><dd>true if a cookie with the specified name is present, or false otherwise.</dd></dl>
@@ -3206,6 +3497,7 @@
 <h4>createCookie</h4>
 <pre>void&nbsp;createCookie(java.lang.String&nbsp;nameValuePair,
                 java.lang.String&nbsp;optionsString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Create a new cookie whose path and domain are same with those of current page under test,
  unless you specified a path for this cookie explicitly.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>nameValuePair</code> - name and value of the cookie in a format "name=value"</dd><dd><code>optionsString</code> - options for the cookie. Currently supported options include 'path',
@@ -3223,6 +3515,7 @@
 <h4>deleteCookie</h4>
 <pre>void&nbsp;deleteCookie(java.lang.String&nbsp;name,
                 java.lang.String&nbsp;optionsString)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Delete a named cookie with specified path and domain. Be careful; to delete a cookie, you need
  to delete it using the exact same path and domain that were used to create the cookie. If the
  path is wrong, or the domain is wrong, the cookie simply won't be deleted. Also note that
@@ -3246,6 +3539,7 @@
 <li class="blockList">
 <h4>deleteAllVisibleCookies</h4>
 <pre>void&nbsp;deleteAllVisibleCookies()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Calls deleteCookie with recurse=true on all cookies visible to the current page. As noted on
  the documentation for deleteCookie, recurse=true can be much slower than simply deleting the
  cookies using a known domain/path.</div>
@@ -3258,6 +3552,7 @@
 <li class="blockList">
 <h4>setBrowserLogLevel</h4>
 <pre>void&nbsp;setBrowserLogLevel(java.lang.String&nbsp;logLevel)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the threshold for browser-side logging messages; log messages beneath this threshold will
  be discarded. Valid logLevel strings are: "debug", "info", "warn", "error" or "off". To see the
  browser logs, you need to either show the log window in GUI mode, or enable browser-side
@@ -3272,6 +3567,7 @@
 <li class="blockList">
 <h4>runScript</h4>
 <pre>void&nbsp;runScript(java.lang.String&nbsp;script)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Creates a new "script" tag in the body of the current test window, and adds the specified text
  into the body of the command. Scripts run in this way can often be debugged more easily than
  scripts executed using Selenium's "getEval" command. Beware that JS exceptions thrown in these
@@ -3288,6 +3584,7 @@
 <h4>addLocationStrategy</h4>
 <pre>void&nbsp;addLocationStrategy(java.lang.String&nbsp;strategyName,
                        java.lang.String&nbsp;functionDefinition)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Defines a new function for Selenium to locate elements on the page. For example, if you define
  the strategy "foo", and someone runs click("foo=blah"), we'll run your function, passing you
  the string "blah", and click on the element that your function returns, or throw an
@@ -3313,6 +3610,7 @@
 <h4>captureEntirePageScreenshot</h4>
 <pre>void&nbsp;captureEntirePageScreenshot(java.lang.String&nbsp;filename,
                                java.lang.String&nbsp;kwargs)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Saves the entire contents of the current window canvas to a PNG file. Contrast this with the
  captureScreenshot command, which captures the contents of the OS viewport (i.e. whatever is
  currently being displayed on the monitor), and is implemented in the RC only. Currently this
@@ -3341,6 +3639,7 @@
 <h4>rollup</h4>
 <pre>void&nbsp;rollup(java.lang.String&nbsp;rollupName,
           java.lang.String&nbsp;kwargs)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Executes a command rollup, which is a series of commands with a unique name, and optionally
  arguments that control the generation of the set of commands. If any one of the rolled-up
  commands fails, the rollup is considered to have failed. Rollups may also contain nested
@@ -3356,6 +3655,7 @@
 <h4>addScript</h4>
 <pre>void&nbsp;addScript(java.lang.String&nbsp;scriptContent,
              java.lang.String&nbsp;scriptTagId)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Loads script content into a new script tag in the Selenium document. This differs from the
  runScript command in that runScript adds the script tag to the document of the AUT, not the
  Selenium document. The following entities in the script content are replaced by the characters
@@ -3375,6 +3675,7 @@
 <li class="blockList">
 <h4>removeScript</h4>
 <pre>void&nbsp;removeScript(java.lang.String&nbsp;scriptTagId)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Removes a script tag from the Selenium document identified by the given id. Does nothing if the
  referenced tag doesn't exist.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>scriptTagId</code> - the id of the script element to remove.</dd></dl>
@@ -3387,6 +3688,7 @@
 <li class="blockList">
 <h4>useXpathLibrary</h4>
 <pre>void&nbsp;useXpathLibrary(java.lang.String&nbsp;libraryName)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Allows choice of one of the available libraries.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>libraryName</code> - name of the desired library Only the following three can be chosen:
         <ul>
@@ -3404,6 +3706,7 @@
 <li class="blockList">
 <h4>setContext</h4>
 <pre>void&nbsp;setContext(java.lang.String&nbsp;context)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Writes a message to the status bar and adds a note to the browser-side log.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>context</code> - the message to be sent to the browser</dd></dl>
 </li>
@@ -3416,6 +3719,7 @@
 <h4>attachFile</h4>
 <pre>void&nbsp;attachFile(java.lang.String&nbsp;fieldLocator,
               java.lang.String&nbsp;fileLocator)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets a file input (upload) field to the file listed in fileLocator</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>fieldLocator</code> - an <a href="#locators">element locator</a></dd><dd><code>fileLocator</code> - a URL pointing to the specified file. Before the file can be set in the
         input field (fieldLocator), Selenium RC may need to transfer the file to the local
@@ -3431,6 +3735,7 @@
 <li class="blockList">
 <h4>captureScreenshot</h4>
 <pre>void&nbsp;captureScreenshot(java.lang.String&nbsp;filename)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Captures a PNG screenshot to the specified file.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>filename</code> - the absolute path to the file to be written, e.g. "c:\blah\screenshot.png"</dd></dl>
 </li>
@@ -3442,6 +3747,7 @@
 <li class="blockList">
 <h4>captureScreenshotToString</h4>
 <pre>java.lang.String&nbsp;captureScreenshotToString()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Capture a PNG screenshot. It then returns the file as a base 64 encoded string.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>The base 64 encoded string of the screen shot (PNG file)</dd></dl>
 </li>
@@ -3453,6 +3759,7 @@
 <li class="blockList">
 <h4>captureNetworkTraffic</h4>
 <pre>java.lang.String&nbsp;captureNetworkTraffic(java.lang.String&nbsp;type)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Returns the network traffic seen by the browser, including headers, AJAX requests, status
  codes, and timings. When this function is called, the traffic log is cleared, so the returned
  content is only the traffic seen since the last call.</div>
@@ -3469,6 +3776,7 @@
 <h4>addCustomRequestHeader</h4>
 <pre>void&nbsp;addCustomRequestHeader(java.lang.String&nbsp;key,
                           java.lang.String&nbsp;value)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Tells the Selenium server to add the specificed key and value as a custom outgoing request
  header. This only works if the browser is configured to use the built in Selenium proxy.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>key</code> - the header name.</dd><dd><code>value</code> - the header value.</dd></dl>
@@ -3481,6 +3789,7 @@
 <li class="blockList">
 <h4>captureEntirePageScreenshotToString</h4>
 <pre>java.lang.String&nbsp;captureEntirePageScreenshotToString(java.lang.String&nbsp;kwargs)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Downloads a screenshot of the browser current window canvas to a based 64 encoded PNG file. The
  <em>entire</em> windows canvas is captured, including parts rendered outside of the current
  view port.
@@ -3501,6 +3810,7 @@
 <li class="blockList">
 <h4>shutDownSeleniumServer</h4>
 <pre>void&nbsp;shutDownSeleniumServer()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Kills the running Selenium Server and all browser sessions. After you run this command, you
  will no longer be able to send commands to the server; you can't remotely start the server once
  it has been stopped. Normally you should prefer to run the "stop" command, which terminates the
@@ -3514,6 +3824,7 @@
 <li class="blockList">
 <h4>retrieveLastRemoteControlLogs</h4>
 <pre>java.lang.String&nbsp;retrieveLastRemoteControlLogs()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Retrieve the last messages logged on a specific remote control. Useful for error reports,
  especially when running multiple remote controls in a distributed environment. The maximum
  number of log messages that can be retrieve is configured on remote control startup.</div>
@@ -3527,6 +3838,7 @@
 <li class="blockList">
 <h4>keyDownNative</h4>
 <pre>void&nbsp;keyDownNative(java.lang.String&nbsp;keycode)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing a key (without releasing it yet) by sending a native operating system
  keystroke. This function uses the java.awt.Robot class to send a keystroke; this more
  accurately simulates typing a key on the keyboard. It does not honor settings from the
@@ -3544,6 +3856,7 @@
 <li class="blockList">
 <h4>keyUpNative</h4>
 <pre>void&nbsp;keyUpNative(java.lang.String&nbsp;keycode)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user releasing a key by sending a native operating system keystroke. This function
  uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing a key
  on the keyboard. It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown
@@ -3560,6 +3873,7 @@
 <li class="blockList">
 <h4>keyPressNative</h4>
 <pre>void&nbsp;keyPressNative(java.lang.String&nbsp;keycode)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Simulates a user pressing and releasing a key by sending a native operating system keystroke.
  This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates
  typing a key on the keyboard. It does not honor settings from the shiftKeyDown, controlKeyDown,

@@ -132,7 +132,7 @@ implements <a href="../../../../org/openqa/selenium/html5/LocationContext.html" 
    @BeforeClass
    public static void createAndStartService() {
      service = new ChromeDriverService.Builder()
-         .usingChromeDriverExecutable(new File("path/to/my/chromedriver.exe"))
+         .usingDriverExecutable(new File("path/to/my/chromedriver.exe"))
          .usingAnyFreePort()
          .build();
      service.start();

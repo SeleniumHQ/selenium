@@ -217,6 +217,13 @@ extends java.lang.Object</pre>
  execution.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#waitFor(long)">waitFor</a></strong>(long&nbsp;timeout)</code>
+<div class="block">Waits for the process to execute, returning the command output taken from the profile's
+ execution.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -382,6 +389,24 @@ extends java.lang.Object</pre>
 <div class="block">Waits for the process to execute, returning the command output taken from the profile's
  execution.</div>
 <dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.InterruptedException</code> - if we are interrupted while waiting for the process to launch</dd>
+<dd><code>java.io.IOException</code> - if there is a problem with reading the input stream of the launching
+         process</dd></dl>
+</li>
+</ul>
+<a name="waitFor(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>waitFor</h4>
+<pre>public&nbsp;void&nbsp;waitFor(long&nbsp;timeout)
+             throws java.lang.InterruptedException,
+                    java.io.IOException</pre>
+<div class="block">Waits for the process to execute, returning the command output taken from the profile's
+ execution.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>timeout</code> - the maximum time to wait in milliseconds</dd>
+<dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.InterruptedException</code> - if we are interrupted while waiting for the process to launch</dd>
 <dd><code>java.io.IOException</code> - if there is a problem with reading the input stream of the launching
          process</dd></dl>

@@ -197,40 +197,46 @@ extends java.lang.Enum&lt;<a href="../../../org/openqa/selenium/Platform.html" t
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#family()">family</a></strong>()</code>
+<div class="block">Returns a platform that represents a family for the current platform.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getCurrent()">getCurrent</a></strong>()</code>
 <div class="block">Get current platform (not necessarily the same as operating system).</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getMajorVersion()">getMajorVersion</a></strong>()</code>
 <div class="block">Returns the major version of this platform.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getMinorVersion()">getMinorVersion</a></strong>()</code>
 <div class="block">Returns the minor version of this platform.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getPartOfOsName()">getPartOfOsName</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#is(org.openqa.selenium.Platform)">is</a></strong>(<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;compareWith)</code>
 <div class="block">Heuristic for comparing two platforms.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#valueOf(java.lang.String)">valueOf</a></strong>(java.lang.String&nbsp;name)</code>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>[]</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#values()">values</a></strong>()</code>
 <div class="block">Returns an array containing the constants of this enum type, in
@@ -469,6 +475,18 @@ with the specified name</dd>
  the LINUX platform is similar to UNIX, and will give a positive result if compared.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>compareWith</code> - the platform to compare with</dd>
 <dt><span class="strong">Returns:</span></dt><dd>true if platforms are approximately similar, false otherwise</dd></dl>
+</li>
+</ul>
+<a name="family()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>family</h4>
+<pre>public&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;family()</pre>
+<div class="block">Returns a platform that represents a family for the current platform.  For instance
+ the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the family platform for the current one</dd></dl>
 </li>
 </ul>
 <a name="getMajorVersion()">
