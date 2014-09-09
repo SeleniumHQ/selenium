@@ -240,6 +240,18 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::wstring executable_version = GetExecutableVersion();
   std::wstring implementation = args.GetValue(IMPLEMENTATION_COMMAND_LINE_ARG,
                                               L"");
+
+  // coerce log level and implementation to uppercase, making the values
+  // case-insensitive, to match expected values.
+  std::transform(log_level.begin(),
+                 log_level.end(),
+                 log_level.begin(),
+                 toupper);
+  std::transform(implementation.begin(),
+                 implementation.end(),
+                 implementation.begin(),
+                 toupper);
+
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
