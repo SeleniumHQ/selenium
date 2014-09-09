@@ -78,9 +78,9 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets the engine implementation to be used by the IEDriverServer.
+        /// Gets or sets the implementation to be used by the IEDriverServer.
         /// </summary>
-        public InternetExplorerDriverEngine EngineImplementation
+        public InternetExplorerDriverEngine Implementation
         {
             get { return this.engineImplementation; }
             set { this.engineImplementation = value; }
