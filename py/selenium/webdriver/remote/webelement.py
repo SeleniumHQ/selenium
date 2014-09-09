@@ -1,4 +1,4 @@
-# Copyright 2008-2013 Software freedom conservancy
+# Copyright 2008-2014 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""WebElement implementation."""
 import hashlib
 import os
 import zipfile
@@ -23,12 +21,12 @@ except ImportError:  # 3+
     from io import BytesIO as IOStream
 import base64
 
-
 from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
 
 try:
     str = basestring
@@ -37,10 +35,17 @@ except NameError:
 
 
 class WebElement(object):
-    """Represents an HTML element.
+    """Represents a DOM element.
 
-    Generally, all interesting operations to do with interacting with a page
-    will be performed through this interface."""
+    Generally, all interesting operations to do with interacting with a
+    document will be performed through this interface.
+
+    All method calls will do a freshness check to ensure that the element
+    reference is still valid.  This essentially determines whether or not the
+    element is still attached to the DOM.  If this test fails, then an
+    `StaleElementReferenceException` is thrown, and all future calls to this
+    instance will fail."""
+
     def __init__(self, parent, id_):
         self._parent = parent
         self._id = id_
