@@ -1,3 +1,31 @@
+v2.43.0
+=======
+ * Supports native events for Firefox versions 32 (current), 31 (immediately
+   previous release and current ESR), and 24 (immediately previous ESR).
+ * Integrated the Microsoft Internet Explorer driver implementation into the
+   .NET bindings. By setting the Implementation property of the .NET bindings'
+   InternetExplorerDriverService class, the user can now force the driver to
+   use the Microsoft implementation. Note that the default is to use the
+   existing open-source implementation based on the Automation Atoms.
+   Over time as the Microsoft implementation matures, this will be switched to
+   use the Microsoft implementation, first by default, then exclusively.
+
+   To use the Microsoft implementation, the user must have the August 2014
+   updates to Internet Explorer installed through Windows Update, and must
+   install the IE Web Driver Tool for Internet Explorer 11 download from
+   Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44069).
+ * Added safe check for window.localStorage in .NET WebDriverBackedSelenium
+   implementation. Patch provided by Timofey Vasenin.
+ * Implemented pluggable element locator factories for .NET PageFactory. This
+   change allows the user to specify a custom IElementLocatorFactory for
+   locating elements when used with the PageFactory. This gives much more
+   control over the algorithm used to locate elements, and allows the
+   incorporation of things like retries or handling of specific exceptions.
+ * Issue #7367: Set Json.NET to ignore dates when parsing response values.
+ * Issue #7419: Added support for SwitchTo().ParentFrame() in .NET bindings.
+   This brings the .NET bindings into parity with other languages.
+ * Belatedly removed long-obsolete .NET tests for AndroidDriver.
+
 v2.42.0
 =======
  * Supports native events for Firefox versions 29 (current), 28 (immediately
