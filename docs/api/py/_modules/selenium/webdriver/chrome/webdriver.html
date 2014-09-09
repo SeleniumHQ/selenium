@@ -94,14 +94,14 @@
 <span class="sd">         - chrome_options: this takes an instance of ChromeOptions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">chrome_options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+            <span class="c"># desired_capabilities stays as passed in</span>
+            <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">options</span> <span class="o">=</span> <span class="n">chrome_options</span>
-
-        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-          <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-          <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">chrome_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chrome_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
             <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
@@ -114,7 +114,7 @@
                 <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-            <span class="k">raise</span> 
+            <span class="k">raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

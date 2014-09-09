@@ -59,7 +59,7 @@ See the License for the specific language governing permissions and
 limitations under the License.</p>
 <dl class="class">
 <dt id="selenium.selenium.selenium">
-<em class="property">class </em><tt class="descclassname">selenium.selenium.</tt><tt class="descname">selenium</tt><big>(</big><em>host</em>, <em>port</em>, <em>browserStartCommand</em>, <em>browserURL</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.selenium.</tt><tt class="descname">selenium</tt><big>(</big><em>host</em>, <em>port</em>, <em>browserStartCommand</em>, <em>browserURL</em>, <em>http_timeout=90</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines an object that runs Selenium commands.</p>
 <p><strong>Element Locators</strong></p>
 <p>Element Locators tell Selenium which HTML element a command refers to.
@@ -67,7 +67,7 @@ The format of a locator is:</p>
 <p><em>locatorType</em><strong>=</strong><em>argument</em></p>
 <p>We support the following strategies for locating elements:</p>
 <ul>
-<li><p class="first"><strong>identifier</strong>=<em>id</em>: 
+<li><p class="first"><strong>identifier</strong>=<em>id</em>:
 Select the element with the specified &#64;id attribute. If no match is
 found, select the first element whose &#64;name attribute is <em>id</em>.
 (This is normally the default; see below.)</p>
@@ -95,7 +95,7 @@ Model using JavaScript.  Note that you must not return a value in this string; s
 <li>dom=function foo() { return document.links[1]; }; foo();</li>
 </ul>
 </li>
-<li><p class="first"><strong>xpath</strong>=<em>xpathExpression</em>: 
+<li><p class="first"><strong>xpath</strong>=<em>xpathExpression</em>:
 Locate an element using an XPath expression.</p>
 <ul class="simple">
 <li>xpath=//img[&#64;alt=&#8217;The image alt text&#8217;]</li>
@@ -196,7 +196,7 @@ pattern.</p>
 <dd><p>Defines a new function for Selenium to locate elements on the page.
 For example,
 if you define the strategy &#8220;foo&#8221;, and someone runs click(&#8220;foo=blah&#8221;), we&#8217;ll
-run your function, passing you the string &#8220;blah&#8221;, and click on the element 
+run your function, passing you the string &#8220;blah&#8221;, and click on the element
 that your function
 returns, or throw an &#8220;Element not found&#8221; error if your function returns null.</p>
 <p>We&#8217;ll pass three arguments to your function:</p>
@@ -306,10 +306,10 @@ borrowed from the Screengrab! Firefox extension. Please see
 <a class="reference external" href="http://www.screengrab.org">http://www.screengrab.org</a> and <a class="reference external" href="http://snapsie.sourceforge.net/">http://snapsie.sourceforge.net/</a> for
 details.</p>
 <p>&#8216;filename&#8217; is the path to the file to persist the screenshot as. No
-filename extension will be appended by default. Directories will not be 
-created if they do not exist, and an exception will be thrown, possibly 
+filename extension will be appended by default. Directories will not be
+created if they do not exist, and an exception will be thrown, possibly
 by native code.</p>
-<p>&#8216;kwargs&#8217; is a kwargs string that modifies the way the 
+<p>&#8216;kwargs&#8217; is a kwargs string that modifies the way the
 screenshot is captured.</p>
 <blockquote>
 <div>Example: &#8220;background=#CCFFDD&#8221;</div></blockquote>
@@ -317,17 +317,17 @@ screenshot is captured.</p>
 <ul class="simple">
 <li>background</li>
 </ul>
-<p>the background CSS for the HTML document. 
-This may be useful to set for capturing screenshots of 
-less-than-ideal layouts, for example where absolute positioning 
-causes the calculation of the canvas dimension to fail and a black 
+<p>the background CSS for the HTML document.
+This may be useful to set for capturing screenshots of
+less-than-ideal layouts, for example where absolute positioning
+causes the calculation of the canvas dimension to fail and a black
 background is exposed (possibly obscuring black text).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.selenium.selenium.capture_entire_page_screenshot_to_string">
 <tt class="descname">capture_entire_page_screenshot_to_string</tt><big>(</big><em>kwargs</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium.capture_entire_page_screenshot_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium.capture_entire_page_screenshot_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads a screenshot of the browser current window canvas to a 
+<dd><p>Downloads a screenshot of the browser current window canvas to a
 based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
 including parts rendered outside of the current view port.</p>
 <p>Currently this only works in Mozilla and when running in chrome mode.</p>
@@ -366,7 +366,7 @@ including parts rendered outside of the current view port.</p>
 return true, as if the user had manually clicked OK; after running
 this command, the next call to confirm() will return false, as if
 the user had clicked Cancel.  Selenium will then resume using the
-default behavior for future confirmations, automatically returning 
+default behavior for future confirmations, automatically returning
 true (OK) unless/until you explicitly call this command for each
 confirmation.</p>
 <p>Take note - every time a confirmation comes up, you must
@@ -382,7 +382,7 @@ that Selenium&#8217;s overridden window.confirm() function will normally automat
 return true, as if the user had manually clicked OK, so you shouldn&#8217;t
 need to use this command unless for some reason you need to change
 your mind prior to the next confirmation.  After any confirmation, Selenium will resume using the
-default behavior for future confirmations, automatically returning 
+default behavior for future confirmations, automatically returning
 true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
 confirmation.</p>
 <p>Take note - every time a confirmation comes up, you must
@@ -1298,7 +1298,7 @@ considered to have failed. Rollups may also contain nested rollups.</p>
 <dl class="method">
 <dt id="selenium.selenium.selenium.run_script">
 <tt class="descname">run_script</tt><big>(</big><em>script</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium.run_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium.run_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new &#8220;script&#8221; tag in the body of the current test window, and 
+<dd><p>Creates a new &#8220;script&#8221; tag in the body of the current test window, and
 adds the specified text into the body of the command.  Scripts run in
 this way can often be debugged more easily than scripts executed using
 Selenium&#8217;s &#8220;getEval&#8221; command.  Beware that JS exceptions thrown in these script
@@ -1396,7 +1396,7 @@ Finds the window using the text that appears in the title bar.  Be careful;
 two windows can share the same title.  If that happens, this locator will
 just pick one.</li>
 <li><strong>name</strong>=<em>myWindow</em>:
-Finds the window using its internal JavaScript &#8220;name&#8221; property.  This is the second 
+Finds the window using its internal JavaScript &#8220;name&#8221; property.  This is the second
 parameter &#8220;windowName&#8221; passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
 (which Selenium intercepts).</li>
 <li><strong>var</strong>=<em>variableName</em>:
@@ -1499,7 +1499,7 @@ the delay is 0 milliseconds.</p>
 <tt class="descname">shut_down_selenium_server</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium.shut_down_selenium_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium.shut_down_selenium_server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
 commands to the server; you can&#8217;t remotely start the server once it has been stopped.  Normally
-you should prefer to run the &#8220;stop&#8221; command, which terminates the current browser session, rather than 
+you should prefer to run the &#8220;stop&#8221; command, which terminates the current browser session, rather than
 shutting down the entire server.</p>
 </dd></dl>
 
@@ -1558,7 +1558,7 @@ send the keystroke events corresponding to what you just typed.</p>
 <dt id="selenium.selenium.selenium.use_xpath_library">
 <tt class="descname">use_xpath_library</tt><big>(</big><em>libraryName</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium.use_xpath_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium.use_xpath_library" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows choice of one of the available libraries.</p>
-<p>&#8216;libraryName&#8217; is name of the desired library Only the following three can be chosen: 
+<p>&#8216;libraryName&#8217; is name of the desired library Only the following three can be chosen:
 *   &#8220;ajaxslt&#8221; - Google&#8217;s library
 *   &#8220;javascript-xpath&#8221; - Cybozu Labs&#8217; faster library
 *   &#8220;default&#8221; - The default library.  Currently the default library is &#8220;ajaxslt&#8221; .</p>
@@ -1584,7 +1584,7 @@ run your JavaScript in there</p>
 <dt id="selenium.selenium.selenium.wait_for_frame_to_load">
 <tt class="descname">wait_for_frame_to_load</tt><big>(</big><em>frameAddress</em>, <em>timeout</em><big>)</big><a class="reference internal" href="../_modules/selenium/selenium.html#selenium.wait_for_frame_to_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.selenium.selenium.wait_for_frame_to_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits for a new frame to load.</p>
-<p>Selenium constantly keeps track of new pages and frames loading, 
+<p>Selenium constantly keeps track of new pages and frames loading,
 and sets a &#8220;newPageLoaded&#8221; flag when it first notices a page load.</p>
 <p>See waitForPageToLoad for more information.</p>
 <p>&#8216;frameAddress&#8217; is FrameAddress from the server side

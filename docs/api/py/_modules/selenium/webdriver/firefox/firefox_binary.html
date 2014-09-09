@@ -65,7 +65,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">STDOUT</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -83,13 +83,16 @@
 <span class="sd">         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.</span>
 <span class="sd">         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.</span>
 <span class="sd">                      Please note that with parallel run the output won&#39;t be synchronous.</span>
-<span class="sd">                      By default, it will be redirected to subprocess.PIPE.</span>
+<span class="sd">                      By default, it will be redirected to /dev/null.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="n">firefox_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="n">log_file</span> <span class="ow">or</span> <span class="n">PIPE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="n">log_file</span> <span class="ow">or</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+          <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Failed to find firefox binary. You can set it by specifying the path to &#39;firefox_binary&#39;:</span><span class="se">\n\n</span><span class="s">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><span class="se">\n\n</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="s">&quot;binary = FirefoxBinary(&#39;/path/to/binary&#39;)</span><span class="se">\n</span><span class="s">driver = webdriver.Firefox(firefox_binary=binary)&quot;</span><span class="p">)</span>
         <span class="c"># Rather than modifying the environment of the calling Python process</span>
         <span class="c"># copy it and modify as needed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -158,9 +161,9 @@
 
     <span class="k">def</span> <span class="nf">_find_exe_in_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">_winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span>
+            <span class="kn">from</span> <span class="nn">_winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="n">HKEY_CURRENT_USER</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span>
+            <span class="kn">from</span> <span class="nn">winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="n">HKEY_CURRENT_USER</span>
         <span class="kn">import</span> <span class="nn">shlex</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span>
            <span class="s">r&quot;SOFTWARE\Classes\FirefoxHTML\shell\open\command&quot;</span><span class="p">,</span>
@@ -173,7 +176,12 @@
                 <span class="n">command</span> <span class="o">=</span> <span class="n">QueryValue</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">OpenKey</span><span class="p">(</span><span class="n">HKEY_CURRENT_USER</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                    <span class="n">command</span> <span class="o">=</span> <span class="n">QueryValue</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                    <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&quot;</span>
 

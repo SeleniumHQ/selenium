@@ -47,7 +47,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webelement</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
+<span class="c"># Copyright 2008-2014 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -61,8 +61,6 @@
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
 
-
-<span class="sd">&quot;&quot;&quot;WebElement implementation.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
@@ -72,12 +70,12 @@
     <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span> <span class="k">as</span> <span class="n">IOStream</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 
-
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+
 
 <span class="k">try</span><span class="p">:</span>
     <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
@@ -86,10 +84,17 @@
 
 
 <div class="viewcode-block" id="WebElement"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement">[docs]</a><span class="k">class</span> <span class="nc">WebElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represents an HTML element.</span>
+    <span class="sd">&quot;&quot;&quot;Represents a DOM element.</span>
 
-<span class="sd">    Generally, all interesting operations to do with interacting with a page</span>
-<span class="sd">    will be performed through this interface.&quot;&quot;&quot;</span>
+<span class="sd">    Generally, all interesting operations to do with interacting with a</span>
+<span class="sd">    document will be performed through this interface.</span>
+
+<span class="sd">    All method calls will do a freshness check to ensure that the element</span>
+<span class="sd">    reference is still valid.  This essentially determines whether or not the</span>
+<span class="sd">    element is still attached to the DOM.  If this test fails, then an</span>
+<span class="sd">    `StaleElementReferenceException` is thrown, and all future calls to this</span>
+<span class="sd">    instance will fail.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">id_</span>
@@ -117,17 +122,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_ELEMENT</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebElement.get_attribute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the attribute value.</span>
+        <span class="sd">&quot;&quot;&quot;Gets the given attribute or property of the element.</span>
+
+<span class="sd">        This method will return the value of the given property if this is set,</span>
+<span class="sd">        otherwise it returns the value of the attribute with the same name if</span>
+<span class="sd">        that exists, or None.</span>
+
+<span class="sd">        Values which are considered truthy, that is equals &quot;true&quot; or &quot;false&quot;,</span>
+<span class="sd">        are returned as booleans.  All other non-None values are returned as</span>
+<span class="sd">        strings.  For attributes or properties which does not exist, None is returned.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - name of the attribute property to retieve.</span>
+<span class="sd">            - name - Name of the attribute/property to retrieve.</span>
 
 <span class="sd">        Example::</span>
 
-<span class="sd">            # Check if the &#39;active&#39; css class is applied to an element.</span>
-<span class="sd">            is_active = &quot;active&quot; in target_element.get_attribute(&quot;class&quot;)</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            # Check if the &quot;active&quot; CSS class is applied to an element.</span>
+<span class="sd">            is_active = &quot;active&quot; in target_element.get_attribute(&quot;class&quot;)&quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
         <span class="n">attributeValue</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -136,7 +147,6 @@
             <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">&#39;value&#39;</span> <span class="ow">and</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;true&#39;</span><span class="p">,</span> <span class="s">&#39;false&#39;</span><span class="p">):</span>
                 <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
         <span class="k">return</span> <span class="n">attributeValue</span>
 </div>
 <div class="viewcode-block" id="WebElement.is_selected"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_selected">[docs]</a>    <span class="k">def</span> <span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -377,6 +387,11 @@
         <span class="n">new_loc</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;x&quot;</span><span class="p">:</span> <span class="n">old_loc</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">],</span>
                    <span class="s">&quot;y&quot;</span><span class="p">:</span> <span class="n">old_loc</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]}</span>
         <span class="k">return</span> <span class="n">new_loc</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebElement.rect"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.rect">[docs]</a>    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a dictionary with the size and location of the element&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.parent"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.parent">[docs]</a>    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

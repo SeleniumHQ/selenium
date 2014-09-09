@@ -89,7 +89,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">socket_</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
         <span class="n">socket_</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">socket_</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">socket_</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
         <span class="n">socket_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">True</span>
     <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
@@ -109,7 +109,7 @@
         <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://localhost:</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://127.0.0.1:</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">else</span><span class="p">:</span>

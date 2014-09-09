@@ -173,7 +173,12 @@
 <span class="sd">    Usually raised when when an expected modal is blocking webdriver form executing any </span>
 <span class="sd">    more commands.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alert_text</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span> <span class="o">=</span> <span class="n">alert_text</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Alert Text: </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)))</span>
 </div>
 <div class="viewcode-block" id="NoAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
