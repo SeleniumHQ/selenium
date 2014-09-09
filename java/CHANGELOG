@@ -1,3 +1,117 @@
+v2.43.0
+=======
+WebDriver:
+
+  * Updating Native events to support Firefox 24, 31 and 32
+  * Add note on stale element checks and a WebElement represents a DOM element
+  * Upgrade third party dependency JavaScript-XPath to 0.1.12
+  * Fix example code: "using(-Chrome)DriverExecutable"
+  * Make event_firing_test.html pass in Firefox 24 ESR.
+  * Fix an error propagation bug when a command fails from bad inputs.
+  * Handle the case where a proxied element from PageFactory causes a FluentWait to timeout.
+  * Integrating the Microsoft Internet Explorer driver implementation
+  * Allow subclasses of HttpCommandExecutor to extend it at runtime.
+  * Handle the case where executeScript returns an HTMLDocument.
+  * IEDriver crashes in WaitUntilElementFocused() because of null pointer. Fixes issue #7577
+  * Deprecate the original RC interface in Selenium.
+    As part of Selenium 3.0, we shall be moving the original RC interface to a
+    legacy JAR that will be available as a separate download. As the first step
+    in this process, the original "Selenium" interface is being marked as
+    deprecated.
+  * Run FirefoxDriver tests with Buck.
+  * Bump timeout for tests since a suite is also a test.
+  * Run htmlunit-driver tests with Buck.
+  * Run the ignored tests printer with Buck.
+  * Get org.openqa.selenium.SmallTests building with Buck.
+  * Working around limitations in subpixel precision event handling.
+
+    The bug/limitation where browser supports subpixel precision for elements but not for dispatched events was found in both modern Chrome (http://crbug.com/396380) and Firefox (?) browsers.
+    (IE doesn't seem to be affected: before and including IE9 - no subpixel for elements and events; from ie10 - subpixel is supported for both elements and events).
+
+    This test was lucky so far (mostly?) and didn't hit this issue, until Chrome 37 that enabled subpixel text scaling by default.
+
+    This change makes *sure* elements have subpixel coordinates (if only browser supports'em) and then it makes sure this test doesn't fail because of that (while still testing selenium atoms).
+
+    While there, I moved asserts from event handlers into the normal test flow so jsunit can properly attribute assertion failures to specific test methods.
+  * Updating prebuilt libs for windows
+  * Re-add the rubyzip jar
+  * updating prebuilts for linux
+  * Updating to gecko 32
+  * Log formatter should be able to work with empty keys array. Fixes issue 7357
+  * Fixing infinite read from socket. Fixes issue 7814
+  * WDBS: safe check for window.localStorage
+  * Driver should operate cookies for the current frame, not the topmost one. Fixes issue 7799 in
+    Firefox
+  * Actually supporting promised Id for webdriver.WebElement.
+  * Adding more checks for JS functions removed from IE11. Fixes issue 7803
+  * Fixing use of deprecated API in httpclient
+  * Fixing use of deprecated API in guava
+  * Update Closure library to head and compiler to the latest release
+  * Implementing ability to use FirefoxDriver on a machine where localhost is not the first alias for
+    127.0.0.1. Fixes issue 3280
+  * Handle null and empty paths the same as /
+  * fixing maven build, adding reference to jetty-rc-repacked-5
+  * adding pom and info on uploading jetty-repacked-5 to maven central
+  * Adding checks for JS functions removed from IE11. Fixes issue 7780
+  * Deleting what appears to be unused deps.
+  * Add more options to the Builder API (every common, settable capability should be covered).
+    * Require calling Builder.usingServer(url) to use a remote server. If this is not called, the
+     builder will attempt to create a client locally, throwing an error if it can't (e.g. for IE).
+    * Add browser specific constructors to simplify creating a client without the Builder.
+    Fixes issue 7593
+  * Updating json-cpp lib and replacing mongoose web server with civetweb.
+  * Safari is flaky. Reducing timeout to fail faster when we're going to fail.
+  * Catch driver start-up failures.
+  * Add explicit API for configuring log prefs rather than forcing users to rely on
+    magic capability strings.
+  * Clean up internal Firefox logging API.
+  * Use LogLevelMapping to convert JSON wire protocol name to Level instance.
+  * Make the jettyMaxThreads parameter actually be effective
+  * Fix NullPointerException when File#listFiles() returns null. Fixes issue #1934
+  * Making WDBS.start command a no-op if it was instantiated with an already started driver. Fixes issue 3993
+  * Handling possible exception in stringification of window.location. Fixes issue 3908
+* Modified IE driver server to more closely follow W3C spec
+
+    This commit includes a number of changes designed to bring the IE driver
+    into closer alignment with the W3C WebDriver specification. It provides
+    no functional changes to the driver, nor does it change any external-
+    facing API. The changes are:
+     * Changed webdriver::Server to examine the response from the newSession
+       command for the session ID rather than a two-stage process. The
+       webdriver::Server::DispatchCommand method now calls the
+       InitializeSession method directly when processing the newSession
+       command.
+     * Removed the now-obsolete webdriver::Server::CreateSession method.
+     * Added a Serialize/Deserialize method pair on the webdriver::Command
+       class (renaming the Populate method to Deserialize).
+     * Revamped the serialization of webdriver::Command to use 'name' instead
+       of 'command' for the command name.
+     * Added a session ID member to the webdriver::Command object.
+     * Modified the webdriver::Command object to no longer draw distinction
+       between parameters passed in as part of the URL substitution and those
+       passed in as part of the JSON payload in the body.
+     * Modified webdriver::CommandHandler::ExecuteInternal (and all subclass
+       implementations to use a single parameters map instead of the dual
+       URL tokens/JSON payload parameters maps used previously.
+  * Propagate webdriver_firefox_port preference to FirefoxDriver, was being ignored. Fixes issue 5172
+  * Adding a new selenium server option -logLongForm to log more details to the console. Fixes issue 6645
+  * Handling possible IllegalStateException while cleaning orphaned and timed out sessions. Fixes issue 6771
+  * Setting forwarded content for CommandListener afterCommand handler. Fixes issue 7443
+  * Fixing the list of extensions to search for an executable on Windows, and logging process startup
+    errors. Fixes issue 7514
+  * Setting layout.css.devPixelsPerPx to 1.0 if native events are enabled only. Fixes issue 7445
+  * BODY element is always shown/displayed.
+    related section in the W3C spec:
+    https://dvcs.w3.org/hg/webdriver/raw-file/default/webdriver-spec.html#determining-if-an-element-is-displayed
+  * Implementing switchToParentFrame support in atoms
+  * Setting HtmlUnit to emulate FF24 by default
+  * Updating HtmlUnit to 2.15
+  * Stop polluting the log with stacktraces. Fixes issue 7460
+  * Returning less specific platform info from firefox driver. Fixes issue 3354
+  * Adding driver info into TimeoutException thrown by WebDriverWait. Fixes issue 7429
+  * Implementing switchToParentFrame command for IE driver
+  * Adding URL endpoint for switchToParentFrame
+
 v2.42.2
 =======
 WebDriver:

@@ -1,3 +1,18 @@
+Selenium 2.43.0
+* Expand WebElement.get_attribute API docs
+* firefox may be installed without admininstrator privileges
+    and therefore there may be no HKEY_LOCAL_MACHINE entry. Issue #7784
+* UnexpectedAlertPresentException should contain the alert text in python too. Issue #7745
+* don't mutate the global 'ignored exceptions', take a copy of the globally specified ones, change the
+  global to be a tuple instead. Issue #7725
+* raise exception when the firefox binary isn't actually found, which usually implies the upgrade failed (on windows) Issue #6092 ,#6847
+* Fixing NameError: global name 'options' is not defined.
+* Remove unused import subprocess.PIPE
+* Redirect Firefox output to /dev/null by default Fixes Issue #7677
+* More flexible management of http timeouts in Selenium RC python client
+* Generate Python API docs for selenium.webdriver.chrome.options. Fixes issue #7471
+* Use 127.0.0.1 as localhost name resolving might fail on some systems
+
 Selenium 2.42.1
 * Fixed Py3 issues
 * Make firefox_binary.py and firefox_profile.py not executable
