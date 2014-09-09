@@ -1,4 +1,4 @@
-/*  JavaScript-XPath 0.1.11
+/*  JavaScript-XPath 0.1.12
  *  (c) 2007 Cybozu Labs, Inc.
  *
  *  JavaScript-XPath is freely distributable under the terms of an MIT-style license.
@@ -308,7 +308,7 @@ BaseExprHasPredicates.parsePredicates = function(lexer, expr) {
     }
 };
 
-BaseExprHasPredicates.prototyps = new BaseExpr();
+BaseExprHasPredicates.prototype = new BaseExpr();
 
 BaseExprHasPredicates.prototype.evaluatePredicates = function(nodeset, start) {
     var predicates, predicate, nodes, node, nodeset, position, reverse;
