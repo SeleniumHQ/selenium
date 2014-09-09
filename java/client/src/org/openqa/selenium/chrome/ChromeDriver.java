@@ -60,7 +60,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *   {@literal @BeforeClass}
  *   public static void createAndStartService() {
  *     service = new ChromeDriverService.Builder()
- *         .usingChromeDriverExecutable(new File("path/to/my/chromedriver.exe"))
+ *         .usingDriverExecutable(new File("path/to/my/chromedriver.exe"))
  *         .usingAnyFreePort()
  *         .build();
  *     service.start();
