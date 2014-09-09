@@ -73,17 +73,23 @@ class WebElement(object):
         self._execute(Command.CLEAR_ELEMENT)
 
     def get_attribute(self, name):
-        """Gets the attribute value.
+        """Gets the given attribute or property of the element.
+
+        This method will return the value of the given property if this is set,
+        otherwise it returns the value of the attribute with the same name if
+        that exists, or None.
+
+        Values which are considered truthy, that is equals "true" or "false",
+        are returned as booleans.  All other non-None values are returned as
+        strings.  For attributes or properties which does not exist, None is returned.
 
         :Args:
-            - name - name of the attribute property to retieve.
+            - name - Name of the attribute/property to retrieve.
 
         Example::
 
-            # Check if the 'active' css class is applied to an element.
-            is_active = "active" in target_element.get_attribute("class")
-
-        """
+            # Check if the "active" CSS class is applied to an element.
+            is_active = "active" in target_element.get_attribute("class")"""
         resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
         attributeValue = ''
         if resp['value'] is None:
@@ -92,7 +98,6 @@ class WebElement(object):
             attributeValue = resp['value']
             if name != 'value' and attributeValue.lower() in ('true', 'false'):
                 attributeValue = attributeValue.lower()
-
         return attributeValue
 
     def is_selected(self):
