@@ -1,3 +1,8 @@
+v2.43.1
+=======
+ * Point-release to correct version resources in .NET bindings assemblies. No
+   functional changes.
+
 v2.43.0
 =======
  * Supports native events for Firefox versions 32 (current), 31 (immediately
