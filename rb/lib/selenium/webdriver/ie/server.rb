@@ -5,10 +5,11 @@ module Selenium
 
         STOP_TIMEOUT = 5
 
-        def self.get
+        def self.get(opts = {})
           binary = IE.driver_path || Platform.find_binary("IEDriverServer")
+
           if binary
-            new(binary)
+            new binary, opts
           else
             raise Error::WebDriverError,
               "Unable to find standalone executable. Please download the IEDriverServer from http://selenium-release.storage.googleapis.com/index.html and place the executable on your PATH."
@@ -24,8 +25,10 @@ module Selenium
           @process = nil
 
           opts = opts.dup
-          @log_level   = opts.delete(:log_level)
-          @log_file    = opts.delete(:log_file)
+
+          @log_level      = opts.delete(:log_level)
+          @log_file       = opts.delete(:log_file)
+          @implementation = opts.delete(:implementation)
 
           unless opts.empty?
             raise ArgumentError, "invalid option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -76,6 +79,7 @@ module Selenium
 
           args << "--log-level=#{@log_level.to_s.upcase}" if @log_level
           args << "--log-file=#{@log_file}" if @log_file
+          args << "--implementation=#{@implementation.to_s.upcase}" if @implementation
 
           args
         end
