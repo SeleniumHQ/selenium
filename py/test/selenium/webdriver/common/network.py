@@ -19,7 +19,10 @@ if os.name != "nt":
             )[20:24])
 
 def get_lan_ip():
-    ip = socket.gethostbyname(socket.gethostname())
+    try:
+        ip = socket.gethostbyname(socket.gethostname())
+    except:
+        return '0.0.0.0'
     if ip.startswith("127.") and os.name != "nt":
         interfaces = ["eth0","eth1","eth2","en0","en1","en2","en3","en4","wlan0","wlan1","wifi0","ath0","ath1","ppp0"]
         for ifname in interfaces:
