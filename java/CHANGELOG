@@ -1,3 +1,8 @@
+v2.43.1
+=======
+
+  * Fixing socketlock bug with reusing the same profile multiple times
+
 v2.43.0
 =======
 WebDriver:
