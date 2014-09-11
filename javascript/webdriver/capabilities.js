@@ -21,6 +21,8 @@ goog.provide('webdriver.Capabilities');
 goog.provide('webdriver.Capability');
 goog.provide('webdriver.ProxyConfig');
 
+goog.require('webdriver.logging.Preferences');
+
 
 
 /**
