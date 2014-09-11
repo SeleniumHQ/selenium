@@ -1416,13 +1416,13 @@ Editor.InfoPanel.prototype.switchView = function (view) {
 Editor.InfoView = function () { };
 
 Editor.InfoView.prototype.show = function () {
-  document.getElementById(this.name + "View").hidden = false;
+  document.getElementById(this.name + "View").style.display = "block";
   document.getElementById(this.name + "Tab").setAttribute("selected", "true");
 };
 
 Editor.InfoView.prototype.hide = function () {
   document.getElementById(this.name + "Tab").removeAttribute("selected");
-  document.getElementById(this.name + "View").hidden = true;
+  document.getElementById(this.name + "View").style.display = "none";
 };
 
 /*
@@ -1446,12 +1446,12 @@ Editor.LogView.prototype = new Editor.InfoView;
 
 Editor.LogView.prototype.show = function () {
   Editor.InfoView.prototype.show.call(this);
-  document.getElementById("logButtons").hidden = false;
+  document.getElementById("logButtons").style.display = "flex";
 };
 
 Editor.LogView.prototype.hide = function () {
   Editor.InfoView.prototype.hide.call(this);
-  document.getElementById("logButtons").hidden = true;
+  document.getElementById("logButtons").style.display = "none";
 } ;
 
 Editor.LogView.prototype.setLog = function (log) {

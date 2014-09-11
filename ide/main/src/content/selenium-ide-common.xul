@@ -311,11 +311,11 @@ limitations under the License.
     </hbox>
     <iframe flex="1" id="logView" src="LogFrame.html" type="content">
     </iframe>
-    <iframe flex="1" id="helpView" src="HelpView.html" hidden="true" type="content">
+    <iframe flex="1" id="helpView" src="HelpView.html" style="display:none" type="content">
     </iframe>
-    <iframe flex="1" id="uiView" src="ui-view.html" hidden="true" type="content">
+    <iframe flex="1" id="uiView" src="ui-view.html" style="display:none" type="content">
     </iframe>
-    <iframe flex="1" id="rollupView" src="rollup-view.html" hidden="true" type="content">
+    <iframe flex="1" id="rollupView" src="rollup-view.html" style="display:none" type="content">
     </iframe>
   </vbox>
 </overlay>
