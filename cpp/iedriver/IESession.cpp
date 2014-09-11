@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "IESession.h"
+#include "BrowserFactory.h"
 #include "CommandExecutor.h"
 #include "IECommandExecutor.h"
 #include "IEWebDriverManagerCommandExecutor.h"
@@ -71,7 +72,26 @@ void IESession::Initialize(void* init_params) {
 
   ThreadProcedure thread_proc = &IECommandExecutor::ThreadProc;
   if (this->driver_implementation_ != LegacyImplementation) {
-    thread_proc = &IEWebDriverManagerCommandExecutor::ThreadProc;
+    BrowserFactory factory;
+    int browser_version = factory.browser_version();
+    bool is_component_registered = IEWebDriverManagerCommandExecutor::IsComponentRegistered();
+    if (this->driver_implementation_ == VendorImplementation) {
+      LOG(DEBUG) << "Attempting to use vendor-provided driver implementation per user request";
+      thread_proc = &IEWebDriverManagerCommandExecutor::ThreadProc;
+    } else if (this->driver_implementation_ == AutoDetectImplementation &&
+               browser_version >= 11 &&
+               is_component_registered) {
+      LOG(DEBUG) << "Using vendor-provided driver implementation per autodetection";
+      thread_proc = &IEWebDriverManagerCommandExecutor::ThreadProc;
+    } else {
+      LOG(DEBUG) << "Falling back to legacy driver implementation per autodetection ("
+                 << "detected IE version: " << browser_version
+                 << ", vendor driver install is "
+                 << (is_component_registered ? "" : "not")
+                 << " registered).";
+    }
+  } else {
+    LOG(DEBUG) << "Using legacy driver implementation per user request";
   }
   HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
                                                                  0,

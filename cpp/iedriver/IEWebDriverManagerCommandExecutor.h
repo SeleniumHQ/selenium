@@ -57,6 +57,7 @@ class IEWebDriverManagerCommandExecutor : public CWindowImpl<IEWebDriverManagerC
   std::string session_id(void) const { return this->session_id_; }
 
   static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
+  static bool IsComponentRegistered(void);
 
   std::string current_browser_id(void) const { 
     return this->current_browser_id_; 

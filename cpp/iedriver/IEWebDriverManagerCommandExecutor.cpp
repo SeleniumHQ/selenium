@@ -19,6 +19,7 @@
 #include "interactions.h"
 #include "json.h"
 #include "logging.h"
+#include "RegistryUtilities.h"
 #include "StringUtilities.h"
 
 namespace webdriver {
@@ -63,8 +64,11 @@ LRESULT IEWebDriverManagerCommandExecutor::OnCreate(UINT uMsg,
                                   IID_IIEWebDriverManager,
                                   reinterpret_cast<void**>(&this->manager_));
   if (FAILED(hr)) {
-    // TOOD: Handle the case where the COM object is not installed.
+    // If the COM object isn't installed, or there is another error, mark the
+    // session as invalid. In theory, we should only hit this issue if we're
+    // forcing the 
     LOGHR(WARN, hr) << "Could not create instance of class IEWebDriverManager";
+    this->is_valid_ = false;
   }
 
   return 0;
@@ -78,6 +82,7 @@ LRESULT IEWebDriverManagerCommandExecutor::OnDestroy(UINT uMsg,
 
   LOG(DEBUG) << "Posting quit message";
   this->manager_.Release();
+  delete this->factory_;
   ::PostQuitMessage(0);
   LOG(DEBUG) << "Leaving IEWebDriverManagerCommandExecutor::OnDestroy";
   return 0;
@@ -108,7 +113,7 @@ LRESULT IEWebDriverManagerCommandExecutor::OnGetResponseLength(UINT uMsg,
                                                WPARAM wParam,
                                                LPARAM lParam,
                                                BOOL& bHandled) {
-  // Not logging trace entering IEDevChannelCommandExecutor::OnGetResponseLength,
+  // Not logging trace entering IEWebDriverManagerCommandExecutor::OnGetResponseLength,
   // because it is polled repeatedly for a non-zero return value.
   size_t response_length = 0;
   if (!this->is_waiting_) {
@@ -224,21 +229,40 @@ unsigned int WINAPI IEWebDriverManagerCommandExecutor::ThreadProc(LPVOID lpParam
 
 void IEWebDriverManagerCommandExecutor::DispatchCommand() {
   LOG(TRACE) << "Entering IEWebDriverManagerCommandExecutor::DispatchCommand";
-  std::wstring serialized_command = StringUtilities::ToWString(this->current_command_.Serialize());
-
-  LPWSTR pszResult = nullptr;
-
-  HRESULT hr = this->manager_->ExecuteCommand((LPWSTR)serialized_command.c_str(), &pszResult);
-  std::wstring result(pszResult);
   Response actual_response;
-  actual_response.Deserialize(StringUtilities::ToString(result));
+  if (this->current_command_.command_type() == CommandType::NewSession && !this->is_valid_) {
+    // Despite our best efforts, we've attempted to create a new session,
+    // but the IEWebDriverManager COM object could not be instantiated.
+    // The most common case of this would be when the user has attempted
+    // to force the use of the Microsoft driver implementation, but it's
+    // not installed, or is not installed properly. So we have to throw
+    // an error at this point.
+    actual_response.SetErrorResponse(ENOSUCHDRIVER, "Could not create IEWebDriverManager COM object. The most common cause of this is that the driver tool from Microsoft is not installed properly.");
+  } else {
+    std::wstring serialized_command = StringUtilities::ToWString(this->current_command_.Serialize());
+
+    LPWSTR pszResult = nullptr;
+
+    HRESULT hr = this->manager_->ExecuteCommand((LPWSTR)serialized_command.c_str(), &pszResult);
+    std::wstring result(pszResult);
+    actual_response.Deserialize(StringUtilities::ToString(result));
+    ::CoTaskMemFree(pszResult);
+  }
   this->serialized_response_ = actual_response.Serialize();
-  ::CoTaskMemFree(pszResult);
 
   if (this->current_command_.command_type() == webdriver::CommandType::Close ||
       this->current_command_.command_type() == webdriver::CommandType::Quit) {
     this->is_valid_ = false;
   }
+}
+
+bool IEWebDriverManagerCommandExecutor::IsComponentRegistered() {
+  LPOLESTR webdriver_class_id;
+  ::StringFromCLSID(CLSID_IEWebDriverManager, &webdriver_class_id);
+  std::wstring subkey(L"CLSID\\");
+  subkey.append(webdriver_class_id);
+  ::CoTaskMemFree(webdriver_class_id);
+  return RegistryUtilities::RegistryKeyExists(HKEY_CLASSES_ROOT, subkey);
 }
 
 } // namespace webdriver
