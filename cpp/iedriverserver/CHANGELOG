@@ -9,6 +9,27 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.43.0.1
+=========
+ * Improved cross-platform compatibility of webdriver-server C++ code. This
+   commit makes the common webdriver-server C++ code more easily cross-
+   platform. It does this mainly by removing use of std::tr1::regex, which has
+   issues compiling under gcc. In its place, we now use a custom URL matching
+   algorithm for matching URLs in the WebDriver JSON Wire Protocol. While this
+   matching algorithm may be a potential source of future errors, a nice side
+   effect of it is a 3% performance increase in server execution times over
+   using regular expressions. Additionally, this commit includes an alias for
+   snprintf, which throws buffer overrun warnings when used with Visual Studio.
+   It also contains some header #include rearranging and linting of the C++
+   code.
+ * Implemented driver implementation autodetect in IE driver server. When
+   specified by the correct command line switch, the driver will use the
+   Microsoft driver implementation, if the detected version of IE is 11 or
+   higher, and if the implementation is installed. Otherwise, it will fall
+   back to the legacy (open-source) implementation.
+ * Updated third-party C++ library dependencies. This resolves compiler
+   warnings when compiling Civetweb and JsonCpp under Visual Studio.
+
 v2.43.0.0
 =========
  * Release to synchronize with release of Selenium project.
