@@ -779,6 +779,7 @@ struct mg_context {
     char *config[NUM_OPTIONS];      /* Civetweb configuration parameters */
     struct mg_callbacks callbacks;  /* User-defined callback function */
     void *user_data;                /* User-defined data */
+    int context_type;               /* 1 = server context, 2 = client context */
 
     struct socket *listening_sockets;
     in_port_t *listening_ports;
@@ -1187,6 +1188,9 @@ static char *skip_quoted(char **buf, const char *delimiters,
     if (end_word > begin_word) {
         p = end_word - 1;
         while (*p == quotechar) {
+            /* TODO (bel): it seems this code is never reached, so quotechar is actually
+               not needed - check if this code may be droped */
+
             /* If there is anything beyond end_word, copy it */
             if (*end_word == '\0') {
                 *p = '\0';
@@ -2267,6 +2271,7 @@ static int pull_all(FILE *fp, struct mg_connection *conn, char *buf, int len)
 int mg_read(struct mg_connection *conn, void *buf, size_t len)
 {
     int64_t n, buffered_len, nread;
+    int64_t len64 = (int64_t)(len > INT_MAX ? INT_MAX : len); /* since the return value is int, we may not read more bytes */
     const char *body;
 
     /* If Content-Length is not set for a PUT or POST request, read until socket is closed */
@@ -2279,7 +2284,7 @@ int mg_read(struct mg_connection *conn, void *buf, size_t len)
     if (conn->consumed_content < conn->content_len) {
         /* Adjust number of bytes to read. */
         int64_t to_read = conn->content_len - conn->consumed_content;
-        if (to_read < (int64_t) len) {
+        if (to_read < len64) {
             len = (size_t) to_read;
         }
 
@@ -2287,11 +2292,11 @@ int mg_read(struct mg_connection *conn, void *buf, size_t len)
         body = conn->buf + conn->request_len + conn->consumed_content;
         buffered_len = (int64_t)(&conn->buf[conn->data_len] - body);
         if (buffered_len > 0) {
-            if (len < (size_t) buffered_len) {
-                buffered_len = (int64_t) len;
+            if (len64 < (size_t) buffered_len) {
+                buffered_len = len64;
             }
             memcpy(buf, body, (size_t) buffered_len);
-            len -= buffered_len;
+            len64 -= buffered_len;
             conn->consumed_content += buffered_len;
             nread += buffered_len;
             buf = (char *) buf + buffered_len;
@@ -2299,13 +2304,13 @@ int mg_read(struct mg_connection *conn, void *buf, size_t len)
 
         /* We have returned all buffered data. Read new data from the remote
            socket. */
-        if ((n = pull_all(NULL, conn, (char *) buf, (int64_t) len)) >= 0) {
+        if ((n = pull_all(NULL, conn, (char *) buf, (int)len64)) >= 0) {
             nread += n;
         } else {
             nread = (nread > 0 ? nread : n);
         }
     }
-    return nread;
+    return (int)nread;
 }
 
 int mg_write(struct mg_connection *conn, const void *buf, size_t len)
@@ -5140,8 +5145,9 @@ static void read_websocket(struct mg_connection *conn)
 
     /* Loop continuously, reading messages from the socket, invoking the
        callback, and waiting repeatedly until an error occurs. */
-    assert(conn->content_len == 0);
-    for (;;) {
+    /* TODO: Investigate if this next line is needed
+    assert(conn->content_len == 0); */
+    while (!conn->ctx->stop_flag) {
         header_len = 0;
         assert(conn->data_len >= conn->request_len);
         if ((body_len = conn->data_len - conn->request_len) >= 2) {
@@ -6286,8 +6292,9 @@ static void close_connection(struct mg_connection *conn)
 #endif
 
     /* call the connection_close callback if assigned */
-    if (conn->ctx->callbacks.connection_close != NULL)
+    if ((conn->ctx->callbacks.connection_close != NULL) && (conn->ctx->context_type == 1)) {
         conn->ctx->callbacks.connection_close(conn);
+    }
 
     mg_lock_connection(conn);
 
@@ -6311,12 +6318,29 @@ static void close_connection(struct mg_connection *conn)
 
 void mg_close_connection(struct mg_connection *conn)
 {
+    struct mg_context * client_ctx = NULL;
+    int i;
+
+    if (conn->ctx->context_type == 2) {
+        client_ctx = conn->ctx;
+        /* client context: loops must end */
+        conn->ctx->stop_flag = 1;
+    }
+
 #ifndef NO_SSL
     if (conn->client_ssl_ctx != NULL) {
         SSL_CTX_free((SSL_CTX *) conn->client_ssl_ctx);
     }
 #endif
     close_connection(conn);
+    if (client_ctx != NULL) {
+        /* join worker thread and free context */
+        for (i = 0; i < client_ctx->workerthreadcount; i++) {
+            mg_join_thread(client_ctx->workerthreadids[i]);
+        }
+        mg_free(client_ctx->workerthreadids);
+        mg_free(client_ctx);
+    }
     (void) pthread_mutex_destroy(&conn->mutex);
     mg_free(conn);
 }
@@ -6436,6 +6460,106 @@ struct mg_connection *mg_download(const char *host, int port, int use_ssl,
         conn = NULL;
     }
     va_end(ap);
+
+    return conn;
+}
+
+#if defined(USE_WEBSOCKET)
+#ifdef _WIN32
+static unsigned __stdcall websocket_client_thread(void *data)
+#else
+static void* websocket_client_thread(void *data)
+#endif
+{
+    struct mg_connection* conn = (struct mg_connection*)data;
+    read_websocket(conn);
+
+    DEBUG_TRACE("Websocket client thread exited\n");
+
+    if (conn->ctx->callbacks.connection_close != NULL) {
+        conn->ctx->callbacks.connection_close(conn);
+    }
+
+#ifdef _WIN32
+    return 0;
+#else
+    return NULL;
+#endif
+}
+#endif
+
+struct mg_connection *mg_connect_websocket_client(const char *host, int port, int use_ssl,
+                                               char *error_buffer, size_t error_buffer_size,
+                                               const char *path, const char *origin,
+                                               websocket_data_func data_func, websocket_close_func close_func,
+                                               void * user_data)
+{
+    struct mg_connection* conn = NULL;
+    struct mg_context * newctx = NULL;
+
+#if defined(USE_WEBSOCKET)
+    static const char *magic = "x3JJHMbDL1EzLkh9GBhXDw==";
+    static const char *handshake_req;
+
+    if(origin != NULL)
+    {
+        handshake_req = "GET %s HTTP/1.1\r\n"
+                            "Host: %s\r\n"
+                            "Upgrade: websocket\r\n"
+                            "Connection: Upgrade\r\n"
+                            "Sec-WebSocket-Key: %s\r\n"
+                            "Sec-WebSocket-Version: 13\r\n"
+                            "Origin: %s\r\n"
+                             "\r\n";
+    }
+    else
+    {
+        handshake_req = "GET %s HTTP/1.1\r\n"
+                            "Host: %s\r\n"
+                            "Upgrade: websocket\r\n"
+                            "Connection: Upgrade\r\n"
+                            "Sec-WebSocket-Key: %s\r\n"
+                            "Sec-WebSocket-Version: 13\r\n"
+                             "\r\n";
+    }
+
+    /* Establish the client connection and request upgrade */
+    conn = mg_download(host, port, use_ssl,
+                             error_buffer, error_buffer_size,
+                             handshake_req, path, host, magic, origin);
+
+    /* Connection object will be null if something goes wrong */
+    if(conn == NULL || (strcmp(conn->request_info.uri, "101") != 0))
+    {
+        DEBUG_TRACE("Websocket client connect error: %s\r\n", error_buffer);
+        if(conn != NULL) { mg_free(conn); conn = NULL; }
+        return conn;
+    }
+
+    /* For client connections, mg_context is fake. Since we need to set a callback
+       function, we need to create a copy and modify it. */
+    newctx = (struct mg_context *) mg_malloc(sizeof(struct mg_context));
+    memcpy(newctx, conn->ctx, sizeof(struct mg_context));
+    newctx->callbacks.websocket_data = data_func; /* read_websocket will automatically call it */
+    newctx->callbacks.connection_close = close_func;
+    newctx->user_data = user_data;
+    newctx->context_type = 2; /* client context type */
+    newctx->workerthreadcount = 1; /* one worker thread will be created */
+    newctx->workerthreadids = (pthread_t*) mg_calloc(newctx->workerthreadcount, sizeof(pthread_t));
+    conn->ctx = newctx;
+
+    /* Start a thread to read the websocket client connection
+    This thread will automatically stop when mg_disconnect is
+    called on the client connection */
+    if (mg_start_thread_with_id(websocket_client_thread, (void*)conn, newctx->workerthreadids) != 0)
+    {
+        mg_free((void*)newctx->workerthreadids);
+        mg_free((void*)newctx);
+        mg_free((void*)conn);
+        conn = NULL;
+        DEBUG_TRACE("Websocket client connect thread could not be started\r\n");
+    }
+#endif
 
     return conn;
 }
@@ -7054,6 +7178,7 @@ struct mg_context *mg_start(const struct mg_callbacks *callbacks,
         ctx->callbacks.init_context(ctx);
     }
     ctx->callbacks.exit_context = exit_callback;
+    ctx->context_type = 1; /* server context */
 
     /* Start master (listening) thread */
     mg_start_thread_with_id(master_thread, ctx, &ctx->masterthreadid);

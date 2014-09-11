@@ -754,7 +754,8 @@ static int lwebsock_write(lua_State *L)
     } else {
         return luaL_error(L, "invalid websocket write() call");
     }
-
+#else
+	(void)(L); /* unused */
 #endif
     return 0;
 }
@@ -818,7 +819,7 @@ static int lua_action_free(struct laction_arg *arg)
 
 static int lwebsocket_set_timer(lua_State *L, int is_periodic)
 {
-#ifdef USE_TIMERS
+#if defined(USE_TIMERS) && defined(USE_WEBSOCKET)
     int num_args = lua_gettop(L);
     struct lua_websock_data *ws;
     int type1,type2, ok = 0;
@@ -867,6 +868,8 @@ static int lwebsocket_set_timer(lua_State *L, int is_periodic)
     return 1;
 
 #else
+    (void)(L);           /* unused */
+    (void)(is_periodic); /* unused */
     return 0;
 #endif
 }
@@ -892,6 +895,7 @@ enum {
 static void prepare_lua_request_info(struct mg_connection *conn, lua_State *L)
 {
     char src_addr[IP_ADDR_STR_LEN] = "";
+    const char *s;
     int i;
 
     sockaddr_to_string(src_addr, sizeof(src_addr), &conn->client.rsa);
@@ -909,6 +913,16 @@ static void prepare_lua_request_info(struct mg_connection *conn, lua_State *L)
     reg_int(L, "remote_port", conn->request_info.remote_port);
     reg_int(L, "num_headers", conn->request_info.num_headers);
     reg_int(L, "server_port", ntohs(conn->client.lsa.sin.sin_port));
+
+    if (conn->request_info.content_length >= 0) {
+        /* reg_int64: content_length */
+        lua_pushstring(L, "content_length");
+        lua_pushnumber(L, (lua_Number)conn->request_info.content_length); /* lua_Number may be used as 52 bit integer */
+        lua_rawset(L, -3);
+    }
+    if ((s = mg_get_header(conn, "Content-Type")) != NULL) {
+        reg_string(L, "content_type", s);
+    }
 
     if (conn->request_info.remote_user != NULL) {
         reg_string(L, "remote_user", conn->request_info.remote_user);
@@ -945,7 +959,7 @@ static void prepare_lua_environment(struct mg_context * ctx, struct mg_connectio
         luaopen_lsqlite3(L);
     }
 #endif
-#ifdef USE_LUA_SQLITE3
+#ifdef USE_LUA_LUAXML
     {
         extern int luaopen_LuaXML(lua_State *);
         luaopen_LuaXML(L);
