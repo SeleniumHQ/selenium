@@ -17,7 +17,6 @@
 #ifndef WEBDRIVER_SERVER_SESSION_H_
 #define WEBDRIVER_SERVER_SESSION_H_
 
-#include <memory>
 #include <string>
 
 namespace webdriver {
@@ -43,8 +42,6 @@ class Session {
 
   DISALLOW_COPY_AND_ASSIGN(Session);
 };
-
-typedef std::tr1::shared_ptr<Session> SessionHandle;
 
 }  // namespace webdriver
 

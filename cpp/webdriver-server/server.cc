@@ -11,13 +11,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <regex>
 #include "server.h"
+#include <cstdio>
+#include <cstring>
+#include <sstream>
+#include "session.h"
+#include "uri_info.h"
 #include "logging.h"
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
 #define HTML_CONTENT_TYPE "text/html"
 #define JSON_CONTENT_TYPE "application/json"
+
+#if defined(WINDOWS)
+#include <cstdarg>
+inline int wd_snprintf(char* str, size_t size, const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  int count = _vscprintf(format, args);
+  if (str != NULL && size > 0) {
+    count = _vsnprintf_s(str, size, _TRUNCATE, format, args);
+  }
+  va_end(args);
+  return count;
+}
+#define snprintf wd_snprintf
+#endif
 
 namespace webdriver {
 
@@ -50,7 +69,8 @@ void Server::Initialize(const int port,
                         const std::string& log_file) {
   LOG::Level(log_level);
   LOG::File(log_file);
-  LOG(INFO) << "Starting WebDriver server on port: '" << port << "' on host: '" << host << "'";
+  LOG(INFO) << "Starting WebDriver server on port: '"
+            << port << "' on host: '" << host << "'";
   this->port_ = port;
   this->host_ = host;
   this->PopulateCommandRepository();
@@ -74,19 +94,20 @@ bool Server::Start() {
     // empty string.
     port_format_string = "%s%d";
   }
-  int formatted_string_size = _scprintf(port_format_string.c_str(),
-                                        this->host_.c_str(),
-                                        this->port_);
-  char* listening_ports_buffer = new char[formatted_string_size + 1];
-  _snprintf_s(listening_ports_buffer,
-              formatted_string_size + 1,
-              formatted_string_size,
-              port_format_string.c_str(),
-              this->host_.c_str(),
-              this->port_);
+  int formatted_string_size = snprintf(NULL,
+                                       0,
+                                       port_format_string.c_str(),
+                                       this->host_.c_str(),
+                                       this->port_) + 1;
+  char* listening_ports_buffer = new char[formatted_string_size];
+  snprintf(listening_ports_buffer,
+           formatted_string_size,
+           port_format_string.c_str(),
+           this->host_.c_str(),
+           this->port_);
 
   std::string acl = "-0.0.0.0/0,+127.0.0.1";
-  LOG(DEBUG) << "Mongoose ACL is " << acl;
+  LOG(DEBUG) << "Civetweb ACL is " << acl;
 
   const char* options[] = { "listening_ports", listening_ports_buffer,
                             "access_control_list", acl.c_str(),
@@ -96,7 +117,7 @@ bool Server::Start() {
   callbacks.begin_request = &OnNewHttpRequest;
   context_ = mg_start(&callbacks, this, options);
   if (context_ == NULL) {
-    LOG(WARN) << "Failed to start Mongoose";
+    LOG(WARN) << "Failed to start Civetweb";
     return false;
   }
   return true;
@@ -114,7 +135,7 @@ int Server::ProcessRequest(struct mg_connection* conn,
     const struct mg_request_info* request_info) {
   LOG(TRACE) << "Entering Server::ProcessRequest";
 
-  int http_response_code = NULL;
+  int http_response_code = 0;
   std::string http_verb = request_info->request_method;
   std::string request_body = "{}";
   if (http_verb == "POST") {
@@ -154,7 +175,12 @@ int Server::ProcessRequest(struct mg_connection* conn,
 void Server::AddCommand(const std::string& url,
                         const std::string& http_verb,
                         const std::string& command_name) {
-  this->commands_[url][http_verb] = command_name;
+  if (this->commands_.find(url) == this->commands_.end()) {
+    this->commands_[url] = std::tr1::shared_ptr<UriInfo>(
+        new UriInfo(url, http_verb, command_name));
+  } else {
+    this->commands_[url]->AddHttpVerb(http_verb, command_name);
+  }
 }
 
 void Server::ShutDownSession(const std::string& session_id) {
@@ -242,7 +268,7 @@ std::string Server::DispatchCommand(const std::string& uri,
     // not by the session.
     serialized_response = this->ListSessions();
   } else {
-    SessionHandle session_handle = NULL;
+    SessionHandle session_handle;
     if (command != webdriver::CommandType::NewSession &&
         !this->LookupSession(session_id, &session_handle)) {
       if (command == webdriver::CommandType::Quit) {
@@ -297,7 +323,9 @@ std::string Server::ListSessions() {
 
   // Manually construct the serialized command for getting 
   // session capabilities.
-  std::string get_caps_command = "{ \"name\" : \"" + webdriver::CommandType::GetSessionCapabilities + "\"" +
+  std::string get_caps_command = "{ \"name\" : \"" + 
+                                 webdriver::CommandType::GetSessionCapabilities
+                                 + "\"" +
                                  ", \"locator\" : {}, \"parameters\" : {} }";
 
   Json::Value sessions(Json::arrayValue);
@@ -513,37 +541,32 @@ std::string Server::LookupCommand(const std::string& uri,
   LOG(TRACE) << "Entering Server::LookupCommand";
 
   std::string value = webdriver::CommandType::NoCommand;
+  std::vector<std::string> url_fragments;
+  UriInfo::ParseUri(uri, &url_fragments, NULL);
   UrlMap::const_iterator it = this->commands_.begin();
   for (; it != this->commands_.end(); ++it) {
-    std::string url_candidate = it->first;
     std::vector<std::string> locator_param_names;
     std::vector<std::string> locator_param_values;
-    if (this->IsCommandMatch(uri, url_candidate, &locator_param_names, &locator_param_values)) {
-      VerbMap::const_iterator verb_iterator = it->second.find(http_verb);
-      if (verb_iterator != it->second.end()) {
-        value = verb_iterator->second;
-        std::string param = this->ConstructLocatorParameterJson(locator_param_names,
-                                                                locator_param_values,
-                                                                session_id);
+    if (it->second->IsUriMatch(url_fragments,
+                               &locator_param_names,
+                               &locator_param_values)) {
+      if (it->second->HasHttpVerb(http_verb, &value)) {
+        std::string param = this->ConstructLocatorParameterJson(
+            locator_param_names, locator_param_values, session_id);
         locator->append(param);
-        break;
       } else {
-        verb_iterator = it->second.begin();
-        for (; verb_iterator != it->second.end(); ++verb_iterator) {
-          if (locator->size() != 0) {
-            locator->append(",");
-          }
-          locator->append(verb_iterator->first);
-        }
+        locator->append(it->second->GetSupportedVerbs());
       }
+      break;
     }
   }
   return value;
 }
 
-std::string Server::ConstructLocatorParameterJson(std::vector<std::string> locator_param_names,
-                                                  std::vector<std::string> locator_param_values,
-                                                  std::string* session_id) {
+std::string Server::ConstructLocatorParameterJson(
+    std::vector<std::string> locator_param_names, 
+    std::vector<std::string> locator_param_values,
+    std::string* session_id) {
   std::string param = "{";
   size_t param_count = locator_param_names.size();
   for (unsigned int i = 0; i < param_count; i++) {
@@ -563,44 +586,6 @@ std::string Server::ConstructLocatorParameterJson(std::vector<std::string> locat
 
   param.append(" }");
   return param;
-}
-
-bool Server::IsCommandMatch(const std::string& uri,
-                            const std::string& url_template,
-                            std::vector<std::string>* locator_param_names,
-                            std::vector<std::string>* locator_param_values) {
-  std::string url_match_regex = url_template;
-  size_t param_start_pos = url_match_regex.find_first_of(":");
-  while (param_start_pos != std::string::npos) {
-    size_t param_len = std::string::npos;
-    size_t param_end_pos = url_match_regex.find_first_of("/", param_start_pos);
-    if (param_end_pos != std::string::npos) {
-      param_len = param_end_pos - param_start_pos;
-    }
-
-    // Skip the colon
-    std::string param_name = url_match_regex.substr(param_start_pos + 1,
-                                                    param_len - 1);
-    locator_param_names->push_back(param_name);
-    if (param_name == "sessionid" || param_name == "id") {
-      url_match_regex.replace(param_start_pos, param_len, "([0-9a-fA-F-]+)");
-    } else {
-      url_match_regex.replace(param_start_pos, param_len, "([^/]+)");
-    }
-    param_start_pos = url_match_regex.find_first_of(":");
-  }
-
-  std::tr1::regex matcher("^" + url_match_regex + "$");
-  std::tr1::match_results<std::string::const_iterator> matches;
-  if (std::tr1::regex_search(uri, matches, matcher)) {
-    size_t param_count = locator_param_names->size();
-    for (unsigned int i = 0; i < param_count; i++) {
-      std::string locator_param_value = matches[i + 1].str();
-      locator_param_values->push_back(locator_param_value);
-    }
-    return true;
-  }
-  return false;
 }
 
 void Server::PopulateCommandRepository() {

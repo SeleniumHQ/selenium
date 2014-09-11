@@ -17,15 +17,24 @@
 #ifndef WEBDRIVER_SERVER_SERVER_H_
 #define WEBDRIVER_SERVER_SERVER_H_
 
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
+#if defined(_WIN32)
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
 #include "civetweb.h"
 #include "command_types.h"
 #include "response.h"
-#include "session.h"
 
 namespace webdriver {
+
+class UriInfo;
+class Session;
+
+typedef std::tr1::shared_ptr<Session> SessionHandle;
 
 class Server {
  public:
@@ -57,8 +66,7 @@ class Server {
 
  private:
   typedef std::map<std::string, SessionHandle> SessionMap;
-  typedef std::map<std::string, std::string> VerbMap;
-  typedef std::map<std::string, VerbMap> UrlMap;
+  typedef std::map<std::string, std::tr1::shared_ptr<UriInfo> > UrlMap;
 
   void Initialize(const int port,
                   const std::string& host,
@@ -82,10 +90,6 @@ class Server {
                            const struct mg_request_info* request_info,
                            const std::string& serialized_response);
   void PopulateCommandRepository(void);
-  bool IsCommandMatch(const std::string& uri,
-                      const std::string& url_template,
-                      std::vector<std::string>* locator_param_names,
-                      std::vector<std::string>* locator_param_values);
   std::string ConstructLocatorParameterJson(std::vector<std::string> locator_param_names,
                                             std::vector<std::string> locator_param_values,
                                             std::string* session_id);

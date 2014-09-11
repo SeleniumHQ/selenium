@@ -24,6 +24,9 @@
     <ClCompile Include="server.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="uri_info.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="errorcodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uri_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
