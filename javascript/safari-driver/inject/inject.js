@@ -63,7 +63,7 @@ goog.exportSymbol('init', safaridriver.inject.init);
 /**
  * Forwards connection requests from the content page to the extension.
  * @param {!safaridriver.message.Message} message The connect message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.onConnect_ = function(message, e) {
@@ -81,7 +81,7 @@ safaridriver.inject.onConnect_ = function(message, e) {
 
 /**
  * @param {!safaridriver.inject.message.Encode} message The message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.onEncode_ = function(message, e) {

@@ -238,7 +238,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
 /**
  * Handles command messages from the injected script.
  * @param {!safaridriver.message.Command} message The command message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @throws {Error} If the command is not supported by this script.
  * @private
  */

@@ -89,8 +89,8 @@ safaridriver.message.throwInvalidMessageError = function(data) {
 
 /**
  * Creates a {@link safaridriver.message.Message} from a message event.
- * @param {!(SafariExtensionMessageEvent|MessageEvent)} event The raw event to
- *     convert to a message.
+ * @param {!(SafariExtensionMessageEvent|MessageEvent.<*>)} event The raw event
+ *     to convert to a message.
  * @return {!safaridriver.message.Message} The new message.
  * @throws {Error} If the event does not conform to the message protocol.
  */

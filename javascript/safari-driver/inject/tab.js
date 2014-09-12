@@ -26,6 +26,7 @@ goog.require('bot.inject');
 goog.require('bot.json');
 goog.require('bot.response');
 goog.require('goog.asserts');
+goog.require('goog.dom');
 goog.require('goog.object');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.Tab');
@@ -236,7 +237,7 @@ safaridriver.inject.Tab.prototype.init = function() {
 
 /**
  * @param {!safaridriver.message.Log} message The log message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
@@ -248,7 +249,7 @@ safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.Alert} message The alert message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
@@ -279,7 +280,7 @@ safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.LoadModule} message The alert message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLoadModule_ = function(message, e) {
@@ -294,7 +295,7 @@ safaridriver.inject.Tab.prototype.onLoadModule_ = function(message, e) {
 /**
  * Responds to an activate message sent from another frame in this window.
  * @param {!safaridriver.inject.message.Activate} message The activate message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
@@ -324,7 +325,7 @@ safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
  * start handling command messages.
  * @param {!safaridriver.inject.message.ActivateFrame} message The activate
  *     message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
@@ -341,7 +342,7 @@ safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
 
 /**
  * @param {!safaridriver.message.Message} message The activate message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onReactivateFrame_ = function(message, e) {
@@ -368,7 +369,7 @@ safaridriver.inject.Tab.prototype.onReactivateFrame_ = function(message, e) {
 /**
  * Responds to load messages.
  * @param {!safaridriver.message.Message} message The message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
@@ -496,7 +497,7 @@ safaridriver.inject.Tab.prototype.checkFrame_ = function() {
 
 /**
  * @param {!safaridriver.message.Command} message The command message.
- * @param {!MessageEvent} e The original message event.
+ * @param {!MessageEvent.<*>} e The original message event.
  * @private
  */
 safaridriver.inject.Tab.prototype.onFrameCommand_ = function(message, e) {
@@ -630,7 +631,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
 
 /**
  * @param {!safaridriver.message.Response} message The message.
- * @param {!MessageEvent} e The original message.
+ * @param {!MessageEvent.<*>} e The original message.
  * @private
  */
 safaridriver.inject.Tab.prototype.onPageResponse_ = function(message, e) {
