@@ -1,3 +1,8 @@
+## v2.43.1
+
+* Fixed an issue with flakiness when setting up the Firefox profile that could
+    prevent the driver from initializing properly.
+
 ## v2.43.0
 
 * Added native support for Firefox - the Java Selenium server is no longer

@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.43.0",
+    "version": "2.43.1",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
         "automation",
@@ -23,7 +23,6 @@
     },
     "dependencies": {
         "adm-zip": "0.4.4",
-        "ncp": "0.6.0",
         "tmp": "0.0.24",
         "xml2js": "0.4.4"
     },
