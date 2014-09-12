@@ -4,6 +4,7 @@
   <title>parent_overflow_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.dom.OverflowState');
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.ie');
@@ -18,15 +19,15 @@
 
     function testScrollElementInToView() {
       var element = bot.locators.findElement({ id: 'line8' });
-      assertTrue(webdriver.ie.isInParentOverflow(element));
+      assertEquals(bot.dom.OverflowState.SCROLL, webdriver.ie.isInParentOverflow(element));
       element.scrollIntoView(false);
-      assertFalse(webdriver.ie.isInParentOverflow(element));
+      assertEquals(bot.dom.OverflowState.NONE, webdriver.ie.isInParentOverflow(element));
 
       // Verify scroll is correct for up and to the left.
       var element = bot.locators.findElement({ id: 'line1' });
-      assertTrue(webdriver.ie.isInParentOverflow(element));
+      assertEquals(bot.dom.OverflowState.SCROLL, webdriver.ie.isInParentOverflow(element));
       element.scrollIntoView(false);
-      assertFalse(webdriver.ie.isInParentOverflow(element));
+      assertEquals(bot.dom.OverflowState.NONE, webdriver.ie.isInParentOverflow(element));
     }
   </script>
   <div style="height: 150px"></div>
