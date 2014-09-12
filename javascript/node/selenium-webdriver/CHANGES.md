@@ -1,4 +1,4 @@
-## v2.43.0-dev
+## v2.43.0
 
 * Added native support for Firefox - the Java Selenium server is no longer
     required.
