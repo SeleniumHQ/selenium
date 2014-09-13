@@ -123,9 +123,8 @@ limitations under the License.
                   </columns>
                   <rows>
                     <row align="center">
-                      <!-- do drop down that depends upon the element type -->
                       <label control="commandAction" value="&command.label;"/>
-                      <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
+                      <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand(this.commandtype, this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true"/>
                     </row>
                     <row align="center">
                       <!-- show different options collected by the client. Allow user to override -->
