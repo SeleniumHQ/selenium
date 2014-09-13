@@ -1,3 +1,8 @@
+## v2.43.2-4
+
+* No changes; version bumps while attempting to work around an issue with
+    publishing to npm (a version string may only be used once).
+
 ## v2.43.1
 
 * Fixed an issue with flakiness when setting up the Firefox profile that could
