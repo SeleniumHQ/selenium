@@ -59,6 +59,15 @@ limitations under the License.
   </toolbarpalette>
 
   <!-- Samit: Enh: Add to the App menu Web developer popup in Firefox 4 -->
+  <menupopup id="menuWebDeveloperPopup">
+    <menuitem id="menuAppmenuSeleniumIDE"
+              label="Selenium IDE"
+              key="key_toggleIDE"
+              command="openRecorder"
+              class="menuitem-iconic"
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
+  </menupopup>
+
   <menupopup id="appmenu_webDeveloper_popup">
     <menuitem id="menuAppmenuSeleniumIDE"
               label="Selenium IDE"
