@@ -845,6 +845,7 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 };
 
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
+  var start = Date.now();
   var self = this;
   self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
   self.app.notify("testCasePlayStart", self.app.getTestCase());
@@ -852,8 +853,14 @@ Editor.prototype.playCurrentTestCase = function (next, index, total) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
-      testCase.testResult = failed ? "failed" : "passed";
-      self.getUserLog().info("Test case " + testCase.testResult);
+      testCase.testResult = {
+        summary: failed ? "failed" : "passed",
+        // remember all in milliseconds
+        start: start,
+        end: Date.now(),
+        dur: Date.now() - start
+      };
+      self.getUserLog().info("Test case " + testCase.testResult.summary);
       self.app.notify("testCasePlayDone", testCase);
     } else {
       self.getUserLog().error("current test case not found");
@@ -872,25 +879,39 @@ Editor.prototype.playTestSuite = function (startIndex) {
     startIndex = 0;
   }
   var index = startIndex - 1;
-  this.app.getTestSuite().tests.forEach(function (test) {
+  var testSuite = this.app.getTestSuite();
+  testSuite.tests.forEach(function (test) {
     if (test.testResult) {
       delete test.testResult;
     }
   });
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
+  var start = Date.now();
+  testSuite.testSuiteProgress = this.testSuiteProgress;
   var self = this;
   self.app.notify("testSuitePlayStart");
-  var total = this.app.getTestSuite().tests.length - startIndex;
+  var total = testSuite.tests.length - startIndex;
   (function () {
-    if (++index < self.app.getTestSuite().tests.length) {
+    if (++index < testSuite.tests.length) {
       self.suiteTreeView.scrollToRow(index);
-      self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
+      self.app.showTestCaseFromSuite(testSuite.tests[index]);
       self.playCurrentTestCase(arguments.callee, index, total);
     } else {
       //Suite done
+      testSuite.suiteResult = {
+        summary: total == self.testSuiteProgress.runs && self.testSuiteProgress.failures == 0 ? 'passed' : 'failed',
+        total: total,
+        ran: self.testSuiteProgress.runs,
+        failed: self.testSuiteProgress.failures,
+        passed: self.testSuiteProgress.runs - self.testSuiteProgress.failures,
+        // remember all in milliseconds
+        start: start,
+        end: Date.now(),
+        dur: Date.now() - start
+      };
       self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
-      self.app.notify("testSuitePlayDone", total, self.testSuiteProgress.runs, self.testSuiteProgress.failures);
+      self.app.notify("testSuitePlayDone", testSuite.suiteResult);
     }
   })();
 };

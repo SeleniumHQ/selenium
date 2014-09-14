@@ -237,6 +237,7 @@ objectExtend(IDETestLoop.prototype, {
       LOG.error(result.failureMessage);
       testCase.debugContext.failed = true;
       testCase.debugContext.currentCommand().result = 'failed';
+      testCase.debugContext.currentCommand().failureMessage = result.failureMessage;
     } else if (result.passed) {
       testCase.debugContext.currentCommand().result = 'passed';
     } else {
@@ -256,6 +257,7 @@ objectExtend(IDETestLoop.prototype, {
       LOG.debug("commandError");
       testCase.debugContext.failed = true;
       testCase.debugContext.currentCommand().result = 'failed';
+      testCase.debugContext.currentCommand().failureMessage = errorMessage;
       editor.view.rowUpdated(testCase.debugContext.debugIndex);
     }
   },

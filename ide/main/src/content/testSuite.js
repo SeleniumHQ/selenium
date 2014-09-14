@@ -16,6 +16,7 @@
 
 function TestSuite() {
     this.tests = [];
+    this.title = "Test Suite";
     this.modified = false;	//Samit: Enh: Support for change detection
 }
 
@@ -153,6 +154,19 @@ TestSuite.prototype = {
         return content;
     },
 
+  result: function() {
+    var r = {
+      title: "Test Suite",
+      result: this.suiteResult,
+      //TODO progress and baseURL and maybe real title?
+      tests: []
+    };
+    r.tests = this.tests.map(function(test) {
+      return test.result();
+    });
+    return r;
+  },
+
     generateNewTestCaseTitle: function() {
         if (this.tests.some(function(test) { return /^Untitled/.test(test.getTitle()) })) {
             var max = 1;
@@ -261,7 +275,28 @@ TestSuite.TestCase.prototype = {
     format: function() {
         return "<tr><td><a href=\"" + this.getRelativeFilePath() + "\">" +
             this.getTitle() + "</a></td></tr>\n";
+    },
+
+  result: function() {
+    var r = {
+      title: this.getTitle(),
+      result: this.testResult,
+      commands: []
+    };
+    if (this.content) {
+      r.baseURL = this.content.baseURL;
+      r.commands = this.content.commands.map(function(cmd) {
+        if (cmd.type == 'comment') {
+          return { type: cmd.type, comment: cmd.comment };
+        } else if (cmd.type == 'command') {
+          return { type: cmd.type, command: cmd.command, target: cmd.target, value: cmd.value, result: cmd.result, error: cmd.failureMessage };
+        }
+        return { type: cmd.type };
+      });
     }
-}
+    return r;
+  }
+
+};
 
 observable(TestSuite);
