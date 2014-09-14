@@ -52,6 +52,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/storedHistory.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/deferred.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/http.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/browser/mozilla/prompt-service.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sidebar-editor.js"/>
