@@ -169,7 +169,10 @@ function Editor(window) {
   this.selDebugger = new Debugger(this);
   this.selDebugger.addObserver({
     stateUpdated: function (state) {
-      document.getElementById("pause-button").setAttribute("class", "icon " + (state == Debugger.PAUSED ? "resume" : "pause"));
+      var pauseBtn = document.getElementById("pause-button");
+      pauseBtn.classList.remove("resume");
+      pauseBtn.classList.remove("pause");
+      pauseBtn.classList.add(state == Debugger.PAUSED ? "resume" : "pause");
       self.updateState();
     }
   });
@@ -711,6 +714,14 @@ Editor.prototype.updateDeveloperTools = function (show) {
   //use when the developer tools have to be enabled or not
   $("reload-button").hidden = !show;
   $("reload-button").disabled = !show;
+};
+
+Editor.prototype.autoCompleteCommand = function (command) {
+  var newcmd = command.replace(/^.+ >> /, '');
+  if (newcmd !== command) {
+    $('commandAction').value = newcmd;
+    this.treeView.updateCurrentCommand('command', newcmd);
+  }
 };
 
 Editor.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {

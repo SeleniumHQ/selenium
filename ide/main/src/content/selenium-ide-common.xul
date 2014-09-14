@@ -166,7 +166,7 @@ limitations under the License.
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menuitem label="&saveSuiteAsCmd.label;" command="cmd_save_suite_as" />
       <menu label="&exportSuiteCmd.label;" accesskey="X">
-        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this, 'exportTestSuite')" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
+        <menupopup id="popup_export_formats_ts" onpopupshowing="window.editor.populateFormatsPopup(this, 'exportTestSuite')" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
       </menu>
       <menu label="&recentSuiteCmd.label;">
         <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.loadRecentSuite(event.target.getAttribute('value'))" /><!-- Samit: Enh: Prompt to save first -->
