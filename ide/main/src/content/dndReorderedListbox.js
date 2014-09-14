@@ -9,12 +9,27 @@
  *
  * @author Samit Badle
  * @param listBox - element with list box (must have an id)
- * @param listItemsRa - array with string items to show and reorder in the listbox
+ * @param listItemsRa - array with string items to show and reorder in the listbox. Can also accept array of objects, but then the mapFn should be provided
+ * @param mapFn - an optional function to map the items in the listItemsRa to displayable text
+ * @param keepInOrder - arrange the listItemsRa in the order of the items in the list
+ * @param dropFn
  */
-function DnDReorderedListbox(listBox, listItemsRa) {
+function DnDReorderedListbox(listBox, listItemsRa, mapFn, keepInOrder, dropFn) {
   this.listBox = listBox;
-  this.listBoxDnD = new ListboxDnDReorder(this.listBox, 'application/x-' + listBox.id.toLowerCase());
   this.listItems = listItemsRa;
+  this.mapFn = mapFn || function(item) { return item; };
+  this.keepInOrder = keepInOrder ? true : false;
+  var self = this;
+  this.listBoxDnD = new ListboxDnDReorder(
+      listBox,
+      'application/x-' + listBox.id.toLowerCase(),
+      keepInOrder ? function (srcIndex, destIndex) {
+        if (dropFn) {
+          dropFn(srcIndex, destIndex);
+        }
+        self._reorder(srcIndex, destIndex);
+      } : dropFn
+  );
   this.reload();
 }
 
@@ -35,11 +50,34 @@ DnDReorderedListbox.prototype.reload = function(listItemsRa) {
   //load the listbox with the list
   var listItems = this.listItems;
   for (var j = 0; j < listItems.length; j++) {
-    list.appendItem(listItems[j], j);
+    list.appendItem(this.mapFn(listItems[j]), j);
   }
 };
 
+DnDReorderedListbox.prototype.updateItem = function(index) {
+  this.listBox.getItemAtIndex(index).label = this.mapFn(this.listItems[index]);
+};
+
+DnDReorderedListbox.prototype.appendItem = function(item) {
+  var newIndex = this.listItems.length;
+  this.listItems.push(item);
+  this.listBox.appendItem(this.mapFn(item), newIndex);
+  return newIndex;
+};
+
+DnDReorderedListbox.prototype.removeItem = function(index) {
+  this.listBox.removeItemAt(index);
+  return this.listItems.splice(index, 1)[0];
+};
+
+DnDReorderedListbox.prototype.selectItem = function(index) {
+  this.listBox.selectedIndex = index;
+};
+
 DnDReorderedListbox.prototype.getListItems = function() {
+  if (this.keepInOrder) {
+    return this.listItems;
+  }
   var listItems = this.listItems;
   var newRa = new Array(listItems.length);
   var list = this.listBox;
@@ -47,6 +85,12 @@ DnDReorderedListbox.prototype.getListItems = function() {
     newRa[i] = listItems[list.getItemAtIndex(i).value];
   }
   return newRa;
+};
+
+DnDReorderedListbox.prototype._reorder = function(srcIndex, destIndex) {
+  //TODO
+  var item = this.listItems.splice(srcIndex, 1);
+  this.listItems.splice(destIndex, 0, item[0]);
 };
 
 /**
@@ -57,8 +101,10 @@ DnDReorderedListbox.prototype.getListItems = function() {
  * @author Samit Badle
  * @param listBox
  * @param dataType
+ * @param onDrop
  */
-function ListboxDnDReorder(listBox, dataType) {
+function ListboxDnDReorder(listBox, dataType, onDrop) {
+  this.onDrop = onDrop;
   this.dataType = dataType; //for e.g. 'application/x-something'
   this.listBox = listBox;
   var self = this;
@@ -76,7 +122,7 @@ ListboxDnDReorder.prototype.dragStart = function(event) {
   if (this.itemCount > 1) {
     // You cannot rearrange a single or no items no matter how hard you try
     //cache some useful elements first
-    this.selectedItem = this.listBox.selectedItem;
+    this.draggedItem = this.listBox.selectedItem;
     this.lastListItem = this.listBox.getItemAtIndex(this.itemCount - 1);
     var rect = this.lastListItem.getBoundingClientRect();
     this.flipYPos = rect.top + (rect.height / 2);
@@ -113,7 +159,7 @@ ListboxDnDReorder.prototype.dragLeave = function(event) {
 
 ListboxDnDReorder.prototype.dragEnd = function(event) {
   this._clearDropPosition();
-  this.selectedItem = null;
+  this.draggedItem = null;
   this.curItem = null;
 };
 
@@ -122,16 +168,23 @@ ListboxDnDReorder.prototype.drop = function(event) {
   if (this.dropAfter) {
     dropIndex++;
   }
-  var selectedIndex = this.listBox.getIndexOfItem(this.selectedItem);
+  var selectedIndex = this.listBox.getIndexOfItem(this.draggedItem);
   this._clearDropPosition();
   if (selectedIndex < dropIndex) {
     dropIndex--;
   }
   if (selectedIndex != dropIndex) {
-    var lbl = this.selectedItem.label;
-    var userData = this.selectedItem.value;
+    var selectDropped = selectedIndex == this.listBox.selectedIndex;
+    if (this.onDrop) {
+      this.onDrop(selectedIndex, dropIndex);
+    }
+    var lbl = this.draggedItem.label;
+    var userData = this.draggedItem.value;
     this.listBox.removeItemAt(selectedIndex);
     this.listBox.insertItemAt(dropIndex, lbl, userData);
+    if (selectDropped) {
+      this.listBox.selectedIndex = dropIndex;
+    }
   }
 };
 
