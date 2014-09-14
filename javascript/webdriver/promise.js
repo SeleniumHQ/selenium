@@ -1044,6 +1044,75 @@ webdriver.promise.ControlFlow = function(opt_timer) {
    * @private {!Array.<!webdriver.promise.Task_>}
    */
   this.history_ = [];
+
+  /**
+   * Tracks the active execution frame for this instance. Lazily initialized
+   * when the first task is scheduled.
+   * @private {webdriver.promise.Frame_}
+   */
+  this.activeFrame_ = null;
+
+  /**
+   * A reference to the frame in which new tasks should be scheduled. If
+   * {@code null}, tasks will be scheduled within the active frame. When forcing
+   * a function to run in the context of a new frame, this pointer is used to
+   * ensure tasks are scheduled within the newly created frame, even though it
+   * won't be active yet.
+   * @private {webdriver.promise.Frame_}
+   * @see {#runInNewFrame_}
+   */
+  this.schedulingFrame_ = null;
+
+  /**
+   * Timeout ID set when the flow is about to shutdown without any errors
+   * being detected. Upon shutting down, the flow will emit an
+   * {@link webdriver.promise.ControlFlow.EventType.IDLE} event. Idle events
+   * always follow a brief timeout in order to catch latent errors from the last
+   * completed task. If this task had a callback registered, but no errback, and
+   * the task fails, the unhandled failure would not be reported by the promise
+   * system until the next turn of the event loop:
+   *
+   *   // Schedule 1 task that fails.
+   *   var result = webriver.promise.controlFlow().schedule('example',
+   *       function() { return webdriver.promise.rejected('failed'); });
+   *   // Set a callback on the result. This delays reporting the unhandled
+   *   // failure for 1 turn of the event loop.
+   *   result.then(goog.nullFunction);
+   *
+   * @private {?number}
+   */
+  this.shutdownId_ = null;
+
+  /**
+   * Interval ID for this instance's event loop.
+   * @private {?number}
+   */
+  this.eventLoopId_ = null;
+
+  /**
+   * The number of "pending" promise rejections.
+   *
+   * <p>Each time a promise is rejected and is not handled by a listener, it
+   * will schedule a 0-based timeout to check if it is still unrejected in the
+   * next turn of the JS-event loop. This allows listeners to attach to, and
+   * handle, the rejected promise at any point in same turn of the event loop
+   * that the promise was rejected.
+   *
+   * <p>When this flow's own event loop triggers, it will not run if there
+   * are any outstanding promise rejections. This allows unhandled promises to
+   * be reported before a new task is started, ensuring the error is reported
+   * to the current task queue.
+   *
+   * @private {number}
+   */
+  this.pendingRejections_ = 0;
+
+  /**
+   * The number of aborted frames since the last time a task was executed or a
+   * frame completed successfully.
+   * @private {number}
+   */
+  this.numAbortedFrames_ = 0;
 };
 goog.inherits(webdriver.promise.ControlFlow, webdriver.EventEmitter);
 
@@ -1116,81 +1185,6 @@ webdriver.promise.ControlFlow.EventType = {
  * @const
  */
 webdriver.promise.ControlFlow.EVENT_LOOP_FREQUENCY = 10;
-
-
-/**
- * Tracks the active execution frame for this instance. Lazily initialized
- * when the first task is scheduled.
- * @private {webdriver.promise.Frame_}
- */
-webdriver.promise.ControlFlow.prototype.activeFrame_ = null;
-
-
-/**
- * A reference to the frame in which new tasks should be scheduled. If
- * {@code null}, tasks will be scheduled within the active frame. When forcing
- * a function to run in the context of a new frame, this pointer is used to
- * ensure tasks are scheduled within the newly created frame, even though it
- * won't be active yet.
- * @private {webdriver.promise.Frame_}
- * @see {#runInNewFrame_}
- */
-webdriver.promise.ControlFlow.prototype.schedulingFrame_ = null;
-
-
-/**
- * Timeout ID set when the flow is about to shutdown without any errors
- * being detected. Upon shutting down, the flow will emit an
- * {@link webdriver.promise.ControlFlow.EventType.IDLE} event. Idle events
- * always follow a brief timeout in order to catch latent errors from the last
- * completed task. If this task had a callback registered, but no errback, and
- * the task fails, the unhandled failure would not be reported by the promise
- * system until the next turn of the event loop:
- *
- *   // Schedule 1 task that fails.
- *   var result = webriver.promise.controlFlow().schedule('example',
- *       function() { return webdriver.promise.rejected('failed'); });
- *   // Set a callback on the result. This delays reporting the unhandled
- *   // failure for 1 turn of the event loop.
- *   result.then(goog.nullFunction);
- *
- * @private {?number}
- */
-webdriver.promise.ControlFlow.prototype.shutdownId_ = null;
-
-
-/**
- * Interval ID for this instance's event loop.
- * @private {?number}
- */
-webdriver.promise.ControlFlow.prototype.eventLoopId_ = null;
-
-
-/**
- * The number of "pending" promise rejections.
- *
- * <p>Each time a promise is rejected and is not handled by a listener, it will
- * schedule a 0-based timeout to check if it is still unrejected in the next
- * turn of the JS-event loop. This allows listeners to attach to, and handle,
- * the rejected promise at any point in same turn of the event loop that the
- * promise was rejected.
- *
- * <p>When this flow's own event loop triggers, it will not run if there
- * are any outstanding promise rejections. This allows unhandled promises to
- * be reported before a new task is started, ensuring the error is reported to
- * the current task queue.
- *
- * @private {number}
- */
-webdriver.promise.ControlFlow.prototype.pendingRejections_ = 0;
-
-
-/**
- * The number of aborted frames since the last time a task was executed or a
- * frame completed successfully.
- * @private {number}
- */
-webdriver.promise.ControlFlow.prototype.numAbortedFrames_ = 0;
 
 
 /**
@@ -1762,15 +1756,11 @@ webdriver.promise.ControlFlow.prototype.abortNow_ = function(error) {
  */
 webdriver.promise.Node_ = function(flow) {
   webdriver.promise.Deferred.call(this, null, flow);
+
+  /** @private {webdriver.promise.Node_} */
+  this.parent_ = null;
 };
 goog.inherits(webdriver.promise.Node_, webdriver.promise.Deferred);
-
-
-/**
- * This node's parent.
- * @private {webdriver.promise.Node_}
- */
-webdriver.promise.Node_.prototype.parent_ = null;
 
 
 /** @return {webdriver.promise.Node_} This node's parent. */
@@ -1831,56 +1821,50 @@ webdriver.promise.Frame_ = function(flow) {
    * @private {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
    */
   this.children_ = [];
+
+
+  /** @private {webdriver.promise.Node_} */
+  this.lastInsertedChild_ = null;
+
+  /**
+   * The task currently being executed within this frame.
+   * @private {webdriver.promise.Task_}
+   */
+  this.pendingTask_ = null;
+
+  /**
+   * Whether this frame is active. A frame is considered active once one of its
+   * descendants has been removed for execution.
+   *
+   * Adding a sub-frame as a child to an active frame is an indication that
+   * a callback to a {@link webdriver.promise.Deferred} is being invoked and any
+   * tasks scheduled within it should have priority over previously scheduled
+   * tasks:
+   * <code><pre>
+   *   var flow = webdriver.promise.controlFlow();
+   *   flow.execute('start here', goog.nullFunction).then(function() {
+   *     flow.execute('this should execute 2nd', goog.nullFunction);
+   *   });
+   *   flow.execute('this should execute last', goog.nullFunction);
+   * </pre></code>
+   *
+   * @private {boolean}
+   */
+  this.isActive_ = false;
+
+  /**
+   * Whether this frame is currently locked. A locked frame represents a callback
+   * or task function which has run to completion and scheduled all of its tasks.
+   *
+   * <p>Once a frame becomes {@link #isActive_ active}, any new frames which are
+   * added represent callbacks on a {@link webdriver.promise.Deferred}, whose
+   * tasks must be given priority over previously scheduled tasks.
+   *
+   * @private {boolean}
+   */
+  this.isLocked_ = false;
 };
 goog.inherits(webdriver.promise.Frame_, webdriver.promise.Node_);
-
-
-/**
- * The task currently being executed within this frame.
- * @private {webdriver.promise.Task_}
- */
-webdriver.promise.Frame_.prototype.pendingTask_ = null;
-
-
-/**
- * Whether this frame is active. A frame is considered active once one of its
- * descendants has been removed for execution.
- *
- * Adding a sub-frame as a child to an active frame is an indication that
- * a callback to a {@link webdriver.promise.Deferred} is being invoked and any
- * tasks scheduled within it should have priority over previously scheduled
- * tasks:
- * <code><pre>
- *   var flow = webdriver.promise.controlFlow();
- *   flow.execute('start here', goog.nullFunction).then(function() {
- *     flow.execute('this should execute 2nd', goog.nullFunction);
- *   });
- *   flow.execute('this should execute last', goog.nullFunction);
- * </pre></code>
- *
- * @private {boolean}
- */
-webdriver.promise.Frame_.prototype.isActive_ = false;
-
-
-/**
- * Whether this frame is currently locked. A locked frame represents a callback
- * or task function which has run to completion and scheduled all of its tasks.
- *
- * <p>Once a frame becomes {@link #isActive_ active}, any new frames which are
- * added represent callbacks on a {@link webdriver.promise.Deferred}, whose
- * tasks must be given priority over previously scheduled tasks.
- *
- * @private {boolean}
- */
-webdriver.promise.Frame_.prototype.isLocked_ = false;
-
-
-/**
- * A reference to the last node inserted in this frame.
- * @private {webdriver.promise.Node_}
- */
-webdriver.promise.Frame_.prototype.lastInsertedChild_ = null;
 
 
 /**
