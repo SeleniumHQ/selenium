@@ -739,7 +739,7 @@ Editor.prototype.addCommand = function (command, target, value, window, insertBe
     if (!this.safeLastWindow.isSameWindow(window)) {
       if (this.safeLastWindow.isSameTopWindow(window)) {
         // frame
-        var destPath = this._createPaths(window);
+        var destPath = this.safeLastWindow.createPath(window);
         var srcPath = this.safeLastWindow.getPath();
         this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
         var branch = 0;
