@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<!DOCTYPE window [
+<!DOCTYPE overlay [
 <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
 %browserDTD;
 <!ENTITY % baseMenuOverlayDTD SYSTEM "chrome://browser/locale/baseMenuOverlay.dtd">
@@ -23,8 +23,7 @@ limitations under the License.
 <!ENTITY % seleniumIdeDTD SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
 %seleniumIdeDTD;
 ]>
-<overlay id="selenium-ide-common" 
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="selenium-ide-common" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/dnd-observers.js"/>
@@ -53,6 +52,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/storedHistory.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/browser/mozilla/prompt-service.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sidebar-editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/standalone-editor.js"/>
