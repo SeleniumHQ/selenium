@@ -1091,11 +1091,13 @@ Editor.prototype.reload = function () {
 };
 
 Editor.prototype.showReference = function (command) {
-  var def = command.getDefinition();
-  if (def) {
-    this.infoPanel.switchView(this.infoPanel.helpView);
-    this.log.debug("showReference: " + def.name);
-    this.reference.show(def, command);
+  if (command.type == 'command') {
+    var def = command.getDefinition();
+    if (def) {
+      this.infoPanel.switchView(this.infoPanel.helpView);
+      this.log.debug("showReference: " + def.name);
+      this.reference.show(def, command);
+    }
   }
 };
 
