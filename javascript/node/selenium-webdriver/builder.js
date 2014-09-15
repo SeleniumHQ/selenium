@@ -83,7 +83,7 @@ var Builder = function() {
  */
 Builder.prototype.usingServer = function(url) {
   this.url_ = url;
-  return url;
+  return this;
 };
 
 
