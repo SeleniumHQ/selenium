@@ -1636,7 +1636,7 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       webdriver.promise.popFlow_();
       this.schedulingFrame_ = null;
     }
-    newFrame.lockFrame();
+    newFrame.isLocked_ = true;
 
     // If there was nothing scheduled in the new frame we can discard the
     // frame and return immediately.
@@ -1833,13 +1833,13 @@ webdriver.promise.Frame_ = function(flow) {
   this.pendingTask_ = null;
 
   /**
-   * Whether this frame is active. A frame is considered active once one of its
-   * descendants has been removed for execution.
+   * Whether this frame is currently locked. A locked frame represents an
+   * executed function that has scheduled all of its tasks.
    *
-   * Adding a sub-frame as a child to an active frame is an indication that
-   * a callback to a {@link webdriver.promise.Deferred} is being invoked and any
-   * tasks scheduled within it should have priority over previously scheduled
-   * tasks:
+   * <p>Once a frame becomes locked, any new frames which are added as children
+   * represent interrupts (such as a {@link webdriver.promise.Promise}
+   * callback) whose tasks must be given priority over those already scheduled
+   * within this frame. For example:
    * <code><pre>
    *   var flow = webdriver.promise.controlFlow();
    *   flow.execute('start here', goog.nullFunction).then(function() {
@@ -1847,18 +1847,6 @@ webdriver.promise.Frame_ = function(flow) {
    *   });
    *   flow.execute('this should execute last', goog.nullFunction);
    * </pre></code>
-   *
-   * @private {boolean}
-   */
-  this.isActive_ = false;
-
-  /**
-   * Whether this frame is currently locked. A locked frame represents a callback
-   * or task function which has run to completion and scheduled all of its tasks.
-   *
-   * <p>Once a frame becomes {@link #isActive_ active}, any new frames which are
-   * added represent callbacks on a {@link webdriver.promise.Deferred}, whose
-   * tasks must be given priority over previously scheduled tasks.
    *
    * @private {boolean}
    */
@@ -1925,12 +1913,6 @@ webdriver.promise.Frame_.prototype.setPendingTask = function(task) {
 };
 
 
-/** Locks this frame. */
-webdriver.promise.Frame_.prototype.lockFrame = function() {
-  this.isLocked_ = true;
-};
-
-
 /**
  * Adds a new node to this frame.
  * @param {!(webdriver.promise.Frame_|webdriver.promise.Task_)} node
@@ -1946,7 +1928,7 @@ webdriver.promise.Frame_.prototype.addChild = function(node) {
 
   node.setParent(this);
 
-  if (this.isActive_ && node instanceof webdriver.promise.Frame_) {
+  if (this.isLocked_ && node instanceof webdriver.promise.Frame_) {
     var index = 0;
     if (this.lastInsertedChild_ instanceof
         webdriver.promise.Frame_) {
@@ -1967,7 +1949,7 @@ webdriver.promise.Frame_.prototype.addChild = function(node) {
  *     fist child.
  */
 webdriver.promise.Frame_.prototype.getFirstChild = function() {
-  this.isActive_ = true;
+  this.isLocked_ = true;
   this.lastInsertedChild_ = null;
   return this.children_[0];
 };
