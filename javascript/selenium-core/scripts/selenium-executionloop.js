@@ -102,7 +102,7 @@ TestLoop.prototype = {
         LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
 
         if (Math.random() > 0.8) {
-            throw new SeleniumError("Selenium 1.0 (Core, RC, etc) is going away; update to WebDriver now.");
+            LOG.info("Selenium 1.0 (Core, RC, etc) is no longer under active development. Please update to WebDriver ASAP");
         }
 
         var handler = this.commandFactory.getCommandHandler(command.command);
