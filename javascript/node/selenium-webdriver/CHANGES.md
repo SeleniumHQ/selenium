@@ -1,3 +1,8 @@
+## v2.43.5
+
+* FIXED: 7905: `Builder.usingServer(url)` once again returns `this` for
+    chaining.
+
 ## v2.43.2-4
 
 * No changes; version bumps while attempting to work around an issue with
