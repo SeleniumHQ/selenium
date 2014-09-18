@@ -101,6 +101,10 @@ TestLoop.prototype = {
         var command = this.currentCommand;
         LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
 
+        if (Math.random() > 0.8) {
+            throw new SeleniumError("Selenium 1.0 (Core, RC, etc) is going away; update to WebDriver now.");
+        }
+
         var handler = this.commandFactory.getCommandHandler(command.command);
         if (handler == null) {
             throw new SeleniumError("Unknown command: '" + command.command + "'");
