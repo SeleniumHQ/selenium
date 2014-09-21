@@ -126,13 +126,13 @@ limitations under the License.
                         <row align="center">
                           <!-- do drop down that depends upon the element type -->
                           <label control="commandAction" value="&command.label;"/>
-                          <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" onchange="window.editor.autoCompleteCommand(this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" completedefaultindex="true" completeselectedindex="true" enablehistory="true" forcecomplete="true" tabscrolling="false"/>
+                          <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" onchange="window.editor.autoCompleteCommand(this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" autofill="true" completedefaultindex="true" completeselectedindex="true" enablehistory="true" tabscrolling="false"/>
                         </row>
                         <row align="center">
                           <!-- show different options collected by the client. Allow user to override -->
                           <label control="commandTarget" value="&target.label;"/>
                           <hbox flex="1">
-                            <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="false" completedefaultindex="true" showcommentcolumn="true" />
+                            <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" type="autocomplete" autocompletesearch="selenium-ide-generic" completedefaultindex="true" enablehistory="true" showcommentcolumn="true" tabscrolling="false"/>
                             <button label="Select" disabled="true" oncommand="window.editor.selDebugger.selectElement()" id="selectElementButton"/>
                             <button label="&findTarget.label;" disabled="true" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)" id="findElementButton"/>
                           </hbox>
