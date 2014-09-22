@@ -1183,7 +1183,15 @@ Utils.isSVG = function(doc) {
 };
 
 Utils.getMainDocumentElement = function(doc) {
-  if (Utils.isSVG(doc))
-    return doc.documentElement;
-  return doc.body;
+  try {
+    if (Utils.isSVG(doc))
+      return doc.documentElement;
+    return doc.body;
+  } catch (ex) {
+    if (ex instanceof TypeError) {
+      return null;
+    } else {
+      throw ex;
+    }
+  }
 };
