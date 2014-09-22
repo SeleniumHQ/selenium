@@ -164,6 +164,7 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   disableBadPluginAddon: "true",
   enableExperimentalFeatures: "false",
   showDeveloperTools: "false",
+  visualEye: "false",
 
   //Internal data
   pluginsData: "[]",

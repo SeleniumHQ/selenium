@@ -87,7 +87,7 @@ limitations under the License.
     </toolbar>
   </toolbox>
 
-  <vbox flex="1">
+  <vbox id="visualEyeContainer" flex="1">
     <hbox id="mainhbox" width="150" persist="height width" flex="1">
       <vbox id="suitePane" persist="height width" />
       <splitter id="suiteTreeSplitter" collapse="before" persist="state">
