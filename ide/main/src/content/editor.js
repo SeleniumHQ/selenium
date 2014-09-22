@@ -45,6 +45,7 @@ function Editor(window) {
       //Samit: Enh: now sync other UI elements with the options
       self.updateDeveloperTools(self.app.getBooleanOption('showDeveloperTools'));
       self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
+      self.updateVisualEye(self.app.getBooleanOption('visualEye'));
     },
 
     testSuiteChanged: function (testSuite) {
@@ -714,6 +715,12 @@ Editor.prototype.updateDeveloperTools = function (show) {
   //use when the developer tools have to be enabled or not
   $("reload-button").hidden = !show;
   $("reload-button").disabled = !show;
+};
+
+//Samit: Enh: Provide a bit of visual assistance
+Editor.prototype.updateVisualEye = function (show) {
+  var container = document.getElementById("visualEyeContainer");
+  show ? container.classList.add("visualeye") : container.classList.remove("visualeye");
 };
 
 Editor.prototype.autoCompleteCommand = function (command) {

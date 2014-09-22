@@ -88,6 +88,7 @@ limitations under the License.
         <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
         <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
         <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" oncommand="updateReloadButton(this.checked)"/>
+        <checkbox id="visualEye" label="Visual assist (restart of Selenium IDE is required)"/>
         <checkbox id="enableExperimentalFeatures" label="&options.enableExperimentalFeatures.label;"/>
         <checkbox id="disableFormatChangeMsg" label="&options.disableFormatChangeMsg.label;"/>
         <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>

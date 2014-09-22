@@ -20,6 +20,11 @@ treechildren::-moz-tree-row(commandFailed)
   background-color: #FFCCCC;
 }
 
+.visualeye treechildren::-moz-tree-row(commandFailed)
+{
+    background-color: #cc7a7a;
+}
+
 treechildren::-moz-tree-row(commandPassed)
 {
   background-color: #CCFFCC;
@@ -279,6 +284,14 @@ tab label {
   font-weight: bold;
   color: #ee0000;
   text-align: right;
+}
+
+.visualeye #suiteProgressRuns {
+    color: #2fed2f;
+}
+
+.visualeye #suiteProgressFailures {
+    color: #ba0000;
 }
 
 #source {
