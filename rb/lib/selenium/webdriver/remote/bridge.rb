@@ -321,6 +321,14 @@ module Selenium
           execute :setLocation, {}, :location => loc
         end
 
+        def getNetworkConnection
+          execute :getNetworkConnection
+        end
+
+        def setNetworkConnection(type)
+          execute :setNetworkConnection, {}, :type => type
+        end
+
         #
         # javascript execution
         #

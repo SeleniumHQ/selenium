@@ -34,6 +34,7 @@ module Selenium
             DriverExtensions::HasInputDevices,
             DriverExtensions::HasWebStorage,
             DriverExtensions::HasLocation,
+            DriverExtensions::HasNetworkConnection,
             DriverExtensions::HasTouchScreen
           ]
         end
