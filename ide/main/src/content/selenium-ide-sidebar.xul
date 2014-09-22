@@ -115,9 +115,16 @@ limitations under the License.
 		              <!-- show different options collected by the client. Allow user to override -->
 		              <hbox flex="1">
 		                <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" autocompletesearch="selenium-ide-generic" enablehistory="true" forcecomplete="true" tabscrolling="true" type="autocomplete" showcommentcolumn="true" />
-		                <button label="&findTarget.label;" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
+                        <button id="selectElementButton" label="Select" class="sm_btn" disabled="true" oncommand="window.editor.selDebugger.selectElement()"/>
+		                <button id="findElementButton" label="&findTarget.label;" class="sm_btn" disabled="true" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)"/>
 		              </hbox>
 		            </row>
+                    <row align="right" id="selectElementTip" style="display: none">
+                      <vbox>
+                        <label></label>
+                        <description>Select an element by clicking on it in the browser or click Cancel to cancel.</description>
+                      </vbox>
+                    </row>
 		            <row align="center">
 		              <textbox disabled="true" id="commandValue" oninput="window.editor.treeView.updateCurrentCommand('value', window.editor.treeView.decodeText(this.value))"/>
 		            </row>

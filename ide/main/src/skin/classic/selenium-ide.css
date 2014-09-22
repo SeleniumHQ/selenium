@@ -294,6 +294,15 @@ tab label {
     color: #ba0000;
 }
 
+.sm_btn {
+    width: 50px;
+    min-width: 50px;
+    padding-left: 2px;
+    margin-left: 1px;
+    padding-right: 2px;
+    margin-right: 1px;
+}
+
 #source {
   font-family: monospace;
 }
