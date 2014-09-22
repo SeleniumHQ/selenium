@@ -13,9 +13,10 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include "IEServer.h"
 #include "CommandLineArguments.h"
+#include "IEServer.h"
 #include <algorithm>
+#include <iostream>
 #include <map>
 #include <iostream>
 #include <string>
@@ -25,7 +26,7 @@
 // by the .dll produced by the IEDriver project in this solution.
 // The definitions of these functions can be found in WebDriver.h
 // in that project.
-typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
+typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -44,6 +45,7 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define LOGFILE_COMMAND_LINE_ARG L"log-file"
 #define SILENT_COMMAND_LINE_ARG L"silent"
 #define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
+#define IMPLEMENTATION_COMMAND_LINE_ARG L"implementation"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
@@ -169,6 +171,10 @@ void ShowUsage(void) {
              << L"  /log-file=<file>" << std::endl
              << L"                Specifies the full path and file name of the log file used by" << std::endl
              << L"                the server. Defaults logging to stdout if not specified. " << std::endl
+             << L"  /implementation=<implementation>" << std::endl
+             << L"                Specifies the driver implementation used by the server. Valid" << std::endl
+             << L"                values are: LEGACY, AUTODETECT, VENDOR. Defaults to LEGACY if" << std::endl
+             << L"                not specified." << std::endl
              << L"  /extract-path=<path>" << std::endl
              << L"                Specifies the full path to the directory used to extract" << std::endl
              << L"                supporting files used by the server. Defaults to the TEMP" << std::endl
@@ -232,11 +238,26 @@ int _tmain(int argc, _TCHAR* argv[]) {
   bool silent = args.GetValue(SILENT_COMMAND_LINE_ARG,
       BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
   std::wstring executable_version = GetExecutableVersion();
+  std::wstring implementation = args.GetValue(IMPLEMENTATION_COMMAND_LINE_ARG,
+                                              L"");
+
+  // coerce log level and implementation to uppercase, making the values
+  // case-insensitive, to match expected values.
+  std::transform(log_level.begin(),
+                 log_level.end(),
+                 log_level.begin(),
+                 toupper);
+  std::transform(implementation.begin(),
+                 implementation.end(),
+                 implementation.begin(),
+                 toupper);
+
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
                                             log_file,
-                                            executable_version);
+                                            executable_version,
+                                            implementation);
   if (server_value == NULL) {
     std::wcout << L"Failed to start the server with: "
                << L"port = '" << port << L"', "
@@ -265,6 +286,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
     if (log_file.size() > 0) {
       std::wcout << L"Log file is set to "
                  << log_file
+                 << std::endl;
+    }
+    if (implementation.size() > 0) {
+      std::wcout << L"Driver implementation set to "
+                 << implementation
                  << std::endl;
     }
     if (extraction_path_arg.size() > 0) {

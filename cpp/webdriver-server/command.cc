@@ -79,7 +79,7 @@ std::string Command::Serialize() {
   } else {
     json_object["sessionId"] = this->session_id_;
   }
-  Json::Value parameters_object;
+  Json::Value parameters_object(Json::objectValue);
   ParametersMap::const_iterator it = this->command_parameters_.begin();
   ParametersMap::const_iterator end = this->command_parameters_.end();
   for (; it != end; ++it) {

@@ -167,7 +167,7 @@ Utils.getActiveElement = function(doc) {
 
 Utils.addToKnownElements = function(element) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.put(element);
 };
@@ -175,7 +175,7 @@ Utils.addToKnownElements = function(element) {
 
 Utils.getElementAt = function(index, currentDoc) {
   var cache = {};
-  Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
+  Components.utils['import']('resource://fxdriver/modules/web-element-cache.js', cache);
 
   return cache.get(index, currentDoc);
 };
@@ -868,6 +868,11 @@ Utils.wrapResult = function(result, doc) {
         return array;
       }
 
+      // Document. Grab the document element.
+      if (result.nodeType == 9) {
+        return Utils.wrapResult(result.documentElement);
+      }
+
       try {
         var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
         var array = [];
@@ -1178,7 +1183,15 @@ Utils.isSVG = function(doc) {
 };
 
 Utils.getMainDocumentElement = function(doc) {
-  if (Utils.isSVG(doc))
-    return doc.documentElement;
-  return doc.body;
+  try {
+    if (Utils.isSVG(doc))
+      return doc.documentElement;
+    return doc.body;
+  } catch (ex) {
+    if (ex instanceof TypeError) {
+      return null;
+    } else {
+      throw ex;
+    }
+  }
 };

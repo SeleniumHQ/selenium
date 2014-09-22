@@ -426,13 +426,16 @@ webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 /**
  * RegExp pattern for function call in a Chakra (IE) stack trace. This
- * expression allows for identifiers like 'Anonymous function', 'eval code',
- * and 'Global code'.
+ * expression creates 2 submatches on the (optional) context and function name,
+ * matching identifiers like 'foo.Bar.prototype.baz', 'Anonymous function',
+ * 'eval code', and 'Global code'.
  * @private {string}
  * @const
  */
-webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ = '(' +
-    webdriver.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
+webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ =
+    '(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
+    '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
+    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
 
 
 /**
@@ -518,7 +521,7 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 
   m = frameStr.match(webdriver.stacktrace.CHAKRA_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame('', m[1], '', m[2]);
+    return new webdriver.stacktrace.Frame(m[1], m[2], '', m[3]);
   }
 
   if (frameStr == webdriver.stacktrace.UNKNOWN_CLOSURE_FRAME_ ||

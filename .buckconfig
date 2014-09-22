@@ -8,8 +8,9 @@
       build
 
 [test]
-  # Maximum timeout of 1 minute per test.
-  timeout = 60000
+  # Maximum timeout of 10 minutes per test (since each suite counts as a test)
+  timeout = 600000
+  run_transitive = false
 
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome

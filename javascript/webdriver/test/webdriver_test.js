@@ -1575,6 +1575,36 @@ function testExecuteScript_scriptReturnsAnError() {
 }
 
 
+function testExecuteScript_failsIfArgumentIsARejectedPromise() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+
+  var callback = callbackHelper(assertIsStubError);
+
+  var arg = webdriver.promise.rejected(STUB_ERROR);
+  arg.thenCatch(goog.nullFunction);  // Suppress default handler.
+
+  var driver = testHelper.createDriver();
+  driver.executeScript(goog.nullFunction, arg).thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
+function testExecuteAsyncScript_failsIfArgumentIsARejectedPromise() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+
+  var callback = callbackHelper(assertIsStubError);
+
+  var arg = webdriver.promise.rejected(STUB_ERROR);
+  arg.thenCatch(goog.nullFunction);  // Suppress default handler.
+
+  var driver = testHelper.createDriver();
+  driver.executeAsyncScript(goog.nullFunction, arg).thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
 function testFindElement_elementNotFound() {
   var testHelper = TestHelper.
       expectingFailure(expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element')).
@@ -2058,6 +2088,23 @@ function testElementEquals_sendsRpcIfElementsHaveDifferentIds() {
   callback.assertCalled();
 }
 
+
+function testElementEquals_failsIfAnInputElementCouldNotBeFound() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+
+  var callback = callbackHelper(assertIsStubError);
+  var id = webdriver.promise.rejected(STUB_ERROR);
+  id.thenCatch(goog.nullFunction);  // Suppress default handler.
+
+  var driver = testHelper.createDriver();
+  var a = new webdriver.WebElement(driver, {'ELEMENT': 'foo'});
+  var b = new webdriver.WebElementPromise(driver, id);
+
+  webdriver.WebElement.equals(a, b).thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
 function testWaiting_waitSucceeds() {
   var testHelper = TestHelper.expectingSuccess().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
@@ -2244,4 +2291,123 @@ function testFetchingLogs() {
   driver.manage().logs().get('browser').then(pair.callback, pair.errback);
   testHelper.execute();
   pair.assertCallback();
+}
+
+
+function testCommandsFailIfInitialSessionCreationFailed() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var navigateResult = callbackPair(null, assertIsStubError);
+  var quitResult = callbackPair(null, assertIsStubError);
+
+  var session = webdriver.promise.rejected(STUB_ERROR);
+
+  var driver = testHelper.createDriver(session);
+  driver.get('some-url').then(navigateResult.callback, navigateResult.errback);
+  driver.quit().then(quitResult.callback, quitResult.errback);
+
+  testHelper.execute();
+  navigateResult.assertErrback();
+  quitResult.assertErrback();
+}
+
+
+function testWebElementCommandsFailIfInitialDriverCreationFailed() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+
+  var session = webdriver.promise.rejected(STUB_ERROR);
+  var callback = callbackHelper(assertIsStubError);
+
+  var driver = testHelper.createDriver(session);
+  driver.findElement(By.id('foo')).click().thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
+function testWebElementCommansFailIfElementCouldNotBeFound() {
+  var testHelper = TestHelper.
+      expectingSuccess().
+      expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+          andReturnError(ECode.NO_SUCH_ELEMENT,
+                         {'message':'Unable to find element'}).
+      replayAll();
+
+  var callback = callbackHelper(
+      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
+
+  var driver = testHelper.createDriver();
+  driver.findElement(By.id('foo')).click().thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
+function testCannotFindChildElementsIfParentCouldNotBeFound() {
+  var testHelper = TestHelper.
+      expectingSuccess().
+      expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+      andReturnError(ECode.NO_SUCH_ELEMENT,
+                     {'message':'Unable to find element'}).
+      replayAll();
+
+  var callback = callbackHelper(
+      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
+
+  var driver = testHelper.createDriver();
+  driver.findElement(By.id('foo'))
+      .findElement(By.id('bar'))
+      .findElement(By.id('baz'))
+      .thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
+function testActionSequenceFailsIfInitialDriverCreationFailed() {
+  var testHelper = TestHelper.expectingSuccess().replayAll();
+
+  var session = webdriver.promise.rejected(STUB_ERROR);
+
+  // Suppress the default error handler so we can verify it propagates
+  // to the perform() call below.
+  session.thenCatch(goog.nullFunction);
+
+  var callback = callbackHelper(assertIsStubError);
+
+  var driver = testHelper.createDriver(session);
+  driver.actions().
+      mouseDown().
+      mouseUp().
+      perform().
+      thenCatch(callback);
+  testHelper.execute();
+  callback.assertCalled();
+}
+
+
+function testAlertCommandsFailIfAlertNotPresent() {
+  var testHelper = TestHelper
+      .expectingSuccess()
+      .expect(CName.GET_ALERT_TEXT)
+      .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var alert = driver.switchTo().alert();
+
+  var expectError = expectedError(ECode.NO_SUCH_ALERT, 'no alert');
+  var callbacks = [];
+  for (var key in webdriver.Alert.prototype) {
+    if (webdriver.Alert.prototype.hasOwnProperty(key)) {
+      var helper = callbackHelper(expectError);
+      callbacks.push(key, helper);
+      alert[key].call(alert).thenCatch(helper);
+    }
+  }
+
+  testHelper.execute();
+  for (var i = 0; i < callbacks.length - 1; i += 2) {
+    callbacks[i + 1].assertCalled(
+            'Error did not propagate for ' + callbacks[i]);
+  }
 }

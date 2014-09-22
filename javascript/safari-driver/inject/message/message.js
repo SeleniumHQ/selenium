@@ -24,7 +24,7 @@ goog.provide('safaridriver.inject.message');
  * Checks whether the given message event originated from the DOMWindow running
  * this script. These messages are exchanged between the injected script and its
  * corresponding content page.
- * @param {!MessageEvent} e The message event to check.
+ * @param {!MessageEvent.<*>} e The message event to check.
  * @return {boolean} Whether the message came from this window.
  */
 safaridriver.inject.message.isFromSelf = function(e) {
@@ -35,7 +35,7 @@ safaridriver.inject.message.isFromSelf = function(e) {
 /**
  * Checks whether the given message event was sent by a frame belonging to the
  * same browser window as this script's context.
- * @param {!MessageEvent} e The message event to check.
+ * @param {!MessageEvent.<*>} e The message event to check.
  * @return {boolean} Whether the message came from a frame belonging to this
  *     browser window.
  */
@@ -46,7 +46,7 @@ safaridriver.inject.message.isFromFrame = function(e) {
 
 /**
  * Checks whether the given message event was sent by the top most window.
- * @param {!MessageEvent} e The message event to check.
+ * @param {!MessageEvent.<*>} e The message event to check.
  * @return {boolean} Whether the message came from the topmost frame.
  */
 safaridriver.inject.message.isFromTop = function(e) {

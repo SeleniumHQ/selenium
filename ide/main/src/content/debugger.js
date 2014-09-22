@@ -66,18 +66,6 @@ function Debugger(editor) {
       }
     }
 
-//    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
-//    if (typeof pluginProvided != 'undefined') {
-//      try {
-//        var split_pluginProvided = pluginProvided.split(",");
-//        for (var sp = 0; sp < split_pluginProvided.length; sp++) {
-//          var js_pluginProvided = split_pluginProvided[sp].split(";");
-//          ExtensionsLoader.loadSubScript(subScriptLoader, js_pluginProvided[0], this.runner);
-//        }
-//      } catch (error) {
-//        this.log.error("error loading plugin provided user extension: " + error);
-//      }
-//    }
     var pluginManager = editor.pluginManager;
     pluginManager.getEnabledUserExtensions().forEach(function (plugin) {
       for (var i = 0; i < plugin.code.length; i++) {
@@ -95,7 +83,6 @@ function Debugger(editor) {
     });
 
     if (executeUsingWebDriver) {
-      subScriptLoader.loadSubScript('chrome://selenium-ide/content/deferred.js', this.runner);
       subScriptLoader.loadSubScript('chrome://selenium-ide/content/webdriver-backed-selenium.js', this.runner);
     }
     pluginManager.getEnabledUserExtensions().forEach(function (plugin) {

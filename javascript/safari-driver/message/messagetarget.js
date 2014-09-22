@@ -45,7 +45,7 @@ safaridriver.message.MessageTarget = function(source, opt_consumeMessages) {
 
   /**
    * @private {function(this: safaridriver.message.MessageTarget,
-   *                    !(SafariExtensionMessageEvent|MessageEvent))}
+   *                    !(SafariExtensionMessageEvent|MessageEvent.<*>))}
    */
   this.boundOnMessage_ = goog.bind(this.onMessage_, this);
 
@@ -129,7 +129,7 @@ safaridriver.message.MessageTarget.prototype.logSevere = function(
 
 
 /**
- * @param {!(SafariExtensionMessageEvent|MessageEvent)} e The message event.
+ * @param {!(SafariExtensionMessageEvent|MessageEvent.<*>)} e The message event.
  * @private
  */
 safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {

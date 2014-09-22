@@ -14,12 +14,12 @@
 // limitations under the License.
 
 goog.provide('safaridriver.extension.Server');
+goog.provide('safaridriver.extension.Server.CommandHandler');
 
 goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.Disposable');
 goog.require('goog.log');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.alert');
@@ -154,7 +154,7 @@ map[CommandName.SCREENSHOT] = commands.takeScreenshot;
 map[CommandName.ACCEPT_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.DISMISS_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.GET_ALERT_TEXT] = commands.handleNoAlertsPresent;
-map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent
+map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
 
 map[CommandName.GET_AVAILABLE_LOG_TYPES] = commands.getAvailableLogTypes;
 map[CommandName.GET_LOG] = commands.getLogs;
@@ -404,7 +404,7 @@ safaridriver.extension.Server.prototype.onClose_ = function(url) {
 
 /**
  * Called when there is a communication error with the WebSocket.
- * @param {!MessageEvent} event The error event.
+ * @param {!MessageEvent.<*>} event The error event.
  * @private
  */
 safaridriver.extension.Server.prototype.onError_ = function(event) {
@@ -415,7 +415,7 @@ safaridriver.extension.Server.prototype.onError_ = function(event) {
 
 /**
  * Called when the WebSocket receives a message.
- * @param {!MessageEvent} event The message event.
+ * @param {!MessageEvent.<*>} event The message event.
  * @private
  */
 safaridriver.extension.Server.prototype.onMessage_ = function(event) {

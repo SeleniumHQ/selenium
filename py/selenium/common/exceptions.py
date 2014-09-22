@@ -124,7 +124,12 @@ class UnexpectedAlertPresentException(WebDriverException):
     Usually raised when when an expected modal is blocking webdriver form executing any 
     more commands.
     """
-    pass
+    def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
+        super(WebDriverException, self).__init__(msg, screen, stacktrace)
+        self.alert_text = alert_text
+
+    def __str__(self):
+        return "Alert Text: %s\n%s" % (self.alert_text, str(super(WebDriverException, self)))
 
 class NoAlertPresentException(WebDriverException):
     """

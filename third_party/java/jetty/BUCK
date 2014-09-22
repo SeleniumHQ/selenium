@@ -1,0 +1,20 @@
+prebuilt_jar(name = 'jetty',
+  binary_jar = 'jetty-repacked-7.6.1.jar',
+  deps = [
+    '//third_party/java/jasper:jasper',
+    '//third_party/java/servlet-api:servlet-api',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/environment:environment',
+  ],
+)
+
+prebuilt_jar(name = 'jetty-for-rc',
+  binary_jar = 'jetty-repacked-5.jar',
+  deps = [
+    '//third_party/java/commons-logging:commons-logging',
+    '//third_party/java/jasper:jasper',
+    '//third_party/java/mx4j:mx4j',
+    '//third_party/java/servlet-api:servlet-api',
+  ],
+)

@@ -56,6 +56,15 @@ module Selenium
           )
         end
 
+        it 'should be able to set implementation' do
+          Server.should_receive(:get).with(:implementation => :vendor).and_return(server)
+
+          Bridge.new(
+            :implementation => :vendor,
+            :http_client    => http
+          )
+        end
+
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = true

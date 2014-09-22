@@ -28,8 +28,6 @@
 #endif
 
 #define WINDOWS
-
-#include <windows.h>
 #else
 // TODO(JimEvans): Add non-Windows includes here
 #endif

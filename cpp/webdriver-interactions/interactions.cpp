@@ -21,11 +21,12 @@ limitations under the License.
 #include <string>
 #include <iostream>
 
-#include "errorcodes.h"
 #include "interactions.h"
 #include "interactions_common.h"
 #include "logging.h"
 #include "event_firing_thread.h"
+
+#define ENULLPOINTER 22
 
 using namespace std;
 

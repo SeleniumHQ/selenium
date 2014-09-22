@@ -1,0 +1,7 @@
+prebuilt_jar(name = 'servlet-api',
+  binary_jar = 'servlet-api-2.5-6.1.9.jar',
+  visibility = [
+    '//java/client/test/org/openqa/selenium/environment:environment',
+    '//third_party/java/jetty:jetty',
+  ],
+)

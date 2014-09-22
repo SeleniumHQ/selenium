@@ -26,7 +26,8 @@ class IEServer : public Server {
            const std::string& host,
            const std::string& log_level,
            const std::string& log_file,
-           const std::string& version);
+           const std::string& version,
+           const std::string& driver_implementation);
   virtual ~IEServer(void);
 
  protected:
@@ -35,6 +36,7 @@ class IEServer : public Server {
   virtual void ShutDown(void);
  private:
   std::string version_;
+  std::string driver_implementation_;
 };
 
 } // namespace webdriver

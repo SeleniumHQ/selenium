@@ -135,7 +135,7 @@ public class InjectionHelper {
         appendFileContent(sb, "/core/xpath/xmltoken.js");
         appendFileContent(sb, "/core/xpath/dom.js");
         appendFileContent(sb, "/core/xpath/xpath.js");
-        appendFileContent(sb, "/core/xpath/javascript-xpath-0.1.11.js");
+        appendFileContent(sb, "/core/xpath/javascript-xpath-0.1.12.js");
         appendFileContent(sb, "/core/scripts/user-extensions.js");
       } catch (Exception e) {
         if (failOnError) {
@@ -170,7 +170,7 @@ public class InjectionHelper {
     writeScriptTag(os, "/core/xpath/xmltoken.js");
     writeScriptTag(os, "/core/xpath/dom.js");
     writeScriptTag(os, "/core/xpath/xpath.js");
-    writeScriptTag(os, "/core/xpath/javascript-xpath-0.1.11.js");
+    writeScriptTag(os, "/core/xpath/javascript-xpath-0.1.12.js");
     writeScriptTag(os, "/core/scripts/user-extensions.js");
   }
 

@@ -1,4 +1,19 @@
-## v2.43.0-dev
+## v2.43.5
+
+* FIXED: 7905: `Builder.usingServer(url)` once again returns `this` for
+    chaining.
+
+## v2.43.2-4
+
+* No changes; version bumps while attempting to work around an issue with
+    publishing to npm (a version string may only be used once).
+
+## v2.43.1
+
+* Fixed an issue with flakiness when setting up the Firefox profile that could
+    prevent the driver from initializing properly.
+
+## v2.43.0
 
 * Added native support for Firefox - the Java Selenium server is no longer
     required.

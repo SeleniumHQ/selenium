@@ -1,4 +1,4 @@
-# Copyright 2008-2013 Software freedom conservancy
+# Copyright 2008-2014 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""WebElement implementation."""
 import hashlib
 import os
 import zipfile
@@ -23,12 +21,12 @@ except ImportError:  # 3+
     from io import BytesIO as IOStream
 import base64
 
-
 from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
 
 try:
     str = basestring
@@ -37,10 +35,17 @@ except NameError:
 
 
 class WebElement(object):
-    """Represents an HTML element.
+    """Represents a DOM element.
 
-    Generally, all interesting operations to do with interacting with a page
-    will be performed through this interface."""
+    Generally, all interesting operations to do with interacting with a
+    document will be performed through this interface.
+
+    All method calls will do a freshness check to ensure that the element
+    reference is still valid.  This essentially determines whether or not the
+    element is still attached to the DOM.  If this test fails, then an
+    `StaleElementReferenceException` is thrown, and all future calls to this
+    instance will fail."""
+
     def __init__(self, parent, id_):
         self._parent = parent
         self._id = id_
@@ -68,17 +73,23 @@ class WebElement(object):
         self._execute(Command.CLEAR_ELEMENT)
 
     def get_attribute(self, name):
-        """Gets the attribute value.
+        """Gets the given attribute or property of the element.
+
+        This method will return the value of the given property if this is set,
+        otherwise it returns the value of the attribute with the same name if
+        that exists, or None.
+
+        Values which are considered truthy, that is equals "true" or "false",
+        are returned as booleans.  All other non-None values are returned as
+        strings.  For attributes or properties which does not exist, None is returned.
 
         :Args:
-            - name - name of the attribute property to retieve.
+            - name - Name of the attribute/property to retrieve.
 
         Example::
 
-            # Check if the 'active' css class is applied to an element.
-            is_active = "active" in target_element.get_attribute("class")
-
-        """
+            # Check if the "active" CSS class is applied to an element.
+            is_active = "active" in target_element.get_attribute("class")"""
         resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
         attributeValue = ''
         if resp['value'] is None:
@@ -87,7 +98,6 @@ class WebElement(object):
             attributeValue = resp['value']
             if name != 'value' and attributeValue.lower() in ('true', 'false'):
                 attributeValue = attributeValue.lower()
-
         return attributeValue
 
     def is_selected(self):

@@ -138,48 +138,56 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#copyOutputTo(java.io.OutputStream)">copyOutputTo</a></strong>(java.io.OutputStream&nbsp;out)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#checkForError()">checkForError</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#copyOutputTo(java.io.OutputStream)">copyOutputTo</a></strong>(java.io.OutputStream&nbsp;out)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#destroy()">destroy</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#executeAsync()">executeAsync</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getEnvironment()">getEnvironment</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getExitCode()">getExitCode</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getStdOut()">getStdOut</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#isRunning()">isRunning</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#setEnvironmentVariable(java.lang.String, java.lang.String)">setEnvironmentVariable</a></strong>(java.lang.String&nbsp;name,
                       java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#setInput(java.lang.String)">setInput</a></strong>(java.lang.String&nbsp;allInput)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#setWorkingDirectory(java.io.File)">setWorkingDirectory</a></strong>(java.io.File&nbsp;workingDirectory)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#waitFor()">waitFor</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#waitFor(long)">waitFor</a></strong>(long&nbsp;timeout)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -286,6 +294,27 @@ extends java.lang.Object</pre>
              throws java.lang.InterruptedException</pre>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.InterruptedException</code></dd></dl>
+</li>
+</ul>
+<a name="waitFor(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>waitFor</h4>
+<pre>public&nbsp;void&nbsp;waitFor(long&nbsp;timeout)
+             throws java.lang.InterruptedException</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.InterruptedException</code></dd></dl>
+</li>
+</ul>
+<a name="checkForError()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkForError</h4>
+<pre>public&nbsp;void&nbsp;checkForError()</pre>
 </li>
 </ul>
 <a name="destroy()">

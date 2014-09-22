@@ -1,0 +1,29 @@
+java_library(name = 'tests',
+  srcs = [
+    'FastWebDriverBackedSeleniumTest.java',
+    'WebDriverCommandProcessorTest.java',
+  ],
+  deps = [
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/test/org/openqa/selenium:helpers',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/junit:junit',
+    '//third_party/java/mockito:mockito',
+  ],
+)
+
+java_test(name = 'small-tests',
+  srcs = [
+    'SmallTests.java',
+  ],
+  deps = [
+    ':tests',
+    '//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:small-tests',
+    '//third_party/java/junit:junit',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium:small-tests',
+  ],
+)

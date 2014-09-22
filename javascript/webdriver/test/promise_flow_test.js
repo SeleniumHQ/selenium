@@ -183,7 +183,7 @@ function testAddChild_withSubframes() {
   assertArrayEquals([task1, frame1], root.children_);
   assertArrayEquals([task2, task3], frame1.children_);
 
-  frame1.lockFrame();
+  frame1.isLocked_ = true;
   var task4 = createTask('task4'), task5 = createTask('task5');
   root.addChild(task4);
   root.addChild(task5);
@@ -199,9 +199,9 @@ function testAddChild_withSubframes() {
   root.addChild(frame2);
   root.addChild(frame3);
   root.addChild(task6);
-  frame3.lockFrame();
+  frame3.isLocked_ = true;
   root.addChild(task7);
-  frame2.lockFrame();
+  frame2.isLocked_ = true;
   root.addChild(task8);
 
   assertArrayEquals([task1, frame1, task4, task5, frame2, task8],
@@ -218,11 +218,11 @@ function testAddChild_insertingFramesIntoAnActiveFrame() {
       task1 = createTask('task1');
 
   root.addChild(task1);
-  root.isActive_ = true;
+  root.isLocked_ = true;
   root.addChild(frame2);
-  frame2.lockFrame();
+  frame2.isLocked_ = true;
   root.addChild(frame3);
-  frame3.lockFrame();
+  frame3.isLocked_ = true;
 
   assertArrayEquals([frame2, frame3, task1], root.children_);
 }
@@ -314,7 +314,7 @@ function testGetNextTask() {
   assertArrayEquals([task1, frame1], root.children_);
   assertArrayEquals([task2, task3], frame1.children_);
 
-  frame1.lockFrame();
+  frame1.isLocked_ = true;
   root.addChild(task4);
   root.addChild(task5);
   assertArrayEquals([task1, frame1, task4, task5], root.children_);
@@ -324,9 +324,9 @@ function testGetNextTask() {
   root.addChild(frame2);
   root.addChild(frame3);
   root.addChild(task6);
-  frame3.lockFrame();
+  frame3.isLocked_ = true;
   root.addChild(task7);
-  frame2.lockFrame();
+  frame2.isLocked_ = true;
   root.addChild(task8);
 
   assertArrayEquals([task1, frame1, task4, task5, frame2, task8],

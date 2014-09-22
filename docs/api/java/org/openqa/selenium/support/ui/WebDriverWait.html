@@ -61,13 +61,13 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods_inherited_from_class_org.openqa.selenium.support.ui.FluentWait">Method</a></li>
+<li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method_detail">Method</a></li>
 </ul>
 </div>
 <a name="skip-navbar_top">
@@ -146,28 +146,24 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
+<th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, org.openqa.selenium.support.ui.Clock, org.openqa.selenium.support.ui.Sleeper, long, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, org.openqa.selenium.support.ui.Clock, org.openqa.selenium.support.ui.Sleeper, long, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
              <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
              long&nbsp;timeOutInSeconds,
              long&nbsp;sleepTimeOut)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>&nbsp;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              long&nbsp;timeOutInSeconds)</code>
 <div class="block">Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
  the 'until' condition, and immediately propagate all others.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>&nbsp;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, long, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait(org.openqa.selenium.WebDriver, long, long)">WebDriverWait</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              long&nbsp;timeOutInSeconds,
              long&nbsp;sleepInMillis)</code>
 <div class="block">Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
@@ -183,12 +179,26 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected java.lang.RuntimeException</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#timeoutException(java.lang.String, java.lang.Throwable)">timeoutException</a></strong>(java.lang.String&nbsp;message,
+                java.lang.Throwable&nbsp;lastException)</code>
+<div class="block">Throws a timeout exception.</div>
+</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.openqa.selenium.support.ui.FluentWait">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.support.ui.<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a></h3>
-<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)">ignoreAll</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class)">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class, java.lang.Class)">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#pollingEvery(long, java.util.concurrent.TimeUnit)">pollingEvery</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)">timeoutException</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Function)">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Predicate)">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage(java.lang.String)">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout(long, java.util.concurrent.TimeUnit)">withTimeout</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)">ignoreAll</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class)">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class, java.lang.Class)">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#pollingEvery(long, java.util.concurrent.TimeUnit)">pollingEvery</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Function)">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Predicate)">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage(java.lang.String)">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout(long, java.util.concurrent.TimeUnit)">withTimeout</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -264,12 +274,39 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <ul class="blockListLast">
 <li class="blockList">
 <h4>WebDriverWait</h4>
-<pre>protected&nbsp;WebDriverWait(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre>public&nbsp;WebDriverWait(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
              <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
              long&nbsp;timeOutInSeconds,
              long&nbsp;sleepTimeOut)</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>driver</code> - The WebDriver instance to pass to the expected conditions</dd><dd><code>clock</code> - The clock to use when measuring the timeout</dd><dd><code>sleeper</code> - Object used to make the current thread go to sleep.</dd><dd><code>timeOutInSeconds</code> - The timeout in seconds when an expectation is</dd><dd><code>sleepTimeOut</code> - The timeout used whilst sleeping. Defaults to 500ms called.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="timeoutException(java.lang.String, java.lang.Throwable)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>timeoutException</h4>
+<pre>protected&nbsp;java.lang.RuntimeException&nbsp;timeoutException(java.lang.String&nbsp;message,
+                                          java.lang.Throwable&nbsp;lastException)</pre>
+<div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)">FluentWait</a></code></strong></div>
+<div class="block">Throws a timeout exception. This method may be overridden to throw an exception that is
+ idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)">timeoutException</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>message</code> - The timeout message.</dd><dd><code>lastException</code> - The last exception to be thrown and subsequently suppressed while waiting
+        on a function.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Nothing will ever be returned; this return type is only specified as a convenience.</dd></dl>
 </li>
 </ul>
 </li>
@@ -325,13 +362,13 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods_inherited_from_class_org.openqa.selenium.support.ui.FluentWait">Method</a></li>
+<li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method_detail">Method</a></li>
 </ul>
 </div>
 <a name="skip-navbar_bottom">

@@ -264,6 +264,7 @@ public class PageLoadingTest extends JUnit4TestBase {
         "window.open('" + pages.formPage + "', 'newWindow')");
     wait.until(newWindowIsOpened(currentWindowHandles));
     driver.switchTo().window("newWindow");
+    wait.until(titleIs("We Leave From Here"));
     String originalTitle = driver.getTitle();
     driver.get(pages.blankPage);
     wait.until(not(titleIs(originalTitle)));

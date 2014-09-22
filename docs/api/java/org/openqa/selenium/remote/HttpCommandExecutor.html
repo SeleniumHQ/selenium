@@ -144,14 +144,22 @@ implements <a href="../../../../org/openqa/selenium/remote/CommandExecutor.html"
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#defineCommand(java.lang.String, org.openqa.selenium.remote.CommandInfo)">defineCommand</a></strong>(java.lang.String&nbsp;commandName,
+             <a href="../../../../org/openqa/selenium/remote/CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&nbsp;info)</code>
+<div class="block">It may be useful to extend the commands understood by this <code>HttpCommandExecutor</code> at run
+ time, and this can be achieved via this method.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></strong>(<a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.net.URL</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#getAddressOfRemoteServer()">getAddressOfRemoteServer</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</a></strong>(<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</code>&nbsp;</td>
 </tr>
@@ -204,6 +212,20 @@ implements <a href="../../../../org/openqa/selenium/remote/CommandExecutor.html"
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="defineCommand(java.lang.String, org.openqa.selenium.remote.CommandInfo)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>defineCommand</h4>
+<pre>protected&nbsp;void&nbsp;defineCommand(java.lang.String&nbsp;commandName,
+                 <a href="../../../../org/openqa/selenium/remote/CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&nbsp;info)</pre>
+<div class="block">It may be useful to extend the commands understood by this <code>HttpCommandExecutor</code> at run
+ time, and this can be achieved via this method. Note, this is protected, and expected usage is
+ for subclasses only to call this.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>commandName</code> - The name of the command to use.</dd></dl>
+</li>
+</ul>
 <a name="setLocalLogs(org.openqa.selenium.logging.LocalLogs)">
 <!--   -->
 </a>

@@ -113,4 +113,19 @@ bool RegistryUtilities::GetRegistryValue(const HKEY root_key,
   return value_retrieved;
 }
 
+bool RegistryUtilities::RegistryKeyExists(HKEY root_key,
+                                          const std::wstring& subkey) {
+  HKEY key_handle;
+  long registry_call_result = ::RegOpenKeyEx(root_key,
+                                             subkey.c_str(),
+                                             0,
+                                             KEY_QUERY_VALUE,
+                                             &key_handle);
+  bool result = (ERROR_SUCCESS == registry_call_result);
+  if (result) {
+    ::RegCloseKey(key_handle);
+  }
+  return result;
+}
+
 } // namespace webdriver

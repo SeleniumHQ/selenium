@@ -32,7 +32,7 @@ import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
 import org.openqa.selenium.os.CommandLineTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
-import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
+import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -60,6 +60,7 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     WindowsUtilsUnitTest.class,
     ZipTest.class,
 
+    org.openqa.selenium.support.SmallTests.class,
     org.openqa.selenium.v1.SmallTests.class
 })
 public class SmallTests {}

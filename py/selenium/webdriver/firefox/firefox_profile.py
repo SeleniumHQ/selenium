@@ -357,6 +357,11 @@ class FirefoxProfile(object):
                 entry = node.nodeName.replace(em, "")
                 if entry in details.keys():
                     details.update({entry: get_text(node)})
+            if details.get('id') is None:
+                for i in range(description.attributes.length):
+                    attribute = description.attributes.item(i)
+                    if attribute.name == em + 'id':
+                        details.update({'id': attribute.value})
         except Exception as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 

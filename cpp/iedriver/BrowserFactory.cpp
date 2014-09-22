@@ -28,6 +28,10 @@
 namespace webdriver {
 
 BrowserFactory::BrowserFactory(void) {
+  // Must be done in the constructor. Do not move to Initialize().
+  this->GetExecutableLocation();
+  this->GetIEVersion();
+  this->GetOSVersion();
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -47,9 +51,6 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
 
-  this->GetExecutableLocation();
-  this->GetIEVersion();
-  this->GetOSVersion();
   this->html_getobject_msg_ = ::RegisterWindowMessage(HTML_GETOBJECT_MSG);
 
   // Explicitly load MSAA so we know if it's installed

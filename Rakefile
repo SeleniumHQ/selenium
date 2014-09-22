@@ -49,7 +49,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.42.2"
+  "2.43.1"
 end
 ide_version = "1.10.0"
 
@@ -312,6 +312,18 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-31/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/31.0/sdk/xulrunner-31.0.en-US.win32.sdk.zip',
            'e8d7d9bd67b957bb627de7d3269d240b'
+
+  sdks.add 'third_party/gecko-32/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/32.0/sdk/xulrunner-32.0.en-US.linux-i686.sdk.tar.bz2',
+           'c34ee083c12ffca658133c2be4aff0ed'
+
+  sdks.add 'third_party/gecko-32/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/32.0/sdk/xulrunner-32.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'bde2b4bcc42eea0f7a395c07d7790e3c'
+
+  sdks.add 'third_party/gecko-32/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/32.0/sdk/xulrunner-32.0.en-US.win32.sdk.zip',
+           'b243148c34a21c78427628f695cc1bfc'
 end
 
 task :'selenium-server_zip' do

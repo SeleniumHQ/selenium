@@ -35,8 +35,11 @@ java_library(name = 'core',
     'Keys.java',
     'OutputType.java',
     'Proxy.java',
+    'Rotatable.java',
+    'ScreenOrientation.java',
     'SearchContext.java',
     'TakesScreenshot.java',
+    'UnexpectedAlertBehaviour.java',
     'WebDriver.java',
     'WebElement.java',
     'internal/Base64Encoder.java',
@@ -95,12 +98,14 @@ java_library(name = 'exceptions',
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
 )
 
 java_library(
   name = 'platform',
   srcs = [
+    'Architecture.java',
     'Platform.java',
   ],
   visibility = ['PUBLIC'],

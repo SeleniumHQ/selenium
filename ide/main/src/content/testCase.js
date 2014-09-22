@@ -352,6 +352,7 @@ function TestCase(tempTitle) {
             this.failed = false;
 			this.started = false;
 			this.debugIndex = -1;
+      this.runTimeStamp = 0;
 		},
 		
 		nextCommand: function() {
@@ -364,6 +365,7 @@ function TestCase(tempTitle) {
 			for (; this.debugIndex < testCase.commands.length; this.debugIndex++) {
 				var command = testCase.commands[this.debugIndex];
 				if (command.type == 'command') {
+          this.runTimeStamp = Date.now();
 					return command;
 				}
 			}

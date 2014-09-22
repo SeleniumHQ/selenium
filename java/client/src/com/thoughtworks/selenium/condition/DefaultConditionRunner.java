@@ -62,7 +62,7 @@ public class DefaultConditionRunner implements ConditionRunner {
    * @param timeout (in millis) when waiting for a condition, how long to wait until we give up.
    */
   public DefaultConditionRunner(Monitor monitor, Selenium selenium, int interval, int timeout) {
-    this(new NoOpMonitor(), selenium, interval, interval, timeout);
+    this(monitor, selenium, interval, interval, timeout);
   }
 
   /**

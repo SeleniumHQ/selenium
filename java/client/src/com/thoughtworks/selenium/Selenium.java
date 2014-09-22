@@ -159,7 +159,9 @@ package com.thoughtworks.selenium;
  * are backslash-escaped. When providing a pattern, the optional matching syntax (i.e. glob, regexp,
  * etc.) is specified once, as usual, at the beginning of the pattern.
  * </p>
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public interface Selenium {
 
   /** Sets the per-session extension Javascript */

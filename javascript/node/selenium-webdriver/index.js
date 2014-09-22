@@ -64,6 +64,10 @@ exports.WebDriver = base.require('webdriver.WebDriver');
 exports.WebElement = base.require('webdriver.WebElement');
 
 
+/** @type {function(new: webdriver.WebElementPromise)} */
+exports.WebElementPromise = base.require('webdriver.WebElementPromise');
+
+
 // Export the remainder of our API through getters to keep things cleaner
 // when this module is used in a REPL environment.
 

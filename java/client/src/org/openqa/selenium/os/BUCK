@@ -10,6 +10,8 @@ java_library(
   visibility = [
     '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/remote/service:service',
+    '//java/client/test/org/openqa/selenium:tests',
+    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
   ],
 )
 

@@ -73,44 +73,49 @@ LocatorBuilders.prototype.buildAll = function(el) {
   for (var i = 0; i < LocatorBuilders.order.length; i++) {
     var finderName = LocatorBuilders.order[i];
     this.log.debug("trying " + finderName);
-    locator = this.buildWith(finderName, e);
-    if (locator) {
-      locator = String(locator);
-      this.log.debug("locator=" + locator);
-      // test the locator. If a is_fuzzy_match() heuristic function is
-      // defined for the location strategy, use it to determine the
-      // validity of the locator's results. Otherwise, maintain existing
-      // behavior.
-//      try {
-//        //alert(PageBot.prototype.locateElementByUIElement);
-//        //Samit: The is_fuzzy_match stuff is buggy - comparing builder name with a locator name usually results in an exception :(
-//        var is_fuzzy_match = this.pageBot().locationStrategies[finderName].is_fuzzy_match;
-//        if (is_fuzzy_match) {
-//          if (is_fuzzy_match(this.findElement(locator), e)) {
-//            locators.push([ locator, finderName ]);
-//          }
-//        }
-//        else {
-//          if (e == this.findElement(locator)) {
-//            locators.push([ locator, finderName ]);
-//          }
-//        }
-//      }
-//      catch (exception) {
-//        if (e == this.findElement(locator)) {
-//          locators.push([ locator, finderName ]);
-//        }
-//      }
+    try {
+      locator = this.buildWith(finderName, e);
+      if (locator) {
+        locator = String(locator);
+        this.log.debug("locator=" + locator);
+        // test the locator. If a is_fuzzy_match() heuristic function is
+        // defined for the location strategy, use it to determine the
+        // validity of the locator's results. Otherwise, maintain existing
+        // behavior.
+  //      try {
+  //        //alert(PageBot.prototype.locateElementByUIElement);
+  //        //Samit: The is_fuzzy_match stuff is buggy - comparing builder name with a locator name usually results in an exception :(
+  //        var is_fuzzy_match = this.pageBot().locationStrategies[finderName].is_fuzzy_match;
+  //        if (is_fuzzy_match) {
+  //          if (is_fuzzy_match(this.findElement(locator), e)) {
+  //            locators.push([ locator, finderName ]);
+  //          }
+  //        }
+  //        else {
+  //          if (e == this.findElement(locator)) {
+  //            locators.push([ locator, finderName ]);
+  //          }
+  //        }
+  //      }
+  //      catch (exception) {
+  //        if (e == this.findElement(locator)) {
+  //          locators.push([ locator, finderName ]);
+  //        }
+  //      }
 
-      //Samit: The following is a quickfix for above commented code to stop exceptions on almost every locator builder
-      //TODO: the builderName should NOT be used as a strategy name, create a feature to allow locatorBuilders to specify this kind of behaviour
-      //TODO: Useful if a builder wants to capture a different element like a parent. Use the this.elementEquals
-      var fe = this.findElement(locator);
-      if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
-        locators.push([ locator, finderName ]);
+        //Samit: The following is a quickfix for above commented code to stop exceptions on almost every locator builder
+        //TODO: the builderName should NOT be used as a strategy name, create a feature to allow locatorBuilders to specify this kind of behaviour
+        //TODO: Useful if a builder wants to capture a different element like a parent. Use the this.elementEquals
+        var fe = this.findElement(locator);
+        if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
+          locators.push([ locator, finderName ]);
+        }
+
+
       }
-
-
+    } catch (e) {
+      // TODO ignore the buggy locator builder for now
+      this.log.debug("locator exception: " + e);
     }
   }
   return locators;

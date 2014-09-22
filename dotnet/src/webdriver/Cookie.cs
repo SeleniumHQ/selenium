@@ -17,8 +17,10 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -70,10 +72,6 @@ namespace OpenQA.Selenium
             {
                 this.cookiePath = path;
             }
-            else
-            {
-                this.cookiePath = "/";
-            }
 
             this.cookieDomain = StripPort(domain);
 
@@ -123,7 +121,7 @@ namespace OpenQA.Selenium
         /// or if it contains a semi-colon.</exception>
         /// <exception cref="ArgumentNullException">If the value is <see langword="null"/>.</exception>
         public Cookie(string name, string value)
-            : this(name, value, "/", null)
+            : this(name, value, null, null)
         {
         }
 
@@ -148,16 +146,16 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the domain of the cookie.
         /// </summary>
-        [JsonProperty("domain")]
+        [JsonProperty("domain", NullValueHandling = NullValueHandling.Ignore)]
         public string Domain
         {
-            get { return string.IsNullOrEmpty(this.cookieDomain) ? string.Empty : this.cookieDomain; }
+            get { return this.cookieDomain; }
         }
 
         /// <summary>
         /// Gets the path of the cookie.
         /// </summary>
-        [JsonProperty("path")]
+        [JsonProperty("path", NullValueHandling = NullValueHandling.Ignore)]
         public virtual string Path
         {
             get { return this.cookiePath; }
@@ -199,6 +197,59 @@ namespace OpenQA.Selenium
                 TimeSpan span = this.cookieExpiry.Value.ToUniversalTime().Subtract(zeroDate);
                 return Convert.ToInt64(span.TotalSeconds);
             }
+        }
+
+        /// <summary>
+        /// Converts a Dictionary to a Cookie.
+        /// </summary>
+        /// <param name="rawCookie">The Dictionary object containing the cookie parameters.</param>
+        /// <returns>A <see cref="Cookie"/> object with the proper parameters set.</returns>
+        public static Cookie FromDictionary(Dictionary<string, object> rawCookie)
+        {
+            if (rawCookie == null)
+            {
+                throw new ArgumentNullException("rawCookie", "Dictionary cannot be null");
+            }
+
+            string name = rawCookie["name"].ToString();
+            string value = rawCookie["value"].ToString();
+
+            string path = "/";
+            if (rawCookie.ContainsKey("path") && rawCookie["path"] != null)
+            {
+                path = rawCookie["path"].ToString();
+            }
+
+            string domain = string.Empty;
+            if (rawCookie.ContainsKey("domain") && rawCookie["domain"] != null)
+            {
+                domain = rawCookie["domain"].ToString();
+            }
+
+            DateTime? expires = null;
+            if (rawCookie.ContainsKey("expiry") && rawCookie["expiry"] != null)
+            {
+                long seconds = 0;
+                if (long.TryParse(rawCookie["expiry"].ToString(), out seconds))
+                {
+                    try
+                    {
+                        expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        expires = DateTime.MaxValue.ToLocalTime();
+                    }
+                }
+            }
+
+            bool secure = false;
+            if (rawCookie.ContainsKey("secure") && rawCookie["secure"] != null)
+            {
+                secure = bool.Parse(rawCookie["secure"].ToString());
+            }
+
+            return new ReturnedCookie(name, value, domain, path, expires, secure);
         }
 
         /// <summary>

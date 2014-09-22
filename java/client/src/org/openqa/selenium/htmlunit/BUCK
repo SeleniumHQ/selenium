@@ -1,5 +1,9 @@
 java_library(name = 'htmlunit',
   srcs = glob(['*.java']),
+  exported_deps = [
+    '//third_party/java/htmlunit:htmlunit',
+    '//third_party/java/htmlunit:js-core',
+  ],
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
@@ -7,8 +11,6 @@ java_library(name = 'htmlunit',
     '//java/client/src/org/openqa/selenium/remote:capabilities',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava-libraries:guava-libraries',
-    '//third_party/java/htmlunit:htmlunit',
-    '//third_party/java/htmlunit:js-core',
     '//third_party/java/sac:sac',
     '//third_party/java/xml:xml',
   ],

@@ -32,6 +32,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+<<<<<<< HEAD
+=======
+
+>>>>>>> selenium_master/master
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
@@ -111,7 +115,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+<<<<<<< HEAD
 import com.gargoylesoftware.htmlunit.javascript.host.Location;
+=======
+import com.gargoylesoftware.htmlunit.javascript.host.Element;
+import com.gargoylesoftware.htmlunit.javascript.host.Location;
+import com.gargoylesoftware.htmlunit.javascript.host.html.DocumentProxy;
+>>>>>>> selenium_master/master
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.google.common.collect.Collections2;
@@ -776,6 +786,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
     if (value instanceof HTMLElement) {
       return newHtmlUnitWebElement(((HTMLElement) value).getDomNodeOrDie());
+    }
+
+    if (value instanceof DocumentProxy) {
+      Element element = ((DocumentProxy) value).getDelegee().getDocumentElement();
+      if (element instanceof HTMLElement) {
+        return newHtmlUnitWebElement(((HTMLElement) element).getDomNodeOrDie());
+      }
+      throw new WebDriverException("Do not know how to coerce to an HTMLElement: " + element);
     }
 
     if (value instanceof Number) {

@@ -115,6 +115,10 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#ALLOWED_HOSTS_PREFERENCE">ALLOWED_HOSTS_PREFERENCE</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#PORT_PREFERENCE">PORT_PREFERENCE</a></strong></code>&nbsp;</td>
 </tr>
 </table>
@@ -216,78 +220,83 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#getAdditionalPreferences()">getAdditionalPreferences</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#getIntegerPreference(java.lang.String, int)">getIntegerPreference</a></strong>(java.lang.String&nbsp;key,
+                    int&nbsp;defaultValue)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#installExtensions(java.io.File)">installExtensions</a></strong>(java.io.File&nbsp;parentDir)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#layoutOnDisk()">layoutOnDisk</a></strong>()</code>
 <div class="block">Call this to cause the current profile to be written to disk.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected java.io.Reader</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#onlyOverrideThisIfYouKnowWhatYouAreDoing()">onlyOverrideThisIfYouKnowWhatYouAreDoing</a></strong>()</code>
 <div class="block"><strong>Internal method.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setAcceptUntrustedCertificates(boolean)">setAcceptUntrustedCertificates</a></strong>(boolean&nbsp;acceptUntrustedSsl)</code>
 <div class="block">Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
  authority or are generally untrusted.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setAlwaysLoadNoFocusLib(boolean)">setAlwaysLoadNoFocusLib</a></strong>(boolean&nbsp;loadNoFocusLib)</code>
 <div class="block">Sets whether the no focus library should always be loaded on Linux.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setAssumeUntrustedCertificateIssuer(boolean)">setAssumeUntrustedCertificateIssuer</a></strong>(boolean&nbsp;untrustedIssuer)</code>
 <div class="block">By default, when accepting untrusted SSL certificates, assume that these certificates will come
  from an untrusted issuer or will be self signed.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setEnableNativeEvents(boolean)">setEnableNativeEvents</a></strong>(boolean&nbsp;enableNativeEvents)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setPreference(java.lang.String, boolean)">setPreference</a></strong>(java.lang.String&nbsp;key,
              boolean&nbsp;value)</code>
 <div class="block">Set a preference for this particular profile.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setPreference(java.lang.String, int)">setPreference</a></strong>(java.lang.String&nbsp;key,
              int&nbsp;value)</code>
 <div class="block">Set a preference for this particular profile.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#setPreference(java.lang.String, java.lang.String)">setPreference</a></strong>(java.lang.String&nbsp;key,
              java.lang.String&nbsp;value)</code>
 <div class="block">Set a preference for this particular profile.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()">shouldLoadNoFocusLib</a></strong>()</code>
 <div class="block">Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
  even if native events are disabled.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#toJson()">toJson</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#updateUserPrefs(java.io.File)">updateUserPrefs</a></strong>(java.io.File&nbsp;userPrefs)</code>&nbsp;</td>
 </tr>
@@ -316,11 +325,21 @@ extends java.lang.Object</pre>
 <a name="PORT_PREFERENCE">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>PORT_PREFERENCE</h4>
 <pre>public static final&nbsp;java.lang.String PORT_PREFERENCE</pre>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="ALLOWED_HOSTS_PREFERENCE">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ALLOWED_HOSTS_PREFERENCE</h4>
+<pre>public static final&nbsp;java.lang.String ALLOWED_HOSTS_PREFERENCE</pre>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxProfile.ALLOWED_HOSTS_PREFERENCE">Constant Field Values</a></dd></dl>
 </li>
 </ul>
 </li>
@@ -382,6 +401,16 @@ protected&nbsp;FirefoxProfile(java.io.Reader&nbsp;defaultsReader,
 <pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</pre>
 <div class="block"><strong>Internal method. This is liable to change at a moment's notice.</strong></div>
+</li>
+</ul>
+<a name="getIntegerPreference(java.lang.String, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getIntegerPreference</h4>
+<pre>public&nbsp;int&nbsp;getIntegerPreference(java.lang.String&nbsp;key,
+                       int&nbsp;defaultValue)</pre>
 </li>
 </ul>
 <a name="containsWebDriverExtension()">

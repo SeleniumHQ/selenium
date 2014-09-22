@@ -281,14 +281,39 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
   checkHasNotQuit();
   command.setParameter('sessionId', this.session_);
 
+  // If any of the command parameters are rejected promises, those
+  // rejections may be reported as unhandled before the control flow
+  // attempts to execute the command. To ensure parameters errors
+  // propagate through the command itself, we resolve all of the
+  // command parameters now, but suppress any errors until the ControlFlow
+  // actually executes the command. This addresses scenarios like catching
+  // an element not found error in:
+  //
+  //     driver.findElement(By.id('foo')).click().thenCatch(function(e) {
+  //       if (e.code === bot.ErrorCode.NO_SUCH_ELEMENT) {
+  //         // Do something.
+  //       }
+  //     });
+  var prepCommand = webdriver.WebDriver.toWireValue_(command.getParameters());
+  prepCommand.thenCatch(goog.nullFunction);
+
   var flow = this.flow_;
+  var executor = this.executor_;
   return flow.execute(function() {
     // A call to WebDriver.quit() may have been scheduled in the same event
     // loop as this |command|, which would prevent us from detecting that the
     // driver has quit above.  Therefore, we need to make another quick check.
     // We still check above so we can fail as early as possible.
     checkHasNotQuit();
-    return webdriver.WebDriver.executeCommand_(self.executor_, command);
+
+    // Retrieve resolved command parameters; any previously suppressed errors
+    // will now propagate up through the control flow as part of the command
+    // execution.
+    return prepCommand.then(function(parameters) {
+      command.setParameters(parameters);
+      return webdriver.promise.checkedNodeCall(
+          goog.bind(executor.execute, executor, command));
+    });
   }, description).then(function(response) {
     try {
       bot.response.checkResponse(response);
@@ -2184,6 +2209,36 @@ webdriver.AlertPromise = function(driver, alert) {
   this.getText = function() {
     return alert.then(function(alert) {
       return alert.getText();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.accept = function() {
+    return alert.then(function(alert) {
+      return alert.accept();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.dismiss = function() {
+    return alert.then(function(alert) {
+      return alert.dismiss();
+    });
+  };
+
+  /**
+   * Defers action until the alert has been located.
+   * @override
+   */
+  this.sendKeys = function(text) {
+    return alert.then(function(alert) {
+      return alert.sendKeys(text);
     });
   };
 };

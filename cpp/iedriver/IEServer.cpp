@@ -21,10 +21,12 @@ IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
                    const std::string& log_file,
-                   const std::string& version) : Server(port, host, log_level, log_file) {
+                   const std::string& version,
+                   const std::string& driver_implementation) : Server(port, host, log_level, log_file) {
   LOG(TRACE) << "Entering IEServer::IEServer";
 
   this->version_ = version;
+  this->driver_implementation_ = driver_implementation;
 }
 
 IEServer::~IEServer(void) {
@@ -35,6 +37,7 @@ SessionHandle IEServer::InitializeSession() {
   SessionHandle session_handle(new IESession());
   SessionParameters params;
   params.port = this->port();
+  params.implementation = IESession::ConvertDriverEngine(this->driver_implementation_);
   session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }

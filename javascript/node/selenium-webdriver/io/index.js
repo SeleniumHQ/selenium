@@ -14,7 +14,6 @@
 // limitations under the License.
 
 var fs = require('fs'),
-    ncp = require('ncp').ncp,
     path = require('path'),
     tmp = require('tmp');
 
@@ -23,25 +22,6 @@ var promise = require('..').promise;
 
 var PATH_SEPARATOR = process.platform === 'win32' ? ';' : ':';
 
-
-/**
- * Creates the specified directory and any necessary parent directories. No
- * action is taken if the directory already exists.
- * @param {string} dir The directory to create.
- * @param {function(Error)} callback Callback function; accepts a single error
- *     or {@code null}.
- */
-function createDirectories(dir, callback) {
-  fs.mkdir(dir, function(err) {
-    if (!err || err.code === 'EEXIST') {
-      callback();
-    } else {
-      createDirectories(path.dirname(dir), function(err) {
-        err && callback(err) || fs.mkdir(dir, callback);
-      });
-    }
-  });
-};
 
 // PUBLIC API
 
@@ -89,11 +69,38 @@ exports.copyDir = function(src, dst, opt_exclude) {
     };
   }
 
-  var copied = promise.defer();
-  ncp(src, dst, {filter: predicate}, function(err) {
-    err && copied.reject(err) || copied.fulfill(dst);
+  // TODO(jleyba): Make this function completely async.
+  if (!fs.existsSync(dst)) {
+    fs.mkdirSync(dst);
+  }
+
+  var files = fs.readdirSync(src);
+  files = files.map(function(file) {
+    return path.join(src, file);
   });
-  return copied.promise;
+
+  if (predicate) {
+    files = files.filter(predicate);
+  }
+
+  var results = [];
+  files.forEach(function(file) {
+    var stats = fs.statSync(file);
+    var target = path.join(dst, path.basename(file));
+
+    if (stats.isDirectory()) {
+      if (!fs.existsSync(target)) {
+        fs.mkdirSync(target, stats.mode);
+      }
+      results.push(exports.copyDir(file, target, predicate));
+    } else {
+      results.push(exports.copy(file, target));
+    }
+  });
+
+  return promise.all(results).then(function() {
+    return dst;
+  });
 };
 
 

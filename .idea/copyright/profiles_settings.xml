@@ -1,3 +1,5 @@
 <component name="CopyrightManager">
-  <settings default="" />
+  <settings default="">
+    <module2copyright />
+  </settings>
 </component>

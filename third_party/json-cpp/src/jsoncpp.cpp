@@ -1,5 +1,5 @@
 /// Json-cpp amalgated source (http://jsoncpp.sourceforge.net/).
-/// It is intented to be used with #include "dist/jsoncpp.cpp"
+/// It is intented to be used with #include <json/json.h>
 
 // //////////////////////////////////////////////////////////////////////
 // Beginning of content of file: LICENSE
@@ -73,7 +73,7 @@ license you like.
 
 
 
-#include "json/json.h"
+#include <json/json.h>
 
 
 // //////////////////////////////////////////////////////////////////////
@@ -1599,8 +1599,7 @@ static inline char *duplicateStringValue(const char *value,
 /** Free the string duplicated by duplicateStringValue().
  */
 static inline void releaseStringValue(char *value) {
-  if (value)
-    free(value);
+  free(value);
 }
 
 } // namespace Json
@@ -1685,9 +1684,8 @@ void Value::CZString::swap(CZString &other) {
   std::swap(index_, other.index_);
 }
 
-Value::CZString &Value::CZString::operator=(const CZString &other) {
-  CZString temp(other);
-  swap(temp);
+Value::CZString &Value::CZString::operator=(CZString other) {
+  swap(other);
   return *this;
 }
 
@@ -1976,9 +1974,8 @@ Value::~Value() {
     delete[] comments_;
 }
 
-Value &Value::operator=(const Value &other) {
-  Value temp(other);
-  swap(temp);
+Value &Value::operator=(Value other) {
+  swap(other);
   return *this;
 }
 
@@ -3121,6 +3118,7 @@ std::string valueToString(double value) {
   // Allocate a buffer that is more than large enough to store the 16 digits of
   // precision requested below.
   char buffer[32];
+  int len = -1;
 
 // Print into the buffer. We need not request the alternative representation
 // that always has a decimal point because JSON doesn't distingish the
@@ -3129,36 +3127,27 @@ std::string valueToString(double value) {
                                                       // visual studio 2005 to
                                                       // avoid warning.
   #if defined(WINCE)
-  _snprintf(buffer, sizeof(buffer), "%.16g", value);
+  len = _snprintf(buffer, sizeof(buffer), "%.16g", value);
   #else
-  sprintf_s(buffer, sizeof(buffer), "%.16g", value);
+  len = sprintf_s(buffer, sizeof(buffer), "%.16g", value);
   #endif
 #else
-  if ( isfinite( value ))
-  {
-     snprintf(buffer, sizeof(buffer), "%.16g", value);
-  }
-  else
-  {
+  if (isfinite( value )) {
+    len = snprintf(buffer, sizeof(buffer), "%.16g", value);
+  } else {
      // IEEE standard states that NaN values will not compare to themselves
-     if ( value != value)
-     {
-        snprintf(buffer, sizeof(buffer), "null");
+     if ( value != value) {
+        len = snprintf(buffer, sizeof(buffer), "null");
+     } else if ( value < 0) {
+        len = snprintf(buffer, sizeof(buffer), "-1e+9999");
+     } else {
+        len = snprintf(buffer, sizeof(buffer), "1e+9999");
      }
-     else if ( value < 0)
-     {
-        snprintf(buffer, sizeof(buffer), "-1e+9999");
-     }
-     else
-     {
-        snprintf(buffer, sizeof(buffer), "1e+9999");
-     }
-     // nothing more to do, return.
-     return buffer;
+     // For those, we do not need to call fixNumLoc, but it is fast.
   }
-
 #endif
-  fixNumericLocale(buffer, buffer + strlen(buffer));
+  assert(len>=0);
+  fixNumericLocale(buffer, buffer + len);
   return buffer;
 }
 
@@ -3234,16 +3223,19 @@ Writer::~Writer() {}
 // //////////////////////////////////////////////////////////////////
 
 FastWriter::FastWriter()
-    : yamlCompatiblityEnabled_(false), dropNullPlaceholders_(false) {}
+    : yamlCompatiblityEnabled_(false), dropNullPlaceholders_(false), omitEndingLineFeed_(false) {}
 
 void FastWriter::enableYAMLCompatibility() { yamlCompatiblityEnabled_ = true; }
 
 void FastWriter::dropNullPlaceholders() { dropNullPlaceholders_ = true; }
 
+void FastWriter::omitEndingLineFeed() { omitEndingLineFeed_ = true; }
+
 std::string FastWriter::write(const Value &root) {
   document_ = "";
   writeValue(root);
-  document_ += "\n";
+  if (!omitEndingLineFeed_)
+    document_ += "\n";
   return document_;
 }
 

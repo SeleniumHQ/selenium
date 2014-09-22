@@ -145,15 +145,18 @@
     <ClCompile Include="command.cc" />
     <ClCompile Include="response.cc" />
     <ClCompile Include="server.cc" />
+    <ClCompile Include="uri_info.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
     <ClInclude Include="command_handler.h" />
     <ClInclude Include="command_types.h" />
+    <ClInclude Include="errorcodes.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="response.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="session.h" />
+    <ClInclude Include="uri_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\third_party\civetweb\civetweb.vcxproj">

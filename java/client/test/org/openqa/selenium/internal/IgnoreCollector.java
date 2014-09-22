@@ -21,7 +21,6 @@ package org.openqa.selenium.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoredTestCallback;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;

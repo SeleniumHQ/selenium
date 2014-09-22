@@ -19,7 +19,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
-IGNORED_EXCEPTIONS = [NoSuchElementException]  # list of exceptions ignored during calls to the method
+IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
 
 class WebDriverWait(object):
 
@@ -46,7 +46,7 @@ class WebDriverWait(object):
         # avoid the divide by zero
         if self._poll == 0:
             self._poll = POLL_FREQUENCY
-        exceptions = IGNORED_EXCEPTIONS
+        exceptions = list(IGNORED_EXCEPTIONS)
         if ignored_exceptions is not None:
             try:
                 exceptions.extend(iter(ignored_exceptions))

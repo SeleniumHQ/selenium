@@ -68,7 +68,7 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 
 <span class="n">POLL_FREQUENCY</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c"># How long to sleep inbetween calls to the method</span>
-<span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="n">NoSuchElementException</span><span class="p">]</span>  <span class="c"># list of exceptions ignored during calls to the method</span>
+<span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,)</span>  <span class="c"># exceptions ignored during calls to the method</span>
 
 <div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
@@ -95,7 +95,7 @@
         <span class="c"># avoid the divide by zero</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">=</span> <span class="n">POLL_FREQUENCY</span>
-        <span class="n">exceptions</span> <span class="o">=</span> <span class="n">IGNORED_EXCEPTIONS</span>
+        <span class="n">exceptions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">IGNORED_EXCEPTIONS</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ignored_exceptions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">))</span>

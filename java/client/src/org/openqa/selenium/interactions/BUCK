@@ -1,7 +1,7 @@
 java_library(name = 'interactions',
   srcs = [
     'Actions.java',
-  ] + glob(['*Action.java', 'internal/*Action.java']),
+  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java']),
   exported_deps = [
     ':core',
     ':exceptions',

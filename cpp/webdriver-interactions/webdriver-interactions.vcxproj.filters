@@ -29,9 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="errorcodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="interaction_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>

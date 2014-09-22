@@ -4,7 +4,6 @@ java_library(name = "testing",
     "TestUtilities.java",
   ],
   deps = [
-    ":junit",
     ":util",
     "//java/client/test/org/openqa/selenium/testing/drivers",
   ])
@@ -18,18 +17,6 @@ java_library(name = "annotations",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
-  ])
-
-java_library(name = "tests",
-  srcs = [
-    "IgnoreComparitorUnitTest.java",
-  ],
-  deps = [
-    ":junit",
-    ":junit_4",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/junit",
-    "//third_party/java/mockito",
   ])
 
 java_library(name = "dev_mode",
@@ -46,17 +33,6 @@ java_library(name = "util",
     "//java/client/src/org/openqa/selenium/remote",
   ])
 
-java_library(name = "junit",
-  srcs = [
-    "IgnoreComparator.java",
-    "IgnoredTestCallback.java",
-  ],
-  deps = [
-    ":annotations",
-    ":util",
-    "//third_party/java/guava-libraries",
-  ])
-
 java_library(name = "junit_4",
   srcs = [
     "JUnit4TestBase.java",
@@ -64,7 +40,6 @@ java_library(name = "junit_4",
     "SeleniumTestRunner.java",
   ],
   deps = [
-    ":junit",
     "//java/client/test/org/openqa/selenium:base",
     "//third_party/java/junit",
     "//third_party/java/mockito",

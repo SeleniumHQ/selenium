@@ -28,7 +28,8 @@ EXPORT webdriver::Server* StartServer(int port,
                                       const std::wstring& host,
                                       const std::wstring& log_level,
                                       const std::wstring& log_file,
-                                      const std::wstring& version);
+                                      const std::wstring& version,
+                                      const std::wstring& driver_engine);
 EXPORT void StopServer(void);
 
 #ifdef __cplusplus

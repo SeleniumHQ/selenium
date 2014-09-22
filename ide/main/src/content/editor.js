@@ -169,7 +169,10 @@ function Editor(window) {
   this.selDebugger = new Debugger(this);
   this.selDebugger.addObserver({
     stateUpdated: function (state) {
-      document.getElementById("pause-button").setAttribute("class", "icon " + (state == Debugger.PAUSED ? "resume" : "pause"));
+      var pauseBtn = document.getElementById("pause-button");
+      pauseBtn.classList.remove("resume");
+      pauseBtn.classList.remove("pause");
+      pauseBtn.classList.add(state == Debugger.PAUSED ? "resume" : "pause");
       self.updateState();
     }
   });
@@ -469,28 +472,20 @@ Editor.prototype.confirmClose = function () {
         "Would you like to save the " + changedTestCases + " changed test case/s?",
         "Would you like to save the test suite and the " + changedTestCases + " changed test case/s?"
       ][promptType];
-      var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 
-      var flags =
-          promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
-          promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1 +
-          promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2;
-
-      var result = promptService.confirmEx(window, "Save?", prompt, flags, null, null, null, null, {});
-
-      switch (result) {
-        case 0:
-          if (curSuite.isTempSuite()) {
-            //For temp suites, just save the test case (as there is only one test case)
-            return this.saveTestCase();
-          }
-          //For all others, save the suite (perhaps unnecessary) and all test cases that have changed
-          return this.app.saveTestSuite(true);
-        case 1:
-          return false;
-        case 2:
-          return true;
+      var result = PromptService.save(prompt, "Save?");
+      if (result.save) {
+        if (curSuite.isTempSuite()) {
+          //For temp suites, just save the test case (as there is only one test case)
+          return this.saveTestCase();
+        }
+        //For all others, save the suite (perhaps unnecessary) and all test cases that have changed
+        return this.app.saveTestSuite(true);
+      } else if (result.cancel) {
+        return false;
       }
+      //result.dontSave
+      return true;
     }
   } else {
     //TODO: Why is there no current suite???
@@ -721,6 +716,14 @@ Editor.prototype.updateDeveloperTools = function (show) {
   $("reload-button").disabled = !show;
 };
 
+Editor.prototype.autoCompleteCommand = function (command) {
+  var newcmd = command.replace(/^.+ >> /, '');
+  if (newcmd !== command) {
+    $('commandAction').value = newcmd;
+    this.treeView.updateCurrentCommand('command', newcmd);
+  }
+};
+
 Editor.prototype.addCommand = function (command, target, value, window, insertBeforeLastCommand) {
   this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);
   if (command != 'open' &&
@@ -736,7 +739,7 @@ Editor.prototype.addCommand = function (command, target, value, window, insertBe
     if (!this.safeLastWindow.isSameWindow(window)) {
       if (this.safeLastWindow.isSameTopWindow(window)) {
         // frame
-        var destPath = this._createPaths(window);
+        var destPath = this.safeLastWindow.createPath(window);
         var srcPath = this.safeLastWindow.getPath();
         this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
         var branch = 0;
@@ -842,6 +845,7 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 };
 
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
+  var start = Date.now();
   var self = this;
   self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
   self.app.notify("testCasePlayStart", self.app.getTestCase());
@@ -849,8 +853,14 @@ Editor.prototype.playCurrentTestCase = function (next, index, total) {
     self.log.debug("finished execution of test case: failed=" + failed);
     var testCase = self.suiteTreeView.getCurrentTestCase();
     if (testCase) {
-      testCase.testResult = failed ? "failed" : "passed";
-      self.getUserLog().info("Test case " + testCase.testResult);
+      testCase.testResult = {
+        summary: failed ? "failed" : "passed",
+        // remember all in milliseconds
+        start: start,
+        end: Date.now(),
+        dur: Date.now() - start
+      };
+      self.getUserLog().info("Test case " + testCase.testResult.summary);
       self.app.notify("testCasePlayDone", testCase);
     } else {
       self.getUserLog().error("current test case not found");
@@ -869,25 +879,39 @@ Editor.prototype.playTestSuite = function (startIndex) {
     startIndex = 0;
   }
   var index = startIndex - 1;
-  this.app.getTestSuite().tests.forEach(function (test) {
+  var testSuite = this.app.getTestSuite();
+  testSuite.tests.forEach(function (test) {
     if (test.testResult) {
       delete test.testResult;
     }
   });
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
+  var start = Date.now();
+  testSuite.testSuiteProgress = this.testSuiteProgress;
   var self = this;
   self.app.notify("testSuitePlayStart");
-  var total = this.app.getTestSuite().tests.length - startIndex;
+  var total = testSuite.tests.length - startIndex;
   (function () {
-    if (++index < self.app.getTestSuite().tests.length) {
+    if (++index < testSuite.tests.length) {
       self.suiteTreeView.scrollToRow(index);
-      self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
+      self.app.showTestCaseFromSuite(testSuite.tests[index]);
       self.playCurrentTestCase(arguments.callee, index, total);
     } else {
       //Suite done
+      testSuite.suiteResult = {
+        summary: total == self.testSuiteProgress.runs && self.testSuiteProgress.failures == 0 ? 'passed' : 'failed',
+        total: total,
+        ran: self.testSuiteProgress.runs,
+        failed: self.testSuiteProgress.failures,
+        passed: self.testSuiteProgress.runs - self.testSuiteProgress.failures,
+        // remember all in milliseconds
+        start: start,
+        end: Date.now(),
+        dur: Date.now() - start
+      };
       self.getUserLog().info("Test suite completed: " + self.testSuiteProgress.runs + " played, " + (self.testSuiteProgress.failures ? self.testSuiteProgress.failures + " failed" : " all passed!"));
-      self.app.notify("testSuitePlayDone", total, self.testSuiteProgress.runs, self.testSuiteProgress.failures);
+      self.app.notify("testSuitePlayDone", testSuite.suiteResult);
     }
   })();
 };
@@ -1088,11 +1112,13 @@ Editor.prototype.reload = function () {
 };
 
 Editor.prototype.showReference = function (command) {
-  var def = command.getDefinition();
-  if (def) {
-    this.infoPanel.switchView(this.infoPanel.helpView);
-    this.log.debug("showReference: " + def.name);
-    this.reference.show(def, command);
+  if (command.type == 'command') {
+    var def = command.getDefinition();
+    if (def) {
+      this.infoPanel.switchView(this.infoPanel.helpView);
+      this.log.debug("showReference: " + def.name);
+      this.reference.show(def, command);
+    }
   }
 };
 
@@ -1416,13 +1442,13 @@ Editor.InfoPanel.prototype.switchView = function (view) {
 Editor.InfoView = function () { };
 
 Editor.InfoView.prototype.show = function () {
-  document.getElementById(this.name + "View").hidden = false;
+  document.getElementById(this.name + "View").style.display = "block";
   document.getElementById(this.name + "Tab").setAttribute("selected", "true");
 };
 
 Editor.InfoView.prototype.hide = function () {
   document.getElementById(this.name + "Tab").removeAttribute("selected");
-  document.getElementById(this.name + "View").hidden = true;
+  document.getElementById(this.name + "View").style.display = "none";
 };
 
 /*
@@ -1446,12 +1472,12 @@ Editor.LogView.prototype = new Editor.InfoView;
 
 Editor.LogView.prototype.show = function () {
   Editor.InfoView.prototype.show.call(this);
-  document.getElementById("logButtons").hidden = false;
+  document.getElementById("logButtons").style.display = "flex";
 };
 
 Editor.LogView.prototype.hide = function () {
   Editor.InfoView.prototype.hide.call(this);
-  document.getElementById("logButtons").hidden = true;
+  document.getElementById("logButtons").style.display = "none";
 } ;
 
 Editor.LogView.prototype.setLog = function (log) {

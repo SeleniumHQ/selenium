@@ -41,6 +41,9 @@ class FirefoxBinary(object):
         self.command_line = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
+        if not self._start_cmd.strip():
+          raise Exception("Failed to find firefox binary. You can set it by specifying the path to 'firefox_binary':\n\nfrom selenium.webdriver.firefox.firefox_binary import FirefoxBinary\n\n" +
+            "binary = FirefoxBinary('/path/to/binary')\ndriver = webdriver.Firefox(firefox_binary=binary)")
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
@@ -109,9 +112,9 @@ class FirefoxBinary(object):
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         except ImportError:
-            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex
         keys = (
            r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
@@ -124,7 +127,12 @@ class FirefoxBinary(object):
                 command = QueryValue(key, "")
                 break
             except OSError:
-                pass
+                try:
+                    key = OpenKey(HKEY_CURRENT_USER, path)
+                    command = QueryValue(key, "")
+                    break
+                except OSError:
+                    pass
         else:
             return ""
 
