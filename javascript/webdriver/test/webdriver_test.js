@@ -510,6 +510,26 @@ function testToWireValue_arrayWithWebElement() {
 }
 
 
+function testToWireValue_arrayWithWebElementPromise() {
+  var elementJson = {};
+  elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
+
+  var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
+  var elementPromise = new webdriver.WebElementPromise(STUB_DRIVER,
+      webdriver.promise.fulfilled(element));
+
+  var callback;
+  webdriver.WebDriver.toWireValue_([elementPromise]).
+      then(callback = callbackHelper(function(actual) {
+        assertTrue(goog.isArray(actual));
+        assertEquals(1, actual.length);
+        webdriver.test.testutil.assertObjectEquals(elementJson, actual[0]);
+      }));
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
 function testToWireValue_complexArray() {
   var elementJson = {};
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
@@ -1534,6 +1554,27 @@ function testExecuteScript_webElementArgumentConversion() {
   var driver = testHelper.createDriver();
   driver.executeScript('return 1;',
       new webdriver.WebElement(driver, elementJson));
+  testHelper.execute();
+}
+
+
+function testExecuteScript_webElementPromiseArgumentConversion() {
+  var elementJson = {'ELEMENT':'bar'};
+
+  var testHelper = TestHelper.expectingSuccess().
+      expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+          andReturnSuccess(elementJson).
+      expect(CName.EXECUTE_SCRIPT).
+          withParameters({
+            'script': 'return 1;',
+            'args': [elementJson]
+          }).
+          andReturnSuccess(null).
+      replayAll();
+
+  var driver = testHelper.createDriver();
+  var element = driver.findElement(By.id('foo'));
+  driver.executeScript('return 1;', element);
   testHelper.execute();
 }
 

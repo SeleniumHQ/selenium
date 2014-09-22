@@ -179,32 +179,74 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
   if (webdriver.promise.isPromise(obj)) {
     return obj.then(webdriver.WebDriver.toWireValue_);
   }
-  switch (goog.typeOf(obj)) {
-    case 'array':
-      return webdriver.promise.all(
-          goog.array.map(/** @type {!Array} */ (obj),
-              webdriver.WebDriver.toWireValue_));
-    case 'object':
-      if (obj instanceof webdriver.WebElement) {
-        return obj.getId();
+  return webdriver.promise.fulfilled(convertValue(obj));
+
+  function convertValue(value) {
+    switch (goog.typeOf(value)) {
+      case 'array':
+        return convertKeys(value, true);
+      case 'object':
+        if (value instanceof webdriver.WebElement) {
+          return value.getId();
+        }
+        if (goog.isFunction(value.toJSON)) {
+          return value.toJSON();
+        }
+        if (goog.isNumber(value.nodeType) && goog.isString(value.nodeName)) {
+          throw new TypeError(
+              'Invalid argument type: ' + value.nodeName +
+              '(' + value.nodeType + ')');
+        }
+        return convertKeys(value, false);
+      case 'function':
+        return '' + value;
+      case 'undefined':
+        return null;
+      default:
+        return value;
+    }
+  }
+
+  function convertKeys(obj, isArray) {
+    var numKeys = isArray ? obj.length : goog.object.getCount(obj);
+    var ret = isArray ? new Array(numKeys) : {};
+    if (!numKeys) {
+      return webdriver.promise.fulfilled(ret);
+    }
+
+    var numResolved = 0;
+    var done = webdriver.promise.defer();
+
+    // forEach will stop iteration at undefined, where we want to convert
+    // these to null and keep iterating.
+    var forEachKey = !isArray ? goog.object.forEach : function(arr, fn) {
+      var n = arr.length;
+      for (var i = 0; i < n; i++) {
+        fn(arr[i], i);
       }
-      if (goog.isFunction(obj.toJSON)) {
-        return webdriver.promise.fulfilled(obj.toJSON());
+    };
+
+    forEachKey(obj, function(value, key) {
+      if (webdriver.promise.isPromise(value)) {
+        value.then(webdriver.WebDriver.toWireValue_).
+            then(setValue, done.reject);
+      } else {
+        webdriver.promise.asap(convertValue(value), setValue, done.reject);
       }
-      if (goog.isNumber(obj.nodeType) && goog.isString(obj.nodeName)) {
-        throw Error([
-          'Invalid argument type: ', obj.nodeName, '(', obj.nodeType, ')'
-        ].join(''));
+
+      function setValue(value) {
+        ret[key] = value;
+        maybeFulfill();
       }
-      return webdriver.promise.fullyResolved(
-          goog.object.map(/** @type {!Object} */ (obj),
-              webdriver.WebDriver.toWireValue_));
-    case 'function':
-      return webdriver.promise.fulfilled('' + obj);
-    case 'undefined':
-      return webdriver.promise.fulfilled(null);
-    default:
-      return webdriver.promise.fulfilled(obj);
+    });
+
+    return done.promise;
+
+    function maybeFulfill() {
+      if (++numResolved === numKeys) {
+        done.fulfill(ret);
+      }
+    }
   }
 };
 
@@ -443,10 +485,11 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   if (goog.isFunction(script)) {
     script = 'return (' + script + ').apply(null, arguments);';
   }
+  var args = arguments.length > 1 ? goog.array.slice(arguments, 1) : [];
   return this.schedule(
       new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
           setParameter('script', script).
-          setParameter('args', goog.array.slice(arguments, 1)),
+          setParameter('args', args),
       'WebDriver.executeScript()');
 };
 
