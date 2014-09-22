@@ -143,6 +143,9 @@ class Selenium::WebDriver::Remote::Bridge
   command :getAppCacheStatus,                      :get,    "session/:session_id/application_cache/status"
   command :clearAppCache,                          :delete, "session/:session_id/application_cache/clear"
 
+  command :getNetworkConnection,                   :get,    "session/:session_id/network_connection"
+  command :setNetworkConnection,                   :post,   "session/:session_id/network_connection"
+
   command :getLocalStorageItem,                    :get,    "session/:session_id/local_storage/key/:key"
   command :removeLocalStorageItem,                 :delete, "session/:session_id/local_storage/key/:key"
   command :getLocalStorageKeys,                    :get,    "session/:session_id/local_storage"
