@@ -33,7 +33,9 @@ public class SetNextConfirmationState extends SeleneseCommand<Void> {
     ((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
         "} else { " +
         "  window.__webdriverNextConfirm = arguments[0];" +
