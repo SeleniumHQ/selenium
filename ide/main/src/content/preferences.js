@@ -169,6 +169,7 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   //Internal data
   pluginsData: "[]",
   currentVersion: "",
+  showHealthAlerts: "false",
   lastSavedTestCase: "",
   lastSavedTestSuite: ""
 };
