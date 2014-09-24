@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.support.events.WebDriverEventListener;
+import org.openqa.selenium.support.events.WebDriverInputDeviceEventListener;
 
 /**
  * A keyboard firing events.
@@ -37,16 +38,44 @@ public class EventFiringKeyboard implements Keyboard {
     this.keyboard = ((HasInputDevices) this.driver).getKeyboard();
 
   }
+  
+  private WebDriverInputDeviceEventListener getKeyBoardEventListener() {
+      if (dispatcher instanceof WebDriverInputDeviceEventListener) {
+          return (WebDriverInputDeviceEventListener) dispatcher;
+      }
+      return null;
+  }
 
   public void sendKeys(CharSequence... keysToSend) {
+    WebDriverInputDeviceEventListener listener = getKeyBoardEventListener();
+    if (listener == null) {
+        keyboard.sendKeys(keysToSend);
+        return;
+    }
+    listener.beforeSendKeys(keysToSend);
     keyboard.sendKeys(keysToSend);
+    listener.afterSendKeys(keysToSend);
   }
 
   public void pressKey(CharSequence keyToPress) {
+    WebDriverInputDeviceEventListener listener = getKeyBoardEventListener();
+    if (listener == null) {
+        keyboard.pressKey(keyToPress);
+        return;
+    }
+    listener.beforePressKey(keyToPress);
     keyboard.pressKey(keyToPress);
+    listener.afterPressKey(keyToPress);
   }
 
   public void releaseKey(CharSequence keyToRelease) {
+    WebDriverInputDeviceEventListener listener = getKeyBoardEventListener();
+    if (listener == null) {
+        keyboard.releaseKey(keyToRelease);
+        return;
+    }
+    listener.beforeReleaseKey(keyToRelease);
     keyboard.releaseKey(keyToRelease);
+    listener.afterReleaseKey(keyToRelease);
   }
 }
