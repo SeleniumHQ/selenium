@@ -719,7 +719,7 @@ Editor.prototype.updateDeveloperTools = function (show) {
 
 //Samit: Enh: Provide a bit of visual assistance
 Editor.prototype.updateVisualEye = function (show) {
-  var container = document.getElementById("visualEyeContainer");
+  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar") ;
   show ? container.classList.add("visualeye") : container.classList.remove("visualeye");
 };
 
