@@ -5,41 +5,28 @@ module Selenium
         def network_connection_type
           connection_value = @bridge.getNetworkConnection
 
-          # Convert connection value to type. In case the connection type is
-          # not recognized return the connection value.
-          case connection_value
-          when 1
-            :airplane_mode
-          when 2
-            :wifi
-          when 4
-            :data
-          when 6
-            :all
-          when 0
-            :none
-          else
-            connection_value
-          end
+          connection_type = values_to_type[connection_value]
+
+          # In case the connection type is not recognized return the
+          # connection value.
+          connection_type || connection_value
         end
 
         def network_connection_type=(connection_type)
-          # convert connection type to value
-          connection_value = case connection_type
-                             when :airplane_mode
-                               1
-                             when :wifi
-                               2
-                             when :data
-                               4
-                             when :all
-                               6
-                             when :none
-                               0
-                             end
+          connection_value = type_to_values[connection_type]
 
           @bridge.setNetworkConnection connection_value
         end
+
+        private
+
+          def type_to_values
+            {:airplane_mode => 1, :wifi => 2, :data => 4, :all => 6, :none => 0}
+          end
+
+          def values_to_type
+            type_to_values.invert
+          end
       end
     end
   end
