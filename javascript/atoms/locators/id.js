@@ -21,6 +21,20 @@ goog.require('goog.dom');
 
 
 /**
+ * Tests whether the standardized W3C Selectors API are available on an
+ * element and the target locator meets CSS requirements.
+ * @param {!(Document|Element)} root The document or element to test for CSS
+ *     selector support.
+ * @return {boolean} Whether or not the root supports query selector APIs.
+ * @see http://www.w3.org/TR/selectors-api/
+ * @private
+ */
+bot.locators.id.canUseQuerySelector_ = function(root, target) {
+  return !!(root.querySelectorAll && root.querySelector) && !/^\d.*/.test(target);
+};
+
+
+/**
  * Find an element by using the value of the ID attribute.
  * @param {string} target The id to search for.
  * @param {!(Document|Element)} root The document or element to perform the
@@ -58,6 +72,16 @@ bot.locators.id.single = function(target, root) {
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.id.many = function(target, root) {
+  if (!target) {
+    return [];
+  }
+  if (bot.locators.id.canUseQuerySelector_(root, target)) {
+    try {
+      return root.querySelectorAll('#' + target.replace(/\./g, '\\.'));
+    } catch (e) {
+      return [];
+    }
+  }
   var dom = goog.dom.getDomHelper(root);
   var elements = dom.getElementsByTagNameAndClass('*', null, root);
   return goog.array.filter(elements, function(e) {
