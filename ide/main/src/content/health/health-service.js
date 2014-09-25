@@ -77,7 +77,8 @@ HealthService.prototype._runDiagnostics = function(providers, results) {
         try {
           results[k] = providers[k].runDiagnostic();
         } catch (e) {
-          results[k] = "Error: " + e;
+          this.addException('HealthService', '_runDiagnostics: ' + k, e);
+          results[k] = "Error running diagnostic: " + e.toString();
         }
       }
     }
@@ -102,18 +103,22 @@ HealthService.prototype._newKey = function() {
 HealthService.prototype.attach = function(win, component) {
   if (win) {
     var oldOnError = win.onerror;
-    win.__side_health_key = Date.now() + component + this._newKey();
-    this.handlers[win.__side_health_key] = {
+    win.__healthsvc_key = Date.now() + component + this._newKey();
+    this.handlers[win.__healthsvc_key] = {
       component: component,
       oldOnError: oldOnError
     };
     var self = this;
-    win.onerror = function SIDEErrorHandler(msg, url, line) {
-      self.addError(component, "UncaughtException", msg, url, line);
+    win.onerror = function SIDEErrorHandler(msg, url, line, column, error) {
+      self.addError(component, "UncaughtException", msg, url, line, column, (error && error.stack ? error.stack : null));
       if (self.alerts) {
-        alert("Caught onerror. Msg: " + msg + ", url: " + url + ", line: " + line);
+        try {
+          alert("There was an unexpected error. Msg: " + msg + "\nUrl: " + url + ", line: " + line + (column ? ", column: " + column : '') + (error && error.stack ? "\n" + error.stack : ''));
+        } catch (e) {
+          self.addException('HealthService', 'showAlert', e);
+        }
       }
-      return oldOnError ? oldOnError(msg, url, line) : false;
+      return oldOnError ? oldOnError(msg, url, line, column, error) : false;
     };
     this.addEvent('HealthService', 'attached: ' + component);
   }
@@ -123,9 +128,9 @@ HealthService.prototype.attach = function(win, component) {
  * Remove the attached health handlers
  */
 HealthService.prototype.detach = function(win) {
-  if (win && win.__side_health_key && this.handlers[win.__side_health_key]) {
-    var info = this.handlers[win.__side_health_key];
-    this.handlers[win.__side_health_key] = null;
+  if (win && win.__healthsvc_key && this.handlers[win.__healthsvc_key]) {
+    var info = this.handlers[win.__healthsvc_key];
+    this.handlers[win.__healthsvc_key] = null;
     win.onerror = info.oldOnError;
     this.addEvent('HealthService', 'detached: ' + info.component);
   }
@@ -137,8 +142,8 @@ HealthService.prototype.detach = function(win) {
 HealthService.prototype.addEvent = function(component, event) {
   this.events.push({
     at: Date.now(),
-    component: component,
     type: 'Event',
+    component: component,
     event: event
   });
 };
@@ -146,15 +151,34 @@ HealthService.prototype.addEvent = function(component, event) {
 /**
  * Add an error for a component
  */
-HealthService.prototype.addError = function(component, event, msg, url, line) {
+HealthService.prototype.addError = function(component, event, msg, url, line, column, stack) {
   this.events.push({
     at: Date.now(),
-    component: component,
     type: 'Error',
+    component: component,
     event: event,
     msg: msg,
     url: url,
-    line: line
+    line: line,
+    column: column,
+    stack: stack
+  });
+};
+
+/**
+ * Add an error for a component using the error object
+ */
+HealthService.prototype.addException = function(component, event, exception) {
+  this.events.push({
+    at: Date.now(),
+    type: 'Error',
+    component: component,
+    event: event,
+    msg: exception.message ? exception.message : exception.toString(),
+    url: exception.fileName ? exception.fileName : null,
+    line: exception.lineNumber ? exception.lineNumber : null,
+    column: exception.columnNumber ? exception.columnNumber : null,
+    stack: exception.stack ? exception.stack : null
   });
 };
 
