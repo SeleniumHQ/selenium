@@ -30,6 +30,11 @@ module Selenium
 
             driver.network_connection_type = :airplane_mode
           end
+
+          it "returns an error when an invalid argument is given" do
+            expect { driver.network_connection_type = :something }.
+              to raise_error(ArgumentError, "Invalid connection type")
+          end
         end
       end
     end

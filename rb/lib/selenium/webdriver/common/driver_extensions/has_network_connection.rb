@@ -13,6 +13,8 @@ module Selenium
         end
 
         def network_connection_type=(connection_type)
+          raise ArgumentError, "Invalid connection type" unless valid_type? connection_type
+
           connection_value = type_to_values[connection_type]
 
           @bridge.setNetworkConnection connection_value
@@ -26,6 +28,10 @@ module Selenium
 
           def values_to_type
             type_to_values.invert
+          end
+
+          def valid_type?(type)
+            type_to_values.keys.include? type
           end
       end
     end
