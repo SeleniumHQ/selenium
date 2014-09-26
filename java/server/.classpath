@@ -19,7 +19,7 @@
 	<classpathentry kind="lib" path="/third-party/java/jcip_annotations/jcip-annotations-1.0.jar" sourcepath="/third-party/java/jcip_annotations/jcip-annotations-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/yaml/snakeyaml-1.8.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48.jar" sourcepath="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.15.jar" sourcepath="/third-party/java/webbit/webbit-0.4.15-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-15.0.jar" sourcepath="/third-party/java/guava-libraries/guava-15.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>
