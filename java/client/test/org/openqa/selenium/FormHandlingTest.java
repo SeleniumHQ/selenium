@@ -244,7 +244,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(value, is("some text"));
   }
 
-  @Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE},
           reason = "iPhone: sendKeys implemented incorrectly")
   @Test
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
