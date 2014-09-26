@@ -63,6 +63,10 @@ class Alert {
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
   int ClickAlertButton(DialogButtonInfo button_info);
+  std::string GetStandardDialogText(void);
+  std::string GetDirectUIDialogText(void);
+  HWND GetDirectUIChild(void);
+  IAccessible* GetChildWithRole(IAccessible* parent, long expected_role, int index);
 
   static bool IsOKButton(HWND button_handle);
   static bool IsCancelButton(HWND button_handle);

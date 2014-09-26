@@ -21,10 +21,7 @@ Alert::Alert(BrowserHandle browser, HWND handle) {
   this->browser_ = browser;
   this->alert_handle_ = handle;
 
-  HWND direct_ui_child = NULL;
-  ::EnumChildWindows(this->alert_handle_,
-                     &Alert::FindDirectUIChild,
-                     reinterpret_cast<LPARAM>(&direct_ui_child));
+  HWND direct_ui_child = this->GetDirectUIChild();
   this->is_standard_alert_ = direct_ui_child == NULL;
 }
 
@@ -99,6 +96,21 @@ int Alert::SendKeys(std::string keys) {
 
 std::string Alert::GetText() {
   LOG(TRACE) << "Entering Alert::GetText";
+  std::string alert_text_value = "";
+  if (this->is_standard_alert_) {
+    alert_text_value = this->GetStandardDialogText();
+  } else {
+    std::string alert_text = this->GetDirectUIDialogText();
+    size_t first_crlf = alert_text.find("\r\n\r\n");
+    if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
+      alert_text_value = alert_text.substr(first_crlf + 4);
+    }
+  }
+  return alert_text_value;
+}
+
+std::string Alert::GetStandardDialogText() {
+  LOG(TRACE) << "Entering Alert::GetStandardDialogText";
   TextLabelFindInfo info;
   info.label_handle = NULL;
   info.control_id_found = 0;
@@ -145,6 +157,114 @@ std::string Alert::GetText() {
     alert_text_value = StringUtilities::ToString(alert_text);
   }
   return alert_text_value;
+}
+
+std::string Alert::GetDirectUIDialogText() {
+  LOG(TRACE) << "Entering Alert::GetDirectUIDialogText";
+  std::string alert_text_value = "";
+  HWND direct_ui_child_handle = this->GetDirectUIChild();
+
+  CComPtr<IAccessible> window_object;
+  HRESULT hr = ::AccessibleObjectFromWindow(
+      direct_ui_child_handle,
+      OBJID_WINDOW,
+      IID_IAccessible,
+      reinterpret_cast<void**>(&window_object));
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Failed to get Active Accessibility window object from dialog";
+    return alert_text_value;
+  }
+
+  // ASSUMPTION: There is an object with the role of "pane" as a child of
+  // the window object.
+  CComPtr<IAccessible> pane_object = this->GetChildWithRole(window_object,
+                                                            ROLE_SYSTEM_PANE,
+                                                            0);
+  if (!pane_object) {
+    LOG(WARN) << "Failed to get Active Accessibility pane child object from window";
+    return alert_text_value;
+  }
+
+  // ASSUMPTION: The second "static text" accessibility object is the one
+  // that contains the message.
+  CComPtr<IAccessible> message_text_object = this->GetChildWithRole(
+      pane_object,
+      ROLE_SYSTEM_STATICTEXT,
+      1);
+  if (!message_text_object) {
+    LOG(WARN) << "Failed to get Active Accessibility text child object from pane";
+    return alert_text_value;
+  }
+
+  CComVariant child_id;
+  child_id.vt = VT_I4;
+  child_id.lVal = CHILDID_SELF;
+
+  CComBSTR text_bstr;
+  hr = message_text_object->get_accName(child_id, &text_bstr);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Failed to get accName property from text object";
+    return alert_text_value;
+  }
+
+  std::wstring text = text_bstr;
+  alert_text_value = StringUtilities::ToString(text);
+  return alert_text_value;
+}
+
+IAccessible* Alert::GetChildWithRole(IAccessible* parent, long expected_role, int index) {
+  LOG(TRACE) << "Entering Alert::GetChildWithRole";
+  IAccessible* child = NULL;
+  long child_count;
+  HRESULT hr = parent->get_accChildCount(&child_count);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Failed to get accChildCount property from Active Accessibility object";
+    return child;
+  }
+
+  long returned_children = 0;
+  std::vector<CComVariant> child_array(child_count);
+  hr = ::AccessibleChildren(parent, 0, child_count, &child_array[0], &returned_children);
+
+  int found_index = 0;
+  for (long i = 0; i < child_count; ++i) {
+    if (child_array[i].vt == VT_DISPATCH) {
+      CComPtr<IAccessible> child_object;
+      hr = child_array[i].pdispVal->QueryInterface<IAccessible>(&child_object);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "QueryInterface for IAccessible failed for child object with index " << i;
+      }
+
+      CComVariant child_id;
+      child_id.vt = VT_I4;
+      child_id.lVal = CHILDID_SELF;
+
+      CComVariant actual_role;
+      hr = child_object->get_accRole(child_id, &actual_role);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Failed to get accRole property from Active Accessibility object";
+      }
+
+      if (expected_role == actual_role.lVal) {
+        if (found_index == index) {
+          child = child_object.Detach();
+        } else {
+          ++found_index;
+        }
+      }
+      LOG(DEBUG) << "accRole for child with index " << i << ": " << actual_role.lVal;
+    }
+  }
+  return child;
+}
+
+HWND Alert::GetDirectUIChild() {
+  LOG(TRACE) << "Entering Alert::GetDirectUIChild";
+  HWND direct_ui_child = NULL;
+  ::EnumChildWindows(this->alert_handle_,
+                     &Alert::FindDirectUIChild,
+                     reinterpret_cast<LPARAM>(&direct_ui_child));
+  return direct_ui_child;
 }
 
 int Alert::ClickAlertButton(DialogButtonInfo button_info) {
