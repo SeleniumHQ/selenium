@@ -55,9 +55,23 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("id"), is("linkId"));
   }
 
-  @Ignore(value = ANDROID, reason = "Bug in Android's XPath library.")
+  @Test
+  public void testShouldBeAbleToFindASingleElementByNumericId() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.id("2"));
+    assertThat(element.getAttribute("id"), is("2"));
+  }
+
   @Test
   public void testShouldBeAbleToFindMultipleElementsById() {
+    driver.get(pages.nestedPage);
+    List<WebElement> elements = driver.findElements(By.id("test_id"));
+    assertThat(elements.size(), is(2));
+  }
+
+  @Ignore(value = ANDROID, reason = "Bug in Android's XPath library.")
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByNumericId() {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("2"));
     assertThat(elements.size(), is(8));
@@ -85,7 +99,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testFindingMultipleElementsByEmptyIdShouldThrow() {
+  public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id(""));
     assertThat(elements.size(), is(0));
@@ -98,7 +112,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
+  public void testFindingMultipleElementsByIdWithSpaceShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id("nonexistent button"));
     assertThat(elements.size(), is(0));

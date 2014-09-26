@@ -39,7 +39,9 @@ public class AlertOverride {
     ((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify([])); " +
         "  window.alert = function(msg) { " +
         "    var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
@@ -84,7 +86,9 @@ public class AlertOverride {
     String result = (String) ((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  if (!('__webdriverAlerts' in window.localStorage)) { return null } " +
         "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
         "  if (! alerts) { return null } " +
@@ -112,7 +116,9 @@ public class AlertOverride {
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  if (!('__webdriverAlerts' in window.localStorage)) { return false } " +
         "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
         "  return alerts && alerts.length > 0; " +
@@ -127,7 +133,9 @@ public class AlertOverride {
     String result = (String) ((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  if (!('__webdriverConfirms' in window.localStorage)) { return null } " +
         "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
         "  if (! confirms) { return null } " +
@@ -153,7 +161,9 @@ public class AlertOverride {
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
         "var canUseLocalStorage = false; " +
         "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage) { " +
+        "var canUseJSON = false; " +
+        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+        "if (canUseLocalStorage && canUseJSON) { " +
         "  if (!('__webdriverConfirms' in window.localStorage)) { return false } " +
         "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
         "  return confirms && confirms.length > 0; " +

@@ -22,6 +22,9 @@ function Editor(window) {
   this.window = window;
   window.editor = this;
   var self = this;
+  this.health = new HealthService();
+  this.health.attach(window, 'editor');
+  this.health.addEvent('editor', 'initializing');
   this.safeLastWindow = new LastWindow();
   this.recordFrameTitle = false;
   this.app = new Application();
@@ -46,6 +49,7 @@ function Editor(window) {
       self.updateDeveloperTools(self.app.getBooleanOption('showDeveloperTools'));
       self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
       self.updateVisualEye(self.app.getBooleanOption('visualEye'));
+      self.health.showAlerts(self.app.getBooleanOption('showHealthAlerts'));
     },
 
     testSuiteChanged: function (testSuite) {
@@ -145,6 +149,7 @@ function Editor(window) {
     }
   });
 
+  this.health.showAlerts(this.app.getBooleanOption('showHealthAlerts'));
   this.document = document;
   this.recordButton = document.getElementById("record-button");
   this.recordMenuItem = document.getElementById("menu_record");
@@ -219,6 +224,7 @@ function Editor(window) {
   }
   this.log.info("Ready");
   this.app.notify('initComplete');
+  this.health.addEvent('editor', 'initialized');
 }
 
 Editor.prototype.saveTC = function () {
@@ -719,7 +725,7 @@ Editor.prototype.updateDeveloperTools = function (show) {
 
 //Samit: Enh: Provide a bit of visual assistance
 Editor.prototype.updateVisualEye = function (show) {
-  var container = document.getElementById("visualEyeContainer");
+  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar") ;
   show ? container.classList.add("visualeye") : container.classList.remove("visualeye");
 };
 
