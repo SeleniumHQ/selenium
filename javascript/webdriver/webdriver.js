@@ -440,15 +440,32 @@ webdriver.WebDriver.prototype.actions = function() {
  * @template T
  */
 webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
-  if (goog.isFunction(script)) {
-    script = 'return (' + script + ').apply(null, arguments);';
-  }
-  return this.schedule(
-      new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
-          setParameter('script', script).
-          setParameter('args', goog.array.slice(arguments, 1)),
-      'WebDriver.executeScript()');
+  this.executeScriptWithDescription(
+      script, 'WebDriver.executeScript()', var_args);
 };
+
+/**
+ * The same as {@code webdriver.WebDriver.prototype.executeScript},
+ * but with a customized description for debugging.
+ *
+ * @param {!(string|Function)} script The script to execute.
+ * @param {string} description A description of the command for debugging.
+ * @param {...*} var_args The arguments to pass to the script.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will resolve to the
+ *    scripts return value.
+ * @template T
+ */
+webdriver.WebDriver.prototype.executeScriptWithDescription =
+    function(script, description, var_args) {
+      if (goog.isFunction(script)) {
+        script = 'return (' + script + ').apply(null, arguments);';
+      }
+      return this.schedule(
+          new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
+              setParameter('script', script).
+              setParameter('args', goog.array.slice(arguments, 1)),
+          description);
+    };
 
 
 /**
@@ -532,15 +549,32 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  * @template T
  */
 webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
-  if (goog.isFunction(script)) {
-    script = 'return (' + script + ').apply(null, arguments);';
-  }
-  return this.schedule(
-      new webdriver.Command(webdriver.CommandName.EXECUTE_ASYNC_SCRIPT).
-          setParameter('script', script).
-          setParameter('args', goog.array.slice(arguments, 1)),
-      'WebDriver.executeScript()');
+    this.executeAsyncScriptWithDescription(
+        script, 'WebDriver.executeScript()', var_args);
 };
+
+/**
+ * The same as {@code webdriver.WebDriver.prototype.executeAsyncScript},
+ * but with a customized description for debugging.
+ *
+ * @param {!(string|Function)} script The script to execute.
+ * @param {string} description A description for debugging purposes.
+ * @param {...*} var_args The arguments to pass to the script.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will resolve to the
+ *    scripts return value.
+ * @template T
+ */
+webdriver.WebDriver.prototype.executeAsyncScriptWithDescription =
+    function(script, description, var_args) {
+      if (goog.isFunction(script)) {
+        script = 'return (' + script + ').apply(null, arguments);';
+      }
+      return this.schedule(
+          new webdriver.Command(webdriver.CommandName.EXECUTE_ASYNC_SCRIPT).
+              setParameter('script', script).
+              setParameter('args', goog.array.slice(arguments, 1)),
+          description);
+    };
 
 
 /**
