@@ -18,9 +18,8 @@ package org.openqa.selenium.logging.profiler;
 
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
 
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 
@@ -33,7 +32,7 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
       "event", eventType.toString(),
       "command", commandName,
       "startorend", isStart ? "start" : "end");
-    return new JSONObject(map).toString();
+    return new Gson().toJson(map);
   }
 
 }

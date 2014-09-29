@@ -22,16 +22,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Charsets;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +47,7 @@ public class CrossDomainRpcLoaderTest {
   }
 
   @Test
-  public void jsonRequestMustHaveAMethod() throws IOException, JSONException {
+  public void jsonRequestMustHaveAMethod() throws IOException {
     HttpServletRequest mockRequest = createJsonRequest(null, "/", "data");
     try {
       new CrossDomainRpcLoader().loadRpc(mockRequest);
@@ -59,7 +57,7 @@ public class CrossDomainRpcLoaderTest {
   }
 
   @Test
-  public void jsonRequestMustHaveAPath() throws IOException, JSONException {
+  public void jsonRequestMustHaveAPath() throws IOException {
     HttpServletRequest mockRequest = createJsonRequest("GET", null, "data");
     try {
       new CrossDomainRpcLoader().loadRpc(mockRequest);
@@ -69,7 +67,7 @@ public class CrossDomainRpcLoaderTest {
   }
 
   @Test
-  public void jsonRequestMustHaveAData() throws IOException, JSONException {
+  public void jsonRequestMustHaveAData() throws IOException {
     HttpServletRequest mockRequest = createJsonRequest("GET", "/", null);
     try {
       new CrossDomainRpcLoader().loadRpc(mockRequest);
@@ -79,25 +77,28 @@ public class CrossDomainRpcLoaderTest {
   }
 
   @Test
-  public void rpcRequestDataInitializedWithDataAsAString()
-      throws IOException, JSONException {
-    HttpServletRequest mockRequest = createJsonRequest("GET", "/",
-        new JSONObject().put("foo", "bar"));
+  public void rpcRequestDataInitializedWithDataAsAString() throws IOException {
+    JsonObject json = new JsonObject();
+    json.addProperty("foo", "bar");
+    HttpServletRequest mockRequest = createJsonRequest("GET", "/", json);
 
     CrossDomainRpc rpc = new CrossDomainRpcLoader().loadRpc(mockRequest);
     assertEquals("{\"foo\":\"bar\"}", rpc.getData());
   }
 
   private HttpServletRequest createJsonRequest(final String method,
-      final String path, final Object data) throws IOException, JSONException {
+      final String path, final Object data) throws IOException {
     when(mockRequest.getHeader("content-type")).thenReturn("application/json");
 
-    final ByteArrayInputStream stream = new ByteArrayInputStream(new JSONObject()
-        .put("method", method)
-        .put("path", path)
-        .put("data", data)
-        .toString()
-        .getBytes(Charsets.UTF_8));
+    JsonObject json = new JsonObject();
+    json.addProperty("method", method);
+    json.addProperty("path", path);
+    if (data instanceof JsonElement) {
+      json.add("data", (JsonElement) data);
+    } else {
+      json.addProperty("data", (String) data);
+    }
+    final ByteArrayInputStream stream = new ByteArrayInputStream(json.toString().getBytes(Charsets.UTF_8));
     when(mockRequest.getInputStream()).thenReturn(new ServletInputStream() {
       @Override
       public int read() throws IOException {

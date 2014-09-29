@@ -18,7 +18,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -159,7 +160,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    *
    * @throws GridException if the node is down.
    */
-  JSONObject getStatus() throws GridException;
+  JsonObject getStatus() throws GridException;
 
   /**
    * Checks if the node has the capability requested.

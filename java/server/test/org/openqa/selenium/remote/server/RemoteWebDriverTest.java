@@ -20,12 +20,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.io.ByteStreams;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -43,7 +42,7 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
   private boolean quitCalled = false;
 
   @Test
-  public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException, JSONException {
+  public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
       return;
@@ -68,14 +67,14 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
       assertEquals(200, connection.getResponseCode());
 
       String raw = new String(ByteStreams.toByteArray(connection.getInputStream()));
-      JSONObject response = new JSONObject(raw);
-      assertEquals(raw, ErrorCodes.SUCCESS, response.getInt("status"));
+      JsonObject response = new JsonParser().parse(raw).getAsJsonObject();
+      assertEquals(raw, ErrorCodes.SUCCESS, response.get("status").getAsInt());
 
-      JSONObject value = response.getJSONObject("value");
+      JsonObject value = response.get("value").getAsJsonObject();
       assertHasKeys(value, "os", "build", "java");
-      assertHasKeys(value.getJSONObject("os"), "name", "arch", CapabilityType.VERSION);
-      assertHasKeys(value.getJSONObject("build"), CapabilityType.VERSION, "revision", "time");
-      assertHasKeys(value.getJSONObject("java"), CapabilityType.VERSION);
+      assertHasKeys(value.get("os").getAsJsonObject(), "name", "arch", CapabilityType.VERSION);
+      assertHasKeys(value.get("build").getAsJsonObject(), CapabilityType.VERSION, "revision", "time");
+      assertHasKeys(value.get("java").getAsJsonObject(), CapabilityType.VERSION);
     } finally {
       if (connection != null) {
         connection.disconnect();
@@ -133,7 +132,7 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
     assertTrue(quitCalled);
   }
 
-  private static void assertHasKeys(JSONObject object, String... keys) {
+  private static void assertHasKeys(JsonObject object, String... keys) {
     for (String key : keys) {
       assertTrue("Object does not contain expected key: " + key + " (" + object + ")",
           object.has(key));

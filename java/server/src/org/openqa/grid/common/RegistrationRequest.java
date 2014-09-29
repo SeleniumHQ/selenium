@@ -18,16 +18,20 @@ limitations under the License.
 package org.openqa.grid.common;
 
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
@@ -39,7 +43,6 @@ import java.net.URLDecoder;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -156,27 +159,22 @@ public class RegistrationRequest {
   }
 
   public String toJSON() {
-    JSONObject res = getAssociatedJSON();
-    return res.toString();
+    return new Gson().toJson(getAssociatedJSON());
   }
 
-  public JSONObject getAssociatedJSON() {
+  public JsonObject getAssociatedJSON() {
+    JsonObject res = new JsonObject();
 
-    JSONObject res = new JSONObject();
-    try {
-      res.put("class", getClass().getCanonicalName());
-      res.put("id", id);
-      res.put("name", name);
-      res.put("description", description);
-      res.put("configuration", configuration);
-      JSONArray caps = new JSONArray();
-      for (DesiredCapabilities c : capabilities) {
-        caps.put(c.asMap());
-      }
-      res.put("capabilities", caps);
-    } catch (JSONException e) {
-      throw new RuntimeException("Error encoding to JSON " + e.getMessage(), e);
+    res.addProperty("class", getClass().getCanonicalName());
+    res.addProperty("id", id);
+    res.addProperty("name", name);
+    res.addProperty("description", description);
+    res.add("configuration", new Gson().toJsonTree(configuration));
+    JsonArray caps = new JsonArray();
+    for (DesiredCapabilities c : capabilities) {
+      caps.add(new Gson().toJsonTree(c.asMap()));
     }
+    res.add("capabilities", caps);
 
     return res;
   }
@@ -259,34 +257,33 @@ public class RegistrationRequest {
   public static RegistrationRequest getNewInstance(String json) {
     RegistrationRequest request = new RegistrationRequest();
     try {
-      JSONObject o = new JSONObject(json);
+      JsonObject o = new JsonParser().parse(json).getAsJsonObject();
 
-      if (o.has("id")) request.setId(o.getString("id"));
-      if (o.has("name")) request.setName(o.getString("name"));
-      if (o.has("description")) request.setDescription(o.getString("description"));
-      JSONObject config = o.getJSONObject("configuration");
+      if (o.has("id")) request.setId(o.get("id").getAsString());
+      if (o.has("name")) request.setName(o.get("name").getAsString());
+      if (o.has("description")) request.setDescription(o.get("description").getAsString());
 
-      Map<String, Object> configuration = Maps.newHashMap();
-      for (Iterator<String> iterator = config.keys(); iterator.hasNext();) {
-        String key = iterator.next();
-        configuration.put(key, config.get(key));
+      JsonObject config = o.get("configuration").getAsJsonObject();
+      Map<String, Object> configuration = new JsonToBeanConverter().convert(Map.class, config);
+      // For backward compatibility numbers should be converted to integers
+      for (String key : configuration.keySet()) {
+        Object value = configuration.get(key);
+        if (value instanceof Long) {
+          configuration.put(key, ((Long) value).intValue());
+        }
       }
       request.setConfiguration(configuration);
 
-      JSONArray capabilities = o.getJSONArray("capabilities");
+      JsonArray capabilities = o.get("capabilities").getAsJsonArray();
 
-      for (int i = 0; i < capabilities.length(); i++) {
-        JSONObject capability = capabilities.getJSONObject(i);
-        DesiredCapabilities cap = new DesiredCapabilities();
-        for (Iterator<String> iterator = capability.keys(); iterator.hasNext();) {
-          String key = iterator.next();
-          cap.setCapability(key, capability.get(key));
-        }
+      for (int i = 0; i < capabilities.size(); i++) {
+        DesiredCapabilities cap = new JsonToBeanConverter()
+            .convert(DesiredCapabilities.class, capabilities.get(i));
         request.capabilities.add(cap);
       }
       request.ensureBackwardCompatibility();
       return request;
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       // Check if it was a Selenium Grid 1.0 request.
       return parseGrid1Request(json);
     }
@@ -544,22 +541,6 @@ public class RegistrationRequest {
     }
   }
 
-  public JSONObject getRegistrationRequest() {
-    try {
-      JSONObject res = new JSONObject();
-      JSONArray a = new JSONArray();
-      for (DesiredCapabilities cap : capabilities) {
-        JSONObject capa = new JSONObject(cap.asMap());
-        a.put(capa);
-      }
-
-      res.put("configuration", new JSONObject(configuration));
-      return res;
-    } catch (JSONException e) {
-      throw new GridConfigurationException("error generating the node config : " + e.getMessage());
-    }
-  }
-
   /**
    * add config, but overwrite capabilities.
    * 
@@ -567,38 +548,27 @@ public class RegistrationRequest {
    */
   public void loadFromJSON(String resource) {
     try {
-      JSONObject base = JSONConfigurationUtils.loadJSON(resource);
+      JsonObject base = JSONConfigurationUtils.loadJSON(resource);
 
       if (base.has("capabilities")) {
         capabilities = new ArrayList<DesiredCapabilities>();
-        JSONArray a = base.getJSONArray("capabilities");
-        for (int i = 0; i < a.length(); i++) {
-          JSONObject cap = a.getJSONObject(i);
-          DesiredCapabilities c = new DesiredCapabilities();
-          for (Iterator<?> iterator = cap.keys(); iterator.hasNext();) {
-            String name = (String) iterator.next();
-            Object value = cap.get(name);
-            c.setCapability(name, value);
-          }
+        JsonArray a = base.get("capabilities").getAsJsonArray();
+        for (int i = 0; i < a.size(); i++) {
+          DesiredCapabilities c = new JsonToBeanConverter()
+              .convert(DesiredCapabilities.class, a.get(i));
           capabilities.add(c);
         }
         addPlatformInfoToCapabilities();
       }
 
-      JSONObject o = base.getJSONObject("configuration");
-      for (Iterator<?> iterator = o.keys(); iterator.hasNext();) {
-        String key = (String) iterator.next();
-        Object value = o.get(key);
-        if (value instanceof JSONArray) {
-          JSONArray a = (JSONArray) value;
-          List<String> as = new ArrayList<String>();
-          for (int i = 0; i < a.length(); i++) {
-            as.add(a.getString(i));
-          }
-          configuration.put(key, as);
-        } else {
-          configuration.put(key, o.get(key));
+      JsonObject o = base.get("configuration").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
+        Object value = new JsonToBeanConverter().convert(Object.class, entry.getValue());
+        // For backward compatibility numbers should be converted to integers
+        if (value instanceof Long) {
+          value = ((Long) value).intValue();
         }
+        configuration.put(entry.getKey(), value);
       }
 
     } catch (Throwable e) {

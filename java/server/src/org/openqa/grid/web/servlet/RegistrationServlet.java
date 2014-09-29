@@ -83,8 +83,8 @@ public class RegistrationServlet extends RegistryBasedServlet {
     }
 
     // TODO freynaud : load template desiredCapability from the hub. Is that useful?
-
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(server, getRegistry());
+
     reply(response, "ok");
 
     new Thread(new Runnable() {  // Thread safety reviewed

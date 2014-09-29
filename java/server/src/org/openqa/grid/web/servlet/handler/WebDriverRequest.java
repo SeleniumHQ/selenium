@@ -18,16 +18,18 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,32 +65,21 @@ public class WebDriverRequest extends SeleniumBasedRequest {
   @Override
   public Map<String, Object> extractDesiredCapability() {
     String json = getBody();
-    Map<String, Object> desiredCapability = new HashMap<String, Object>();
     try {
-      JSONObject map = new JSONObject(json);
-      JSONObject dc = map.getJSONObject("desiredCapabilities");
-      for (Iterator iterator = dc.keys(); iterator.hasNext();) {
-        String key = (String) iterator.next();
-        Object value = dc.get(key);
-        if (value == JSONObject.NULL) {
-          value = null;
-        }
-        desiredCapability.put(key, value);
-      }
-    } catch (JSONException e) {
+      JsonObject map = new JsonParser().parse(json).getAsJsonObject();
+      JsonObject dc = map.get("desiredCapabilities").getAsJsonObject();
+      return new JsonToBeanConverter().convert(Map.class, dc);
+
+    } catch (JsonSyntaxException e) {
       throw new GridException("Cannot extract a capabilities from the request " + json);
     }
-    return desiredCapability;
   }
 
   @Override
   public String getNewSessionRequestedCapability(TestSession session) {
-    try {
-      JSONObject c = new JSONObject();
-      c.put("desiredCapabilities", session.getRequestedCapabilities());
-      return c.toString();
-    } catch (JSONException  e) {
-      throw new NewSessionException("Error with the request " + e.getMessage(),e);
-    }
+    JsonObject c = new JsonObject();
+    c.add("desiredCapabilities",
+          new BeanToJsonConverter().convertObject(session.getRequestedCapabilities()));
+    return new Gson().toJson(c);
   }
 }

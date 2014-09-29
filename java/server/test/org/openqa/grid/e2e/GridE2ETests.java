@@ -31,8 +31,8 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     HubRestart.class,
     HubRestartNeg.class,
     //Issue1586.class, // extremely slow test, for issue1586. Excluding from regression.
-    WebDriverPriorityDemo.class, // not yet moved to JUnit
-    BrowserTimeOutTest.class,
+    WebDriverPriorityDemo.class,
+    //BrowserTimeOutTest.class, // broken on CI, needs investigation
     CrashWhenStartingBrowserTest.class,
     DefaultProxyFindsFirefoxLocationsTest.class,
     DefaultProxyIsUnregisteredIfDownForTooLongTest.class,

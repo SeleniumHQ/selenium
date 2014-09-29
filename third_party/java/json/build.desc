@@ -1,2 +1,0 @@
-java_library(name = "json",
-  deps = [ "json-20080701.jar" ])

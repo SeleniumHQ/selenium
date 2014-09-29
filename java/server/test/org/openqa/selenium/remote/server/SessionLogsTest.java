@@ -28,6 +28,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,7 +37,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -106,7 +107,7 @@ public class SessionLogsTest extends JUnit4TestBase {
     }    
   }
   
-  private static JSONObject getValueForPostRequest(URL serverUrl) throws Exception {
+  private static JsonObject getValueForPostRequest(URL serverUrl) throws Exception {
     String postRequest = serverUrl + "/logs";
     HttpClient client = HttpClientBuilder.create().build();
     HttpPost postCmd = new HttpPost(postRequest);
@@ -115,7 +116,8 @@ public class SessionLogsTest extends JUnit4TestBase {
     InputStreamReader reader = new InputStreamReader(entity.getContent(), Charsets.UTF_8);
     try {
       String str = CharStreams.toString(reader);
-      return new JSONObject(str).getJSONObject("value");
+      return new JsonParser().parse(str).getAsJsonObject()
+          .get("value").getAsJsonObject();
     } finally {
       EntityUtils.consume(entity);
       reader.close();

@@ -16,15 +16,16 @@ package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
@@ -91,13 +92,13 @@ public class SelfRegisteringRemote {
     try {
       final String CLIENT_TIMEOUT = "timeout";
       final String BROWSER_TIMEOUT = "browserTimeout";
-      JSONObject hubParameters = getHubConfiguration(CLIENT_TIMEOUT, BROWSER_TIMEOUT);
+      JsonObject hubParameters = getHubConfiguration();
       if (hubParameters.has(CLIENT_TIMEOUT)){
-        int timeout = hubParameters.getInt(CLIENT_TIMEOUT) / 1000;
+        int timeout = hubParameters.get(CLIENT_TIMEOUT).getAsInt() / 1000;
         remoteControlConfiguration.setTimeoutInSeconds(timeout);
       }
       if (hubParameters.has(BROWSER_TIMEOUT)) {
-        int browserTimeout = hubParameters.getInt(BROWSER_TIMEOUT);
+        int browserTimeout = hubParameters.get(BROWSER_TIMEOUT).getAsInt();
         remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
       }
     }catch (Exception e) {
@@ -108,7 +109,7 @@ public class SelfRegisteringRemote {
 
     Server jetty = server.getServer();
 
-    String servletsStr = (String) nodeConfig.getConfiguration().get(GridNodeConfiguration.SERVLETS);
+    String servletsStr = (String) nodeConfig.getConfiguration().get(RegistrationRequest.SERVLETS);
     if (servletsStr != null) {
       List<String> servlets = Arrays.asList(servletsStr.split(","));
 
@@ -267,11 +268,10 @@ public class SelfRegisteringRemote {
 
   /**
    * uses the hub API to get some of its configuration.
-   * @param parameters list of the parameter to be retrieved from the hub
    * @return
    * @throws Exception
    */
-  private JSONObject getHubConfiguration(String ... parameters) throws Exception{
+  private JsonObject getHubConfiguration() throws Exception{
     String hubApi =
         "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
             + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/hub";
@@ -283,10 +283,8 @@ public class SelfRegisteringRemote {
     String url = api.toExternalForm();
     BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
 
-    JSONObject j = new JSONObject();
-    JSONArray keys = new JSONArray();
-
-    j.put("configuration", keys);
+    JsonObject j = new JsonObject();
+    j.add("configuration", new JsonArray());
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
@@ -313,14 +311,14 @@ public class SelfRegisteringRemote {
       if (response.getStatusLine().getStatusCode() != 200) {
         throw new GridException("Hub is down or not responding.");
       }
-      JSONObject o = extractObject(response);
-      return (Boolean) o.get("success");
+      JsonObject o = extractObject(response);
+      return o.get("success").getAsBoolean();
     } catch (Exception e) {
       throw new GridException("Hub is down or not responding: " + e.getMessage());
     }
   }
 
-  private static JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
+  private static JsonObject extractObject(HttpResponse resp) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;
@@ -328,7 +326,7 @@ public class SelfRegisteringRemote {
       s.append(line);
     }
     rd.close();
-    return new JSONObject(s.toString());
+    return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
 
 }
