@@ -68,11 +68,11 @@ public class CrossDomainRpcLoader {
       throw new IllegalArgumentException("Missing required parameter: " + key);
     }
 
-    if (!(json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isString())) {
-      throw new IllegalArgumentException(key + " is not a string");
+    if (json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isString()) {
+      return json.get(key).getAsString();
+    } else {
+      return json.get(key).toString();
     }
-
-    return json.get(key).getAsString();
   }
 
   /**
