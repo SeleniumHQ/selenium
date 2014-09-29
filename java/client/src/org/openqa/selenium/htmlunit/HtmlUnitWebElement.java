@@ -27,6 +27,7 @@ import java.util.concurrent.Callable;
 
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -452,6 +453,14 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     if (element.hasAttribute(name)) {
       return "";
+    }
+
+    final Object slotVal = element.getScriptObject().get(name);
+    if (slotVal instanceof String) {
+        String strVal = (String) slotVal;
+        if (StringUtils.isNotEmpty(strVal)) {
+            return strVal;
+        }
     }
 
     return null;

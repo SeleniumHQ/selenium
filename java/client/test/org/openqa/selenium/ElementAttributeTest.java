@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
@@ -35,7 +36,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -398,7 +398,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element.getAttribute("multiple"));
   }
 
-  @Ignore({HTMLUNIT})
+  @JavascriptEnabled
   @Test
   public void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
