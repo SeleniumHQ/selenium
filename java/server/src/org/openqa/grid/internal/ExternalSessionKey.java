@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.internal.exception.NewSessionException;
 
 public class ExternalSessionKey {
@@ -98,12 +100,12 @@ public class ExternalSessionKey {
    */
   public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
     try {
-      JSONObject json = new JSONObject(responseBody);
-      if (!json.has("sessionId") || json.isNull("sessionId")) {
+      JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
+      if (!json.has("sessionId") || json.get("sessionId").isJsonNull()) {
         return null;
       }
-      return new ExternalSessionKey(json.getString("sessionId"));
-    } catch (JSONException e) {
+      return new ExternalSessionKey(json.get("sessionId").getAsString());
+    } catch (JsonSyntaxException e) {
       return null;
     }
   }

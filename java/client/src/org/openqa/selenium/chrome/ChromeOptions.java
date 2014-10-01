@@ -25,9 +25,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -198,13 +198,10 @@ public class ChromeOptions {
    * @return The JSON representation of these options.
    * @throws IOException If an error occurs while reading the
    *     {@link #addExtensions(java.util.List) extension files} from disk.
-   * @throws JSONException If an error occurs while encoding these options as
-   *     JSON.
    */
-  public JSONObject toJson() throws IOException, JSONException {
-    JSONObject options = new JSONObject();
-    // copy experimental options, instead of passing to the JSONObject constructor
-    // because the JSON library will mutate the map passed in.
+  public JsonElement toJson() throws IOException {
+    Map<String, Object> options = Maps.newHashMap();
+
     for (String key : experimentalOptions.keySet()) {
       options.put(key, experimentalOptions.get(key));
     }
@@ -224,7 +221,7 @@ public class ChromeOptions {
     encoded_extensions.addAll(extensions);
     options.put("extensions", encoded_extensions);
 
-    return options;
+    return new Gson().toJsonTree(options);
   }
 
   /**

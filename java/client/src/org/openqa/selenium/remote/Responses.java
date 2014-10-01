@@ -1,9 +1,7 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.base.Optional;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Contains factory methods for creating {@link Response} objects.
@@ -62,14 +60,9 @@ public class Responses {
     response.setState(ERROR_CODES.toState(response.getStatus()));
 
     if (reason != null) {
-      String raw = new BeanToJsonConverter().convert(reason);
-      try {
-        JSONObject jsonError = new JSONObject(raw);
-        jsonError.put("screen", screenshot.orNull());
-        response.setValue(jsonError);
-      } catch (JSONException e) {
-        throw new JsonException(e);
-      }
+      JsonObject json = new BeanToJsonConverter().convertObject(reason).getAsJsonObject();
+      json.addProperty("screen", screenshot.orNull());
+      response.setValue(json);
     }
     return response;
   }

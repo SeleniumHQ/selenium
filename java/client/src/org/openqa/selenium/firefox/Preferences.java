@@ -24,18 +24,15 @@ import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
 import com.google.common.io.LineReader;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.IOUtils;
-import org.openqa.selenium.remote.JsonException;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,26 +92,20 @@ class Preferences {
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
       String rawJson = CharStreams.toString(defaultsReader);
-      JSONObject jsonPrefs = new JSONObject(rawJson);
+      Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawJson);
 
-      JSONObject frozen = jsonPrefs.getJSONObject("frozen");
-      Iterator keys = frozen.keys();
-      while (keys.hasNext()) {
-        String key = (String) keys.next();
-        Object value = frozen.get(key);
+      Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
+      for (Map.Entry<String, Object> entry : frozen.entrySet()) {
+        String key = entry.getKey();
+        Object value = entry.getValue();
         setPreference(key, value);
         immutablePrefs.put(key, value);
       }
 
-      JSONObject mutable = jsonPrefs.getJSONObject("mutable");
-      keys = mutable.keys();
-      while (keys.hasNext()) {
-        String key = (String) keys.next();
-        Object value = mutable.get(key);
-        setPreference(key, value);
+      Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
+      for (Map.Entry<String, Object> entry : mutable.entrySet()) {
+        setPreference(entry.getKey(), entry.getValue());
       }
-    } catch (JSONException e) {
-      throw new JsonException(e);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }

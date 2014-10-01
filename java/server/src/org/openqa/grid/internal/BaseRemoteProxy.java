@@ -22,14 +22,15 @@ import static org.openqa.grid.common.RegistrationRequest.PATH;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -503,7 +504,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   /**
    * @throws GridException If the node if down or doesn't recognize the /wd/hub/status request.
    */
-  public JSONObject getStatus() throws GridException {
+  public JsonObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
     HttpClient client = getHttpClientFactory().getGridHttpClient(statusCheckTimeout, statusCheckTimeout);
@@ -518,7 +519,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       int code = response.getStatusLine().getStatusCode();
 
       if (code == 200) {
-        JSONObject status = new JSONObject();
+        JsonObject status = new JsonObject();
         try {
           status = extractObject(response);
         } catch (Exception e) {
@@ -527,7 +528,7 @@ public class BaseRemoteProxy implements RemoteProxy {
         EntityUtils.consume(response.getEntity());
         return status;
       } else if (code == 404) { // selenium RC case
-        JSONObject status = new JSONObject();
+        JsonObject status = new JsonObject();
         EntityUtils.consume(response.getEntity());
         return status;
       } else {
@@ -548,7 +549,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
-  private JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
+  private JsonObject extractObject(HttpResponse resp) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;
@@ -558,7 +559,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
     rd.close();
 
-    return new JSONObject(s.toString());
+    return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
   
   

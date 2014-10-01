@@ -24,10 +24,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Base64Encoder;
@@ -298,17 +298,17 @@ public class SafariOptions {
    * @return The JSON representation of the options.
    * @throws IOException If an error occurred while reading the Safari extension files.
    */
-  public JSONObject toJson() throws IOException, JSONException {
-    JSONObject options = new JSONObject();
+  public JsonElement toJson() throws IOException {
+    JsonObject options = new JsonObject();
 
     if (dataDir.isPresent()) {
-      options.put(Option.DATA_DIR, dataDir.get().getPath());
+      options.addProperty(Option.DATA_DIR, dataDir.get().getPath());
     }
-    options.put(Option.EXTENSIONS, extensionsToJson());
-    options.put(Option.PORT, port);
-    options.put(Option.SKIP_EXTENSION_INSTALLATION, skipExtensionInstallation);
-    options.put(Option.CLEAN_SESSION, useCleanSession);
-    options.put(Option.CUSTOM_DRIVER_EXENSION, useCustomDriverExtension);
+    options.add(Option.EXTENSIONS, extensionsToJson());
+    options.addProperty(Option.PORT, port);
+    options.addProperty(Option.SKIP_EXTENSION_INSTALLATION, skipExtensionInstallation);
+    options.addProperty(Option.CLEAN_SESSION, useCleanSession);
+    options.addProperty(Option.CUSTOM_DRIVER_EXENSION, useCustomDriverExtension);
 
     return options;
   }
@@ -371,7 +371,7 @@ public class SafariOptions {
   }
 
   /**
-   * Converts the list of Safari extensions to a JSONArray
+   * Converts the list of Safari extensions to a JsonArray
    *
    * @throws IOException If an error occurs while reading the
    *     {@link #addExtensions(java.util.List) extension files} from disk.
@@ -382,15 +382,15 @@ public class SafariOptions {
    *        ...
    *    ]</code>
    */
-  private JSONArray extensionsToJson() throws IOException, JSONException {
-    JSONArray extensionsList = new JSONArray();
+  private JsonArray extensionsToJson() throws IOException {
+    JsonArray extensionsList = new JsonArray();
     for (File path : extensionFiles) {
-      JSONObject extensionInfo = new JSONObject();
-      extensionInfo.put("filename", path.getName());
+      JsonObject extensionInfo = new JsonObject();
+      extensionInfo.addProperty("filename", path.getName());
       String encoded = new Base64Encoder().encode(Files.toByteArray(path));
-      extensionInfo.put("contents", encoded);
+      extensionInfo.addProperty("contents", encoded);
 
-      extensionsList.put(extensionInfo);
+      extensionsList.add(extensionInfo);
     }
     return extensionsList;
   }

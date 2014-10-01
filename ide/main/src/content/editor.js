@@ -41,6 +41,7 @@ function Editor(window) {
     },
 
     optionsChanged: function () {
+      self.health.addEvent('editor', 'optionsChanged');
       if (self.view) {
         self.view.refresh();
       }
@@ -149,7 +150,6 @@ function Editor(window) {
     }
   });
 
-  this.health.showAlerts(this.app.getBooleanOption('showHealthAlerts'));
   this.document = document;
   this.recordButton = document.getElementById("record-button");
   this.recordMenuItem = document.getElementById("menu_record");
@@ -157,6 +157,7 @@ function Editor(window) {
   this.initMenus();
   this.app.initOptions();
   this.pluginManager = this.app.pluginManager;
+  this.health.addDiagnostic('PluginManager', this.pluginManager);
   this.loadExtensions();
   this.loadSeleniumAPI();
   //TODO show plugin errors
@@ -860,6 +861,7 @@ Editor.prototype.showInBrowser = function (url, newWindow) {
 Editor.prototype.playCurrentTestCase = function (next, index, total) {
   var start = Date.now();
   var self = this;
+  this.health.increaseCounter('editor', 'playCurrentTestCase');
   self.getUserLog().info("Playing test case " + (self.app.getTestCase().getTitle() || ''));
   self.app.notify("testCasePlayStart", self.app.getTestCase());
   this.selDebugger.start(function (failed) {
@@ -890,6 +892,11 @@ Editor.prototype.playCurrentTestCase = function (next, index, total) {
 Editor.prototype.playTestSuite = function (startIndex) {
   if (!startIndex) {
     startIndex = 0;
+  }
+  if (startIndex === 0) {
+    this.health.increaseCounter('editor', 'playTestSuite');
+  } else {
+    this.health.increaseCounter('editor', 'playPartialTestSuite');
   }
   var index = startIndex - 1;
   var testSuite = this.app.getTestSuite();
@@ -1024,17 +1031,10 @@ Editor.prototype.loadExtensions = function () {
     try {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().ideExtensionsPaths, window);
     } catch (error) {
+      this.health.addException('editor', 'ide-extensions: ' + this.getOptions().ideExtensionsPaths, error);
       this.showAlert("error loading Selenium IDE extensions: " + error);
     }
   }
-  //Samit: Enh: add support for plugin provided IDE extensions
-//	if (this.getOptions().pluginProvidedIDEExtensions) {
-//		try {
-//			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().pluginProvidedIDEExtensions, window);
-//		} catch (error) {
-//			this.showAlert("error loading Selenium IDE extensions: " + error);
-//		}
-//	}
   var pluginManager = this.pluginManager;
   pluginManager.getEnabledIDEExtensions().forEach(function (plugin) {
     for (var i = 0; i < plugin.code.length; i++) {
@@ -1067,6 +1067,7 @@ Editor.prototype.loadSeleniumAPI = function () {
     try {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, seleniumAPI);
     } catch (error) {
+      this.health.addException('editor', 'user-extensions: ' + this.getOptions().userExtensionsURL, error);
       this.showAlert("Failed to load user-extensions.js!"
           + "\nfiles=" + this.getOptions().userExtensionsURL
           + "\nlineNumber=" + error.lineNumber
@@ -1074,26 +1075,6 @@ Editor.prototype.loadSeleniumAPI = function () {
       );
     }
   }
-
-  // plugin supplied extensions
-//    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
-//    if (typeof pluginProvided != 'undefined' && pluginProvided.length != 0) {
-//        try {
-//            var split_pluginProvided = pluginProvided.split(",");
-//            for(var sp = 0; sp < split_pluginProvided.length; sp++){
-//                var js_url = split_pluginProvided[sp].split(";");
-//                ExtensionsLoader.loadSubScript(subScriptLoader, js_url[0], this.seleniumAPI);
-//                if (js_url[1] != 'undefined') {
-//                  Command.apiDocuments.push(parser.parseFromString(FileUtils.readURL(js_url[1]), "text/xml"));
-//                }
-//            }
-//        } catch (error) {
-//            this.showAlert("Failed to load plugin provided js!"
-//                + "\nfiles=" + pluginProvided
-//                + "\nlineNumber=" + error.lineNumber
-//                + "\nerror=" + error);
-//        }
-//    }
 
   var pluginManager = this.pluginManager;
   pluginManager.getEnabledUserExtensions().forEach(function (plugin) {

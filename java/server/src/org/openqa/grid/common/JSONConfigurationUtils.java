@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 
 import java.io.BufferedReader;
@@ -34,11 +36,9 @@ public class JSONConfigurationUtils {
    * load a JSON file from the resource or file system.
    * 
    * @param resource
-   * @return A JSONObject representing the passed resource argument.
-   * @throws IOException
-   * @throws JSONException
+   * @return A JsonObject representing the passed resource argument.
    */
-  public static JSONObject loadJSON(String resource) {
+  public static JsonObject loadJSON(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(
         JSONConfigurationUtils.class.getPackage().getName().replace('.', '/') + '/' + resource);
 
@@ -75,14 +75,10 @@ public class JSONConfigurationUtils {
       }
     }
 
-    String json = b.toString();
-    JSONObject o;
     try {
-      o = new JSONObject(json);
-    } catch (JSONException e) {
+      return new JsonParser().parse(b.toString()).getAsJsonObject();
+    } catch (JsonSyntaxException e) {
       throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
     }
-
-    return o;
   }
 }

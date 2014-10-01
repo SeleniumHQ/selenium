@@ -122,8 +122,8 @@ public interface JavascriptExecutor {
    *       "  }" +
    *       "};" +
    *       "xhr.send();");
-   *   JSONObject json = new JSONObject((String) response);
-   *   assertEquals("cheese", json.getString("food"));
+   *   JsonObject json = new JsonParser().parse((String) response);
+   *   assertEquals("cheese", json.get("food").getAsString());
    * </pre></code>
    *
    * <p>

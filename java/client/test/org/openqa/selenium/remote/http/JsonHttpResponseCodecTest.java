@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -33,7 +32,7 @@ public class JsonHttpResponseCodecTest {
   private final JsonHttpResponseCodec codec = new JsonHttpResponseCodec();
 
   @Test
-  public void convertsResponses_success() throws JSONException {
+  public void convertsResponses_success() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -52,7 +51,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void convertsResponses_failure() throws JSONException {
+  public void convertsResponses_failure() {
     Response response = new Response();
     response.setStatus(ErrorCodes.NO_SUCH_ELEMENT);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -71,7 +70,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void roundTrip() throws JSONException {
+  public void roundTrip() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -85,7 +84,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_200() throws JSONException {
+  public void decodeNonJsonResponse_200() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
     response.setContent("foobar".getBytes(UTF_8));
@@ -96,7 +95,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_204() throws JSONException {
+  public void decodeNonJsonResponse_204() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_NO_CONTENT);
 
@@ -106,7 +105,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_4xx() throws JSONException {
+  public void decodeNonJsonResponse_4xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_BAD_REQUEST);
     response.setContent("foobar".getBytes(UTF_8));
@@ -117,7 +116,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_5xx() throws JSONException {
+  public void decodeNonJsonResponse_5xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_INTERNAL_ERROR);
     response.setContent("foobar".getBytes(UTF_8));
@@ -128,7 +127,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeJsonResponseMissingContentType() throws JSONException {
+  public void decodeJsonResponseMissingContentType() {
     Response response = new Response();
     response.setStatus(ErrorCodes.ASYNC_SCRIPT_TIMEOUT);
     response.setValue(ImmutableMap.of("color", "red"));

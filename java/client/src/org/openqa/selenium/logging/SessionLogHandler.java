@@ -17,11 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class SessionLogHandler {
@@ -32,16 +31,14 @@ public class SessionLogHandler {
    *  
    * @param rawSessionMap The raw session map.
    * @return The session logs mapped to session IDs.
-   * @throws Exception If something goes wrong in server communication or JSON parsing.
    */
-  public static Map<String, SessionLogs> getSessionLogs(JSONObject rawSessionMap)
-      throws JSONException {
+  public static Map<String, SessionLogs> getSessionLogs(JsonObject rawSessionMap) {
     Map<String, SessionLogs> sessionLogsMap = new HashMap<String, SessionLogs>();
-    for (Iterator keyItr = rawSessionMap.keys(); keyItr.hasNext();) {
-      String sessionId = (String) keyItr.next();
-      SessionLogs sessionLogs = SessionLogs.fromJSON(rawSessionMap.getJSONObject(sessionId));
+    for (Map.Entry<String, JsonElement> entry : rawSessionMap.entrySet()) {
+      String sessionId = entry.getKey();
+      SessionLogs sessionLogs = SessionLogs.fromJSON(entry.getValue().getAsJsonObject());
       sessionLogsMap.put(sessionId, sessionLogs);
     }
-    return sessionLogsMap;    
+    return sessionLogsMap;
   }
 }

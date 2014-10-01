@@ -283,6 +283,30 @@ objectExtend(IDETestLoop.prototype, {
     if (this.handler && this.handler.testComplete) this.handler.testComplete(failed);
   },
 
+  // overide _executeCurrentCommand so we can collect stats of the commands executed
+  _executeCurrentCommand : function() {
+    /**
+     * Execute the current command.
+     *
+     * @return a function which will be used to determine when
+     * execution can continue, or null if we can continue immediately
+     */
+    var command = this.currentCommand;
+    LOG.info("Executing: |" + command.command + " | " + command.target + " | " + command.value + " |");
+
+    var handler = this.commandFactory.getCommandHandler(command.command);
+    if (handler == null) {
+      throw new SeleniumError("Unknown command: '" + command.command + "'");
+    }
+
+    command.target = selenium.preprocessParameter(command.target);
+    command.value = selenium.preprocessParameter(command.value);
+    LOG.debug("Command found, going to execute " + command.command);
+    updateStats(command.command);
+    this.result = handler.execute(selenium, command);
+    this.waitForCondition = this.result.terminationCondition;
+  },
+
   pause: function() {
     // editor.setState("paused");
     setState(Debugger.PAUSED);

@@ -17,7 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 
@@ -28,7 +29,7 @@ public class DetachedRemoteProxy extends BaseRemoteProxy {
   }
 
   @Override
-  public JSONObject getStatus() throws GridException {
+  public JsonObject getStatus() throws GridException {
     return null; // just to make sure there is no GridException thrown
   }
 

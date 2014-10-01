@@ -117,11 +117,22 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
       element = target;
     } else {
       if (this.lastElement) {
-        // move to relative offset
-        element = this.lastElement;
-        xOffset = this.lastMousePosition.x + xOffset;
-        yOffset = this.lastMousePosition.y + yOffset;
-      } else {
+        var sameDoc;
+        try {
+          goog.dom.getOwnerDocument(this.lastElement);
+          sameDoc = true;
+        } catch (ex) {
+          sameDoc = false;
+        }
+        if (sameDoc) {
+          // move to relative offset
+          element = this.lastElement;
+          xOffset = this.lastMousePosition.x + xOffset;
+          yOffset = this.lastMousePosition.y + yOffset;
+        }
+      }
+
+      if (!element) {
         // no previous element, move relative to viewport
         element = Utils.getMainDocumentElement(target);
         var bodyPos = goog.style.getClientPosition(element);

@@ -19,7 +19,7 @@ java_library(name = 'logging',
     ':api',
     '//java/client/src/org/openqa/selenium:beta',
     '//third_party/java/guava-libraries:guava-libraries',
-    '//third_party/java/json:json',
+    '//third_party/java/gson:gson',
   ],
   visibility = ['PUBLIC'],
 )

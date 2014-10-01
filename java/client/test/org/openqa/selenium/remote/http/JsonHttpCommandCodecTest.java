@@ -17,9 +17,9 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -173,8 +173,10 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canExtractSessionIdFromRequestBody() throws JSONException, URISyntaxException {
-    String data = new JSONObject().put("sessionId", "sessionX").toString();
+  public void canExtractSessionIdFromRequestBody() throws URISyntaxException {
+    JsonObject json = new JsonObject();
+    json.addProperty("sessionId", "sessionX");
+    String data = json.toString();
     HttpRequest request = new HttpRequest(POST, "/foo/bar/baz");
     request.setContent(data.getBytes(UTF_8));
     codec.defineCommand("foo", POST, "/foo/bar/baz");
@@ -195,13 +197,13 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void extractsAllPrameters() throws JSONException, URISyntaxException {
-    String data = new JSONObject()
-        .put("sessionId", "sessionX")
-        .put("fruit", "apple")
-        .put("color", "red")
-        .put("size", "large")
-        .toString();
+  public void extractsAllParameters() throws URISyntaxException {
+    JsonObject json = new JsonObject();
+    json.addProperty("sessionId", "sessionX");
+    json.addProperty("fruit", "apple");
+    json.addProperty("color", "red");
+    json.addProperty("size", "large");
+    String data = json.toString();
 
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
     request.setContent(data.getBytes(UTF_8));
@@ -214,13 +216,13 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void ignoresNullSessionIdInSessionBody() throws JSONException, URISyntaxException {
-    String data = new JSONObject()
-        .put("sessionId", JSONObject.NULL)
-        .put("fruit", "apple")
-        .put("color", "red")
-        .put("size", "large")
-        .toString();
+  public void ignoresNullSessionIdInSessionBody() throws URISyntaxException {
+    JsonObject json = new JsonObject();
+    json.add("sessionId", JsonNull.INSTANCE);
+    json.addProperty("fruit", "apple");
+    json.addProperty("color", "red");
+    json.addProperty("size", "large");
+    String data = json.toString();
 
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
     request.setContent(data.getBytes(UTF_8));

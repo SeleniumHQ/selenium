@@ -20,13 +20,15 @@ package org.openqa.selenium.atoms;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,15 +120,15 @@ public class CompiledAtomsNotLeakingTest {
         String jsonResult = eval(context, nestedScript, FRAGMENT_PATH);
 
         try {
-          JSONObject result = new JSONObject(jsonResult);
+          JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
 
-          assertEquals(jsonResult, 0, result.getInt("status"));
+          assertEquals(jsonResult, 0, result.get("status").getAsLong());
 
-          result = result.getJSONObject("value");
-          assertEquals(jsonResult, 0, result.getInt("status"));
-          assertEquals(jsonResult, 3, result.getInt("value"));
+          result = result.get("value").getAsJsonObject();
+          assertEquals(jsonResult, 0, result.get("status").getAsLong());
+          assertEquals(jsonResult, 3, result.get("value").getAsLong());
 
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
           throw new RuntimeException("JSON result was: " + jsonResult, e);
         }
 

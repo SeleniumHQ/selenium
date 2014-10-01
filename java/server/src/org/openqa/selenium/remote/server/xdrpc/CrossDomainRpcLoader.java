@@ -18,9 +18,9 @@ package org.openqa.selenium.remote.server.xdrpc;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,13 +42,13 @@ public class CrossDomainRpcLoader {
    *     data.
    */
   public CrossDomainRpc loadRpc(HttpServletRequest request) throws IOException {
-    JSONObject json;
+    JsonObject json;
     InputStream stream = null;
     try {
       stream = request.getInputStream();
       byte[] data = ByteStreams.toByteArray(stream);
-      json = new JSONObject(new String(data, Charsets.UTF_8));
-    } catch (JSONException e) {
+      json = new JsonParser().parse(new String(data, Charsets.UTF_8)).getAsJsonObject();
+    } catch (JsonSyntaxException e) {
       throw new IllegalArgumentException(
           "Failed to parse JSON request: " + e.getMessage(), e);
     } finally {
@@ -63,15 +63,15 @@ public class CrossDomainRpcLoader {
         getField(json, Field.DATA));
   }
 
-  private String getField(JSONObject json, String key) {
-    if (!json.has(key) || json.isNull(key)) {
+  private String getField(JsonObject json, String key) {
+    if (!json.has(key) || json.get(key).isJsonNull()) {
       throw new IllegalArgumentException("Missing required parameter: " + key);
     }
 
-    try {
+    if (json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isString()) {
+      return json.get(key).getAsString();
+    } else {
       return json.get(key).toString();
-    } catch (JSONException e) {
-      throw new IllegalArgumentException(key + " is not a string", e);
     }
   }
 

@@ -24,9 +24,9 @@ import org.openqa.selenium.testing.Ignore;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -56,12 +56,12 @@ public class IgnoreCollector implements IgnoredTestCallback {
         || clazz.getAnnotation(Ignore.class) != null;
   }
 
-  public String toJson() throws JSONException {
-    JSONArray array = new JSONArray();
+  public String toJson() {
+    JsonArray array = new JsonArray();
     for (IgnoredTest test : tests) {
-      array.put(test.toJson());
+      array.add(test.toJson());
     }
-    return array.toString();
+    return new Gson().toJson(array);
   }
 
   private static class IgnoredTest {
@@ -89,30 +89,32 @@ public class IgnoreCollector implements IgnoredTestCallback {
       return false;
     }
     
-    public JSONObject toJson() throws JSONException {
-      JSONObject json = new JSONObject()
-          .put("className", clazz.getName())
-          .put("testName", method.getName());
+    public JsonObject toJson() {
+      JsonObject json = new JsonObject();
+      json.addProperty("className", clazz.getName());
+      json.addProperty("testName", method.getName());
 
       Ignore methodIgnore = method.getAnnotation(Ignore.class);
       if (methodIgnore != null) {
-        json.put("method", getIgnoreInfo(methodIgnore));
+        json.add("method", getIgnoreInfo(methodIgnore));
       }
 
       Ignore classIgnore = clazz.getAnnotation(Ignore.class);
       if (classIgnore != null) {
-        json.put("class", getIgnoreInfo(classIgnore));
+        json.add("class", getIgnoreInfo(classIgnore));
       }
 
       return json;
     }
     
-    private static JSONObject getIgnoreInfo(Ignore annotation) throws JSONException {
-      return new JSONObject()
-          .put("drivers", annotation.value())
-          .put("issues", annotation.issues())
-          .put("platforms", annotation.platforms())
-          .put("reason", annotation.reason());
+    private static JsonObject getIgnoreInfo(Ignore annotation) {
+      JsonObject json = new JsonObject();
+      Gson gson = new Gson();
+      json.add("drivers", gson.toJsonTree(annotation.value()));
+      json.add("issues", gson.toJsonTree(annotation.issues()));
+      json.add("platforms", gson.toJsonTree(annotation.platforms()));
+      json.addProperty("reason", annotation.reason());
+      return json;
     }
   }
 }

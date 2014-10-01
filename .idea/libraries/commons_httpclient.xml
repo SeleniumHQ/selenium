@@ -8,7 +8,7 @@
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.3.4-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.3.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.3.2-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.3.4-sources.jar!/" />
     </SOURCES>
   </library>
