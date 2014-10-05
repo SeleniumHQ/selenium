@@ -95,7 +95,7 @@ public class JsonToBeanConverter {
       JsonObject json = new JsonParser().parse((String) text).getAsJsonObject();
 
       SessionId sessionId = null;
-      if (json.has("sessionId")) {
+      if (json.has("sessionId") && !json.get("sessionId").isJsonNull()) {
         sessionId = convert(SessionId.class, json.get("sessionId"), depth + 1);
       }
 
