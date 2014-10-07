@@ -21,11 +21,11 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import com.thoughtworks.selenium.CommandProcessor;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +34,6 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -126,21 +125,16 @@ public class ServerHttpChannel implements Runnable {
     if (!raw.startsWith("json=")) {
       return null;
     }
-    try {
-      JSONObject converted = new JSONObject(raw.substring("json=".length()));
 
-      Map<String, String> toReturn = Maps.newHashMap();
-      Iterator allKeys = converted.keys();
+    JsonObject converted = new JsonParser().parse(raw.substring("json=".length())).getAsJsonObject();
 
-      while (allKeys.hasNext()) {
-        String next = (String) allKeys.next();
-        toReturn.put(next, converted.getString(next));
-      }
+    Map<String, String> toReturn = Maps.newHashMap();
 
-      return toReturn;
-    } catch (JSONException e) {
-      throw Throwables.propagate(e);
+    for (Map.Entry<String, JsonElement> entry : converted.entrySet()) {
+      toReturn.put(entry.getKey(), entry.getValue().getAsString());
     }
+
+    return toReturn;
   }
 
   public void kill() {

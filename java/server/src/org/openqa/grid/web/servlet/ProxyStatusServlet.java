@@ -17,8 +17,12 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -30,8 +34,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -66,19 +70,19 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
-    JSONObject res;
+    JsonObject res;
     try {
       res = getResponse(request);
       response.getWriter().print(res);
       response.getWriter().close();
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
 
   }
 
-  private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
-    JSONObject requestJSON = null;
+  private JsonObject getResponse(HttpServletRequest request) throws IOException {
+    JsonObject requestJSON = null;
     if (request.getInputStream() != null) {
       BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
       StringBuilder s = new StringBuilder();
@@ -89,13 +93,13 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
       rd.close();
       String json = s.toString();
       if (!"".equals(json)) {
-        requestJSON = new JSONObject(json);
+        requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
 
     }
 
-    JSONObject res = new JSONObject();
-    res.put("success", false);
+    JsonObject res = new JsonObject();
+    res.addProperty("success", false);
 
     // the id can be specified via a param, or in the json request.
     String id;
@@ -103,10 +107,11 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
       id = request.getParameter("id");
     } else {
       if (!requestJSON.has("id")) {
-        res.put("msg", "you need to specify at least an id when call the node  status service.");
+        res.addProperty("msg",
+                        "you need to specify at least an id when call the node  status service.");
         return res;
       } else {
-        id = requestJSON.getString("id");
+        id = requestJSON.get("id").getAsString();
       }
     }
 
@@ -119,13 +124,13 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     // id is defined from here.
     RemoteProxy proxy = getRegistry().getProxyById(id);
     if (proxy == null) {
-      res.put("msg", "Cannot find proxy with ID =" + id + " in the registry.");
+      res.addProperty("msg", "Cannot find proxy with ID =" + id + " in the registry.");
       return res;
     } else {
-      res.put("msg", "proxy found !");
-      res.put("success", true);
-      res.put("id", proxy.getId());
-      res.put("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
+      res.addProperty("msg", "proxy found !");
+      res.addProperty("success", true);
+      res.addProperty("id", proxy.getId());
+      res.add("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
 
       // maybe the request was for more info
       if (requestJSON != null) {
@@ -137,14 +142,14 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
         for (String method : methods) {
           try {
             Object o = getValueByReflection(proxy, method);
-            res.put(method, o);
+            res.add(method, new Gson().toJsonTree(o));
           } catch (Throwable t) {
             errors.add(t.getMessage());
           }
         }
         if (!errors.isEmpty()) {
-          res.put("success", false);
-          res.put("errors", errors.toString());
+          res.addProperty("success", false);
+          res.addProperty("errors", errors.toString());
         }
       }
       return res;
@@ -162,16 +167,15 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     }
   }
 
-  private List<String> getExtraMethodsRequested(JSONObject request) {
+  private List<String> getExtraMethodsRequested(JsonObject request) {
     List<String> res = new ArrayList<String>();
 
-    for (Iterator<?> iterator = request.keys(); iterator.hasNext();) {
-      String key = (String) iterator.next();
-      if (!"id".equals(key)) {
-        res.add(key);
+    for (Map.Entry<String, JsonElement> entry : request.entrySet()) {
+      if (!"id".equals(entry.getKey())) {
+        res.add(entry.getKey());
       }
-
     }
+
     return res;
   }
 

@@ -19,13 +19,16 @@ limitations under the License.
 import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
 import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -36,7 +39,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -286,63 +288,56 @@ public class GridHubConfiguration {
   public void loadFromJSON(String resource) {
 
     try {
-      JSONObject o = JSONConfigurationUtils.loadJSON(resource);
+      JsonObject o = JSONConfigurationUtils.loadJSON(resource);
 
       // handling the core config.
-      if (o.has(RegistrationRequest.HOST) && !o.isNull(RegistrationRequest.HOST)) {
-        host = o.getString(RegistrationRequest.HOST);
+      if (o.has(RegistrationRequest.HOST) && !o.get(RegistrationRequest.HOST).isJsonNull()) {
+        host = o.get(RegistrationRequest.HOST).getAsString();
       }
-      if (o.has(RegistrationRequest.PORT) && !o.isNull(RegistrationRequest.PORT)) {
-        port = o.getInt(RegistrationRequest.PORT);
+      if (o.has(RegistrationRequest.PORT) && !o.get(RegistrationRequest.PORT).isJsonNull()) {
+        port = o.get(RegistrationRequest.PORT).getAsInt();
       }
       if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) &&
-          !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
-        cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
+          !o.get(RegistrationRequest.CLEAN_UP_CYCLE).isJsonNull()) {
+        cleanupCycle = o.get(RegistrationRequest.CLEAN_UP_CYCLE).getAsInt();
       }
-      if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
-        setTimeout(o.getInt(RegistrationRequest.TIME_OUT));
+      if (o.has(RegistrationRequest.TIME_OUT) && !o.get(RegistrationRequest.TIME_OUT).isJsonNull()) {
+        setTimeout(o.get(RegistrationRequest.TIME_OUT).getAsInt());
       }
-      if (o.has(RegistrationRequest.BROWSER_TIME_OUT) && !o.isNull(RegistrationRequest.BROWSER_TIME_OUT)) {
-        setBrowserTimeout(o.getInt(RegistrationRequest.BROWSER_TIME_OUT));
+      if (o.has(RegistrationRequest.BROWSER_TIME_OUT)
+          && !o.get(RegistrationRequest.BROWSER_TIME_OUT).isJsonNull()) {
+        setBrowserTimeout(o.get(RegistrationRequest.BROWSER_TIME_OUT).getAsInt());
       }
-      if (o.has("newSessionWaitTimeout") && !o.isNull("newSessionWaitTimeout")) {
-        newSessionWaitTimeout = o.getInt("newSessionWaitTimeout");
+      if (o.has("newSessionWaitTimeout") && !o.get("newSessionWaitTimeout").isJsonNull()) {
+        newSessionWaitTimeout = o.get("newSessionWaitTimeout").getAsInt();
       }
-      if (o.has(RegistrationRequest.SERVLETS) && !o.isNull(RegistrationRequest.SERVLETS)) {
-        JSONArray jsservlets = o.getJSONArray(RegistrationRequest.SERVLETS);
-        for (int i = 0; i < jsservlets.length(); i++) {
-          servlets.add(jsservlets.getString(i));
+      if (o.has(RegistrationRequest.SERVLETS) && !o.get(RegistrationRequest.SERVLETS).isJsonNull()) {
+        JsonArray jsservlets = o.get(RegistrationRequest.SERVLETS).getAsJsonArray();
+        for (int i = 0; i < jsservlets.size(); i++) {
+          servlets.add(jsservlets.get(i).getAsString());
         }
       }
-      if (o.has("jettyMaxThreads") && !o.isNull("jettyMaxThreads")) {
-        jettyMaxThreads = o.getInt("jettyMaxThreads");
+      if (o.has("jettyMaxThreads") && !o.get("jettyMaxThreads").isJsonNull()) {
+        jettyMaxThreads = o.get("jettyMaxThreads").getAsInt();
       }
-      if (o.has("prioritizer") && !o.isNull("prioritizer")) {
-        String prioritizerClass = o.getString("prioritizer");
-        setPrioritizer(prioritizerClass);
+      if (o.has("prioritizer") && !o.get("prioritizer").isJsonNull()) {
+        setPrioritizer(o.get("prioritizer").getAsString());
       }
-      if (o.has("capabilityMatcher") && !o.isNull("capabilityMatcher")) {
-        String capabilityMatcherClass = o.getString("capabilityMatcher");
-        setCapabilityMatcher(capabilityMatcherClass);
+      if (o.has("capabilityMatcher") && !o.get("capabilityMatcher").isJsonNull()) {
+        setCapabilityMatcher(o.get("capabilityMatcher").getAsString());
       }
-      if (o.has("throwOnCapabilityNotPresent") && !o.isNull("throwOnCapabilityNotPresent")) {
-        throwOnCapabilityNotPresent = o.getBoolean("throwOnCapabilityNotPresent");
+      if (o.has("throwOnCapabilityNotPresent") && !o.get("throwOnCapabilityNotPresent").isJsonNull()) {
+        throwOnCapabilityNotPresent = o.get("throwOnCapabilityNotPresent").getAsBoolean();
       }
 
       // store them all.
-      for (Iterator iterator = o.keys(); iterator.hasNext();) {
-        String key = (String) iterator.next();
-        Object value = o.get(key);
-        if (value instanceof JSONArray) {
-          JSONArray a = (JSONArray) value;
-          List<String> as = new ArrayList<String>();
-          for (int i = 0; i < a.length(); i++) {
-            as.add(a.getString(i));
-          }
-          allParams.put(key, as);
-        } else {
-          allParams.put(key, o.get(key));
+      for (Map.Entry<String, JsonElement> entry : o.entrySet()) {
+        Object value = new JsonToBeanConverter().convert(Object.class, entry.getValue());
+        // For backward compatibility numbers should be converted to integers
+        if (value instanceof Long) {
+          value = ((Long) value).intValue();
         }
+        allParams.put(entry.getKey(), value);
       }
 
     } catch (Throwable e) {

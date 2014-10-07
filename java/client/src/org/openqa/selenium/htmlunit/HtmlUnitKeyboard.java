@@ -26,7 +26,9 @@ import org.openqa.selenium.interactions.Keyboard;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.KeyboardEvent;
 
@@ -64,9 +66,22 @@ public class HtmlUnitKeyboard implements Keyboard {
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
       if (element instanceof HtmlTextArea) {
-        String text = ((HtmlTextArea) element).getText();
-        ((HtmlTextArea) element).setSelectionStart(text.length());
-        ((HtmlTextArea) element).setSelectionEnd(text.length());
+        HtmlTextArea area = (HtmlTextArea) element;
+        String text = area.getText();
+        area.setSelectionStart(text.length());
+        area.setSelectionEnd(text.length());
+      }
+      else if (element instanceof HtmlTextInput) {
+        HtmlTextInput input = (HtmlTextInput) element;
+        String text = input.getText();
+        input.setSelectionStart(text.length());
+        input.setSelectionEnd(text.length());
+      }
+      else if (element instanceof HtmlPasswordInput) {
+        HtmlPasswordInput input = (HtmlPasswordInput) element;
+        String text = input.getText();
+        input.setSelectionStart(text.length());
+        input.setSelectionEnd(text.length());
       }
       try {
         element.type(keysToSend.toString());

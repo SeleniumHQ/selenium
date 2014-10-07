@@ -27,6 +27,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/health/health-service.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/health/firefox-diagnostics.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/health/selenium-ide-diagnostics.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/dnd-observers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <!-- import misc.js before tools.js, because both declare a Log object -->
@@ -238,6 +240,7 @@ limitations under the License.
       <menuitem label="UI-Element Documentation" oncommand="openTabOrWindow('chrome://selenium-ide/content/selenium-core/scripts/ui-doc.html')"/>
       <menuseparator/>
       <menuitem label="&helpReportIssue.label;" oncommand="openTabOrWindow('https://code.google.com/p/selenium/issues/entry?template=Defect report from user&amp;labels=Component-IDE,Priority-Medium,Type-Defect')"/>
+      <menuitem label="&helpSearchIssues.label;" oncommand="openTabOrWindow('https://code.google.com/p/selenium/issues/list?can=1&amp;q=&amp;sort=-id&amp;colspec=ID+Stars+Type+Status+Priority+Owner+Summary&amp;cells=tiles')"/>
       <menuitem label="&helpReleaseNotes.label;" oncommand="openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes')"/>
       <menuitem label="&helpBlog.label;" oncommand="openTabOrWindow('http://seleniumhq.wordpress.com/')"/>
       <menuitem label="&helpWebsite.label;" oncommand="openTabOrWindow('http://seleniumhq.org/')"/>

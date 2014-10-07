@@ -18,11 +18,10 @@ limitations under the License.
 package org.openqa.grid.e2e.node;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -133,8 +132,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
   public void testBrowserLocations() throws MalformedURLException {
     Map<String, Object> req_caps = null;
     RequestHandler newSessionRequest = null;
-    String actual = null;
-    JSONObject options = null;
 
     // firefox
 
@@ -200,77 +197,46 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(CapabilityType.VERSION, "27");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(
-          ChromeOptions.CAPABILITY)).get("binary");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
-    assertEquals(locationChrome27, actual);
+
+    JsonObject json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome27, json.get("binary").getAsString());
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
     req_caps.put(CapabilityType.VERSION, "29");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("binary");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
-    assertEquals(locationChrome29, actual);
+
+    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome29, json.get("binary").getAsString());
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
     req_caps.put(CapabilityType.VERSION, "29");
-    options = new JSONObject();
-    try {
-      options.put("test1", "test2");
-    } catch (JSONException e) {
-      assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
-    }
+    JsonObject options = new JsonObject();
+    options.addProperty("test1", "test2");
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("binary");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
-    assertEquals(locationChrome29, actual);
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("test1");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
-    assertEquals("test2", actual);
+
+    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome29, json.get("binary").getAsString());
+    assertEquals("test2", json.get("test1").getAsString());
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
     req_caps.put(CapabilityType.VERSION, "30");
-    options = new JSONObject();
-    try {
-      options.put("test11", "test22");
-      options.put("binary", "custom");
-    } catch (JSONException e) {
-      assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
-    }
+    options = new JsonObject();
+    options.addProperty("test11", "test22");
+    options.addProperty("binary", "custom");
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("binary");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
+
+    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
     // Ignored due it fails
-    //Assert.assertEquals("custom", actual);
-    try {
-      actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("test11");
-    } catch (JSONException e) {
-      actual = "Exception is raised: " + e.getMessage();
-    }
-    assertEquals("test22", actual);
+    //Assert.assertEquals("custom", json.get("binary").getAsString());
+    assertEquals("test22", json.get("test11").getAsString());
   }
 
   @AfterClass

@@ -15,7 +15,6 @@
 	<classpathentry kind="lib" path="/third-party/java/commons-exec/commons-exec-1.1.jar" sourcepath="/third-party/java/commons-exec/commons-exec-1.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="/third-party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/cglib/cglib-nodep-2.1_3.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar" sourcepath="/third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/opera-driver/operadriver-1.5.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/phantomjs-driver/phantomjsdriver-1.1.0.jar" sourcepath="/third-party/java/phantomjs-driver/phantomjsdriver-1.1.0-sources.jar"/>
@@ -32,7 +31,7 @@
 	<classpathentry kind="lib" path="/third-party/java/xml/xercesImpl-2.11.0.jar" sourcepath="/third-party/java/xml/xercesImpl-2.11.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.15.jar" sourcepath="/third-party/java/webbit/webbit-0.4.15-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/little_proxy/littleproxy-0.5.3.jar" sourcepath="/third-party/java/little_proxy/littleproxy-0.5.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.21.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
@@ -41,5 +40,8 @@
 	<classpathentry kind="lib" path="/third-party/java/xml/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/objenesis/objenesis-1.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-api-1.6.6.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-jdk14-1.6.6.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.3.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>

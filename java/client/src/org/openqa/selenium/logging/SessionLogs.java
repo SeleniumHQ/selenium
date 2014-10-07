@@ -17,16 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.openqa.selenium.Beta;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,17 +60,19 @@ public class SessionLogs {
     return Collections.unmodifiableMap(logTypeToEntriesMap);
   }
   
-  public static SessionLogs fromJSON(JSONObject rawSessionLogs) throws JSONException {
+  public static SessionLogs fromJSON(JsonObject rawSessionLogs) {
     SessionLogs sessionLogs = new SessionLogs();
-    for (Iterator logTypeItr = rawSessionLogs.keys(); logTypeItr.hasNext();) {
-      String logType = (String) logTypeItr.next();
-      JSONArray rawLogEntries = rawSessionLogs.getJSONArray(logType);
+    for (Map.Entry<String, JsonElement> entry : rawSessionLogs.entrySet()) {
+      String logType = entry.getKey();
+      JsonArray rawLogEntries = entry.getValue().getAsJsonArray();
       List<LogEntry> logEntries = new ArrayList<LogEntry>();
-      for (int index = 0; index < rawLogEntries.length(); index++) {
-        JSONObject rawEntry = rawLogEntries.getJSONObject(index);
-        logEntries.add(new LogEntry(LogLevelMapping.toLevel(rawEntry.getString("level")),
-            rawEntry.getLong("timestamp"), rawEntry.getString("message")));
-      }        
+      for (int index = 0; index < rawLogEntries.size(); index++) {
+        JsonObject rawEntry = rawLogEntries.get(index).getAsJsonObject();
+        logEntries.add(new LogEntry(LogLevelMapping.toLevel(
+            rawEntry.get("level").getAsString()),
+            rawEntry.get("timestamp").getAsLong(),
+            rawEntry.get("message").getAsString()));
+      }
       sessionLogs.addLog(logType, new LogEntries(logEntries));
     }
     return sessionLogs;

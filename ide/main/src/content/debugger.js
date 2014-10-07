@@ -43,6 +43,9 @@ function Debugger(editor) {
       }
     });
     this.runner.testCase = this.editor.getTestCase();
+    this.runner.updateStats = function (command) {
+      editor.health.increaseCounter('commands', command);
+    };
 
     const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
     //subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/selenium-logging.js', this.runner);

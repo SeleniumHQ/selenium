@@ -19,10 +19,10 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -51,7 +51,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -64,7 +63,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertASimpleString() throws Exception {
     String json = new BeanToJsonConverter().convert("cheese");
 
-    assertThat(json, is("cheese"));
+    assertThat(json, is("\"cheese\""));
   }
 
   @Test
@@ -75,41 +74,40 @@ public class BeanToJsonConverterTest {
 
     String json = new BeanToJsonConverter().convert(toConvert);
 
-    JSONObject converted = new JSONObject(json);
-    assertThat((String) converted.get("cheese"), is("cheddar"));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    assertThat(converted.get("cheese").getAsString(), is("cheddar"));
   }
 
   @Test
   public void testShouldConvertASimpleJavaBean() throws Exception {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
 
-    JSONObject converted = new JSONObject(json);
-    assertThat((String) converted.get("foo"), is("bar"));
-    assertThat((Boolean) converted.get("simple"), is(true));
-    assertThat((Double) converted.get("number"), is(123.456));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    assertThat(converted.get("foo").getAsString(), is("bar"));
+    assertThat(converted.get("simple").getAsBoolean(), is(true));
+    assertThat(converted.get("number").getAsDouble(), is(123.456));
   }
 
   @Test
   public void testShouldConvertArrays() throws Exception {
     String json = new BeanToJsonConverter().convert(new BeanWithArray());
 
-    JSONObject converted = new JSONObject(json);
-    JSONArray allNames = (JSONArray) converted.get("names");
-    assertThat(allNames.length(), is(3));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonArray allNames = converted.get("names").getAsJsonArray();
+    assertThat(allNames.size(), is(3));
   }
 
   @Test
   public void testShouldConvertCollections() throws Exception {
     String json = new BeanToJsonConverter().convert(new BeanWithCollection());
 
-    JSONObject converted = new JSONObject(json);
-    JSONArray allNames = (JSONArray) converted.get("something");
-    assertThat(allNames.length(), is(2));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonArray allNames = converted.get("something").getAsJsonArray();
+    assertThat(allNames.size(), is(2));
   }
 
   @Test
   public void testShouldConvertNumbersAsLongs() throws Exception {
-
     String json = new BeanToJsonConverter().convert(new Exception());
     Map<?,?> map = new JsonToBeanConverter().convert(Map.class, json);
 
@@ -166,43 +164,47 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldEncodeClassNameAsClassProperty() throws Exception {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
-    JSONObject converted = new JSONObject(json);
 
-    assertEquals(SimpleBean.class.getName(), converted.get("class"));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals(SimpleBean.class.getName(), converted.get("class").getAsString());
   }
 
   @Test
-  public void testShouldBeAbleToConvertASessionId() throws JSONException {
+  public void testShouldBeAbleToConvertASessionId() {
     SessionId sessionId = new SessionId("some id");
     String json = new BeanToJsonConverter().convert(sessionId);
-    JSONObject converted = new JSONObject(json);
 
-    assertEquals("some id", converted.getString("value"));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals("some id", converted.get("value").getAsString());
   }
 
-  @Test
-  public void testShouldBeAbleToConvertAJsonObject() throws JSONException {
-    JSONObject obj = new JSONObject();
-    obj.put("key", "value");
+  //@Test
+  public void testShouldBeAbleToConvertAJsonObject() {
+    JsonObject obj = new JsonObject();
+    obj.addProperty("key", "value");
     String json = new BeanToJsonConverter().convert(obj);
-    JSONObject converted = new JSONObject(json);
 
-    assertEquals("value", converted.getString("key"));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals("value", converted.get("key").getAsString());
   }
 
   @Test
-  public void testShouldBeAbleToConvertACapabilityObject() throws JSONException {
+  public void testShouldBeAbleToConvertACapabilityObject() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability("key", "alpha");
 
     String json = new BeanToJsonConverter().convert(caps);
-    JSONObject converted = new JSONObject(json);
 
-    assertEquals("alpha", converted.getString("key"));
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals("alpha", converted.get("key").getAsString());
   }
 
   @Test
-  public void testShouldConvertAProxyPacProperly() throws JSONException {
+  public void testShouldConvertAProxyPacProperly() {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
     pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
     pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
@@ -212,20 +214,29 @@ public class BeanToJsonConverterTest {
     pac.defaults().toNoProxy();
 
     String json = new BeanToJsonConverter().convert(pac);
-    JSONObject converted = new JSONObject(json);
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
     assertEquals("http://localhost:8080/selenium-server",
-        converted.getJSONObject("proxiedUrls").get("*/selenium/*"));
+        converted.get("proxiedUrls").getAsJsonObject()
+            .get("*/selenium/*").getAsString());
     assertEquals("http://localhost:1010/selenium-server/",
-        converted.getJSONObject("proxiedRegexUrls").get("/[a-zA-Z]{4}.microsoft.com/"));
-    assertEquals("/flibble*", converted.getJSONArray("directUrls").get(0));
-    assertEquals("seleniumhq.org", converted.getJSONArray("directHosts").get(0));
-    assertEquals("http://fishy.com/", converted.getJSONObject("proxiedHosts").get("www.google.com"));
-    assertEquals("'DIRECT'", converted.get("defaultProxy"));
+        converted.get("proxiedRegexUrls").getAsJsonObject()
+            .get("/[a-zA-Z]{4}.microsoft.com/").getAsString());
+    assertEquals("/flibble*",
+        converted.get("directUrls").getAsJsonArray()
+            .get(0).getAsString());
+    assertEquals("seleniumhq.org",
+        converted.get("directHosts").getAsJsonArray()
+            .get(0).getAsString());
+    assertEquals("http://fishy.com/",
+        converted.get("proxiedHosts").getAsJsonObject()
+            .get("www.google.com").getAsString());
+    assertEquals("'DIRECT'", converted.get("defaultProxy").getAsString());
   }
 
   @Test
-  public void testShouldConvertAProxyCorrectly() throws JSONException {
+  public void testShouldConvertAProxyCorrectly() {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("localhost:4444");
 
@@ -235,18 +246,20 @@ public class BeanToJsonConverterTest {
     Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);
 
     String json = new BeanToJsonConverter().convert(command.getParameters());
-    JSONObject converted = new JSONObject(json);
-    JSONObject capsAsMap = converted.getJSONObject("desiredCapabilities");
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject capsAsMap = converted.get("desiredCapabilities").getAsJsonObject();
 
     assertEquals(json, proxy.getHttpProxy(),
-        capsAsMap.getJSONObject(CapabilityType.PROXY).get("httpProxy"));
+        capsAsMap.get(CapabilityType.PROXY).getAsJsonObject()
+            .get("httpProxy").getAsString());
   }
 
   @Test
   public void testShouldCallToJsonMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
 
-    assertEquals("converted", json);
+    assertEquals("\"converted\"", json);
   }
 
 
@@ -284,21 +297,22 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertAWebDriverException() throws JSONException {
+  public void testShouldBeAbleToConvertAWebDriverException() {
     RuntimeException clientError = new WebDriverException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String raw = new BeanToJsonConverter().convert(clientError);
 
-    JSONObject json = new JSONObject(raw);
-    assertTrue(raw, json.has("buildInformation"));
-    assertTrue(raw, json.has("systemInformation"));
-    assertTrue(raw, json.has("additionalInformation"));
+    JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
 
-    assertTrue(raw, json.has("message"));
-    assertThat(json.getString("message"), containsString("foo bar baz!"));
-    assertThat(json.getString("class"), is(WebDriverException.class.getName()));
+    assertTrue(raw, converted.has("buildInformation"));
+    assertTrue(raw, converted.has("systemInformation"));
+    assertTrue(raw, converted.has("additionalInformation"));
 
-    assertTrue(raw, json.has("stackTrace"));
+    assertTrue(raw, converted.has("message"));
+    assertThat(converted.get("message").getAsString(), containsString("foo bar baz!"));
+    assertThat(converted.get("class").getAsString(), is(WebDriverException.class.getName()));
+
+    assertTrue(raw, converted.has("stackTrace"));
     verifyStackTraceInJson(raw, stackTrace);
   }
 
@@ -309,7 +323,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertDateFieldsToSecondsSince1970InUtcTime() throws JSONException {
+  public void testShouldConvertDateFieldsToSecondsSince1970InUtcTime() {
     class Bean {
       private final Date date;
 
@@ -325,27 +339,30 @@ public class BeanToJsonConverterTest {
     Date date = new Date(123456789L);
     Bean bean = new Bean(date);
     String jsonStr = new BeanToJsonConverter().convert(bean);
-    JSONObject json = new JSONObject(jsonStr);
 
-    assertTrue(json.has("date"));
-    assertEquals(123456L, json.getLong("date"));
+    JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
+
+    assertTrue(converted.has("date"));
+    assertEquals(123456L, converted.get("date").getAsLong());
   }
 
   @Test
-  public void testShouldBeAbleToConvertACookie() throws JSONException {
+  public void testShouldBeAbleToConvertACookie() {
     Date expiry = new Date();
     Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true, true);
 
     String jsonStr = new BeanToJsonConverter().convert(cookie);
-    JSONObject json = new JSONObject(jsonStr);
 
-    assertEquals("name", json.getString("name"));
-    assertEquals("value", json.getString("value"));
-    assertEquals("domain", json.getString("domain"));
-    assertEquals("/path", json.getString("path"));
-    assertTrue(json.getBoolean("secure"));
-    assertTrue(json.getBoolean("httpOnly"));
-    assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
+    JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
+
+    assertEquals("name", converted.get("name").getAsString());
+    assertEquals("value", converted.get("value").getAsString());
+    assertEquals("domain", converted.get("domain").getAsString());
+    assertEquals("/path", converted.get("path").getAsString());
+    assertTrue(converted.get("secure").getAsBoolean());
+    assertTrue(converted.get("httpOnly").getAsBoolean());
+    assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()),
+                 converted.get("expiry").getAsLong());
   }
 
   @Test
@@ -366,45 +383,53 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testConvertLoggingPreferencesToJson() throws JSONException {
+  public void testConvertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.CLIENT, Level.FINE);
     prefs.enable(LogType.DRIVER, Level.ALL);
 
-    JSONObject json = new JSONObject(new BeanToJsonConverter().convert(prefs));
-    assertEquals("FINE", json.getString(LogType.CLIENT));
-    assertEquals("ALL", json.getString(LogType.DRIVER));
+    String json = new BeanToJsonConverter().convert(prefs);
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals("FINE", converted.get(LogType.CLIENT).getAsString());
+    assertEquals("ALL", converted.get(LogType.DRIVER).getAsString());
   }
 
   @Test
-  public void testConvertsLogEntryToJson() throws JSONException {
+  public void testConvertsLogEntryToJson() {
     String raw = new BeanToJsonConverter().convert(new LogEntry(Level.OFF, 17, "foo"));
-    JSONObject object = new JSONObject(raw);
-    assertEquals("foo", object.get("message"));
-    assertEquals(17, object.get("timestamp"));
-    assertEquals("OFF", object.get("level"));
+
+    JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
+
+    assertEquals("foo", converted.get("message").getAsString());
+    assertEquals(17, converted.get("timestamp").getAsLong());
+    assertEquals("OFF", converted.get("level").getAsString());
   }
 
   @Test
-  public void testConvertLogEntriesToJson() throws JSONException {
+  public void testConvertLogEntriesToJson() {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
-    LogEntries entries = new LogEntries(Lists.<LogEntry>newArrayList(entry1, entry2));
+    LogEntries entries = new LogEntries(Lists.newArrayList(entry1, entry2));
 
-    JSONArray json = new JSONArray(new BeanToJsonConverter().convert(entries));
-    JSONObject obj1 = (JSONObject) json.get(0);
-    JSONObject obj2 = (JSONObject) json.get(1);
-    assertEquals("OFF", obj1.get("level"));
-    assertEquals(timestamp, obj1.get("timestamp"));
-    assertEquals("entry1", obj1.get("message"));
-    assertEquals("WARNING", obj2.get("level"));
-    assertEquals(timestamp, obj2.get("timestamp"));
-    assertEquals("entry2", obj2.get("message"));
+    String json = new BeanToJsonConverter().convert(entries);
+
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    JsonObject obj1 = converted.get(0).getAsJsonObject();
+    JsonObject obj2 = converted.get(1).getAsJsonObject();
+    assertEquals("OFF", obj1.get("level").getAsString());
+    assertEquals(timestamp, obj1.get("timestamp").getAsLong());
+    assertEquals("entry1", obj1.get("message").getAsString());
+    assertEquals("WARNING", obj2.get("level").getAsString());
+    assertEquals(timestamp, obj2.get("timestamp").getAsLong());
+    assertEquals("entry2", obj2.get("message").getAsString());
   }
 
   @Test
-  public void testShouldBeAbleToConvertACommand() throws JSONException {
+  public void testShouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("some id");
     String commandName = "some command";
     Map<String, Object> parameters = new HashMap<String, Object>();
@@ -412,20 +437,21 @@ public class BeanToJsonConverterTest {
     parameters.put("param2", "value2");
     Command command = new Command(sessionId, commandName, parameters);
 
-    System.out.println(new BeanToJsonConverter().convert(command));
-    JSONObject json = new JSONObject(new BeanToJsonConverter().convert(command));
+    String json = new BeanToJsonConverter().convert(command);
 
-    assertNotNull(json.get("sessionId"));
-    JSONObject sid = (JSONObject) json.get("sessionId");
-    assertEquals(sid.getString("value"), sessionId.toString());
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
-    assertEquals(json.getString("name"), commandName);
+    assertTrue(converted.has("sessionId"));
+    JsonObject sid = converted.get("sessionId").getAsJsonObject();
+    assertEquals(sid.get("value").getAsString(), sessionId.toString());
 
-    assertNotNull(json.get("parameters"));
-    JSONObject pars = (JSONObject) json.get("parameters");
-    assertEquals(pars.length(), 2);
-    assertEquals(pars.getString("param1"), parameters.get("param1"));
-    assertEquals(pars.getString("param2"), parameters.get("param2"));
+    assertEquals(converted.get("name").getAsString(), commandName);
+
+    assertTrue(converted.has("parameters"));
+    JsonObject pars = converted.get("parameters").getAsJsonObject();
+    assertEquals(pars.entrySet().size(), 2);
+    assertEquals(pars.get("param1").getAsString(), parameters.get("param1"));
+    assertEquals(pars.get("param2").getAsString(), parameters.get("param2"));
   }
 
   @SuppressWarnings("unused")

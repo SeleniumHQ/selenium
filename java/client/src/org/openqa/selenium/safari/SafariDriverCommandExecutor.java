@@ -25,9 +25,11 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
@@ -196,18 +198,18 @@ class SafariDriverCommandExecutor implements CommandExecutor {
       String rawJsonCommand = new BeanToJsonConverter().convert(serialize(safariCommand));
       ListenableFuture<String> futureResponse = connection.send(rawJsonCommand);
 
-      JSONObject jsonResponse = new JSONObject(futureResponse.get());
+      JsonObject jsonResponse = new JsonParser().parse(futureResponse.get()).getAsJsonObject();
       Response response = new JsonToBeanConverter().convert(
-          Response.class, jsonResponse.getJSONObject("response").toString());
+          Response.class, jsonResponse.get("response"));
       if (response.getStatus() == ErrorCodes.SUCCESS) {
         checkArgument(
-            safariCommand.getId().equals(jsonResponse.getString("id")),
+            safariCommand.getId().equals(jsonResponse.get("id").getAsString()),
             "Response ID<%s> does not match command ID<%s>",
-            jsonResponse.getString("id"), safariCommand.getId());
+            jsonResponse.get("id").getAsString(), safariCommand.getId());
       }
 
       return response;
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new JsonException(e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -217,13 +219,13 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
   }
 
-  private static String serialize(SafariCommand command) throws JSONException {
-    String rawJsonCommand = new BeanToJsonConverter().convert(command);
-    return new JSONObject()
-        .put("origin", "webdriver")
-        .put("type", "command")
-        .put("command", new JSONObject(rawJsonCommand))
-        .toString();
+  private static JsonElement serialize(SafariCommand command) {
+    JsonObject rawJsonCommand = new BeanToJsonConverter().convertObject(command).getAsJsonObject();
+    JsonObject serialized = new JsonObject();
+    serialized.addProperty("origin", "webdriver");
+    serialized.addProperty("type", "command");
+    serialized.add("command", rawJsonCommand);
+    return serialized;
   }
 
   /**

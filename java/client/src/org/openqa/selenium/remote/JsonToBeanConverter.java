@@ -16,13 +16,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,7 +34,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,31 +42,41 @@ public class JsonToBeanConverter {
   public <T> T convert(Class<T> clazz, Object text) throws JsonException {
     try {
       return convert(clazz, text, 0);
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new JsonException(e, text);
     }
   }
 
   @SuppressWarnings("unchecked")
-  private <T> T convert(Class<T> clazz, Object text, int depth) throws JSONException {
+  private <T> T convert(Class<T> clazz, Object text, int depth) {
     if (text == null) {
       return null;
     }
 
-    if (String.class.equals(clazz)) {
-      return (T) text;
-    }
+    if (text instanceof JsonElement) {
+      JsonElement json = (JsonElement) text;
 
-    if (isPrimitive(clazz)) {
-      return (T) text;
-    }
+      if (json.isJsonPrimitive()) {
+        JsonPrimitive jp = json.getAsJsonPrimitive();
 
-    if (text instanceof Number) {
-      // Thank you type erasure.
-      if (text instanceof Double || text instanceof Float) {
-        return (T) Double.valueOf(String.valueOf(text));
+        if (String.class.equals(clazz)) {
+          return (T) jp.getAsString();
+        }
+
+        if (jp.isNumber()) {
+          if (Integer.class.isAssignableFrom(clazz) || int.class.equals(clazz)) {
+            return (T) Integer.valueOf(jp.getAsNumber().intValue());
+          } else if (Long.class.isAssignableFrom(clazz) || long.class.equals(clazz)) {
+            return (T) Long.valueOf(jp.getAsNumber().longValue());
+          } else if (Float.class.isAssignableFrom(clazz) || float.class.equals(clazz)) {
+            return (T) Float.valueOf(jp.getAsNumber().floatValue());
+          } else if (Double.class.isAssignableFrom(clazz) || double.class.equals(clazz)) {
+            return (T) Double.valueOf(jp.getAsNumber().doubleValue());
+          } else {
+            return (T) convertJsonPrimitive(jp);
+          }
+        }
       }
-      return (T) Long.valueOf(String.valueOf(text));
     }
 
     if (isPrimitive(text.getClass())) {
@@ -80,17 +92,16 @@ public class JsonToBeanConverter {
     }
 
     if (Command.class.equals(clazz)) {
-      JSONObject rawCommand = new JSONObject((String) text);
+      JsonObject json = new JsonParser().parse((String) text).getAsJsonObject();
 
       SessionId sessionId = null;
-      if (rawCommand.has("sessionId")) {
-        sessionId = convert(SessionId.class, rawCommand.getString("sessionId"), depth + 1);
+      if (json.has("sessionId") && !json.get("sessionId").isJsonNull()) {
+        sessionId = convert(SessionId.class, json.get("sessionId"), depth + 1);
       }
 
-      String name = rawCommand.getString("name");
-      if (rawCommand.has("parameters")) {
-        Map<String, ?> args = (Map<String, ?>) convert(HashMap.class,
-            rawCommand.getJSONObject("parameters"), depth + 1);
+      String name = json.get("name").getAsString();
+      if (json.has("parameters")) {
+        Map<String, ?> args = (Map<String, ?>) convert(HashMap.class, json.get("parameters"), depth + 1);
         return (T) new Command(sessionId, name, args);
       }
 
@@ -99,83 +110,78 @@ public class JsonToBeanConverter {
 
     if (SessionId.class.equals(clazz)) {
       // Stupid heuristic to tell if we are dealing with a selenium 2 or 3 session id.
-      String coerced = String.valueOf(text);
-      if (!coerced.isEmpty() && coerced.charAt(0) == '{') {
-        JSONObject object = new JSONObject(coerced);
-        String value = object.getString("value");
-        return (T) new SessionId(value);
+      JsonElement json = text instanceof String
+          ? new JsonParser().parse((String) text).getAsJsonObject() : (JsonElement) text;
+      if (json.isJsonPrimitive()) {
+        return (T) new SessionId(json.getAsString());
+      } else {
+        return (T) new SessionId(json.getAsJsonObject().get("value").getAsString());
       }
-
-      return (T) new SessionId(coerced);
     }
 
-    if (Capabilities.class.equals(clazz)) {
-      JSONObject object = new JSONObject((String) text);
+    if (Capabilities.class.isAssignableFrom(clazz)) {
+      JsonObject json = text instanceof JsonElement
+                        ? ((JsonElement) text).getAsJsonObject()
+                        : new JsonParser().parse(text.toString()).getAsJsonObject();
       DesiredCapabilities caps = new DesiredCapabilities();
-      Iterator allKeys = object.keys();
-      while (allKeys.hasNext()) {
-        String key = (String) allKeys.next();
-        caps.setCapability(key, object.get(key));
+
+      for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+        caps.setCapability(entry.getKey(), convert(Object.class, entry.getValue(), depth + 1));
       }
+
       return (T) caps;
     }
 
     if (DoNotUseProxyPac.class.equals(clazz)) {
-      JSONObject object = new JSONObject((String) text);
+      JsonObject json = new JsonParser().parse((String) text).getAsJsonObject();
       DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
-      if (object.has("directUrls")) {
-        JSONArray allUrls = object.getJSONArray("directUrls");
-        for (int i = 0; i < allUrls.length(); i++) {
-          pac.map(allUrls.getString(i)).toNoProxy();
+      if (json.has("directUrls")) {
+        JsonArray allUrls = json.get("directUrls").getAsJsonArray();
+        for (int i = 0; i < allUrls.size(); i++) {
+          pac.map(allUrls.get(i).getAsString()).toNoProxy();
         }
       }
 
-      if (object.has("directHosts")) {
-        JSONArray allHosts = object.getJSONArray("directHosts");
-        for (int i = 0; i < allHosts.length(); i++) {
-          pac.mapHost(allHosts.getString(i)).toNoProxy();
+      if (json.has("directHosts")) {
+        JsonArray allHosts = json.get("directHosts").getAsJsonArray();
+        for (int i = 0; i < allHosts.size(); i++) {
+          pac.mapHost(allHosts.get(i).getAsString()).toNoProxy();
         }
       }
 
-      if (object.has("proxiedHosts")) {
-        JSONObject proxied = object.getJSONObject("proxiedHosts");
-        Iterator allHosts = proxied.keys();
-        while (allHosts.hasNext()) {
-          String host = (String) allHosts.next();
-          pac.mapHost(host).toProxy(proxied.getString(host));
+      if (json.has("proxiedHosts")) {
+        JsonObject proxied = json.get("proxiedHosts").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+          pac.mapHost(entry.getKey()).toProxy(entry.getValue().getAsString());
         }
       }
 
-      if (object.has("proxiedUrls")) {
-        JSONObject proxied = object.getJSONObject("proxiedUrls");
-        Iterator allUrls = proxied.keys();
-        while (allUrls.hasNext()) {
-          String host = (String) allUrls.next();
-          pac.map(host).toProxy(proxied.getString(host));
+      if (json.has("proxiedUrls")) {
+        JsonObject proxied = json.get("proxiedUrls").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+          pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
         }
       }
 
-      if (object.has("proxiedRegexUrls")) {
-        JSONObject proxied = object.getJSONObject("proxiedRegexUrls");
-        Iterator allUrls = proxied.keys();
-        while (allUrls.hasNext()) {
-          String host = (String) allUrls.next();
-          pac.map(host).toProxy(proxied.getString(host));
+      if (json.has("proxiedRegexUrls")) {
+        JsonObject proxied = json.get("proxiedRegexUrls").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+          pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
         }
       }
 
-      if (object.has("defaultProxy")) {
-        if ("'DIRECT'".equals(object.getString("defaultProxy"))) {
+      if (json.has("defaultProxy")) {
+        if ("'DIRECT'".equals(json.get("defaultProxy").getAsString())) {
           pac.defaults().toNoProxy();
         } else {
-          pac.defaults().toProxy(object.getString("defaultProxy"));
+          pac.defaults().toProxy(json.get("defaultProxy").getAsString());
         }
       }
 
-      if (object.has("deriveFrom")) {
+      if (json.has("deriveFrom")) {
         try {
-          pac.deriveFrom(new URI(object.getString("deriveFrom")));
+          pac.deriveFrom(new URI(json.get("deriveFrom").getAsString()));
         } catch (URISyntaxException e) {
           throw new WebDriverException(e);
         }
@@ -192,57 +198,81 @@ public class JsonToBeanConverter {
       return (T) text;
     }
 
-    if (text instanceof JSONArray) {
-      return (T) convertList((JSONArray) text, depth);
-    }
-
-    if (text == JSONObject.NULL) {
-      return null;
-    }
-
     if (depth == 0) {
       if (text instanceof String) {
-        if (((String) text).startsWith("[")) {
-          text = new JSONArray((String) text);
-        } else {
-          text = new JSONObject(String.valueOf(text));
-        }
+        text = new JsonParser().parse((String) text);
       }
     }
 
-    if (text instanceof JSONObject) {
-      JSONObject o = (JSONObject) text;
+    if (text instanceof JsonElement) {
+      JsonElement element = (JsonElement) text;
 
-      if (Map.class.isAssignableFrom(clazz)) {
-        return (T) convertMap(o, depth);
+      if (element.isJsonPrimitive()) {
+        return (T) convertJsonPrimitive(element.getAsJsonPrimitive());
       }
 
-      if (isPrimitive(o.getClass())) {
-        return (T) o;
+      if (element.isJsonArray()) {
+        return (T) convertList(element.getAsJsonArray(), depth);
       }
 
-      if (Object.class.equals(clazz)) {
-        return (T) convertMap(o, depth);
+      if (element.isJsonNull()) {
+        return null;
       }
 
-      return convertBean(clazz, o, depth);
-    } else if (text instanceof JSONArray) {
-      return (T) convertList((JSONArray) text, depth + 1);
+      if (element.isJsonObject()) {
+        if (Map.class.isAssignableFrom(clazz)) {
+          return (T) convertMap(element.getAsJsonObject(), depth);
+        }
+
+        if (Object.class.equals(clazz)) {
+          return (T) convertMap(element.getAsJsonObject(), depth);
+        }
+
+        return convertBean(clazz, element.getAsJsonObject(), depth);
+      }
+    }
+
+    return (T) text; // Crap shoot here; probably a string.
+  }
+
+  private Object convertJsonPrimitive(JsonElement json) {
+    return convertJsonPrimitive(json.getAsJsonPrimitive());
+  }
+
+  private Object convertJsonPrimitive(JsonPrimitive json) {
+    if (json.isBoolean()) {
+      return json.getAsBoolean();
+    } else if (json.isNumber()) {
+      if (json.getAsLong() == json.getAsDouble()) {
+        return json.getAsLong();
+      } else {
+        return json.getAsDouble();
+      }
+    } else if (json.isString()) {
+      return json.getAsString();
     } else {
-      return (T) text; // Crap shoot here; probably a string.
+      return null;
     }
   }
 
   @SuppressWarnings("unchecked")
   private Enum convertEnum(Class clazz, Object text) {
     if (clazz.isEnum()) {
-      return Enum.valueOf(clazz, String.valueOf(text));
+      if (text instanceof JsonElement) {
+        return Enum.valueOf(clazz, (String) convertJsonPrimitive((JsonElement) text));
+      } else {
+        return Enum.valueOf(clazz, String.valueOf(text));
+      }
     }
 
     Class[] allClasses = clazz.getClasses();
     for (Class current : allClasses) {
       if (current.isEnum()) {
-        return Enum.valueOf(current, String.valueOf(text));
+        if (text instanceof JsonElement) {
+          return Enum.valueOf(current, (String) convertJsonPrimitive((JsonElement) text));
+        } else {
+          return Enum.valueOf(current, String.valueOf(text));
+        }
       }
     }
 
@@ -253,7 +283,7 @@ public class JsonToBeanConverter {
     return clazz.isEnum() || text instanceof Enum<?>;
   }
 
-  public <T> T convertBean(Class<T> clazz, JSONObject toConvert, int depth) throws JSONException {
+  private <T> T convertBean(Class<T> clazz, JsonObject toConvert, int depth) {
     T t = newInstance(clazz);
     SimplePropertyDescriptor[] allProperties =
         SimplePropertyDescriptor.getPropertyDescriptors(clazz);
@@ -261,7 +291,7 @@ public class JsonToBeanConverter {
       if (!toConvert.has(property.getName()))
         continue;
 
-      Object value = toConvert.get(property.getName());
+      JsonElement value = toConvert.get(property.getName());
 
       Method write = property.getWriteMethod();
       if (write == null) {
@@ -271,10 +301,12 @@ public class JsonToBeanConverter {
       Class<?> type = write.getParameterTypes()[0];
 
       try {
-        if (JSONObject.NULL.equals(value)) {
+        if (value.isJsonNull()) {
           value = null;
         }
         write.invoke(t, convert(type, value, depth + 1));
+      } catch (IllegalArgumentException e) {
+        throw propertyWriteException(property, value, type, e);
       } catch (IllegalAccessException e) {
         throw propertyWriteException(property, value, type, e);
       } catch (InvocationTargetException e) {
@@ -303,22 +335,20 @@ public class JsonToBeanConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private Map convertMap(JSONObject toConvert, int depth) throws JSONException {
+  private Map convertMap(JsonObject toConvert, int depth) {
     Map map = new HashMap();
 
-    Iterator allEntries = toConvert.keys();
-    while (allEntries.hasNext()) {
-      String key = (String) allEntries.next();
-      map.put(key, convert(Object.class, toConvert.get(key), depth + 1));
+    for (Map.Entry<String, JsonElement> entry : toConvert.entrySet()) {
+      map.put(entry.getKey(), convert(Object.class, entry.getValue(), depth + 1));
     }
 
     return map;
   }
 
   @SuppressWarnings("unchecked")
-  private List convertList(JSONArray toConvert, int depth) throws JSONException {
-    ArrayList list = new ArrayList(toConvert.length());
-    for (int i = 0; i < toConvert.length(); i++) {
+  private List convertList(JsonArray toConvert, int depth) {
+    ArrayList list = new ArrayList(toConvert.size());
+    for (int i = 0; i < toConvert.size(); i++) {
       list.add(convert(Object.class, toConvert.get(i), depth + 1));
     }
     return list;

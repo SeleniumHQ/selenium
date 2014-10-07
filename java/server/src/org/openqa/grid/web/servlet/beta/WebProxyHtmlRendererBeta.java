@@ -18,7 +18,8 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.RemoteProxy;
@@ -75,8 +76,10 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
   private String getHtmlNodeVersion() {
     try {
-      JSONObject object = proxy.getStatus();
-      String version = object.getJSONObject("value").getJSONObject("build").getString("version");   
+      JsonObject object = proxy.getStatus();
+      String version = object.get("value").getAsJsonObject()
+          .get("build").getAsJsonObject()
+          .get("version").getAsString();
       return " (version : "+version+ ")";
     }catch (Exception e) {
       return " unknown version,"+e.getMessage();

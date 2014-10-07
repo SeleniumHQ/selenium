@@ -164,7 +164,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public void setCapability(String capabilityName, String value) {
-    capabilities.put(capabilityName, value);
+    if (PLATFORM.equals(capabilityName)) {
+      capabilities.put(capabilityName, Platform.valueOf(value));
+    } else {
+      capabilities.put(capabilityName, value);
+    }
   }
 
   public void setCapability(String capabilityName, Platform value) {
@@ -172,7 +176,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public void setCapability(String key, Object value) {
-    capabilities.put(key, value);
+    if (PLATFORM.equals(key) && value instanceof String) {
+      capabilities.put(key, Platform.valueOf((String) value));
+    } else {
+      capabilities.put(key, value);
+    }
   }
 
   public Map<String, ?> asMap() {

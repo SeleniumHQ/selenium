@@ -16,9 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -48,7 +45,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 @RunWith(JUnit4.class)
 public class JsonToBeanConverterTest {
@@ -63,9 +63,9 @@ public class JsonToBeanConverterTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testCanPopulateAMap() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("cheese", "brie");
-    toConvert.put("foodstuff", "cheese");
+    JsonObject toConvert = new JsonObject();
+    toConvert.addProperty("cheese", "brie");
+    toConvert.addProperty("foodstuff", "cheese");
 
     Map<String, String> map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
     assertThat(map.size(), is(2));
@@ -75,8 +75,8 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testCanPopulateAMapThatContainsNull() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("foo", JSONObject.NULL);
+    JsonObject toConvert = new JsonObject();
+    toConvert.add("foo", JsonNull.INSTANCE);
 
     Map<?,?> converted = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
     assertEquals(1, converted.size());
@@ -86,8 +86,8 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testCanPopulateASimpleBean() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("value", "time");
+    JsonObject toConvert = new JsonObject();
+    toConvert.addProperty("value", "time");
 
     SimpleBean bean = new JsonToBeanConverter().convert(SimpleBean.class, toConvert.toString());
 
@@ -96,9 +96,9 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("value", "time");
-    toConvert.put("frob", "telephone");
+    JsonObject toConvert = new JsonObject();
+    toConvert.addProperty("value", "time");
+    toConvert.addProperty("frob", "telephone");
 
     SimpleBean bean = new JsonToBeanConverter().convert(SimpleBean.class, toConvert.toString());
 
@@ -107,8 +107,8 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testShouldSetPrimitiveValuesToo() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("magicNumber", 3);
+    JsonObject toConvert = new JsonObject();
+    toConvert.addProperty("magicNumber", 3);
 
     Map<?,?> map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
 
@@ -117,11 +117,11 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testShouldPopulateFieldsOnNestedBeans() throws Exception {
-    JSONObject toConvert = new JSONObject();
-    toConvert.put("name", "frank");
-    JSONObject child = new JSONObject();
-    child.put("value", "lots");
-    toConvert.put("bean", child);
+    JsonObject toConvert = new JsonObject();
+    toConvert.addProperty("name", "frank");
+    JsonObject child = new JsonObject();
+    child.addProperty("value", "lots");
+    toConvert.add("bean", child);
 
     ContainingBean bean =
         new JsonToBeanConverter().convert(ContainingBean.class, toConvert.toString());
@@ -145,9 +145,9 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testShouldBeAbleToInstantiateBooleans() throws Exception {
-    JSONArray array = new JSONArray();
-    array.put(true);
-    array.put(false);
+    JsonArray array = new JsonArray();
+    array.add(new JsonPrimitive(true));
+    array.add(new JsonPrimitive(false));
 
     boolean first = new JsonToBeanConverter().convert(Boolean.class, array.get(0));
     boolean second = new JsonToBeanConverter().convert(Boolean.class, array.get(1));
@@ -158,11 +158,11 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
-    JSONObject toModel = new JSONObject();
-    toModel.put("thing", "hairy");
-    toModel.put("hairy", "true");
+    JsonObject toModel = new JsonObject();
+    toModel.addProperty("thing", "hairy");
+    toModel.addProperty("hairy", "true");
 
-    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class, toModel);
+    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class,  toModel.toString());
     assertEquals(2, modelled.size());
   }
 
@@ -321,13 +321,13 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() throws JSONException {
-    JSONObject inner = new JSONObject()
-        .put("color", "green")
-        .put("number", 123);
+  public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
+    JsonObject inner = new JsonObject();
+    inner.addProperty("color", "green");
+    inner.addProperty("number", 123);
 
-    JSONObject outer = new JSONObject()
-        .put("inner", inner.toString());
+    JsonObject outer = new JsonObject();
+    outer.addProperty("inner", inner.toString());
 
     String jsonStr = outer.toString();
 
@@ -341,14 +341,14 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() throws JSONException {
+  public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() {
     SessionId expectedId = new SessionId("thisisakey");
 
-    JSONObject rawJson = new JSONObject();
+    JsonObject rawJson = new JsonObject();
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
-    rawJson.put("sessionId", expectedId.toString());
-    rawJson.put("name", "some command");
-    rawJson.put("parameters", Maps.newHashMap());
+    rawJson.addProperty("sessionId", expectedId.toString());
+    rawJson.addProperty("name", "some command");
+    rawJson.add("parameters", new JsonObject());
 
     String stringified = rawJson.toString();
 

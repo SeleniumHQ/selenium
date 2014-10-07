@@ -91,7 +91,7 @@ java_library(name = 'remote',
     '//java/client/src/org/openqa/selenium/net:net',
     '//third_party/java/apache-httpclient:apache-httpclient',
     '//third_party/java/guava-libraries:guava-libraries',
-    '//third_party/java/json:json',
+    '//third_party/java/gson:gson',
   ],
   visibility = ['PUBLIC'],
 )

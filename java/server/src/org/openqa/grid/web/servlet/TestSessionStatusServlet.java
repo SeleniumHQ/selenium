@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
@@ -62,19 +64,18 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
-    JSONObject res;
+    JsonObject res;
     try {
       res = getResponse(request);
       response.getWriter().print(res);
       response.getWriter().close();
-    } catch (JSONException e) {
+    } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
-
   }
 
-  private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
-    JSONObject requestJSON = null;
+  private JsonObject getResponse(HttpServletRequest request) throws IOException {
+    JsonObject requestJSON = null;
     if (request.getInputStream() != null) {
       BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
       StringBuilder s = new StringBuilder();
@@ -85,13 +86,13 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
       rd.close();
       String json = s.toString();
       if (!"".equals(json)) {
-        requestJSON = new JSONObject(json);
+        requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
 
     }
 
-    JSONObject res = new JSONObject();
-    res.put("success", false);
+    JsonObject res = new JsonObject();
+    res.addProperty("success", false);
 
     // the id can be specified via a param, or in the json request.
     String session;
@@ -99,29 +100,29 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
       session = request.getParameter("session");
     } else {
       if (!requestJSON.has("session")) {
-        res.put("msg",
+        res.addProperty("msg",
             "you need to specify at least a session or internalKey when call the test slot status service.");
         return res;
       }
-      session = requestJSON.getString("session");
+      session = requestJSON.get("session").getAsString();
     }
 
     TestSession testSession = getRegistry().getSession(ExternalSessionKey.fromString(session));
 
     if (testSession == null) {
-      res.put("msg", "Cannot find test slot running session " + session + " in the registry.");
+      res.addProperty("msg", "Cannot find test slot running session " + session + " in the registry.");
       return res;
     } else {
-      res.put("msg", "slot found !");
-      res.put("success", true);
-      res.put("session", testSession.getExternalKey().getKey());
-      res.put("internalKey", testSession.getInternalKey());
-      res.put("inactivityTime", testSession.getInactivityTime());
+      res.addProperty("msg", "slot found !");
+      res.remove("success");
+      res.addProperty("success", true);
+      res.addProperty("session", testSession.getExternalKey().getKey());
+      res.addProperty("internalKey", testSession.getInternalKey());
+      res.addProperty("inactivityTime", testSession.getInactivityTime());
       RemoteProxy p = testSession.getSlot().getProxy();
-      res.put("proxyId", p.getId());
+      res.addProperty("proxyId", p.getId());
       return res;
     }
-
   }
 
 }
