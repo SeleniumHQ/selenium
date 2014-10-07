@@ -15,6 +15,7 @@ mozilla_lib(name = "webdriver_firefox_esr_previous",
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
   geckoversion="24")
 
@@ -23,6 +24,7 @@ mozilla_lib(name = "webdriver_firefox_esr_previous_64",
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
   geckoversion="24")
 
@@ -31,6 +33,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest",
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
   geckoversion="31")
 
@@ -39,6 +42,7 @@ mozilla_lib(name = "webdriver_firefox_esr_latest_64",
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
   geckoversion="31")
 
@@ -47,6 +51,7 @@ mozilla_lib(name = "webdriver_firefox_previous",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
   geckoversion="32")
 
@@ -54,6 +59,7 @@ mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
   geckoversion="32")
 
@@ -61,6 +67,7 @@ mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "i386",
   geckoversion="33")
 
@@ -68,6 +75,7 @@ mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
+  args = "-Icpp/webdriver-server",
   arch = "amd64",
   geckoversion="33")
 
