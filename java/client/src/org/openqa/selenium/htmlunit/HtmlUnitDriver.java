@@ -235,7 +235,18 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (BrowserType.FIREFOX.equals(browserName)) {
-      return BrowserVersion.FIREFOX_24;
+      // Try and convert the version
+      try {
+        int version = Integer.parseInt(browserVersion);
+        switch (version) {
+          case 17:
+            return BrowserVersion.FIREFOX_17;
+          default:
+            return BrowserVersion.FIREFOX_24;
+        }
+      } catch (NumberFormatException e) {
+        return BrowserVersion.FIREFOX_24;
+      }
     }
 
     if (BrowserType.CHROME.equals(browserName)) {
