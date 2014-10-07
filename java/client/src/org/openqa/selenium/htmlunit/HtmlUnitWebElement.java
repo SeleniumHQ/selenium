@@ -28,7 +28,6 @@ import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLabel;
@@ -500,7 +499,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return true;
     }
 
-    return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
+    return element.isDisplayed();
   }
 
   @Override
