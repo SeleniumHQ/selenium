@@ -125,7 +125,7 @@ class UnexpectedAlertPresentException(WebDriverException):
     more commands.
     """
     def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
-        super(WebDriverException, self).__init__(msg, screen, stacktrace)
+        super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
     def __str__(self):
