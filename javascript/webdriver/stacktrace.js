@@ -353,7 +353,9 @@ webdriver.stacktrace.V8_LOCATION_PATTERN_ = ' (?:\\((.*)\\)|(.*))';
  * @private {!RegExp}
  * @const
  */
-webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
+webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^\\s+at' +
+    // Prevent intersections with IE10 stack frame regex.
+    '(?! (?:Anonymous function|Global code|eval code) )' +
     '(?:' + webdriver.stacktrace.V8_FUNCTION_CALL_PATTERN_ + ')?' +
     webdriver.stacktrace.V8_LOCATION_PATTERN_ + '$');
 
@@ -590,6 +592,18 @@ webdriver.stacktrace.getStack_ = function(error) {
 webdriver.stacktrace.format = function(error) {
   var stack = webdriver.stacktrace.getStack_(error);
   var frames = webdriver.stacktrace.parse_(stack);
+
+  // If the original stack is in an unexpected format, our formatted stack
+  // trace will be a bunch of "    at <anonymous>" lines. If this is the case,
+  // just return the error unmodified to avoid losing information. This is
+  // necessary since the user may have defined a custom stack formatter in
+  // V8 via Error.prepareStackTrace. See issue 7994.
+  var isAnonymousFrame = function(frame) {
+    return frame.toString() === '    at <anonymous>';
+  };
+  if (frames.length && goog.array.every(frames, isAnonymousFrame)) {
+    return error;
+  }
 
   // Older versions of IE simply return [object Error] for toString(), so
   // only use that as a last resort.

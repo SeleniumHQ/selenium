@@ -165,6 +165,11 @@ function testParseStackFrameInV8() {
       '    at Object.assert (http://bar:4000/bar.js?value=(a):150:3)',
       new webdriver.stacktrace.Frame('Object', 'assert', '',
           'http://bar:4000/bar.js?value=(a):150:3'));
+
+  assertStackFrame('Frame with non-standard leading whitespace (issue 7994)',
+      '  at module.exports.runCucumber (/local/dir/path)',
+      new webdriver.stacktrace.Frame('module.exports', 'runCucumber', '',
+          '/local/dir/path'));
 }
 
 function testParseStackFrameInOpera() {
@@ -466,6 +471,19 @@ function testFormatsUsingNameAndMessageIfAvailable() {
     }
   });
   assertEquals('TypeError: boom\n', ret.stack);
+}
+
+function testDoesNotFormatErrorIfOriginalStacktraceIsInAnUnexpectedFormat() {
+  var error = Error('testing');
+  var stack = error.stack = [
+    'Error: testing',
+    '..> at Color.red (http://x:1234)',
+    '..> at Foo.bar (http://y:5678)'
+  ].join('\n');
+
+  var ret = webdriver.stacktrace.format(error);
+  assertEquals(ret, error);
+  assertEquals(stack, error.stack);
 }
 
 function testParseStackFrameInIE10() {
