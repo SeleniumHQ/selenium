@@ -272,9 +272,10 @@ Builder.prototype.build = function() {
 
   browser = capabilities.get(Capability.BROWSER_NAME);
 
-  if (!browser) {
-    throw Error(
-        'Target browser not defined; did you forget to call forBrowser()?');
+  if (typeof browser !== 'string') {
+    throw TypeError(
+        'Target browser must be a string, but is <' + (typeof browser) + '>;' +
+        ' did you forget to call forBrowser()?');
   }
 
   // Apply browser specific overrides.
