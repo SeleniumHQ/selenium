@@ -49,8 +49,7 @@ class Service(object):
             self.process = subprocess.Popen(["java", "-jar", self.path, "-port", "%s" % self.port])
         except:
             raise WebDriverException(
-                "OperaDriver executable needs to be available in the path. \
-                ")
+                "OperaDriver executable needs to be available in the path.")
         time.sleep(10)
         count = 0
         while not utils.is_connectable(self.port):
