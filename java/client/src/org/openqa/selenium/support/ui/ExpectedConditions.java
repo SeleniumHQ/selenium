@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -33,7 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Canned {@link ExpectedCondition}s which are generally useful within webdriver
+ * Canned {@link AnticipatedCondition}s which are generally useful within webdriver
  * tests.
  */
 public class ExpectedConditions {
@@ -50,13 +51,13 @@ public class ExpectedConditions {
    * @param title the expected title, which must be an exact match
    * @return true when the title matches, false otherwise
    */
-  public static ExpectedCondition<Boolean> titleIs(final String title) {
-    return new ExpectedCondition<Boolean>() {
+  public static AnticipatedCondition<Boolean> titleIs(final String title) {
+    return new AnticipatedCondition<Boolean>() {
       private String currentTitle = "";
 
       @Override
-      public Boolean apply(WebDriver driver) {
-        currentTitle = driver.getTitle();
+      public Boolean apply(SearchContext context) {
+        currentTitle = ContextInfo.getDriver(context).getTitle();
         return title.equals(currentTitle);
       }
 
@@ -74,13 +75,13 @@ public class ExpectedConditions {
    * @param title the fragment of title expected
    * @return true when the title matches, false otherwise
    */
-  public static ExpectedCondition<Boolean> titleContains(final String title) {
-    return new ExpectedCondition<Boolean>() {
+  public static AnticipatedCondition<Boolean> titleContains(final String title) {
+    return new AnticipatedCondition<Boolean>() {
       private String currentTitle = "";
 
       @Override
-      public Boolean apply(WebDriver driver) {
-        currentTitle = driver.getTitle();
+      public Boolean apply(SearchContext context) {
+        currentTitle = ContextInfo.getDriver(context).getTitle();
         return currentTitle != null && currentTitle.contains(title);
       }
 
@@ -98,12 +99,12 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the WebElement once it is located
    */
-  public static ExpectedCondition<WebElement> presenceOfElementLocated(
+  public static AnticipatedCondition<WebElement> presenceOfElementLocated(
       final By locator) {
-    return new ExpectedCondition<WebElement>() {
+    return new AnticipatedCondition<WebElement>() {
       @Override
-      public WebElement apply(WebDriver driver) {
-        return findElement(locator, driver);
+      public WebElement apply(SearchContext context) {
+        return findElement(locator, context);
       }
 
       @Override
@@ -121,13 +122,13 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the WebElement once it is located and visible
    */
-  public static ExpectedCondition<WebElement> visibilityOfElementLocated(
+  public static AnticipatedCondition<WebElement> visibilityOfElementLocated(
       final By locator) {
-    return new ExpectedCondition<WebElement>() {
+    return new AnticipatedCondition<WebElement>() {
       @Override
-      public WebElement apply(WebDriver driver) {
+      public WebElement apply(SearchContext context) {
         try {
-          return elementIfVisible(findElement(locator, driver));
+          return elementIfVisible(findElement(locator, context));
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -148,12 +149,12 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the list of WebElements once they are located
    */
-  public static ExpectedCondition<List<WebElement>> visibilityOfAllElementsLocatedBy(
+  public static AnticipatedCondition<List<WebElement>> visibilityOfAllElementsLocatedBy(
       final By locator) {
-    return new ExpectedCondition<List<WebElement>>() {
+    return new AnticipatedCondition<List<WebElement>>() {
       @Override
-      public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = findElements(locator, driver);
+      public List<WebElement> apply(SearchContext context) {
+        List<WebElement> elements = findElements(locator, context);
         for(WebElement element : elements){
           if(!element.isDisplayed()){
             return null;
@@ -177,11 +178,11 @@ public class ExpectedConditions {
    * @param elements list of WebElements
    * @return the list of WebElements once they are located
    */
-  public static ExpectedCondition<List<WebElement>> visibilityOfAllElements(
+  public static AnticipatedCondition<List<WebElement>> visibilityOfAllElements(
       final List<WebElement> elements) {
-    return new ExpectedCondition<List<WebElement>>() {
+    return new AnticipatedCondition<List<WebElement>>() {
       @Override
-      public List<WebElement> apply(WebDriver driver) {
+      public List<WebElement> apply(SearchContext context) {
         for(WebElement element : elements){
           if(!element.isDisplayed()){
             return null;
@@ -205,11 +206,11 @@ public class ExpectedConditions {
    * @param element the WebElement
    * @return the (same) WebElement once it is visible
    */
-  public static ExpectedCondition<WebElement> visibilityOf(
+  public static AnticipatedCondition<WebElement> visibilityOf(
       final WebElement element) {
-    return new ExpectedCondition<WebElement>() {
+    return new AnticipatedCondition<WebElement>() {
       @Override
-      public WebElement apply(WebDriver driver) {
+      public WebElement apply(SearchContext context) {
         return elementIfVisible(element);
       }
 
@@ -234,12 +235,12 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the list of WebElements once they are located
    */
-  public static ExpectedCondition<List<WebElement>> presenceOfAllElementsLocatedBy(
+  public static AnticipatedCondition<List<WebElement>> presenceOfAllElementsLocatedBy(
       final By locator) {
-    return new ExpectedCondition<List<WebElement>>() {
+    return new AnticipatedCondition<List<WebElement>>() {
       @Override
-      public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = findElements(locator, driver);
+      public List<WebElement> apply(SearchContext context) {
+        List<WebElement> elements = findElements(locator, context);
         return elements.size() > 0 ? elements : null;
       }
 
@@ -257,12 +258,12 @@ public class ExpectedConditions {
    * @param text to be present in the element
    * @return true once the element contains the given text
    */
-  public static ExpectedCondition<Boolean> textToBePresentInElement(
+  public static AnticipatedCondition<Boolean> textToBePresentInElement(
       final WebElement element, final String text) {
 
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
           String elementText = element.getText();
           return elementText.contains(text);
@@ -289,7 +290,7 @@ public class ExpectedConditions {
    * @deprecated Use {@link #textToBePresentInElementLocated(By, String)} instead
    */
   @Deprecated
-  public static ExpectedCondition<Boolean> textToBePresentInElement(
+  public static AnticipatedCondition<Boolean> textToBePresentInElement(
       final By locator, final String text) {
     return textToBePresentInElementLocated(locator, text);
   }
@@ -302,14 +303,14 @@ public class ExpectedConditions {
    * @param text to be present in the element found by the locator
    * @return true once the first element located by locator contains the given text
    */
-  public static ExpectedCondition<Boolean> textToBePresentInElementLocated(
+  public static AnticipatedCondition<Boolean> textToBePresentInElementLocated(
       final By locator, final String text) {
 
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
-          String elementText = findElement(locator, driver).getText();
+          String elementText = findElement(locator, context).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
           return null;
@@ -332,12 +333,12 @@ public class ExpectedConditions {
    * @param text to be present in the element's value attribute
    * @return true once the element's value attribute contains the given text
    */
-  public static ExpectedCondition<Boolean> textToBePresentInElementValue(
+  public static AnticipatedCondition<Boolean> textToBePresentInElementValue(
       final WebElement element, final String text) {
 
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
           String elementText = element.getAttribute("value");
           if (elementText != null) {
@@ -366,14 +367,14 @@ public class ExpectedConditions {
    * @return true once the value attribute of the first element located by locator contains
    * the given text
    */
-  public static ExpectedCondition<Boolean> textToBePresentInElementValue(
+  public static AnticipatedCondition<Boolean> textToBePresentInElementValue(
       final By locator, final String text) {
 
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
-          String elementText = findElement(locator, driver).getAttribute("value");
+          String elementText = findElement(locator, context).getAttribute("value");
           if (elementText != null) {
             return elementText.contains(text);
           } else {
@@ -399,13 +400,13 @@ public class ExpectedConditions {
    *
    * @param frameLocator used to find the frame (id or name)
    */
-  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
+  public static AnticipatedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final String frameLocator) {
-    return new ExpectedCondition<WebDriver>() {
+    return new AnticipatedCondition<WebDriver>() {
       @Override
-      public WebDriver apply(WebDriver driver) {
+      public WebDriver apply(SearchContext context) {
         try {
-          return driver.switchTo().frame(frameLocator);
+          return ContextInfo.getDriver(context).switchTo().frame(frameLocator);
         } catch (NoSuchFrameException e) {
           return null;
         }
@@ -425,13 +426,13 @@ public class ExpectedConditions {
    *
    * @param locator used to find the frame
    */
-  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
+  public static AnticipatedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final By locator) {
-    return new ExpectedCondition<WebDriver>() {
+    return new AnticipatedCondition<WebDriver>() {
       @Override
-      public WebDriver apply(WebDriver driver) {
+      public WebDriver apply(SearchContext context) {
         try {
-          return driver.switchTo().frame(findElement(locator, driver));
+          return ContextInfo.getDriver(context).switchTo().frame(findElement(locator, context));
         } catch (NoSuchFrameException e) {
           return null;
         }
@@ -450,13 +451,13 @@ public class ExpectedConditions {
    *
    * @param locator used to find the element
    */
-  public static ExpectedCondition<Boolean> invisibilityOfElementLocated(
+  public static AnticipatedCondition<Boolean> invisibilityOfElementLocated(
       final By locator) {
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
-          return !(findElement(locator, driver).isDisplayed());
+          return !(findElement(locator, context).isDisplayed());
         } catch (NoSuchElementException e) {
           // Returns true because the element is not present in DOM. The
           // try block checks if the element is present but is invisible.
@@ -482,13 +483,13 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @param text of the element
    */
-  public static ExpectedCondition<Boolean> invisibilityOfElementWithText(
+  public static AnticipatedCondition<Boolean> invisibilityOfElementWithText(
       final By locator, final String text) {
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
-          return !findElement(locator, driver).getText().equals(text);
+          return !findElement(locator, context).getText().equals(text);
         } catch (NoSuchElementException e) {
           // Returns true because the element with text is not present in DOM. The
           // try block checks if the element is present but is invisible.
@@ -516,16 +517,16 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the WebElement once it is located and clickable (visible and enabled)
    */
-  public static ExpectedCondition<WebElement> elementToBeClickable(
+  public static AnticipatedCondition<WebElement> elementToBeClickable(
       final By locator) {
-    return new ExpectedCondition<WebElement>() {
+    return new AnticipatedCondition<WebElement>() {
 
-      public ExpectedCondition<WebElement> visibilityOfElementLocated =
+      public AnticipatedCondition<WebElement> visibilityOfElementLocated =
           ExpectedConditions.visibilityOfElementLocated(locator);
 
       @Override
-      public WebElement apply(WebDriver driver) {
-        WebElement element = visibilityOfElementLocated.apply(driver);
+      public WebElement apply(SearchContext context) {
+        WebElement element = visibilityOfElementLocated.apply(context);
         try {
           if (element != null && element.isEnabled()) {
             return element;
@@ -551,16 +552,16 @@ public class ExpectedConditions {
    * @param element the WebElement
    * @return the (same) WebElement once it is clickable (visible and enabled)
    */
-  public static ExpectedCondition<WebElement> elementToBeClickable(
+  public static AnticipatedCondition<WebElement> elementToBeClickable(
       final WebElement element) {
-    return new ExpectedCondition<WebElement>() {
+    return new AnticipatedCondition<WebElement>() {
 
-      public ExpectedCondition<WebElement> visibilityOfElement =
+      public AnticipatedCondition<WebElement> visibilityOfElement =
           ExpectedConditions.visibilityOf(element);
 
       @Override
-      public WebElement apply(WebDriver driver) {
-        WebElement element = visibilityOfElement.apply(driver);
+      public WebElement apply(SearchContext context) {
+        WebElement element = visibilityOfElement.apply(context);
         try {
           if (element != null && element.isEnabled()) {
             return element;
@@ -586,11 +587,11 @@ public class ExpectedConditions {
    * @return false is the element is still attached to the DOM, true
    *         otherwise.
    */
-  public static ExpectedCondition<Boolean> stalenessOf(
+  public static AnticipatedCondition<Boolean> stalenessOf(
       final WebElement element) {
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver ignored) {
+      public Boolean apply(SearchContext ignored) {
         try {
           // Calling any method forces a staleness check
           element.isEnabled();
@@ -616,13 +617,13 @@ public class ExpectedConditions {
    * the client. When this happens a {@link StaleElementReferenceException} is
    * thrown when the second part of the condition is checked.
    */
-  public static <T> ExpectedCondition<T> refreshed(
-      final ExpectedCondition<T> condition) {
-    return new ExpectedCondition<T>() {
+  public static <T> AnticipatedCondition<T> refreshed(
+      final AnticipatedCondition<T> condition) {
+    return new AnticipatedCondition<T>() {
       @Override
-      public T apply(WebDriver driver) {
+      public T apply(SearchContext context) {
         try {
-          return condition.apply(driver);
+          return condition.apply(context);
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -638,18 +639,18 @@ public class ExpectedConditions {
   /**
    * An expectation for checking if the given element is selected.
    */
-  public static ExpectedCondition<Boolean> elementToBeSelected(final WebElement element) {
+  public static AnticipatedCondition<Boolean> elementToBeSelected(final WebElement element) {
     return elementSelectionStateToBe(element, true);
   }
 
   /**
    * An expectation for checking if the given element is selected.
    */
-  public static ExpectedCondition<Boolean> elementSelectionStateToBe(final WebElement element,
+  public static AnticipatedCondition<Boolean> elementSelectionStateToBe(final WebElement element,
                                                                      final boolean selected) {
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         return element.isSelected() == selected;
       }
 
@@ -660,17 +661,17 @@ public class ExpectedConditions {
     };
   }
 
-  public static ExpectedCondition<Boolean> elementToBeSelected(final By locator) {
+  public static AnticipatedCondition<Boolean> elementToBeSelected(final By locator) {
     return elementSelectionStateToBe(locator, true);
   }
 
-  public static ExpectedCondition<Boolean> elementSelectionStateToBe(final By locator,
+  public static AnticipatedCondition<Boolean> elementSelectionStateToBe(final By locator,
                                                                      final boolean selected) {
-    return new ExpectedCondition<Boolean>() {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
+      public Boolean apply(SearchContext context) {
         try {
-          WebElement element = driver.findElement(locator);
+          WebElement element = context.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
           return null;
@@ -685,12 +686,12 @@ public class ExpectedConditions {
     };
   }
 
-  public static ExpectedCondition<Alert> alertIsPresent() {
-    return new ExpectedCondition<Alert>() {
+  public static AnticipatedCondition<Alert> alertIsPresent() {
+    return new AnticipatedCondition<Alert>() {
       @Override
-      public Alert apply(WebDriver driver) {
+      public Alert apply(SearchContext context) {
         try {
-          return driver.switchTo().alert();
+          return ContextInfo.getDriver(context).switchTo().alert();
         } catch (NoAlertPresentException e) {
           return null;
         }
@@ -706,11 +707,11 @@ public class ExpectedConditions {
   /**
    * An expectation with the logical opposite condition of the given condition.
    */
-  public static ExpectedCondition<Boolean> not(final ExpectedCondition<?> condition) {
-    return new ExpectedCondition<Boolean>() {
+  public static AnticipatedCondition<Boolean> not(final AnticipatedCondition<?> condition) {
+    return new AnticipatedCondition<Boolean>() {
       @Override
-      public Boolean apply(WebDriver driver) {
-        Object result = condition.apply(driver);
+      public Boolean apply(SearchContext context) {
+        Object result = condition.apply(context);
         return result == null || result == Boolean.FALSE;
       }
 
@@ -725,9 +726,9 @@ public class ExpectedConditions {
    * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/>
    * Method exists to gather data for http://code.google.com/p/selenium/issues/detail?id=1800
    */
-  private static WebElement findElement(By by, WebDriver driver) {
+  private static WebElement findElement(By by, SearchContext context) {
     try {
-      return driver.findElement(by);
+      return context.findElement(by);
     } catch (NoSuchElementException e) {
       throw e;
     } catch (WebDriverException e) {
@@ -740,9 +741,9 @@ public class ExpectedConditions {
   /**
    * @see #findElement(By, WebDriver)
    */
-  private static List<WebElement> findElements(By by, WebDriver driver) {
+  private static List<WebElement> findElements(By by, SearchContext context) {
     try {
-      return driver.findElements(by);
+      return context.findElements(by);
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
           String.format("WebDriverException thrown by findElement(%s)", by), e);
