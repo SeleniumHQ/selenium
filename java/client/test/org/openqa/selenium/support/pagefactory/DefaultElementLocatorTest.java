@@ -192,6 +192,25 @@ public class DefaultElementLocatorTest {
     }
   }
 
+  @Test(expected = NullPointerException.class)
+  public void shouldWorkWithCustomAnnotations() {
+    final WebDriver driver = mock(WebDriver.class);
+
+    AbstractAnnotations npeAnnotations = new AbstractAnnotations() {
+      @Override
+      public boolean isLookupCached() {
+        return false;
+      }
+
+      @Override
+      public By buildBy() {
+        throw new NullPointerException();
+      }
+    };
+
+    new DefaultElementLocator(driver, npeAnnotations);
+  }
+
   private static class Page {
     @SuppressWarnings("unused")
     private WebElement first;

@@ -42,6 +42,24 @@ public class AjaxElementLocator extends DefaultElementLocator {
   private final Clock clock;
 
   /**
+   * Use this constructor in order to process custom annotaions.
+   *
+   * @param context The context to use when finding the element
+   * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
+   * @param annotations	AbstractAnnotations class implementation
+   */
+  public AjaxElementLocator(SearchContext context, int timeOutInSeconds, AbstractAnnotations annotations) {
+    this(new SystemClock(), context, timeOutInSeconds, annotations);
+  }
+
+  public AjaxElementLocator(Clock clock, SearchContext context, int timeOutInSeconds,
+                            AbstractAnnotations annotations) {
+    super(context, annotations);
+    this.timeOutInSeconds = timeOutInSeconds;
+    this.clock = clock;
+  }
+
+  /**
    * Main constructor.
    * 
    * @param searchContext The context to use when finding the element
@@ -53,9 +71,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   public AjaxElementLocator(Clock clock, SearchContext searchContext, Field field, int timeOutInSeconds) {
-    super(searchContext, field);
-    this.timeOutInSeconds = timeOutInSeconds;
-    this.clock = clock;
+    this(clock, searchContext, timeOutInSeconds, new Annotations(field));
   }
 
   /**
