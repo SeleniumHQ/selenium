@@ -130,6 +130,25 @@ public class AjaxElementLocatorTest {
     verify(driver, atLeast(2)).findElement(by);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void shouldWorkWithCustomAnnotations() {
+    final WebDriver driver = mock(WebDriver.class);
+
+    AbstractAnnotations npeAnnotations = new AbstractAnnotations() {
+      @Override
+      public boolean isLookupCached() {
+        return false;
+      }
+
+      @Override
+      public By buildBy() {
+        throw new NullPointerException();
+      }
+    };
+
+    new AjaxElementLocator(driver, 5, npeAnnotations);
+  }
+
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {
     public MonkeyedAjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
       super(clock, driver, field, timeOutInSeconds);
