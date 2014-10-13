@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
  * element or a list of elements. Used in conjunction with
  * {@link org.openqa.selenium.support.PageFactory}
  * this allows users to quickly and easily create PageObjects.
+ *
+ * It can be used on a types as well, but will not be processed by default.
  * 
  * <p>
  * You can either use this annotation by specifying both "how" and "using" or by specifying one of

@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
  * It will then search for all elements that match any of the FindBy criteria. Note that elements
  * are not guaranteed to be in document order.
  *
+ * It can be used on a types as well, but will not be processed by default.
+ *
  * Eg:
  *
  * <pre class="code">

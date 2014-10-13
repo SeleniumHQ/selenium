@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
  * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
  * in a chain as described in {@link org.openqa.selenium.support.pagefactory.ByChained}
  * 
+ * It can be used on a types as well, but will not be processed by default.
+ *
  * Eg:
  *
  * <pre class="code">
