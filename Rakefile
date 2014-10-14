@@ -659,8 +659,7 @@ namespace :marionette do
 
   # This task takes all the relevant Marionette atom dependencies
   # (listed in func_lookup) and concatenates them to a single atoms.js
-  # file, where each atom is assigned to a custom function name
-  # matching the Marionette protocol.
+  # file.
   #
   # The function names are defined in the func_lookup dictionary of
   # target to name.
@@ -676,13 +675,17 @@ namespace :marionette do
     b = StringIO.new
     b << File.read("javascript/marionette/COPYING") << "\n"
     b << "\n"
+    b << "const EXPORTED_SYMBOLS = [\"atoms\"];" << "\n"
+    b << "\n"
+    b << "function atoms() {};" << "\n"
+    b << "\n"
 
     task.prerequisites.each do |target|
       out = Rake::Task[target].out
       atom = File.read(out).chop
 
-      b << "// target #{target}\n"
-      b << "var #{func_lookup[target]} = #{atom};\n"
+      b << "// target #{target}" << "\n"
+      b << "atoms.#{func_lookup[target]} = #{atom};" << "\n"
       b << "\n"
     end
 
