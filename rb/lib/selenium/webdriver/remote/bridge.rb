@@ -66,6 +66,8 @@ module Selenium
 
           @http          = http_client
           @capabilities  = create_session(desired_capabilities)
+
+          @file_detector = nil
         end
 
         def browser
