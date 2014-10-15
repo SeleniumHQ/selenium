@@ -63,15 +63,18 @@ class Service(object):
               self.service_args, env=env, stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
-                "ChromeDriver executable needs to be available in the path. "
-                "Please download from http://chromedriver.storage.googleapis.com/index.html "
-                "and read up at http://code.google.com/p/selenium/wiki/ChromeDriver")
+                "'" + os.path.basename(self.path) + "' executable needs to be \
+                available in the path. Please look at \
+                http://docs.seleniumhq.org/download/#thirdPartyDrivers \
+                and read up at \
+                http://code.google.com/p/selenium/wiki/ChromeDriver")
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to the ChromeDriver")
+                raise WebDriverException("Can not connect to the '" +
+                                         os.path.basename(self.path) + "'")
 
     @property
     def service_url(self):
