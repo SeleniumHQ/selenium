@@ -224,6 +224,16 @@ limitations under the License.
       assertEquals(4, bad.length);
     }
 
+    function testCanFindByIdWithSpecialCharacters() {
+      var els = bot.locators.findElements({id: 'span+#foo>a:active+[lang|=it]'});
+      assertEquals(1, els.length);
+      assertEquals('special_foo', els[0].getAttribute('name'));
+
+      els = bot.locators.findElements({id: 'p:lang(es)>a[href~=baño],div^$-/'});
+      assertEquals(1, els.length);
+      assertEquals('special_bar', els[0].getAttribute('name'));
+    }
+
     function testCanFindManyElementsViaXPath() {
       var bad = bot.locators.findElements({xpath: '//*[@name = "after"]'});
 
@@ -394,6 +404,8 @@ limitations under the License.
     <li id="illegal">item
     <li id="illegal">item
   </ul>
+  <div name="special_foo" id="span+#foo>a:active+[lang|=it]">foo</div>
+  <div name="special_bar" id="p:lang(es)>a[href~=baño],div^$-/">bar</div>
 
   <a id="link" href="#">this is a link</a>
   <a name="fishsticks">this is a link</a>

@@ -77,7 +77,7 @@ bot.locators.id.many = function(target, root) {
   }
   if (bot.locators.id.canUseQuerySelector_(root, target)) {
     try {
-      return root.querySelectorAll('#' + target.replace(/\./g, '\\.'));
+      return root.querySelectorAll('#' + bot.locators.id.cssEscape_(target));
     } catch (e) {
       return [];
     }
@@ -87,4 +87,28 @@ bot.locators.id.many = function(target, root) {
   return goog.array.filter(elements, function(e) {
     return bot.dom.getAttribute(e, 'id') == target;
   });
+};
+
+/**
+ * Element ID can consist of one or more characters except space characters:
+ * http://www.w3.org/TR/html5/dom.html#the-id-attribute
+ *
+ * Some of the characters that are valid in an ID are special characters in
+ * CSS selector, they then need to be escaped if a CSS selector is used to
+ * look up element(s) by literal ID.
+ *
+ * This method escapes only characters commonly used in CSS selectors.
+ *
+ * It can be further improved, perhaps by using
+ * http://dev.w3.org/csswg/cssom/#the-css.escape()-method , where implemented,
+ * or a polyfill for that such as https://github.com/mathiasbynens/CSS.escape.
+ *
+ * @param {!string} s String to escape.
+ * @return {!string} Escaped string.
+ * @private
+ */
+bot.locators.id.cssEscape_ = function(s) {
+  // One backslash escapes things in a regex statement; we need two in a string.
+  return s.replace(/([#.:,+>=~*^$|\-\/\[\]\(\)])/g, '\\$1');
+
 };
