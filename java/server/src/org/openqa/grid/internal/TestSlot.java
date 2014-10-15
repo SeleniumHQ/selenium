@@ -16,6 +16,8 @@ limitations under the License.
 */
 package org.openqa.grid.internal;
 
+import com.google.common.base.Throwables;
+
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
@@ -219,8 +221,9 @@ public class TestSlot {
         ((TestSessionListener) proxy).afterSession(currentSession);
       }
     } catch (Throwable t) {
-      log.severe("Error running afterSession for " + currentSession + " the test slot is now dead.");
-      t.printStackTrace();
+      log.severe(String.format(
+          "Error running afterSession for %s, the test slot is now dead: %s\n%s", currentSession,
+          t.getMessage(), Throwables.getStackTraceAsString(t)));
       return false;
     }
     return true;
