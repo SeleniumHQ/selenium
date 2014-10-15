@@ -49,6 +49,14 @@ public class CombinedFirefoxLocator implements BrowserLocator {
     throw new RuntimeException(couldNotFindFirefoxMessage());
   }
 
+  public BrowserInstallation findBrowserLocation() {
+    try {
+      return findBrowserLocationOrFail();
+    } catch (RuntimeException re) {
+      return null;
+    }
+  }
+
   public BrowserInstallation retrieveValidInstallationPath(String customLauncherPath) {
     return new Firefox3Locator().retrieveValidInstallationPath(customLauncherPath);
   }

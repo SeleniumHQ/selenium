@@ -35,6 +35,8 @@ import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
@@ -87,7 +89,19 @@ public class SelfRegisteringRemote {
 
 
     nodeConfig.validate();
-    RemoteControlConfiguration remoteControlConfiguration = nodeConfig.getRemoteControlConfiguration();
+
+    nodeConfig.getConfiguration()
+        .put("isFirefoxAvailable",          BrowserInstallation.isFirefoxInstalled());
+    nodeConfig.getConfiguration()
+        .put("isGoogleChromeAvailable",     BrowserInstallation.isGoogleChromeInstalled());
+    nodeConfig.getConfiguration()
+        .put("isInternetExplorerAvailable", BrowserInstallation.isInternetExplorerInstalled());
+    nodeConfig.getConfiguration()
+        .put("isSafariAvailable",           BrowserInstallation.isSafariInstalled());
+
+    RemoteControlConfiguration
+        remoteControlConfiguration =
+        nodeConfig.getRemoteControlConfiguration();
 
     try {
       final String CLIENT_TIMEOUT = "timeout";
@@ -156,11 +170,27 @@ public class SelfRegisteringRemote {
    */
   public void addBrowser(DesiredCapabilities cap, int instances) {
     String s = cap.getBrowserName();
+    String sl = s.toLowerCase();
+
     if (s == null || "".equals(s)) {
       throw new InvalidParameterException(cap + " does seems to be a valid browser.");
     }
+
     cap.setPlatform(Platform.getCurrent());
-    cap.setCapability(RegistrationRequest.MAX_INSTANCES, instances);
+
+    if (sl.equalsIgnoreCase(BrowserType.GOOGLECHROME)) {
+      if (BrowserInstallation.isGoogleChromeInstalled())
+        cap.setCapability(RegistrationRequest.MAX_INSTANCES, instances);
+    } else if (sl.equalsIgnoreCase(BrowserType.IE) || sl.equalsIgnoreCase(BrowserType.IEXPLORE)) {
+      if (BrowserInstallation.isInternetExplorerInstalled())
+        cap.setCapability(RegistrationRequest.MAX_INSTANCES, instances);
+    } else if (sl.contains(BrowserType.FIREFOX) || sl.contains(BrowserType.FIREFOX_2) || sl.contains(BrowserType.FIREFOX_3)) {
+      if (BrowserInstallation.isFirefoxInstalled())
+        cap.setCapability(RegistrationRequest.MAX_INSTANCES, instances);
+    } else {
+      log.warning("cant register the \"" + s + "\" browser because its not installed on the machine!");
+    }
+
     nodeConfig.getCapabilities().add(cap);
   }
 
