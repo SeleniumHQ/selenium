@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
@@ -122,7 +123,7 @@ public class BeanToJsonConverter {
       }
       return converted;
     }
-    
+
     if (toConvert instanceof SessionLogs) {
       return convertObject(((SessionLogs)toConvert).getAll(), maxDepth - 1);
     }
@@ -203,7 +204,11 @@ public class BeanToJsonConverter {
         if (res instanceof JsonElement) {
           return (JsonElement) res;
         } else {
-          return new JsonParser().parse((String) res);
+          try {
+            return new JsonParser().parse((String) res);
+          } catch (JsonParseException e) {
+            return new JsonPrimitive((String) res);
+          }
         }
       } catch (IllegalArgumentException e) {
         throw new WebDriverException(e);

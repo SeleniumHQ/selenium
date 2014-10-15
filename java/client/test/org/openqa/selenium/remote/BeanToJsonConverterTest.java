@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -180,7 +181,7 @@ public class BeanToJsonConverterTest {
     assertEquals("some id", converted.get("value").getAsString());
   }
 
-  //@Test
+  @Test
   public void testShouldBeAbleToConvertAJsonObject() {
     JsonObject obj = new JsonObject();
     obj.addProperty("key", "value");
@@ -258,10 +259,27 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldCallToJsonMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
-
     assertEquals("\"converted\"", json);
   }
 
+  @Test
+  public void testConvertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
+    // We want this parsed as a string primitive, but JsonParser will reject it
+    // as malformed because of the slash.
+    String raw = "gnu/linux";
+
+    try {
+      // Make sure that the parser does actually reject this so the test is
+      // meaningful. If this stops failing, choose a different malformed JSON
+      // string.
+      new JsonParser().parse(raw).toString();
+      fail("Expected a parser exception when parsing: " + raw);
+    } catch (JsonSyntaxException expected) {
+    }
+
+    String json = new BeanToJsonConverter().convert(new JsonAware(raw));
+    assertEquals("\"gnu/linux\"", json);
+  }
 
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
     int posOfLastStackTraceElement = 0;
