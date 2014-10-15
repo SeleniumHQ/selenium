@@ -233,18 +233,7 @@ public class ChromeOptions {
    */
   DesiredCapabilities toCapabilities() {
     DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-
     capabilities.setCapability(CAPABILITY, this);
-
-    // chromeOptions is only recognized by chromedriver 17.0.963.0 or newer.
-    // Provide backwards compatibility for capabilities supported by older
-    // versions of chromedriver.
-    // TODO: remove this once the deprecated capabilities are no longer supported.
-    capabilities.setCapability("chrome.switches", args);
-    if (binary != null) {
-      capabilities.setCapability("chrome.binary", binary);
-    }
-
     return capabilities;
   }
 
