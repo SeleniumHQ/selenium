@@ -153,4 +153,15 @@ public class JsonHttpResponseCodecTest {
     Response response = codec.decode(httpResponse);
     assertEquals("水", response.getValue());
   }
+
+  @Test
+  public void decodeJsonResponseWithTrailingNullBytes() {
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent("{\"status\":0,\"value\":\"foo\"}\0\0".getBytes(UTF_8));
+
+    Response decoded = codec.decode(response);
+    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
+    assertEquals("foo", decoded.getValue());
+  }
 }

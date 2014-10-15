@@ -57,7 +57,7 @@ public class JsonHttpResponseCodec implements ResponseCodec<HttpResponse> {
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
-    String content = encodedResponse.getContentString();
+    String content = encodedResponse.getContentString().trim();
     try {
       return jsonToBeanConverter.convert(Response.class, content);
     } catch (JsonException e) {
