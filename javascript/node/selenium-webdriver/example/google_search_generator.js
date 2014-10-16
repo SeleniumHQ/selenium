@@ -21,18 +21,17 @@
  *     selenium-webdriver/example/google_search_generator.js
  */
 
-var webdriver = require('..');
+var By = require('..').By,
+    firefox = require('../firefox');
 
-var driver = new webdriver.Builder().
-    withCapabilities(webdriver.Capabilities.chrome()).
-    build();
+var driver = new firefox.Driver();
 
-driver.get('http://www.google.com');
+driver.get('http://www.google.com/ncr');
 driver.call(function* () {
-  var query = yield driver.findElement(webdriver.By.name('q'));
+  var query = yield driver.findElement(By.name('q'));
   query.sendKeys('webdriver');
 
-  var submit = yield driver.findElement(webdriver.By.name('btnG'));
+  var submit = yield driver.findElement(By.name('btnG'));
   submit.click();
 });
 

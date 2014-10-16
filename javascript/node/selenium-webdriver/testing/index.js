@@ -30,40 +30,27 @@
  * <p>The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
  * <pre><code>
- * var webdriver = require('selenium-webdriver'),
- *     portprober = require('selenium-webdriver/net/portprober'),
- *     remote = require('selenium-webdriver/remote'),
+ * var By = require('selenium-webdriver').By,
+ *     until = require('selenium-webdriver').until,
+ *     firefox = require('selenium-webdriver/firefox'),
  *     test = require('selenium-webdriver/testing');
  *
  * test.describe('Google Search', function() {
- *   var driver, server;
+ *   var driver;
  *
  *   test.before(function() {
- *     server = new remote.SeleniumServer(
- *         'path/to/selenium-server-standalone.jar',
- *         {port: portprober.findFreePort()});
- *     server.start();
- *
- *     driver = new webdriver.Builder().
- *         withCapabilities({'browserName': 'firefox'}).
- *         usingServer(server.address()).
- *         build();
+ *     driver = new firefox.Driver();
  *   });
  *
  *   test.after(function() {
  *     driver.quit();
- *     server.stop();
  *   });
  *
  *   test.it('should append query to title', function() {
- *     driver.get('http://www.google.com');
- *     driver.findElement(webdriver.By.name('q')).sendKeys('webdriver');
- *     driver.findElement(webdriver.By.name('btnG')).click();
- *     driver.wait(function() {
- *       return driver.getTitle().then(function(title) {
- *         return 'webdriver - Google Search' === title;
- *       });
- *     }, 1000, 'Waiting for title to update');
+ *     driver.get('http://www.google.com/ncr');
+ *     driver.findElement(By.name('q')).sendKeys('webdriver');
+ *     driver.findElement(By.name('btnG')).click();
+ *     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
  *   });
  * });
  * </code></pre>

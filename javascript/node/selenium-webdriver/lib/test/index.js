@@ -171,14 +171,6 @@ function TestEnvironment(browserName, server) {
       return d.quit();
     }
   };
-
-  this.waitForTitleToBe = function(expected) {
-    driver.wait(function() {
-      return driver.getTitle().then(function(title) {
-        return title === expected;
-      });
-    }, 5000, 'Waiting for title to be ' + expected);
-  };
 }
 
 

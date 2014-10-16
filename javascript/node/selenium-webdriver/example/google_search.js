@@ -19,22 +19,14 @@
  * Usage: node selenium-webdriver/example/google_search.js
  */
 
-var fs = require('fs');
+var By = require('..').By,
+    until = require('..').until,
+    firefox = require('../firefox');
 
-var webdriver = require('..'),
-    remote = require('../remote');
+var driver = new firefox.Driver();
 
-var driver = new webdriver.Builder().
-    withCapabilities(webdriver.Capabilities.chrome()).
-    build();
-
-driver.get('http://www.google.com');
-driver.findElement(webdriver.By.name('q')).sendKeys('webdriver');
-driver.findElement(webdriver.By.name('btnG')).click();
-driver.wait(function() {
-  return driver.getTitle().then(function(title) {
-    return 'webdriver - Google Search' === title;
-  });
-}, 1000);
-
+driver.get('http://www.google.com/ncr');
+driver.findElement(By.name('q')).sendKeys('webdriver');
+driver.findElement(By.name('btnG')).click();
+driver.wait(until.titleIs('webdriver - Google Search'), 1000);
 driver.quit();

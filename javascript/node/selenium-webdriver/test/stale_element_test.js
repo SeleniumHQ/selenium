@@ -19,6 +19,7 @@ var fail = require('assert').fail;
 
 var By = require('..').By,
     error = require('..').error,
+    until = require('..').until,
     assert = require('../testing/assert'),
     test = require('../lib/test'),
     Browser = test.Browser,
@@ -39,16 +40,7 @@ test.suite(function(env) {
         assert(toBeDeleted.isDisplayed()).isTrue();
 
         driver.findElement(By.id('delete')).click();
-        driver.wait(function() {
-          return toBeDeleted.isDisplayed().
-              then(function() { return false; }).
-              then(null, function(e) {
-                if (e.code === error.ErrorCode.STALE_ELEMENT_REFERENCE) {
-                  return true;
-                }
-                throw e;
-              });
-       }, 5000, 'Element should be stale at this point');
+        driver.wait(until.stalenessOf(toBeDeleted), 5000);
       });
 
   test.it('an element found in a different frame is stale', function() {

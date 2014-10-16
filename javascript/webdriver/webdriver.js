@@ -36,6 +36,7 @@ goog.require('webdriver.Locator');
 goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
+goog.require('webdriver.until');
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -621,15 +622,33 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  * evaluating whether the condition has been satisfied. The resolution time for
  * a promise is factored into whether a wait has timed out.
  *
- * @param {function():boolean} fn The function to evaluate as a wait condition.
+ * @param {!(webdriver.until.Condition.<T>|
+ *           function(!webdriver.WebDriver): T)} condition Either a condition
+ *     object, or a function to evaluate as a condition.
  * @param {number} timeout How long to wait for the condition to be true.
  * @param {string=} opt_message An optional message to use if the wait times
  *     out.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     wait condition has been satisfied.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be fulfilled
+ *     with the first truthy value returned by the condition function, or
+ *     rejected if the condition times out.
+ * @template T
  */
-webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
-  return this.flow_.wait(fn, timeout, opt_message);
+webdriver.WebDriver.prototype.wait = function(
+    condition, timeout, opt_message) {
+  var message = opt_message;
+  var fn = /** @type {!Function} */(condition);
+  if (condition instanceof webdriver.until.Condition) {
+    message = message || condition.description();
+    fn = condition.fn;
+  }
+
+  var driver = this;
+  return this.flow_.wait(function() {
+    if (webdriver.promise.isGenerator(fn)) {
+      return webdriver.promise.consume(fn, null, [driver]);
+    }
+    return fn(driver);
+  }, timeout, opt_message);
 };
 
 

@@ -1,3 +1,13 @@
+## v2.44.0-dev
+
+* FIXED: 8000: `Builder.forBrowser()` now accepts an empty string since some
+    WebDriver implementations ignore the value. A value must still be specified,
+    however, since it is a required field in WebDriver's wire protocol.
+* FIXED: 7994: The `stacktrace` module will not modify stack traces if the
+    initial parse fails (e.g. the user defined `Error.prepareStackTrace`)
+* FIXED: 5855: Added a module (`until`) that defines several common conditions 
+    for use with explicit waits. See updated examples for usage.
+
 ## v2.43.5
 
 * FIXED: 7905: `Builder.usingServer(url)` once again returns `this` for

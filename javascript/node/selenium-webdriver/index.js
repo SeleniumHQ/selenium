@@ -130,3 +130,9 @@ exports.WebElementPromise = base.require('webdriver.WebElementPromise');
 (exports.__defineGetter__('stacktrace', function() {
   return base.exportPublicApi('webdriver.stacktrace');
 }));
+
+
+/** @type {webdriver.until.} */
+(exports.__defineGetter__('until', function() {
+  return base.exportPublicApi('webdriver.until');
+}));

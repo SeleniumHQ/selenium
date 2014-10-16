@@ -19,6 +19,7 @@ var fail = require('assert').fail;
 
 var By = require('..').By,
     error = require('..').error,
+    until = require('..').until,
     test = require('../lib/test'),
     assert = require('../testing/assert'),
     Browser = test.Browser,
@@ -26,8 +27,7 @@ var By = require('..').By,
 
 
 test.suite(function(env) {
-  var browsers = env.browsers,
-      waitForTitleToBe = env.waitForTitleToBe;
+  var browsers = env.browsers;
 
   var driver;
   beforeEach(function() { driver = env.driver; });
@@ -40,14 +40,14 @@ test.suite(function(env) {
           driver.get(Pages.formPage);
           driver.get(Pages.xhtmlTestPage);
           driver.findElement(By.linkText('click me')).click();
-          waitForTitleToBe('We Arrive Here');
+          driver.wait(until.titleIs('We Arrive Here'), 5000);
         });
 
     describe('By.id()', function() {
       test.it('should work', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElement(By.id('linkId')).click();
-        waitForTitleToBe('We Arrive Here');
+        driver.wait(until.titleIs('We Arrive Here'), 5000);
       });
 
       test.it('should fail if ID not present on page', function() {
@@ -73,14 +73,14 @@ test.suite(function(env) {
       test.it('should be able to click on link identified by text', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElement(By.linkText('click me')).click();
-        waitForTitleToBe('We Arrive Here');
+        driver.wait(until.titleIs('We Arrive Here'), 5000);
       });
 
       test.it(
         'should be able to find elements by partial link text', function() {
           driver.get(Pages.xhtmlTestPage);
           driver.findElement(By.partialLinkText('ick me')).click();
-          waitForTitleToBe('We Arrive Here');
+          driver.wait(until.titleIs('We Arrive Here'), 5000);
         });
 
       test.it('should work when link text contains equals sign', function() {

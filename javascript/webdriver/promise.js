@@ -1370,14 +1370,15 @@ webdriver.promise.ControlFlow.prototype.timeout = function(
  * <p>If the condition function throws, or returns a rejected promise, the
  * wait task will fail.
  *
- * @param {!Function} condition The condition function to poll.
+ * @param {function(): T} condition The condition function to poll.
  * @param {number} timeout How long to wait, in milliseconds, for the condition
  *     to hold before timing out.
  * @param {string=} opt_message An optional error message to include if the
  *     wait times out; defaults to the empty string.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     condition has been satisified. The promise shall be rejected if the wait
- *     times out waiting for the condition.
+ * @return {!webdriver.promise.Promise.<T>} A promise that will be fulfilled
+ *     when the condition has been satisified. The promise shall be rejected if
+ *     the wait times out waiting for the condition.
+ * @template T
  */
 webdriver.promise.ControlFlow.prototype.wait = function(
     condition, timeout, opt_message) {

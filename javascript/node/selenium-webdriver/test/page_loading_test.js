@@ -17,6 +17,7 @@
 
 var By = require('..').By,
     ErrorCode = require('..').error.ErrorCode,
+    until = require('..').until,
     assert = require('../testing/assert'),
     test = require('../lib/test'),
     Browser = test.Browser,
@@ -24,8 +25,7 @@ var By = require('..').By,
 
 
 test.suite(function(env) {
-  var browsers = env.browsers,
-      waitForTitleToBe = env.waitForTitleToBe;
+  var browsers = env.browsers;
 
   var driver;
   beforeEach(function() { driver = env.driver; });
@@ -74,7 +74,7 @@ test.suite(function(env) {
     driver.get(Pages.formPage);
 
     driver.findElement(By.id('imageButton')).click();
-    waitForTitleToBe('We Arrive Here');
+    driver.wait(until.titleIs('We Arrive Here'), 5000);
 
     driver.navigate().back();
     assert(driver.getTitle()).equalTo('We Leave From Here');
@@ -85,7 +85,7 @@ test.suite(function(env) {
     driver.get(Pages.xhtmlTestPage);
 
     driver.findElement(By.name('sameWindow')).click();
-    waitForTitleToBe('This page has iframes');
+    driver.wait(until.titleIs('This page has iframes'), 5000);
 
     driver.navigate().back();
     assert(driver.getTitle()).equalTo('XHTML Test Page');
@@ -96,13 +96,13 @@ test.suite(function(env) {
     driver.get(Pages.formPage);
 
     driver.findElement(By.id('imageButton')).click();
-    waitForTitleToBe('We Arrive Here');
+    driver.wait(until.titleIs('We Arrive Here'), 5000);
 
     driver.navigate().back();
-    waitForTitleToBe('We Leave From Here');
+    driver.wait(until.titleIs('We Leave From Here'), 5000);
 
     driver.navigate().forward();
-    waitForTitleToBe('We Arrive Here');
+    driver.wait(until.titleIs('We Arrive Here'), 5000);
   });
 
   test.it('should be able to refresh a page', function() {
