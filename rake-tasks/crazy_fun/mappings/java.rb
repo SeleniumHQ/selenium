@@ -900,7 +900,6 @@ module CrazyFunJava
         temp = zip + "temp"
         mkdir_p File.join(temp, "libs")
 
-        cp Rake::Task[uber].out, temp
         cp Rake::Task[project].out, temp
         cp Rake::Task[srcs].out, temp
 
