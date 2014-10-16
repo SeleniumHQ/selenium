@@ -79,7 +79,7 @@ public class BeanToJsonConverter {
    */
   public JsonElement convertObject(Object object) {
     if (object == null) {
-      return null;
+      return JsonNull.INSTANCE;
     }
 
     try {
@@ -187,7 +187,7 @@ public class BeanToJsonConverter {
     Method toMap = getMethod(toConvert, "toMap");
     if (toMap != null) {
       try {
-        return convertObject(toMap.invoke(toConvert), maxDepth);
+        return convertObject(toMap.invoke(toConvert), maxDepth - 1);
       } catch (IllegalArgumentException e) {
         throw new WebDriverException(e);
       } catch (IllegalAccessException e) {
@@ -241,7 +241,7 @@ public class BeanToJsonConverter {
 
   private JsonElement mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
     if (maxDepth < 1) {
-      return null;
+      return JsonNull.INSTANCE;
     }
 
     // Raw object via reflection? Nope, not needed
