@@ -25,10 +25,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.SessionLogs;
@@ -168,14 +166,6 @@ public class BeanToJsonConverter {
       return converted;
     }
 
-    if (toConvert instanceof Capabilities) {
-      return convertObject(((Capabilities) toConvert).asMap(), maxDepth - 1);
-    }
-
-    if (toConvert instanceof DoNotUseProxyPac) {
-      return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth - 1);
-    }
-
     if (toConvert instanceof Date) {
       return new JsonPrimitive(TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime()));
     }
@@ -185,6 +175,9 @@ public class BeanToJsonConverter {
     }
 
     Method toMap = getMethod(toConvert, "toMap");
+    if (toMap == null) {
+      toMap = getMethod(toConvert, "asMap");
+    }
     if (toMap != null) {
       try {
         return convertObject(toMap.invoke(toConvert), maxDepth - 1);
