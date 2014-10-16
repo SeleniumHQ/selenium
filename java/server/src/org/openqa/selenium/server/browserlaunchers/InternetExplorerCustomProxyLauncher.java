@@ -20,7 +20,6 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Sleeper;
-import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.os.WindowsProcessGroup;

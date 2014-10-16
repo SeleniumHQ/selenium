@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.os.CommandLine;

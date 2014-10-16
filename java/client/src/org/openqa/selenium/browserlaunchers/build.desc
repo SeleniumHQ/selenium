@@ -16,7 +16,6 @@ java_library(name = "browserlaunchers",
 java_library(name = "launcher-utils",
   srcs = [
     "LauncherUtils.java",
-    "MacProxyManager.java",
     "Sleeper.java",
   ],
   deps = [
@@ -32,9 +31,7 @@ java_library(name = "launcher-utils",
 java_library(name = "proxies",
   srcs = [
     "DoNotUseProxyPac.java",
-    "Maps.java",
     "Proxies.java",
-    "WindowsProxyManager.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
