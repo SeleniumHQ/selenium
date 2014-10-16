@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.
+ * {@link org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocator} unit test class.
  */
 public class SingleBrowserLocatorUnitTest {
 

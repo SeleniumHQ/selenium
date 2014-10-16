@@ -895,7 +895,7 @@ module CrazyFunJava
       srcs = task_name + ":project-srcs"
 
       file zip => [uber, project, srcs] do
-        puts "Zip: #{task_name}:zip as #{zip}"
+        puts "===== Zip: #{task_name}:zip as #{zip}"
 
         temp = zip + "temp"
         mkdir_p File.join(temp, "libs")
@@ -913,7 +913,7 @@ module CrazyFunJava
         end
 
         zip(temp, zip)
-        rm_rf temp
+        #rm_rf temp
       end
 
       task task_name + ":zip" => [zip]

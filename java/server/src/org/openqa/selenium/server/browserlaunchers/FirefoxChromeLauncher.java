@@ -23,7 +23,7 @@ import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
+import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -51,7 +51,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance()
             .browserInstallationCache().locateBrowserInstallation(
-                BrowserType.CHROME, browserString, new CombinedFirefoxLocator()));
+                BrowserType.CHROME, browserString, new FirefoxLocator()));
     if (browserInstallation == null) {
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");

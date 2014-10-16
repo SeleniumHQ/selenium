@@ -20,9 +20,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
-import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
-import org.openqa.selenium.browserlaunchers.locators.Firefox2Locator;
-import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
+import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -36,16 +34,7 @@ public class FirefoxLauncher implements BrowserLauncher {
       String sessionId, String browserLaunchLocation)
       throws InvalidBrowserExecutableException {
     String browserName = BrowserType.FIREFOX;
-    BrowserLocator locator = new CombinedFirefoxLocator();
-    String version = (String) browserOptions.getCapability(CapabilityType.VERSION);
-    if ("2".equals(version)) {
-      browserName = BrowserType.FIREFOX_2;
-      locator = new Firefox2Locator();
-    }
-    if ("3".equals(version)) {
-      browserName = BrowserType.FIREFOX_3;
-      locator = new Firefox3Locator();
-    }
+    BrowserLocator locator = new FirefoxLocator();
     String mode = (String) browserOptions.getCapability("mode");
     if (mode == null) {
       mode = "chrome";

@@ -51,8 +51,6 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put(BrowserType.FIREFOX, FirefoxLauncher.class);
     supportedBrowsers.put(BrowserType.CHROME, FirefoxChromeLauncher.class);
     supportedBrowsers.put(BrowserType.FIREFOX_CHROME, FirefoxChromeLauncher.class);
-    supportedBrowsers.put(BrowserType.FIREFOX_2, Firefox2Launcher.class);
-    supportedBrowsers.put(BrowserType.FIREFOX_3, Firefox3Launcher.class);
     supportedBrowsers.put(BrowserType.IEXPLORE_PROXY, InternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put(BrowserType.SAFARI, SafariLauncher.class);
     supportedBrowsers.put(BrowserType.SAFARI_PROXY, SafariCustomProfileLauncher.class);

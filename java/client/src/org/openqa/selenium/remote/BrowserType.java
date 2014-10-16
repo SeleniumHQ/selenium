@@ -22,8 +22,6 @@ package org.openqa.selenium.remote;
  */
 public interface BrowserType {
   String FIREFOX = "firefox";
-  String FIREFOX_2 = "firefox2";
-  String FIREFOX_3 = "firefox3";
   String FIREFOX_PROXY = "firefoxproxy";
   String FIREFOX_CHROME = "firefoxchrome";
   String GOOGLECHROME = "googlechrome";

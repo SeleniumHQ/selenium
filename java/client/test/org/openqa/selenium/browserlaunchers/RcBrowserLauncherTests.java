@@ -19,12 +19,12 @@ package org.openqa.selenium.browserlaunchers;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.browserlaunchers.locators.Firefox3LocatorUnitTest;
+import org.openqa.selenium.browserlaunchers.locators.FirefoxLocatorUnitTest;
 import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(value = {
-    Firefox3LocatorUnitTest.class,
+    FirefoxLocatorUnitTest.class,
     LauncherUtilsUnitTest.class,
     MacProxyManagerUnitTest.class,
     ProxyPacTest.class,

@@ -24,15 +24,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * {@link org.openqa.selenium.browserlaunchers.locators.Firefox3Locator} unit test class.
+ * {@link FirefoxLocator} unit test class.
  */
-public class Firefox3LocatorUnitTest {
+public class FirefoxLocatorUnitTest {
 
   @Test
   public void testUsualLauncherLocationsOnWindows() {
-    final Firefox3Locator locator;
+    final FirefoxLocator locator;
 
-    locator = new Firefox3Locator() {
+    locator = new FirefoxLocator() {
       @Override
       protected boolean runningOnWindows() {
         return true;
@@ -47,9 +47,9 @@ public class Firefox3LocatorUnitTest {
 
   @Test
   public void testUsualLauncherLocationsOnOSX() {
-    final Firefox3Locator locator;
+    final FirefoxLocator locator;
 
-    locator = new Firefox3Locator() {
+    locator = new FirefoxLocator() {
       @Override
       protected boolean runningOnWindows() {
         return false;
@@ -68,9 +68,9 @@ public class Firefox3LocatorUnitTest {
 
   @Test
   public void testUsualLauncherLocationsOnUbuntu() {
-    final Firefox3Locator locator;
+    final FirefoxLocator locator;
 
-    locator = new Firefox3Locator() {
+    locator = new FirefoxLocator() {
       @Override
       protected boolean runningOnWindows() {
         return false;

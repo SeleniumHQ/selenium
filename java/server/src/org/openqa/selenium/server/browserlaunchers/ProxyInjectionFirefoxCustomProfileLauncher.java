@@ -21,7 +21,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
+import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -45,7 +45,7 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
     this(browserOptions, configuration,
         sessionId,
         ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-            "firefoxproxy", browserLaunchLocation, new CombinedFirefoxLocator()));
+            "firefoxproxy", browserLaunchLocation, new FirefoxLocator()));
   }
 
   public ProxyInjectionFirefoxCustomProfileLauncher(Capabilities browserOptions,
