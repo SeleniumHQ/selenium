@@ -24,7 +24,9 @@ import org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncherUnitTe
 import org.openqa.selenium.server.browserlaunchers.BrowserConfigurationOptionsTest;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactoryUnitTest;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherUnitTest;
+import org.openqa.selenium.server.browserlaunchers.MacProxyManagerUnitTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacUnitTest;
+import org.openqa.selenium.server.browserlaunchers.WindowsProxyManagerUnitTest;
 import org.openqa.selenium.server.htmlrunner.HTMLSuiteResultUnitTest;
 import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
 
@@ -45,6 +47,7 @@ import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
     FsResourceLocatorUnitTest.class,
     HTMLSuiteResultUnitTest.class,
     LoggingTests.class,
+    MacProxyManagerUnitTest.class,
     MakeProxyPacUnitTest.class,
     MockPIFrameUnitTest.class,
     ProxyHandlerUnitTest.class,
@@ -52,6 +55,7 @@ import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
     SeleniumDriverResourceHandlerUnitTest.class,
     SeleniumServerUnitTest.class,
     SingleEntryAsyncQueueUnitTest.class,
-    StaticContentHandlerUnitTest.class
+    StaticContentHandlerUnitTest.class,
+    WindowsProxyManagerUnitTest.class
 })
 public class RcServerUnitTests {}

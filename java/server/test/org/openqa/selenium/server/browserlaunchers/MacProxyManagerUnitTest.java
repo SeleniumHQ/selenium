@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.browserlaunchers.MacProxyManager.MacNetworkSetupException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -429,7 +428,7 @@ public class MacProxyManagerUnitTest {
     try {
       mmpm._getCurrentNetworkSettings();
       fail("Didn't see expected exception");
-    } catch (MacNetworkSetupException e) {
+    } catch (MacProxyManager.MacNetworkSetupException e) {
       assertExceptionContains("Unhelpful exception message", "Port didn't look right", e);
     }
   }

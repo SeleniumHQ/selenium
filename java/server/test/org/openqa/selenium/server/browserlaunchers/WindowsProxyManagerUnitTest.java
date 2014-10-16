@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.server.browserlaunchers.WindowsProxyManager;
 
 import java.io.File;
 import java.io.IOException;
