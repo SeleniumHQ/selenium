@@ -64,7 +64,7 @@ var until = webdriver.until;
  */
 until.Condition = function(message, fn) {
   /** @private {string} */
-  this.description_ = message;
+  this.description_ = 'Waiting ' + message;
 
   /** @type {function(!webdriver.WebDriver): OUT} */
   this.fn = fn;

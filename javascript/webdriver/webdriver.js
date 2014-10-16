@@ -648,7 +648,7 @@ webdriver.WebDriver.prototype.wait = function(
       return webdriver.promise.consume(fn, null, [driver]);
     }
     return fn(driver);
-  }, timeout, opt_message);
+  }, timeout, message);
 };
 
 
