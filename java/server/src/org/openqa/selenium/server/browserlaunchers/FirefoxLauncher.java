@@ -17,7 +17,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;

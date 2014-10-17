@@ -27,7 +27,6 @@ import com.thoughtworks.selenium.webdriven.WebDriverCommandProcessor;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;

@@ -19,7 +19,6 @@ package org.openqa.selenium.server.browserlaunchers;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;

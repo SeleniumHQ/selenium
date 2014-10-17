@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.io.FileHandler;

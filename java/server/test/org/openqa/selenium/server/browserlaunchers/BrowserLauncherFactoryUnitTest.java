@@ -20,7 +20,6 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**

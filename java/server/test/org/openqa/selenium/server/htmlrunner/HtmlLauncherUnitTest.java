@@ -26,9 +26,9 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
 import java.io.File;
 import java.io.FileWriter;

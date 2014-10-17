@@ -20,7 +20,7 @@ package org.openqa.selenium.server;
 
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;

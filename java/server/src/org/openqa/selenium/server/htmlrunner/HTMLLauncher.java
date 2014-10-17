@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.server.htmlrunner;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.BrowserType;
@@ -28,6 +28,7 @@ import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 

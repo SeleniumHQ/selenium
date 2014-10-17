@@ -1,18 +1,4 @@
 
-java_library(name = "browserlaunchers",
-  srcs = [
-    "BrowserLauncher.java",
-  ],
-  deps = [
-    ":launcher-utils",
-    "//java/client/src/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
-    "//java/client/src/org/openqa/selenium/net",
-    "//java/client/src/org/openqa/selenium/os",
-    "//third_party/java/guava-libraries",
-  ])
-
 java_library(name = "launcher-utils",
   srcs = [
     "LauncherUtils.java",

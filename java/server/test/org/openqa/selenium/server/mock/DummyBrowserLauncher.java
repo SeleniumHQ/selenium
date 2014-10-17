@@ -18,8 +18,8 @@ limitations under the License.
 package org.openqa.selenium.server.mock;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
 /**
  * Unlike the MockBrowserLauncher which acts like a real canned browser, the DummyBrowserLauncher

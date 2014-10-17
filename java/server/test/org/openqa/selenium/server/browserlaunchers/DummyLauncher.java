@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-
 /**
  * A teeny tiny no-op launcher to get a non-null launcher for testing.
  * 
