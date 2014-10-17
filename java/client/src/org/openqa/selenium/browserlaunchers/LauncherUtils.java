@@ -22,14 +22,12 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -170,25 +168,6 @@ public class LauncherUtils {
 
   private static InputStream getSeleniumResourceAsStream(String resourceFile) {
     return LauncherUtils.class.getResourceAsStream(resourceFile);
-  }
-
-  public static boolean isScriptFile(File aFile) {
-    final char firstTwoChars[] = new char[2];
-    FileReader reader = null;
-    int charsRead;
-
-    try {
-      reader = new FileReader(aFile);
-      charsRead = reader.read(firstTwoChars);
-      if (2 != charsRead) {
-        return false;
-      }
-      return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
-    }
   }
 
   // TODO(simon): Replace with something not in LauncherUtils

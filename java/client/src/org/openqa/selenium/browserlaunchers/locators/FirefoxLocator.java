@@ -21,7 +21,6 @@ package org.openqa.selenium.browserlaunchers.locators;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.BrowserType;
@@ -163,7 +162,7 @@ public class FirefoxLocator extends SingleBrowserLocator {
         continue;
       }
 
-      if (LauncherUtils.isScriptFile(new File(executable))) {
+      if (isScriptFile(new File(executable))) {
         LOGGER.warning("Caution: '" + executable + "': file is a script file, not a real executable." +
                        " The browser environment is no longer fully under RC control");
       }

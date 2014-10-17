@@ -18,11 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -163,7 +165,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
       return null;
     }
 
-    if (LauncherUtils.isScriptFile(launcher)) {
+    if (isScriptFile(launcher)) {
       log.warning("Caution: '" +
           launcher.getAbsolutePath() +
           "': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
@@ -187,6 +189,25 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     currentLibraryPath = WindowsUtils.loadEnvironment().getProperty(libraryPathEnvironmentVariable);
 
     return currentLibraryPath + File.pathSeparator + launcherPath.getParent();
+  }
+
+  protected boolean isScriptFile(File aFile) {
+    final char firstTwoChars[] = new char[2];
+    FileReader reader = null;
+    int charsRead;
+
+    try {
+      reader = new FileReader(aFile);
+      charsRead = reader.read(firstTwoChars);
+      if (2 != charsRead) {
+        return false;
+      }
+      return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } finally {
+      IOUtils.closeQuietly(reader);
+    }
   }
 
 }
