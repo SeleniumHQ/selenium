@@ -28,7 +28,6 @@ import com.thoughtworks.selenium.BrowserConfigurationOptions;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserConfigurationOptionsTest {

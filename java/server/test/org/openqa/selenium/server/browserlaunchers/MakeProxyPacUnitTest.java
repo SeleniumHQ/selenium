@@ -26,7 +26,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.io.FileHandler;
 
 import java.io.File;

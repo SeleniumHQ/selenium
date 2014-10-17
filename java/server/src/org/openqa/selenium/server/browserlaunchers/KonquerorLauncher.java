@@ -19,7 +19,6 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 

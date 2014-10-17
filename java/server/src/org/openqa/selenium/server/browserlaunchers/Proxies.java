@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYI
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
 import org.openqa.selenium.remote.DesiredCapabilities;

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Proxies;
 
 public class ProxyUtilsTest {
   @Test

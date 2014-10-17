@@ -1,7 +1,6 @@
 java_library(name = 'proxies',
   srcs = [
     'DoNotUseProxyPac.java',
-    'Proxies.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',

@@ -20,7 +20,6 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
