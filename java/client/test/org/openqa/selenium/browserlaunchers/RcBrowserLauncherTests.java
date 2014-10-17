@@ -25,7 +25,6 @@ import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTes
 @RunWith(Suite.class)
 @Suite.SuiteClasses(value = {
     FirefoxLocatorUnitTest.class,
-    ProxyPacTest.class,
     SingleBrowserLocatorUnitTest.class
 })
 public class RcBrowserLauncherTests {

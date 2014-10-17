@@ -31,7 +31,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
@@ -202,38 +201,6 @@ public class BeanToJsonConverterTest {
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
     assertEquals("alpha", converted.get("key").getAsString());
-  }
-
-  @Test
-  public void testShouldConvertAProxyPacProperly() {
-    DoNotUseProxyPac pac = new DoNotUseProxyPac();
-    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
-    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
-    pac.map("/flibble*").toNoProxy();
-    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
-    pac.mapHost("seleniumhq.org").toNoProxy();
-    pac.defaults().toNoProxy();
-
-    String json = new BeanToJsonConverter().convert(pac);
-
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
-
-    assertEquals("http://localhost:8080/selenium-server",
-        converted.get("proxiedUrls").getAsJsonObject()
-            .get("*/selenium/*").getAsString());
-    assertEquals("http://localhost:1010/selenium-server/",
-        converted.get("proxiedRegexUrls").getAsJsonObject()
-            .get("/[a-zA-Z]{4}.microsoft.com/").getAsString());
-    assertEquals("/flibble*",
-        converted.get("directUrls").getAsJsonArray()
-            .get(0).getAsString());
-    assertEquals("seleniumhq.org",
-        converted.get("directHosts").getAsJsonArray()
-            .get(0).getAsString());
-    assertEquals("http://fishy.com/",
-        converted.get("proxiedHosts").getAsJsonObject()
-            .get("www.google.com").getAsString());
-    assertEquals("'DIRECT'", converted.get("defaultProxy").getAsString());
   }
 
   @Test

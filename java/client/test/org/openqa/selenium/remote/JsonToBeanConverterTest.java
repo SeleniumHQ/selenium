@@ -22,10 +22,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -300,27 +297,6 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToReconstituteAProxyPac() throws Exception {
-    DoNotUseProxyPac pac = new DoNotUseProxyPac();
-    pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
-    pac.map("/[a-zA-Z]{4}.microsoft.com/").toProxy("http://localhost:1010/selenium-server/");
-    pac.map("/flibble*").toNoProxy();
-    pac.mapHost("www.google.com").toProxy("http://fishy.com/");
-    pac.mapHost("seleniumhq.org").toNoProxy();
-    pac.defaults().toNoProxy();
-
-    String raw = new BeanToJsonConverter().convert(pac);
-    DoNotUseProxyPac converted = new JsonToBeanConverter().convert(DoNotUseProxyPac.class, raw);
-
-    Writer source = new StringWriter();
-    pac.outputTo(source);
-    Writer derived = new StringWriter();
-    converted.outputTo(derived);
-
-    assertEquals(source.toString(), derived.toString());
-  }
-
-  @Test
   public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
     JsonObject inner = new JsonObject();
     inner.addProperty("color", "green");
@@ -357,6 +333,12 @@ public class JsonToBeanConverterTest {
     assertEquals(expectedId, converted.getSessionId());
   }
 
+  @Test
+  public void testShouldCallFromJsonMethodIfPresent() {
+    JsonAware res = new JsonToBeanConverter().convert(JsonAware.class, "converted");
+    assertEquals("converted", res.convertedValue);
+  }
+
   public static class SimpleBean {
 
     private String value;
@@ -391,4 +373,17 @@ public class JsonToBeanConverterTest {
       this.bean = bean;
     }
   }
+
+  public static class JsonAware {
+    private String convertedValue;
+
+    public JsonAware(String convertedValue) {
+      this.convertedValue = convertedValue;
+    }
+
+    public static JsonAware fromJson(String json) {
+      return new JsonAware(json);
+    }
+  }
+
 }

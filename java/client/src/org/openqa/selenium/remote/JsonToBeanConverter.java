@@ -25,12 +25,9 @@ import com.google.gson.JsonSyntaxException;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,70 +129,25 @@ public class JsonToBeanConverter {
       return (T) caps;
     }
 
-    if (DoNotUseProxyPac.class.equals(clazz)) {
-      JsonObject json = new JsonParser().parse((String) text).getAsJsonObject();
-      DoNotUseProxyPac pac = new DoNotUseProxyPac();
-
-      if (json.has("directUrls")) {
-        JsonArray allUrls = json.get("directUrls").getAsJsonArray();
-        for (int i = 0; i < allUrls.size(); i++) {
-          pac.map(allUrls.get(i).getAsString()).toNoProxy();
-        }
-      }
-
-      if (json.has("directHosts")) {
-        JsonArray allHosts = json.get("directHosts").getAsJsonArray();
-        for (int i = 0; i < allHosts.size(); i++) {
-          pac.mapHost(allHosts.get(i).getAsString()).toNoProxy();
-        }
-      }
-
-      if (json.has("proxiedHosts")) {
-        JsonObject proxied = json.get("proxiedHosts").getAsJsonObject();
-        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
-          pac.mapHost(entry.getKey()).toProxy(entry.getValue().getAsString());
-        }
-      }
-
-      if (json.has("proxiedUrls")) {
-        JsonObject proxied = json.get("proxiedUrls").getAsJsonObject();
-        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
-          pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
-        }
-      }
-
-      if (json.has("proxiedRegexUrls")) {
-        JsonObject proxied = json.get("proxiedRegexUrls").getAsJsonObject();
-        for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
-          pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
-        }
-      }
-
-      if (json.has("defaultProxy")) {
-        if ("'DIRECT'".equals(json.get("defaultProxy").getAsString())) {
-          pac.defaults().toNoProxy();
-        } else {
-          pac.defaults().toProxy(json.get("defaultProxy").getAsString());
-        }
-      }
-
-      if (json.has("deriveFrom")) {
-        try {
-          pac.deriveFrom(new URI(json.get("deriveFrom").getAsString()));
-        } catch (URISyntaxException e) {
-          throw new WebDriverException(e);
-        }
-      }
-
-      return (T) pac;
-    }
-
     if (Date.class.equals(clazz)) {
       return (T) new Date(Long.valueOf(String.valueOf(text)));
     }
 
     if (text instanceof String && !((String) text).startsWith("{") && Object.class.equals(clazz)) {
       return (T) text;
+    }
+
+    Method fromJson = getMethod(clazz, "fromJson");
+    if (fromJson != null) {
+      try {
+        return (T) fromJson.invoke(null, text.toString());
+      } catch (IllegalArgumentException e) {
+        throw new WebDriverException(e);
+      } catch (IllegalAccessException e) {
+        throw new WebDriverException(e);
+      } catch (InvocationTargetException e) {
+        throw new WebDriverException(e);
+      }
     }
 
     if (depth == 0) {
@@ -233,6 +185,18 @@ public class JsonToBeanConverter {
     }
 
     return (T) text; // Crap shoot here; probably a string.
+  }
+
+  private Method getMethod(Class<?> clazz, String methodName) {
+    try {
+      return clazz.getMethod(methodName, String.class);
+    } catch (SecurityException e) {
+      // fall through
+    } catch (NoSuchMethodException e) {
+      // fall through
+    }
+
+    return null;
   }
 
   private Object convertJsonPrimitive(JsonElement json) {

@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYI
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
 import org.openqa.selenium.remote.DesiredCapabilities;

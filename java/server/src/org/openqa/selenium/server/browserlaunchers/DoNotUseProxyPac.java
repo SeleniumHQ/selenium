@@ -16,10 +16,17 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +35,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -193,6 +201,64 @@ public class DoNotUseProxyPac implements Serializable {
     }
 
     return toReturn;
+  }
+
+  public static DoNotUseProxyPac fromJson(String text) {
+    JsonObject json = new JsonParser().parse(text).getAsJsonObject();
+    DoNotUseProxyPac pac = new DoNotUseProxyPac();
+
+    if (json.has("directUrls")) {
+      JsonArray allUrls = json.get("directUrls").getAsJsonArray();
+      for (int i = 0; i < allUrls.size(); i++) {
+        pac.map(allUrls.get(i).getAsString()).toNoProxy();
+      }
+    }
+
+    if (json.has("directHosts")) {
+      JsonArray allHosts = json.get("directHosts").getAsJsonArray();
+      for (int i = 0; i < allHosts.size(); i++) {
+        pac.mapHost(allHosts.get(i).getAsString()).toNoProxy();
+      }
+    }
+
+    if (json.has("proxiedHosts")) {
+      JsonObject proxied = json.get("proxiedHosts").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+        pac.mapHost(entry.getKey()).toProxy(entry.getValue().getAsString());
+      }
+    }
+
+    if (json.has("proxiedUrls")) {
+      JsonObject proxied = json.get("proxiedUrls").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+        pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
+      }
+    }
+
+    if (json.has("proxiedRegexUrls")) {
+      JsonObject proxied = json.get("proxiedRegexUrls").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : proxied.entrySet()) {
+        pac.map(entry.getKey()).toProxy(entry.getValue().getAsString());
+      }
+    }
+
+    if (json.has("defaultProxy")) {
+      if ("'DIRECT'".equals(json.get("defaultProxy").getAsString())) {
+        pac.defaults().toNoProxy();
+      } else {
+        pac.defaults().toProxy(json.get("defaultProxy").getAsString());
+      }
+    }
+
+    if (json.has("deriveFrom")) {
+      try {
+        pac.deriveFrom(new URI(json.get("deriveFrom").getAsString()));
+      } catch (URISyntaxException e) {
+        throw new WebDriverException(e);
+      }
+    }
+
+    return pac;
   }
 
   public DoNotUseProxyPac deriveFrom(URI uri) {
