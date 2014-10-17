@@ -164,8 +164,8 @@ function testUntilAbleToSwitchToFrame_timesOutIfNeverAbletoSwitchFrames() {
 
   driver.wait(until.ableToSwitchToFrame(0), 100).then(fail, function(e) {
     assertTrue(count > 0);
-    assertTrue('Wrong message: ' + e.message,
-        goog.string.startsWith(e.message, 'Wait timed out after'));
+    assertTrue('Wrong message: ' + e.message, goog.string.startsWith(
+        e.message, 'Waiting to be able to switch to frame'));
     test.continueTesting();
   });
 }
