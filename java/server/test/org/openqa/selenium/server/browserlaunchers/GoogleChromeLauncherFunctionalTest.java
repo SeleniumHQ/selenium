@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
- * {@link org.openqa.selenium.server.browserlaunchers.GoogleChromeLaunhcer} functional test class.
+ * {@link org.openqa.selenium.server.browserlaunchers.GoogleChromeLauncher} functional test class.
  * 
  * <p>
  * If no local proxy server (such as Selenium Server) is running during this test, there won't be a

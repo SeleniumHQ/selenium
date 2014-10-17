@@ -20,7 +20,6 @@ package org.openqa.selenium.server.browserlaunchers;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
 import org.openqa.selenium.io.FileHandler;

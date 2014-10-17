@@ -18,7 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.util.ArrayList;

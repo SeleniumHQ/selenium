@@ -18,9 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.server.IOHelper;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 import java.io.File;
 import java.io.IOException;

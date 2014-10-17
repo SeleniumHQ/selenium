@@ -16,12 +16,13 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
 import org.junit.Test;
+import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;

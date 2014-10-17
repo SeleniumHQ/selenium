@@ -21,7 +21,6 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.server.ClassPathResource;
 

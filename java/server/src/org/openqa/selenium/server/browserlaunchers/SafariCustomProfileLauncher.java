@@ -20,7 +20,6 @@ import static org.openqa.selenium.Platform.MAC;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.os.CommandLine;

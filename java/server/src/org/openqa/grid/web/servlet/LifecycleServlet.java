@@ -20,7 +20,7 @@ package org.openqa.grid.web.servlet;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
-import org.openqa.selenium.browserlaunchers.Sleeper;
+import org.openqa.selenium.server.browserlaunchers.Sleeper;
 
 import java.io.IOException;
 

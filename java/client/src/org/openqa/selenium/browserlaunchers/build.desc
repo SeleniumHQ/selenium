@@ -1,19 +1,4 @@
 
-java_library(name = "launcher-utils",
-  srcs = [
-    "LauncherUtils.java",
-    "Sleeper.java",
-  ],
-  deps = [
-    ":proxies",
-    "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//java/client/src/org/openqa/selenium/io",
-    "//java/client/src/org/openqa/selenium/net",
-    "//java/client/src/org/openqa/selenium/os",
-    "//java/client/src/org/openqa/selenium/remote:base",
-    "//third_party/java/guava-libraries",
-  ])
-
 java_library(name = "proxies",
   srcs = [
     "DoNotUseProxyPac.java",
