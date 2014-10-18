@@ -23,6 +23,7 @@ import org.openqa.selenium.support.pagefactory.DefaultElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecoratorTest;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandlerTest;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandlerTest;
+import org.openqa.selenium.support.ui.ExpectedConditionsTest;
 import org.openqa.selenium.support.ui.FluentWaitTest;
 import org.openqa.selenium.support.ui.LoadableComponentTest;
 import org.openqa.selenium.support.ui.SelectTest;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
     DefaultElementLocatorTest.class,
     DefaultFieldDecoratorTest.class,
     EventFiringWebDriverTest.class,
+    ExpectedConditionsTest.class,
     FluentWaitTest.class,
     LoadableComponentTest.class,
     LocatingElementHandlerTest.class,
