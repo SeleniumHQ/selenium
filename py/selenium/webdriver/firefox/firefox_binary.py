@@ -37,6 +37,8 @@ class FirefoxBinary(object):
                       By default, it will be redirected to /dev/null.
         """
         self._start_cmd = firefox_path
+        # We used to default to subprocess.PIPE instead of /dev/null, but after
+        # a while the pipe would fill up and Firefox would freeze.
         self._log_file = log_file or open(os.devnull, "wb")
         self.command_line = None
         if self._start_cmd is None:
@@ -89,9 +91,6 @@ class FirefoxBinary(object):
             command, stdout=self._log_file, stderr=STDOUT,
             env=self._firefox_env)
 
-    def _get_firefox_output(self):
-      return self.process.communicate()[0]
-
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
@@ -99,13 +98,13 @@ class FirefoxBinary(object):
             if self.process.poll() is not None:
                 # Browser has exited
                 raise WebDriverException("The browser appears to have exited "
-                      "before we could connect. The output was: %s" %
-                      self._get_firefox_output())
+                      "before we could connect. If you specified a log_file in "
+                      "the FirefoxBinary constructor, check it for details.")
             if count == 30:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile "
-                      "Dir: %s Firefox output: %s" % (
-                          self.profile.path, self._get_firefox_output()))
+                      "Dir: %s If you specified a log_file in the "
+                      "FirefoxBinary constructor, check it for details.")
             count += 1
             time.sleep(1)
         return True
