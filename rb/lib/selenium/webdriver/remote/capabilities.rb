@@ -193,8 +193,8 @@ module Selenium
         end
 
         def merge!(other)
-          if other.respond_to?(:capabilities, true) && other.capabilities.kind_of?(Hash)
-            @capabilities.merge! other.capabilities
+          if other.respond_to?(:capabilities, true) && other.send(:capabilities).kind_of?(Hash)
+            @capabilities.merge! other.send(:capabilities)
           elsif other.kind_of? Hash
             @capabilities.merge! other
           else
