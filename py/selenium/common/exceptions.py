@@ -28,13 +28,12 @@ class WebDriverException(Exception):
         self.stacktrace = stacktrace
 
     def __str__(self):
-        exception_msg = "Message: %s " % repr(self.msg)
+        exception_msg = "Message: %s\n" % self.msg
         if self.screen is not None:
-            exception_msg = "%s; Screenshot: available via screen " \
-                % exception_msg
+            exception_msg += "Screenshot: available via screen\n"
         if self.stacktrace is not None:
-            exception_msg = "%s; Stacktrace: %s " \
-                % (exception_msg, str("\n" + "\n".join(self.stacktrace)))
+            stacktrace = "\n".join(self.stacktrace)
+            exception_msg += "Stacktrace:\n%s" % stacktrace
         return exception_msg
 
 class ErrorInResponseException(WebDriverException):
