@@ -64,7 +64,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   //
   // ----------------------------------------------------------------------------------------------
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent() {
     driver.get(pages.framesetPage);
     driver.findElement(By.tagName("frameset")); // Test passes if this does not throw.
@@ -101,7 +100,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   //
   // ----------------------------------------------------------------------------------------------
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAFrameByItsIndex() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame(1);

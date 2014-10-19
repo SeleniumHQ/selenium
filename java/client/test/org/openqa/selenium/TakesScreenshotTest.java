@@ -72,8 +72,7 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-@Ignore(value = {IPHONE, MARIONETTE, ANDROID, OPERA_MOBILE, IE},
-        reason = "untested properly"
+@Ignore(value = {IPHONE, ANDROID, OPERA_MOBILE, IE}, reason = "untested properly"
                  + " IE: strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
@@ -95,6 +94,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
     tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
@@ -135,7 +135,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, SAFARI, CHROME},
+  @Ignore(value = {OPERA, SAFARI, CHROME, MARIONETTE},
           reason = " SAFARI: takes only visible viewport." +
                    " CHROME: takes only visible viewport." +
                    " OPERA: takes only visible viewport."
@@ -158,7 +158,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, SAFARI, CHROME},
+  @Ignore(value = {OPERA, SAFARI, CHROME, MARIONETTE},
           reason = " SAFARI: takes only visible viewport." +
                    " CHROME: takes only visible viewport." +
                    " OPERA: takes only visible viewport."
@@ -181,7 +181,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
           reason = " IE: cuts captured image at driver level." +
                    " FF: captured image is cat at driver level." +
                    " SAFARI: takes only visible viewport." +
@@ -207,7 +207,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
           reason = " IE: cuts captured image at driver level." +
                    " FF: captured image is cat at driver level." +
                    " SAFARI: takes only visible viewport." +
@@ -233,7 +233,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
           reason = " IE: returns null." +
                    " FF: failed due NS_ERROR_FAILURE at context.drawWindow." +
                    " SAFARI: takes only visible viewport." +
@@ -260,7 +260,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {OPERA, IE},
+      value = {OPERA, IE, MARIONETTE},
       reason = " OPERA: takes empty 1x1 screenshot." +
                " IE: v9 shows strange border which broke color comparison"
   )
@@ -288,7 +288,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME},
+  @Ignore(value = {CHROME, MARIONETTE},
           reason = " CHROME: Unknown actual colors are presented at screenshot")
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
@@ -315,7 +315,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {OPERA, IE},
+      value = {OPERA, IE, MARIONETTE},
       reason = " OPERA: takes screenshot only of switched-in frame." +
                " IE: v9 shows strange border which broke color comparison"
   )
@@ -347,7 +347,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {OPERA, IE, CHROME},
+      value = {OPERA, IE, CHROME, MARIONETTE},
       reason = " OPERA: takes screenshot only of switched-in frame." +
                " IE: v9 takes screesnhot only of switched-in frame area " +
                " CHROME: Unknown actual colors are presented at screenshot"

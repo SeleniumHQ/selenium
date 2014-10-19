@@ -35,8 +35,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @RunWith(SeleniumTestRunner.class)
-@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE, MARIONETTE},
-    reason = "Not tested")
+@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE}, reason = "Not tested")
 public class SessionHandlingTest {
 
   @Test
@@ -79,7 +78,7 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, OPERA, PHANTOMJS, SAFARI}, reason =
+  @Ignore(value = {FIREFOX, OPERA, PHANTOMJS, SAFARI, MARIONETTE}, reason =
       "Firefox: can perform an operation after closing the last window,"
       + "Opera: throws Opera-specific exception,"
       + "PhantomJS: throws NoSuchWindowException,"

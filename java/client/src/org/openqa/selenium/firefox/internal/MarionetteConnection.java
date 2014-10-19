@@ -26,7 +26,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
@@ -47,8 +46,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +61,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   private File profileDir;
 
   private static Map<String, String> seleniumToMarionetteCommandMap = ImmutableMap.<String, String>builder()
-      .put(DriverCommand.GET, "goUrl")
+      .put(DriverCommand.GET, "get")
       .put(DriverCommand.GET_CURRENT_WINDOW_HANDLE, "getWindow")
       .put(DriverCommand.GET_WINDOW_HANDLES, "getWindows")
       .put(DriverCommand.CLOSE, "closeWindow")
@@ -162,6 +159,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     // This initializes the "actor" for future communication with this instance.
     sendCommand(serializeCommand(new Command(null, "getMarionetteID")));
     String getMarionetteIdRawResponse = receiveResponse();
+    System.out.println(getMarionetteIdRawResponse);
     Map<String, Object> map = new JsonToBeanConverter().convert(Map.class,
                                                                 getMarionetteIdRawResponse);
     marionetteId = map.get("id").toString();
@@ -191,14 +189,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawResponse);
     Response response;
     if (DriverCommand.NEW_SESSION.equals(command.getName())) {
-      // If we're starting a new session, we need to return the response
-      // with that session.
-      // ***************************************************************
-      // Marionette Compliance Issue: The response should return the
-      // newly created session ID in the "sessionId" member of the
-      // returned JSON object.
-      // ***************************************************************
-      response = new Response(new SessionId(map.get("value").toString()));
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
+      response = new Response(new SessionId(new BeanToJsonConverter().convert(map.get("value"))));
       response.setValue(Maps.newHashMap());
 
     } else {
@@ -217,17 +209,27 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
         // }
         // ***************************************************************
         response = new Response();
-        Map<String, Object> errorMap = (Map<String, Object>) map.get("error");
-        if (errorMap != null) {
-          response.setStatus(Integer.parseInt(errorMap.get("status").toString()));
-          errorMap.remove("status");
-          response.setValue(errorMap);
+        Object value = map.get("error");
+        if (value != null) {
+          if (value instanceof Map) {
+            Map<String, Object> errorMap = (Map<String, Object>) value;
+            if (errorMap != null) {
+              response.setStatus(Integer.parseInt(errorMap.get("status").toString()));
+              errorMap.remove("status");
+              response.setValue(errorMap);
+            }
+          } else {
+            response.setStatus(ErrorCodes.UNHANDLED_ERROR);
+            response.setValue(value + ": " + map.get("message"));
+          }
         }
 
       } else {
+        response = new JsonToBeanConverter().convert(Response.class, rawResponse);
+
         // ***************************************************************
-        // Marionette Compliance Issue: Responses from findElement and
-        // findElements are returned with raw element IDs as the value.
+        // Marionette Compliance Issue: Responses from findElements
+        // are returned with raw element IDs as the value.
         // This should be a JSON object with the following structure:
         //
         //   { "ELEMENT": "<element ID goes here>" }
@@ -236,11 +238,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
         // a raw string and an element reference returned from the
         // executeScript command.
         // ***************************************************************
-        response = new JsonToBeanConverter().convert(Response.class, rawResponse);
-
-        if (DriverCommand.FIND_ELEMENT.equals(command.getName())
-            || DriverCommand.FIND_CHILD_ELEMENT.equals(command.getName())
-            || DriverCommand.GET_ACTIVE_ELEMENT.equals(command.getName()))
+        if (DriverCommand.GET_ACTIVE_ELEMENT.equals(command.getName()))
         {
           if (response.getStatus() == ErrorCodes.SUCCESS) {
             Map<String, Object> wrappedElement = Maps.newHashMap();
@@ -278,51 +276,17 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     if (DriverCommand.NEW_SESSION.equals(commandName)) {
       params.remove("desiredCapabilities");
 
-    } else if (DriverCommand.GET.equals(commandName)) {
-      renameParameter(params, "url", "value");
-
     } else if (DriverCommand.SET_TIMEOUT.equals(commandName)) {
       String timeoutType = (String) params.get("type");
-//      System.out.println("timeout type = " + timeoutType);
       if ("implicit".equals(timeoutType)) {
         commandName = "setSearchTimeout";
       } else if ("script".equals(timeoutType)) {
         commandName = "setScriptTimeout";
       }
       params.remove("type");
-      renameParameter(params, "ms", "value");
-
-    } else if (DriverCommand.EXECUTE_SCRIPT.equals(commandName)
-            || DriverCommand.EXECUTE_ASYNC_SCRIPT.equals(commandName)) {
-      renameParameter(params, "script", "value");
-
-    } else if (DriverCommand.SWITCH_TO_WINDOW.equals(commandName)) {
-      renameParameter(params, "name", "value");
-
-    } else if (DriverCommand.SWITCH_TO_FRAME.equals(commandName)) {
-      Object target = params.get("id");
-      if (target instanceof Map) {
-        String elementId = (String) ((Map<String,Object>) target).get("ELEMENT");
-        params.put("element", elementId);
-        params.remove("id");
-
-      } else {
-        renameParameter(params, "id", "value");
-      }
 
     } else if (DriverCommand.FIND_CHILD_ELEMENT.equals(commandName)
-            || DriverCommand.FIND_CHILD_ELEMENTS.equals(commandName)
-            || DriverCommand.CLICK_ELEMENT.equals(commandName)
-            || DriverCommand.CLEAR_ELEMENT.equals(commandName)
-            || DriverCommand.GET_ELEMENT_ATTRIBUTE.equals(commandName)
-            || DriverCommand.GET_ELEMENT_TEXT.equals(commandName)
-            || DriverCommand.SEND_KEYS_TO_ELEMENT.equals(commandName)
-            || DriverCommand.IS_ELEMENT_SELECTED.equals(commandName)
-            || DriverCommand.IS_ELEMENT_ENABLED.equals(commandName)
-            || DriverCommand.IS_ELEMENT_DISPLAYED.equals(commandName)
-            || DriverCommand.GET_ELEMENT_SIZE.equals(commandName)
-            || DriverCommand.GET_ELEMENT_LOCATION.equals(commandName)
-            || DriverCommand.GET_ELEMENT_TAG_NAME.equals(commandName)) {
+            || DriverCommand.FIND_CHILD_ELEMENTS.equals(commandName)) {
       renameParameter(params, "id", "element");
 
     } else if (DriverCommand.CLICK.equals(commandName)
@@ -349,11 +313,12 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
     Map<String, Object> map = Maps.newHashMap();
     map.put("to", marionetteId != null ? marionetteId : "root");
-    map.put("type", commandName);
+    map.put("name", commandName);
     if (command.getSessionId() != null) {
-      map.put("session", command.getSessionId().toString());
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
+      map.put("sessionId", new JsonToBeanConverter().convert(Map.class, command.getSessionId().toString()));
     }
-    map.putAll(params);
+    map.put("parameters", params);
 
     return new BeanToJsonConverter().convert(map);
   }
@@ -365,8 +330,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   private void sendCommand(String commandAsString) {
-    String line = "" + commandAsString.length() + ":" + commandAsString + " ";
-//    System.out.println(line);
+    String line = "" + commandAsString.length() + ":" + commandAsString;
+    System.out.println(line);
     writer.write(line);
     writer.flush();
   }
@@ -383,7 +348,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       response.append(buf, 0, len);
     }
 
-//    System.out.println("<- |" + response.toString() + "|");
+    System.out.println("<- |" + response.toString() + "|");
 
     String[] parts = response.toString().split(":", 2);
     int length = Integer.parseInt(parts[0]);

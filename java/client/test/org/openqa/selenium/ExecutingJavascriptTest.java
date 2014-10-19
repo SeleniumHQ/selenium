@@ -443,7 +443,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
 
@@ -484,7 +483,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
@@ -539,7 +537,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
           reason = "Opera obeys the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {

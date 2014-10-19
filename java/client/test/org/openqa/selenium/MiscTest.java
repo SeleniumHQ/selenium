@@ -78,7 +78,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
           reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
                    + "Opera: includes XML doctype"
                    + "Others: untested")

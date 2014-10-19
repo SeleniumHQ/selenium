@@ -673,7 +673,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, MARIONETTE, HTMLUNIT},
+  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, HTMLUNIT},
           reason = "HtmlUnit: failure, others: not tested")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {

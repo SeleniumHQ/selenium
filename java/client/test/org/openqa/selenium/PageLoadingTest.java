@@ -274,7 +274,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo(originalTitle));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
+  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -298,7 +298,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
+  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);

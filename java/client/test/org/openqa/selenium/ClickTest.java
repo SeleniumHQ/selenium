@@ -234,6 +234,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
@@ -330,8 +331,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
-      = "not tested")
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE}, reason = "not tested")
   public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter() {
     String url = appServer.whereIs("fixedFooterNoScroll.html");
     driver.get(url);
@@ -343,8 +343,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
-      = "not tested")
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE}, reason = "not tested")
   public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode() {
     String url = appServer.whereIs("fixedFooterNoScrollQuirksMode.html");
     driver.get(url);

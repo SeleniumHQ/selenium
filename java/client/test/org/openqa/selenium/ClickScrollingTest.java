@@ -104,7 +104,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SAFARI, MARIONETTE}, reason = "Safari: failed, iPhone: untested")
+  @Ignore(value = {IPHONE, SAFARI}, reason = "Safari: failed, iPhone: untested")
   @Test
   public void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));

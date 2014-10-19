@@ -49,6 +49,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, reason = "Marionette does not recognize the packet type elementEquals")
   public void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
 

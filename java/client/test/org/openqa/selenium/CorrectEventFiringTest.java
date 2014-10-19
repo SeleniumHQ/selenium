@@ -121,7 +121,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
@@ -290,7 +289,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID, MARIONETTE}, reason = "iPhone: sendKeys implementation is incorrect")
+  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -304,7 +303,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID, MARIONETTE}, reason = "iPhone: sendKeys implementation is incorrect")
+  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
