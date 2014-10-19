@@ -128,5 +128,3 @@ exports.FileDetector = base.require('webdriver.FileDetector');
 (exports.__defineGetter__('stacktrace', function() {
   return base.exportPublicApi('webdriver.stacktrace');
 }));
-
-
