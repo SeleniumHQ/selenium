@@ -1519,10 +1519,11 @@ webdriver.promise.ControlFlow.prototype.runEventLoop_ = function() {
  * @private
  */
 webdriver.promise.ControlFlow.prototype.getNextTask_ = function() {
-  var firstChild = this.activeFrame_.getFirstChild();
+  var frame = this.activeFrame_;
+  var firstChild = frame.getFirstChild();
   if (!firstChild) {
-    if (!this.activeFrame_.isWaiting) {
-      this.resolveFrame_(this.activeFrame_);
+    if (!frame.isWaiting) {
+      this.resolveFrame_(frame);
     }
     return null;
   }
@@ -1532,7 +1533,7 @@ webdriver.promise.ControlFlow.prototype.getNextTask_ = function() {
     return this.getNextTask_();
   }
 
-  firstChild.getParent().removeChild(firstChild);
+  frame.removeChild(firstChild);
   return firstChild;
 };
 
@@ -1553,7 +1554,7 @@ webdriver.promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
     frame.getParent().removeChild(frame);
   }
   this.trimHistory_();
-  frame.fulfill();
+  frame.close();
 
   if (!this.activeFrame_) {
     this.commenceShutdown_();
@@ -1591,7 +1592,7 @@ webdriver.promise.ControlFlow.prototype.abortFrame_ = function(error) {
 
   var frame = this.activeFrame_;
   this.activeFrame_ = parent;
-  frame.reject(error);
+  frame.abort(error);
 };
 
 
@@ -1647,16 +1648,18 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       return;
     }
 
-    newFrame.then(function() {
+    newFrame.onComplete = function() {
       webdriver.promise.asap(result, callback, errback);
-    }, function(e) {
+    };
+
+    newFrame.onAbort = function(e) {
       if (webdriver.promise.Thenable.isImplementation(result) &&
           result.isPending()) {
         result.cancel(e);
         e = result;
       }
       errback(e);
-    });
+    };
   } catch (ex) {
     removeNewFrame(new webdriver.promise.CanceledTaskError_(ex));
     errback(ex);
@@ -1748,50 +1751,6 @@ webdriver.promise.ControlFlow.prototype.abortNow_ = function(error) {
 
 
 /**
- * A single node in an {@link webdriver.promise.ControlFlow}'s task tree.
- * @param {!webdriver.promise.ControlFlow} flow The flow this instance belongs
- *     to.
- * @constructor
- * @extends {webdriver.promise.Deferred}
- * @private
- */
-webdriver.promise.Node_ = function(flow) {
-  webdriver.promise.Deferred.call(this, null, flow);
-
-  /** @private {webdriver.promise.Node_} */
-  this.parent_ = null;
-};
-goog.inherits(webdriver.promise.Node_, webdriver.promise.Deferred);
-
-
-/** @return {webdriver.promise.Node_} This node's parent. */
-webdriver.promise.Node_.prototype.getParent = function() {
-  return this.parent_;
-};
-
-
-/**
- * @param {webdriver.promise.Node_} parent This node's new parent.
- */
-webdriver.promise.Node_.prototype.setParent = function(parent) {
-  this.parent_ = parent;
-};
-
-
-/**
- * @return {!webdriver.promise.Node_} The root of this node's tree.
- */
-webdriver.promise.Node_.prototype.getRoot = function() {
-  var root = this;
-  while (root.parent_) {
-    root = root.parent_;
-  }
-  return root;
-};
-
-
-
-/**
  * An execution frame within a {@link webdriver.promise.ControlFlow}.  Each
  * frame represents the execution context for either a
  * {@link webdriver.promise.Task_} or a callback on a
@@ -1803,20 +1762,16 @@ webdriver.promise.Node_.prototype.getRoot = function() {
  * @param {!webdriver.promise.ControlFlow} flow The flow this instance belongs
  *     to.
  * @constructor
- * @extends {webdriver.promise.Node_}
  * @private
+ * @final
+ * @struct
  */
 webdriver.promise.Frame_ = function(flow) {
-  webdriver.promise.Node_.call(this, flow);
+  /** @private {!webdriver.promise.ControlFlow} */
+  this.flow_ = flow;
 
-  var reject = goog.bind(this.reject, this);
-  var cancelRemainingTasks = goog.bind(this.cancelRemainingTasks, this);
-
-  /** @override */
-  this.reject = function(e) {
-    cancelRemainingTasks(new webdriver.promise.CanceledTaskError_(e));
-    reject(e);
-  };
+  /** @private {webdriver.promise.Frame_} */
+  this.parent_ = null;
 
   /**
    * @private {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
@@ -1824,7 +1779,7 @@ webdriver.promise.Frame_ = function(flow) {
   this.children_ = [];
 
 
-  /** @private {webdriver.promise.Node_} */
+  /** @private {(webdriver.promise.Frame_|webdriver.promise.Task_)} */
   this.lastInsertedChild_ = null;
 
   /**
@@ -1852,8 +1807,94 @@ webdriver.promise.Frame_ = function(flow) {
    * @private {boolean}
    */
   this.isLocked_ = false;
+
+  /** @type {boolean} */
+  this.isWaiting = false;
+
+  /**
+   * The function to notify if this frame executes without error.
+   * @type {?function()}
+   */
+  this.onComplete = null;
+
+  /**
+   * The function to notify if this frame is aborted with an error.
+   * @type {?function(*)}
+   */
+  this.onAbort = null;
 };
-goog.inherits(webdriver.promise.Frame_, webdriver.promise.Node_);
+
+
+/** @return {webdriver.promise.Frame_} This frame's parent, if any. */
+webdriver.promise.Frame_.prototype.getParent = function() {
+  return this.parent_;
+};
+
+
+/**
+ * @param {webdriver.promise.Frame_} parent This frame's new parent.
+ */
+webdriver.promise.Frame_.prototype.setParent = function(parent) {
+  this.parent_ = parent;
+};
+
+
+/**
+ * @return {!webdriver.promise.Frame_} The root of this frame's tree.
+ */
+webdriver.promise.Frame_.prototype.getRoot = function() {
+  var root = this;
+  while (root.parent_) {
+    root = root.parent_;
+  }
+  return root;
+};
+
+
+/**
+ * Aborts the execution of this frame, cancelling all outstanding tasks
+ * scheduled within this frame.
+ *
+ * @param {*} error The error that triggered this abortion.
+ */
+webdriver.promise.Frame_.prototype.abort = function(error) {
+  this.cancelRemainingTasks(new webdriver.promise.CanceledTaskError_(error));
+
+  var frame = this;
+  frame.flow_.pendingRejections_ += 1;
+  this.flow_.timer.setTimeout(function() {
+    frame.flow_.pendingRejections_ -= 1;
+    if (frame.onAbort) {
+      frame.notify_(frame.onAbort, error);
+    } else {
+      frame.flow_.abortFrame_(error);
+    }
+  }, 0);
+};
+
+
+/**
+ * Signals that this frame has successfully finished executing.
+ */
+webdriver.promise.Frame_.prototype.close = function() {
+  var frame = this;
+  this.flow_.timer.setTimeout(function() {
+    frame.notify_(frame.onComplete);
+  }, 0);
+};
+
+
+/**
+ * @param {?(function(*)|function())} fn The function to notify.
+ * @param {*=} opt_error Value to pass to the notified function, if any.
+ * @private
+ */
+webdriver.promise.Frame_.prototype.notify_ = function(fn, opt_error) {
+  this.onAbort = this.onComplete = null;
+  if (fn) {
+    fn(opt_error);
+  }
+};
 
 
 /**
@@ -1927,7 +1968,9 @@ webdriver.promise.Frame_.prototype.addChild = function(node) {
     return;
   }
 
-  node.setParent(this);
+  if (node instanceof webdriver.promise.Frame_) {
+    node.setParent(this);
+  }
 
   if (this.isLocked_ && node instanceof webdriver.promise.Frame_) {
     var index = 0;
@@ -1963,7 +2006,9 @@ webdriver.promise.Frame_.prototype.getFirstChild = function() {
  */
 webdriver.promise.Frame_.prototype.removeChild = function(child) {
   var index = goog.array.indexOf(this.children_, child);
-  child.setParent(null);
+  if (child instanceof webdriver.promise.Frame_) {
+    child.setParent(null);
+  }
   goog.array.removeAt(this.children_, index);
   if (this.lastInsertedChild_ === child) {
     this.lastInsertedChild_ = null;
@@ -1985,22 +2030,23 @@ webdriver.promise.Frame_.prototype.toString = function() {
  *
  * @param {!webdriver.promise.ControlFlow} flow The flow this instances belongs
  *     to.
- * @param {!Function} fn The function to call when the task executes. If it
- *     returns a {@code webdriver.promise.Promise}, the flow will wait
- *     for it to be resolved before starting the next task.
+ * @param {function(): (T|!webdriver.promise.Promise.<T>)} fn The function to
+ *     call when the task executes. If it returns a
+ *     {@link webdriver.promise.Promise}, the flow will wait for it to be
+ *     resolved before starting the next task.
  * @param {string} description A description of the task for debugging.
  * @param {!webdriver.stacktrace.Snapshot} snapshot A snapshot of the stack
  *     when this task was scheduled.
  * @constructor
- * @extends {webdriver.promise.Node_}
+ * @extends {webdriver.promise.Deferred.<T>}
+ * @template T
  * @private
  */
 webdriver.promise.Task_ = function(flow, fn, description, snapshot) {
-  webdriver.promise.Node_.call(this, flow);
+  webdriver.promise.Deferred.call(this, null, flow);
 
   /**
-   * Executes this task.
-   * @type {!Function}
+   * @type {function(): (T|!webdriver.promise.Promise.<T>)}
    */
   this.execute = fn;
 
@@ -2010,7 +2056,7 @@ webdriver.promise.Task_ = function(flow, fn, description, snapshot) {
   /** @private {!webdriver.stacktrace.Snapshot} */
   this.snapshot_ = snapshot;
 };
-goog.inherits(webdriver.promise.Task_, webdriver.promise.Node_);
+goog.inherits(webdriver.promise.Task_, webdriver.promise.Deferred);
 
 
 /** @return {string} This task's description. */

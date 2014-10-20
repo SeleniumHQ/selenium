@@ -248,9 +248,9 @@ function testResolveFrame() {
   assertArrayEquals([frame3], frame2.children_);
   assertArrayEquals([frame2], frame1.children_);
 
-  frame1.fulfill = callbackHelper();
-  frame2.fulfill = callbackHelper();
-  frame3.fulfill = callbackHelper();
+  frame1.close = callbackHelper();
+  frame2.close = callbackHelper();
+  frame3.close = callbackHelper();
 
   var obj = {
     activeFrame_: frame2,
@@ -260,9 +260,9 @@ function testResolveFrame() {
   };
   webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame3);
   assertEquals(1, obj.trimHistory_.getCallCount());
-  frame3.fulfill.assertCalled('frame 3 not resolved');
-  frame2.fulfill.assertNotCalled('frame 2 should not be resolved yet');
-  frame1.fulfill.assertNotCalled('frame 1 should not be resolved yet');
+  frame3.close.assertCalled('frame 3 not resolved');
+  frame2.close.assertNotCalled('frame 2 should not be resolved yet');
+  frame1.close.assertNotCalled('frame 1 should not be resolved yet');
   assertNull(frame3.getParent());
   assertArrayEquals([], frame2.children_);
   assertArrayEquals([frame2], frame1.children_);
@@ -270,8 +270,8 @@ function testResolveFrame() {
 
   webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame2);
   assertEquals(2, obj.trimHistory_.getCallCount());
-  frame2.fulfill.assertCalled('frame 2 not resolved');
-  frame1.fulfill.assertNotCalled('frame 1 should not be resolved yet');
+  frame2.close.assertCalled('frame 2 not resolved');
+  frame1.close.assertNotCalled('frame 1 should not be resolved yet');
   assertNull(frame2.getParent());
   assertArrayEquals([], frame1.children_);
   assertEquals(frame1, obj.activeFrame_);
@@ -279,7 +279,7 @@ function testResolveFrame() {
   obj.commenceShutdown_.assertNotCalled();
   webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame1);
   assertEquals(3, obj.trimHistory_.getCallCount());
-  frame1.fulfill.assertCalled('frame 1 not resolved');
+  frame1.close.assertCalled('frame 1 not resolved');
   obj.commenceShutdown_.assertCalled();
   assertNull(frame1.getParent());
   assertNull(obj.activeFrame_);
@@ -302,10 +302,10 @@ function testGetNextTask() {
       task8 = createTask('task8');
 
   flow.commenceShutdown_ = callbackHelper();
-  root.fulfill = callbackHelper();
-  frame1.fulfill = callbackHelper();
-  frame2.fulfill = callbackHelper();
-  frame3.fulfill = callbackHelper();
+  root.close = callbackHelper();
+  frame1.close = callbackHelper();
+  frame2.close = callbackHelper();
+  frame3.close = callbackHelper();
 
   root.addChild(task1);
   root.addChild(frame1);
@@ -335,88 +335,79 @@ function testGetNextTask() {
   assertArrayEquals([frame3, task7], frame2.children_);
   assertArrayEquals([task6], frame3.children_);
 
-  assertEquals(root, task1.getParent());
   assertEquals(task1, flow.getNextTask_());
-  assertNull(task1.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame1.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame1.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertEquals(task2, flow.getNextTask_());
-  assertNull(task2.getParent());
   assertEquals(frame1, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame1.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame1.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertEquals(task3, flow.getNextTask_());
-  assertNull(task3.getParent());
   assertEquals(frame1, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame1.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame1.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertNull(flow.getNextTask_());
   assertNull(frame1.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame1.fulfill.assertCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame1.close.assertCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertEquals(task4, flow.getNextTask_());
-  assertNull(task4.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertEquals(task5, flow.getNextTask_());
-  assertNull(task5.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertEquals(task6, flow.getNextTask_());
-  assertNull(task6.getParent());
   assertEquals(frame3, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertNotCalled();
 
   assertNull(flow.getNextTask_());
   assertNull(frame3.getParent());
   assertEquals(frame2, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
-  frame3.fulfill.assertCalled('frame3 should have been resolved');
+  root.close.assertNotCalled();
+  frame2.close.assertNotCalled();
+  frame3.close.assertCalled('frame3 should have been resolved');
 
   assertEquals(task7, flow.getNextTask_());
-  assertNull(task7.getParent());
   assertEquals(frame2, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
+  frame2.close.assertNotCalled();
 
   assertNull(flow.getNextTask_());
   assertNull(frame2.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
-  frame2.fulfill.assertCalled('frame2 should have been resolved');
+  root.close.assertNotCalled();
+  frame2.close.assertCalled('frame2 should have been resolved');
 
   assertEquals(task8, flow.getNextTask_());
-  assertNull(task8.getParent());
   assertEquals(root, flow.activeFrame_);
-  root.fulfill.assertNotCalled();
+  root.close.assertNotCalled();
 
   flow.commenceShutdown_.assertNotCalled();
   assertNull(flow.getNextTask_());
   assertNull(flow.activeFrame_);
-  root.fulfill.assertCalled('Root should have been resolved');
+  root.close.assertCalled('Root should have been resolved');
   flow.commenceShutdown_.assertCalled();
 }
 
@@ -504,14 +495,15 @@ function testAbortFrame_unhandledAbortionsBubbleUp() {
   assertNull(flow.activeFrame_);
   flow.abortNow_.assertCalled();
 
-  function installResolveHelper(promise) {
-    var reject = promise.reject;
-    var pair = callbackPair(promise.fulfill, function(e) {
+  function installResolveHelper(frame) {
+    var abort = goog.bind(frame.abort, frame);
+    var close = goog.bind(frame.close, frame);
+    var pair = callbackPair(close, function(e) {
       assertIsStubError(e);
-      reject(e);
+      abort(e);
     });
-    promise.fulfill = pair.callback;
-    promise.reject = pair.errback;
+    frame.close = pair.callback;
+    frame.abort = pair.errback;
     return pair;
   }
 }
@@ -667,6 +659,7 @@ function testRunInNewFrame_doesNotReturnUntilScheduledFrameResolved() {
   pair.assertNeither('active frame still not resolved yet');
 
   assertNull(flow.getNextTask_());
+  clock.tick();
   pair.assertCallback();
   assertEquals(root, flow.activeFrame_);
   assertEquals(task2, flow.getNextTask_());
@@ -693,9 +686,11 @@ function testRunInNewFrame_doesNotReturnUntilScheduledFrameResolved_nested() {
   assertEquals('task3', flow.getNextTask_().getDescription());
   assertEquals('task4', flow.getNextTask_().getDescription());
   assertNull(flow.getNextTask_());
+  clock.tick();
   pair1.assertNeither();
   pair2.assertCallback();
   assertNull(flow.getNextTask_());
+  clock.tick();
   pair1.assertCallback();
 
   assertEquals(root, flow.activeFrame_);
@@ -1372,6 +1367,7 @@ function testWaiting_aConditionThatReturnsATaskResult() {
   clock.tick(100);  // Advance clock for next polling pass.
   assertEquals(1, count);
   turnEventLoop();
+  clock.tick();
   assertEquals(2, count);
   turnEventLoop();
   assertFlowHistory(
@@ -1381,6 +1377,7 @@ function testWaiting_aConditionThatReturnsATaskResult() {
   clock.tick(100);  // Advance clock for next polling pass.
   assertEquals(2, count);
   turnEventLoop();
+  clock.tick();
   assertEquals(3, count);
   turnEventLoop();
   assertFlowHistory(
@@ -1502,7 +1499,7 @@ function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
   scheduleWait(function() {
     scheduleAction('increment count', function() { ++count; });
     return count >= 3;
-  }, 300, 'counting to 3');
+  }, 350, 'counting to 3');
   schedule('post wait');
 
   turnEventLoop();
@@ -1515,6 +1512,7 @@ function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
   clock.tick(100);  // Advance clock for next polling pass.
   assertEquals(1, count);
   turnEventLoop();
+  clock.tick();
   assertEquals(2, count);
 
   clock.tick(100);  // Advance clock for next polling pass.
