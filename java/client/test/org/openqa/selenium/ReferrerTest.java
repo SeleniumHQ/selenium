@@ -35,6 +35,7 @@ import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -437,7 +438,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     HostAndPort getHostAndPort() {
-      String host = Objects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
+      String host = MoreObjects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
       return HostAndPort.fromParts(host, server.getPort());
     }
 

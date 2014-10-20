@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
@@ -283,7 +284,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   private static HostAndPort getHostAndPort(WebServer server) {
-    String host = Objects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
+    String host = MoreObjects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
     return HostAndPort.fromParts(host, server.getPort());
   }
 }
