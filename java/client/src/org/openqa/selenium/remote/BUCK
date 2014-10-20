@@ -86,7 +86,6 @@ java_library(name = 'remote',
   ],
   deps = [
     ':http-session-id',
-    '//java/client/src/org/openqa/selenium/browserlaunchers:proxies',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
     '//third_party/java/apache-httpclient:apache-httpclient',

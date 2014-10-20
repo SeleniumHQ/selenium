@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Tests for {@link ExpectedConditions}.
  */
+@SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
 
   @Mock private WebDriver mockDriver;
@@ -229,7 +230,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfAllElementsReturnsListOfElements() {
-    List webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = Lists.newArrayList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements = wait.until(visibilityOfAllElements(webElements));
