@@ -23,8 +23,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.html5.ResultSet;
-import org.openqa.selenium.html5.ResultSetRows;
 import org.openqa.selenium.remote.server.KnownElements;
 
 import java.util.List;
@@ -58,19 +56,6 @@ public class ResultConverter implements Function<Object, Object> {
       for (Map.Entry<?, ?> entry : resultAsMap.entrySet()) {
         converted.put(entry.getKey(), apply(entry.getValue()));
       }
-      return converted;
-    }
-
-    if (result instanceof ResultSet) {
-      Map<Object, Object> converted = Maps.newHashMap();
-      converted.put("insertId", ((ResultSet) result).getLastInsertedRowId());
-      converted.put("rowsAffected", ((ResultSet) result).getNumberOfRowsAffected());
-      ResultSetRows rsRows = ((ResultSet) result).rows();
-      List<Map<String, Object>> rows = Lists.newArrayList();
-      for (int i = 0; i < rsRows.size(); i++) {
-        rows.add(rsRows.item(i));
-      }
-      converted.put("rows", Lists.newArrayList(Iterables.transform(rows, this)));
       return converted;
     }
 

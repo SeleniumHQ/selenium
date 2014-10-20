@@ -99,7 +99,6 @@ import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
-import org.openqa.selenium.remote.server.handler.html5.ExecuteSQL;
 import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
@@ -265,8 +264,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(SET_TIMEOUT, ConfigureTimeout.class);
     addNewMapping(IMPLICITLY_WAIT, ImplicitlyWait.class);
     addNewMapping(SET_SCRIPT_TIMEOUT, SetScriptTimeout.class);
-
-    addNewMapping(EXECUTE_SQL, ExecuteSQL.class);
 
     addNewMapping(GET_LOCATION, GetLocationContext.class);
     addNewMapping(SET_LOCATION,  SetLocationContext.class);

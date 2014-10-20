@@ -84,7 +84,6 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));
-    defineCommand(EXECUTE_SQL, post("/session/:sessionId/execute_sql"));
 
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));

@@ -23,13 +23,11 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.html5.RemoteApplicationCache;
-import org.openqa.selenium.remote.html5.RemoteDatabaseStorage;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 
@@ -50,11 +48,6 @@ class Utils {
   static LocationContext getLocationContext(WebDriver driver) {
     return convert(driver, LocationContext.class, CapabilityType.SUPPORTS_LOCATION_CONTEXT,
         RemoteLocationContext.class);
-  }
-
-  static DatabaseStorage getDatabaseStorage(WebDriver driver) {
-    return convert(driver, DatabaseStorage.class, CapabilityType.SUPPORTS_SQL_DATABASE,
-        RemoteDatabaseStorage.class);
   }
 
   static WebStorage getWebStorage(WebDriver driver) {

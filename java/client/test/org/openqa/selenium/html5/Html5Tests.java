@@ -25,8 +25,7 @@ import org.junit.runners.Suite;
     Html5CapabilitiesTest.class,
     LocalStorageTest.class,
     LocationContextTest.class,
-    SessionStorageTest.class,
-    SqlDatabaseTest.class
+    SessionStorageTest.class
 })
 public class Html5Tests {
 }

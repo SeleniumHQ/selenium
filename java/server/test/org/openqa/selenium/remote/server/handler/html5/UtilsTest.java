@@ -34,7 +34,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.html5.AppCacheStatus;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -56,7 +55,6 @@ public class UtilsTest {
     WebDriver driver = mock(Html5Driver.class);
     assertSame(driver, Utils.getApplicationCache(driver));
     assertSame(driver, Utils.getLocationContext(driver));
-    assertSame(driver, Utils.getDatabaseStorage(driver));
     assertSame(driver, Utils.getWebStorage(driver));
   }
 
@@ -72,13 +70,6 @@ public class UtilsTest {
 
     try {
       Utils.getLocationContext(driver);
-      fail();
-    } catch (UnsupportedCommandException expected) {
-      // Do nothing.
-    }
-
-    try {
-      Utils.getDatabaseStorage(driver);
       fail();
     } catch (UnsupportedCommandException expected) {
       // Do nothing.
@@ -153,7 +144,6 @@ public class UtilsTest {
   interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {
   }
 
-  interface Html5Driver extends WebDriver, ApplicationCache, LocationContext,
-      DatabaseStorage, WebStorage {
+  interface Html5Driver extends WebDriver, ApplicationCache, LocationContext, WebStorage {
   }
 }

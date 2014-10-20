@@ -27,7 +27,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
-import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
@@ -235,9 +234,6 @@ public class DefaultSession implements Session {
       caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
       if (instance instanceof TakesScreenshot) {
         caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-      }
-      if (instance instanceof DatabaseStorage) {
-        caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
       }
       if (instance instanceof LocationContext) {
         caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);

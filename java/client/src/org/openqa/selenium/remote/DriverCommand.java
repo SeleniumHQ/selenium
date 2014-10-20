@@ -96,7 +96,6 @@ public interface DriverCommand {
   String IMPLICITLY_WAIT = "implicitlyWait";
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
 
-  String EXECUTE_SQL = "executeSQL";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
   String GET_APP_CACHE = "getAppCache";
