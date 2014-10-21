@@ -1,5 +1,15 @@
 ## v2.44.0-dev
 
+* Added the `until` module, which defines common explicit wait conditions.
+    Sample usage:
+
+        var firefox = require('selenium-webdriver/firefox'),
+            until = require('selenium-webdriver/until');
+
+        var driver = new firefox.Driver();
+        driver.get('http://www.google.com/ncr');
+        driver.wait(until.titleIs('Google Search'), 1000);
+
 * FIXED: 8000: `Builder.forBrowser()` now accepts an empty string since some
     WebDriver implementations ignore the value. A value must still be specified,
     however, since it is a required field in WebDriver's wire protocol.
