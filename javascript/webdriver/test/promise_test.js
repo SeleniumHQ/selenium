@@ -341,7 +341,10 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
 
 
 function testWhen_canCancelReturnedPromise() {
-  var callbacks = callbackPair(null, assertIsStubError);
+  var callbacks = callbackPair(null, function(e) {
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('just because', e.message);
+  });
 
   var promiseLike = {
     then: function(cb, eb) {
@@ -354,7 +357,7 @@ function testWhen_canCancelReturnedPromise() {
       callbacks.callback, callbacks.errback);
 
   assertTrue(promise.isPending());
-  promise.cancel(STUB_ERROR);
+  promise.cancel('just because');
   callbacks.assertErrback();
 
   // The following should have no effect.
@@ -1044,81 +1047,44 @@ function testCheckedNodeCall_functionThrowsAndReturns() {
 
 
 function testCancel_passesTheCancellationReasonToReject() {
-  var pair = callbackPair(null, assertIsStubError);
+  var pair = callbackPair(null, function(e) {
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('because i said so', e.message);
+  });
   var d = new webdriver.promise.Deferred();
   d.then(pair.callback, pair.errback);
-  d.cancel(STUB_ERROR);
+  d.cancel('because i said so');
   pair.assertErrback();
-}
-
-
-function testCancel_invokesTheCancellerFunctionIfOneWasProvided() {
-  var pair = callbackPair(null, assertIsStubError);
-  var callback = callbackHelper();
-  var d = new webdriver.promise.Deferred(callback);
-  d.then(pair.callback, pair.errback);
-  d.cancel(STUB_ERROR);
-  pair.assertErrback();
-  callback.assertCalled();
-}
-
-
-function testCancel_canChangeRejectionReasonWithTruthyCancellerReturnValue() {
-  var pair = callbackPair(null, assertIsStubError);
-  var callback = callbackHelper(function() {
-    return STUB_ERROR;
-  });
-  var d = new webdriver.promise.Deferred(callback);
-  d.then(pair.callback, pair.errback);
-  d.cancel();
-  pair.assertErrback();
-  callback.assertCalled();
 }
 
 
 function testCancel_canCancelADeferredFromAChainedPromise() {
-  var pair1 = callbackPair(null, assertIsStubError),
-      pair2 = callbackPair();
+  var pair1 = callbackPair(null, function(e) {
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+    assertEquals('because i said so', e.message);
+  });
+  var pair2 = callbackPair();
 
   var d = new webdriver.promise.Deferred();
   var p = d.then(pair1.callback, pair1.errback);
   p.then(pair2.callback, pair2.errback);
 
-  p.cancel(STUB_ERROR);
+  p.cancel('because i said so');
   pair1.assertErrback('The first errback should have fired.');
   pair2.assertCallback();
 }
 
 
 function testCancel_canCancelATimeout() {
-  var pair = callbackPair(null, assertIsStubError);
+  var pair = callbackPair(null, function(e) {
+    assertTrue(e instanceof webdriver.promise.CancellationError);
+  });
   var p = webdriver.promise.delayed(250).
       then(pair.callback, pair.errback);
-  p.cancel(STUB_ERROR);
+  p.cancel();
   pair.assertErrback();
   clock.tick(250);  // Just to make sure nothing happens.
   pair.assertErrback();
-}
-
-
-function testCancel_cannotCancelACheckedNodeCall() {
-  var d = webdriver.promise.checkedNodeCall(goog.nullFunction);
-  assertThrows(d.cancel);
-}
-
-
-function testCancel_cancellerFunctionExplicityResolvesPromise() {
-  var pair = callbackPair(goog.partial(assertEquals, 123));
-  var canceller;
-  var d = new webdriver.promise.Deferred(
-      canceller = callbackHelper(function(e) {
-        assertIsStubError(e);
-        d.fulfill(123);
-      }));
-  d.then(pair.callback, pair.errback);
-  d.cancel(STUB_ERROR);
-  canceller.assertCalled();
-  pair.assertCallback();
 }
 
 
@@ -1148,12 +1114,6 @@ function testCancel_noopCancelTriggeredOnCallbackOfResolvedPromise() {
 
   d.fulfill();
   p.cancel();  // This should not throw.
-}
-
-
-function testCancel_cancellerCanForbidCancellation() {
-  var d = new webdriver.promise.Deferred(throwStubError);
-  assertThrows(d.cancel);
 }
 
 
@@ -1239,11 +1199,11 @@ function testResolvedReturnsInputValueIfItIsAPromise() {
 
 function testADeferredsParentControlFlowIsActiveForCallbacks() {
   var flow = new webdriver.promise.ControlFlow();
-  var d = new webdriver.promise.Deferred(null, flow);
+  var d = new webdriver.promise.Deferred(flow);
   d.fulfill();
 
   var flow2 = new webdriver.promise.ControlFlow();
-  var d2 = new webdriver.promise.Deferred(null, flow2);
+  var d2 = new webdriver.promise.Deferred(flow2);
   d2.fulfill();
 
   assertIsFlow(webdriver.promise.defaultFlow_)();

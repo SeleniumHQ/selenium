@@ -1797,8 +1797,12 @@ function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
 }
 
 function testCancelsPromiseReturnedByCallbackIfFrameFails_promiseCallback() {
-  var chainPair = callbackPair(null, assertIsStubError);
-  var deferredPair = callbackPair(null, assertIsStubError);
+  var isCancellationError = function(e) {
+    assertEquals('CancellationError: Error: ouch', e.toString());
+  };
+
+  var chainPair = callbackPair(null, isCancellationError);
+  var deferredPair = callbackPair(null, isCancellationError);
 
   var d = new webdriver.promise.Deferred();
   d.then(deferredPair.callback, deferredPair.errback);
@@ -1818,8 +1822,12 @@ function testCancelsPromiseReturnedByCallbackIfFrameFails_promiseCallback() {
 }
 
 function testCancelsPromiseReturnedByCallbackIfFrameFails_taskCallback() {
-  var chainPair = callbackPair(null, assertIsStubError);
-  var deferredPair = callbackPair(null, assertIsStubError);
+  var isCancellationError = function(e) {
+    assertEquals('CancellationError: Error: ouch', e.toString());
+  };
+
+  var chainPair = callbackPair(null, isCancellationError);
+  var deferredPair = callbackPair(null, isCancellationError);
 
   var d = new webdriver.promise.Deferred();
   d.then(deferredPair.callback, deferredPair.errback);

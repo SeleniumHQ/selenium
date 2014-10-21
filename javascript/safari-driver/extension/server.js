@@ -174,7 +174,7 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
 
   if (this.webSocket_) {
     if (this.ready_.isPending()) {
-      this.ready_.cancel(Error('Server has been disposed'));
+      this.ready_.cancel('Server has been disposed');
     }
     this.disposeWebSocket_();
   }
