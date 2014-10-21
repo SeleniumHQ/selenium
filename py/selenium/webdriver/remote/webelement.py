@@ -285,7 +285,7 @@ class WebElement(object):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_file = self.parent.get_file_detector().is_local_file(*value)
+            local_file = self.parent.file_detector.is_local_file(*value)
             if local_file is not None:
                 value = self._upload(local_file)
 

@@ -19,5 +19,5 @@ class UselessFileDetector(file_detector.FileDetector):
     """
     A file detector that never finds anything.
     """
-    def is_local_file(*keys):
+    def is_local_file(self, *keys):
         return None

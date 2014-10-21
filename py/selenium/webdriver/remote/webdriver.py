@@ -23,7 +23,7 @@ from .errorhandler import ErrorHandler
 from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector
-from .useless_file_detector import UselessFileDetector
+from .local_file_detector import LocalFileDetector
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
@@ -75,7 +75,7 @@ class WebDriver(object):
         self.start_session(desired_capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
-        self._file_detector = UselessFileDetector()
+        self.file_detector = LocalFileDetector()
 
     @property
     def mobile(self):
@@ -775,7 +775,12 @@ class WebDriver(object):
         return self.execute(Command.GET_WINDOW_POSITION,
             {'windowHandle': windowHandle})['value']
 
-    def set_file_detector(self, detector):
+    @property
+    def file_detector(self):
+        return self._file_detector
+
+    @file_detector.setter
+    def file_detector(self, detector):
         """
         Set the file detector to be used when sending keyboard input.
         By default, this is set to a file detector that does nothing.
@@ -792,9 +797,6 @@ class WebDriver(object):
         if not isinstance(detector, FileDetector):
             raise WebDriverException("Detector has to be instance of FileDetector")
         self._file_detector = detector;
-
-    def get_file_detector(self):
-        return self._file_detector
 
     @property
     def orientation(self):

@@ -13,13 +13,15 @@
 # limitations under the License.
 
 import file_detector
+import os
+from selenium.webdriver.common.keys import Keys
 
 
 class LocalFileDetector(file_detector.FileDetector):
     """
     Detects files on the local disk.
     """
-    def is_local_file(*keys):
+    def is_local_file(self, *keys):
         file_path = ''
         typing = []
         for val in keys:

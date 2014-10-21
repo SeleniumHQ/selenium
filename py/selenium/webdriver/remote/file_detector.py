@@ -23,5 +23,5 @@ class FileDetector(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def is_local_file(*keys):
+    def is_local_file(self, *keys):
         return
