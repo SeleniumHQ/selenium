@@ -30,6 +30,6 @@
         "mocha" : "~1.10.0"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha -t 600000 --recursive test"
+        "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"
     }
 }
