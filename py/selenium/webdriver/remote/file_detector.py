@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import abc
+import os
+from selenium.webdriver.common.keys import Keys
 
 
 class FileDetector(object):
@@ -25,3 +27,41 @@ class FileDetector(object):
     @abc.abstractmethod
     def is_local_file(self, *keys):
         return
+
+
+class UselessFileDetector(FileDetector):
+    """
+    A file detector that never finds anything.
+    """
+    def is_local_file(self, *keys):
+        return None
+
+
+class LocalFileDetector(FileDetector):
+    """
+    Detects files on the local disk.
+    """
+    def is_local_file(self, *keys):
+        file_path = ''
+        typing = []
+        for val in keys:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = val.__str__()
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i])
+        file_path = ''.join(typing)
+
+        if file_path is '':
+            return None
+
+        try:
+            if os.path.isfile(file_path):
+                return file_path
+        except:
+            pass
+        return None

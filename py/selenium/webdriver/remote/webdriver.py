@@ -22,8 +22,7 @@ from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
 from .switch_to import SwitchTo
 from .mobile import Mobile
-from .file_detector import FileDetector
-from .local_file_detector import LocalFileDetector
+from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
