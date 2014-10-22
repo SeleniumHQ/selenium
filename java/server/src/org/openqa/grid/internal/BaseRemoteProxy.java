@@ -309,8 +309,9 @@ public class BaseRemoteProxy implements RemoteProxy {
         if (hasTimedOut) {
           if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
-                "session " + session
-                    + " has TIMED OUT due to client inactivity and will be released.");
+                     String.format(
+                         "session %s on Proxy %s has TIMED OUT due to client inactivity and will be released.",
+                         session, proxy.getId()));
             try {
               ((TimeoutListener) proxy).beforeRelease(session);
             } catch(IllegalStateException ignore){
@@ -561,8 +562,8 @@ public class BaseRemoteProxy implements RemoteProxy {
 
     return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
-  
-  
+
+
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
