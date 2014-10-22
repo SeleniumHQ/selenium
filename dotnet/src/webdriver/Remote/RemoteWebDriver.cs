@@ -487,10 +487,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByClassName(string className)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElement("class name", className);
-            return this.FindElement("css selector", "." + className);
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElement("css selector", "." + className);
+            return this.FindElement("class name", className);
         }
 
         /// <summary>
@@ -506,10 +509,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElements("class name", className);
-            return this.FindElements("css selector", "." + className);
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElements("css selector", "." + className);
+            return this.FindElements("class name", className);
         }
 
         #endregion
@@ -598,10 +604,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByName(string name)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElement("name", name);
-            return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            return this.FindElement("name", name);
         }
 
         /// <summary>
@@ -617,10 +626,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElements("name", name);
-            return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            return this.FindElements("name", name);
         }
 
         #endregion
@@ -639,10 +651,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByTagName(string tagName)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElement("tag name", tagName);
-            return this.FindElement("css selector", tagName);
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElement("css selector", tagName);
+            return this.FindElement("tag name", tagName);
         }
 
         /// <summary>
@@ -658,10 +673,13 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
         {
-            // TODO: Modified for spec-compliance. May change.
-            // Requires cleanup after spec is at recommendation.
-            // return this.FindElements("tag name", tagName);
-            return this.FindElements("css selector", tagName);
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElements("css selector", tagName);
+            return this.FindElements("tag name", tagName);
         }
         #endregion
 
