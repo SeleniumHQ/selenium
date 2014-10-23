@@ -1,3 +1,10 @@
+v2.44.0
+=======
+ * Supports native events for Firefox versions 33 (current), 32 (immediately
+   previous release), 31 (current ESR), and 24 (immediately previous ESR).
+ * Rolled back improper spec compliance for finding elements.
+ * Fixed WebDriverBackedSelenium compatibility with IE5. Fixes issue #7938.
+
 v2.43.1
 =======
  * Point-release to correct version resources in .NET bindings assemblies. No
