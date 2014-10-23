@@ -132,7 +132,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html#getSessionLogs(org.json.JSONObject)">getSessionLogs</a></strong>(org.json.JSONObject&nbsp;rawSessionMap)</code>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html#getSessionLogs(com.google.gson.JsonObject)">getSessionLogs</a></strong>(com.google.gson.JsonObject&nbsp;rawSessionMap)</code>
 <div class="block">Creates a session logs map, with session logs mapped to session IDs, given
  a raw session log map as a JSON object.</div>
 </td>
@@ -176,21 +176,17 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getSessionLogs(org.json.JSONObject)">
+<a name="getSessionLogs(com.google.gson.JsonObject)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getSessionLogs</h4>
-<pre>public static&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&gt;&nbsp;getSessionLogs(org.json.JSONObject&nbsp;rawSessionMap)
-                                                                  throws org.json.JSONException</pre>
+<pre>public static&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&gt;&nbsp;getSessionLogs(com.google.gson.JsonObject&nbsp;rawSessionMap)</pre>
 <div class="block">Creates a session logs map, with session logs mapped to session IDs, given
  a raw session log map as a JSON object.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>rawSessionMap</code> - The raw session map.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>The session logs mapped to session IDs.</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code>java.lang.Exception</code> - If something goes wrong in server communication or JSON parsing.</dd>
-<dd><code>org.json.JSONException</code></dd></dl>
+<dt><span class="strong">Returns:</span></dt><dd>The session logs mapped to session IDs.</dd></dl>
 </li>
 </ul>
 </li>

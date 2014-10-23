@@ -134,7 +134,14 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#convert(java.lang.Object)">convert</a></strong>(java.lang.Object&nbsp;object)</code>
-<div class="block">Convert an object that may or may not be a JSONArray or JSONObject into its JSON string
+<div class="block">Convert an object that may or may not be a JsonElement into its JSON string
+ representation, handling the case where it is neither in a graceful way.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>com.google.gson.JsonElement</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#convertObject(java.lang.Object)">convertObject</a></strong>(java.lang.Object&nbsp;object)</code>
+<div class="block">Convert an object that may or may not be a JsonElement into its JSON object
  representation, handling the case where it is neither in a graceful way.</div>
 </td>
 </tr>
@@ -180,14 +187,27 @@ extends java.lang.Object</pre>
 <a name="convert(java.lang.Object)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>convert</h4>
 <pre>public&nbsp;java.lang.String&nbsp;convert(java.lang.Object&nbsp;object)</pre>
-<div class="block">Convert an object that may or may not be a JSONArray or JSONObject into its JSON string
+<div class="block">Convert an object that may or may not be a JsonElement into its JSON string
  representation, handling the case where it is neither in a graceful way.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>object</code> - which needs conversion</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the JSON string representation of object</dd></dl>
+</li>
+</ul>
+<a name="convertObject(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>convertObject</h4>
+<pre>public&nbsp;com.google.gson.JsonElement&nbsp;convertObject(java.lang.Object&nbsp;object)</pre>
+<div class="block">Convert an object that may or may not be a JsonElement into its JSON object
+ representation, handling the case where it is neither in a graceful way.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>object</code> - which needs conversion</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the JSON object representation of object</dd></dl>
 </li>
 </ul>
 </li>

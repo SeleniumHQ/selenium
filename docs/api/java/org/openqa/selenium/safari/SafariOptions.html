@@ -247,7 +247,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>org.json.JSONObject</code></td>
+<td class="colFirst"><code>com.google.gson.JsonElement</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#toJson()">toJson</a></strong>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
 </td>
@@ -493,14 +493,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>toJson</h4>
-<pre>public&nbsp;org.json.JSONObject&nbsp;toJson()
-                           throws java.io.IOException,
-                                  org.json.JSONException</pre>
+<pre>public&nbsp;com.google.gson.JsonElement&nbsp;toJson()
+                                   throws java.io.IOException</pre>
 <div class="block">Converts this instance to its JSON representation.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>The JSON representation of the options.</dd>
 <dt><span class="strong">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an error occurred while reading the Safari extension files.</dd>
-<dd><code>org.json.JSONException</code></dd></dl>
+<dd><code>java.io.IOException</code> - If an error occurred while reading the Safari extension files.</dd></dl>
 </li>
 </ul>
 <a name="equals(java.lang.Object)">

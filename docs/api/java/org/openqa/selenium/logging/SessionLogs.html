@@ -134,12 +134,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#addLog(java.lang.String, org.openqa.selenium.logging.LogEntries)">addLog</a></strong>(java.lang.String&nbsp;logType,
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#addLog(java.lang.String,%20org.openqa.selenium.logging.LogEntries)">addLog</a></strong>(java.lang.String&nbsp;logType,
       <a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;logEntries)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#fromJSON(org.json.JSONObject)">fromJSON</a></strong>(org.json.JSONObject&nbsp;rawSessionLogs)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#fromJSON(com.google.gson.JsonObject)">fromJSON</a></strong>(com.google.gson.JsonObject&nbsp;rawSessionLogs)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;</code></td>
@@ -229,16 +229,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;&nbsp;getAll()</pre>
 </li>
 </ul>
-<a name="fromJSON(org.json.JSONObject)">
+<a name="fromJSON(com.google.gson.JsonObject)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>fromJSON</h4>
-<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&nbsp;fromJSON(org.json.JSONObject&nbsp;rawSessionLogs)
-                            throws org.json.JSONException</pre>
-<dl><dt><span class="strong">Throws:</span></dt>
-<dd><code>org.json.JSONException</code></dd></dl>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&nbsp;fromJSON(com.google.gson.JsonObject&nbsp;rawSessionLogs)</pre>
 </li>
 </ul>
 </li>

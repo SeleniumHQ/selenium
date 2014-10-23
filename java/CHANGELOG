@@ -1,3 +1,47 @@
+v2.44.0
+=======
+
+  * Updating Native events to support Firefox 24, 31, 32 and 33
+  * Update calls to deprecated guava methods.
+  * Remove the deprecated DatabaseStorage interface. And callers. Note that the browser implementations may still have an implementation of these interfaces, but nothing in the main project implements it so we should be okay.
+  * Bump the version of guava to 18
+  * Bringing MarionetteConnection in line with the current marionette state (FF33)
+  * Add new tests for some wait conditions Also add the ExpectedConditionsTest to the test suite.
+  * Update FindBy annotations description
+  * Moving last part of browserlaunchers package from client to server
+  * Moving Proxies utility class to server
+  * Moving LauncherUtils to the server
+  * Moving utility method isScriptFile to the only class where it is needed
+  * Deleting tests for removed deprecated classes
+  * Moving more RC stuff to the server
+  * Moving tests too
+  * Moving proxy management stuff to the server, it is used in RC browser launchers only
+  * Using asMap as well as toMap to convert an object to Json
+  * Using JsonNull.INSTANCE instead of null
+  * Removing deprecated classes
+  * Log stacktrace. Adds more info on catch to be put into the log instead of just console.  This will help debug issues when one has access to grid hub log but no access to console.
+  * Remove unused static import of Ignore.Driver.HTMLUNIT.
+  * Remove obsolete ChromeOptions code.
+  * trim() HTTP response content because some drivers send back a response containing trailing null bytes, which the GSON parser does not like.
+  * If JsonParser.parse() fails to parse a string obtained from a reflective call to a toJson() method, assume it is a primitive string.
+        This is the case for, e.g., FirefoxProfile.toJson(), which returns a base64-encoded zip file. That string likely contains at least one '/', which the Gson parser rejects.
+  * Fixing SessionId from json converter to better handle the case of null sessionId
+  * Fix the Eclipse config. The new gson dependency wasn't added. Now is :) Also switched a call in HtmlUnitWebElement to use guava rather than commons-lang since that's already included in the build configs for both Buck and CrazyFun.
+  * Get the Buck build working again.
+  * HtmlUnit: add text to the end of input fields. This makes the htmlunit driver work as the other drivers do.
+  * HtmlUnit: Fix getAttribute for dynamic properties.
+  * Enable Html5CapabilitiesTest for HtmlUnit
+  * Fix classpath for running tests in eclipse This allows the htmlunitdriver tests to run in Eclipse.
+  * Fixing broken CrossDomainRpcLoader
+  * Implementing autoconverion of platform in Capabilities on write
+  * Moving from org.json to gson because the license. Fixes issue 7956
+  * Revert "Bump the version of webbit to 0.4.15"
+  * Optimizing finding multiple elements by id by using CSS selectors if available. Fixes issue 7682
+  * Fixing WDBS compatibility with IE5. Fixes issue 7938
+  * HtmlUnitDriver: Initial code cleanup.
+  * Eclipse classpath fixes for htmlunit.
+  * Deflake a test.
+
 v2.43.1
 =======
 

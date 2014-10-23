@@ -160,19 +160,19 @@ implements <a href="../../../../../org/openqa/selenium/support/pagefactory/Field
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#decorate(java.lang.ClassLoader, java.lang.reflect.Field)">decorate</a></strong>(java.lang.ClassLoader&nbsp;loader,
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#decorate(java.lang.ClassLoader,%20java.lang.reflect.Field)">decorate</a></strong>(java.lang.ClassLoader&nbsp;loader,
         java.lang.reflect.Field&nbsp;field)</code>
 <div class="block">This method is called by PageFactory on all fields to decide how to decorate the field.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForListLocator(java.lang.ClassLoader, org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForListLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForListLocator(java.lang.ClassLoader,%20org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForListLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
                    <a href="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</a>&nbsp;locator)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForLocator(java.lang.ClassLoader, org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForLocator(java.lang.ClassLoader,%20org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
                <a href="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</a>&nbsp;locator)</code>&nbsp;</td>
 </tr>
 </table>
@@ -239,11 +239,11 @@ implements <a href="../../../../../org/openqa/selenium/support/pagefactory/Field
 <h4>decorate</h4>
 <pre>public&nbsp;java.lang.Object&nbsp;decorate(java.lang.ClassLoader&nbsp;loader,
                         java.lang.reflect.Field&nbsp;field)</pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html#decorate(java.lang.ClassLoader, java.lang.reflect.Field)">FieldDecorator</a></code></strong></div>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html#decorate(java.lang.ClassLoader,%20java.lang.reflect.Field)">FieldDecorator</a></code></strong></div>
 <div class="block">This method is called by PageFactory on all fields to decide how to decorate the field.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html#decorate(java.lang.ClassLoader, java.lang.reflect.Field)">decorate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html" title="interface in org.openqa.selenium.support.pagefactory">FieldDecorator</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html#decorate(java.lang.ClassLoader,%20java.lang.reflect.Field)">decorate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html" title="interface in org.openqa.selenium.support.pagefactory">FieldDecorator</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>loader</code> - The class loader that was used for the page object</dd><dd><code>field</code> - The field that may be decorated.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Value to decorate the field with or null if it shouldn't be decorated. If non-null,
          must be assignable to the field.</dd></dl>
