@@ -1,4 +1,4 @@
-## v2.44.0-dev
+## v2.44.0
 
 * Added the `until` module, which defines common explicit wait conditions.
     Sample usage:
