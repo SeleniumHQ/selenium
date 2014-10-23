@@ -1019,7 +1019,6 @@ namespace OpenQA.Selenium
             Assert.IsTrue(toBeDeleted.Displayed);
 
             driver.FindElement(By.Id("delete")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             bool displayedAfterDelete = toBeDeleted.Displayed;
         }
 

@@ -71,7 +71,6 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded()
         {
             driver.Url = framesetPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
 
             driver.SwitchTo().Frame(0);
             IWebElement pageNumber = driver.FindElement(By.XPath("//span[@id='pageNumber']"));
@@ -172,7 +171,6 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
 
             driver.Navigate().Refresh();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
 
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }

@@ -16,7 +16,6 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             elem.Click();
         }
 
@@ -28,7 +27,6 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Size elementSize = elem.Size;
         }
 
