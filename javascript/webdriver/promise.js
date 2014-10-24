@@ -108,9 +108,9 @@ webdriver.promise.Thenable.prototype.isPending = function() {};
  * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback The
  *     function to call if this promise is successfully resolved. The function
  *     should expect a single argument: the promise's resolved value.
- * @param {?(function(*): (R|webdriver.promise.Promise.<R>))=} opt_errback The
- *     function to call if this promise is rejected. The function should expect
- *     a single argument: the rejection reason.
+ * @param {?(function(Error): (R|webdriver.promise.Promise.<R>))=} opt_errback
+ *     The function to call if this promise is rejected. The function should
+ *     expect a single argument: the rejection reason.
  * @return {!webdriver.promise.Promise.<R>} A new promise which will be
  *     resolved with the result of the invoked callback.
  * @template R
@@ -136,9 +136,9 @@ webdriver.promise.Thenable.prototype.then = function(
  *   });
  * </code></pre>
  *
- * @param {function(*): (R|webdriver.promise.Promise.<R>)} errback The function
- *     to call if this promise is rejected. The function should expect a single
- *     argument: the rejection reason.
+ * @param {function(Error): (R|webdriver.promise.Promise.<R>)} errback The
+ *     function to call if this promise is rejected. The function should
+ *     expect a single argument: the rejection reason.
  * @return {!webdriver.promise.Promise.<R>} A new promise which will be
  *     resolved with the result of the invoked callback.
  * @template R
@@ -429,10 +429,10 @@ webdriver.promise.Deferred = function(opt_flow) {
    * @param {*} newValue The deferred's new value.
    */
   function notifyAll(newState, newValue) {
-    if (newState === webdriver.promise.Deferred.State_.REJECTED &&
-        // We cannot check instanceof Error since the object may have been
-        // created in a different JS context.
-        goog.isObject(newValue) && goog.isString(newValue.message)) {
+    if (newState === webdriver.promise.Deferred.State_.REJECTED) {
+      if (!webdriver.promise.isError_(newValue)) {
+        newValue = Error(newValue ? newValue : 'Promise rejected');
+      }
       newValue = flow.annotateError(/** @type {!Error} */(newValue));
     }
 
@@ -484,7 +484,8 @@ webdriver.promise.Deferred = function(opt_flow) {
    * Registers a callback on this Deferred.
    *
    * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback .
-   * @param {?(function(*): (R|webdriver.promise.Promise.<R>))=} opt_errback .
+   * @param {?(function(Error):
+   *           (R|webdriver.promise.Promise.<R>))=} opt_errback .
    * @return {!webdriver.promise.Promise.<R>} A new promise representing the
    *     result of the callback.
    * @template R
@@ -538,8 +539,8 @@ webdriver.promise.Deferred = function(opt_flow) {
   /**
    * Rejects this promise. If the error is itself a promise, this instance will
    * be chained to it and be rejected with the error's resolved value.
-   * @param {*=} opt_error The rejection reason, typically either a
-   *     {@code Error} or a {@code string}.
+   * @param {*=} opt_error The rejection reason. If not a {@link Error}, one
+   *     will be created from the value's string representation.
    */
   function reject(opt_error) {
     resolve(webdriver.promise.Deferred.State_.REJECTED, opt_error);
@@ -622,7 +623,7 @@ webdriver.promise.Deferred.State_ = {
 webdriver.promise.isError_ = function(value) {
   return value instanceof Error ||
       goog.isObject(value) &&
-      (Object.prototype.toString.call(value) === '[object Error]' ||
+      (goog.isString(value.message) ||
        // A special test for goog.testing.JsUnitException.
        value.isJsUnitException);
 
@@ -1514,19 +1515,12 @@ webdriver.promise.ControlFlow.prototype.runEventLoop_ = function() {
   }, this);
 
   this.trimHistory_();
-  var self = this;
   this.runInNewFrame_(task.execute, function(result) {
     markTaskComplete();
     task.fulfill(result);
   }, function(error) {
     markTaskComplete();
-
-    if (!webdriver.promise.isError_(error) &&
-        !webdriver.promise.isPromise(error)) {
-      error = Error(error);
-    }
-
-    task.reject(self.annotateError(/** @type {!Error} */ (error)));
+    task.reject(error);
   }, true);
 };
 

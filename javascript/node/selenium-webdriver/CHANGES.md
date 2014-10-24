@@ -1,3 +1,9 @@
+## v2.45.0-dev
+
+* Promise rejections are now always coerced to Error-like objects (an object
+    with a string `message` property). We do not guarantee `instanceof Error`
+    since the rejection value may come from another context.
+
 ## v2.44.0
 
 * Added the `until` module, which defines common explicit wait conditions.

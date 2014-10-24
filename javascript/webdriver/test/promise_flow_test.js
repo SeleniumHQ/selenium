@@ -2249,26 +2249,6 @@ function testAnnotatesRejectedPromiseErrorsWithFlowState_taskErrorBubblesUp() {
   pair.assertErrback();
 }
 
-function testDoesNotAnnotatedRejectedPromisesIfGivenNonErrorValue() {
-  var error = {};
-
-  var pair = callbackPair(null, function(e) {
-    assertEquals(error, e);
-    for (var val in error) {
-      fail('Did not expect error to be modified');
-    }
-  });
-
-  webdriver.promise.createFlow(function(flow) {
-    var d = webdriver.promise.defer();
-    d.reject(error);
-    d.then(pair.callback, pair.errback);
-  });
-
-  runAndExpectSuccess();
-  pair.assertErrback();
-}
-
 function testDoesNotModifyRejectionErrorIfPromiseNotInsideAFlow() {
   var error = Error('original message');
   var originalStack = error.stack;

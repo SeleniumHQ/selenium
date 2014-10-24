@@ -474,6 +474,55 @@ function testResolvingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
 }
 
 
+function testRejectForcesValueToAnError_errorInstance() {
+  var d = webdriver.promise.defer();
+  var callback = callbackHelper(assertIsStubError);
+
+  d.thenCatch(callback);
+  d.reject(STUB_ERROR);
+  callback.assertCalled();
+}
+
+
+function testRejectForcesValueToAnError_errorSubTypeInstance() {
+  var d = webdriver.promise.defer();
+  var e = new TypeError('hi');
+  var callback = callbackHelper(function(actual) {
+    assertEquals(e, actual);
+  });
+
+  d.thenCatch(callback);
+  d.reject(e);
+  callback.assertCalled();
+}
+
+
+function testRejectForcesValueToAnError_customErrorInstance() {
+  var d = webdriver.promise.defer();
+  var e = new goog.debug.Error('hi there');
+  var callback = callbackHelper(function(actual) {
+    assertEquals(e, actual);
+  });
+
+  d.thenCatch(callback);
+  d.reject(e);
+  callback.assertCalled();
+}
+
+
+function testRejectForcesValueToAnError_errorLike() {
+  var d = webdriver.promise.defer();
+  var e = {message: 'yolo'};
+  var callback = callbackHelper(function(actual) {
+    assertEquals(e, actual);
+  });
+
+  d.thenCatch(callback);
+  d.reject(e);
+  callback.assertCalled();
+}
+
+
 function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   var d1 = new webdriver.promise.Deferred();
   var d2 = new webdriver.promise.Deferred();

@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.44.0",
+    "version": "2.45.0-dev",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
         "automation",
