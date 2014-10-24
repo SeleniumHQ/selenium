@@ -108,11 +108,11 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
  *     screenshot of the focused tab as a base64 encoded PNG.
  */
 safaridriver.extension.commands.takeScreenshot = function(session) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
-    response.fulfill(dataUrl.substring('data:image/png;base64,'.length));
+  return new webdriver.promise.Promise(function(fulfill) {
+    session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
+      fulfill(dataUrl.substring('data:image/png;base64,'.length));
+    });
   });
-  return response.promise;
 };
 
 
@@ -138,15 +138,14 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
         'http://code.google.com/p/selenium/issues/detail?id=3773');
   }
 
-  var response = new webdriver.promise.Deferred();
-  var tab = session.getCommandTab();
-  tab.whenReady(function() {
-    var expectLoad = tab.loadsNewPage(uri);
-    safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        expectLoad).then(response.fulfill, response.reject);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    var tab = session.getCommandTab();
+    tab.whenReady(function() {
+      var expectLoad = tab.loadsNewPage(uri);
+      safaridriver.extension.commands.sendNavigationCommand_(
+          session, command, expectLoad).then(fulfill, reject);
+    });
   });
-
-  return response.promise;
 };
 
 
@@ -158,12 +157,12 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
  *     the operation has completed.
  */
 safaridriver.extension.commands.refresh = function(session, command) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function() {
-    safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        true).then(response.fulfill, response.reject);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    session.getCommandTab().whenReady(function() {
+      safaridriver.extension.commands.sendNavigationCommand_(
+          session, command, true).then(fulfill, reject);
+    });
   });
-  return response.promise;
 };
 
 

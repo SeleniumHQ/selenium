@@ -21,7 +21,7 @@ goog.provide('safaridriver.inject.util');
 
 goog.require('bot.response');
 goog.require('safaridriver.message.LoadModule');
-goog.require('webdriver.promise.Deferred');
+goog.require('webdriver.promise.Promise');
 
 
 /**
@@ -33,25 +33,23 @@ goog.require('webdriver.promise.Deferred');
  *     the module's source code.
  */
 safaridriver.inject.util.loadModule = function(moduleId, target) {
-  var numAttempts = 0;
-  var d = new webdriver.promise.Deferred();
-  attemptLoad();
-  return d.promise;
-
-  function attemptLoad() {
-    var message = new safaridriver.message.LoadModule(moduleId);
-    var response = /** @type {bot.response.ResponseObject} */ (
-        message.sendSync(target));
-    try {
-      var src = bot.response.checkResponse(response)['value'];
-      d.fulfill(src);
-    } catch (ex) {
-      numAttempts += 1;
-      if (numAttempts == 3) {
-        d.reject(ex);
-      } else {
-        setTimeout(attemptLoad, 150);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    var numAttempts = 0;
+    attemptLoad();
+    function attemptLoad() {
+      var message = new safaridriver.message.LoadModule(moduleId);
+      var response = /** @type {bot.response.ResponseObject} */ (
+          message.sendSync(target));
+      try {
+        fulfill(bot.response.checkResponse(response)['value']);
+      } catch (ex) {
+        numAttempts += 1;
+        if (numAttempts == 3) {
+          reject(ex);
+        } else {
+          setTimeout(attemptLoad, 150);
+        }
       }
     }
-  }
+  });
 };

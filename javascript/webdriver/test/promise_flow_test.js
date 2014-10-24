@@ -2174,58 +2174,6 @@ function testCancelsRemainingTasksInFrameIfATaskFails() {
   pair.assertErrback();
 }
 
-function testAnnotatesRejectedPromiseErrorsWithFlowState() {
-  var error = Error('original message');
-  var originalStack = webdriver.stacktrace.format(error).stack;
-
-  var pair = callbackPair(null, function(e) {
-    assertEquals(error, e);
-    assertEquals('original message', e.message);
-    assertTrue(
-      'Expected to start with: ' + originalStack,
-      goog.string.startsWith(e.stack, originalStack));
-
-    var parts = e.stack.split('\n==== async task ====\n');
-    assertEquals(2, parts.length);
-    assertEquals(originalStack, parts[0]);
-  });
-
-  webdriver.promise.createFlow(function(flow) {
-    var d = webdriver.promise.defer();
-    d.reject(error);
-    d.then(pair.callback, pair.errback);
-  });
-
-  runAndExpectSuccess();
-  pair.assertErrback();
-}
-
-function testAnnotatesChainedErrors() {
-  var error = Error('original message');
-  var originalStack = webdriver.stacktrace.format(error).stack;
-
-  var pair = callbackPair(null, function(e) {
-    assertEquals(error, e);
-    assertEquals('original message', e.message);
-    assertTrue(
-      'Expected to start with: ' + originalStack,
-      goog.string.startsWith(e.stack, originalStack));
-
-    var parts = e.stack.split('\n==== async task ====\n');
-    assertEquals(2, parts.length);
-    assertEquals(originalStack, parts[0]);
-  });
-
-  webdriver.promise.createFlow(function(flow) {
-    var rejected = webdriver.promise.rejected(error);
-    webdriver.promise.fulfilled(rejected).
-        then(pair.callback, pair.errback);
-  });
-
-  runAndExpectSuccess();
-  pair.assertErrback();
-}
-
 function testAnnotatesRejectedPromiseErrorsWithFlowState_taskErrorBubblesUp() {
   var error = Error('original message');
   var originalStack = webdriver.stacktrace.format(error).stack;

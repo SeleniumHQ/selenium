@@ -248,32 +248,227 @@ webdriver.promise.Thenable.isImplementation = function(object) {
  * in the pending state and may make a single transition to either a
  * fulfilled or rejected state, at which point the promise is considered
  * resolved.
- *
  * @constructor
  * @implements {webdriver.promise.Thenable.<T>}
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
-webdriver.promise.Promise = function() {};
+webdriver.promise.Promise = function(resolver, opt_flow) {
+
+  /** @private {!webdriver.promise.ControlFlow} */
+  this.flow_ = opt_flow || webdriver.promise.controlFlow();
+
+  /** @private {webdriver.promise.Promise.<?>} */
+  this.parent_ = null;
+
+  /** @private {Array.<webdriver.promise.Promise.Listener_>} */
+  this.listeners_ = null;
+
+  /** @private {webdriver.promise.Promise.State_} */
+  this.state_ = webdriver.promise.Promise.State_.PENDING;
+
+  /** @private {boolean} */
+  this.handled_ = false;
+
+  /** @private {?number} */
+  this.pendingRejectionKey_ = null;
+
+  /** @private {*} */
+  this.value_ = undefined;
+
+  try {
+    var self = this;
+    resolver(function(value) {
+      self.resolve_(webdriver.promise.Promise.State_.FULFILLED, value);
+    }, function(reason) {
+      self.resolve_(webdriver.promise.Promise.State_.REJECTED, reason);
+    });
+  } catch (ex) {
+    this.resolve_(webdriver.promise.Promise.State_.REJECTED, ex);
+  }
+};
 webdriver.promise.Thenable.addImplementation(webdriver.promise.Promise);
 
 
+/**
+ * @typedef {{
+ *     promise: !webdriver.promise.Promise,
+ *     onFulfilled: function(*),
+ *     onRejected: function(*)
+ * }}
+ * @private
+ */
+webdriver.promise.Promise.Listener_;
+
+
+/**
+ * @enum {number}
+ * @private
+ */
+webdriver.promise.Promise.State_ = {
+  PENDING: 0,
+  BLOCKED: 1,
+  REJECTED: 2,
+  FULFILLED: 3
+};
+
+
+/**
+ * Resolves this promise. If the new value is itself a promise, this function
+ * will wait for it to be resolved before notifying the registered listeners.
+ * @param {webdriver.promise.Promise.State_} newState The promise's new state.
+ * @param {*} newValue The promise's new value.
+ * @throws {TypeError} If {@code newValue === this}.
+ * @private
+ */
+webdriver.promise.Promise.prototype.resolve_ = function(newState, newValue) {
+  if (webdriver.promise.Promise.State_.PENDING !== this.state_) {
+    return;
+  }
+
+  if (newValue === this) {
+    // See promise a+, 2.3.1
+    // http://promises-aplus.github.io/promises-spec/#point-48
+    throw new TypeError('A promise may not resolve to itself');
+  }
+
+  this.state_ = webdriver.promise.Promise.State_.BLOCKED;
+
+  if (webdriver.promise.isPromise(newValue)) {
+    var onFulfill = goog.bind(this.notifyAll_, this, newState);
+    var onReject = goog.bind(this.notifyAll_, this,
+        webdriver.promise.Promise.State_.REJECTED);
+    if (newValue instanceof webdriver.promise.Promise) {
+      newValue.then(onFulfill, onReject);
+    } else {
+      webdriver.promise.asap(newValue, onFulfill, onReject);
+    }
+  } else {
+    this.notifyAll_(newState, newValue);
+  }
+};
+
+
+/**
+ * Notifies all of the listeners registered with this promise that its state
+ * has changed.
+ * @param {webdriver.promise.Promise.State_} newState The promise's new state.
+ * @param {*} newValue The promise's new value.
+ * @private
+ */
+webdriver.promise.Promise.prototype.notifyAll_ = function(
+    newState, newValue) {
+  if (newState === webdriver.promise.Promise.State_.REJECTED) {
+  }
+
+  this.state_ = newState;
+  this.value_ = newValue;
+
+  while (this.listeners_ && this.listeners_.length) {
+    this.notify_(this.listeners_.shift());
+  }
+  this.listeners_ = null;
+
+  if (!this.handled_ &&
+      newState === webdriver.promise.Promise.State_.REJECTED &&
+      !(newValue instanceof webdriver.promise.CancellationError)) {
+    var self = this;
+    this.flow_.pendingRejections_ += 1;
+    this.pendingRejectionKey_ = this.flow_.timer.setTimeout(function() {
+      self.pendingRejectionKey_ = null;
+      self.flow_.pendingRejections_ -= 1;
+      self.flow_.abortFrame_(newValue);
+    }, 0);
+  }
+};
+
+
+/**
+ * Notifies a single listener of this promise's change in state.
+ * @param {webdriver.promise.Promise.Listener_} listener The listener to
+ *     notify.
+ * @private
+ */
+webdriver.promise.Promise.prototype.notify_ = function(listener) {
+  if (this.state_ === webdriver.promise.Promise.State_.REJECTED) {
+    listener.onRejected(this.value_);
+  } else {
+    listener.onFulfilled(this.value_);
+  }
+};
+
+
 /** @override */
-webdriver.promise.Promise.prototype.cancel = function(reason) {
-  throw new TypeError('Unimplemented function: "cancel"');
+webdriver.promise.Promise.prototype.cancel = function(opt_reason) {
+  if (!this.isPending()) {
+    return;
+  }
+
+  if (this.parent_) {
+    this.parent_.cancel(opt_reason);
+  } else {
+    this.resolve_(
+        webdriver.promise.Promise.State_.REJECTED,
+        new webdriver.promise.CancellationError(opt_reason));
+  }
 };
 
 
 /** @override */
 webdriver.promise.Promise.prototype.isPending = function() {
-  throw new TypeError('Unimplemented function: "isPending"');
+  return this.state_ === webdriver.promise.Promise.State_.PENDING;
 };
 
 
 /** @override */
 webdriver.promise.Promise.prototype.then = function(
     opt_callback, opt_errback) {
-  throw new TypeError('Unimplemented function: "then"');
+  if (!goog.isFunction(opt_callback) && !goog.isFunction(opt_errback)) {
+    return this;
+  }
+
+  this.handled_ = true;
+  if (this.pendingRejectionKey_ !== null) {
+    this.flow_.pendingRejections_ -= 1;
+    this.flow_.timer.clearTimeout(this.pendingRejectionKey_);
+    this.pendingRejectionKey_ = null;
+  }
+
+  var listener = {
+    promise: null,
+    onFulfilled: null,
+    onRejected: null
+  };
+
+  var flow = this.flow_;
+  listener.promise = new webdriver.promise.Promise(function(fulfill, reject) {
+    listener.onFulfilled = function (value) {
+      if (goog.isFunction(opt_callback)) {
+        flow.runInNewFrame_(goog.partial(opt_callback, value), fulfill, reject);
+      } else {
+        fulfill(value);
+      }
+    };
+
+    listener.onRejected = function (reason) {
+      if (goog.isFunction(opt_errback)) {
+        flow.runInNewFrame_(goog.partial(opt_errback, reason), fulfill, reject);
+      } else {
+        reject(reason);
+      }
+    };
+  }, this.flow_);
+  listener.promise.parent_ = this;
+
+  if (this.state_ === webdriver.promise.Promise.State_.PENDING ||
+      this.state_ === webdriver.promise.Promise.State_.BLOCKED) {
+    this.listeners_ = this.listeners_ || [];
+    this.listeners_.push(listener);
+  } else {
+    this.notify_(
+        /** @type {webdriver.promise.Promise.Listener_} */(listener));
+  }
+  return listener.promise;
 };
 
 
@@ -317,299 +512,74 @@ webdriver.promise.Promise.prototype.thenFinally = function(callback) {
  *     this instance was created under. This should only be provided during
  *     unit tests.
  * @constructor
- * @extends {webdriver.promise.Promise.<T>}
+ * @implements {webdriver.promise.Thenable.<T>}
  * @template T
  */
 webdriver.promise.Deferred = function(opt_flow) {
-  /* NOTE: This class's implementation diverges from the prototypical style
-   * used in the rest of the atoms library. This was done intentionally to
-   * protect the internal Deferred state from consumers, as outlined by
-   *     http://wiki.commonjs.org/wiki/Promises
-   */
-  goog.base(this);
+  var fulfill, reject;
 
-  var flow = opt_flow || webdriver.promise.controlFlow();
-
-  /**
-   * The deferred this instance is chained from, if any.
-   * @private {webdriver.promise.Deferred.<?>}
-   */
-  this.parent_ = null;
-
-  /**
-   * The listeners registered with this Deferred. Each element in the list will
-   * be a 3-tuple of the callback function, errback function, and the
-   * corresponding deferred object.
-   * @type {!Array.<!webdriver.promise.Deferred.Listener_>}
-   */
-  var listeners = [];
-
-  /**
-   * Whether this Deferred's resolution was ever handled by a listener.
-   * If the Deferred is rejected and its value is not handled by a listener
-   * before the next turn of the event loop, the error will be passed to the
-   * global error handler.
-   * @type {boolean}
-   */
-  var handled = false;
-
-  /**
-   * Key for the timeout used to delay reproting an unhandled rejection to the
-   * parent {@link webdriver.promise.ControlFlow}.
-   * @type {?number}
-   */
-  var pendingRejectionKey = null;
-
-  /**
-   * This Deferred's current state.
-   * @type {!webdriver.promise.Deferred.State_}
-   */
-  var state = webdriver.promise.Deferred.State_.PENDING;
-
-  /**
-   * This Deferred's resolved value; set when the state transitions from
-   * {@code webdriver.promise.Deferred.State_.PENDING}.
-   * @type {*}
-   */
-  var value;
-
-  /** @return {boolean} Whether this promise's value is still pending. */
-  function isPending() {
-    return state == webdriver.promise.Deferred.State_.PENDING;
-  }
-
-  /**
-   * Removes all of the listeners previously registered on this deferred.
-   * @throws {Error} If this deferred has already been resolved.
-   */
-  function removeAll() {
-    listeners = [];
-  }
-
-  /**
-   * Resolves this deferred. If the new value is a promise, this function will
-   * wait for it to be resolved before notifying the registered listeners.
-   * @param {!webdriver.promise.Deferred.State_} newState The deferred's new
-   *     state.
-   * @param {*} newValue The deferred's new value.
-   */
-  function resolve(newState, newValue) {
-    if (webdriver.promise.Deferred.State_.PENDING !== state) {
-      return;
-    }
-
-    if (newValue === self) {
-      // See promise a+, 2.3.1
-      // http://promises-aplus.github.io/promises-spec/#point-48
-      throw TypeError('A promise may not resolve to itself');
-    }
-
-    state = webdriver.promise.Deferred.State_.BLOCKED;
-
-    if (webdriver.promise.isPromise(newValue)) {
-      var onFulfill = goog.partial(notifyAll, newState);
-      var onReject = goog.partial(
-          notifyAll, webdriver.promise.Deferred.State_.REJECTED);
-      if (newValue instanceof webdriver.promise.Deferred) {
-        newValue.then(onFulfill, onReject);
-      } else {
-        webdriver.promise.asap(newValue, onFulfill, onReject);
-      }
-
-    } else {
-      notifyAll(newState, newValue);
-    }
-  }
-
-  /**
-   * Notifies all of the listeners registered with this Deferred that its state
-   * has changed.
-   * @param {!webdriver.promise.Deferred.State_} newState The deferred's new
-   *     state.
-   * @param {*} newValue The deferred's new value.
-   */
-  function notifyAll(newState, newValue) {
-    if (newState === webdriver.promise.Deferred.State_.REJECTED) {
-      if (!webdriver.promise.isError_(newValue)) {
-        newValue = Error(newValue ? newValue : 'Promise rejected');
-      }
-      newValue = flow.annotateError(/** @type {!Error} */(newValue));
-    }
-
-    state = newState;
-    value = newValue;
-    while (listeners.length) {
-      notify(listeners.shift());
-    }
-
-    if (!handled && state == webdriver.promise.Deferred.State_.REJECTED &&
-        !(value instanceof webdriver.promise.CancellationError)) {
-      flow.pendingRejections_ += 1;
-      pendingRejectionKey = flow.timer.setTimeout(function() {
-        pendingRejectionKey = null;
-        flow.pendingRejections_ -= 1;
-        flow.abortFrame_(value);
-      }, 0);
-    }
-  }
-
-  /**
-   * Notifies a single listener of this Deferred's change in state.
-   * @param {!webdriver.promise.Deferred.Listener_} listener The listener to
-   *     notify.
-   */
-  function notify(listener) {
-    var func = state == webdriver.promise.Deferred.State_.RESOLVED ?
-        listener.callback : listener.errback;
-    if (func) {
-      flow.runInNewFrame_(goog.partial(func, value),
-          listener.fulfill, listener.reject);
-    } else if (state == webdriver.promise.Deferred.State_.REJECTED) {
-      listener.reject(value);
-    } else {
-      listener.fulfill(value);
-    }
-  }
-
-  /**
-   * The consumer promise for this instance. Provides protected access to the
-   * callback registering functions.
-   * @type {!webdriver.promise.Promise.<T>}
-   */
-  var promise = new webdriver.promise.Promise();
+  /** @type {!webdriver.promise.Promise.<T>} */
+  this.promise = new webdriver.promise.Promise(function(f, r) {
+    fulfill = f;
+    reject = r;
+  }, opt_flow);
 
   var self = this;
-
-  /**
-   * Registers a callback on this Deferred.
-   *
-   * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback .
-   * @param {?(function(Error):
-   *           (R|webdriver.promise.Promise.<R>))=} opt_errback .
-   * @return {!webdriver.promise.Promise.<R>} A new promise representing the
-   *     result of the callback.
-   * @template R
-   * @see webdriver.promise.Promise#then
-   */
-  function then(opt_callback, opt_errback) {
-    // Avoid unnecessary allocations if we weren't given any callback functions.
-    if (!opt_callback && !opt_errback) {
-      return promise;
+  var checkNotSelf = function(value) {
+    if (value === self) {
+      throw new TypeError('May not resolve a Deferred with itself');
     }
+  };
 
-    // The moment a listener is registered, we consider this deferred to be
-    // handled; the callback must handle any rejection errors.
-    handled = true;
-    if (pendingRejectionKey !== null) {
-      flow.pendingRejections_ -= 1;
-      flow.timer.clearTimeout(pendingRejectionKey);
-      pendingRejectionKey = null;
-    }
+  this.fulfill = function(value) {
+    checkNotSelf(value);
+    fulfill(value);
+  };
 
-    var deferred = new webdriver.promise.Deferred(flow);
-    deferred.parent_ = self;
-
-    var listener = {
-      callback: opt_callback,
-      errback: opt_errback,
-      fulfill: deferred.fulfill,
-      reject: deferred.reject
-    };
-
-    if (state == webdriver.promise.Deferred.State_.PENDING ||
-        state == webdriver.promise.Deferred.State_.BLOCKED) {
-      listeners.push(listener);
-    } else {
-      notify(listener);
-    }
-
-    return deferred.promise;
-  }
-
-  /**
-   * Resolves this promise with the given value. If the value is itself a
-   * promise and not a reference to this deferred, this instance will wait for
-   * it before resolving.
-   * @param {T=} opt_value The fulfilled value.
-   */
-  function fulfill(opt_value) {
-    resolve(webdriver.promise.Deferred.State_.RESOLVED, opt_value);
-  }
-
-  /**
-   * Rejects this promise. If the error is itself a promise, this instance will
-   * be chained to it and be rejected with the error's resolved value.
-   * @param {*=} opt_error The rejection reason. If not a {@link Error}, one
-   *     will be created from the value's string representation.
-   */
-  function reject(opt_error) {
-    resolve(webdriver.promise.Deferred.State_.REJECTED, opt_error);
-  }
-
-  /**
-   * Attempts to cancel the computation of this instance's value. This attempt
-   * will silently fail if this instance has already resolved.
-   * @param {string=} opt_reason The reason for cancelling this promise.   */
-  function cancel(opt_reason) {
-    if (!isPending()) {
-      return;
-    }
-
-    if (self.parent_) {
-      self.parent_.cancel(opt_reason);
-    } else {
-      reject(new webdriver.promise.CancellationError(opt_reason));
-    }
-  }
-
-  this.promise = promise;
-  this.promise.then = this.then = then;
-  this.promise.cancel = this.cancel = cancel;
-  this.promise.isPending = this.isPending = isPending;
-  this.fulfill = fulfill;
-  this.reject = this.errback = reject;
-
-  // Only expose this function to our internal classes.
-  // TODO: find a cleaner way of handling this.
-  if (this instanceof webdriver.promise.Task_) {
-    this.removeAll = removeAll;
-  }
-
-  // Export symbols necessary for the contract on this object to work in
-  // compiled mode.
-  goog.exportProperty(this, 'then', this.then);
-  goog.exportProperty(this, 'cancel', cancel);
-  goog.exportProperty(this, 'fulfill', fulfill);
-  goog.exportProperty(this, 'reject', reject);
-  goog.exportProperty(this, 'isPending', isPending);
-  goog.exportProperty(this, 'promise', this.promise);
-  goog.exportProperty(this.promise, 'then', this.then);
-  goog.exportProperty(this.promise, 'cancel', cancel);
-  goog.exportProperty(this.promise, 'isPending', isPending);
+  this.reject = function(reason) {
+    checkNotSelf(reason);
+    reject(reason);
+  };
 };
-goog.inherits(webdriver.promise.Deferred, webdriver.promise.Promise);
+webdriver.promise.Thenable.addImplementation(webdriver.promise.Deferred);
+
+
+/** @override */
+webdriver.promise.Deferred.prototype.isPending = function() {
+  return this.promise.isPending();
+};
+
+
+/** @override */
+webdriver.promise.Deferred.prototype.cancel = function(opt_reason) {
+  this.promise.cancel(opt_reason);
+};
 
 
 /**
- * Type definition for a listener registered on a Deferred object.
- * @typedef {{callback:(Function|undefined),
- *            errback:(Function|undefined),
- *            fulfill: function(*), reject: function(*)}}
- * @private
+ * @override
+ * @deprecated Use {@code then} from the promise property directly.
  */
-webdriver.promise.Deferred.Listener_;
+webdriver.promise.Deferred.prototype.then = function(opt_cb, opt_eb) {
+  return this.promise.then(opt_cb, opt_eb);
+};
 
 
 /**
- * The three states a {@link webdriver.promise.Deferred} object may be in.
- * @enum {number}
- * @private
+ * @override
+ * @deprecated Use {@code thenCatch} from the promise property directly.
  */
-webdriver.promise.Deferred.State_ = {
-  REJECTED: -1,
-  PENDING: 0,
-  BLOCKED: 1,
-  RESOLVED: 2
+webdriver.promise.Deferred.prototype.thenCatch = function(opt_eb) {
+  return this.promise.thenCatch(opt_eb);
+};
+
+
+/**
+ * @override
+ * @deprecated Use {@code thenFinally} from the promise property directly.
+ */
+webdriver.promise.Deferred.prototype.thenFinally = function(opt_cb) {
+  this.promise.thenFinally(opt_cb);
 };
 
 
@@ -653,9 +623,10 @@ webdriver.promise.isPromise = function(value) {
  */
 webdriver.promise.delayed = function(ms) {
   var timer = webdriver.promise.controlFlow().timer;
-  var deferred = new webdriver.promise.Deferred();
-  var key = timer.setTimeout(deferred.fulfill, ms);
-  return deferred.thenCatch(function(e) {
+  var key;
+  return new webdriver.promise.Promise(function(fulfill) {
+    key = timer.setTimeout(fulfill, ms);
+  }).thenCatch(function(e) {
     timer.clearTimeout(key);
     throw e;
   });
@@ -682,9 +653,9 @@ webdriver.promise.fulfilled = function(opt_value) {
   if (opt_value instanceof webdriver.promise.Promise) {
     return opt_value;
   }
-  var deferred = new webdriver.promise.Deferred();
-  deferred.fulfill(opt_value);
-  return deferred.promise;
+  return new webdriver.promise.Promise(function(fulfill) {
+    fulfill(opt_value);
+  });
 };
 
 
@@ -696,9 +667,12 @@ webdriver.promise.fulfilled = function(opt_value) {
  * @template T
  */
 webdriver.promise.rejected = function(opt_reason) {
-  var deferred = new webdriver.promise.Deferred();
-  deferred.reject(opt_reason);
-  return deferred.promise;
+  if (opt_reason instanceof webdriver.promise.Promise) {
+    return opt_reason;
+  }
+  return new webdriver.promise.Promise(function(_, reject) {
+    reject(opt_reason);
+  });
 };
 
 
@@ -715,17 +689,17 @@ webdriver.promise.rejected = function(opt_reason) {
  *     result of the provided function's callback.
  */
 webdriver.promise.checkedNodeCall = function(fn, var_args) {
-  var deferred = new webdriver.promise.Deferred();
-  try {
-    var args = goog.array.slice(arguments, 1);
-    args.push(function(error, value) {
-      error ? deferred.reject(error) : deferred.fulfill(value);
-    });
-    fn.apply(null, args);
-  } catch (ex) {
-    deferred.reject(ex);
-  }
-  return deferred.promise;
+  var args = goog.array.slice(arguments, 1);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    try {
+      args.push(function(error, value) {
+        error ? reject(error) : fulfill(value);
+      });
+      fn.apply(undefined, args);
+    } catch (ex) {
+      reject(ex);
+    }
+  });
 };
 
 
@@ -745,11 +719,9 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
     return value.then(opt_callback, opt_errback);
   }
 
-  var deferred = new webdriver.promise.Deferred();
-
-  webdriver.promise.asap(value, deferred.fulfill, deferred.reject);
-
-  return deferred.then(opt_callback, opt_errback);
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    webdriver.promise.asap(value, fulfill, reject);
+  }).then(opt_callback, opt_errback);
 };
 
 
@@ -966,44 +938,42 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
   }
 
   var numResolved = 0;
-  var deferred = new webdriver.promise.Deferred();
+  return new webdriver.promise.Promise(function(fulfill, reject) {
+    // In pre-IE9, goog.array.forEach will not iterate properly over arrays
+    // containing undefined values because "index in array" returns false
+    // when array[index] === undefined (even for x = [undefined, 1]). To get
+    // around this, we need to use our own forEach implementation.
+    // DO NOT REMOVE THIS UNTIL WE NO LONGER SUPPORT IE8. This cannot be
+    // reproduced in IE9 by changing the browser/document modes, it requires an
+    // actual pre-IE9 browser.  Yay, IE!
+    var forEachKey = !isArray ? goog.object.forEach : function(arr, fn) {
+      var n = arr.length;
+      for (var i = 0; i < n; ++i) {
+        fn.call(null, arr[i], i, arr);
+      }
+    };
 
-  // In pre-IE9, goog.array.forEach will not iterate properly over arrays
-  // containing undefined values because "index in array" returns false
-  // when array[index] === undefined (even for x = [undefined, 1]). To get
-  // around this, we need to use our own forEach implementation.
-  // DO NOT REMOVE THIS UNTIL WE NO LONGER SUPPORT IE8. This cannot be
-  // reproduced in IE9 by changing the browser/document modes, it requires an
-  // actual pre-IE9 browser.  Yay, IE!
-  var forEachKey = !isArray ? goog.object.forEach : function(arr, fn) {
-    var n = arr.length;
-    for (var i = 0; i < n; ++i) {
-      fn.call(null, arr[i], i, arr);
+    forEachKey(obj, function(partialValue, key) {
+      var type = goog.typeOf(partialValue);
+      if (type != 'array' && type != 'object') {
+        maybeResolveValue();
+        return;
+      }
+
+      webdriver.promise.fullyResolved(partialValue).then(
+          function(resolvedValue) {
+            obj[key] = resolvedValue;
+            maybeResolveValue();
+          },
+          reject);
+    });
+
+    function maybeResolveValue() {
+      if (++numResolved == numKeys) {
+        fulfill(obj);
+      }
     }
-  };
-
-  forEachKey(obj, function(partialValue, key) {
-    var type = goog.typeOf(partialValue);
-    if (type != 'array' && type != 'object') {
-      maybeResolveValue();
-      return;
-    }
-
-    webdriver.promise.fullyResolved(partialValue).then(
-        function(resolvedValue) {
-          obj[key] = resolvedValue;
-          maybeResolveValue();
-        },
-        deferred.reject);
   });
-
-  return deferred.promise;
-
-  function maybeResolveValue() {
-    if (++numResolved == numKeys) {
-      deferred.fulfill(obj);
-    }
-  }
 };
 
 
@@ -1941,7 +1911,7 @@ webdriver.promise.Frame_.prototype.cancelRemainingTasks = function(reason) {
       // None of the previously registered listeners should be notified that
       // the task is being canceled, however, we need at least one errback
       // to prevent the cancellation from bubbling up.
-      child.removeAll();
+      child.listeners_ = null;
       child.thenCatch(goog.nullFunction);
       child.cancel(reason);
     }
@@ -2217,7 +2187,7 @@ webdriver.promise.isGenerator = function(fn) {
  */
 webdriver.promise.consume = function(generatorFn, opt_self, var_args) {
   if (!webdriver.promise.isGenerator(generatorFn)) {
-    throw TypeError('Input is not a GeneratorFunction: ' +
+    throw new TypeError('Input is not a GeneratorFunction: ' +
         generatorFn.constructor.name);
   }
 
