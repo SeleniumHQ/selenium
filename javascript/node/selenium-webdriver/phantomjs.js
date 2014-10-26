@@ -182,7 +182,6 @@ var Driver = function(opt_capabilities, opt_flow) {
   this.quit = function() {
     return boundQuit().thenFinally(service.kill.bind(service));
   };
-  return driver;
 };
 util.inherits(Driver, webdriver.WebDriver);
 
