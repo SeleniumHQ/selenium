@@ -210,14 +210,18 @@ public enum Platform {
    * @return the Platform enum value matching the parameter
    */
   public static Platform fromString(String name) {
-    for (Platform os : Platform.values()) {
-      for (String matcher : os.partOfOsName) {
-        if (name.toLowerCase().equals(matcher.toLowerCase())) {
-          return os;
+    try {
+      return Platform.valueOf(name);
+    } catch (IllegalArgumentException ex) {
+      for (Platform os : Platform.values()) {
+        for (String matcher : os.partOfOsName) {
+          if (name.toLowerCase().equals(matcher.toLowerCase())) {
+            return os;
+          }
         }
       }
+      throw new WebDriverException("Unrecognized platform: " + name);
     }
-    throw new WebDriverException("Unknown platform: " + name);
   }
 
   /**
