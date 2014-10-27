@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -93,4 +94,14 @@ public class DesiredCapabilitiesTest {
         (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
     assertSame(Level.FINE, prefs.getLevel("browser"));
   }
+
+  @Test
+  public void shouldAutomaticallyConvertPlatformFromStringToEnum() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.PLATFORM, "windows 7");
+    assertEquals(caps.getCapability(CapabilityType.PLATFORM), Platform.VISTA);
+    caps.setCapability(CapabilityType.PLATFORM, "WIN8_1");
+    assertEquals(caps.getCapability(CapabilityType.PLATFORM), Platform.WIN8_1);
+  }
+
 }
