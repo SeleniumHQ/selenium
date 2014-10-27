@@ -241,7 +241,9 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
 
   var handler = this.handler;
   loadingListenerTimer.setTimeout(function() {
-    browser.removeProgressListener(handler);
+    if (browser.removeProgressListener) {
+      browser.removeProgressListener(handler);
+    }
     func(true);
   }, timeout);
 };
@@ -252,5 +254,7 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
  * @param {!WebLoadingListener} listener The listener to remove.
  */
 WebLoadingListener.removeListener = function(browser, listener) {
-  browser.removeProgressListener(listener.handler);
+  if (browser.removeProgressListener) {
+    browser.removeProgressListener(listener.handler);
+  }
 };
