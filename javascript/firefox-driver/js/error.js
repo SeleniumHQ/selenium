@@ -37,16 +37,29 @@ fxdriver.error.toJSON = function(ex) {
     var stack = ex.stack.replace(/\s*$/, '').split('\n');
 
     for (var frame = stack.shift(); frame; frame = stack.shift()) {
-      var match = frame.match(/^([a-zA-Z_$][\w./<]*)?(?:\(.*\))?@(.+)?:(\d*)$/);
+      var methodName;
+      var fileName;
+      var lineNumber;
+      var columnNumber;
+
+      var match = frame.match(/(.*):(\d+):(\d+)$/);
       if (match) {
-        stackFrames.push({
-            'methodName': match[1],
-            'fileName': match[2],
-            'lineNumber': Number(match[3])
-          });
+        frame = match[1];
+        lineNumber = Number(match[2]);
+        columnNumber = Number(match[3]);
       } else {
-        stackFrames.push({'methodName': frame});
+        match = frame.match(/(.*):(\d+)$/);
+        frame = match[1];
+        lineNumber = Number(match[2]);
       }
+
+      match = frame.match(/^([a-zA-Z_$][\w./<$]*)?(?:\(.*\))?@(.+)?$/);
+      stackFrames.push({
+          'methodName': match[1],
+          'fileName': match[2],
+          'lineNumber': lineNumber,
+          'columnNumber': columnNumber
+        });
     }
   }
 
