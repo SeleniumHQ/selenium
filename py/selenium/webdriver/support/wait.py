@@ -21,8 +21,8 @@ from selenium.common.exceptions import TimeoutException
 POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
 IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
 
-class WebDriverWait(object):
 
+class WebDriverWait(object):
     def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
@@ -57,24 +57,28 @@ class WebDriverWait(object):
     def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \
         return value is not False."""
+        screen = None
+        stacktrace = None
+
         end_time = time.time() + self._timeout
-        while(True):
+        while True:
             try:
                 value = method(self._driver)
                 if value:
                     return value
-            except self._ignored_exceptions:
-                pass
+            except self._ignored_exceptions as exc:
+                screen = getattr(exc, 'screen', None)
+                stacktrace = getattr(exc, 'stacktrace', None)
             time.sleep(self._poll)
-            if(time.time() > end_time):
+            if time.time() > end_time:
                 break
-        raise TimeoutException(message)
+        raise TimeoutException(message, screen, stacktrace)
 
     def until_not(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \
         return value is False."""
         end_time = time.time() + self._timeout
-        while(True):
+        while True:
             try:
                 value = method(self._driver)
                 if not value:
@@ -82,6 +86,6 @@ class WebDriverWait(object):
             except self._ignored_exceptions:
                 return True
             time.sleep(self._poll)
-            if(time.time() > end_time):
+            if time.time() > end_time:
                 break
         raise TimeoutException(message)
