@@ -204,6 +204,23 @@ public enum Platform {
   }
 
   /**
+   * Gets a platform with the name matching the parameter.
+   *
+   * @param name the platform name
+   * @return the Platform enum value matching the parameter
+   */
+  public static Platform fromString(String name) {
+    for (Platform os : Platform.values()) {
+      for (String matcher : os.partOfOsName) {
+        if (name.toLowerCase().equals(matcher.toLowerCase())) {
+          return os;
+        }
+      }
+    }
+    throw new WebDriverException("Unknown platform: " + name);
+  }
+
+  /**
    * Decides whether the previous match is better or not than the current match.  If previous match
    * is null, the newer match is always better.
    *
