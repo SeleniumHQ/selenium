@@ -248,6 +248,9 @@ webdriver.promise.Thenable.isImplementation = function(object) {
  * in the pending state and may make a single transition to either a
  * fulfilled or rejected state, at which point the promise is considered
  * resolved.
+ *
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow
+ *     this instance was created under. Defaults to the currently active flow.
  * @constructor
  * @implements {webdriver.promise.Thenable.<T>}
  * @template T
@@ -358,9 +361,6 @@ webdriver.promise.Promise.prototype.resolve_ = function(newState, newValue) {
  */
 webdriver.promise.Promise.prototype.notifyAll_ = function(
     newState, newValue) {
-  if (newState === webdriver.promise.Promise.State_.REJECTED) {
-  }
-
   this.state_ = newState;
   this.value_ = newValue;
 
@@ -1912,7 +1912,7 @@ webdriver.promise.Frame_.prototype.cancelRemainingTasks = function(reason) {
       // the task is being canceled, however, we need at least one errback
       // to prevent the cancellation from bubbling up.
       child.listeners_ = null;
-      child.thenCatch(goog.nullFunction);
+      child.promise.thenCatch(goog.nullFunction);
       child.cancel(reason);
     }
   });
