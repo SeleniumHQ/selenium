@@ -36,6 +36,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
@@ -102,6 +103,24 @@ public class FirefoxProfileTest {
     profile.setPreference("cheese", false);
 
     assertPreferenceValueEquals("cheese", false);
+  }
+
+  @Test
+  public void shouldSetDefaultPreferences() throws Exception {
+    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
+  }
+
+  @Test
+
+  public void shouldNotResetFrozenPreferences() throws Exception {
+    try {
+      profile.setPreference("network.http.phishy-userpass-length", 1024);
+      fail("Should not be able to reset a frozen preference");
+    } catch (IllegalArgumentException ex) {
+      // expected
+    }
+
+    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
   }
 
   @Test
