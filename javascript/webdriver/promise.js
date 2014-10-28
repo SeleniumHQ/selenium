@@ -84,6 +84,7 @@ goog.inherits(webdriver.promise.CancellationError, goog.debug.Error);
  * used to schedule callbacks on a promised value.
  *
  * @interface
+ * @extends {IThenable.<T>}
  * @template T
  */
 webdriver.promise.Thenable = function() {};
@@ -108,7 +109,7 @@ webdriver.promise.Thenable.prototype.isPending = function() {};
  * @param {?(function(T): (R|webdriver.promise.Promise.<R>))=} opt_callback The
  *     function to call if this promise is successfully resolved. The function
  *     should expect a single argument: the promise's resolved value.
- * @param {?(function(Error): (R|webdriver.promise.Promise.<R>))=} opt_errback
+ * @param {?(function(*): (R|webdriver.promise.Promise.<R>))=} opt_errback
  *     The function to call if this promise is rejected. The function should
  *     expect a single argument: the rejection reason.
  * @return {!webdriver.promise.Promise.<R>} A new promise which will be
@@ -136,7 +137,7 @@ webdriver.promise.Thenable.prototype.then = function(
  *   });
  * </code></pre>
  *
- * @param {function(Error): (R|webdriver.promise.Promise.<R>)} errback The
+ * @param {function(*): (R|webdriver.promise.Promise.<R>)} errback The
  *     function to call if this promise is rejected. The function should
  *     expect a single argument: the rejection reason.
  * @return {!webdriver.promise.Promise.<R>} A new promise which will be
@@ -249,6 +250,12 @@ webdriver.promise.Thenable.isImplementation = function(object) {
  * fulfilled or rejected state, at which point the promise is considered
  * resolved.
  *
+ * @param {function(
+ *           function((T|IThenable.<T>|Thenable)=),
+ *           function(*=))} resolver
+ *     Function that is invoked immediately to begin computation of this
+ *     promise's value. The function should accept a pair of callback functions,
+ *     one for fulfilling the promise and another for rejecting it.
  * @param {webdriver.promise.ControlFlow=} opt_flow The control flow
  *     this instance was created under. Defaults to the currently active flow.
  * @constructor
@@ -531,14 +538,22 @@ webdriver.promise.Deferred = function(opt_flow) {
     }
   };
 
-  this.fulfill = function(value) {
-    checkNotSelf(value);
-    fulfill(value);
+  /**
+   * Resolves this deferred with the given value.
+   * @param {(T|IThenable.<T>|Thenable)=} opt_value The fulfilled value.
+   */
+  this.fulfill = function(opt_value) {
+    checkNotSelf(opt_value);
+    fulfill(opt_value);
   };
 
-  this.reject = function(reason) {
-    checkNotSelf(reason);
-    reject(reason);
+  /**
+   * Rejects this promise with the given reason.
+   * @param {*=} opt_reason The rejection reason.
+   */
+  this.reject = function(opt_reason) {
+    checkNotSelf(opt_reason);
+    reject(opt_reason);
   };
 };
 webdriver.promise.Thenable.addImplementation(webdriver.promise.Deferred);
@@ -1587,10 +1602,11 @@ webdriver.promise.ControlFlow.prototype.abortFrame_ = function(error) {
  * returned promise will be rejected.
  *
  * @param {!Function} fn The function to execute.
- * @param {function(*)} callback The function to call with a successful result.
+ * @param {function(T)} callback The function to call with a successful result.
  * @param {function(*)} errback The function to call if there is an error.
  * @param {boolean=} opt_activate Whether the active frame should be updated to
  *     the newly created frame so tasks are treated as sub-tasks.
+ * @template T
  * @private
  */
 webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(

@@ -586,7 +586,7 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
           var docEl = dom.getDocument().documentElement;
           goog.dom.appendChild(docEl, script);
 
-          this.installedPageScript_.thenFinally(function() {
+          this.installedPageScript_.promise.thenFinally(function() {
             goog.dom.removeNode(script);
           });
         }, this));
@@ -622,7 +622,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
 
     message.send(window);
 
-    return commandResponse.then(function(result) {
+    return commandResponse.promise.then(function(result) {
       return bot.inject.wrapValue(result);
     });
   }, this));

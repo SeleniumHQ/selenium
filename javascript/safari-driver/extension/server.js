@@ -305,8 +305,8 @@ safaridriver.extension.Server.prototype.execute = function(
   if (!handler) {
     this.logMessage_('Unknown command: ' + command.getName(),
         goog.log.Logger.Level.SEVERE);
-    return webdriver.promise.rejected(bot.response.createErrorResponse(
-        Error('Unknown command: ' + command.getName())));
+    return webdriver.promise.rejected(
+        Error('Unknown command: ' + command.getName()));
   }
 
   var description = this.session_.getId() + '::' + command.getName();
