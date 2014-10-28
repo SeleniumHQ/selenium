@@ -98,13 +98,20 @@ class Preferences {
       for (Map.Entry<String, Object> entry : frozen.entrySet()) {
         String key = entry.getKey();
         Object value = entry.getValue();
+        if (value instanceof Long) {
+          value = new Integer(((Long)value).intValue());
+        }
         setPreference(key, value);
         immutablePrefs.put(key, value);
       }
 
       Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
       for (Map.Entry<String, Object> entry : mutable.entrySet()) {
-        setPreference(entry.getKey(), entry.getValue());
+        Object value = entry.getValue();
+        if (value instanceof Long) {
+          value = new Integer(((Long)value).intValue());
+        }
+        setPreference(entry.getKey(), value);
       }
     } catch (IOException e) {
       throw new WebDriverException(e);
