@@ -22,8 +22,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -59,6 +64,32 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     for (WebElement link : page.divs) {
       assertThat(link.getTagName(), equalTo("div"));
     }
+  }
+
+  @Test
+  public void testDecoratedElementsShouldBeUnwrapped() {
+    final RemoteWebElement element = new RemoteWebElement();
+    element.setId("foo");
+
+    WebDriver driver = new StubDriver() {
+      @Override
+      public WebElement findElement(By by) {
+        return element;
+      }
+    };
+
+    PublicPage page = new PublicPage();
+    PageFactory.initElements(driver, page);
+
+    Object seen = new WebElementToJsonConverter().apply(page.element);
+    Object expected = new WebElementToJsonConverter().apply(element);
+
+    assertEquals(expected, seen);
+  }
+
+
+  public class PublicPage {
+    public WebElement element;
   }
 
   public static class Page {
