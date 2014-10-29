@@ -35,8 +35,8 @@ package com.thoughtworks.selenium;
  * @author Dan Fabulich
  *
  * @deprecated Moved to com.thoughtworks.selenium.webdriven
- * 
  */
+@Deprecated
 public abstract class Wait {
   public Wait() {
   }

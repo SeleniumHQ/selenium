@@ -22,7 +22,10 @@ import org.openqa.selenium.Capabilities;
 /**
  * The default implementation of the Selenium interface; <i>end users will primarily interact with
  * this object.</i>
+ *
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public class DefaultSelenium implements Selenium {
 
   protected CommandProcessor commandProcessor;

@@ -22,10 +22,12 @@ package com.thoughtworks.selenium;
  * Provides a <code>doCommand</code> method, which sends the command to the browser to be performed.
  * </p>
  * 
- * 
+ *
  * @author Paul Hammant
  * @version $Revision$
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public interface CommandProcessor {
 
   /**
