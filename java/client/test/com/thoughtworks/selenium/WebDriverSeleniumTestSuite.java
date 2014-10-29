@@ -19,7 +19,6 @@ package com.thoughtworks.selenium;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.thoughtworks.selenium.BaseSuite;
 import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;

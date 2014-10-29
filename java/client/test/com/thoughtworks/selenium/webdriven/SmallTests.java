@@ -23,9 +23,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CompoundMutatorTest.class,
-    ScriptMutatorTest.class,
+    FastWebDriverBackedSeleniumTest.class,
     TimerTest.class,
-    VariableDeclarationTest.class
+    VariableDeclarationTest.class,
+    WebDriverCommandProcessorTest.class
 })
 public class SmallTests {
 }

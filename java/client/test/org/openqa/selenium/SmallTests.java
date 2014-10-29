@@ -61,6 +61,6 @@ import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
     ZipTest.class,
 
     org.openqa.selenium.support.SmallTests.class,
-    org.openqa.selenium.v1.SmallTests.class
+    com.thoughtworks.selenium.webdriven.SmallTests.class
 })
 public class SmallTests {}

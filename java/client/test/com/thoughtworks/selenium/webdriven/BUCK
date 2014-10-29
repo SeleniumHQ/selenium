@@ -1,6 +1,8 @@
 java_test(name = 'LargeTests',
   srcs = [
+    'LargeTests.java',
     'ScriptMutatorTest.java',
+    'WebDriverBackedSeleniumLargeTest.java',
   ],
   deps = [
     '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
@@ -20,13 +22,10 @@ java_test(name = 'small-tests',
     ':tests',
     '//third_party/java/junit:junit',
   ],
-  visibility = [
-    '//java/client/test/org/openqa/selenium/v1:small-tests',
-  ],
 )
 
 java_library(name = 'tests',
-  srcs = glob(['*Test.java'], excludes = ['ScriptMutatorTest.java',]),
+  srcs = glob(['*Test.java'], excludes = ['ScriptMutatorTest.java','WebDriverBackedSeleniumLargeTest.java']),
   deps = [
     '//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api',
     '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',

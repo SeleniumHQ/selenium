@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium.webdriven;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    FastWebDriverBackedSeleniumTest.class,
-    WebDriverCommandProcessorTest.class,
-    com.thoughtworks.selenium.webdriven.SmallTests.class
+    ScriptMutatorTest.class,
+    WebDriverBackedSeleniumLargeTest.class
 })
-public class SmallTests {
+public class LargeTests {
 }

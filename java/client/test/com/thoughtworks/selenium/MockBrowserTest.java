@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;

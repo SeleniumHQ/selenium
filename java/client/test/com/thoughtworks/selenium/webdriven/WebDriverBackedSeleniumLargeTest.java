@@ -14,14 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium.webdriven;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.webdriven.Wait;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.Before;
 import org.junit.Test;

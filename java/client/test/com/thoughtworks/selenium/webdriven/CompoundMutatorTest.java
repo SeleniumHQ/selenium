@@ -18,8 +18,6 @@ package com.thoughtworks.selenium.webdriven;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.thoughtworks.selenium.webdriven.CompoundMutator;
-import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import static org.junit.Assert.assertTrue;
 

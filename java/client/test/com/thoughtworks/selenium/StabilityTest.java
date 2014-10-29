@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1.remotecontrol;
+package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class StabilityTest {
 
   @Test
-  public void retrievelastRemoteControlLogsDoesNotTriggerOutOfMemoryErrors() {
+  public void retrieveLastRemoteControlLogsDoesNotTriggerOutOfMemoryErrors() {
     final DefaultSelenium seleniumDriver;
 
     seleniumDriver = new DefaultSelenium("localhost", 4444, "*chrome", "http://localhost:4444");

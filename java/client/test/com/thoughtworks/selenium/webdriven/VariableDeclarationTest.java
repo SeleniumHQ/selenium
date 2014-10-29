@@ -18,7 +18,6 @@ package com.thoughtworks.selenium.webdriven;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.thoughtworks.selenium.webdriven.VariableDeclaration;
 
 import static org.junit.Assert.assertEquals;
 

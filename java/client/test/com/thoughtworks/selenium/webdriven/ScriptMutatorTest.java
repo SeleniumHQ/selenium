@@ -20,7 +20,6 @@ package com.thoughtworks.selenium.webdriven;
 import static org.junit.Assert.assertEquals;
 
 import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
