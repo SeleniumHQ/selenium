@@ -51,6 +51,7 @@ java_library(name = 'emulation-api',
     'ScriptMutator.java',
     'SeleneseCommand.java',
     'Timer.java',
+    'Wait.java',
     'Windows.java',
   ],
   deps = [

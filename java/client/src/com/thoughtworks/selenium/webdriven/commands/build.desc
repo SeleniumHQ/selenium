@@ -4,7 +4,6 @@ java_library(name = "commands",
     "*.java",
   ],
   deps = [
-    "//java/client/src/com/thoughtworks/selenium:wait",
     "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",

@@ -3,7 +3,6 @@ java_library(name = 'api',
     'CommandProcessor.java',
     'Selenium.java',
     'SeleniumException.java',
-    'Wait.java',
   ],
   visibility = ['PUBLIC'],
 )
