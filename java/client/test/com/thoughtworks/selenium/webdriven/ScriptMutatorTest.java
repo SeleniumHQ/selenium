@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven;
 
 import static org.junit.Assert.assertEquals;
 

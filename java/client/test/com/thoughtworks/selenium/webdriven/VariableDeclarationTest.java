@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.v1.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven;
 
 import org.junit.Before;
 import org.junit.Test;

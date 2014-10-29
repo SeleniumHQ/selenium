@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.SeleniumException;
 

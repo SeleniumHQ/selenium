@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     FastWebDriverBackedSeleniumTest.class,
     WebDriverCommandProcessorTest.class,
-    org.openqa.selenium.v1.internal.seleniumemulation.SmallTests.class
+    com.thoughtworks.selenium.webdriven.SmallTests.class
 })
 public class SmallTests {
 }

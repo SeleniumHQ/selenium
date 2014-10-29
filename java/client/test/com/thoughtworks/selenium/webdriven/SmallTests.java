@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.openqa.selenium.v1.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CompoundMutatorTest.class,
+    ScriptMutatorTest.class,
     TimerTest.class,
     VariableDeclarationTest.class
 })
