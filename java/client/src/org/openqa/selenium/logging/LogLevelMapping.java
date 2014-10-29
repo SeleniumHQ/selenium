@@ -16,14 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import java.util.Map;
-import java.util.logging.Level;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.logging.Level;
+
 public class LogLevelMapping {
 
-  private static Map<Long, Level> levelMap;
+  /**
+   *  WebDriver log level DEBUG which is mapped to Level.FINE.
+   */
+  private static final String DEBUG = "DEBUG";
+
+  private static ImmutableMap<Integer, Level> levelMap;
 
   static {
     Level[] supportedLevels = new Level[] {
@@ -34,24 +40,40 @@ public class LogLevelMapping {
       Level.SEVERE,
       Level.OFF
     };
-    ImmutableMap.Builder<Long, Level> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<Integer, Level> builder = ImmutableMap.builder();
     for (Level level : supportedLevels) {
-      builder.put((long)level.intValue(), level);
+      builder.put(level.intValue(), level);
     }
     levelMap = builder.build();
   }
-  
+
   /**
-   *  WebDriver log level DEBUG which is mapped to Level.FINE. 
+   * Normalizes the given level to one of those supported by Selenium.
    */
-  private static final String DEBUG = "DEBUG";
-  
-  public static Level toLevel(long longValue) {
-    return levelMap.get(longValue);
+  public static Level normalize(Level level) {
+    if (levelMap.containsKey(level.intValue())) {
+      return levelMap.get(level.intValue());
+    } else if (level.intValue() >= Level.SEVERE.intValue()) {
+      return Level.SEVERE;
+    } else if (level.intValue() >= Level.WARNING.intValue()) {
+      return Level.WARNING;
+    } else if (level.intValue() >= Level.INFO.intValue()) {
+      return Level.INFO;
+    } else {
+      return Level.FINE;
+    }
+  }
+
+  /**
+   * Converts the JDK level to a name supported by Selenium.
+   */
+  public static String getName(Level level) {
+    Level normalized = normalize(level);
+    return normalized == Level.FINE ? DEBUG : normalized.getName();
   }
   
   public static Level toLevel(String logLevelName) {
-    if (logLevelName == null || "".equals(logLevelName)) {
+    if (isNullOrEmpty(logLevelName)) {
       // Default the log level to info.
       return Level.INFO;
     }
@@ -59,6 +81,6 @@ public class LogLevelMapping {
     if (logLevelName.equals(DEBUG)) {
       return Level.FINE;
     }
-    return levelMap.get((long)Level.parse(logLevelName).intValue());
+    return levelMap.get(Level.parse(logLevelName).intValue());
   }
 }

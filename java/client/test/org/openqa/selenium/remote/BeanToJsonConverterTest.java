@@ -370,15 +370,19 @@ public class BeanToJsonConverterTest {
   @Test
   public void testConvertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
+    prefs.enable(LogType.BROWSER, Level.WARNING);
     prefs.enable(LogType.CLIENT, Level.FINE);
     prefs.enable(LogType.DRIVER, Level.ALL);
+    prefs.enable(LogType.SERVER, Level.OFF);
 
     String json = new BeanToJsonConverter().convert(prefs);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
-    assertEquals("FINE", converted.get(LogType.CLIENT).getAsString());
+    assertEquals("WARNING", converted.get(LogType.BROWSER).getAsString());
+    assertEquals("DEBUG", converted.get(LogType.CLIENT).getAsString());
     assertEquals("ALL", converted.get(LogType.DRIVER).getAsString());
+    assertEquals("OFF", converted.get(LogType.SERVER).getAsString());
   }
 
   @Test
