@@ -17,7 +17,7 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.thoughtworks.selenium.Wait;
+import com.thoughtworks.selenium.webdriven.Wait;
 import com.thoughtworks.selenium.webdriven.ScriptMutator;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 

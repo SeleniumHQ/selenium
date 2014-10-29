@@ -1,6 +1,6 @@
 /*
-Copyright 2006-2012 Selenium committers
-Copyright 2006-2012 Software Freedom Conservancy
+Copyright 2006-2014 Selenium committers
+Copyright 2006-2014 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.webdriven;
 
 /**
  * A utility class, designed to help the user automatically wait until a condition turns true.
@@ -30,12 +30,6 @@ package com.thoughtworks.selenium;
  * &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
  * };</code>
  * </p>
- * 
- * 
- * @author Dan Fabulich
- *
- * @deprecated Moved to com.thoughtworks.selenium.webdriven
- * 
  */
 public abstract class Wait {
   public Wait() {
@@ -67,7 +61,7 @@ public abstract class Wait {
 
   /**
    * Wait until the "until" condition returns true or time runs out.
-   * 
+   *
    * @param message the failure message
    * @param timeoutInMilliseconds the amount of time to wait before giving up
    * @throws WaitTimedOutException if "until" doesn't return true until the timeout
@@ -79,7 +73,7 @@ public abstract class Wait {
 
   /**
    * Wait until the "until" condition returns true or time runs out.
-   * 
+   *
    * @param message the failure message
    * @param timeoutInMilliseconds the amount of time to wait before giving up
    * @param intervalInMilliseconds the interval to pause between checking "until"
