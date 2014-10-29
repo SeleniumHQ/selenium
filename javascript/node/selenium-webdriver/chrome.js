@@ -257,7 +257,7 @@ Options.fromCapabilities = function(capabilities) {
         addExtensions(o.extensions || []).
         detachDriver(!!o.detach).
         setChromeBinaryPath(o.binary).
-        setChromeLogFile(o.logFile).
+        setChromeLogFile(o.logPath).
         setLocalState(o.localState).
         setUserPreferences(o.prefs);
   }
@@ -417,25 +417,38 @@ Options.prototype.toCapabilities = function(opt_capabilities) {
  *           detach: boolean,
  *           extensions: !Array.<string>,
  *           localState: (Object|undefined),
- *           logFile: (string|undefined),
+ *           logPath: (string|undefined),
  *           prefs: (Object|undefined)}} The JSON wire protocol representation
  *     of this instance.
  */
 Options.prototype.toJSON = function() {
-  return {
+  var json = {
     args: this.args_,
-    binary: this.binary_,
     detach: !!this.detach_,
     extensions: this.extensions_.map(function(extension) {
       if (Buffer.isBuffer(extension)) {
         return extension.toString('base64');
       }
       return fs.readFileSync(extension, 'base64');
-    }),
-    localState: this.localState_,
-    logFile: this.logFile_,
-    prefs: this.prefs_
+    })
   };
+
+  // ChromeDriver barfs on null keys, so we must ensure these are not included
+  // if unset (really?)
+  if (this.binary_) {
+    json.binary = this.binary_;
+  }
+  if (this.localState_) {
+    json.localState = this.localState_;
+  }
+  if (this.logFile_) {
+    json.logPath = this.logFile_;
+  }
+  if (this.prefs_) {
+    json.prefs = this.prefs_;
+  }
+
+  return json;
 };
 
 

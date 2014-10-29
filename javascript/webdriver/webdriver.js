@@ -191,7 +191,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
           return value.getId();
         }
         if (goog.isFunction(value.toJSON)) {
-          return value.toJSON();
+          return convertValue(value.toJSON());
         }
         if (goog.isNumber(value.nodeType) && goog.isString(value.nodeName)) {
           throw new TypeError(

@@ -48,7 +48,7 @@ describe('chrome.Options', function() {
         args: ['a', 'b'],
         extensions: [1, 2],
         binary: 'binaryPath',
-        logFile: 'logFilePath',
+        logPath: 'logFilePath',
         detach: true,
         localState: 'localStateValue',
         prefs: 'prefsValue'
@@ -72,7 +72,7 @@ describe('chrome.Options', function() {
     it('should rebuild options from incomplete wire representation',
         function() {
           var caps = webdriver.Capabilities.chrome().set('chromeOptions', {
-            logFile: 'logFilePath'
+            logPath: 'logFilePath'
           });
 
           var options = chrome.Options.fromCapabilities(caps);
@@ -83,7 +83,7 @@ describe('chrome.Options', function() {
           assert(json.detach).isFalse();
           assert(json.extensions.length).equalTo(0);
           assert(json.localState).isUndefined();
-          assert(json.logFile).equalTo('logFilePath');
+          assert(json.logPath).equalTo('logFilePath');
           assert(json.prefs).isUndefined();
         });
 

@@ -442,6 +442,30 @@ function testToWireValue_nestedObject() {
 }
 
 
+function testToWireValue_capabilities() {
+  var prefs = new webdriver.logging.Preferences();
+  prefs.setLevel(webdriver.logging.Type.BROWSER,
+      webdriver.logging.Level.DEBUG);
+
+  var caps = webdriver.Capabilities.chrome();
+  caps.set(webdriver.Capability.LOGGING_PREFS, prefs);
+
+  var callback = callbackHelper(function(actual) {
+    webdriver.test.testutil.assertObjectEquals({
+      'browserName': 'chrome',
+      'loggingPrefs': {
+        'browser': 'DEBUG'
+      }
+    }, actual);
+  });
+
+  webdriver.WebDriver.toWireValue_(caps).then(callback);
+
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
 function testToWireValue_webElement() {
   var expected = {};
   expected[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
