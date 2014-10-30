@@ -18,17 +18,18 @@
  * Usage: mocha -t 10000 selenium-webdriver/example/google_search_test.js
  */
 
-var By = require('..').By,
-    until = require('..').until,
-    firefox = require('../firefox'),
+var webdriver = require('..'),
+    By = webdriver.By,
+    until = webdriver.until,
     test = require('../testing');
-
 
 test.describe('Google Search', function() {
   var driver;
 
   test.before(function() {
-    driver = new firefox.Driver();
+    driver = new webdriver.Builder()
+        .forBrowser('firefox')
+        .build();
   });
 
   test.it('should append query to title', function() {
@@ -38,5 +39,7 @@ test.describe('Google Search', function() {
     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   });
 
-  test.after(function() { driver.quit(); });
+  test.after(function() {
+    driver.quit();
+  });
 });

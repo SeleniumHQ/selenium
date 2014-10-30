@@ -231,18 +231,28 @@ DriverService.prototype.stop = function() {
 
 
 /**
- * Manages the life and death of the Selenium standalone server. The server
- * may be obtained from http://selenium-release.storage.googleapis.com/index.html.
+ * Manages the life and death of the
+ * <a href="http://selenium-release.storage.googleapis.com/index.html">
+ * standalone Selenium server</a>.
+ *
  * @param {string} jar Path to the Selenium server jar.
- * @param {!SeleniumServer.Options} options Configuration options for the
+ * @param {SeleniumServer.Options=} opt_options Configuration options for the
  *     server.
- * @throws {Error} If an invalid port is specified.
+ * @throws {Error} If the path to the Selenium jar is not specified or if an
+ *     invalid port is specified.
  * @constructor
  * @extends {DriverService}
  */
-function SeleniumServer(jar, options) {
-  if (options.port < 0)
+function SeleniumServer(jar, opt_options) {
+  if (!jar) {
+    throw Error('Path to the Selenium jar not specified');
+  }
+
+  var options = opt_options || {};
+
+  if (options.port < 0) {
     throw Error('Port must be >= 0: ' + options.port);
+  }
 
   var port = options.port || portprober.findFreePort();
   var args = promise.when(options.jvmArgs || [], function(jvmArgs) {
