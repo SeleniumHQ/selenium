@@ -285,7 +285,7 @@ class WebElement(object):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_file = LocalFileDetector.is_local_file(*value)
+            local_file = self.parent.file_detector.is_local_file(*value)
             if local_file is not None:
                 value = self._upload(local_file)
 
@@ -421,32 +421,3 @@ class WebElement(object):
                 return filename
             else:
                 raise e
-
-class LocalFileDetector(object):
-
-    @classmethod
-    def is_local_file(cls, *keys):
-        file_path = ''
-        typing = []
-        for val in keys:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-        file_path = ''.join(typing)
-
-        if file_path is '':
-            return None
-
-        try:
-            if os.path.isfile(file_path):
-                return file_path
-        except:
-            pass
-        return None
-
