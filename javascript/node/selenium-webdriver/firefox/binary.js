@@ -20,7 +20,8 @@ var child = require('child_process'),
     path = require('path'),
     util = require('util');
 
-var promise = require('..').promise,
+var Serializable = require('..').Serializable,
+    promise = require('..').promise,
     _base = require('../_base'),
     io = require('../io'),
     exec = require('../io/exec');
@@ -148,11 +149,15 @@ function installProfile(firefox, env) {
 
 /**
  * Manages a Firefox subprocess configured for use with WebDriver.
+ *
  * @param {string=} opt_exe Path to the Firefox binary to use. If not
  *     specified, will attempt to locate Firefox on the current system.
  * @constructor
+ * @extends {Serializable.<string>}
  */
 var Binary = function(opt_exe) {
+  Serializable.call(this);
+
   /** @private {(string|undefined)} */
   this.exe_ = opt_exe;
 
@@ -171,6 +176,7 @@ var Binary = function(opt_exe) {
   /** @private {promise.Promise.<!exec.Command>} */
   this.command_ = null;
 };
+util.inherits(Binary, Serializable);
 
 
 /**
@@ -251,6 +257,21 @@ Binary.prototype.kill = function() {
     command.kill();
     return command.result();
   });
+};
+
+
+/**
+ * Returns a promise for the wire representation of this binary. Note: the
+ * FirefoxDriver only supports passing the path to the binary executable over
+ * the wire; all command line arguments and environment variables will be
+ * discarded.
+ *
+ * @return {!promise.Promise.<string>} A promise for this binary's wire
+ *     representation.
+ * @override
+ */
+Binary.prototype.serialize = function() {
+  return promise.when(this.exe_ || findFirefox());
 };
 
 

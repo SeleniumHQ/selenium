@@ -229,14 +229,18 @@ var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 /**
  * Class for managing ChromeDriver specific options.
  * @constructor
+ * @extends {webdriver.Serializable}
  */
 var Options = function() {
+  webdriver.Serializable.call(this);
+
   /** @private {!Array.<string>} */
   this.args_ = [];
 
   /** @private {!Array.<(string|!Buffer)>} */
   this.extensions_ = [];
 };
+util.inherits(Options, webdriver.Serializable);
 
 
 /**
@@ -415,13 +419,14 @@ Options.prototype.toCapabilities = function(opt_capabilities) {
  * @return {{args: !Array.<string>,
  *           binary: (string|undefined),
  *           detach: boolean,
- *           extensions: !Array.<string>,
+ *           extensions: !Array.<(string|!webdriver.promise.Promise.<string>))>,
  *           localState: (Object|undefined),
  *           logPath: (string|undefined),
  *           prefs: (Object|undefined)}} The JSON wire protocol representation
  *     of this instance.
+ * @override
  */
-Options.prototype.toJSON = function() {
+Options.prototype.serialize = function() {
   var json = {
     args: this.args_,
     detach: !!this.detach_,
@@ -429,7 +434,8 @@ Options.prototype.toJSON = function() {
       if (Buffer.isBuffer(extension)) {
         return extension.toString('base64');
       }
-      return fs.readFileSync(extension, 'base64');
+      return webdriver.promise.checkedNodeCall(
+          fs.readFile, extension, 'base64');
     })
   };
 

@@ -33,6 +33,7 @@ goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
+goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
@@ -163,11 +164,14 @@ webdriver.WebDriver.acquireSession_ = function(
  * When converting values of type object, the following steps will be taken:
  * <ol>
  * <li>if the object is a WebElement, the return value will be the element's
- *     server ID</li>
- * <li>if the object provides a "toJSON" function, the return value of this
- *     function will be returned</li>
+ *     server ID
+ * <li>if the object is a Serializable, its
+ *     {@link webdriver.Serializable#serialize} function will be invoked and
+ *     this algorithm will recursively be applied to the result
+ * <li>if the object provides a "toJSON" function, this algorithm will
+ *     recursively be applied to the result of that function
  * <li>otherwise, the value of each key will be recursively converted according
- *     to the rules above.</li>
+ *     to the rules above.
  * </ol>
  *
  * @param {*} obj The object to convert.
@@ -187,11 +191,17 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
       case 'array':
         return convertKeys(value, true);
       case 'object':
+        // NB: WebElement is a Serializable, but we know its serialized form
+        // is a promise for its wire format. This is a micro optimization to
+        // avoid creating extra promises by recursing on the promised id.
         if (value instanceof webdriver.WebElement) {
           return value.getId();
         }
+        if (value instanceof webdriver.Serializable) {
+          return webdriver.WebDriver.toWireValue_(value.serialize());
+        }
         if (goog.isFunction(value.toJSON)) {
-          return convertValue(value.toJSON());
+          return webdriver.WebDriver.toWireValue_(value.toJSON());
         }
         if (goog.isNumber(value.nodeType) && goog.isString(value.nodeName)) {
           throw new TypeError(
@@ -1633,8 +1643,10 @@ webdriver.Key.chord = function(var_args) {
  *           webdriver.WebElement.Id)} id The server-assigned opaque ID for the
  *     underlying DOM element.
  * @constructor
+ * @extends {webdriver.Serializable.<webdriver.WebElement.Id>}
  */
 webdriver.WebElement = function(driver, id) {
+  webdriver.Serializable.call(this);
 
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
@@ -1643,6 +1655,7 @@ webdriver.WebElement = function(driver, id) {
   this.id_ = id instanceof webdriver.promise.Promise ?
       id : webdriver.promise.fulfilled(id);
 };
+goog.inherits(webdriver.WebElement, webdriver.Serializable);
 
 
 /**
@@ -1707,6 +1720,12 @@ webdriver.WebElement.prototype.getDriver = function() {
  */
 webdriver.WebElement.prototype.getId = function() {
   return this.id_;
+};
+
+
+/** @override */
+webdriver.WebElement.prototype.serialize = function() {
+  return this.getId();
 };
 
 
