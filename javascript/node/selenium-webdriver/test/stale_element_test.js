@@ -17,12 +17,12 @@
 
 var fail = require('assert').fail;
 
-var By = require('..').By,
+var Browser = require('..').Browser,
+    By = require('..').By,
     error = require('..').error,
     until = require('..').until,
     assert = require('../testing/assert'),
     test = require('../lib/test'),
-    Browser = test.Browser,
     Pages = test.Pages;
 
 

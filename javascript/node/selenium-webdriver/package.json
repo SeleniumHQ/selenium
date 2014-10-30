@@ -27,9 +27,9 @@
         "xml2js": "0.4.4"
     },
     "devDependencies" : {
-        "mocha" : "~1.10.0"
+        "mocha" : ">= 1.21.x"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"
+        "test": "node_modules/.bin/mocha --harmony --no-timeouts --recursive test"
     }
 }
