@@ -93,7 +93,7 @@ java_test(name = "SmallTests",
 
 java_test(name = "RcBrowserLauncherTests",
   scs = [
-    "browserlaunchers/RcBrowserLauncherTests.java",
+    "browserlaunchers/locators/RcBrowserLauncherTests.java",
   ],
   deps = [
     ":tests",

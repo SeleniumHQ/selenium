@@ -15,12 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.browserlaunchers.locators;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.browserlaunchers.locators.FirefoxLocatorUnitTest;
-import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(value = {
