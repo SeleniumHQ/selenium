@@ -1,4 +1,4 @@
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium.testing;
 
 import org.seleniumhq.jetty7.http.HttpFields;
 

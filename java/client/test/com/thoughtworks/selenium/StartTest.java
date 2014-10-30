@@ -19,6 +19,8 @@ package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
 
+import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +29,6 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 import java.net.MalformedURLException;
 import java.net.URL;

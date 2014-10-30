@@ -28,6 +28,7 @@ import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
+import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.After;
@@ -51,7 +52,6 @@ import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 import java.io.File;
 import java.io.IOException;

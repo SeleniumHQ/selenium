@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium.testing;
 
 import com.google.common.collect.Lists;
 
