@@ -40,7 +40,6 @@ java_library(name = "emulation-api",
     "SeleniumMutator.java",
     "Timer.java",
     "VariableDeclaration.java",
-    "Wait.java",
     "Windows.java",
   ],
   deps = [

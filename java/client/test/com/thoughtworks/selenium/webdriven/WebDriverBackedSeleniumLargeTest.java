@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.Wait;
 
 import org.junit.Before;
 import org.junit.Test;

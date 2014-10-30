@@ -18,7 +18,7 @@ package com.thoughtworks.selenium.webdriven.commands;
 
 import com.google.common.base.Throwables;
 
-import com.thoughtworks.selenium.webdriven.Wait;
+import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.By;

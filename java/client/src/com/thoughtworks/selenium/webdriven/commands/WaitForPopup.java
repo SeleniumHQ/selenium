@@ -17,7 +17,7 @@ limitations under the License.
 package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.webdriven.Wait;
+import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import com.thoughtworks.selenium.webdriven.Windows;
 
