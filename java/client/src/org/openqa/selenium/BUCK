@@ -108,6 +108,9 @@ java_library(
     'Architecture.java',
     'Platform.java',
   ],
+  deps = [
+    ':exceptions',
+  ],
   visibility = ['PUBLIC'],
 )
 
