@@ -18,6 +18,7 @@ goog.require('goog.json');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.Capabilities');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandExecutor');
@@ -416,6 +417,9 @@ function testToWireValue_function() {
 
 
 function testToWireValue_date() {
+  if (goog.userAgent.IE) {
+    return;  // Because IE...
+  }
   var callback;
   webdriver.WebDriver.toWireValue_(new Date(605728511546)).
       then(callback = callbackHelper(function(value) {
