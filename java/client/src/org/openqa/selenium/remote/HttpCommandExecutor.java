@@ -162,8 +162,15 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     HttpRequest request = commandCodec.encode(command);
 
-    String requestUrl = remoteServer.toExternalForm().replaceAll("/$", "")
-        + request.getUri();
+    String requestUrl = null;
+
+  	if (remoteServer.getQuery() != null && !remoteServer.getQuery().isEmpty()){
+  		requestUrl = remoteServer.toExternalForm().replaceAll("/$", "").replaceAll("\\?.*", "")
+  	            + request.getUri() + "?" + remoteServer.getQuery();
+  	} else {
+  		requestUrl = remoteServer.toExternalForm().replaceAll("/$", "")
+  		        + request.getUri();
+  	}
 
     HttpUriRequest httpMethod = createHttpUriRequest(request.getMethod(), requestUrl);
     for (String name : request.getHeaderNames()) {
