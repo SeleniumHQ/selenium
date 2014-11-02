@@ -41,7 +41,6 @@ goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('wgxpath');
 
-
 /**
  * XPathResult enum values. These are defined separately since
  * the context running this script may not support the XPathResult
@@ -61,18 +60,6 @@ bot.locators.XPathResult_ = {
   ORDERED_NODE_SNAPSHOT_TYPE: 7,
   FIRST_ORDERED_NODE_TYPE: 9
 };
-
-
-/**
- * Default XPath namespace resolver.
- * @private
- */
-bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
-  var namespaces = {svg: 'http://www.w3.org/2000/svg'};
-  return function(prefix) {
-    return namespaces[prefix] || null;
-  };
-})();
 
 
 /**
@@ -96,16 +83,46 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   }
 
   try {
-    var resolver = doc.createNSResolver ?
-        doc.createNSResolver(doc.documentElement) :
-        bot.locators.xpath.DEFAULT_RESOLVER_;
+    var reversedNamespaces = {};
+    var allNodes = doc.getElementsByTagName("*");
+    for (var i = 0; i < allNodes.length; ++i) {
+      var n = allNodes[i];
+      var ns = n.namespaceURI;
+      if (!reversedNamespaces[ns]) {
+        var prefix = n.lookupPrefix(ns);
+        if (!prefix) {
+          var m = ns.match('.*/(\\w+)/?$');
+          if (m) {
+            prefix = m[1];
+          } else {
+            prefix = 'xhtml';
+          }
+        }
+        reversedNamespaces[ns] = prefix;
+      }
+    }
+    var namespaces = {};
+    for (var key in reversedNamespaces) {
+      namespaces[reversedNamespaces[key]] = key;
+    }
+    var resolver = function(prefix) {
+      return namespaces[prefix] || null;
+    }
     if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(7)) {
       // IE6, and only IE6, has an issue where calling a custom function
       // directly attached to the document object does not correctly propagate
       // thrown errors. So in that case *only* we will use apply().
       return doc.evaluate.call(doc, path, node, resolver, resultType, null);
     } else {
-      return doc.evaluate(path, node, resolver, resultType, null);
+      try {
+        return doc.evaluate(path, node, resolver, resultType, null);
+      } catch (te) {
+        if (goog.userAgent.GECKO && te.name === 'TypeError') {
+          return doc.evaluate(path, node, doc.createNSResolver(doc.documentElement), resultType, null);
+        } else {
+          throw te;
+        }
+      }
     }
   } catch (ex) {
     // The Firefox XPath evaluator can throw an exception if the document is
@@ -147,6 +164,7 @@ bot.locators.xpath.single = function(target, root) {
   function selectSingleNode() {
     var result = bot.locators.xpath.evaluate_(root, target,
         bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
+
     if (result) {
       var node = result.singleNodeValue;
       // On Opera, a singleNodeValue of undefined indicates a type error, while
