@@ -160,6 +160,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_persistent_hover_ = enable_persistent_hover;
   }
 
+  bool validate_cookie_document_type(void) const {
+    return this->validate_cookie_document_type_;
+  }
+  void set_validate_cookie_document_type(const bool validate_document) {
+    this->validate_cookie_document_type_ = validate_document;
+  }
+
   std::string unexpected_alert_behavior(void) const {
     return this->unexpected_alert_behavior_;
   }
@@ -216,6 +223,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool ignore_zoom_setting_;
   std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
+  bool validate_cookie_document_type_;
 
   Command current_command_;
   std::string serialized_response_;

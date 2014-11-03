@@ -261,7 +261,8 @@ void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
   }
 }
 
-int DocumentHost::AddCookie(const std::string& cookie) {
+int DocumentHost::AddCookie(const std::string& cookie,
+                            const bool validate_document_type) {
   LOG(TRACE) << "Entering DocumentHost::AddCookie";
 
   CComBSTR cookie_bstr = StringUtilities::ToWString(cookie.c_str()).c_str();
@@ -275,8 +276,16 @@ int DocumentHost::AddCookie(const std::string& cookie) {
   }
 
   if (!this->IsHtmlPage(doc)) {
-    LOG(WARN) << "Unable to add cookie, document does not appear to be an HTML page";
-    return ENOSUCHDOCUMENT;
+    if (validate_document_type) {
+      LOG(WARN) << "Unable to add cookie, document does not appear to be an HTML page";
+      return ENOSUCHDOCUMENT;
+    } else {
+      LOG(WARN) << "Document does not appear to be an HTML page. Perhaps the "
+                << "Cache-control header was set to 'no-cache'. Since you have "
+                << "specified to ignore validating the document type, you may "
+                << "experience adverse results, including crashes, from this "
+                << "point.";
+    }
   }
 
   HRESULT hr = doc->put_cookie(cookie_bstr);

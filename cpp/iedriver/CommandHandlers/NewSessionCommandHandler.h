@@ -63,6 +63,9 @@ class NewSessionCommandHandler : public IECommandHandler {
       Json::Value require_window_focus = it->second.get(REQUIRE_WINDOW_FOCUS_CAPABILITY, false);
       mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
 
+      Json::Value validate_cookie_document_type = it->second.get(VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, true);
+      mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
+
       Json::Value unexpected_alert_behavior = it->second.get(UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, DISMISS_UNEXPECTED_ALERTS);
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
       Json::Value enable_element_cache_cleanup = it->second.get(ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, true);

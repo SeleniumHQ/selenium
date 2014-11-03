@@ -101,6 +101,7 @@ namespace OpenQA.Selenium.IE
         private const string UsePerProcessProxyCapability = "ie.usePerProcessProxy";
         private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
+        private const string ValidateCookieDocumentTypeCapability = "ie.validateCookieDocumentType";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -111,6 +112,7 @@ namespace OpenQA.Selenium.IE
         private bool forceShellWindowsApi;
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
+        private bool validateCookieDocumentType = true;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
@@ -232,6 +234,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to validate the document type of the loaded
+        /// document when setting cookies.
+        /// </summary>
+        public bool ValidateCookieDocumentType
+        {
+            get { return validateCookieDocumentType; }
+            set { validateCookieDocumentType = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the command line arguments used in launching Internet Explorer when the 
         /// Windows CreateProcess API is used. This property only has an effect when the
         /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
@@ -308,7 +320,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == BrowserCommandLineSwitchesCapability ||
                 capabilityName == CapabilityType.Proxy ||
                 capabilityName == UsePerProcessProxyCapability ||
-                capabilityName == EnsureCleanSessionCapability)
+                capabilityName == EnsureCleanSessionCapability ||
+                capabilityName == ValidateCookieDocumentTypeCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -404,6 +417,11 @@ namespace OpenQA.Selenium.IE
             if (this.ensureCleanSession)
             {
                 capabilities.SetCapability(EnsureCleanSessionCapability, true);
+            }
+
+            if (!this.validateCookieDocumentType)
+            {
+                capabilities.SetCapability(ValidateCookieDocumentTypeCapability, false);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
