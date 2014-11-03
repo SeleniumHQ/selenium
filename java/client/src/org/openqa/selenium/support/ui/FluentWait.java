@@ -201,7 +201,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param isTrue The predicate to wait on.
    * @throws TimeoutException If the timeout expires.
    */
-  public void until(final Predicate<T> isTrue) {
+  public void until(final Predicate<? super T> isTrue) {
     until(new Function<T, Boolean>() {
       public Boolean apply(T input) {
         return isTrue.apply(input);
