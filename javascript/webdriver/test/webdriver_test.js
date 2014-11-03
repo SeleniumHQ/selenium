@@ -418,6 +418,7 @@ function testToWireValue_function() {
 
 function testToWireValue_date() {
   if (goog.userAgent.IE) {
+    verifyAll();  // Expected by tear down.
     return;  // Because IE...
   }
   var callback;
