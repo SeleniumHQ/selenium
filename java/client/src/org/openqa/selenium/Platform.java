@@ -74,6 +74,39 @@ public enum Platform {
 
   MAC("mac", "darwin", "os x") {},
 
+  SNOW_LEOPARD("snow leopard", "os x 10.6") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "OS X 10.6";
+    }
+  },
+
+  MOUNTAIN_LION("mountain lion", "os x 10.8") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "OS X 10.8";
+    }
+  },
+
+  MAVERICKS("mavericks", "os x 10.9") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "OS X 10.9";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
