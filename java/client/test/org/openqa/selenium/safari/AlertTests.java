@@ -30,9 +30,11 @@ import com.google.common.base.Joiner;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.concurrent.TimeUnit;
 
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class AlertTests extends SafariTestBase {
 
   @AfterClass

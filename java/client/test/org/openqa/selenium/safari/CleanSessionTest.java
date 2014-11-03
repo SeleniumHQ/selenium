@@ -26,7 +26,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class CleanSessionTest extends SafariTestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");

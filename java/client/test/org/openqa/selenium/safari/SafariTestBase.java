@@ -7,9 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import org.junit.Before;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class SafariTestBase extends JUnit4TestBase {
 
   private static WebDriver staticDriver = null;
