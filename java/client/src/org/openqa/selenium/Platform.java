@@ -72,7 +72,7 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin") {},
+  MAC("mac", "darwin", "os x") {},
 
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
