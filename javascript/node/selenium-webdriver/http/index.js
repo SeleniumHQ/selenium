@@ -30,10 +30,12 @@ var base = require('../_base'),
  * @param {string} serverUrl URL for the WebDriver server to send commands to.
  * @param {http.Agent=} opt_agent The agent to use for each request.
  *     Defaults to {@code http.globalAgent}.
+ * @param {string=} opt_proxy The proxy to use for the connection to the server.
+ *     Default is to use no proxy.
  * @constructor
  * @implements {webdriver.http.Client}
  */
-var HttpClient = function(serverUrl, opt_agent) {
+var HttpClient = function(serverUrl, opt_agent, opt_proxy) {
   var parsedUrl = url.parse(serverUrl);
   if (!parsedUrl.hostname) {
     throw new Error('Invalid server URL: ' + serverUrl);
@@ -41,6 +43,9 @@ var HttpClient = function(serverUrl, opt_agent) {
 
   /** @private {http.Agent} */
   this.agent_ = opt_agent;
+
+  /** @private {string} */
+  this.proxy_ = opt_proxy;
 
   /**
    * Base options for each request.
@@ -78,10 +83,12 @@ HttpClient.prototype.send = function(httpRequest, callback) {
     path: path,
     headers: httpRequest.headers
   };
+
   if (this.agent_) {
     options.agent = this.agent_;
   }
-  sendRequest(options, callback, data);
+
+  sendRequest(options, callback, data, this.proxy_);
 };
 
 
@@ -91,8 +98,24 @@ HttpClient.prototype.send = function(httpRequest, callback) {
  * @param {function(Error, !webdriver.http.Response=)} callback The function to
  *     invoke with the server's response.
  * @param {string=} opt_data The data to send with the request.
+ * @param {string=} opt_proxy The proxy server to use for the request.
  */
-var sendRequest = function(options, callback, opt_data) {
+var sendRequest = function(options, callback, opt_data, opt_proxy) {
+  var host = options.host;
+  var port = options.port;
+
+  if (opt_proxy) {
+    var proxy = url.parse(opt_proxy);
+
+    options.headers['Host'] = options.host;
+    options.host = proxy.hostname;
+    options.port = proxy.port;
+
+    if (proxy.auth) {
+      options.headers['Proxy-Authorization'] = 'Basic ' + new Buffer(proxy.auth).toString('base64');
+    }
+  }
+
   var request = http.request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       try {
@@ -106,8 +129,8 @@ var sendRequest = function(options, callback, opt_data) {
       }
 
       if (!location.hostname) {
-        location.hostname = options.host;
-        location.port = options.port;
+        location.hostname = host;
+        location.port = port;
       }
 
       request.abort();
@@ -119,7 +142,7 @@ var sendRequest = function(options, callback, opt_data) {
         headers: {
           'Accept': 'application/json; charset=utf-8'
         }
-      }, callback);
+      }, callback, undefined, opt_proxy);
       return;
     }
 
@@ -135,7 +158,7 @@ var sendRequest = function(options, callback, opt_data) {
   request.on('error', function(e) {
     if (e.code === 'ECONNRESET') {
       setTimeout(function() {
-        sendRequest(options, callback, opt_data);
+        sendRequest(options, callback, opt_data, opt_proxy);
       }, 15);
     } else {
       var message = e.message;
