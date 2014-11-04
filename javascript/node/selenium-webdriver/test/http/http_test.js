@@ -25,6 +25,8 @@ var promise = require('../..').promise;
 var test = require('../../lib/test');
 
 describe('HttpClient', function() {
+  this.timeout(4*1000);
+
   var server = new Server(function(req, res) {
     if (req.method == 'GET' && req.url == '/echo') {
       res.writeHead(200, req.headers);
@@ -40,6 +42,14 @@ describe('HttpClient', function() {
 
     } else if (req.method == 'GET' && req.url == '/badredirect') {
       res.writeHead(303, {});
+      res.end();
+
+    } else if (req.method == 'GET' && req.url == '/proxy') {
+      res.writeHead(200, req.headers);
+      res.end();
+
+    } else if (req.method == 'GET' && req.url == '/proxy/redirect') {
+      res.writeHead(303, {'Location': '/proxy'});
       res.end();
 
     } else {
@@ -90,10 +100,33 @@ describe('HttpClient', function() {
   test.it('handles malformed redirect responses', function() {
     var request = new HttpRequest('GET', '/badredirect');
     var client = new HttpClient(server.url());
-    return promise.checkedNodeCall(client.send.bind(client, request)).
-        thenCatch(function(err) {
+    return promise.checkedNodeCall(client.send.bind(client, request))
+        .thenCatch(function(err) {
           assert.ok(/Failed to parse "Location"/.test(err.message),
               'Not the expected error: ' + err.message);
+        });
+  });
+
+  test.it('proxies requests through the webdriver proxy', function() {
+    var request = new HttpRequest('GET', '/proxy');
+    var client = new HttpClient(
+        'http://another.server.com', undefined, server.url());
+    return promise.checkedNodeCall(client.send.bind(client, request))
+        .then(function(response) {
+           assert.equal(200, response.status);
+           assert.equal('another.server.com', response.headers['host']);
+        });
+  });
+
+  test.it(
+      'proxies requests through the webdriver proxy on redirect', function() {
+    var request = new HttpRequest('GET', '/proxy/redirect');
+    var client = new HttpClient(
+        'http://another.server.com', undefined, server.url());
+    return promise.checkedNodeCall(client.send.bind(client, request))
+        .then(function(response) {
+          assert.equal(200, response.status);
+          assert.equal('another.server.com', response.headers['host']);
         });
   });
 });

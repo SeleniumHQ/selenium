@@ -1,5 +1,7 @@
 ## v2.46.0-dev
 
+* Added support for using a proxy server for WebDriver commands.
+    See `Builder#usingWebDriverProxy()` for more info.
 * Removed deprecated functions:
     * Capabilities#toJSON()
     * UnhandledAlertError#getAlert()
