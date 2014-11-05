@@ -104,4 +104,11 @@ public class DesiredCapabilitiesTest {
     assertEquals(caps.getCapability(CapabilityType.PLATFORM), Platform.WIN8_1);
   }
 
+  @Test
+  public void shouldNotAutomaticallyConvertPlatformIfItNotConvertible() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.PLATFORM, "FreeBSD");
+    assertEquals(caps.getCapability(CapabilityType.PLATFORM), "FreeBSD");
+  }
+
 }
