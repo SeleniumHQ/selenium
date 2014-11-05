@@ -424,11 +424,11 @@ class RemoteConnection(object):
 
         data = resp.read()
         try:
-            if 399 < statuscode < 500:
-                return {'status': statuscode, 'value': data}
             if 300 <= statuscode < 304:
                 return self._request('GET', resp.getheader('location'))
             body = data.decode('utf-8').replace('\x00', '').strip()
+            if 399 < statuscode < 500:
+                return {'status': statuscode, 'value': body}
             content_type = []
             if resp.getheader('Content-Type') is not None:
                 content_type = resp.getheader('Content-Type').split(';')
