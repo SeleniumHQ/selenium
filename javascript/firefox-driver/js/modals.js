@@ -168,30 +168,11 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    if (driver.response_.name == 'executeAsyncScript' && !driver.response_.responseSent_) {
+    if (res.name == 'executeAsyncScript' && !res.responseSent_) {
       // Special case handling. If a modal is open when executeAsyncScript
       // tries to respond with a result, it doesn't do anything, so that this
       // codepath can be followed.
-      fxdriver.modals.isModalPresent(function(present) {
-        var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
-        if (present) {
-          try {
-            fxdriver.modals.dismissAlert(driver);
-          } catch (e) {
-            errorMessage +=
-                ' The alert could not be closed. The browser may be in a ' +
-                'wildly inconsistent state, and the alert may still be ' +
-                'open. This is not good. If you can reliably reproduce this' +
-                ', please report a new issue at ' +
-                'https://code.google.com/p/selenium/issues/entry ' +
-                'with reproduction steps. Exception message: ' + e;
-          }
-        } else {
-          errorMessage += ' The alert disappeared before it could be closed.';
-        }
-        res.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
-            errorMessage, {alert: {text: text}}));
-      }, 2000);
+      fxdriver.modals.closeUnhandledAlert(res, driver, false);
     } else {
       // We hope that modals can only be opened by actions which don't pay
       // attention to the results of the command. Given this, the only ways we
@@ -251,4 +232,33 @@ fxdriver.modals.getUnexpectedAlertBehaviour = function() {
 
   var raw = prefs.getCharPref('webdriver_unexpected_alert_behaviour');
   return fxdriver.modals.asAcceptableAlertValue(raw);
+};
+
+
+fxdriver.modals.closeUnhandledAlert = function(response, driver, accept) {
+  var text = driver.modalOpen;
+  fxdriver.modals.isModalPresent(function(present) {
+    var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
+    if (present) {
+      try {
+        if (accept) {
+          fxdriver.modals.acceptAlert(driver);
+        } else {
+          fxdriver.modals.dismissAlert(driver);
+        }
+      } catch (e) {
+        errorMessage +=
+        ' The alert could not be closed. The browser may be in a ' +
+        'wildly inconsistent state, and the alert may still be ' +
+        'open. This is not good. If you can reliably reproduce this' +
+        ', please report a new issue at ' +
+        'https://code.google.com/p/selenium/issues/entry ' +
+        'with reproduction steps. Exception message: ' + e;
+      }
+    } else {
+      errorMessage += ' The alert disappeared before it could be closed.';
+    }
+    response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
+                                     errorMessage, {alert: {text: text}}));
+  }, 2000);
 };

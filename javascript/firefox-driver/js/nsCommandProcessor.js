@@ -481,25 +481,22 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       var modalText = driver.modalOpen;
       var unexpectedAlertBehaviour = fxdriver.modals.getUnexpectedAlertBehaviour();
       switch (unexpectedAlertBehaviour) {
-          case 'accept':
-            fxdriver.modals.acceptAlert(driver);
-            break;
+        case 'accept':
+          fxdriver.modals.closeUnhandledAlert(response, driver, true);
+          break;
 
-          case 'ignore':
-            // do nothing, ignore the alert
-            break;
+        case 'ignore':
+          // do nothing, ignore the alert
+          response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
+              'Modal dialog present', {alert: {text: modalText}}));
+          break;
 
-          // Dismiss is the default
-          case 'dismiss':
-          default:
-            fxdriver.modals.dismissAlert(driver);
-            break;
+        // Dismiss is the default
+        case 'dismiss':
+        default:
+          fxdriver.modals.closeUnhandledAlert(response, driver, false);
+          break;
       }
-      goog.log.error(nsCommandProcessor.LOG_,
-          'Sending error from command ' + command.name +
-          ' with alertText: ' + modalText);
-      response.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_ALERT_OPEN,
-          'Modal dialog present', {alert: {text: modalText}}));
       return;
     }
   }
