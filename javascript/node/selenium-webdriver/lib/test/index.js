@@ -44,19 +44,9 @@ var nativeRun = !serverJar && !remoteUrl;
 
 
 var browsersToTest = (function() {
-  if (process.env['SELENIUM_BROWSER']) {
-    if (process.env['SELENIUM_BROWSERS']) {
-      console.log('SELENIUM_BROWSER and SELENIUM_BROWSERS both set for');
-      console.log('Selenium test suite; unsetting SELENIUM_BROWSER');
-    } else {
-      process.env['SELENIUM_BROWSERS'] = process.env['SELENIUM_BROWSER'];
-    }
-    delete process.env['SELENIUM_BROWSER'];
-  }
-
   var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
   var permitUnknownBrowsers = !nativeRun;
-  var browsers = process.env['SELENIUM_BROWSERS'] || webdriver.Browser.FIREFOX;
+  var browsers = process.env['SELENIUM_BROWSER'] || webdriver.Browser.FIREFOX;
 
   browsers = browsers.split(',');
   browsers.forEach(function(browser) {
@@ -114,20 +104,9 @@ function browsers(currentBrowser, browsersToIgnore) {
 function TestEnvironment(browserName, server) {
   var name = browserName;
 
-  var autoCreate = true;
-  this.__defineGetter__(
-      'autoCreateDriver', function() { return autoCreate; });
-  this.__defineSetter__(
-      'autoCreateDriver', function(auto) { autoCreate = auto; });
-
-  this.__defineGetter__('browser', function() { return browserName; });
-
-  var driver;
-  this.__defineGetter__('driver', function() { return driver; });
-  this.__defineSetter__('driver', function(d) {
-    if (driver) throw Error('Driver already created');
-    driver = d;
-  });
+  this.currentBrowser = function() {
+    return browserName;
+  };
 
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
@@ -135,7 +114,6 @@ function TestEnvironment(browserName, server) {
   };
 
   this.builder = function() {
-    assert.ok(!driver, 'Can only have one driver at a time');
     var builder = new webdriver.Builder();
     var realBuild = builder.build;
 
@@ -148,33 +126,10 @@ function TestEnvironment(browserName, server) {
         builder.usingServer(remoteUrl);
       }
       builder.disableEnvironmentOverrides();
-      return driver = realBuild.call(builder);
+      return realBuild.call(builder);
     };
 
     return builder;
-  };
-
-  this.createDriver = function() {
-    if (!driver) {
-      driver = this.builder().build();
-    }
-    return driver;
-  };
-
-  this.refreshDriver = function() {
-    if (driver) {
-      driver.quit();
-      driver = null;
-    }
-    this.createDriver();
-  };
-
-  this.dispose = function() {
-    if (driver) {
-      var d = driver;
-      driver = null;
-      return d.quit();
-    }
   };
 }
 
@@ -206,6 +161,14 @@ function suite(fn, opt_options) {
   }
 
   try {
+
+    // Server is only started if required for a specific config.
+    testing.after(function() {
+      if (seleniumServer) {
+        return seleniumServer.stop();
+      }
+    });
+
     browsers.forEach(function(browser) {
       testing.describe('[' + browser + ']', function() {
 
@@ -229,20 +192,7 @@ function suite(fn, opt_options) {
             return seleniumServer.start(60 * 1000);
           });
         }
-
-        var env = new TestEnvironment(browser, serverToUse);
-
-        testing.beforeEach(function() {
-          if (env.autoCreateDriver) {
-            return env.createDriver().getSession();  // Catch start-up failures.
-          }
-        });
-
-        testing.after(function() {
-          return env.dispose();
-        });
-
-        fn(env);
+        fn(new TestEnvironment(browser, serverToUse));
       });
     });
   } finally {
@@ -256,14 +206,6 @@ function suite(fn, opt_options) {
 
 testing.before(fileserver.start);
 testing.after(fileserver.stop);
-
-// Server is only started if required for a specific config.
-testing.after(function() {
-  if (seleniumServer) {
-    seleniumServer.stop();
-  }
-});
-
 
 // PUBLIC API
 

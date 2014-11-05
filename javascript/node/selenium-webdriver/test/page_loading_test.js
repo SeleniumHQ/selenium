@@ -28,7 +28,13 @@ test.suite(function(env) {
   var browsers = env.browsers;
 
   var driver;
-  beforeEach(function() { driver = env.driver; });
+  test.before(function() {
+    driver = env.builder().build();
+  });
+
+  test.after(function() {
+    driver.quit();
+  });
 
   test.it('should wait for document to be loaded', function() {
     driver.get(Pages.simpleTestPage);
