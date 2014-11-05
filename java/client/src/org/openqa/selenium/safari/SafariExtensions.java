@@ -176,16 +176,29 @@ class SafariExtensions {
    */
   private static File getInstallDirectory(Optional<File> customDataDir) throws IOException {
     File dataDir = customDataDir.or(getSafariDataDirectory());
-    checkState(dataDir.isDirectory(),
-        "The expected Safari data directory does not exist: %s",
-        dataDir.getAbsolutePath());
+    checkIfDirectoryExists(dataDir);
 
     File extensionsDir = new File(dataDir, "Extensions");
     if (!extensionsDir.isDirectory()) {
       extensionsDir.mkdir();
     }
+    checkIfDirectoryExists(extensionsDir);
+
+    File databasesDir = new File(dataDir, "Databases");
+    if(!databasesDir.exists()){
+      databasesDir.mkdir();
+    }
+    checkIfDirectoryExists(databasesDir);
+
     return extensionsDir;
   }
+
+  private static void checkIfDirectoryExists(File dir){
+    checkState(dir.exists(),
+               "SafariDriver needs the following directory to exist, in order to work properly: %s",
+               dir.getAbsolutePath());
+  }
+
 
   /**
    * Installs the SafariDriver extension, if available.
