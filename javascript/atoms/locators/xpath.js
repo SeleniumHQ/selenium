@@ -63,6 +63,18 @@ bot.locators.XPathResult_ = {
 
 
 /**
+ * Default XPath namespace resolver.
+ * @private
+ */
+bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
+  var namespaces = {svg: 'http://www.w3.org/2000/svg'};
+  return function(prefix) {
+    return namespaces[prefix] || null;
+  };
+})();
+
+
+/**
  * Evaluates an XPath expression using a W3 XPathEvaluator.
  * @param {!(Document|Element)} node The document or element to perform the
  *     search under.
@@ -118,7 +130,10 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
         return doc.evaluate(path, node, resolver, resultType, null);
       } catch (te) {
         if (te.name === 'TypeError') {
-          return doc.evaluate(path, node, doc.createNSResolver(doc.documentElement), resultType, null);
+          resolver = doc.createNSResolver ?
+            doc.createNSResolver(doc.documentElement) :
+            bot.locators.xpath.DEFAULT_RESOLVER_;
+          return doc.evaluate(path, node, resolver, resultType, null);
         } else {
           throw te;
         }
