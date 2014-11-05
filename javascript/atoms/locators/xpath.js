@@ -117,7 +117,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
       try {
         return doc.evaluate(path, node, resolver, resultType, null);
       } catch (te) {
-        if (goog.userAgent.GECKO && te.name === 'TypeError') {
+        if (te.name === 'TypeError') {
           return doc.evaluate(path, node, doc.createNSResolver(doc.documentElement), resultType, null);
         } else {
           throw te;
