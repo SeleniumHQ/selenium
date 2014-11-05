@@ -257,21 +257,21 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   var runScript = function() {
-    // Since Firefox 15 we have to populate __exposedProps__
-    // when passing objects from chrome to content due to security reasons
-    if (bot.userAgent.isProductVersion(4)) {
-      for (var i = 0; i < converted.length; i++) {
-        if (goog.typeOf(converted[i]) === "object") {
-          var keys = Object.keys(converted[i]);
-          for (var key in keys) {
-            if (converted[i].__exposedProps__ == undefined) {
-              converted[i].__exposedProps__ = {};
-            }
-            converted[i].__exposedProps__[keys[key]] = "rw";
-          }
-        }
+    converted.forEach(function(value) {
+      if (goog.typeOf(value) === 'object') {
+        var props = {};
+        Object.keys(value).forEach(function(key) {
+          props[key] = 'rw';
+        });
+
+        Object.defineProperty(value, '__exposedProps__', {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: props
+        });
       }
-    }
+    });
 
     unwrappedDoc['__webdriver_evaluate']['args'] = converted;
     unwrappedDoc['__webdriver_evaluate']['async'] = isAsync;

@@ -235,6 +235,11 @@ test.suite(function(env) {
           assert(result[0].color).equalTo('red');
         });
       });
+
+      test.it('does not modify object literal parameters', function() {
+        var input = {color: 'red'};
+        execute('return arguments[0];', input).then(verifyJson(input));
+      });
     });
   });
 
