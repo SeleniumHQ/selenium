@@ -21,10 +21,12 @@
  *     selenium-webdriver/example/google_search_generator.js
  */
 
-var By = require('..').By,
-    firefox = require('../firefox');
+var webdriver = require('..'),
+    By = webdriver.By;
 
-var driver = new firefox.Driver();
+var driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .build();
 
 driver.get('http://www.google.com/ncr');
 driver.call(function* () {

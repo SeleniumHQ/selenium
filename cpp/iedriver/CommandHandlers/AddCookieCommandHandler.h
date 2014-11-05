@@ -72,7 +72,8 @@ class AddCookieCommandHandler : public IECommandHandler {
       // If a test sends both "expiry" and "expires", remove "expires"
       // from the cookie so that it doesn't get added when the string
       // properties of the JSON object are processed.
-      Json::Value expires_value = cookie_value.get("expires", Json::Value::null);
+      Json::Value expires_value = cookie_value.get("expires",
+                                                   Json::Value::null);
       if (!expires_value.isNull()) {
         cookie_value.removeMember("expires");
       }
@@ -95,7 +96,10 @@ class AddCookieCommandHandler : public IECommandHandler {
       return;
     }
 
-    status_code = browser_wrapper->AddCookie(cookie_string);
+    status_code = browser_wrapper->AddCookie(
+        cookie_string,
+        executor.validate_cookie_document_type());
+
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to add cookie to page");
       return;

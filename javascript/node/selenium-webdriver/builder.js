@@ -24,30 +24,67 @@ var Browser = base.require('webdriver.Browser'),
 
 
 
+var seleniumServer;
+
+/**
+ * Starts an instance of the Selenium server if not yet running.
+ * @param {string} jar Path to the server jar to use.
+ * @return {!webdriver.promise.Promise.<string>} A promise for the server's
+ *     addrss once started.
+ */
+function startSeleniumServer(jar) {
+  if (!seleniumServer) {
+    // Requiring 'chrome' above would create a cycle:
+    // index -> builder -> chrome -> index
+    var remote = require('./remote');
+    seleniumServer = new remote.SeleniumServer(jar);
+  }
+  return seleniumServer.start();
+}
+
+
 /**
  * Creates new {@link webdriver.WebDriver WebDriver} instances. The environment
  * variables listed below may be used to override a builder's configuration,
  * allowing quick runtime changes.
  * <ul>
- * <li>{@code SELENIUM_REMOTE_URL}: defines the remote URL for all builder
- *   instances. This environment variable should be set to a fully qualified
- *   URL for a WebDriver server (e.g. http://localhost:4444/wd/hub).
- *
  * <li>{@code SELENIUM_BROWSER}: defines the target browser in the form
  *   {@code browser[:version][:platform]}.
+ *
+ * <li>{@code SELENIUM_REMOTE_URL}: defines the remote URL for all builder
+ *   instances. This environment variable should be set to a fully qualified
+ *   URL for a WebDriver server (e.g. http://localhost:4444/wd/hub). This
+ *   option always takes precedence over {@code SELENIUM_SERVER_JAR}.
+ *
+ * <li>{@code SELENIUM_SERVER_JAR}: defines the path to the
+ * <a href="http://selenium-release.storage.googleapis.com/index.html">
+ * standalone Selenium server</a> jar to use. The server will be started the
+ * first time a WebDriver instance and be killed when the process exits.
  * </ul>
  *
  * <p>Suppose you had mytest.js that created WebDriver with
- *     {@code var driver = new webdriver.Builder().build();}.
+ * <pre><code>
+ *   var driver = new webdriver.Builder()
+ *       .forBrowser('chrome')
+ *       .build();
+ * </code></pre>
  *
  * This test could be made to use Firefox on the local machine by running with
- * {@code SELENIUM_BROWSER=firefox node mytest.js}.
+ * {@code SELENIUM_BROWSER=firefox node mytest.js}. Rather than change the
+ * code to target Google Chrome on a remote machine, you can simply set the
+ * SELENIUM_BROWSER and SELENIUM_REMOTE_URL environment variables:
+ * <pre><code>
+ *   SELENIUM_BROWSER=chrome:36:LINUX \
+ *   SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub \
+ *   node mytest.js
+ * </code></pre>
  *
- * <p>Alternatively, you could request Chrome 36 on Linux from a remote
- * server with {@code
- *     SELENIUM_BROWSER=chrome:36:LINUX
- *     SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub
- *     node mytest.js}.
+ * <p>You could also use a local copy of the standalone Selenium server:
+ * <pre><code>
+ *   SELENIUM_BROWSER=chrome:36:LINUX \
+ *   SELENIUM_SERVER_JAR=/path/to/selenium-server-standalone.jar \
+ *   node mytest.js
+ * </code></pre>
  *
  * @constructor
  */
@@ -67,6 +104,21 @@ var Builder = function() {
 
   /** @private {firefox.Options} */
   this.firefoxOptions_ = null;
+
+  /** @private {boolean} */
+  this.ignoreEnv_ = false;
+};
+
+
+/**
+ * Configures this builder to ignore any environment variable overrides and to
+ * only use the configuration specified through this instance's API.
+ *
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.disableEnvironmentOverrides = function() {
+  this.ignoreEnv_ = true;
+  return this;
 };
 
 
@@ -262,9 +314,9 @@ Builder.prototype.build = function() {
   // environment.
   var capabilities = new Capabilities(this.capabilities_);
 
-  var browser = process.env.SELENIUM_BROWSER;
-  if (browser) {
-    browser = browser.split(/:/, 3);
+  var browser;
+  if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
+    browser = process.env.SELENIUM_BROWSER.split(/:/, 3);
     capabilities.set(Capability.BROWSER_NAME, browser[0]);
     capabilities.set(Capability.VERSION, browser[1] || null);
     capabilities.set(Capability.PLATFORM, browser[2] || null);
@@ -288,7 +340,15 @@ Builder.prototype.build = function() {
   }
 
   // Check for a remote browser.
-  var url = process.env.SELENIUM_REMOTE_URL || this.url_;
+  var url = this.url_;
+  if (!this.ignoreEnv_) {
+    if (process.env.SELENIUM_REMOTE_URL) {
+      url = process.env.SELENIUM_REMOTE_URL;
+    } else if (process.env.SELENIUM_SERVER_JAR) {
+      url = startSeleniumServer(process.env.SELENIUM_SERVER_JAR);
+    }
+  }
+
   if (url) {
     var executor = executors.createExecutor(url);
     return WebDriver.createSession(executor, capabilities, this.flow_);

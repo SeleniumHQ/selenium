@@ -22,6 +22,8 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
@@ -159,7 +162,8 @@ public class JsonToBeanConverterTest {
     toModel.addProperty("thing", "hairy");
     toModel.addProperty("hairy", "true");
 
-    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class,  toModel.toString());
+    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class,
+                                                                     toModel.toString());
     assertEquals(2, modelled.size());
   }
 
@@ -244,7 +248,7 @@ public class JsonToBeanConverterTest {
   private void assertMapEntry(Map<?,?> map, String key, Object expected) {
     assertTrue("Missing key: " + key, map.containsKey(key));
     assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(),
-        expected, map.get(key));
+                 expected, map.get(key));
   }
 
   @Test
@@ -294,6 +298,29 @@ public class JsonToBeanConverterTest {
     Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, raw);
 
     assertEquals("fishy", converted.getCapability("furrfu"));
+  }
+
+  @Test
+  public void testShouldParseCapabilitiesWithLoggingPreferences() throws Exception {
+    JsonObject prefs = new JsonObject();
+    prefs.addProperty("browser", "WARNING");
+    prefs.addProperty("client", "DEBUG");
+    prefs.addProperty("driver", "ALL");
+    prefs.addProperty("server", "OFF");
+
+    JsonObject caps = new JsonObject();
+    caps.add(CapabilityType.LOGGING_PREFS, prefs);
+
+    Capabilities converted = new JsonToBeanConverter()
+        .convert(Capabilities.class, caps.toString());
+
+    LoggingPreferences lp =
+        (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
+    assertNotNull(lp);
+    assertEquals(Level.WARNING, lp.getLevel(LogType.BROWSER));
+    assertEquals(Level.FINE, lp.getLevel(LogType.CLIENT));
+    assertEquals(Level.ALL, lp.getLevel(LogType.DRIVER));
+    assertEquals(Level.OFF, lp.getLevel(LogType.SERVER));
   }
 
   @Test

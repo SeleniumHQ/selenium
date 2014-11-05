@@ -248,29 +248,26 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
   }
 
   var command = message.getCommand();
-
-  var response = new webdriver.promise.Deferred();
-  // When the response is resolved, we want to wrap it up in a message and
-  // send it back to the injected script. This does all that.
-  response.then(function(value) {
-    var encodedValue = safaridriver.inject.page.encoder.encode(value);
-    // If the command result contains any DOM elements from another
-    // document, the encoded value will contain promises that will resolve
-    // once the owner documents have encoded the elements. Therefore, we
-    // must wait for those to resolve.
-    return webdriver.promise.fullyResolved(encodedValue);
-  }).then(bot.response.createResponse, bot.response.createErrorResponse).
-      then(function(response) {
+  safaridriver.inject.CommandRegistry.getInstance()
+      .execute(command, goog.global)
+      // When the response is resolved, we want to wrap it up in a message and
+      // send it back to the injected script. This does all that.
+      .then(function(value) {
+        var encodedValue = safaridriver.inject.page.encoder.encode(value);
+        // If the command result contains any DOM elements from another
+        // document, the encoded value will contain promises that will resolve
+        // once the owner documents have encoded the elements. Therefore, we
+        // must wait for those to resolve.
+        return webdriver.promise.fullyResolved(encodedValue);
+      })
+      .then(bot.response.createResponse, bot.response.createErrorResponse)
+      .then(function(response) {
         var responseMessage = new safaridriver.message.Response(
             command.getId(), response);
         goog.log.fine(safaridriver.inject.page.LOG_,
             'Sending ' + command.getName() + ' response: ' + responseMessage);
         responseMessage.send(window);
       });
-
-  safaridriver.inject.CommandRegistry.getInstance()
-      .execute(command, goog.global)
-      .then(response.fulfill, response.reject);
 };
 
 

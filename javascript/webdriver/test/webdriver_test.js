@@ -18,11 +18,13 @@ goog.require('goog.json');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.Capabilities');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.WebDriver');
+goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
@@ -414,6 +416,21 @@ function testToWireValue_function() {
 }
 
 
+function testToWireValue_date() {
+  if (goog.userAgent.IE) {
+    verifyAll();  // Expected by tear down.
+    return;  // Because IE...
+  }
+  var callback;
+  webdriver.WebDriver.toWireValue_(new Date(605728511546)).
+      then(callback = callbackHelper(function(value) {
+        assertEquals('1989-03-12T17:55:11.546Z', value);
+      }));
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
 function testToWireValue_simpleObject() {
   var expected = {'sessionId': 'foo'};
   var callback;
@@ -437,6 +454,30 @@ function testToWireValue_nestedObject() {
   }).then(callback = callbackHelper(function(actual) {
     webdriver.test.testutil.assertObjectEquals(expected, actual);
   }));
+  callback.assertCalled();
+  verifyAll();  // Expected by tear down.
+}
+
+
+function testToWireValue_capabilities() {
+  var prefs = new webdriver.logging.Preferences();
+  prefs.setLevel(webdriver.logging.Type.BROWSER,
+      webdriver.logging.Level.DEBUG);
+
+  var caps = webdriver.Capabilities.chrome();
+  caps.set(webdriver.Capability.LOGGING_PREFS, prefs);
+
+  var callback = callbackHelper(function(actual) {
+    webdriver.test.testutil.assertObjectEquals({
+      'browserName': 'chrome',
+      'loggingPrefs': {
+        'browser': 'DEBUG'
+      }
+    }, actual);
+  });
+
+  webdriver.WebDriver.toWireValue_(caps).then(callback);
+
   callback.assertCalled();
   verifyAll();  // Expected by tear down.
 }
@@ -477,6 +518,42 @@ function testToWireValue_webElementPromise() {
 function testToWireValue_domElement() {
   assertThrows(
       goog.partial(webdriver.WebDriver.toWireValue_, document.body));
+  verifyAll();  // Expected by tear down.
+}
+
+
+function testToWireValue_serializableObject() {
+  /**
+   * @constructor
+   * @extends {webdriver.Serializable}
+   */
+  var CustomSerializable = function () {
+    webdriver.Serializable.call(this);
+
+    this.d = webdriver.promise.defer();
+  };
+  goog.inherits(CustomSerializable, webdriver.Serializable);
+
+  /** @override */
+  CustomSerializable.prototype.serialize = function() {
+    return this.d.promise;
+  };
+
+
+  var obj = new CustomSerializable();
+  var callback;
+  webdriver.WebDriver.toWireValue_(obj).
+      then(callback = callbackHelper(function(actual) {
+        webdriver.test.testutil.assertObjectEquals(
+            {name: 'bob', age: 30}, actual);
+      }));
+
+  callback.assertNotCalled();
+  obj.d.fulfill({
+    name: webdriver.promise.fulfilled('bob'),
+    age: 30
+  });
+  callback.assertCalled();
   verifyAll();  // Expected by tear down.
 }
 

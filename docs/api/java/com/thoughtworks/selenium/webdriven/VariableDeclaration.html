@@ -119,7 +119,7 @@ implements <a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutato
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../com/thoughtworks/selenium/webdriven/VariableDeclaration.html#VariableDeclaration(java.lang.String, java.lang.String)">VariableDeclaration</a></strong>(java.lang.String&nbsp;raw,
+<td class="colOne"><code><strong><a href="../../../../com/thoughtworks/selenium/webdriven/VariableDeclaration.html#VariableDeclaration(java.lang.String,%20java.lang.String)">VariableDeclaration</a></strong>(java.lang.String&nbsp;raw,
                    java.lang.String&nbsp;declaration)</code>&nbsp;</td>
 </tr>
 </table>
@@ -139,7 +139,7 @@ implements <a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutato
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../com/thoughtworks/selenium/webdriven/VariableDeclaration.html#mutate(java.lang.String, java.lang.StringBuilder)">mutate</a></strong>(java.lang.String&nbsp;script,
+<td class="colLast"><code><strong><a href="../../../../com/thoughtworks/selenium/webdriven/VariableDeclaration.html#mutate(java.lang.String,%20java.lang.StringBuilder)">mutate</a></strong>(java.lang.String&nbsp;script,
       java.lang.StringBuilder&nbsp;outputTo)</code>
 <div class="block">Mutate a script.</div>
 </td>
@@ -192,13 +192,13 @@ implements <a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutato
 <h4>mutate</h4>
 <pre>public&nbsp;void&nbsp;mutate(java.lang.String&nbsp;script,
           java.lang.StringBuilder&nbsp;outputTo)</pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html#mutate(java.lang.String, java.lang.StringBuilder)">ScriptMutator</a></code></strong></div>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html#mutate(java.lang.String,%20java.lang.StringBuilder)">ScriptMutator</a></code></strong></div>
 <div class="block">Mutate a script. The original, unmodified script is used to generate a script on the
  StringBuilder, the "toString" method of which should be used to get the result. We make use of
  a StringBuilder rather than a normal String so that we can efficiently chain mutators.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html#mutate(java.lang.String, java.lang.StringBuilder)">mutate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html" title="interface in com.thoughtworks.selenium.webdriven">ScriptMutator</a></code></dd>
+<dd><code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html#mutate(java.lang.String,%20java.lang.StringBuilder)">mutate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/thoughtworks/selenium/webdriven/ScriptMutator.html" title="interface in com.thoughtworks.selenium.webdriven">ScriptMutator</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>script</code> - The original script.</dd><dd><code>outputTo</code> - The mutated script.</dd></dl>
 </li>
 </ul>

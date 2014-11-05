@@ -9,9 +9,14 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class ImplicitWaitTest : DriverTestFixture
     {
+        [TearDown]
+        public void ResetImplicitWaitTimeout()
+        {
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
+        }
+
         [Test]
         [Category("JavaScript")]
-        [NeedsFreshDriver]
         public void ShouldImplicitlyWaitForASingleElement()
         {
             driver.Url = dynamicPage;
@@ -25,7 +30,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [NeedsFreshDriver]
         [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled()
         {

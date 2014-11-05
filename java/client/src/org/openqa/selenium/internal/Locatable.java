@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 public interface Locatable {

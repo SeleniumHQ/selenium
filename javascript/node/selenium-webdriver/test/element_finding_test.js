@@ -17,12 +17,12 @@
 
 var fail = require('assert').fail;
 
-var By = require('..').By,
+var Browser = require('..').Browser,
+    By = require('..').By,
     error = require('..').error,
     until = require('..').until,
     test = require('../lib/test'),
     assert = require('../testing/assert'),
-    Browser = test.Browser,
     Pages = test.Pages;
 
 
@@ -58,9 +58,9 @@ test.suite(function(env) {
             });
       });
 
-      test.ignore(browsers(Browser.ANDROID)).it(
-          'should find multiple elements by ID even though that ' +
-              'is malformed HTML',
+      test.it(
+          'should find multiple elements by ID even though that is ' +
+              'malformed HTML',
           function() {
             driver.get(Pages.nestedPage);
             driver.findElements(By.id('2')).then(function(elements) {

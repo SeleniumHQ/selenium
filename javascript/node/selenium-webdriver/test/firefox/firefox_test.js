@@ -43,7 +43,10 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.driver = new firefox.Driver(options);
+        var driver = env.builder().
+            setFirefoxOptions(options).
+            build();
+
         driver.get('data:text/html,<html><div>content</div></html>');
 
         var userAgent = driver.executeScript(
@@ -57,7 +60,10 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.driver = new firefox.Driver(options);
+        var driver = env.builder().
+            setFirefoxOptions(options).
+            build();
+
         loadJetpackPage(driver,
             'data:text/html;charset=UTF-8,<html><div>content</div></html>');
         assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
@@ -70,7 +76,10 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.driver = new firefox.Driver(options);
+        var driver = env.builder().
+            setFirefoxOptions(options).
+            build();
+
         driver.get('data:text/html,<html><div>content</div></html>');
         assert(driver.findElement({id: 'sample-extension-footer'}).getText())
             .equalTo('Goodbye');
@@ -83,7 +92,9 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.driver = new firefox.Driver(options);
+        var driver = env.builder().
+            setFirefoxOptions(options).
+            build();
 
         loadJetpackPage(driver,
             'data:text/html;charset=UTF-8,<html><div>content</div></html>');

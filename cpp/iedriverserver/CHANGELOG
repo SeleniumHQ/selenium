@@ -9,6 +9,26 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.44.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Introduced capability to disable check of document type when setting
+   cookies. When setting cookies, there is a check in the IE driver to validate
+   that the page in the browser is, in fact, an HTML page. Despite the fact
+   that omitting this check can cause unrecoverable crashes in the driver,
+   there is demand for a mechanism to disable this check for older, legacy
+   versions of Internet Explorer. This commit introduces a new capability,
+   "ie.validateCookieDocumentType" which, when set to false, skips this check
+   when adding a cookie. The default for this capability when unspecified for
+   a session is true; users setting this capability to false are considered to
+   be on their own when encountering issues setting cookies, including, but not
+   limited to, crashes in the driver executable. Fixes issue #1227.
+
+v2.44.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
 v2.43.0.2
 =========
  * Implemented retrival of alert text for onBeforeUnload dialogs. Fixes issue

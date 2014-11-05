@@ -120,13 +120,8 @@ public class JsonToBeanConverter {
       JsonObject json = text instanceof JsonElement
                         ? ((JsonElement) text).getAsJsonObject()
                         : new JsonParser().parse(text.toString()).getAsJsonObject();
-      DesiredCapabilities caps = new DesiredCapabilities();
-
-      for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-        caps.setCapability(entry.getKey(), convert(Object.class, entry.getValue(), depth + 1));
-      }
-
-      return (T) caps;
+      Map<String, Object> map = convertMap(json.getAsJsonObject(), depth);
+      return (T) new DesiredCapabilities(map);
     }
 
     if (Date.class.equals(clazz)) {

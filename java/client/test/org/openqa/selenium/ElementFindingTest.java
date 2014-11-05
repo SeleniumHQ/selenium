@@ -32,12 +32,14 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import static org.hamcrest.Matchers.is;
@@ -397,6 +399,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.xpath("//a[contains(.,'hello world')]"));
     assertThat(element.getText(), containsString("hello world"));
+  }
+
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE, SAFARI})
+  @Test
+  public void testShouldBeAbleToFindElementByXPathWithNamespace() {
+    driver.get(pages.svgPage);
+    WebElement element = driver.findElement(By.xpath("//svg:svg//svg:text"));
+    assertThat(element.getText(), is("Test Chart"));
   }
 
   // By.xpath negative

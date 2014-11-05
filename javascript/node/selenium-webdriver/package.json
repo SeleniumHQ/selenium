@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.44.0-dev",
+    "version": "2.45.0-dev",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
         "automation",
@@ -27,9 +27,9 @@
         "xml2js": "0.4.4"
     },
     "devDependencies" : {
-        "mocha" : "~1.10.0"
+        "mocha" : ">= 1.21.x"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"
+        "test": "node_modules/.bin/mocha --harmony --no-timeouts --recursive test"
     }
 }

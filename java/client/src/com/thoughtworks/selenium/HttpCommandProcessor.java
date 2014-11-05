@@ -40,7 +40,9 @@ import java.util.List;
  * Sends commands and retrieves results via HTTP.
  * 
  * @author Ben Griffiths, Jez Humble
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public class HttpCommandProcessor implements CommandProcessor {
 
   private String pathToServlet;

@@ -57,8 +57,28 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test3"));
-            Point expectedLocation = drag(img, img.Location, 100, 100);
-            Assert.AreEqual(expectedLocation, img.Location);
+            Point startLocation = img.Location;
+            Point expectedLocation = drag(img, startLocation, 100, 100);
+            Point endLocation = img.Location;
+            Assert.AreEqual(expectedLocation, endLocation);
+        }
+
+        [Test]
+        public void MemoryTest()
+        {
+            driver.Url = dragAndDropPage;
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            System.Threading.Thread.Sleep(1000);
+            for (int i = 0; i < 500; i++)
+            {
+                string foo = img1.GetAttribute("id");
+                //img1 = driver.FindElement(By.Id("test1"));
+                //Actions a = new Actions(driver);
+                //a.MoveToElement(img1).Perform();
+            }
+
+            driver.Url = simpleTestPage;
         }
 
         [Test]

@@ -3,6 +3,7 @@ java_library(name = "api",
     "CommandProcessor.java",
     "Selenium.java",
     "SeleniumException.java",
+    "Wait.java",
   ])
 
 java_library(name = "selenium",
@@ -20,18 +21,9 @@ java_library(name = "selenium",
   ],
   deps = [
     ":api",
-    ":wait",
     "//java/client/src/com/thoughtworks/selenium/condition",
     "//java/client/src/org/openqa/selenium/net",
     "//third_party/java/guava-libraries",
     "//third_party/java/junit",
     "//third_party/java/testng",
-  ])
-
-java_library(name = "wait",
-  srcs = [
-    "Wait.java",
-  ],
-  deps = [
-    ":api",
   ])

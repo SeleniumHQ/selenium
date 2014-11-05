@@ -33,8 +33,8 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxPathLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html" title="interface in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/GoogleChromeLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html" target="_top">Frames</a></li>
@@ -100,13 +100,9 @@
 <dt>All Implemented Interfaces:</dt>
 <dd><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html" title="interface in org.openqa.selenium.browserlaunchers.locators">BrowserLocator</a></dd>
 </dl>
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Firefox2Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators">Firefox2Locator</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators">Firefox3Locator</a></dd>
-</dl>
 <hr>
 <br>
-<pre>public abstract class <span class="strong">FirefoxLocator</span>
+<pre>public class <span class="strong">FirefoxLocator</span>
 extends <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></pre>
 <div class="block">Discovers a valid Firefox installation on local system.</div>
 </li>
@@ -146,7 +142,53 @@ extends <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Si
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#browserName()">browserName</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#browserPathOverridePropertyName()">browserPathOverridePropertyName</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#computeLibraryPath(java.io.File)">computeLibraryPath</a></strong>(java.io.File&nbsp;launcherPath)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserInstallation.html" title="class in org.openqa.selenium.browserlaunchers.locators">BrowserInstallation</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#findBrowserLocation()">findBrowserLocation</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserInstallation.html" title="class in org.openqa.selenium.browserlaunchers.locators">BrowserInstallation</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#findBrowserLocationOrFail()">findBrowserLocationOrFail</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#firefoxDefaultLocationsOnUbuntu()">firefoxDefaultLocationsOnUbuntu</a></strong>()</code>
+<div class="block">Dynamic because the directory version number keep changing.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#firefoxDefaultLocationsOnWindows()">firefoxDefaultLocationsOnWindows</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#runningOnWindows()">runningOnWindows</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#seleniumBrowserName()">seleniumBrowserName</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#standardlauncherFilenames()">standardlauncherFilenames</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#usualLauncherLocations()">usualLauncherLocations</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected java.lang.String[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html#usualUnixLauncherLocations()">usualUnixLauncherLocations</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -154,7 +196,7 @@ extends <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Si
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.browserlaunchers.locators.<a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></h3>
-<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserDefaultPath()">browserDefaultPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserName()">browserName</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#computeLibraryPath(java.io.File)">computeLibraryPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#couldNotFindAnyInstallationMessage()">couldNotFindAnyInstallationMessage</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#fakeLauncherPath()">fakeLauncherPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findAtADefaultLocation()">findAtADefaultLocation</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findBrowserLocation()">findBrowserLocation</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findBrowserLocationOrFail()">findBrowserLocationOrFail</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findFileInPath(java.lang.String)">findFileInPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findInPath()">findInPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#humanFriendlyLauncherFileNames()">humanFriendlyLauncherFileNames</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.io.File)">retrieveValidInstallationPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.lang.String)">retrieveValidInstallationPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.lang.String, java.lang.String)">retrieveValidInstallationPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#seleniumBrowserName()">seleniumBrowserName</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#standardlauncherFilenames()">standardlauncherFilenames</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#usualLauncherLocations()">usualLauncherLocations</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserDefaultPath()">browserDefaultPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#couldNotFindAnyInstallationMessage()">couldNotFindAnyInstallationMessage</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#fakeLauncherPath()">fakeLauncherPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findAtADefaultLocation()">findAtADefaultLocation</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findFileInPath(java.lang.String)">findFileInPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findInPath()">findInPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#humanFriendlyLauncherFileNames()">humanFriendlyLauncherFileNames</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#isScriptFile(java.io.File)">isScriptFile</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.io.File)">retrieveValidInstallationPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.lang.String)">retrieveValidInstallationPath</a>, <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#retrieveValidInstallationPath(java.lang.String,%20java.lang.String)">retrieveValidInstallationPath</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
@@ -197,13 +239,143 @@ extends <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Si
 <a name="browserPathOverridePropertyName()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>browserPathOverridePropertyName</h4>
 <pre>protected&nbsp;java.lang.String&nbsp;browserPathOverridePropertyName()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserPathOverridePropertyName()">browserPathOverridePropertyName</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="browserName()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>browserName</h4>
+<pre>protected&nbsp;java.lang.String&nbsp;browserName()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserName()">browserName</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="seleniumBrowserName()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>seleniumBrowserName</h4>
+<pre>protected&nbsp;java.lang.String&nbsp;seleniumBrowserName()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#seleniumBrowserName()">seleniumBrowserName</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="standardlauncherFilenames()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>standardlauncherFilenames</h4>
+<pre>protected&nbsp;java.lang.String[]&nbsp;standardlauncherFilenames()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#standardlauncherFilenames()">standardlauncherFilenames</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="usualLauncherLocations()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>usualLauncherLocations</h4>
+<pre>protected&nbsp;java.lang.String[]&nbsp;usualLauncherLocations()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#usualLauncherLocations()">usualLauncherLocations</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="usualUnixLauncherLocations()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>usualUnixLauncherLocations</h4>
+<pre>protected&nbsp;java.lang.String[]&nbsp;usualUnixLauncherLocations()</pre>
+</li>
+</ul>
+<a name="firefoxDefaultLocationsOnUbuntu()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>firefoxDefaultLocationsOnUbuntu</h4>
+<pre>protected&nbsp;java.lang.String[]&nbsp;firefoxDefaultLocationsOnUbuntu()</pre>
+<div class="block">Dynamic because the directory version number keep changing.</div>
+</li>
+</ul>
+<a name="firefoxDefaultLocationsOnWindows()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>firefoxDefaultLocationsOnWindows</h4>
+<pre>protected&nbsp;java.lang.String[]&nbsp;firefoxDefaultLocationsOnWindows()</pre>
+</li>
+</ul>
+<a name="runningOnWindows()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>runningOnWindows</h4>
+<pre>protected&nbsp;boolean&nbsp;runningOnWindows()</pre>
+</li>
+</ul>
+<a name="computeLibraryPath(java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>computeLibraryPath</h4>
+<pre>public&nbsp;java.lang.String&nbsp;computeLibraryPath(java.io.File&nbsp;launcherPath)</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#computeLibraryPath(java.io.File)">computeLibraryPath</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="findBrowserLocationOrFail()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findBrowserLocationOrFail</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserInstallation.html" title="class in org.openqa.selenium.browserlaunchers.locators">BrowserInstallation</a>&nbsp;findBrowserLocationOrFail()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html#findBrowserLocationOrFail()">findBrowserLocationOrFail</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html" title="interface in org.openqa.selenium.browserlaunchers.locators">BrowserLocator</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findBrowserLocationOrFail()">findBrowserLocationOrFail</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="findBrowserLocation()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>findBrowserLocation</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserInstallation.html" title="class in org.openqa.selenium.browserlaunchers.locators">BrowserInstallation</a>&nbsp;findBrowserLocation()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#findBrowserLocation()">findBrowserLocation</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -232,8 +404,8 @@ extends <a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Si
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/FirefoxPathLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/BrowserLocator.html" title="interface in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/browserlaunchers/locators/GoogleChromeLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/browserlaunchers/locators/FirefoxLocator.html" target="_top">Frames</a></li>

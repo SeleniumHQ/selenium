@@ -20,7 +20,6 @@ import static org.openqa.selenium.net.NetworkInterface.isIpv6;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;

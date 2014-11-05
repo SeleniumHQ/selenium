@@ -21,6 +21,7 @@ goog.provide('webdriver.Capabilities');
 goog.provide('webdriver.Capability');
 goog.provide('webdriver.ProxyConfig');
 
+goog.require('webdriver.Serializable');
 goog.require('webdriver.logging.Preferences');
 
 
@@ -161,16 +162,19 @@ webdriver.Capability = {
  * @param {(webdriver.Capabilities|Object)=} opt_other Another set of
  *     capabilities to merge into this instance.
  * @constructor
+ * @extends {webdriver.Serializable.<!Object.<string, ?>>}
  */
 webdriver.Capabilities = function(opt_other) {
+  webdriver.Serializable.call(this);
 
-  /** @private {!Object} */
+  /** @private {!Object.<string, ?>} */
   this.caps_ = {};
 
   if (opt_other) {
     this.merge(opt_other);
   }
 };
+goog.inherits(webdriver.Capabilities, webdriver.Serializable);
 
 
 /**
@@ -281,8 +285,22 @@ webdriver.Capabilities.htmlunitwithjs = function() {
 };
 
 
-/** @return {!Object} The JSON representation of this instance. */
+/**
+ * @return {!Object} The JSON representation of this instance.
+ * @deprecated Use {@link #serialize} since a component capability may be a
+ *     promised value.
+ */
 webdriver.Capabilities.prototype.toJSON = function() {
+  return this.caps_;
+};
+
+
+/**
+ * @return {!Object.<string, ?>} The JSON representation of this instance. Note,
+ *    the returned object may contain nested promises that are promised values.
+ * @override
+ */
+webdriver.Capabilities.prototype.serialize = function() {
   return this.caps_;
 };
 

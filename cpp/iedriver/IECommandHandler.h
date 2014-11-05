@@ -46,6 +46,7 @@
 #define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
 #define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
+#define VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY "ie.validateCookieDocumentType"
 
 using namespace std;
 

@@ -30,9 +30,11 @@ import org.openqa.selenium.TimeoutException;
 
 import org.junit.AfterClass;
 import org.junit.Test;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.File;
 
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class SafariExtensionsTest extends SafariTestBase {
 
   @AfterClass

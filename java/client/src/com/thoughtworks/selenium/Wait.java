@@ -33,8 +33,10 @@ package com.thoughtworks.selenium;
  * 
  * 
  * @author Dan Fabulich
- * 
+ *
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public abstract class Wait {
   public Wait() {
   }

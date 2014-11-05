@@ -19,7 +19,7 @@ To run the tests, you will need to download a copy of the
 [ChromeDriver](http://chromedriver.storage.googleapis.com/index.html) and make
 sure it can be found on your `PATH`.
 
-    npm test selenium-webdriver
+    cd node_modules/selenium-webdriver/ && npm test
 
 To run the tests against multiple browsers, download the
 [Selenium server](http://selenium-release.storage.googleapis.com/index.html) and
@@ -28,7 +28,7 @@ You can use the `SELENIUM_BROWSER` environment variable to define a
 comma-separated list of browsers you wish to test against. For example:
 
     export SELENIUM_SERVER_JAR=path/to/selenium-server-standalone-2.33.0.jar
-    SELENIUM_BROWSER=chrome,firefox npm test selenium-webdriver
+    SELENIUM_BROWSER=chrome,firefox npm test
 
 ## Usage
 

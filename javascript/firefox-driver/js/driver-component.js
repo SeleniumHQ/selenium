@@ -19,12 +19,15 @@
 
 goog.require('WebDriverServer');
 goog.require('WebElement');
+goog.require('fxdriver.logging');
+goog.require('goog.log');
 
 // constants
 /** @const */ var nsISupports = Components.interfaces.nsISupports;
 /** @const */ var CLASS_ID = Components.ID("{1C0E8D86-B661-40d0-AE3D-CA012FADF170}");
 /** @const */ var CLASS_NAME = "firefoxWebDriver";
 /** @const */ var CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
+/** @const */ var LOG_ = fxdriver.logging.getLogger('fxdriver.ServerFactory');
 
 // This code has been derived from the example code at
 // http://developer-stage.mozilla.org/en/docs/How_to_Build_an_XPCOM_Component_in_Javascript
@@ -32,6 +35,10 @@ goog.require('WebElement');
 
 var ServerFactory = {
   createInstance: function (aOuter, aIID) {
+    Components.utils.import("resource://gre/modules/AddonManager.jsm");
+    AddonManager.getAddonByID("fxdriver@googlecode.com", function(addon) {
+      goog.log.info(LOG_, "Driven by WebDriver version " + addon.version);
+    });
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
     if (!this.server)

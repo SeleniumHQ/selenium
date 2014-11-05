@@ -20,7 +20,7 @@ var assert = require('assert'),
 
 var test = require('../lib/test'),
     fileserver = require('../lib/test/fileserver'),
-    Browser = test.Browser,
+    Browser = require('..').Browser,
     Pages = test.Pages;
 
 

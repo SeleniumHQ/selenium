@@ -15,7 +15,8 @@
 
 'use strict';
 
-var By = require('..').By,
+var Browser = require('..').Browser,
+    By = require('..').By,
     logging = require('..').logging,
     assert = require('../testing/assert'),
     test = require('../lib/test');
@@ -27,7 +28,7 @@ test.suite(function(env) {
   //   - does not support adjusting log levels for type "browser".
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
-  test.ignore(env.browsers(test.Browser.PHANTOMJS)).
+  test.ignore(env.browsers(Browser.PHANTOM_JS)).
   describe('logging', function() {
     test.afterEach(function() {
       env.dispose();
@@ -53,7 +54,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(test.Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX)).
     it('can be turned down', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
@@ -76,7 +77,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(test.Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX)).
     it('can be made verbose', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
@@ -105,7 +106,7 @@ test.suite(function(env) {
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(test.Browser.FIREFOX)).
+    test.ignore(env.browsers(Browser.FIREFOX)).
     it('clears records after retrieval', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);

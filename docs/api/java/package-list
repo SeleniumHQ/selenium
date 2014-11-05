@@ -3,7 +3,6 @@ com.thoughtworks.selenium.condition
 com.thoughtworks.selenium.webdriven
 com.thoughtworks.selenium.webdriven.commands
 org.openqa.selenium
-org.openqa.selenium.browserlaunchers
 org.openqa.selenium.browserlaunchers.locators
 org.openqa.selenium.chrome
 org.openqa.selenium.firefox

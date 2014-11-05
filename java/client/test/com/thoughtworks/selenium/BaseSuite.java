@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
+import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
+
 import java.util.logging.Logger;
 
 import org.junit.ClassRule;
@@ -24,7 +26,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 public class BaseSuite {
   

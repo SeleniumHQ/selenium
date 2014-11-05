@@ -35,7 +35,9 @@ import java.util.regex.Pattern;
  * </p>
  * 
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
+ * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
+@Deprecated
 public class SeleneseTestBase {
 
   private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");

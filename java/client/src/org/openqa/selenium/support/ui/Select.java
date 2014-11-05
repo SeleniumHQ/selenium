@@ -87,6 +87,7 @@ public class Select {
   /**
    * @return The first selected option in this select tag (or the currently selected option in a
    *         normal select)
+   * @throws NoSuchElementException If no option is selected
    */
   public WebElement getFirstSelectedOption() {
     for (WebElement option : getOptions()) {
@@ -105,6 +106,7 @@ public class Select {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    * 
    * @param text The visible text to match against
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
@@ -165,6 +167,7 @@ public class Select {
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be selected
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void selectByIndex(int index) {
     String match = String.valueOf(index);
@@ -191,6 +194,7 @@ public class Select {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    * 
    * @param value The value to match against
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void selectByValue(String value) {
     StringBuilder builder = new StringBuilder(".//option[@value = ");
@@ -237,6 +241,7 @@ public class Select {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    * 
    * @param value The value to match against
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByValue(String value) {
     StringBuilder builder = new StringBuilder(".//option[@value = ");
@@ -255,6 +260,7 @@ public class Select {
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be deselected
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByIndex(int index) {
     String match = String.valueOf(index);
@@ -273,6 +279,7 @@ public class Select {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    * 
    * @param text The visible text to match against
+   * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByVisibleText(String text) {
     StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");

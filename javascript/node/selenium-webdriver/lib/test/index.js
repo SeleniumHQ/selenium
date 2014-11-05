@@ -21,58 +21,74 @@ var build = require('./build'),
     webdriver = require('../..'),
     flow = webdriver.promise.controlFlow(),
     _base = require('../../_base'),
+    remote = require('../../remote'),
     testing = require('../../testing'),
-    fileserver = require('./fileserver'),
-    seleniumserver = require('./seleniumserver');
-
-
-var Browser = {
-  ANDROID: 'android',
-  CHROME: 'chrome',
-  IE: 'internet explorer',
-  // Shorthand for IPAD && IPHONE when using the browsers predciate.
-  IOS: 'iOS',
-  IPAD: 'iPad',
-  IPHONE: 'iPhone',
-  FIREFOX: 'firefox',
-  OPERA: 'opera',
-  PHANTOMJS: 'phantomjs',
-  SAFARI: 'safari',
-
-  // Browsers that should always be tested via the java Selenium server.
-  REMOTE_CHROME: 'remote.chrome',
-  REMOTE_FIREFOX: 'remote.firefox',
-  REMOTE_PHANTOMJS: 'remote.phantomjs'
-};
+    fileserver = require('./fileserver');
 
 
 /**
  * Browsers with native support.
- * @type {!Array.<string>}
+ * @type {!Array.<webdriver.Browser>}
  */
 var NATIVE_BROWSERS = [
-  Browser.CHROME,
-  Browser.FIREFOX,
-  Browser.PHANTOMJS
+  webdriver.Browser.CHROME,
+  webdriver.Browser.FIREFOX,
+  webdriver.Browser.PHANTOM_JS
 ];
 
 
+var serverJar = process.env['SELENIUM_SERVER_JAR'];
+var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
+var startServer = !!serverJar && !remoteUrl;
+var nativeRun = !serverJar && !remoteUrl;
+
+
 var browsersToTest = (function() {
-  var browsers = process.env['SELENIUM_BROWSERS'] || Browser.FIREFOX;
+  if (process.env['SELENIUM_BROWSER']) {
+    if (process.env['SELENIUM_BROWSERS']) {
+      console.log('SELENIUM_BROWSER and SELENIUM_BROWSERS both set for');
+      console.log('Selenium test suite; unsetting SELENIUM_BROWSER');
+    } else {
+      process.env['SELENIUM_BROWSERS'] = process.env['SELENIUM_BROWSER'];
+    }
+    delete process.env['SELENIUM_BROWSER'];
+  }
+
+  var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
+  var permitUnknownBrowsers = !nativeRun;
+  var browsers = process.env['SELENIUM_BROWSERS'] || webdriver.Browser.FIREFOX;
+
   browsers = browsers.split(',');
   browsers.forEach(function(browser) {
-    if (browser === Browser.IOS) {
-      throw Error('Invalid browser name: ' + browser);
+    var parts = browser.split(/:/, 3);
+
+    if (NATIVE_BROWSERS.indexOf(parts[0]) == -1 && !permitRemoteBrowsers) {
+      throw Error('Browser ' + parts[0] + ' requires a WebDriver server and ' +
+          'neither the SELENIUM_REMOTE_URL nor the SELENIUM_SERVER_JAR ' +
+          'environment variables have been set.');
     }
 
-    for (var name in Browser) {
-      if (Browser.hasOwnProperty(name) && Browser[name] === browser) {
-        return;
+    var recognized = false;
+    for (var prop in webdriver.Browser) {
+      if (webdriver.Browser.hasOwnProperty(prop) &&
+          webdriver.Browser[prop] === parts[0]) {
+        recognized = true;
+        break;
       }
     }
 
-    throw Error('Unrecognized browser: ' + browser);
+    if (!recognized && !permitUnknownBrowsers) {
+      throw Error('Unrecognized browser: ' + browser);
+    }
   });
+
+  console.log('Running tests against [' + browsers.join(',') + ']');
+  if (remoteUrl) {
+    console.log('Using remote server ' + remoteUrl);
+  } else if (serverJar) {
+    console.log('Using standalone Selenium server ' + serverJar);
+  }
+
   return browsers;
 })();
 
@@ -85,10 +101,7 @@ var browsersToTest = (function() {
  */
 function browsers(currentBrowser, browsersToIgnore) {
   return function() {
-    var checkIos =
-        currentBrowser === Browser.IPAD || currentBrowser === Browser.IPHONE;
-    return browsersToIgnore.indexOf(currentBrowser) != -1 ||
-        (checkIos && browsersToIgnore.indexOf(Browser.IOS) != -1);
+    return browsersToIgnore.indexOf(currentBrowser) != -1;
   };
 }
 
@@ -100,9 +113,6 @@ function browsers(currentBrowser, browsersToIgnore) {
  */
 function TestEnvironment(browserName, server) {
   var name = browserName;
-  if (name.lastIndexOf('remote.', 0) == 0) {
-    name = name.substring('remote.'.length);
-  }
 
   var autoCreate = true;
   this.__defineGetter__(
@@ -110,7 +120,7 @@ function TestEnvironment(browserName, server) {
   this.__defineSetter__(
       'autoCreateDriver', function(auto) { autoCreate = auto; });
 
-  this.__defineGetter__('browser', function() { return name; });
+  this.__defineGetter__('browser', function() { return browserName; });
 
   var driver;
   this.__defineGetter__('driver', function() { return driver; });
@@ -121,13 +131,6 @@ function TestEnvironment(browserName, server) {
 
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
-    var remoteVariants = [];
-    browsersToIgnore.forEach(function(browser) {
-      if (browser.lastIndexOf('remote.', 0) === 0) {
-        remoteVariants.push(browser.substring('remote.'.length));
-      }
-    });
-    browsersToIgnore = browsersToIgnore.concat(remoteVariants);
     return browsers(browserName, browsersToIgnore);
   };
 
@@ -137,12 +140,14 @@ function TestEnvironment(browserName, server) {
     var realBuild = builder.build;
 
     builder.build = function() {
-      builder.getCapabilities().
-          set(webdriver.Capability.BROWSER_NAME, name);
-
+      var parts = browserName.split(/:/, 3);
+      builder.forBrowser(parts[0], parts[1], parts[2]);
       if (server) {
         builder.usingServer(server.address());
+      } else if (remoteUrl) {
+        builder.usingServer(remoteUrl);
       }
+      builder.disableEnvironmentOverrides();
       return driver = realBuild.call(builder);
     };
 
@@ -194,11 +199,7 @@ function suite(fn, opt_options) {
     // Filter out browser specific tests when that browser is not currently
     // selected for testing.
     browsers = browsers.filter(function(browser) {
-      if (browsersToTest.indexOf(browser) != -1) {
-        return true;
-      }
-      return browsersToTest.indexOf(
-          browser.substring('remote.'.length)) != -1;
+      return browsersToTest.indexOf(browser) != -1;
     });
   } else {
     browsers = browsersToTest;
@@ -206,17 +207,24 @@ function suite(fn, opt_options) {
 
   try {
     browsers.forEach(function(browser) {
-
       testing.describe('[' + browser + ']', function() {
+
+        if (_base.isDevMode() && nativeRun &&
+            browser === webdriver.Browser.FIREFOX) {
+          testing.before(function() {
+            return build.of('//javascript/firefox-driver:webdriver')
+                .onlyOnce().go();
+          });
+        }
+
         var serverToUse = null;
 
-        if (NATIVE_BROWSERS.indexOf(browser) == -1) {
-          serverToUse = seleniumServer;
-          if (!serverToUse) {
-            serverToUse = seleniumServer = new seleniumserver.Server();
+        if (!!serverJar && !remoteUrl) {
+          if (!(serverToUse = seleniumServer)) {
+            serverToUse = seleniumServer = new remote.SeleniumServer();
           }
+
           testing.before(function() {
-            // Starting the server may require a build, so disable timeouts.
             this.timeout(0);
             return seleniumServer.start(60 * 1000);
           });
@@ -249,12 +257,6 @@ function suite(fn, opt_options) {
 testing.before(fileserver.start);
 testing.after(fileserver.stop);
 
-if (_base.isDevMode() && browsersToTest.indexOf(Browser.FIREFOX) != -1) {
-  testing.before(function() {
-    return build.of('//javascript/firefox-driver:webdriver').onlyOnce().go();
-  });
-}
-
 // Server is only started if required for a specific config.
 testing.after(function() {
   if (seleniumServer) {
@@ -274,6 +276,5 @@ exports.beforeEach = testing.beforeEach;
 exports.it = testing.it;
 exports.ignore = testing.ignore;
 
-exports.Browser = Browser;
 exports.Pages = fileserver.Pages;
 exports.whereIs = fileserver.whereIs;

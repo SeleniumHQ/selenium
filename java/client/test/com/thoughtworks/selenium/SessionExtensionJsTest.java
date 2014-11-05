@@ -21,13 +21,13 @@ package com.thoughtworks.selenium;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 import java.net.MalformedURLException;
 import java.net.URL;

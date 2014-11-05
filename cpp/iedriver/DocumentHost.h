@@ -60,7 +60,7 @@ class DocumentHost {
   static bool GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info);
 
   void GetCookies(std::map<std::string, std::string>* cookies);
-  int AddCookie(const std::string& cookie);
+  int AddCookie(const std::string& cookie, const bool validate_document_type);
   int DeleteCookie(const std::string& cookie_name);
   
   int SetFocusedFrameByIndex(const int frame_index);

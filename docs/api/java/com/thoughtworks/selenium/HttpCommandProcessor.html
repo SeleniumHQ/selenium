@@ -119,7 +119,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#HttpCommandProcessor(java.lang.String, int, java.lang.String, java.lang.String)">HttpCommandProcessor</a></strong>(java.lang.String&nbsp;serverHost,
+<td class="colOne"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#HttpCommandProcessor(java.lang.String,%20int,%20java.lang.String,%20java.lang.String)">HttpCommandProcessor</a></strong>(java.lang.String&nbsp;serverHost,
                     int&nbsp;serverPort,
                     java.lang.String&nbsp;browserStartCommand,
                     java.lang.String&nbsp;browserURL)</code>
@@ -128,7 +128,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#HttpCommandProcessor(java.lang.String, java.lang.String, java.lang.String)">HttpCommandProcessor</a></strong>(java.lang.String&nbsp;pathToServlet,
+<td class="colOne"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#HttpCommandProcessor(java.lang.String,%20java.lang.String,%20java.lang.String)">HttpCommandProcessor</a></strong>(java.lang.String&nbsp;pathToServlet,
                     java.lang.String&nbsp;browserStartCommand,
                     java.lang.String&nbsp;browserURL)</code>
 <div class="block">Specifies the URL to the CommandBridge servlet, a command to launch the browser, and a starting
@@ -152,13 +152,13 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#closeResources(java.net.HttpURLConnection, java.io.Writer, java.io.Reader)">closeResources</a></strong>(java.net.HttpURLConnection&nbsp;conn,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#closeResources(java.net.HttpURLConnection,%20java.io.Writer,%20java.io.Reader)">closeResources</a></strong>(java.net.HttpURLConnection&nbsp;conn,
               java.io.Writer&nbsp;wr,
               java.io.Reader&nbsp;rdr)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#doCommand(java.lang.String, java.lang.String[])">doCommand</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#doCommand(java.lang.String,%20java.lang.String[])">doCommand</a></strong>(java.lang.String&nbsp;commandName,
          java.lang.String[]&nbsp;args)</code>
 <div class="block">Send the specified remote command to the browser to be performed</div>
 </td>
@@ -171,12 +171,12 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getBoolean(java.lang.String, java.lang.String[])">getBoolean</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getBoolean(java.lang.String,%20java.lang.String[])">getBoolean</a></strong>(java.lang.String&nbsp;commandName,
           java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean[]</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getBooleanArray(java.lang.String, java.lang.String[])">getBooleanArray</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getBooleanArray(java.lang.String,%20java.lang.String[])">getBooleanArray</a></strong>(java.lang.String&nbsp;commandName,
                java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -193,12 +193,12 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.Number</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getNumber(java.lang.String, java.lang.String[])">getNumber</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getNumber(java.lang.String,%20java.lang.String[])">getNumber</a></strong>(java.lang.String&nbsp;commandName,
          java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.Number[]</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getNumberArray(java.lang.String, java.lang.String[])">getNumberArray</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getNumberArray(java.lang.String,%20java.lang.String[])">getNumberArray</a></strong>(java.lang.String&nbsp;commandName,
               java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -217,12 +217,12 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getString(java.lang.String, java.lang.String[])">getString</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getString(java.lang.String,%20java.lang.String[])">getString</a></strong>(java.lang.String&nbsp;commandName,
          java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
-<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getStringArray(java.lang.String, java.lang.String[])">getStringArray</a></strong>(java.lang.String&nbsp;commandName,
+<td class="colLast"><code><strong><a href="../../../com/thoughtworks/selenium/HttpCommandProcessor.html#getStringArray(java.lang.String,%20java.lang.String[])">getStringArray</a></strong>(java.lang.String&nbsp;commandName,
               java.lang.String[]&nbsp;args)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -361,11 +361,11 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 <h4>doCommand</h4>
 <pre>public&nbsp;java.lang.String&nbsp;doCommand(java.lang.String&nbsp;commandName,
                          java.lang.String[]&nbsp;args)</pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#doCommand(java.lang.String, java.lang.String[])">CommandProcessor</a></code></strong></div>
+<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#doCommand(java.lang.String,%20java.lang.String[])">CommandProcessor</a></code></strong></div>
 <div class="block">Send the specified remote command to the browser to be performed</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#doCommand(java.lang.String, java.lang.String[])">doCommand</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#doCommand(java.lang.String,%20java.lang.String[])">doCommand</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>commandName</code> - - the remote command verb</dd><dd><code>args</code> - - the arguments to the remote command (depends on the verb)</dd>
 <dt><span class="strong">Returns:</span></dt><dd>- the command result, defined by the remote JavaScript. "getX" style commands may
          return data from the browser; other "doX" style commands may just return "OK" or an
@@ -564,7 +564,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                          java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getString(java.lang.String, java.lang.String[])">getString</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getString(java.lang.String,%20java.lang.String[])">getString</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -578,7 +578,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                                 java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getStringArray(java.lang.String, java.lang.String[])">getStringArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getStringArray(java.lang.String,%20java.lang.String[])">getStringArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -607,7 +607,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                          java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getNumber(java.lang.String, java.lang.String[])">getNumber</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getNumber(java.lang.String,%20java.lang.String[])">getNumber</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -621,7 +621,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                                 java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getNumberArray(java.lang.String, java.lang.String[])">getNumberArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getNumberArray(java.lang.String,%20java.lang.String[])">getNumberArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -635,7 +635,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                  java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getBoolean(java.lang.String, java.lang.String[])">getBoolean</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getBoolean(java.lang.String,%20java.lang.String[])">getBoolean</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -649,7 +649,7 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
                         java.lang.String[]&nbsp;args)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getBooleanArray(java.lang.String, java.lang.String[])">getBooleanArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
+<dd><code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html#getBooleanArray(java.lang.String,%20java.lang.String[])">getBooleanArray</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></code></dd>
 </dl>
 </li>
 </ul>

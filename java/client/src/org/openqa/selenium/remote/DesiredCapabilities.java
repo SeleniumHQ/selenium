@@ -165,7 +165,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   public void setCapability(String capabilityName, String value) {
     if (PLATFORM.equals(capabilityName)) {
-      capabilities.put(capabilityName, Platform.valueOf(value));
+      capabilities.put(capabilityName, Platform.fromString(value));
     } else {
       capabilities.put(capabilityName, value);
     }
@@ -177,7 +177,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   public void setCapability(String key, Object value) {
     if (PLATFORM.equals(key) && value instanceof String) {
-      capabilities.put(key, Platform.valueOf((String) value));
+      capabilities.put(key, Platform.fromString((String) value));
     } else {
       capabilities.put(key, value);
     }

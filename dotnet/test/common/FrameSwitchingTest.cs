@@ -27,6 +27,7 @@ namespace OpenQA.Selenium
             driver.Url = iframePage;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
             IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
             Assert.IsNotNull(element);
         }
 
@@ -335,7 +336,6 @@ namespace OpenQA.Selenium
             // This should replaxe frame "iframe1" inside frame "sixth" ...
             driver.FindElement(By.Id("submitButton")).Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             // driver should still be focused on frame "iframe1" inside frame "sixth" ...
             Assert.AreEqual("Success!", GetTextOfGreetingElement());
 
@@ -397,7 +397,6 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs()
         {
             driver.Url = deletingFrame;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
             driver.SwitchTo().Frame("iframe1");
 
             IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
