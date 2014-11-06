@@ -6,13 +6,16 @@ import static org.junit.Assert.fail;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
+@RunWith(SeleniumTestRunner.class)
 public class NewProfileExtensionConnectionTest {
 
   private NewProfileExtensionConnection connection;
