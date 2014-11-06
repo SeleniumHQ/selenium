@@ -28,8 +28,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -47,7 +45,6 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID}, reason = "I'm not sure why this fails")
   @Test
   public void testDocumentShouldReflectLatestTitle() throws Exception {
     driver.get(pages.javascriptPage);
@@ -76,8 +73,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
-          reason = "iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -89,8 +85,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
-          reason = "iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -114,8 +109,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE},
-          reason = "iPhone: sendKeys not implemented correctly")
   @Test
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
@@ -126,7 +119,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(ANDROID)
   @Test
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(pages.javascriptPage);
@@ -143,7 +135,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID})
   @Test
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
@@ -156,7 +147,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(ANDROID)
   @Test
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
@@ -171,7 +161,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: focus doesn't change as expected")
   @Test
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
@@ -183,7 +172,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE})
   @Test
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
@@ -233,7 +221,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
@@ -261,7 +249,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {IPHONE, OPERA, SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
+  @Ignore(value = {OPERA, SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test

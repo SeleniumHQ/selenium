@@ -21,10 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -47,7 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
+@Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
 public class GetLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

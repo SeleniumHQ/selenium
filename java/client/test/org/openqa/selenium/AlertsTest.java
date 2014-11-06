@@ -27,12 +27,10 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -55,7 +53,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE, MARIONETTE})
+@Ignore({HTMLUNIT, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE, MARIONETTE})
 public class AlertsTest extends JUnit4TestBase {
 
   private WebDriverWait wait;
@@ -220,7 +218,6 @@ public class AlertsTest extends JUnit4TestBase {
     fail("Expected NoAlertPresentException");
   }
 
-  @Ignore(ANDROID)
   @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
@@ -235,7 +232,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(ANDROID)
   @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
@@ -301,7 +297,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(ANDROID)
   @Test
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.findElement(By.id("prompt-with-default")).click();
@@ -434,8 +429,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME}, reason = "On Android, alerts do not pop up" +
-      " when a window is closed.")
+  @Ignore(value = {CHROME})
   @Test
   public void testShouldHandleAlertOnWindowClose() {
     if (isFirefox(driver) &&
@@ -466,7 +460,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA})
+  @Ignore(value = {CHROME, HTMLUNIT, OPERA})
   @Test
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();

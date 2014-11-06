@@ -26,7 +26,6 @@ import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.testing.Ignore;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
@@ -100,8 +99,6 @@ public class TouchFlickTest extends TouchTestBase {
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
-  @Ignore(value = {ANDROID},
-          reason = "Android flick's can result in different offsets")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFast() {

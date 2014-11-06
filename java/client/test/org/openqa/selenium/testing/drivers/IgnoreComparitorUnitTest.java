@@ -22,8 +22,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import com.google.common.collect.Sets;
 
@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Ignore.Driver;
-import org.openqa.selenium.testing.drivers.IgnoreComparator;
 
 import java.util.Set;
 
@@ -58,9 +57,9 @@ public class IgnoreComparitorUnitTest {
 
   @Test
   public void shouldIgnoreOnlyDriverBeingIgnored() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       CURRENT_PLATFORM_SET)));
   }
 
@@ -73,15 +72,15 @@ public class IgnoreComparitorUnitTest {
 
   @Test
   public void shouldNotIgnoreOtherPlatform() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertFalse(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       OTHER_PLATFORM_SET)));
   }
 
   @Test
   public void shouldNotIgnoreOtherBrowser() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertFalse(ignoreComparator.shouldIgnore(ignoreForDriver(
       Sets.newHashSet(IE),
       CURRENT_PLATFORM_SET)));
@@ -89,33 +88,33 @@ public class IgnoreComparitorUnitTest {
 
   @Test
   public void shouldIgnoreEnabledNativeEventsIfIgnoringEnabled() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreDisabledNativeEventsIfIgnoringDisabled() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreEnabledNativeEventsIfIgnoringAll() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreDisabledNativeEventsIfIgnoringAll() {
-    ignoreComparator.addDriver(ANDROID);
+    ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(ANDROID),
+      Sets.newHashSet(SAFARI),
       CURRENT_PLATFORM_SET)));
   }
 

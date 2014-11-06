@@ -35,9 +35,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -83,7 +81,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({OPERA, MARIONETTE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -128,7 +126,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
 
-  @Ignore(value = {IPHONE, MARIONETTE},
+  @Ignore(value = {MARIONETTE},
           reason = "sendKeys does not determine whether the element is disabled")
   @Test
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
@@ -298,9 +296,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
-                                                  "SVG elements crash the iWebDriver app (issue 1134)",
-          issues = {1134})
+  @Ignore(value = {IE}, reason = "IE7 Does not support SVG")
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
@@ -326,7 +322,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello@example.com", element.getAttribute("value"));
   }
 
-  @Ignore({ANDROID, OPERA_MOBILE})
+  @Ignore({OPERA_MOBILE})
   @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
@@ -336,7 +332,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({OPERA, MARIONETTE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -346,7 +342,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertNull(element2.getAttribute("nowrap"));
   }
 
-  @Ignore({IPHONE, ANDROID})
   @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -362,7 +357,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element5.getAttribute("nowrap"));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Ignore({OPERA, MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);

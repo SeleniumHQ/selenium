@@ -37,12 +37,10 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -188,7 +186,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore(ANDROID)
   @Test
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
@@ -224,7 +221,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get("www.test.com");
   }
 
-  @Ignore(value = {IPHONE, SAFARI, MARIONETTE}, issues = {4062})
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
@@ -238,7 +235,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertEquals(url, driver.getCurrentUrl());
   }
 
-  @Ignore({IPHONE, ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
@@ -252,7 +249,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI, HTMLUNIT}, issues = {3771},
+  @Ignore(value = {SAFARI, HTMLUNIT}, issues = {3771},
           reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @JavascriptEnabled
   @NeedsFreshDriver
@@ -274,7 +271,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo(originalTitle));
   }
 
-  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
+  @Ignore(value = {SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -298,7 +295,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
+  @Ignore(value = {SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -313,7 +310,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},
+  @Ignore(value = {IE, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS},
           reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
@@ -323,7 +320,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
@@ -357,7 +354,7 @@ public class PageLoadingTest extends JUnit4TestBase {
    *      driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {IE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Safari: issue 4062; Others: Untested user-agents",
           issues = {4062})
   @NoDriverAfterTest
@@ -372,7 +369,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(elementTextToContain(body, "world"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -410,7 +407,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IPHONE, HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -450,7 +447,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -490,7 +487,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {CHROME, HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment

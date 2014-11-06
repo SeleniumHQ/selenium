@@ -22,8 +22,6 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -39,7 +37,7 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.logging.Logger;
 
-@Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE},
+@Ignore(value = {OPERA, OPERA_MOBILE, MARIONETTE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 

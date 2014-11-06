@@ -20,9 +20,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -56,7 +54,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
@@ -71,7 +68,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
@@ -93,7 +90,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
@@ -118,7 +115,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -146,7 +143,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testSendingKeysToActiveElement() {
     assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
@@ -162,7 +158,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThatFormEventsFiredAreExactly("");
   }
 
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
@@ -178,7 +173,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {

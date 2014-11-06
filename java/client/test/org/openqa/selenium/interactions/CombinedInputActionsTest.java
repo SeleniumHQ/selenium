@@ -24,11 +24,9 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -60,7 +58,7 @@ import java.util.List;
 /**
  * Tests combined input actions.
  */
-@Ignore(value = {ANDROID, SAFARI, MARIONETTE},
+@Ignore(value = {SAFARI, MARIONETTE},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class CombinedInputActionsTest extends JUnit4TestBase {
@@ -151,7 +149,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA, PHANTOMJS})
+  @Ignore({IE, REMOTE, OPERA, PHANTOMJS})
   @Test
   public void testControlClickingOnCustomMultiSelectionList() {
     assumeFalse("Does not works with native events on Windows",
@@ -196,7 +194,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, PHANTOMJS, SAFARI}, reason = "Not tested")
+  @Ignore(value = {OPERA, PHANTOMJS, SAFARI}, reason = "Not tested")
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
@@ -214,14 +212,13 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("Submitted Successfully!"));
   }
 
-  @Ignore({IPHONE})
   @Test
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
   @Ignore(
-      value = {HTMLUNIT, IPHONE},
+      value = {HTMLUNIT},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testCanClickOnLinksWithAnOffset() {
@@ -239,7 +236,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(
-      value = {HTMLUNIT, IPHONE},
+      value = {HTMLUNIT},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
@@ -280,7 +277,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @Ignore({IPHONE, HTMLUNIT})
+  @Ignore({HTMLUNIT})
   @Test
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
@@ -360,7 +357,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     assumeFalse("Does not works with native events on Windows",

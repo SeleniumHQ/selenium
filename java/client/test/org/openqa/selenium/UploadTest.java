@@ -20,8 +20,6 @@ package org.openqa.selenium;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -42,8 +40,7 @@ import java.io.IOException;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {IPHONE, ANDROID, SAFARI, MARIONETTE}, reason = "File uploads not allowed on the iPhone",
-        issues = {4220})
+@Ignore(value = {SAFARI, MARIONETTE}, issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";

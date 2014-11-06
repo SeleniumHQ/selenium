@@ -20,9 +20,7 @@ package org.openqa.selenium.rc;
 import static org.junit.Assert.assertTrue;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 
 import com.google.common.io.Files;
 
@@ -51,7 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-@Ignore(value = {ANDROID, IE, IPHONE},
+@Ignore(value = {IE},
         reason = "Not tested on these browsers yet.")
 @RunWith(SeleniumTestRunner.class)
 public class SetProxyTest {

@@ -26,10 +26,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -245,7 +243,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();
@@ -301,7 +299,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, MARIONETTE})
+  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

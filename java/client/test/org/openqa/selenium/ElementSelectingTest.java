@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
@@ -113,7 +112,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(value = {ANDROID, MARIONETTE}, reason = "Android: opens a dialog.")
+  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);

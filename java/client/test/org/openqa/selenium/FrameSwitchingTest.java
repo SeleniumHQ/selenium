@@ -29,7 +29,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -189,7 +188,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
     driver.get(pages.framesetPage);
@@ -219,7 +218,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({ANDROID, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
@@ -228,7 +227,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
     driver.get(pages.framesetPage);
@@ -267,7 +266,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
@@ -276,7 +275,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore({ANDROID, CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
@@ -286,7 +285,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({ANDROID, CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
@@ -294,7 +293,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals(driver.getTitle(), "XHTML Test Page");
   }
 
-  @Ignore({ANDROID, CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
@@ -310,7 +309,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   //
   // ----------------------------------------------------------------------------------------------
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(pages.framesetPage);
@@ -326,8 +325,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(WaitingConditions.elementTextToEqual(By.xpath("//p"), "Success!"));
   }
 
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
-          reason = "Android does not detect that the select frame has disappeared")
+  @Ignore(value = {OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
       throws Exception {
@@ -342,7 +340,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("only-exists-on-xhtmltest")));
   }
 
-  @Ignore(ANDROID)
   @Test
   public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
     driver.get(pages.iframePage);
@@ -356,7 +353,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(ANDROID)
   @Test
   public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     driver.get(pages.iframePage);
@@ -371,7 +367,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     return wait.until(presenceOfElementLocated(By.id("greeting"))).getText();
   }
 
-  @Ignore({OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
@@ -387,7 +383,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   // See https://code.google.com/p/selenium/issues/detail?id=5237
-  @Ignore({OPERA, ANDROID, OPERA_MOBILE})
+  @Ignore({OPERA, OPERA_MOBILE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
@@ -398,7 +394,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(titleIs("Target page for issue 5237"));
   }
 
-  @Ignore({OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
@@ -416,7 +412,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
-  @Ignore(ANDROID)
   @Test
   public void testShouldBeAbleToFindElementsInIframesByXPath() {
     driver.get(pages.iframePage);
@@ -428,7 +423,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertNotNull(element);
   }
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testGetCurrentUrl() {
     driver.get(pages.framesetPage);
@@ -447,7 +442,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
 
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, PHANTOMJS})
+  @Ignore(value = {OPERA, OPERA_MOBILE, PHANTOMJS})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
