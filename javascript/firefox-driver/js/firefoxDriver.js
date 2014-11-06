@@ -267,7 +267,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         Object.defineProperty(value, '__exposedProps__', {
           enumerable: false,
           configurable: false,
-          writable: false,
+          writable: true,
           value: props
         });
       }

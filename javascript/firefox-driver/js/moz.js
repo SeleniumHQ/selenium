@@ -140,7 +140,7 @@ fxdriver.moz.markUnwrapped_ = function(thing) {
   Object.defineProperty(thing, '__fxdriver_unwrapped', {
     enumerable: false,
     configurable: false,
-    writable: false,
+    writable: true,
     value: true
   });
 };
