@@ -73,7 +73,6 @@ import java.util.Random;
 import java.util.Set;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@RunWith(SeleniumTestRunner.class)
 @Ignore(MARIONETTE)
 public class FirefoxDriverTest extends JUnit4TestBase {
   @Test

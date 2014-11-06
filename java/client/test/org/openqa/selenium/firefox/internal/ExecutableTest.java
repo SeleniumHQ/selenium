@@ -30,7 +30,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 
-@RunWith(JUnit4.class)
 public class ExecutableTest {
 
   @Test
