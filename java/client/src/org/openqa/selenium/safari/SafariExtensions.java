@@ -30,6 +30,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
@@ -39,6 +40,7 @@ import com.google.common.io.Resources;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +117,14 @@ class SafariExtensions {
       "\t<integer>1</integer>",
       "</dict>",
       "</plist>");
+  public static final
+  String
+      ENABLE_SAFARI_EXTENSIONS_COMMAND =
+      "defaults write com.apple.Safari ExtensionsEnabled 1";
+  public static final
+  String
+      GET_SAFARI_EXTENSIONS_STATUS_COMMAND =
+      "defaults read com.apple.Safari ExtensionsEnabled";
 
   private final Runtime runtime;
   private final Backup backup;
@@ -210,6 +220,7 @@ class SafariExtensions {
    * @throws IOException If an I/O error occurs.
    */
   public synchronized void install() throws IOException {
+    checkIfExtensionsAreEnabled();
     if (uninstallThread != null) {
       return;  // Already installed.
     }
@@ -251,6 +262,75 @@ class SafariExtensions {
 
     uninstallThread = new UninstallThread();
     runtime.addShutdownHook(uninstallThread);
+  }
+
+  /**
+   * Attempts to enable Safari extensions. If it fails, throws an IllegalStateException
+   *
+   * @throws IllegalStateException If the extension cannot be enabled
+   */
+  private static void checkIfExtensionsAreEnabled() {
+    boolean enabled = false;
+    try {
+      enableSafariExtensions();
+      if (safariExtensionsEnabled()) {
+        enabled = true;
+      }
+    } catch (InterruptedException e) {
+      logger.warning(String.format(
+          "Error while enabling Safari Extensions: %s\n%s",
+          e.getMessage(),
+          Throwables.getStackTraceAsString(e)));
+    } catch (IOException e) {
+      logger.warning(String.format(
+          "Error while enabling Safari Extensions: %s\n%s",
+          e.getMessage(),
+          Throwables.getStackTraceAsString(e)));
+    }
+
+    checkState(enabled,
+               "SafariDriver requires Safari Extensions to be enabled. "
+               + "Attempt to enable the extensions has failed.");
+
+  }
+
+  private static void enableSafariExtensions() throws IOException, InterruptedException {
+    Process p = Runtime.getRuntime().exec(ENABLE_SAFARI_EXTENSIONS_COMMAND);
+    int exitCode = p.waitFor();
+    System.out.println(
+        String.format("Attempting to enable Safari Extensions, exit code: %s", exitCode));
+  }
+
+  private static boolean safariExtensionsEnabled() throws IOException, InterruptedException {
+    Process p = Runtime.getRuntime().exec(GET_SAFARI_EXTENSIONS_STATUS_COMMAND);
+    int exitCode = p.waitFor();
+    String output = reachCommandOutput(p);
+
+    logger.info(
+        String.format(
+            "Checking if Safari Extensions are enabled. Exit code: %s, Standard Out (0-disabled/1-enabled): '%s'",
+            exitCode,
+            output));
+
+    if (output.equals("1")) {
+      return true;
+    }
+    return false;
+  }
+
+  private static String reachCommandOutput(Process process) throws IOException {
+    StringBuffer sb = new StringBuffer();
+    InputStreamReader rdr = new InputStreamReader(process.getInputStream(), "UTF-8");
+    int c;
+    try {
+      while ((c = rdr.read()) != -1) {
+        sb.append((char) c);
+      }
+      return sb.toString().replaceAll("\n", "");
+
+    } finally {
+      rdr.close();
+    }
   }
 
   /**
