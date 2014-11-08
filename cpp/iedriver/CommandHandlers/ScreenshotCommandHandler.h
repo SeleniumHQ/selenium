@@ -232,7 +232,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     CComPtr<IStream> stream;
     HRESULT hr = ::CreateStreamOnHGlobal(NULL, TRUE, &stream);
     if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Error is occured during creating IStream";
+      LOGHR(WARN, hr) << "Error is occurred during creating IStream";
       return hr;
     }
 

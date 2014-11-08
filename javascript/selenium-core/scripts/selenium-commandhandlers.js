@@ -258,7 +258,7 @@ objectExtend(CommandHandlerFactory.prototype, {
         this.registerAction("waitFor" + baseName, waitForActionBlock, false, true);
         this.registerAction("waitFor" + this._invertPredicateName(baseName), waitForNotActionBlock, false, true);
         //TODO decide remove "waitForNot.*Present" action name or not
-        //for the back compatiblity issues we still make waitForNot.*Present availble
+        //for the back compatibility issues we still make waitForNot.*Present availble
         this.registerAction("waitForNot" + baseName, waitForNotActionBlock, false, true);
     },
 

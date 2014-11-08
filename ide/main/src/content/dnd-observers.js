@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-//a shorthand writting
+//a shorthand writing
 const Ci = Components.interfaces;
 const Cc = Components.classes;
 

@@ -169,7 +169,7 @@ void backgroundKeyDown(HWND hwnd, HKL layout, BYTE keyboardState[256],
 		WORD keyCode, UINT scanCode, bool extended, int pause)
 {
     // For capital letters and symbols requiring the shift key to be pressed,
-    // A Shift key press must preceed. Unless the shift key is pressed - if
+    // A Shift key press must precede. Unless the shift key is pressed - if
     // shiftPressed is true, then a shift key-down was sent in the past.
     sendModifierKeyDownIfNeeded(isShiftPressNeeded(keyCode) && (!shiftPressed), hwnd, layout,
         VK_SHIFT, keyboardState, pause);

@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Beacuse re-use is discouraged in the CFB
+ * Because re-use is discouraged in the CFB
 */
 public class SlowServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = 7653463271803124556L;

@@ -279,7 +279,7 @@ WebDriver:
    This feature will be used by mobile WebDriver users to switch
    between different contexts like the native or the webview UI element
    tree. The feature is end to end tested with latest Selendroid
-   snapshot version (6a126ab). In the langauge bindings, this is
+   snapshot version (6a126ab). In the language bindings, this is
    implemented as a role-based interface. Subclasses of RemoteWEbDriver
    that need this should extend TargetLocator and use covariant return
    types to keep everything happy and sweet.
@@ -807,7 +807,7 @@ WebDriver:
     interactions. Note that this will mean you MUST NOT use the
     machine running IE for anything else as the tests are running.
   * Use the "webdriver.remote.shorten_log_messages" system property to
-    reduce the verboseness of ouput from executeScript and
+    reduce the verboseness of output from executeScript and
     executeAsyncScript when using the RemoteWebDriver.
   * Switching HtmlUnitDriver default from FIREFOX_3_6 to FIREFOX_10
   * SafariDriverExtension should restore Safari's previous settings on

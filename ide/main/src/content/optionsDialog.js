@@ -192,7 +192,7 @@ function showFormatDialog() {
     format = formatInfo.loadFormatter();
   } catch (error) {
     setTimeout(function() {
-      alert("an error occured: " + error + ", file=" + formatInfo.getFormatURI());
+      alert("an error occurred: " + error + ", file=" + formatInfo.getFormatURI());
     }, 50);
     format = {};
   }

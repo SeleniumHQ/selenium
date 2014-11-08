@@ -31,7 +31,7 @@ class EventFiringData
   void pauseFiring() { m_shouldFire = false; }
   void resumeFiring() { m_shouldFire = true; }
   bool shouldFire() { return m_shouldFire; }
-  // Used to control the existance of the background thread:
+  // Used to control the existence of the background thread:
   // when shouldRun returns false the thread will exit.
   void stopRunning() { m_keepRunning = false; }
   bool shouldRun() { return m_keepRunning; }

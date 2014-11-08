@@ -286,7 +286,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     try {
       driver.switchTo().window("i will never exist");
-      fail("Should not be ablt to change to a non-existant window");
+      fail("Should not be ablt to change to a non-existent window");
     } catch (NoSuchWindowException e) {
       // expected
     }

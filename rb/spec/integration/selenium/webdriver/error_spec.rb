@@ -6,7 +6,7 @@ describe Selenium::WebDriver::Error do
     driver.navigate.to url_for("xhtmlTest.html")
 
     lambda {
-      driver.find_element(:id, "nonexistant")
+      driver.find_element(:id, "nonexistent")
     }.should raise_error(WebDriver::Error::NoSuchElementError)
   end
 
@@ -18,7 +18,7 @@ describe Selenium::WebDriver::Error do
       ex = nil
 
       begin
-        driver.find_element(:id, "nonexistant")
+        driver.find_element(:id, "nonexistent")
       rescue => ex
         rescued = true
       end

@@ -102,7 +102,7 @@ NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode,
     releaseModifierKeys(windowHandle, 0);
   }
 
-  LOG(DEBUG) << "Sent keys sucessfully.";
+  LOG(DEBUG) << "Sent keys successfully.";
 
   return NS_OK;
 }

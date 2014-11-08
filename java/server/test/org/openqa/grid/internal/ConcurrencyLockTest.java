@@ -117,7 +117,7 @@ public class ConcurrencyLockTest {
       newSessionHandler.process();
       results.add("IE");
     }
-    // at that point, the hub has recieved first 3 FF requests that are
+    // at that point, the hub has received first 3 FF requests that are
     // queued and 1 IE request 1sec later, after the FF are already blocked
     // in the queue.The blocked FF request shouldn't block IE from starting,
     // so IE should be done first.

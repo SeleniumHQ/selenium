@@ -174,8 +174,8 @@ function onLoad()
   resizeToc();
 }
 // The function executes on OnLoad event and Changetab action on Code snippets.
-// The function parameter changeLang is the user choosen programming language, VB is used as default language if the app runs for the fist time.
-// this function iterates through the 'lanSpecTextIdSet' dictionary object to update the node value of the LST span tag per user's choosen programming language.
+// The function parameter changeLang is the user chosen programming language, VB is used as default language if the app runs for the fist time.
+// this function iterates through the 'lanSpecTextIdSet' dictionary object to update the node value of the LST span tag per user's chosen programming language.
 function updateLST(currentLang) 
 {
     for (var lstMember in lanSpecTextIdSet) 

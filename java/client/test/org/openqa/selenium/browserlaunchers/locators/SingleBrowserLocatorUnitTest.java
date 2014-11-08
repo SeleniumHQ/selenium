@@ -97,7 +97,7 @@ public class SingleBrowserLocatorUnitTest {
   }
 
   @Test
-  public void testHumanFriendlyLauncherFileNamesReturnsAllFileNamesOrSeperatedWhenThereIsMoreThanOneFileName() {
+  public void testHumanFriendlyLauncherFileNamesReturnsAllFileNamesOrSeparatedWhenThereIsMoreThanOneFileName() {
     final SingleBrowserLocator locator;
 
     locator = new SingleBrowserLocator() {

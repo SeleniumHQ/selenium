@@ -197,7 +197,7 @@ var FileUtils = {
     },
 
     //Samit: Enh: Guess the file separator
-    getFileSeperator: function(localFile) {
+    getFileSeparator: function(localFile) {
         if (Components.interfaces.nsILocalFileWin && localFile instanceof Components.interfaces.nsILocalFileWin) {
             return '\\';
         }
@@ -208,7 +208,7 @@ var FileUtils = {
     appendRelativePath: function(file, relativePath) {
         var up = 0;
         var cleanPath = [];
-        var fileSep = this.getFileSeperator(file);
+        var fileSep = this.getFileSeparator(file);
         var relPath = relativePath.split(fileSep);
         while (relPath.length > 0) {
             var f = relPath.shift();

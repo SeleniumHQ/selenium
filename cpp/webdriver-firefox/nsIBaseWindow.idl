@@ -95,7 +95,7 @@ interface nsIBaseWindow : nsISupports
 		in nsIWidget parentWidget,	in long x, in long y, in long cx, in long cy);
 
 	/*
-	Tells the window that intialization and setup is complete.  When this is
+	Tells the window that initialization and setup is complete.  When this is
 	called the window can actually create itself based on the setup
 	information handed to it.
 

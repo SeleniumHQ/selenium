@@ -418,7 +418,7 @@ function main() {
       path('root', {
         help: 'A content root for mapping input files to their location under' +
             ' lib/. Each lib file will have its path stripped of any leading' +
-            ' content roots befor being copied to the lib/ directory. Each ' +
+            ' content roots before being copied to the lib/ directory. Each ' +
             'lib file must belong to a directory under a content root.',
         list: true
       }).

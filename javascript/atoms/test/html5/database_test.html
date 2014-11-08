@@ -118,7 +118,7 @@
       }
 
       try {
-        // WITH is errorneously used instead of WHERE
+        // WITH is erroneously used instead of WHERE
         bot.storage.database.executeSql('testDB',
             'SELECT * from docids WITH id = 1', [], queryResultCallback,
             txErrorCallback, txSuccessCallback);

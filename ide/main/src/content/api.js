@@ -51,7 +51,7 @@ API.prototype.addPluginProvidedUserExtension = function (js_url, xml_url, canHan
  * the formatter.
  * Don't forget to call the addPlugin function once for your plugin!
  *
- * @param id - an id for your formatter, used internally, a combination of numbers, letters, underscores and atleast one letter
+ * @param id - an id for your formatter, used internally, a combination of numbers, letters, underscores and at least one letter
  * @param name - the name shown to the users. It should have three parts like "language / test-framework / WebDriver or Remote Control"
  * @param url - url to your bundled formatter in the form of chrome://
  * @param type - optional, can be "webdriver" or "remotecontrol". Specifying the type

@@ -824,7 +824,7 @@ namespace OpenQA.Selenium
         public void ShouldNotBeAbleToLocateASingleElementOnABlankPage()
         {
             // Note we're on the default start page for the browser at this point.
-            driver.FindElement(By.Id("nonExistantButton"));
+            driver.FindElement(By.Id("nonExistentButton"));
         }
 
         [Test]

@@ -38,7 +38,7 @@ public interface WebElement extends SearchContext {
    * it to be loaded and the caller should verify that a new page has been loaded.
    * <p/>
    * There are some preconditions for an element to be clicked.  The element must be visible and 
-   * it must have a height and width greater then 0.
+   * it must have a height and width greater than 0.
    *
    * @throws StaleElementReferenceException If the element no longer exists as initially defined
    */

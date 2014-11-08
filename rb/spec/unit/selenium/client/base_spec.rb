@@ -42,7 +42,7 @@ describe Selenium::Client::Base do
       client.default_javascript_framework.should == :jquery
     end
 
-    it "sets the default javascript framework to prototype when not explicitely set" do
+    it "sets the default javascript framework to prototype when not explicitly set" do
       BaseClient.new.default_javascript_framework.should == :prototype
     end
 
@@ -59,7 +59,7 @@ describe Selenium::Client::Base do
   end
 
   describe "#initialize" do
-    it "sets the default timeout to 5 minutes when not explicitely set" do
+    it "sets the default timeout to 5 minutes when not explicitly set" do
       BaseClient.new.default_timeout_in_seconds.should == 5 * 60
     end
 
