@@ -117,7 +117,7 @@ public class CompiledAtomsNotLeakingTest {
         String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
             fragment, fragment);
 
-        String jsonResult = eval(context, nestedScript, FRAGMENT_PATH);
+        String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
 
         try {
           JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
@@ -138,13 +138,11 @@ public class CompiledAtomsNotLeakingTest {
     });
   }
 
-  @SuppressWarnings({"unchecked"})
-  private <T> T eval(Context context, String script) {
-    return (T) eval(context, script, "");
+  private Object eval(Context context, String script) {
+    return eval(context, script, "");
   }
 
-  @SuppressWarnings({"unchecked"})
-  private <T> T eval(Context context, String script, String src) {
-    return (T) context.evaluateString(global, script, src, 1, null);
+  private Object eval(Context context, String script, String src) {
+    return context.evaluateString(global, script, src, 1, null);
   }
 }
