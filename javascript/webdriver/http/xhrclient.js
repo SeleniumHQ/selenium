@@ -18,6 +18,7 @@ goog.provide('webdriver.http.XhrClient');
 
 goog.require('goog.json');
 goog.require('goog.net.XmlHttp');
+goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
 
 

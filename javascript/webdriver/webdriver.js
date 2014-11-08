@@ -38,6 +38,7 @@ goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 goog.require('webdriver.until');
+goog.require('webdriver.promise.Thenable');
 
 
 //////////////////////////////////////////////////////////////////////////////

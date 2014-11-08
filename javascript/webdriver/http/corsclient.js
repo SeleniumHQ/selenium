@@ -15,6 +15,7 @@
 goog.provide('webdriver.http.CorsClient');
 
 goog.require('goog.json');
+goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
 
 

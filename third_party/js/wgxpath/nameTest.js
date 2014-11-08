@@ -7,6 +7,7 @@
 goog.provide('wgxpath.NameTest');
 
 goog.require('goog.dom.NodeType');
+goog.require('wgxpath.NodeTest');
 
 
 
