@@ -545,6 +545,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'ignored_only', :value => 'true'
               end
 
+              if local_only?
+                ant.sysproperty :key => 'local_only', :value => 'true'
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -649,6 +653,11 @@ module CrazyFunJava
     def ignored_only?
       # we set ignored_only true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['ignoredonly'])
+    end
+
+    def local_only?
+      # we set local_only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['localonly'])
     end
 
     def leave_running?

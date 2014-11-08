@@ -37,7 +37,6 @@ import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
