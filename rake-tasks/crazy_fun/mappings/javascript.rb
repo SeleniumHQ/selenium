@@ -766,6 +766,9 @@ module Javascript
                   "document:typeof window!='undefined'?window.document:null" +
                   "}, arguments);}"
 
+        formatting =
+            (ENV['pretty_print'] == 'true') ?  "--formatting=PRETTY_PRINT" : ""
+
         cmd = "" <<
             "--third_party=false " <<
             "--js_output_file=#{output} " <<
@@ -774,6 +777,7 @@ module Javascript
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
             "#{defines} " <<
+            "#{formatting} " <<
             "--jscomp_off=unknownDefines " <<
             "--jscomp_off=deprecated " <<
             "--jscomp_error=accessControls " <<
