@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+ 
 """
 The Desired Capabilities implementation.
 """
@@ -121,3 +121,87 @@ class DesiredCapabilities(object):
         "javascriptEnabled": True,
     }
 
+
+class AllowDesiredCapabilitiesOverrides(object):
+    '''This is a decorator class intended to decorate the __init__ method for
+    all webdrivers.  It allows the caller to override any argument in the init
+    method with similarly named key in desired_capabilities.  This way
+    desired_capabilities can be used as a standard way to completely setup 
+    / configure a webdriver instance.
+    Example:
+
+    caps = {'init.executable_path' : '/path/to/Safari'}
+    driver = webdriver.Safari(desired_capabilities=caps)
+    
+    is functionaly equivalent to
+
+    driver = webdriver.Safari(executable_path='/path/to/Safari'
+
+    while the example may seem simple the idea is to allow all options for all
+    webdrivers to be created through desired_capabilities so there is a
+    standard way to configure webdrivers.
+    '''
+   
+    def __init__(self, constructors={}):
+        '''handle keyword arguments for the decorator.  Currently we support
+        constructors which is a dictionary of argument_names -> callable.  Then
+        if the argument_name is found in the desired capabilities dictionary
+        the callable will be called and passed in the value of
+        desired_capabilities['argument_name'].  This allows for complex object
+        to be instantiated from passed in parameters in the
+        desired_capabilities
+        '''
+        self.constructors = constructors
+        self.prefix = 'init.'
+
+    def _get_list_of_function_arguments(self, f):
+        from inspect import getargspec
+        return getargspec(f)[0][1:]
+
+    def _get_desired_capabilities_index(self,arg_list):
+        return arg_list.index("desired_capabilities")
+
+    def __call__ (self, f):
+        '''The decorator main entry point.
+        Stores the various argument names for the function we are
+        decorating removing the self argument.
+        '''
+        decorated_func_args = self._get_list_of_function_arguments(f)
+        caps_arg_index = self._get_desired_capabilities_index(decorated_func_args)
+
+        def wrap(init_self, *args, **kwargs):
+            #find desired_capabilities
+            if caps_arg_index < len(args):
+                caps = args[caps_arg_index]
+            else:
+                caps = kwargs.get("desired_capabilities") 
+
+            if caps:
+                for count, val in enumerate(decorated_func_args):
+                    caps_val = 'init.' + val
+                    if caps.has_key(caps_val):
+                        #we shouldn't overwrite parameters if they have
+                        #allready been passed in
+                        if kwargs.get(val):
+                            raise TypeError(f.__name__ + " got multiple values"
+                                            " for keyword " + val)
+                        #check for custom constructors
+                        constructor = self.constructors.get(val)
+                        if constructor:
+                            cnstr_args = caps.pop(caps_val)
+                            if isinstance(cnstr_args, (list, tuple)):
+                                kwargs[val] = constructor(*cnstr_args)
+                            else:
+                                kwargs[val] = constructor(**cnstr_args)
+                        else:
+                            kwargs[val] = caps.pop(caps_val)
+            #call our function
+            f(init_self, *args, **kwargs)
+
+
+        #make the decorate play nice
+        wrap.__doc__ = f.__doc__
+        wrap.__name__ = f.__name__
+        wrap.__dict__.update(f.__dict__)
+
+        return wrap

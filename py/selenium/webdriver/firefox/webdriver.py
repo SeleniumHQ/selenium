@@ -26,6 +26,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
+from selenium.webdriver.common.proxy import Proxy
 
 
 class WebDriver(RemoteWebDriver):
@@ -33,8 +35,18 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
+    @AllowDesiredCapabilitiesOverrides(constructors={'firefox_profile':FirefoxProfile,
+                                                    'firefox_binary':FirefoxBinary,
+                                                    'proxy':Proxy})
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None):
+                 capabilities=None, proxy=None, desired_capabilities=None):
+        '''Creation function of firefox driver.  Note there are now two
+        arguments, capabilities and desired_capabilities which in effect do the
+        same thing.  Capabilities is maintained for backward compatibility.
+        Further desired_capabilities overrides i.e. the decorator on this
+        function, only operates on desired_capabilities.
+        '''
+        if not desired_capabilities is None: capabilities = desired_capabilities
 
         self.binary = firefox_binary
         self.profile = firefox_profile

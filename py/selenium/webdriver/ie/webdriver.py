@@ -21,7 +21,9 @@ from selenium.webdriver.remote.command import Command
 from selenium.common.exceptions import WebDriverException
 import base64
 from .service import Service
-
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
+   
+   
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
 DEFAULT_HOST = None
@@ -30,9 +32,14 @@ DEFAULT_LOG_FILE = None
 
 class WebDriver(RemoteWebDriver):
 
+    @AllowDesiredCapabilitiesOverrides()
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
-                 log_level=DEFAULT_LOG_LEVEL, log_file=DEFAULT_LOG_FILE):
+                 log_level=DEFAULT_LOG_LEVEL, log_file=DEFAULT_LOG_FILE,
+                 desired_capabilities=None):
+        
+        if not desired_capabilities is None: capabilities = desired_capabilities
+        
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
