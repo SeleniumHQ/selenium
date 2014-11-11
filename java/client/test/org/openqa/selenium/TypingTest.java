@@ -707,11 +707,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE}, issues = {6711})
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE}, issues = {6711})
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    assumeFalse("not tested on mac", getEffectivePlatform().is(Platform.MAC));
-
     driver.get(pages.richTextPage);
 
     driver.switchTo().frame("editFrame");
