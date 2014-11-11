@@ -1333,6 +1333,11 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
 
     Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
 
+    if (bot.dom.isEditable(elementForNode) && elementForNode.value !== undefined) {
+      goog.dom.selection.setCursorPosition(
+          elementForNode, elementForNode.value.length);
+    }
+
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
   }
@@ -1382,11 +1387,6 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
   Utils.installWindowCloseListener(respond);
 
   var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
-
-  if (bot.dom.isEditable(currentlyActiveElement) && currentlyActiveElement.value !== undefined) {
-      goog.dom.selection.setCursorPosition(
-          currentlyActiveElement, currentlyActiveElement.value.length);
-  }
 
   var useElement = currentlyActiveElement;
   var tagName = useElement.tagName.toLowerCase();

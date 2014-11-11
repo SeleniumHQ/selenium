@@ -86,7 +86,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     releaseShift.perform();
 
     assertTrue("Key down event not isolated, got: " + logText,
-        logText.endsWith("keydown"));
+               logText.endsWith("keydown"));
   }
 
   @JavascriptEnabled
@@ -198,6 +198,77 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
         .perform();
     assertBackgroundColor(body, Colors.SILVER);
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectBySymbol() {
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .sendKeys(Keys.LEFT)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc d"));
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectByWord() {
+    assumeTrue(
+        "Test fails with native events enabled, likely due to issue 4385",
+        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .keyDown(Keys.CONTROL)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.CONTROL)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc "));
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectAll() {
+    assumeTrue(
+        "Test fails with native events enabled, likely due to issue 4385",
+        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.CONTROL)
+        .sendKeys("a")
+        .keyUp(Keys.CONTROL)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {

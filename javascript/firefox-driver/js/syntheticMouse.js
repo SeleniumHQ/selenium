@@ -207,6 +207,11 @@ SyntheticMouse.prototype.click = function(target) {
 
   bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, keyboardState));
 
+  if (bot.dom.isEditable(element) && element.value !== undefined) {
+    goog.dom.selection.setCursorPosition(
+        element, element.value.length);
+  }
+
   this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
