@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -227,6 +228,9 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",
         !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -253,6 +257,9 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",
         !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
