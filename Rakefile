@@ -447,29 +447,22 @@ task :ios_driver => [
 ]
 
 file "build/javascript/deps.js" => FileList[
-    "third_party/closure/goog/**/*.js",
+  "third_party/closure/goog/**/*.js",
 	"third_party/js/wgxpath/**/*.js",
-    "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
+  "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
   ] do
-  our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-  our_cmd << "--output_mode=deps --path=javascript --path=third_party/js/wgxpath "
-  our_cmd << "--dep=third_party/closure/goog"
 
-  # Generate the deps. The file paths will be as they appear on the filesystem,
-  # but for our tests, the WebDriverJS source files are served from /js/src and
-  # the Closure Library source is under /third_party/closure/goog, so we need
-  # to modify the generated paths to match that scheme.
-  output = ""
-  io = IO.popen(our_cmd)
-    io.each do |line|
-      line = line.gsub("\\\\", "/")
-      output << line.gsub(/common\/(.*)\/js/, 'js/\1')
-    end
+  puts "Scanning deps"
+  deps = Javascript::ClosureDeps.new
+  Dir["javascript/*/**/*.js"].
+      reject {|f| f[/javascript\/node/]}.
+      each {|f| deps.parse_file(f)}
+  Dir["third_party/js/wgxpath/**/*.js"].each {|f| deps.parse_file(f)}
 
   built_deps = "build/javascript/deps.js"
   puts "Writing #{built_deps}"
   mkdir_p File.dirname(built_deps)
-  File.open(built_deps, "w") do |f| f.write(output); end
+  deps.write_deps(built_deps)
   cp built_deps, "javascript/deps.js"
 end
 

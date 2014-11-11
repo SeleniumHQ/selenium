@@ -4,7 +4,7 @@ js_binary(name = "clientbin",
     "ui/*.js",
   ],
   deps = [
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
     "//javascript/webdriver:webdriver_lib",
   ],
   flags = [
@@ -49,8 +49,8 @@ js_test(name = "test",
   srcs = [ "test/**/*_test.html" ],
   deps = [
     "./**/*.js",
-    "//javascript/atoms:deps",
-    "//javascript/webdriver:deps",
+    "//javascript/atoms:all_js",
+    "//javascript/webdriver:all_js",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
