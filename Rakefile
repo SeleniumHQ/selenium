@@ -477,10 +477,11 @@ desc "Generate a single file with WebDriverJS' public API"
 task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
 
 task :release => [
-    :clean,
+#    :clean,
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc:zip',
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
@@ -520,6 +521,7 @@ task :release => [
   cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
   cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
+  cp "build/java/client/src/com/thoughtworks/selenium/leg-rc-standalone.jar", "build/dist/leg-rc-#{version}.jar"
 end
 
 task :push_release => [:release] do
@@ -536,7 +538,8 @@ task :push_release => [:release] do
   [
     {:file => "build/dist/selenium-server-standalone-#{version}.jar", :description => "Use this if you want to use the Selenium RC or Remote WebDriver or use Grid 2 without needing any additional dependencies"},
     {:file => "build/dist/selenium-server-#{version}.zip", :description => "All variants of the Selenium Server: stand-alone, jar with dependencies and sources."},
-    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"}
+    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API clients. Download this if you want to use WebDriver API"},
+    {:file => "build/dist/leg-rc-#{version}.jar", :description => "The Java bindings for Selenium 1, including the RC API clients. Download this if you want to use RC API"},
   ].each do |file|
     puts "Uploading file #{file[:file]}..."
     sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{file[:description]}' -p selenium #{file[:file]} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
