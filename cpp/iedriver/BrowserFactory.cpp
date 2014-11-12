@@ -58,10 +58,13 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
 }
 
 void BrowserFactory::ClearCache() {
+  LOG(TRACE) << "Entering BrowserFactory::ClearCache";
   if (this->clear_cache_) {
     if (this->windows_major_version_ >= 6) {
+      LOG(DEBUG) << "Clearing cache with low mandatory integrity level as required on Windows Vista or later.";
       this->InvokeClearCacheUtility(true);
     }
+    LOG(DEBUG) << "Clearing cache with normal process execution.";
     this->InvokeClearCacheUtility(false);
   }
 }
@@ -700,6 +703,7 @@ bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
 }
 
 void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
+  LOG(TRACE) << "Entering BrowserFactory::InvokeClearCacheUtility";
   HRESULT hr = S_OK;
   std::vector<wchar_t> system_path_buffer(MAX_PATH);
   std::vector<wchar_t> rundll_exe_path_buffer(MAX_PATH);
@@ -730,13 +734,16 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
                                        &inetcpl_path_buffer[0],
                                        CLEAR_CACHE_OPTIONS);
       } else {
+        LOG(WARN) << "Cannot combine paths to utilities required to clear cache.";
         can_create_process = false;
       }
     } else {
+      LOG(WARN) << "Paths system directory exceeds MAX_PATH.";
       can_create_process = false;
     }
 
     if (can_create_process) {
+      LOG(DEBUG) << "Launching inetcpl.cpl via rundll32.exe to clear cache";
       STARTUPINFO start_info;
       ::ZeroMemory(&start_info, sizeof(start_info));
       start_info.cb = sizeof(start_info);
@@ -776,10 +783,12 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
 
       if (is_process_created) {
         // Wait for the rundll32.exe process to exit.
+        LOG(DEBUG) << "Waiting for rundll32.exe process to exit.";
         ::WaitForInputIdle(process_info.hProcess, 5000);
         ::WaitForSingleObject(process_info.hProcess, 30000);
         ::CloseHandle(process_info.hProcess);
         ::CloseHandle(process_info.hThread);
+        LOG(DEBUG) << "Cache clearing complete.";
       }
     }
 
