@@ -38,18 +38,19 @@ module Selenium
 
       def window(id)
         if block_given?
-          original = @bridge.getCurrentWindowHandle
+          original = begin
+            @bridge.getCurrentWindowHandle
+          rescue Error::NoSuchWindowError
+            nil
+          end
+
           @bridge.switchToWindow id
 
           begin
             returned = yield
           ensure
             current_handles = @bridge.getWindowHandles
-
-            if current_handles.size == 1
-              original = current_handles.shift
-            end
-
+            original = current_handles.first unless current_handles.include? original
             @bridge.switchToWindow original
             returned
           end
