@@ -42,6 +42,10 @@ describe "Selenium::WebDriver::TargetLocator" do
 
   # switching by name not yet supported by safari
   not_compliant_on :browser => [:ie, :iphone, :safari] do
+    after do
+      reset_driver!
+    end
+
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -54,7 +58,6 @@ describe "Selenium::WebDriver::TargetLocator" do
 
       wait.until { driver.title == "XHTML Test Page" }
 
-      reset_driver!
     end
 
     it "should handle exceptions inside the block" do
@@ -69,7 +72,6 @@ describe "Selenium::WebDriver::TargetLocator" do
 
       driver.title.should == "XHTML Test Page"
 
-      reset_driver!
     end
 
     it "should switch to a window" do
@@ -81,7 +83,6 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.switch_to.window("result")
       wait.until { driver.title == "We Arrive Here" }
 
-      reset_driver!
     end
 
     it "should use the original window if the block closes the popup" do
@@ -97,7 +98,74 @@ describe "Selenium::WebDriver::TargetLocator" do
 
       driver.current_url.should include("xhtmlTest.html")
       driver.title.should == "XHTML Test Page"
-      reset_driver!
+    end
+
+    it "should close current window when more than two windows exist" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:link, "Create a new anonymous window").click
+      driver.find_element(:link, "Open new window").click
+
+      expect(driver.window_handles.size).to eq 3
+
+      driver.switch_to.window(driver.window_handle) {driver.close}
+      expect(driver.window_handles.size).to eq 2
+    end
+
+    it "should close another window when more than two windows exist" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:link, "Create a new anonymous window").click
+      driver.find_element(:link, "Open new window").click
+
+      expect(driver.window_handles.size).to eq 3
+
+      window_to_close = driver.window_handles.last
+
+      driver.switch_to.window(window_to_close) {driver.close}
+      expect(driver.window_handles.size).to eq 2
+    end
+
+    it "should iterate over open windows when current window is not closed" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:link, "Create a new anonymous window").click
+      driver.find_element(:link, "Open new window").click
+
+      new_window = driver.window_handles.find do |wh|
+        driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+      end
+
+      driver.switch_to.window(new_window)
+      driver.title.should == "We Arrive Here"
+    end
+
+    it "should iterate over open windows when current window is closed" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:link, "Create a new anonymous window").click
+      driver.find_element(:link, "Open new window").click
+
+      driver.close
+
+      new_window = driver.window_handles.find do |wh|
+        driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
+      end
+
+      driver.switch_to.window(new_window)
+      driver.title.should == "We Arrive Here"
+    end
+
+    it "should switch to a window and execute a block when current window is closed" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.find_element(:link, "Open new window").click
+
+      driver.switch_to.window("result")
+      wait.until { driver.title == "We Arrive Here" }
+
+      driver.close
+
+      driver.switch_to.window(driver.window_handles.first) do
+        wait.until { driver.title == "XHTML Test Page" }
+      end
+
+      driver.title.should == "XHTML Test Page"
     end
   end
 
