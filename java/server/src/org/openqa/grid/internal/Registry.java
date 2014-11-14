@@ -81,7 +81,7 @@ public class Registry {
     proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
-  
+
 
   @SuppressWarnings({"NullableProblems"})
   public static Registry newInstance() {
@@ -146,11 +146,22 @@ public class Registry {
    */
   private void _release(TestSlot testSlot, SessionTerminationReason reason) {
     if (!testSlot.startReleaseProcess()) {
+      log.log(Level.FINER,
+              String.format(
+                  "Start release process failed session: %s, proxy: %s, release reason: %s",
+                  testSlot.toString(),
+                  testSlot.getProxy().getId()),
+                  reason);
       return;
     }
 
     if (!testSlot.performAfterSessionEvent()) {
-      return;
+      log.log(Level.FINER,
+              String.format(
+                  "After session event failed for session: %s, proxy: %s, release reason: %s",
+                  testSlot.toString(),
+                  testSlot.getProxy().getId()),
+                  reason);
     }
 
     final String internalKey = testSlot.getInternalKey();
