@@ -109,7 +109,7 @@ fxdriver.moz.unwrap = function(thing) {
   }
 
   if (thing['wrappedJSObject']) {
-    thing.wrappedJSObject.__fxdriver_unwrapped = true;
+    fxdriver.moz.markUnwrapped_(thing.wrappedJSObject);
     return thing.wrappedJSObject;
   }
 
@@ -119,7 +119,7 @@ fxdriver.moz.unwrap = function(thing) {
     if (isWrapper) {
       var unwrapped = XPCNativeWrapper.unwrap(thing);
       var toReturn = !!unwrapped ? unwrapped : thing;
-      toReturn.__fxdriver_unwrapped = true;
+      fxdriver.moz.markUnwrapped_(toReturn);
       return toReturn;
     }
   } catch (e) {
@@ -129,6 +129,22 @@ fxdriver.moz.unwrap = function(thing) {
 
   return thing;
 };
+
+
+/**
+ * Defines a property on the given object to signal it has been unwrapped.
+ * @param {!Object} thing The object to mark.
+ * @private
+ */
+fxdriver.moz.markUnwrapped_ = function(thing) {
+  Object.defineProperty(thing, '__fxdriver_unwrapped', {
+    enumerable: false,
+    configurable: false,
+    writable: true,
+    value: true
+  });
+};
+
 
 /**
  * For Firefox 4, some objects (like the Window) are wrapped to make them safe

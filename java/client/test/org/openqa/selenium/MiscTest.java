@@ -27,7 +27,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -78,7 +77,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
+  @Ignore(value = {CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
           reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
                    + "Opera: includes XML doctype"
                    + "Others: untested")

@@ -30,11 +30,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -71,7 +69,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(2));
   }
 
-  @Ignore(value = ANDROID, reason = "Bug in Android's XPath library.")
   @Test
   public void testShouldBeAbleToFindMultipleElementsByNumericId() {
     driver.get(pages.nestedPage);
@@ -401,7 +398,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), containsString("hello world"));
   }
 
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE, SAFARI})
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE, MARIONETTE, SAFARI})
   @Test
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
@@ -417,14 +414,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.xpath("//a[@id='Not here']"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -433,7 +430,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
@@ -441,7 +438,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElement(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -451,14 +448,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElements(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("count(//input)"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -467,7 +464,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.xpath("count(//input)"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
@@ -476,7 +473,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElement(By.xpath("count(//input)"));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -736,7 +733,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName("a"));
   }
 
-  @Ignore({IPHONE})
   @NeedsFreshDriver
   @Test(expected = NoSuchElementException.class)
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
@@ -744,7 +740,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonExistantButton"));
   }
 
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE}, reason = "Just not working")
+  @Ignore(value = {OPERA, OPERA_MOBILE, MARIONETTE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -760,7 +756,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);

@@ -30,12 +30,10 @@ public @interface Ignore {
 
   public static enum Driver {
     ALL,
-    ANDROID,
     CHROME,
     HTMLUNIT,
     FIREFOX,
     IE,
-    IPHONE,
     MARIONETTE,
     OPERA,
     OPERA_MOBILE,

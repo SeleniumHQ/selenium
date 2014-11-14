@@ -24,11 +24,9 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -53,7 +51,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE, MARIONETTE},
+    value = {HTMLUNIT, SAFARI, OPERA_MOBILE, MARIONETTE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
              "Safari: not implemented (issue 4136)",
     issues = {4136})

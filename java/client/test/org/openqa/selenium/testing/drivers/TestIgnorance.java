@@ -143,14 +143,17 @@ public class TestIgnorance {
   }
 
   private boolean isIgnoredDueToBeingOnSauce(FrameworkMethod method, Object test) {
-    return SauceDriver.shouldUseSauce() &&
-           (method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null ||
-            test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null);
+    boolean isLocal = method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null
+                      || test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null;
+    if (SauceDriver.shouldUseSauce()) {
+      return isLocal;
+    } else {
+      return Boolean.getBoolean("local_only") && !isLocal;
+    }
   }
 
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
     return enabled != null && !browser.isJavascriptEnabled();
-
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {

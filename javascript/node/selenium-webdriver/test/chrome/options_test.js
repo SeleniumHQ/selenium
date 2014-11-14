@@ -192,14 +192,18 @@ describe('chrome.Options', function() {
 });
 
 test.suite(function(env) {
-  env.autoCreateDriver = false;
+  var driver;
+
+  test.afterEach(function() {
+    driver.quit();
+  });
 
   describe('Chrome options', function() {
     test.it('can start Chrome with custom args', function() {
       var options = new chrome.Options().
           addArguments('user-agent=foo;bar');
 
-      var driver = env.builder().
+      driver = env.builder().
           setChromeOptions(options).
           build();
 

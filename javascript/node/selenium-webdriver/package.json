@@ -30,6 +30,6 @@
         "mocha" : ">= 1.21.x"
     },
     "scripts": {
-        "test": "node_modules/.bin/mocha --harmony --no-timeouts --recursive test"
+        "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"
     }
 }

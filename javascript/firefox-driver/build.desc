@@ -82,7 +82,7 @@ js_binary(name = "bad-cert-listener",
   deps = [
     ":logging",
     ":moz",
-    "//javascript/webdriver/atoms:deps"
+    "//javascript/webdriver/atoms:all_js"
   ])
 
 js_binary(name = "command-processor",
@@ -109,7 +109,7 @@ js_binary(name = "command-processor",
     ":timer",
     ":utils",
     ":webelement",
-    "//javascript/webdriver/atoms:deps"
+    "//javascript/webdriver/atoms:all_js"
   ])
 
 js_binary(name = "driver-component",
@@ -131,7 +131,7 @@ js_binary(name = "driver-component",
     ":firefoxdriver",
     ":webdriverserver",
     ":webelement",
-    "//javascript/webdriver/atoms:deps",
+    "//javascript/webdriver/atoms:all_js",
   ])
 
 js_binary(name = "modifier-keys",
@@ -147,7 +147,7 @@ js_binary(name = "modifier-keys",
   deps = [
     ":moz",
     ":utils",
-    "//javascript/webdriver/atoms:deps",
+    "//javascript/webdriver/atoms:all_js",
   ])
 
 js_binary(name = "prompt-service",
@@ -214,7 +214,7 @@ js_binary(name = "synthetic-mouse",
     ":logging",
     ":moz",
     ":utils",
-    "//javascript/webdriver/atoms:deps",
+    "//javascript/webdriver/atoms:all_js",
   ])
 
 js_binary(name = "web-element-cache",
@@ -231,7 +231,7 @@ js_binary(name = "web-element-cache",
     ":firefox-utils",
     ":moz",
     ":utils",
-    "//javascript/webdriver/atoms:deps"
+    "//javascript/webdriver/atoms:all_js"
   ])
 
 
@@ -242,7 +242,7 @@ js_library(name = "dispatcher",
     ":request",
     ":response",
     ":utils",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "firefox-utils",
@@ -252,7 +252,7 @@ js_library(name = "firefox-utils",
   deps = [
     ":logging",
     ":moz",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "firefoxdriver",
@@ -265,7 +265,7 @@ js_library(name = "firefoxdriver",
     ":utils",
     ":webelement",
     ":webloadinglistener",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "error",
@@ -299,20 +299,20 @@ js_library(name = "modals",
     ":moz",
     ":timer",
     ":utils",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "moz",
   srcs = [ "js/moz.js" ],
   deps = [
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "preconditions",
   srcs = [ "js/preconditions.js", ],
   deps = [
     ":utils",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "prefs",
@@ -353,7 +353,7 @@ js_library(name = "utils",
     ":logging",
     ":moz",
     ":webloadinglistener",
-    "//javascript/atoms:deps",
+    "//javascript/atoms:all_js",
   ])
 
 js_library(name = "webdriverserver",
@@ -374,8 +374,8 @@ js_library(name = "webelement",
     ":preconditions",
     ":utils",
     ":webloadinglistener",
-    "//javascript/atoms:deps",
-    "//javascript/webdriver:deps",
+    "//javascript/atoms:all_js",
+    "//javascript/webdriver:all_js",
   ])
 
 js_library(name = "webloadinglistener",

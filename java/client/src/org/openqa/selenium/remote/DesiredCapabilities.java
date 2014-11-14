@@ -26,6 +26,7 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -165,7 +166,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   public void setCapability(String capabilityName, String value) {
     if (PLATFORM.equals(capabilityName)) {
-      capabilities.put(capabilityName, Platform.fromString(value));
+      try {
+        capabilities.put(capabilityName, Platform.fromString(value));
+      } catch (WebDriverException ex) {
+        capabilities.put(capabilityName, value);
+      }
     } else {
       capabilities.put(capabilityName, value);
     }

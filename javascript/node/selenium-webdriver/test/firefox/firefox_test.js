@@ -29,12 +29,18 @@ var NORMAL_EXTENSION = path.join(__dirname,
 
 
 test.suite(function(env) {
-  env.autoCreateDriver = false;
-
   describe('firefox', function() {
     describe('Options', function() {
+      var driver;
+
+      test.beforeEach(function() {
+        driver = null;
+      });
+
       test.afterEach(function() {
-        return env.dispose();
+        if (driver) {
+          driver.quit();
+        }
       });
 
       test.it('can start Firefox with custom preferences', function() {
@@ -43,7 +49,7 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.builder().
+        driver = env.builder().
             setFirefoxOptions(options).
             build();
 
@@ -60,7 +66,7 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.builder().
+        driver = env.builder().
             setFirefoxOptions(options).
             build();
 
@@ -76,7 +82,7 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.builder().
+        driver = env.builder().
             setFirefoxOptions(options).
             build();
 
@@ -92,7 +98,7 @@ test.suite(function(env) {
 
         var options = new firefox.Options().setProfile(profile);
 
-        var driver = env.builder().
+        driver = env.builder().
             setFirefoxOptions(options).
             build();
 

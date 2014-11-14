@@ -51,7 +51,7 @@ verbose($DEBUG)
 def version
   "2.44.0"
 end
-ide_version = "1.10.0"
+ide_version = "2.8.0"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
@@ -447,29 +447,22 @@ task :ios_driver => [
 ]
 
 file "build/javascript/deps.js" => FileList[
-    "third_party/closure/goog/**/*.js",
+  "third_party/closure/goog/**/*.js",
 	"third_party/js/wgxpath/**/*.js",
-    "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
+  "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
   ] do
-  our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-  our_cmd << "--output_mode=deps --path=javascript --path=third_party/js/wgxpath "
-  our_cmd << "--dep=third_party/closure/goog"
 
-  # Generate the deps. The file paths will be as they appear on the filesystem,
-  # but for our tests, the WebDriverJS source files are served from /js/src and
-  # the Closure Library source is under /third_party/closure/goog, so we need
-  # to modify the generated paths to match that scheme.
-  output = ""
-  io = IO.popen(our_cmd)
-    io.each do |line|
-      line = line.gsub("\\\\", "/")
-      output << line.gsub(/common\/(.*)\/js/, 'js/\1')
-    end
+  puts "Scanning deps"
+  deps = Javascript::ClosureDeps.new
+  Dir["javascript/*/**/*.js"].
+      reject {|f| f[/javascript\/node/]}.
+      each {|f| deps.parse_file(f)}
+  Dir["third_party/js/wgxpath/**/*.js"].each {|f| deps.parse_file(f)}
 
   built_deps = "build/javascript/deps.js"
   puts "Writing #{built_deps}"
   mkdir_p File.dirname(built_deps)
-  File.open(built_deps, "w") do |f| f.write(output); end
+  deps.write_deps(built_deps)
   cp built_deps, "javascript/deps.js"
 end
 
@@ -488,6 +481,7 @@ task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
+    '//java/client/src/com/thoughtworks/selenium:leg-rc:zip',
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
@@ -527,6 +521,7 @@ task :release => [
   cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
   cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
+  cp "build/java/client/src/com/thoughtworks/selenium/leg-rc-standalone.jar", "build/dist/leg-rc-#{version}.jar"
 end
 
 task :push_release => [:release] do
@@ -543,7 +538,8 @@ task :push_release => [:release] do
   [
     {:file => "build/dist/selenium-server-standalone-#{version}.jar", :description => "Use this if you want to use the Selenium RC or Remote WebDriver or use Grid 2 without needing any additional dependencies"},
     {:file => "build/dist/selenium-server-#{version}.zip", :description => "All variants of the Selenium Server: stand-alone, jar with dependencies and sources."},
-    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"}
+    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API clients. Download this if you want to use WebDriver API"},
+    {:file => "build/dist/leg-rc-#{version}.jar", :description => "The Java bindings for Selenium 1, including the RC API clients. Download this if you want to use RC API"},
   ].each do |file|
     puts "Uploading file #{file[:file]}..."
     sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{file[:description]}' -p selenium #{file[:file]} -l Featured -u #{googlecode_username} -w #{googlecode_password}"

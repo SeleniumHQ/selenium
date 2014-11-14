@@ -17,15 +17,21 @@ limitations under the License.
 package org.openqa.selenium.firefox.internal;
 
 import org.junit.Test;
+import org.openqa.selenium.remote.internal.CircularOutputStream;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class StreamsTest {
 
   @Test
-  public void streamExtraction() {
-    // InputStream stream = new ByteArrayInputStream("foo".getBytes());
-    // assertEquals("foo", new String(Streams.drainStream(stream)));
+  public void streamExtraction() throws IOException {
+    OutputStream stream = new CircularOutputStream(100);
+    stream.write("foo".getBytes());
+    assertEquals("foo", Streams.drainStream(stream));
   }
 
   @Test

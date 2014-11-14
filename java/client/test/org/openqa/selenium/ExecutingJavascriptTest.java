@@ -52,13 +52,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -287,7 +285,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
@@ -537,7 +535,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
+  @Ignore(value = {OPERA, OPERA_MOBILE},
           reason = "Opera obeys the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
@@ -579,7 +577,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 
@@ -594,7 +592,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test(timeout = 10000)
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 

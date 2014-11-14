@@ -20,9 +20,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -34,6 +32,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -56,7 +55,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
@@ -71,7 +69,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
@@ -89,11 +87,11 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     releaseShift.perform();
 
     assertTrue("Key down event not isolated, got: " + logText,
-        logText.endsWith("keydown"));
+               logText.endsWith("keydown"));
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
@@ -118,7 +116,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, IE, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -146,7 +144,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testSendingKeysToActiveElement() {
     assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
@@ -162,7 +159,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThatFormEventsFiredAreExactly("");
   }
 
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
@@ -178,7 +174,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
@@ -203,6 +199,83 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
         .perform();
     assertBackgroundColor(body, Colors.SILVER);
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectBySymbol() {
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .sendKeys(Keys.LEFT)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc d"));
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectByWord() {
+    assumeTrue(
+        "Test fails with native events enabled, likely due to issue 4385",
+        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.SHIFT)
+        .keyDown(Keys.CONTROL)
+        .sendKeys(Keys.LEFT)
+        .keyUp(Keys.CONTROL)
+        .keyUp(Keys.SHIFT)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is("abc "));
+  }
+
+  @Test
+  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  public void testSelectionSelectAll() {
+    assumeTrue(
+        "Test fails with native events enabled, likely due to issue 4385",
+        !TestUtilities.isFirefox(driver) || !TestUtilities.isNativeEventsEnabled(driver));
+    assumeFalse(
+        "MacOS has alternative keyboard",
+        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+
+    getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    getBuilder(driver).click(keyReporter)
+        .keyDown(Keys.CONTROL)
+        .sendKeys("a")
+        .keyUp(Keys.CONTROL)
+        .sendKeys(Keys.DELETE)
+        .perform();
+
+    assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {

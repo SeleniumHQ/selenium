@@ -27,15 +27,14 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -112,7 +111,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
@@ -122,7 +120,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, ANDROID, IPHONE},
+      value = {HTMLUNIT},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
@@ -146,7 +144,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testDoubleClickThenGet() {
     // Fails in ff3 if WebLoadingListener removes browser listener
@@ -161,7 +158,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
@@ -198,7 +194,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA})
+  @Ignore({OPERA})
   @Test
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
@@ -214,7 +210,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE})
+  @Ignore({HTMLUNIT})
   @Test
   public void testContextClick() {
     driver.get(pages.javascriptPage);
@@ -229,7 +225,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE})
   @Test
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
@@ -247,7 +242,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE})
+  @Ignore({CHROME, IE})
   @Test
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
@@ -263,7 +258,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, FIREFOX, OPERA, HTMLUNIT, OPERA_MOBILE})
+  @Ignore({CHROME, IE, FIREFOX, OPERA, HTMLUNIT, OPERA_MOBILE})
   @Test
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
@@ -281,7 +276,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, OPERA},
+  @Ignore(value = {IE, HTMLUNIT, REMOTE, OPERA},
           reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
@@ -324,7 +319,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, CHROME},
+  @Ignore(value = {IE, HTMLUNIT, CHROME},
           reason = "Not implemented yet.")
   @Test
   public void testMovingMousePastViewPort() {
@@ -360,7 +355,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, CHROME, OPERA, OPERA_MOBILE},
+  @Ignore(value = {IE, HTMLUNIT, CHROME, OPERA, OPERA_MOBILE},
           reason = "Not implemented yet.")
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
@@ -391,7 +386,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(resultArea, expectedEvents));
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
+  @Ignore({OPERA, OPERA_MOBILE})
   @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
@@ -409,7 +404,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE,  OPERA, SAFARI, MARIONETTE},
+      value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers.",
       issues = {4136})
   @Test
@@ -430,7 +425,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, OPERA, SAFARI, MARIONETTE},
+      value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -465,7 +460,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, OPERA, FIREFOX},
+      value = {HTMLUNIT, OPERA, FIREFOX, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
       reason = "This is an IE only tests")
   @NoDriverAfterTest
   @NeedsLocalEnvironment

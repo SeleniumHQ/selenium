@@ -34,8 +34,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
@@ -44,7 +42,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
-@Ignore(value = {HTMLUNIT, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE},
+@Ignore(value = {HTMLUNIT, OPERA_MOBILE, MARIONETTE},
         reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
 public class PositionAndSizeTest extends JUnit4TestBase {
 
@@ -152,7 +150,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
+  @Ignore({IE, CHROME, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
   // Reason for Chrome: WebKit bug 28804
   @Test
   public void testShouldHandleNonIntegerPositionAndSize() {

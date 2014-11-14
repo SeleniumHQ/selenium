@@ -3,6 +3,10 @@
 * Promise rejections are now always coerced to Error-like objects (an object
     with a string `message` property). We do not guarantee `instanceof Error`
     since the rejection value may come from another context.
+* FIXED: 8128: When the FirefoxDriver marshals an object to the page for
+    `executeScript`, it defines additional properties (required by the driver's
+    implementation). These properties will no longer be enumerable and should
+    be omitted (i.e. they won't show up in JSON.stringify output).
 
 ## v2.44.0
 

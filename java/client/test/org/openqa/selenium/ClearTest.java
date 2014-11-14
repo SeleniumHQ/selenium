@@ -22,12 +22,9 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
-@Ignore({ANDROID})
 public class ClearTest extends JUnit4TestBase {
 
   @Test
@@ -97,7 +94,7 @@ public class ClearTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IPHONE, OPERA_MOBILE})
+  @Ignore({OPERA_MOBILE})
   @Test
   public void testContentEditableAreaShouldClear() {
     driver.get(pages.readOnlyPage);

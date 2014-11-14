@@ -28,7 +28,8 @@ var Browser = require('..').Browser,
 
 test.suite(function(env) {
   var driver;
-  beforeEach(function() { driver = env.driver; });
+  test.before(function() { driver = env.builder().build(); });
+  test.after(function() { driver.quit(); });
 
   test.it(
       'dynamically removing elements from the DOM trigger a ' +

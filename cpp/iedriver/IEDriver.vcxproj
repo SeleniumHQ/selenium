@@ -92,7 +92,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\iewebdriverheader;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -124,7 +124,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\iewebdriverheader;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -152,7 +152,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\iewebdriverheader;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -179,7 +179,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\iewebdriverheader;$(ProjectDir)..\..\third_party\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -200,16 +200,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\third_party\civetweb\civetweb.vcxproj">
+    <ProjectReference Include="..\..\third_party\cpp\civetweb\civetweb.vcxproj">
       <Project>{231a8bed-6f2d-4688-a3bd-920310621bbf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\cpp\json-cpp\json-cpp.vcxproj">
+      <Project>{320f3bbe-8223-4e7f-abee-18d3bd57b1fd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\webdriver-interactions\webdriver-interactions.vcxproj">
       <Project>{87fa39a1-958e-478a-8ab9-6d5e5aaa3886}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\third_party\json-cpp\json-cpp.vcxproj">
-      <Project>{320f3bbe-8223-4e7f-abee-18d3bd57b1fd}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>

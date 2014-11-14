@@ -17,10 +17,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 
 /**
  * Bug 126 identified an instance where the HtmlUnitDriver threw a NullPointerException, {@see <a
@@ -73,7 +70,6 @@ public class ObjectStateAssumptionsTest extends JUnit4TestBase {
   /**
    * Test the various options, again for an uninitialized driver, NPEs are thrown.
    */
-  @Ignore({IPHONE})
   @Test
   public void testOptionsForUninitializedWebDriver() {
     WebDriver.Options options = driver.manage();

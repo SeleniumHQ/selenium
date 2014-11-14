@@ -22,23 +22,29 @@ var Browser = require('..').Browser,
     test = require('../lib/test');
 
 test.suite(function(env) {
-  env.autoCreateDriver = false;
-
   // Logging API has numerous issues with PhantomJS:
   //   - does not support adjusting log levels for type "browser".
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
   test.ignore(env.browsers(Browser.PHANTOM_JS)).
   describe('logging', function() {
+    var driver;
+
+    test.beforeEach(function() {
+      driver = null;
+    });
+
     test.afterEach(function() {
-      env.dispose();
+      if (driver) {
+        driver.quit();
+      }
     });
 
     test.it('can be disabled', function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.OFF);
 
-      var driver = env.builder()
+      driver = env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
@@ -59,7 +65,7 @@ test.suite(function(env) {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
 
-      var driver = env.builder()
+      driver = env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
@@ -82,7 +88,7 @@ test.suite(function(env) {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      var driver = env.builder()
+      driver = env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
@@ -111,7 +117,7 @@ test.suite(function(env) {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      var driver = env.builder()
+      driver = env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
@@ -134,7 +140,7 @@ test.suite(function(env) {
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
       prefs.setLevel(logging.Type.DRIVER, logging.Level.SEVERE);
 
-      var driver = env.builder()
+      driver = env.builder()
           .setLoggingPrefs(prefs)
           .build();
 

@@ -1,3 +1,9 @@
+java_library(name = "leg-rc",
+  deps = [
+    ":api",
+    ":selenium",
+  ])
+
 java_library(name = "api",
   srcs = [
     "CommandProcessor.java",

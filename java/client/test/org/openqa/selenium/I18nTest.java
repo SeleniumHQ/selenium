@@ -21,12 +21,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
@@ -59,14 +57,14 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
-  @Ignore({IPHONE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
@@ -77,7 +75,7 @@ public class I18nTest extends JUnit4TestBase {
     assertEquals(shalom, input.getAttribute("value"));
   }
 
-  @Ignore({ANDROID, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
@@ -133,7 +131,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID, IPHONE},
+  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX, OPERA},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   @Test
@@ -183,7 +181,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, HTMLUNIT, OPERA, ANDROID, IPHONE},
+  @Ignore(value = {IE, CHROME, HTMLUNIT, OPERA},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   @Test

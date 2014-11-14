@@ -24,16 +24,14 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA, MARIONETTE})
+  @Ignore({HTMLUNIT, OPERA, MARIONETTE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -50,7 +48,7 @@ public class CssValueTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA, MARIONETTE})
+  @Ignore({HTMLUNIT, OPERA, MARIONETTE})
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
@@ -66,7 +64,7 @@ public class CssValueTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, HTMLUNIT})
+  @Ignore({OPERA, HTMLUNIT})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);

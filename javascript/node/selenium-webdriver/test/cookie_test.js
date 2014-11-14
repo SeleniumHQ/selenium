@@ -26,7 +26,14 @@ var test = require('../lib/test'),
 
 test.suite(function(env) {
   var driver;
-  beforeEach(function() { driver = env.driver; });
+
+  test.before(function() {
+    driver = env.builder().build();
+  });
+
+  test.after(function() {
+    driver.quit();
+  });
 
   test.ignore(env.browsers(Browser.SAFARI)).  // Cookie handling is broken.
   describe('Cookie Management;', function() {

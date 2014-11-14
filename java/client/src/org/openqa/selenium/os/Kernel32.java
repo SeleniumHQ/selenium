@@ -23,6 +23,10 @@ import com.sun.jna.Structure;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.win32.W32APIOptions;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.openqa.selenium.Beta;
 
 @Beta
@@ -67,6 +71,12 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
     public ULONG_PTR Affinity;
     public int PriorityClass;
     public int SchedulingClass;
+
+    protected List<String> getFieldOrder() {
+      return Arrays.asList("PerProcessUserTimeLimit", "PerJobUserTimeLimit", "LimitFlags",
+          "MinimumWorkingSetSize", "MaximumWorkingSetSize", "ActiveProcessLimit", "Affinity",
+          "PriorityClass", "SchedulingClass");
+    }
   }
 
   static class IO_COUNTERS extends Structure {
@@ -76,6 +86,11 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
     public ULONGLONG ReadTransferCount;
     public ULONGLONG WriteTransferCount;
     public ULONGLONG OtherTransferCount;
+
+    protected List<String> getFieldOrder() {
+      return Arrays.asList("ReadOperationCount", "WriteOperationCount", "OtherOperationCount",
+          "ReadTransferCount", "WriteTransferCount", "OtherTransferCount");
+    }
   }
 
   static class JOBJECT_EXTENDED_LIMIT_INFORMATION extends Structure {
@@ -91,6 +106,11 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
     public SIZE_T JobMemoryLimit;
     public SIZE_T PeakProcessMemoryUsed;
     public SIZE_T PeakJobMemoryUsed;
+
+    protected List<String> getFieldOrder() {
+      return Arrays.asList("BasicLimitInformation", "IoInfo", "ProcessMemoryLimit",
+          "JobMemoryLimit", "PeakProcessMemoryUsed", "PeakJobMemoryUsed");
+    }
 
     public static class ByReference extends JOBJECT_EXTENDED_LIMIT_INFORMATION implements Structure.ByReference {
       public ByReference() {}
@@ -109,6 +129,10 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
     }
 
     public int UIRestrictionsClass;
+
+    protected List<String> getFieldOrder() {
+      return Arrays.asList("UIRestrictionsClass");
+    }
 
     public static class ByReference extends JOBOBJECT_BASIC_UI_RESTRICTIONS implements Structure.ByReference {
       public ByReference() {}

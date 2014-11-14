@@ -23,10 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -95,8 +93,8 @@ import java.util.concurrent.TimeUnit;
  * not be served by the same server.
  */
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI},
-    reason = "Android/HtmlUnit/Iphone/Opera/PhantomJS - not tested, " +
+    value = {HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI},
+    reason = "HtmlUnit/Opera/PhantomJS - not tested, " +
              "Opera mobile/Safari - not implemented")
 public class ReferrerTest extends JUnit4TestBase {
 
