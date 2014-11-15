@@ -180,12 +180,12 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.3.4</version>
+                <version>4.3.6</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.3.2</version>
+                <version>4.3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
