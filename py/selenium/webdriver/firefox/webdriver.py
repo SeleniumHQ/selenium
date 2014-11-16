@@ -28,6 +28,12 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
+try:
+    basestring
+except NameError:
+    # Python 3
+    basestring = unicode = str
+
 class WebDriver(RemoteWebDriver):
 
     # There is no native event support on Mac
@@ -41,6 +47,8 @@ class WebDriver(RemoteWebDriver):
 
         if self.profile is None:
             self.profile = FirefoxProfile()
+        elif isinstance(self.profile, basestring):
+            self.profile = FirefoxProfile(self.profile)
 
         self.profile.native_events_enabled = (
             self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
