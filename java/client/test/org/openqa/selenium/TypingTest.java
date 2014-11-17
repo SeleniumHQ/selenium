@@ -713,7 +713,7 @@ public class TypingTest extends JUnit4TestBase {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
                 !isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
+                (getEffectivePlatform().is(Platform.LINUX) || getEffectivePlatform().is(Platform.MAC)));
 
     driver.get(pages.richTextPage);
 
