@@ -46,17 +46,10 @@
             <groupId>org.webbitserver</groupId>
             <artifactId>webbit</artifactId>
         </dependency>
-        <!-- We need JUnit for SeleneseTestCase ... -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- We need TestNG for SeleneseTestNgHelper ... -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <optional>true</optional>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-leg-rc</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -87,27 +80,11 @@
                                                 <present targetdir="../remote-driver/src/main/java" />
                                                 <present targetdir="../safari-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
+                                                <present targetdir="../leg-rc/src/main/java" />
                                             </or>
                                         </not>
                                     </fileset>
                                 </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>copy_resource_files</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <!-- Extract *.js files from client-combined-nodeps.jar to target/classes ... -->
-                                <unjar src="../../build/java/client/src/com/thoughtworks/selenium/webdriven/webdriven.jar" dest="target/classes">
-                                    <patternset>
-                                        <include name="**/webdriven/*.js" />
-                                    </patternset>
-                                </unjar>
                             </tasks>
                         </configuration>
                         <goals>

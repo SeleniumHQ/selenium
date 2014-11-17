@@ -147,7 +147,14 @@ public class FirefoxLocator extends SingleBrowserLocator {
   }
 
   public BrowserInstallation findBrowserLocationOrFail() {
-    final BrowserInstallation firefoxPathLocation = findBrowserLocation();
+    LOGGER.fine("Discovering Firefox 3...");
+    final BrowserInstallation firefoxLocation = findBrowserLocation();
+    if (null != firefoxLocation) {
+      return firefoxLocation;
+    }
+
+    LOGGER.fine("Did not find Firefox 3, now searching PATH...");
+    final BrowserInstallation firefoxPathLocation = findBrowserLocationInPath();
     if (null != firefoxPathLocation) {
       return firefoxPathLocation;
     }
@@ -155,7 +162,7 @@ public class FirefoxLocator extends SingleBrowserLocator {
     throw new RuntimeException(couldNotFindAnyInstallationMessage());
   }
 
-  public BrowserInstallation findBrowserLocation() {
+  public BrowserInstallation findBrowserLocationInPath() {
     for (String name : standardlauncherFilenames()) {
       String executable = CommandLine.find(name);
       if (executable == null) {
