@@ -38,39 +38,39 @@ class NewSessionCommandHandler : public IECommandHandler {
     ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {
       BrowserFactorySettings factory_settings;
-      Json::Value ignore_protected_mode_settings = it->second.get(IGNORE_PROTECTED_MODE_CAPABILITY, false);
+      Json::Value ignore_protected_mode_settings = this->GetCapability(it->second, IGNORE_PROTECTED_MODE_CAPABILITY, Json::booleanValue, false);
       factory_settings.ignore_protected_mode_settings = ignore_protected_mode_settings.asBool();
-      Json::Value ignore_zoom_setting = it->second.get(IGNORE_ZOOM_SETTING_CAPABILITY, false);
+      Json::Value ignore_zoom_setting = this->GetCapability(it->second, IGNORE_ZOOM_SETTING_CAPABILITY, Json::booleanValue, false);
       factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
-      Json::Value browser_attach_timeout = it->second.get(BROWSER_ATTACH_TIMEOUT_CAPABILITY, 0);
+      Json::Value browser_attach_timeout = this->GetCapability(it->second, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, 0);
       factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
-      Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, default_initial_url);
+      Json::Value initial_url = this->GetCapability(it->second, INITIAL_BROWSER_URL_CAPABILITY, Json::stringValue, default_initial_url);
       factory_settings.initial_browser_url = initial_url.asString();
-      Json::Value force_create_process_api = it->second.get(FORCE_CREATE_PROCESS_API_CAPABILITY, false);
+      Json::Value force_create_process_api = this->GetCapability(it->second, FORCE_CREATE_PROCESS_API_CAPABILITY, Json::booleanValue, false);
       factory_settings.force_create_process_api = force_create_process_api.asBool();
-      Json::Value force_shell_windows_api = it->second.get(FORCE_SHELL_WINDOWS_API_CAPABILITY, false);
+      Json::Value force_shell_windows_api = this->GetCapability(it->second, FORCE_SHELL_WINDOWS_API_CAPABILITY, Json::booleanValue, false);
       factory_settings.force_shell_windows_api = force_shell_windows_api.asBool();
-      Json::Value browser_command_line_switches = it->second.get(BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, "");
+      Json::Value browser_command_line_switches = this->GetCapability(it->second, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, "");
       factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
-      Json::Value ensure_clean_session = it->second.get(ENSURE_CLEAN_SESSION_CAPABILITY, false);
+      Json::Value ensure_clean_session = this->GetCapability(it->second, ENSURE_CLEAN_SESSION_CAPABILITY, Json::booleanValue, false);
       factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
       mutable_executor.browser_factory()->Initialize(factory_settings);
 
-      Json::Value enable_native_events = it->second.get(NATIVE_EVENTS_CAPABILITY, true);
+      Json::Value enable_native_events = this->GetCapability(it->second, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
       mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
-      Json::Value scroll_behavior = it->second.get(ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, 0);
+      Json::Value scroll_behavior = this->GetCapability(it->second, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
       mutable_executor.input_manager()->set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
-      Json::Value require_window_focus = it->second.get(REQUIRE_WINDOW_FOCUS_CAPABILITY, false);
+      Json::Value require_window_focus = this->GetCapability(it->second, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
       mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
 
-      Json::Value validate_cookie_document_type = it->second.get(VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, true);
+      Json::Value validate_cookie_document_type = this->GetCapability(it->second, VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
 
-      Json::Value unexpected_alert_behavior = it->second.get(UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, DISMISS_UNEXPECTED_ALERTS);
+      Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
-      Json::Value enable_element_cache_cleanup = it->second.get(ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, true);
+      Json::Value enable_element_cache_cleanup = this->GetCapability(it->second, ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
-      Json::Value enable_persistent_hover = it->second.get(ENABLE_PERSISTENT_HOVER_CAPABILITY, true);
+      Json::Value enable_persistent_hover = this->GetCapability(it->second, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
       if (require_window_focus.asBool() || !enable_native_events.asBool()) {
         // Setting "require_window_focus" implies SendInput() API, and does not therefore require
         // persistent hover. Likewise, not using native events requires no persistent hover either.
@@ -81,6 +81,7 @@ class NewSessionCommandHandler : public IECommandHandler {
       ProxySettings proxy_settings = { false, "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {
+        // TODO(JimEvans): Validate the members of the proxy JSON object.
         std::string proxy_type = proxy.get("proxyType", "").asString();
         proxy_settings.proxy_type = proxy_type;
         std::string http_proxy = proxy.get("httpProxy", "").asString();
@@ -91,7 +92,7 @@ class NewSessionCommandHandler : public IECommandHandler {
         proxy_settings.ssl_proxy = ssl_proxy;
         std::string autoconfig_url = proxy.get("proxyAutoconfigUrl", "").asString();
         proxy_settings.proxy_autoconfig_url = autoconfig_url;
-        Json::Value use_per_process_proxy = it->second.get(USE_PER_PROCESS_PROXY_CAPABILITY, false);
+        Json::Value use_per_process_proxy = this->GetCapability(it->second, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
         proxy_settings.use_per_process_proxy = use_per_process_proxy.asBool();
       }
       mutable_executor.proxy_manager()->Initialize(proxy_settings);
@@ -109,6 +110,53 @@ class NewSessionCommandHandler : public IECommandHandler {
     }
     std::string id = executor.session_id();
     response->SetResponse(303, "/session/" + id);
+  }
+
+ private:
+  Json::Value NewSessionCommandHandler::GetCapability(Json::Value capabilities,
+                                                      std::string capability_name,
+                                                      Json::ValueType expected_capability_type,
+                                                      Json::Value default_value) {
+    Json::Value capability_value = capabilities.get(capability_name, default_value);
+    if (!this->IsEquivalentType(capability_value.type(), expected_capability_type)) {
+      LOG(WARN) << "Invalid capability setting: " << capability_name
+                << " is type " << this->GetJsonTypeDescription(capability_value.type())
+                << " instead of " << this->GetJsonTypeDescription(expected_capability_type)
+                << ". Default value will be used: " << default_value.toStyledString();
+      return default_value;
+    }
+    return capability_value;
+  }
+
+  bool NewSessionCommandHandler::IsEquivalentType(Json::ValueType actual_type,
+                                                  Json::ValueType expected_type) {
+    if (expected_type == actual_type) {
+      return true;
+    }
+    if ((expected_type == Json::intValue || expected_type == Json::uintValue || expected_type == Json::realValue) &&
+        (actual_type == Json::intValue || actual_type == Json::uintValue || actual_type == Json::realValue)) {
+      // All numeric types are equivalent for our purposes.
+      return true;
+    }
+    return false;
+  }
+
+  std::string NewSessionCommandHandler::GetJsonTypeDescription(Json::ValueType type) {
+    switch(type) {
+      case Json::booleanValue:
+        return "boolean";
+      case Json::intValue:
+      case Json::uintValue:
+      case Json::realValue:
+        return "number";
+      case Json::objectValue:
+        return "object";
+      case Json::arrayValue:
+        return "array";
+      case Json::stringValue:
+        return "string";
+    }
+    return "null";
   }
 };
 

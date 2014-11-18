@@ -58,12 +58,18 @@ void Command::Deserialize(const std::string& json) {
     }
 
     Json::Value command_parameter_object = root["parameters"];
-    it = command_parameter_object.begin();
-    end = command_parameter_object.end();
-    for (; it != end; ++it) {
-      std::string key = it.key().asString();
-      Json::Value value = command_parameter_object[key];
-      this->command_parameters_[key] = value;
+    if (!command_parameter_object.isObject()) {
+      LOG(WARN) << "The value of the 'parameters' attribute is not a JSON "
+                << "object. This is invalid for the WebDriver JSON Wire "
+                << "Protocol.";
+    } else {
+      it = command_parameter_object.begin();
+      end = command_parameter_object.end();
+      for (; it != end; ++it) {
+        std::string key = it.key().asString();
+        Json::Value value = command_parameter_object[key];
+        this->command_parameters_[key] = value;
+      }
     }
   } else {
     LOG(DEBUG) << "Command type is zero, no 'name' attribute in JSON object";

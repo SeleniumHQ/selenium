@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.44.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Added additional logging to cache clearing code
+ * Updated session intialization to more robustly handle malformed JSON.
+   Previously, in the IE driver, malformed JSON requests when requesting a
+   new session would cause the driver to crash. The new behavior is that
+   if the JSON payload for the new session is malformed by not including
+   a desiredCapabilities object will now throw an exception. If the user
+   passes a capability value with the wrong data type, it will be logged
+   by the driver at a warning level, and the default value for the specified
+   capability will be used.
+
 v2.44.0.1
 =========
  * Updates to JavaScript automation atoms.

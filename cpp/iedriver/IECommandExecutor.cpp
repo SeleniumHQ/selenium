@@ -121,6 +121,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
+  this->is_waiting_ = false;
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
