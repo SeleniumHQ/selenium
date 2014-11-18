@@ -17,20 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Manages the life and death of an IEDriverServer.
@@ -102,12 +96,8 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * Builder used to configure new {@link InternetExplorerDriverService} instances.
    */
-  public static class Builder {
+  public static class Builder extends DriverService.Builder<InternetExplorerDriverService> {
 
-    private int port = 0;
-    private File exe = null;
-    private ImmutableMap<String, String> environment = ImmutableMap.of();
-    private File logFile;
     private InternetExplorerDriverLogLevel logLevel;
 	private InternetExplorerDriverEngine engineImplementation;
     private String host = null;
@@ -115,68 +105,6 @@ public class InternetExplorerDriverService extends DriverService {
     private Boolean silent = null;
     private Boolean forceCreateProcess = null;
     private String ieSwitches = null;
-
-    /**
-     * Sets which driver executable the builder will use.
-     *
-     * @param file The executable to use.
-     * @return A self reference.
-     */
-    public Builder usingDriverExecutable(File file) {
-      checkNotNull(file);
-      checkExecutable(file);
-      this.exe = file;
-      return this;
-    }
-
-    /**
-     * Sets which port the driver server should be started on. A value of 0 indicates that any
-     * free port may be used.
-     *
-     * @param port The port to use; must be non-negative.
-     * @return A self reference.
-     */
-    public Builder usingPort(int port) {
-      checkArgument(port >= 0, "Invalid port number: %d", port);
-      this.port = port;
-      return this;
-    }
-
-    /**
-     * Configures the driver server to start on any available port.
-     *
-     * @return A self reference.
-     */
-    public Builder usingAnyFreePort() {
-      this.port = 0;
-      return this;
-    }
-
-    /**
-     * Defines the environment for the launched driver server. These
-     * settings will be inherited by every browser session launched by the
-     * server.
-     *
-     * @param environment A map of the environment variables to launch the
-     *     server with.
-     * @return A self reference.
-     */
-    @Beta
-    public Builder withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
-      return this;
-    }
-
-    /**
-     * Configures the driver server to write log to the given file.
-     *
-     * @param logFile A file to write log to.
-     * @return A self reference.
-     */
-    public Builder withLogFile(File logFile) {
-      this.logFile = logFile;
-      return this;
-    }
 
     /**
      * Configures the logging level for the driver server.
@@ -233,25 +161,19 @@ public class InternetExplorerDriverService extends DriverService {
       return this;
     }
 
-    /**
-     * Creates a new service to manage the driver server. Before creating a new service, the
-     * builder will find a port for the server to listen to.
-     *
-     * @return The new service object.
-     */
-    public InternetExplorerDriverService build() {
-      if (port == 0) {
-        port = PortProber.findFreePort();
-      }
-      if (exe == null) {
-        exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                             "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
-                             "http://selenium-release.storage.googleapis.com/index.html");
-      }
-      if (logFile == null) {
+    @Override
+    protected File findDefaultExecutable() {
+      return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
+                            "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
+                            "http://selenium-release.storage.googleapis.com/index.html");
+    }
+
+    @Override
+    protected ImmutableList<String> createArgs() {
+      if (getLogFile() == null) {
         String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);
         if (logFilePath != null) {
-          logFile = new File(logFilePath);
+          withLogFile(new File(logFilePath));
         }
       }
       if (logLevel == null) {
@@ -285,30 +207,36 @@ public class InternetExplorerDriverService extends DriverService {
         }
       }
 
+      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
+      argsBuilder.add(String.format("--port=%d", getPort()));
+      if (getLogFile() != null) {
+        argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
+      }
+      if (logLevel != null) {
+        argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
+      }
+      if (engineImplementation != null) {
+        argsBuilder.add(String.format("--implementation=%s", engineImplementation.toString()));
+      }
+      if (host != null) {
+        argsBuilder.add(String.format("--host=%s", host));
+      }
+      if (extractPath != null) {
+        argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
+      }
+      if (silent != null && silent.equals(Boolean.TRUE)) {
+        argsBuilder.add("--silent");
+      }
+
+      return argsBuilder.build();
+    }
+
+    @Override
+    protected InternetExplorerDriverService createDriverService(File exe, int port,
+                                                                ImmutableList<String> args,
+                                                                ImmutableMap<String, String> environment) {
       try {
-        ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-        argsBuilder.add(String.format("--port=%d", port));
-        if (logFile != null) {
-          argsBuilder.add(String.format("--log-file=\"%s\"", logFile.getAbsolutePath()));
-        }
-        if (logLevel != null) {
-          argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
-        }
-        if (engineImplementation != null) {
-          argsBuilder.add(String.format("--implementation=%s", engineImplementation.toString()));
-        }
-        if (host != null) {
-          argsBuilder.add(String.format("--host=%s", host));
-        }
-        if (extractPath != null) {
-          argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
-        }
-        if (silent != null && silent.equals(Boolean.TRUE)) {
-          argsBuilder.add("--silent");
-        }
-
-        return new InternetExplorerDriverService(exe, port, argsBuilder.build(), environment);
-
+        return new InternetExplorerDriverService(exe, port, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
