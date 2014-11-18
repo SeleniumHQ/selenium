@@ -55,6 +55,7 @@ namespace OpenQA.Selenium.Firefox
         private bool acceptUntrustedCerts;
         private bool assumeUntrustedIssuer;
         private bool deleteSource;
+        private bool deleteOnClean = true;
         private Preferences profilePreferences;
         private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
         #endregion
@@ -114,6 +115,16 @@ namespace OpenQA.Selenium.Firefox
         public string ProfileDirectory
         {
             get { return this.profileDir; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to delete this profile after use with
+        /// the <see cref="FirefoxDriver"/>.
+        /// </summary>
+        public bool DeleteAfterUse
+        {
+            get { return this.deleteOnClean; }
+            set { this.deleteOnClean = value; }
         }
 
         /// <summary>
@@ -303,7 +314,7 @@ namespace OpenQA.Selenium.Firefox
         /// is deleted.</remarks>
         public void Clean()
         {
-            if (!string.IsNullOrEmpty(this.profileDir) && Directory.Exists(this.profileDir))
+            if (this.deleteOnClean && !string.IsNullOrEmpty(this.profileDir) && Directory.Exists(this.profileDir))
             {
                 FileUtilities.DeleteDirectory(this.profileDir);
             }
