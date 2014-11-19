@@ -199,7 +199,7 @@ public class DriverService {
     }
   }
 
-  public static abstract class Builder<DS extends DriverService> {
+  public static abstract class Builder<DS extends DriverService, B extends Builder> {
 
     private int port = 0;
     private File exe = null;
@@ -212,11 +212,11 @@ public class DriverService {
      * @param file The executable to use.
      * @return A self reference.
      */
-    public Builder<DS> usingDriverExecutable(File file) {
+    public B usingDriverExecutable(File file) {
       checkNotNull(file);
       checkExecutable(file);
       this.exe = file;
-      return this;
+      return (B) this;
     }
 
     /**
@@ -226,10 +226,10 @@ public class DriverService {
      * @param port The port to use; must be non-negative.
      * @return A self reference.
      */
-    public Builder<DS> usingPort(int port) {
+    public B usingPort(int port) {
       checkArgument(port >= 0, "Invalid port number: %d", port);
       this.port = port;
-      return this;
+      return (B) this;
     }
 
     protected int getPort() {
@@ -241,9 +241,9 @@ public class DriverService {
      *
      * @return A self reference.
      */
-    public Builder<DS> usingAnyFreePort() {
+    public B usingAnyFreePort() {
       this.port = 0;
-      return this;
+      return (B) this;
     }
 
     /**
@@ -256,9 +256,9 @@ public class DriverService {
      * @return A self reference.
      */
     @Beta
-    public Builder<DS> withEnvironment(Map<String, String> environment) {
+    public B withEnvironment(Map<String, String> environment) {
       this.environment = ImmutableMap.copyOf(environment);
-      return this;
+      return (B) this;
     }
 
     /**
@@ -267,9 +267,9 @@ public class DriverService {
      * @param logFile A file to write log to.
      * @return A self reference.
      */
-    public Builder<DS> withLogFile(File logFile) {
+    public B withLogFile(File logFile) {
       this.logFile = logFile;
-      return this;
+      return (B) this;
     }
 
     protected File getLogFile() {

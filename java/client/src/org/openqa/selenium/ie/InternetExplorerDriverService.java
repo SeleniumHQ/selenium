@@ -20,13 +20,11 @@ package org.openqa.selenium.ie;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Manages the life and death of an IEDriverServer.
@@ -98,74 +96,16 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * Builder used to configure new {@link InternetExplorerDriverService} instances.
    */
-  public static class Builder extends DriverService.Builder<InternetExplorerDriverService> {
+  public static class Builder extends DriverService.Builder<
+      InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
-	private InternetExplorerDriverEngine engineImplementation;
+    private InternetExplorerDriverEngine engineImplementation;
     private String host = null;
     private File extractPath = null;
     private Boolean silent = null;
     private Boolean forceCreateProcess = null;
     private String ieSwitches = null;
-
-    /**
-     * Sets which driver executable the builder will use.
-     *
-     * @param file The executable to use.
-     * @return A self reference.
-     */
-    public Builder usingDriverExecutable(File file) {
-      super.usingDriverExecutable(file);
-      return this;
-    }
-
-    /**
-     * Sets which port the driver server should be started on. A value of 0 indicates that any
-     * free port may be used.
-     *
-     * @param port The port to use; must be non-negative.
-     * @return A self reference.
-     */
-    public Builder usingPort(int port) {
-      super.usingPort(port);
-      return this;
-    }
-
-    /**
-     * Configures the driver server to start on any available port.
-     *
-     * @return A self reference.
-     */
-    public Builder usingAnyFreePort() {
-      super.usingAnyFreePort();
-      return this;
-    }
-
-    /**
-     * Defines the environment for the launched driver server. These
-     * settings will be inherited by every browser session launched by the
-     * server.
-     *
-     * @param environment A map of the environment variables to launch the
-     *     server with.
-     * @return A self reference.
-     */
-    @Beta
-    public Builder withEnvironment(Map<String, String> environment) {
-      super.withEnvironment(environment);
-      return this;
-    }
-
-    /**
-     * Configures the driver server to write log to the given file.
-     *
-     * @param logFile A file to write log to.
-     * @return A self reference.
-     */
-    public Builder withLogFile(File logFile) {
-      super.withLogFile(logFile);
-      return this;
-    }
 
     /**
      * Configures the logging level for the driver server.
