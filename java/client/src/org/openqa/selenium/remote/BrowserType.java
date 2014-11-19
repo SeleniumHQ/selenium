@@ -26,7 +26,13 @@ public interface BrowserType {
   String FIREFOX_CHROME = "firefoxchrome";
   String GOOGLECHROME = "googlechrome";
   String SAFARI = "safari";
-  String OPERA = "opera"; 
+  /**
+   * @deprecated Use OPERA_BLINK or OPERA_PRESTO
+   */
+  @Deprecated
+  String OPERA = "opera";
+  String OPERA_BLINK = "operablink";
+  String OPERA_PRESTO = "operapresto";
   String IEXPLORE= "iexplore";
   String IEXPLORE_PROXY= "iexploreproxy";
   String SAFARI_PROXY = "safariproxy";

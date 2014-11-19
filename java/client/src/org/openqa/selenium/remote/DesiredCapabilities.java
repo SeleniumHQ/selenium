@@ -230,8 +230,20 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
   }
 
+  /**
+   * @deprecated Use #operaBlink or #operaPresto
+   */
+  @Deprecated
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
+  }
+
+  public static DesiredCapabilities operaPresto() {
+    return new DesiredCapabilities(BrowserType.OPERA_PRESTO, "", Platform.ANY);
+  }
+
+  public static DesiredCapabilities operaBlink() {
+    return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
   }
 
   public static DesiredCapabilities safari() {

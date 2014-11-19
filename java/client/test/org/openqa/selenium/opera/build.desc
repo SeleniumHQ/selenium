@@ -1,11 +1,27 @@
-java_test(name = "test",
+java_test(name = "test_presto",
   srcs = [
-    "*.java",
+    "OperaDriverTests.java",
   ],
   sysproperties = [
     { "selenium.browser" : "opera" },
   ],
   deps = [
+    "//java/client/test/org/openqa/selenium:tests",
+    "//third_party/java/junit",
+    "//third_party/java/opera-driver"
+  ]
+)
+
+java_test(name = "test_blink",
+  srcs = [
+    "OperaBlinkDriverTests.java",
+    "OperaOptionsFunctionalTest.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "operablink" },
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/opera",
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
     "//third_party/java/opera-driver"

@@ -157,7 +157,8 @@ task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_syn
 if (!mac?)
   task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 end
-task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
+task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
+task :test_operapresto => [ "//java/client/test/org/openqa/selenium/opera:test_presto:run" ]
 task :test_opera_mobile => [ "//java/client/test/org/openqa/selenium/opera/mobile:test:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
 task :test_remote => [

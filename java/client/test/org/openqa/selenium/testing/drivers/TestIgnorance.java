@@ -199,7 +199,12 @@ public class TestIgnorance {
         break;
 
       case opera:
+      case operapresto:
         comparator.addDriver(OPERA);
+        break;
+
+      case operablink:
+        comparator.addDriver(CHROME);
         break;
 
       case opera_mobile:

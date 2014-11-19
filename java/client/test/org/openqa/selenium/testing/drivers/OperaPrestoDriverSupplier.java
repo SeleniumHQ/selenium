@@ -25,11 +25,11 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class OperaDriverSupplier implements Supplier<WebDriver> {
+public class OperaPrestoDriverSupplier implements Supplier<WebDriver> {
 
   private final Capabilities capabilities;
 
-  public OperaDriverSupplier(Capabilities capabilities) {
+  public OperaPrestoDriverSupplier(Capabilities capabilities) {
     this.capabilities = capabilities;
   }
 
@@ -38,7 +38,8 @@ public class OperaDriverSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!DesiredCapabilities.opera().getBrowserName().equals(capabilities.getBrowserName())) {
+    if (!DesiredCapabilities.operaPresto().getBrowserName().equals(capabilities.getBrowserName())
+        && !DesiredCapabilities.opera().getBrowserName().equals(capabilities.getBrowserName())) {
       return null;
     }
 

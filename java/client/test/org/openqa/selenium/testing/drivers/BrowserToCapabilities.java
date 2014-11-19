@@ -58,19 +58,24 @@ public class BrowserToCapabilities {
         break;
 
       case opera:
+      case operapresto:
         OperaProfile profile = new OperaProfile();
         profile.preferences().set("Geolocation", "Enable geolocation", true);
         // This pref allows all sites to access geolocation without prompting.
         // A 0 value would deny all sites and -1 would prompt for all sites.
         profile.preferences().set("User Prefs", "Geolocation site state", 1);
 
-        caps = DesiredCapabilities.opera();
+        caps = DesiredCapabilities.operaPresto();
         caps.setCapability("opera.profile", profile);
         break;
 
       case opera_mobile:
-        caps = DesiredCapabilities.opera();
+        caps = DesiredCapabilities.operaPresto();
         caps.setCapability(OperaSettings.Capability.PRODUCT.getCapability(), OperaProduct.MOBILE);
+        break;
+
+      case operablink:
+        caps = DesiredCapabilities.operaBlink();
         break;
 
       case phantomjs:
