@@ -366,6 +366,19 @@ public class JsonToBeanConverterTest {
     assertEquals("converted", res.convertedValue);
   }
 
+  // Test for issue 8187
+  @Test
+  public void testDecodingResponseWithNumbersInValueObject() {
+    Response response = new JsonToBeanConverter()
+        .convert(Response.class, "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}");
+
+    @SuppressWarnings("unchecked")
+    Map<String, Number> value = (Map<String, Number>) response.getValue();
+    assertEquals(96, value.get("width").intValue());
+    assertEquals(46, value.get("height").intValue());
+    assertEquals(46.19140625, value.get("height").doubleValue(), 0.00001);
+  }
+
   public static class SimpleBean {
 
     private String value;
