@@ -28,7 +28,7 @@ class Options(object):
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
-        self._debugger_address = ''
+        self._debugger_address = None
 
     @property
     def binary_location(self):
@@ -161,7 +161,8 @@ class Options(object):
         if self.binary_location:
             chrome_options["binary"] = self.binary_location
         chrome_options["args"] = self.arguments
-        chrome_options["debuggerAddress"] = self.debugger_address
+        if self.debugger_address:
+            chrome_options["debuggerAddress"] = self.debugger_address
 
         chrome["chromeOptions"] = chrome_options
 
