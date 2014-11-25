@@ -48,6 +48,7 @@ class Service(object):
             self.service_args=service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
+        self.process = None
         if not log_path:
             log_path = "ghostdriver.log"
         self._log = open(log_path, 'w')
