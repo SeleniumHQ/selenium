@@ -28,6 +28,7 @@ class Options(object):
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
+        self._debugger_address = None
 
     @property
     def binary_location(self):
@@ -45,6 +46,25 @@ class Options(object):
          - value: path to the Chromium binary
         """
         self._binary_location = value
+
+    @property
+    def debugger_address(self):
+        """
+        Returns the address of the remote devtools instance
+        """
+        return self._debugger_address
+
+    @debugger_address.setter
+    def debugger_address(self, value):
+        """
+        Allows you to set the address of the remote devtools instance
+        that the ChromeDriver instance will try to connect to during an
+        active wait.
+
+        :Args:
+         - value: address of remote devtools instance if any (hostname[:port])
+        """
+        self._debugger_address = value
 
     @property
     def arguments(self):
@@ -141,6 +161,8 @@ class Options(object):
         if self.binary_location:
             chrome_options["binary"] = self.binary_location
         chrome_options["args"] = self.arguments
+        if self.debugger_address:
+            chrome_options["debuggerAddress"] = self.debugger_address
 
         chrome["chromeOptions"] = chrome_options
 
