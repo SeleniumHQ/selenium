@@ -17,7 +17,6 @@
  * an editor toolbar.
  *
  * @author attila@google.com (Attila Bodis)
- * @author jparent@google.com (Julie Parent)
  */
 
 goog.provide('goog.ui.editor.ToolbarFactory');
@@ -64,7 +63,7 @@ goog.ui.editor.ToolbarFactory.getPrimaryFont = function(fontSpec) {
  *       (e.g. 'Tahoma, Arial, sans-serif')
  * </ul>
  * @param {!goog.ui.Select} button Font menu button.
- * @param {!Array.<{caption: string, value: string}>} fonts Array of
+ * @param {!Array<{caption: string, value: string}>} fonts Array of
  *     font descriptors.
  */
 goog.ui.editor.ToolbarFactory.addFonts = function(button, fonts) {
@@ -106,7 +105,7 @@ goog.ui.editor.ToolbarFactory.addFont = function(button, caption, value) {
  *   <li>{@code value} - Value for the corresponding HTML font size (e.g. 6)
  * </ul>
  * @param {!goog.ui.Select} button Font size menu button.
- * @param {!Array.<{caption: string, value:number}>} sizes Array of font
+ * @param {!Array<{caption: string, value:number}>} sizes Array of font
  *     size descriptors.
  */
 goog.ui.editor.ToolbarFactory.addFontSizes = function(button, sizes) {
@@ -168,7 +167,7 @@ goog.ui.editor.ToolbarFactory.getLegacySizeFromPx = function(px) {
 
 /**
  * Map of legacy font sizes (0-7) to equivalent pixel sizes.
- * @type {!Array.<number>}
+ * @type {!Array<number>}
  * @private
  */
 goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =
@@ -185,7 +184,7 @@ goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =
  *       'H4')
  * </ul>
  * @param {!goog.ui.Select} button "Format block" menu button.
- * @param {!Array.<{caption: string, command: goog.dom.TagName}>} formats Array
+ * @param {!Array<{caption: string, command: goog.dom.TagName}>} formats Array
  *     of format option descriptors.
  */
 goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
@@ -217,7 +216,7 @@ goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
  * Creates a {@link goog.ui.Toolbar} containing the specified set of
  * toolbar buttons, and renders it into the given parent element.  Each
  * item in the {@code items} array must a {@link goog.ui.Control}.
- * @param {!Array.<goog.ui.Control>} items Toolbar items; each must
+ * @param {!Array<goog.ui.Control>} items Toolbar items; each must
  *     be a {@link goog.ui.Control}.
  * @param {!Element} elem Toolbar parent element.
  * @param {boolean=} opt_isRightToLeft Whether the editor chrome is

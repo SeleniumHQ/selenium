@@ -21,7 +21,7 @@ goog.provide('goog.testing.messaging.MockMessageEvent');
 
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventType');
-goog.require('goog.testing.events');
+goog.require('goog.testing.events.Event');
 
 
 
@@ -34,7 +34,7 @@ goog.require('goog.testing.events');
  * @param {string=} opt_lastEventId The last event ID, for server-sent events.
  * @param {Window=} opt_source The proxy for the source window, for
  *     cross-document events.
- * @param {Array.<MessagePort>=} opt_ports The Array of ports sent with the
+ * @param {Array<MessagePort>=} opt_ports The Array of ports sent with the
  *     message, for cross-document and channel events.
  * @extends {goog.testing.events.Event}
  * @constructor
@@ -72,7 +72,7 @@ goog.testing.messaging.MockMessageEvent = function(
   /**
    * The Array of ports sent with the message, for cross-document and channel
    * events.
-   * @type {Array.<!MessagePort>}
+   * @type {Array<!MessagePort>}
    */
   this.ports = opt_ports || null;
 };
@@ -90,7 +90,7 @@ goog.inherits(
  * @param {string=} opt_lastEventId The last event ID, for server-sent events.
  * @param {Window=} opt_source The proxy for the source window, for
  *     cross-document events.
- * @param {Array.<MessagePort>=} opt_ports The Array of ports sent with the
+ * @param {Array<MessagePort>=} opt_ports The Array of ports sent with the
  *     message, for cross-document and channel events.
  * @return {!goog.events.BrowserEvent} The wrapping event.
  */

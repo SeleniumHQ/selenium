@@ -22,6 +22,7 @@
  * Note: these utilities are meant to operate on HTMLElements and
  * will not work on elements with differing interfaces (such as SVGElements).
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -44,7 +45,7 @@ goog.dom.classes.set = function(element, className) {
 /**
  * Gets an array of class names on an element
  * @param {Node} element DOM node to get class of.
- * @return {!Array} Class names on {@code element}. Some browsers add extra
+ * @return {!Array<?>} Class names on {@code element}. Some browsers add extra
  *     properties to the array. Do not depend on any of these!
  * @deprecated Use goog.dom.classlist.get instead.
  */
@@ -96,9 +97,9 @@ goog.dom.classes.remove = function(element, var_args) {
  * Helper method for {@link goog.dom.classes.add} and
  * {@link goog.dom.classes.addRemove}. Adds one or more classes to the supplied
  * classes array.
- * @param {Array.<string>} classes All class names for the element, will be
+ * @param {Array<string>} classes All class names for the element, will be
  *     updated to have the classes supplied in {@code args} added.
- * @param {Array.<string>} args Class names to add.
+ * @param {Array<string>} args Class names to add.
  * @private
  */
 goog.dom.classes.add_ = function(classes, args) {
@@ -113,9 +114,9 @@ goog.dom.classes.add_ = function(classes, args) {
 /**
  * Helper method for {@link goog.dom.classes.remove} and
  * {@link goog.dom.classes.addRemove}. Calculates the difference of two arrays.
- * @param {!Array.<string>} arr1 First array.
- * @param {!Array.<string>} arr2 Second array.
- * @return {!Array.<string>} The first array without the elements of the second
+ * @param {!Array<string>} arr1 First array.
+ * @param {!Array<string>} arr2 Second array.
+ * @return {!Array<string>} The first array without the elements of the second
  *     array.
  * @private
  */
@@ -166,9 +167,9 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
  * more than two class names that you want to swap.
  *
  * @param {Node} element DOM node to swap classes on.
- * @param {?(string|Array.<string>)} classesToRemove Class or classes to
+ * @param {?(string|Array<string>)} classesToRemove Class or classes to
  *     remove, if null no classes are removed.
- * @param {?(string|Array.<string>)} classesToAdd Class or classes to add, if
+ * @param {?(string|Array<string>)} classesToAdd Class or classes to add, if
  *     null no classes are added.
  * @deprecated Use goog.dom.classlist.addRemove instead.
  */

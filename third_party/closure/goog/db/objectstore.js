@@ -380,21 +380,22 @@ goog.db.ObjectStore.prototype.deleteIndex = function(name) {
  * @return {!goog.async.Deferred} The deferred number of records.
  */
 goog.db.ObjectStore.prototype.count = function(opt_range) {
-  var request;
   var d = new goog.async.Deferred();
 
   try {
     var range = opt_range ? opt_range.range() : null;
-    request = this.store_.count(range);
+    var request = this.store_.count(range);
+    request.onsuccess = function(ev) {
+      d.callback(ev.target.result);
+    };
+    var self = this;
+    request.onerror = function(ev) {
+      d.errback(goog.db.Error.fromRequest(ev.target, self.getName()));
+    };
   } catch (ex) {
     d.errback(goog.db.Error.fromException(ex, this.getName()));
   }
-  request.onsuccess = function(ev) {
-    d.callback(ev.target.result);
-  };
-  request.onerror = function(ev) {
-    d.errback(goog.db.Error.fromRequest(ev.target, this.getName()));
-  };
+
   return d;
 };
 

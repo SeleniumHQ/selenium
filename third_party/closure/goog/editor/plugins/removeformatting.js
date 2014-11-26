@@ -72,7 +72,7 @@ goog.editor.plugins.RemoveFormatting.BLOCK_RE_ =
 
 /**
  * Appends a new line to a string buffer.
- * @param {Array.<string>} sb The string buffer to add to.
+ * @param {Array<string>} sb The string buffer to add to.
  * @private
  */
 goog.editor.plugins.RemoveFormatting.appendNewline_ = function(sb) {

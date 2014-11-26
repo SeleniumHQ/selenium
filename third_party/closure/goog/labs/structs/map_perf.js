@@ -17,6 +17,7 @@
  * goog.labs.structs.Map. To run this test fairly, you would have to
  * compile this via JsCompiler (with --export_test_functions), and
  * pull the compiled JS into an empty HTML file.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.labs.structs.mapPerf');
@@ -51,7 +52,7 @@ mapPerf.perfTable;
  * This is filled once in setUpPage and then remain unchanged for the
  * rest of the test case.
  *
- * @type {Array}
+ * @type {!Array<string>}
  */
 mapPerf.keyList = [];
 

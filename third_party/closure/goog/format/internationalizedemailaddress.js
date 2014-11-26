@@ -23,6 +23,8 @@ goog.provide('goog.format.InternationalizedEmailAddress');
 
 goog.require('goog.format.EmailAddress');
 
+goog.require('goog.string');
+
 
 
 /**
@@ -70,6 +72,40 @@ goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ =
     // And same thing but without a period in the end
     goog.format.InternationalizedEmailAddress.EAI_LABEL_CHAR_REGEXP_STR_ +
     '{2,63}';
+
+
+/**
+ * Match string for address separators. This list is the result of the
+ * discussion in b/16241003.
+ * @type {string}
+ * @private
+ */
+goog.format.InternationalizedEmailAddress.ADDRESS_SEPARATORS_ =
+    ',' + // U+002C ( , ) COMMA
+    ';' + // U+003B ( ; ) SEMICOLON
+    '\u055D' + // ( ՝ ) ARMENIAN COMMA
+    '\u060C' + // ( ، ) ARABIC COMMA
+    '\u1363' + // ( ፣ ) ETHIOPIC COMMA
+    '\u1802' + // ( ᠂ ) MONGOLIAN COMMA
+    '\u1808' + // ( ᠈ ) MONGOLIAN MANCHU COMMA
+    '\u2E41' + // ( ⹁ ) REVERSED COMMA
+    '\u3001' + // ( 、 ) IDEOGRAPHIC COMMA
+    '\uFF0C' + // ( ， ) FULLWIDTH COMMA
+    '\u061B' + // ( ‎؛‎ ) ARABIC SEMICOLON
+    '\u1364' + // ( ፤ ) ETHIOPIC SEMICOLON
+    '\uFF1B' + // ( ； ) FULLWIDTH SEMICOLON
+    '\uFF64'; // ( ､ ) HALFWIDTH IDEOGRAPHIC COMMA
+
+
+/**
+ * Match string for characters that, when in a display name, require it to be
+ * quoted.
+ * @type {string}
+ * @private
+ */
+goog.format.InternationalizedEmailAddress.CHARS_REQUIRE_QUOTES_ =
+    goog.format.EmailAddress.SPECIAL_CHARS +
+    goog.format.InternationalizedEmailAddress.ADDRESS_SEPARATORS_;
 
 
 /**
@@ -175,11 +211,12 @@ goog.format.InternationalizedEmailAddress.isValidAddrSpec = function(str) {
  * Parses a string containing email addresses of the form
  * "name" &lt;address&gt; into an array of email addresses.
  * @param {string} str The address list.
- * @return {!Array.<!goog.format.EmailAddress>} The parsed emails.
+ * @return {!Array<!goog.format.EmailAddress>} The parsed emails.
  */
 goog.format.InternationalizedEmailAddress.parseList = function(str) {
   return goog.format.EmailAddress.parseListInternal(
-      str, goog.format.InternationalizedEmailAddress.parse);
+      str, goog.format.InternationalizedEmailAddress.parse,
+      goog.format.InternationalizedEmailAddress.isAddressSeparator);
 };
 
 
@@ -192,4 +229,27 @@ goog.format.InternationalizedEmailAddress.parseList = function(str) {
 goog.format.InternationalizedEmailAddress.parse = function(addr) {
   return goog.format.EmailAddress.parseInternal(
       addr, goog.format.InternationalizedEmailAddress);
+};
+
+
+/**
+ * @param {string} ch The character to test.
+ * @return {boolean} Whether the provided character is an address separator.
+ */
+goog.format.InternationalizedEmailAddress.isAddressSeparator = function(ch) {
+  return goog.string.contains(
+      goog.format.InternationalizedEmailAddress.ADDRESS_SEPARATORS_, ch);
+};
+
+
+/**
+ * Return the address in a standard format:
+ *  - remove extra spaces.
+ *  - Surround name with quotes if it contains special characters.
+ * @return {string} The cleaned address.
+ * @override
+ */
+goog.format.InternationalizedEmailAddress.prototype.toString = function() {
+  return this.toStringInternal(
+      goog.format.InternationalizedEmailAddress.CHARS_REQUIRE_QUOTES_);
 };

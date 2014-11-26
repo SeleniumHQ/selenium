@@ -23,12 +23,11 @@ goog.provide('goog.ui.Checkbox.State');
 
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.State');
-goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.string');
 goog.require('goog.ui.CheckboxRenderer');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.registry');
 
@@ -204,13 +203,12 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
   }
 
   // Set aria label.
-  if (this.label_) {
+  var checkboxElement = this.getElementStrict();
+  if (this.label_ && checkboxElement != this.label_ &&
+      goog.string.isEmptyOrWhitespace(goog.a11y.aria.getLabel(checkboxElement))) {
     if (!this.label_.id) {
       this.label_.id = this.makeId('lbl');
     }
-    var checkboxElement = this.getElement();
-    goog.asserts.assert(checkboxElement,
-        'The checkbox DOM element cannot be null.');
     goog.a11y.aria.setState(checkboxElement,
         goog.a11y.aria.State.LABELLEDBY,
         this.label_.id);

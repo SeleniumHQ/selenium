@@ -66,7 +66,7 @@ goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT = 4;
 
 /**
  * Sets elements of the array.
- * @param {Array.<number>|Float32Array} values The array of values.
+ * @param {Array<number>|Float32Array} values The array of values.
  * @param {number=} opt_offset The offset in this array to start.
  */
 goog.vec.Float32Array.prototype.set = function(values, opt_offset) {

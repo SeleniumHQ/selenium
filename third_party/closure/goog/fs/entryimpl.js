@@ -265,6 +265,10 @@ goog.fs.DirectoryEntryImpl.prototype.createPath = function(path) {
   var parts = goog.array.filter(path.split('/'), goog.functions.identity);
   var existed = [];
 
+  /**
+   * @param {goog.fs.DirectoryEntryImpl} dir
+   * @return {!goog.async.Deferred}
+   */
   function getNextDirectory(dir) {
     if (!parts.length) {
       return goog.async.Deferred.succeed(dir);
@@ -333,7 +337,7 @@ goog.fs.DirectoryEntryImpl.prototype.removeRecursively = function() {
  *
  * @param {goog.fs.DirectoryEntry.Behavior=} opt_behavior The behavior for
  *     existing files.
- * @return {!Object.<boolean>} The options object expected by the File API.
+ * @return {!Object<boolean>} The options object expected by the File API.
  * @private
  */
 goog.fs.DirectoryEntryImpl.prototype.getOptions_ = function(opt_behavior) {

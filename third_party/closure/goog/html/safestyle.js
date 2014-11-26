@@ -305,7 +305,7 @@ goog.html.SafeStyle.INNOCUOUS_STRING = 'zClosurez';
 
 /**
  * Mapping of property names to their values.
- * @typedef {!Object.<string, goog.string.Const|string>}
+ * @typedef {!Object<string, goog.string.Const|string>}
  */
 goog.html.SafeStyle.PropertyMap;
 
@@ -365,7 +365,7 @@ goog.html.SafeStyle.VALUE_RE_ = /^[-.%_!# a-zA-Z0-9]+$/;
 
 /**
  * Creates a new SafeStyle object by concatenating the values.
- * @param {...(!goog.html.SafeStyle|!Array.<!goog.html.SafeStyle>)} var_args
+ * @param {...(!goog.html.SafeStyle|!Array<!goog.html.SafeStyle>)} var_args
  *     SafeStyles to concatenate.
  * @return {!goog.html.SafeStyle}
  */
@@ -373,7 +373,7 @@ goog.html.SafeStyle.concat = function(var_args) {
   var style = '';
 
   /**
-   * @param {!goog.html.SafeStyle|!Array.<!goog.html.SafeStyle>} argument
+   * @param {!goog.html.SafeStyle|!Array<!goog.html.SafeStyle>} argument
    */
   var addArgument = function(argument) {
     if (goog.isArray(argument)) {

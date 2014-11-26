@@ -76,7 +76,7 @@ goog.structs.LinkedMap = function(opt_maxCount, opt_cache) {
   this.cache_ = !!opt_cache;
 
   /**
-   * @private {!goog.structs.Map.<string,
+   * @private {!goog.structs.Map<string,
    *     goog.structs.LinkedMap.Node_.<string, VALUE>>}
    */
   this.map_ = new goog.structs.Map();
@@ -247,7 +247,7 @@ goog.structs.LinkedMap.prototype.setMaxCount = function(maxCount) {
 
 
 /**
- * @return {!Array.<string>} The list of the keys in the appropriate order for
+ * @return {!Array<string>} The list of the keys in the appropriate order for
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getKeys = function() {
@@ -258,7 +258,7 @@ goog.structs.LinkedMap.prototype.getKeys = function() {
 
 
 /**
- * @return {!Array.<VALUE>} The list of the values in the appropriate order for
+ * @return {!Array<VALUE>} The list of the values in the appropriate order for
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getValues = function() {
@@ -304,10 +304,9 @@ goog.structs.LinkedMap.prototype.clear = function() {
  * Calls a function on each item in the LinkedMap.
  *
  * @see goog.structs.forEach
- * @param {Function} f The function to call for each item. The function takes
- *     three arguments: the value, the key, and the LinkedMap.
- * @param {Object=} opt_obj The object context to use as "this" for the
- *     function.
+ * @param {function(this:T, VALUE, KEY, goog.structs.LinkedMap<KEY,VALUE>)} f
+ * @param {T=} opt_obj The value of "this" inside f.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.forEach = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {
@@ -321,12 +320,15 @@ goog.structs.LinkedMap.prototype.forEach = function(f, opt_obj) {
  * those calls in an array.
  *
  * @see goog.structs.map
- * @param {!Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY,VALUE>): RESULT} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the LinkedMap.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
- * @return {!Array.<VALUE>} The results of the function calls for each item in
+ * @return {!Array<RESULT>} The results of the function calls for each item in
  *     the LinkedMap.
+ * @template T,RESULT
  */
 goog.structs.LinkedMap.prototype.map = function(f, opt_obj) {
   var rv = [];
@@ -342,13 +344,16 @@ goog.structs.LinkedMap.prototype.map = function(f, opt_obj) {
  * those function calls returns a true-like value.
  *
  * @see goog.structs.some
- * @param {Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY,VALUE>):boolean} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the LinkedMap, and returns a
  *     boolean.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
  * @return {boolean} Whether f evaluates to true for at least one item in the
  *     LinkedMap.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.some = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {
@@ -365,12 +370,15 @@ goog.structs.LinkedMap.prototype.some = function(f, opt_obj) {
  * function call returns a true-like value.
  *
  * @see goog.structs.some
- * @param {Function} f The function to call for each item. The function takes
+ * @param {function(this:T, VALUE, KEY,
+ *         goog.structs.LinkedMap<KEY,VALUE>):boolean} f
+ *     The function to call for each item. The function takes
  *     three arguments: the value, the key, and the Cache, and returns a
  *     boolean.
- * @param {Object=} opt_obj The object context to use as "this" for the
+ * @param {T=} opt_obj The object context to use as "this" for the
  *     function.
  * @return {boolean} Whether f evaluates to true for every item in the Cache.
+ * @template T
  */
 goog.structs.LinkedMap.prototype.every = function(f, opt_obj) {
   for (var n = this.head_.next; n != this.head_; n = n.next) {

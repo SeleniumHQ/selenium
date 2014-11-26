@@ -91,7 +91,7 @@ goog.debug.Logger = function(name) {
 
   /**
    * Handlers that are listening to this logger.
-   * @private {Array.<Function>}
+   * @private {Array<Function>}
    */
   this.handlers_ = null;
 };
@@ -111,7 +111,7 @@ goog.define('goog.debug.Logger.ENABLE_HIERARCHY', true);
 
 if (!goog.debug.Logger.ENABLE_HIERARCHY) {
   /**
-   * @type {!Array.<Function>}
+   * @type {!Array<Function>}
    * @private
    */
   goog.debug.Logger.rootHandlers_ = [];
@@ -261,7 +261,7 @@ goog.debug.Logger.Level.ALL = new goog.debug.Logger.Level('ALL', 0);
 
 /**
  * The predefined levels.
- * @type {!Array.<!goog.debug.Logger.Level>}
+ * @type {!Array<!goog.debug.Logger.Level>}
  * @final
  */
 goog.debug.Logger.Level.PREDEFINED_LEVELS = [
@@ -579,8 +579,7 @@ goog.debug.Logger.prototype.getLogRecord = function(
 
     logRecord.setException(opt_exception);
     logRecord.setExceptionText(
-        goog.debug.exposeException(opt_exception,
-            opt_fnStackContext || goog.debug.Logger.prototype.getLogRecord));
+        goog.debug.exposeException(opt_exception, context));
   }
   return logRecord;
 };
@@ -771,6 +770,7 @@ goog.debug.Logger.prototype.addChild_ = function(name, logger) {
  * There is a single global LogManager object that is used to maintain a set of
  * shared state about Loggers and log services. This is loosely based on the
  * java class java.util.logging.LogManager.
+ * @const
  */
 goog.debug.LogManager = {};
 
@@ -778,7 +778,7 @@ goog.debug.LogManager = {};
 /**
  * Map of logger names to logger objects.
  *
- * @type {!Object.<string, !goog.debug.Logger>}
+ * @type {!Object<string, !goog.debug.Logger>}
  * @private
  */
 goog.debug.LogManager.loggers_ = {};
@@ -808,7 +808,7 @@ goog.debug.LogManager.initialize = function() {
 
 /**
  * Returns all the loggers.
- * @return {!Object.<string, !goog.debug.Logger>} Map of logger names to logger
+ * @return {!Object<string, !goog.debug.Logger>} Map of logger names to logger
  *     objects.
  */
 goog.debug.LogManager.getLoggers = function() {

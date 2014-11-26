@@ -72,7 +72,7 @@ goog.testing.net.XhrIo.ResponseType = goog.net.XhrIo.ResponseType;
  * All non-disposed instances of goog.testing.net.XhrIo created
  * by {@link goog.testing.net.XhrIo.send} are in this Array.
  * @see goog.testing.net.XhrIo.cleanup
- * @type {!Array.<!goog.testing.net.XhrIo>}
+ * @type {!Array<!goog.testing.net.XhrIo>}
  * @private
  */
 goog.testing.net.XhrIo.sendInstances_ = [];
@@ -81,7 +81,7 @@ goog.testing.net.XhrIo.sendInstances_ = [];
 /**
  * Returns an Array containing all non-disposed instances of
  * goog.testing.net.XhrIo created by {@link goog.testing.net.XhrIo.send}.
- * @return {!Array.<!goog.testing.net.XhrIo>} Array of goog.testing.net.XhrIo
+ * @return {!Array<!goog.testing.net.XhrIo>} Array of goog.testing.net.XhrIo
  *     instances.
  */
 goog.testing.net.XhrIo.getSendInstances = function() {
@@ -735,7 +735,7 @@ goog.testing.net.XhrIo.prototype.getAllResponseHeaders = function() {
  * include any case normalization logic, it will just return a key-value
  * representation of the headers.
  * See: http://www.w3.org/TR/XMLHttpRequest/#the-getresponseheader()-method
- * @return {!Object.<string, string>} An object with the header keys as keys
+ * @return {!Object<string, string>} An object with the header keys as keys
  *     and header values as values.
  */
 goog.testing.net.XhrIo.prototype.getResponseHeaders = function() {

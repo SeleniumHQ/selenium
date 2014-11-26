@@ -49,7 +49,7 @@ goog.inherits(goog.dom.pattern.ChildMatches, goog.dom.pattern.AllChildren);
 /**
  * Array of matched child nodes.
  *
- * @type {Array.<Node>}
+ * @type {Array<Node>}
  */
 goog.dom.pattern.ChildMatches.prototype.matches;
 

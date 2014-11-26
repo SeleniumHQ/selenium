@@ -15,6 +15,7 @@
 /**
  * @fileoverview A labs location for functions destined for Closure's
  * {@code goog.object} namespace.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.labs.object');

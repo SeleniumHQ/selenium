@@ -19,12 +19,12 @@
  */
 
 goog.provide('proto2.TestAllTypes');
-goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestAllTypes.NestedMessage');
 goog.provide('proto2.TestAllTypes.OptionalGroup');
 goog.provide('proto2.TestAllTypes.RepeatedGroup');
-goog.provide('proto2.TestDefaultChild');
+goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestDefaultParent');
+goog.provide('proto2.TestDefaultChild');
 
 goog.require('goog.proto2.Message');
 
@@ -34,10 +34,9 @@ goog.require('goog.proto2.Message');
  * Message TestAllTypes.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes, goog.proto2.Message);
 
@@ -2311,6 +2310,812 @@ proto2.TestAllTypes.prototype.clearRepeatedInt64String = function() {
 
 
 /**
+ * Gets the value of the packed_int32 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedInt32 = function(index) {
+  return /** @type {?number} */ (this.get$Value(54, index));
+};
+
+
+/**
+ * Gets the value of the packed_int32 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedInt32OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(54, index));
+};
+
+
+/**
+ * Adds a value to the packed_int32 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedInt32 = function(value) {
+  this.add$Value(54, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_int32 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedInt32Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(54));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_int32 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedInt32 = function() {
+  return this.has$Value(54);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_int32 field.
+ */
+proto2.TestAllTypes.prototype.packedInt32Count = function() {
+  return this.count$Values(54);
+};
+
+
+/**
+ * Clears the values in the packed_int32 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedInt32 = function() {
+  this.clear$Field(54);
+};
+
+
+/**
+ * Gets the value of the packed_int64 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedInt64 = function(index) {
+  return /** @type {?number} */ (this.get$Value(55, index));
+};
+
+
+/**
+ * Gets the value of the packed_int64 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedInt64OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(55, index));
+};
+
+
+/**
+ * Adds a value to the packed_int64 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedInt64 = function(value) {
+  this.add$Value(55, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_int64 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedInt64Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(55));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_int64 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedInt64 = function() {
+  return this.has$Value(55);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_int64 field.
+ */
+proto2.TestAllTypes.prototype.packedInt64Count = function() {
+  return this.count$Values(55);
+};
+
+
+/**
+ * Clears the values in the packed_int64 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedInt64 = function() {
+  this.clear$Field(55);
+};
+
+
+/**
+ * Gets the value of the packed_uint32 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedUint32 = function(index) {
+  return /** @type {?number} */ (this.get$Value(56, index));
+};
+
+
+/**
+ * Gets the value of the packed_uint32 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedUint32OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(56, index));
+};
+
+
+/**
+ * Adds a value to the packed_uint32 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedUint32 = function(value) {
+  this.add$Value(56, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_uint32 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedUint32Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(56));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_uint32 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedUint32 = function() {
+  return this.has$Value(56);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_uint32 field.
+ */
+proto2.TestAllTypes.prototype.packedUint32Count = function() {
+  return this.count$Values(56);
+};
+
+
+/**
+ * Clears the values in the packed_uint32 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedUint32 = function() {
+  this.clear$Field(56);
+};
+
+
+/**
+ * Gets the value of the packed_uint64 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedUint64 = function(index) {
+  return /** @type {?number} */ (this.get$Value(57, index));
+};
+
+
+/**
+ * Gets the value of the packed_uint64 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedUint64OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(57, index));
+};
+
+
+/**
+ * Adds a value to the packed_uint64 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedUint64 = function(value) {
+  this.add$Value(57, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_uint64 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedUint64Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(57));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_uint64 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedUint64 = function() {
+  return this.has$Value(57);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_uint64 field.
+ */
+proto2.TestAllTypes.prototype.packedUint64Count = function() {
+  return this.count$Values(57);
+};
+
+
+/**
+ * Clears the values in the packed_uint64 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedUint64 = function() {
+  this.clear$Field(57);
+};
+
+
+/**
+ * Gets the value of the packed_sint32 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSint32 = function(index) {
+  return /** @type {?number} */ (this.get$Value(58, index));
+};
+
+
+/**
+ * Gets the value of the packed_sint32 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSint32OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(58, index));
+};
+
+
+/**
+ * Adds a value to the packed_sint32 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedSint32 = function(value) {
+  this.add$Value(58, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_sint32 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedSint32Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(58));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_sint32 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedSint32 = function() {
+  return this.has$Value(58);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_sint32 field.
+ */
+proto2.TestAllTypes.prototype.packedSint32Count = function() {
+  return this.count$Values(58);
+};
+
+
+/**
+ * Clears the values in the packed_sint32 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedSint32 = function() {
+  this.clear$Field(58);
+};
+
+
+/**
+ * Gets the value of the packed_sint64 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSint64 = function(index) {
+  return /** @type {?number} */ (this.get$Value(59, index));
+};
+
+
+/**
+ * Gets the value of the packed_sint64 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSint64OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(59, index));
+};
+
+
+/**
+ * Adds a value to the packed_sint64 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedSint64 = function(value) {
+  this.add$Value(59, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_sint64 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedSint64Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(59));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_sint64 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedSint64 = function() {
+  return this.has$Value(59);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_sint64 field.
+ */
+proto2.TestAllTypes.prototype.packedSint64Count = function() {
+  return this.count$Values(59);
+};
+
+
+/**
+ * Clears the values in the packed_sint64 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedSint64 = function() {
+  this.clear$Field(59);
+};
+
+
+/**
+ * Gets the value of the packed_fixed32 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFixed32 = function(index) {
+  return /** @type {?number} */ (this.get$Value(60, index));
+};
+
+
+/**
+ * Gets the value of the packed_fixed32 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFixed32OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(60, index));
+};
+
+
+/**
+ * Adds a value to the packed_fixed32 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedFixed32 = function(value) {
+  this.add$Value(60, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_fixed32 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedFixed32Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(60));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_fixed32 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedFixed32 = function() {
+  return this.has$Value(60);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_fixed32 field.
+ */
+proto2.TestAllTypes.prototype.packedFixed32Count = function() {
+  return this.count$Values(60);
+};
+
+
+/**
+ * Clears the values in the packed_fixed32 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedFixed32 = function() {
+  this.clear$Field(60);
+};
+
+
+/**
+ * Gets the value of the packed_fixed64 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFixed64 = function(index) {
+  return /** @type {?number} */ (this.get$Value(61, index));
+};
+
+
+/**
+ * Gets the value of the packed_fixed64 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFixed64OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(61, index));
+};
+
+
+/**
+ * Adds a value to the packed_fixed64 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedFixed64 = function(value) {
+  this.add$Value(61, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_fixed64 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedFixed64Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(61));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_fixed64 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedFixed64 = function() {
+  return this.has$Value(61);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_fixed64 field.
+ */
+proto2.TestAllTypes.prototype.packedFixed64Count = function() {
+  return this.count$Values(61);
+};
+
+
+/**
+ * Clears the values in the packed_fixed64 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedFixed64 = function() {
+  this.clear$Field(61);
+};
+
+
+/**
+ * Gets the value of the packed_sfixed32 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSfixed32 = function(index) {
+  return /** @type {?number} */ (this.get$Value(62, index));
+};
+
+
+/**
+ * Gets the value of the packed_sfixed32 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSfixed32OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(62, index));
+};
+
+
+/**
+ * Adds a value to the packed_sfixed32 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedSfixed32 = function(value) {
+  this.add$Value(62, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_sfixed32 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedSfixed32Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(62));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_sfixed32 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedSfixed32 = function() {
+  return this.has$Value(62);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_sfixed32 field.
+ */
+proto2.TestAllTypes.prototype.packedSfixed32Count = function() {
+  return this.count$Values(62);
+};
+
+
+/**
+ * Clears the values in the packed_sfixed32 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedSfixed32 = function() {
+  this.clear$Field(62);
+};
+
+
+/**
+ * Gets the value of the packed_sfixed64 field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSfixed64 = function(index) {
+  return /** @type {?number} */ (this.get$Value(63, index));
+};
+
+
+/**
+ * Gets the value of the packed_sfixed64 field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedSfixed64OrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(63, index));
+};
+
+
+/**
+ * Adds a value to the packed_sfixed64 field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedSfixed64 = function(value) {
+  this.add$Value(63, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_sfixed64 field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedSfixed64Array = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(63));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_sfixed64 field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedSfixed64 = function() {
+  return this.has$Value(63);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_sfixed64 field.
+ */
+proto2.TestAllTypes.prototype.packedSfixed64Count = function() {
+  return this.count$Values(63);
+};
+
+
+/**
+ * Clears the values in the packed_sfixed64 field.
+ */
+proto2.TestAllTypes.prototype.clearPackedSfixed64 = function() {
+  this.clear$Field(63);
+};
+
+
+/**
+ * Gets the value of the packed_float field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFloat = function(index) {
+  return /** @type {?number} */ (this.get$Value(64, index));
+};
+
+
+/**
+ * Gets the value of the packed_float field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedFloatOrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(64, index));
+};
+
+
+/**
+ * Adds a value to the packed_float field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedFloat = function(value) {
+  this.add$Value(64, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_float field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedFloatArray = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(64));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_float field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedFloat = function() {
+  return this.has$Value(64);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_float field.
+ */
+proto2.TestAllTypes.prototype.packedFloatCount = function() {
+  return this.count$Values(64);
+};
+
+
+/**
+ * Clears the values in the packed_float field.
+ */
+proto2.TestAllTypes.prototype.clearPackedFloat = function() {
+  this.clear$Field(64);
+};
+
+
+/**
+ * Gets the value of the packed_double field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedDouble = function(index) {
+  return /** @type {?number} */ (this.get$Value(65, index));
+};
+
+
+/**
+ * Gets the value of the packed_double field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {number} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedDoubleOrDefault = function(index) {
+  return /** @type {number} */ (this.get$ValueOrDefault(65, index));
+};
+
+
+/**
+ * Adds a value to the packed_double field.
+ * @param {number} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedDouble = function(value) {
+  this.add$Value(65, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_double field.
+ * @return {!Array.<number>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedDoubleArray = function() {
+  return /** @type {!Array.<number>} */ (this.array$Values(65));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_double field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedDouble = function() {
+  return this.has$Value(65);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_double field.
+ */
+proto2.TestAllTypes.prototype.packedDoubleCount = function() {
+  return this.count$Values(65);
+};
+
+
+/**
+ * Clears the values in the packed_double field.
+ */
+proto2.TestAllTypes.prototype.clearPackedDouble = function() {
+  this.clear$Field(65);
+};
+
+
+/**
+ * Gets the value of the packed_bool field at the index given.
+ * @param {number} index The index to lookup.
+ * @return {?boolean} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedBool = function(index) {
+  return /** @type {?boolean} */ (this.get$Value(66, index));
+};
+
+
+/**
+ * Gets the value of the packed_bool field at the index given or the default value if not set.
+ * @param {number} index The index to lookup.
+ * @return {boolean} The value.
+ */
+proto2.TestAllTypes.prototype.getPackedBoolOrDefault = function(index) {
+  return /** @type {boolean} */ (this.get$ValueOrDefault(66, index));
+};
+
+
+/**
+ * Adds a value to the packed_bool field.
+ * @param {boolean} value The value to add.
+ */
+proto2.TestAllTypes.prototype.addPackedBool = function(value) {
+  this.add$Value(66, value);
+};
+
+
+/**
+ * Returns the array of values in the packed_bool field.
+ * @return {!Array.<boolean>} The values in the field.
+ */
+proto2.TestAllTypes.prototype.packedBoolArray = function() {
+  return /** @type {!Array.<boolean>} */ (this.array$Values(66));
+};
+
+
+/**
+ * @return {boolean} Whether the packed_bool field has a value.
+ */
+proto2.TestAllTypes.prototype.hasPackedBool = function() {
+  return this.has$Value(66);
+};
+
+
+/**
+ * @return {number} The number of values in the packed_bool field.
+ */
+proto2.TestAllTypes.prototype.packedBoolCount = function() {
+  return this.count$Values(66);
+};
+
+
+/**
+ * Clears the values in the packed_bool field.
+ */
+proto2.TestAllTypes.prototype.clearPackedBool = function() {
+  this.clear$Field(66);
+};
+
+
+/**
  * Enumeration NestedEnum.
  * @enum {number}
  */
@@ -2326,10 +3131,9 @@ proto2.TestAllTypes.NestedEnum = {
  * Message NestedMessage.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.NestedMessage = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.NestedMessage, goog.proto2.Message);
 
@@ -2449,10 +3253,9 @@ proto2.TestAllTypes.NestedMessage.prototype.clearC = function() {
  * Message OptionalGroup.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.OptionalGroup = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.OptionalGroup, goog.proto2.Message);
 
@@ -2521,10 +3324,9 @@ proto2.TestAllTypes.OptionalGroup.prototype.clearA = function() {
  * Message RepeatedGroup.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.RepeatedGroup = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.RepeatedGroup, goog.proto2.Message);
 
@@ -2604,10 +3406,9 @@ proto2.TestAllTypes.RepeatedGroup.prototype.clearA = function() {
  * Message TestDefaultParent.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestDefaultParent = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultParent, goog.proto2.Message);
 
@@ -2676,10 +3477,9 @@ proto2.TestDefaultParent.prototype.clearChild = function() {
  * Message TestDefaultChild.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestDefaultChild = function() {
-  goog.proto2.Message.apply(this);
+  goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultChild, goog.proto2.Message);
 
@@ -2743,311 +3543,486 @@ proto2.TestDefaultChild.prototype.clearFoo = function() {
 };
 
 
-goog.proto2.Message.set$Metadata(proto2.TestAllTypes, {
-  0: {
-    name: 'TestAllTypes',
-    fullName: 'TestAllTypes'
-  },
-  1: {
-    name: 'optional_int32',
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
-  },
-  2: {
-    name: 'optional_int64',
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    defaultValue: '1',
-    type: String
-  },
-  3: {
-    name: 'optional_uint32',
-    fieldType: goog.proto2.Message.FieldType.UINT32,
-    type: Number
-  },
-  4: {
-    name: 'optional_uint64',
-    fieldType: goog.proto2.Message.FieldType.UINT64,
-    type: String
-  },
-  5: {
-    name: 'optional_sint32',
-    fieldType: goog.proto2.Message.FieldType.SINT32,
-    type: Number
-  },
-  6: {
-    name: 'optional_sint64',
-    fieldType: goog.proto2.Message.FieldType.SINT64,
-    type: String
-  },
-  7: {
-    name: 'optional_fixed32',
-    fieldType: goog.proto2.Message.FieldType.FIXED32,
-    type: Number
-  },
-  8: {
-    name: 'optional_fixed64',
-    fieldType: goog.proto2.Message.FieldType.FIXED64,
-    type: String
-  },
-  9: {
-    name: 'optional_sfixed32',
-    fieldType: goog.proto2.Message.FieldType.SFIXED32,
-    type: Number
-  },
-  10: {
-    name: 'optional_sfixed64',
-    fieldType: goog.proto2.Message.FieldType.SFIXED64,
-    type: String
-  },
-  11: {
-    name: 'optional_float',
-    fieldType: goog.proto2.Message.FieldType.FLOAT,
-    defaultValue: 1.5,
-    type: Number
-  },
-  12: {
-    name: 'optional_double',
-    fieldType: goog.proto2.Message.FieldType.DOUBLE,
-    type: Number
-  },
-  13: {
-    name: 'optional_bool',
-    fieldType: goog.proto2.Message.FieldType.BOOL,
-    type: Boolean
-  },
-  14: {
-    name: 'optional_string',
-    fieldType: goog.proto2.Message.FieldType.STRING,
-    type: String
-  },
-  15: {
-    name: 'optional_bytes',
-    fieldType: goog.proto2.Message.FieldType.BYTES,
-    defaultValue: 'moo',
-    type: String
-  },
-  16: {
-    name: 'optionalgroup',
-    fieldType: goog.proto2.Message.FieldType.GROUP,
-    type: proto2.TestAllTypes.OptionalGroup
-  },
-  18: {
-    name: 'optional_nested_message',
-    fieldType: goog.proto2.Message.FieldType.MESSAGE,
-    type: proto2.TestAllTypes.NestedMessage
-  },
-  21: {
-    name: 'optional_nested_enum',
-    fieldType: goog.proto2.Message.FieldType.ENUM,
-    defaultValue: proto2.TestAllTypes.NestedEnum.FOO,
-    type: proto2.TestAllTypes.NestedEnum
-  },
-  50: {
-    name: 'optional_int64_number',
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    defaultValue: 1000000000000000001,
-    type: Number
-  },
-  51: {
-    name: 'optional_int64_string',
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    defaultValue: '1000000000000000001',
-    type: String
-  },
-  31: {
-    name: 'repeated_int32',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
-  },
-  32: {
-    name: 'repeated_int64',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    type: String
-  },
-  33: {
-    name: 'repeated_uint32',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.UINT32,
-    type: Number
-  },
-  34: {
-    name: 'repeated_uint64',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.UINT64,
-    type: String
-  },
-  35: {
-    name: 'repeated_sint32',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.SINT32,
-    type: Number
-  },
-  36: {
-    name: 'repeated_sint64',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.SINT64,
-    type: String
-  },
-  37: {
-    name: 'repeated_fixed32',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.FIXED32,
-    type: Number
-  },
-  38: {
-    name: 'repeated_fixed64',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.FIXED64,
-    type: String
-  },
-  39: {
-    name: 'repeated_sfixed32',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.SFIXED32,
-    type: Number
-  },
-  40: {
-    name: 'repeated_sfixed64',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.SFIXED64,
-    type: String
-  },
-  41: {
-    name: 'repeated_float',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.FLOAT,
-    type: Number
-  },
-  42: {
-    name: 'repeated_double',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.DOUBLE,
-    type: Number
-  },
-  43: {
-    name: 'repeated_bool',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.BOOL,
-    type: Boolean
-  },
-  44: {
-    name: 'repeated_string',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.STRING,
-    type: String
-  },
-  45: {
-    name: 'repeated_bytes',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.BYTES,
-    type: String
-  },
-  46: {
-    name: 'repeatedgroup',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.GROUP,
-    type: proto2.TestAllTypes.RepeatedGroup
-  },
-  48: {
-    name: 'repeated_nested_message',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.MESSAGE,
-    type: proto2.TestAllTypes.NestedMessage
-  },
-  49: {
-    name: 'repeated_nested_enum',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.ENUM,
-    defaultValue: proto2.TestAllTypes.NestedEnum.FOO,
-    type: proto2.TestAllTypes.NestedEnum
-  },
-  52: {
-    name: 'repeated_int64_number',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    type: Number
-  },
-  53: {
-    name: 'repeated_int64_string',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.INT64,
-    type: String
+/** @override */
+proto2.TestAllTypes.prototype.getDescriptor = function() {
+  if (!proto2.TestAllTypes.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'TestAllTypes',
+        fullName: 'TestAllTypes'
+      },
+      1: {
+        name: 'optional_int32',
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      },
+      2: {
+        name: 'optional_int64',
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        defaultValue: '1',
+        type: String
+      },
+      3: {
+        name: 'optional_uint32',
+        fieldType: goog.proto2.Message.FieldType.UINT32,
+        type: Number
+      },
+      4: {
+        name: 'optional_uint64',
+        fieldType: goog.proto2.Message.FieldType.UINT64,
+        type: String
+      },
+      5: {
+        name: 'optional_sint32',
+        fieldType: goog.proto2.Message.FieldType.SINT32,
+        type: Number
+      },
+      6: {
+        name: 'optional_sint64',
+        fieldType: goog.proto2.Message.FieldType.SINT64,
+        type: String
+      },
+      7: {
+        name: 'optional_fixed32',
+        fieldType: goog.proto2.Message.FieldType.FIXED32,
+        type: Number
+      },
+      8: {
+        name: 'optional_fixed64',
+        fieldType: goog.proto2.Message.FieldType.FIXED64,
+        type: String
+      },
+      9: {
+        name: 'optional_sfixed32',
+        fieldType: goog.proto2.Message.FieldType.SFIXED32,
+        type: Number
+      },
+      10: {
+        name: 'optional_sfixed64',
+        fieldType: goog.proto2.Message.FieldType.SFIXED64,
+        type: String
+      },
+      11: {
+        name: 'optional_float',
+        fieldType: goog.proto2.Message.FieldType.FLOAT,
+        defaultValue: 1.5,
+        type: Number
+      },
+      12: {
+        name: 'optional_double',
+        fieldType: goog.proto2.Message.FieldType.DOUBLE,
+        type: Number
+      },
+      13: {
+        name: 'optional_bool',
+        fieldType: goog.proto2.Message.FieldType.BOOL,
+        type: Boolean
+      },
+      14: {
+        name: 'optional_string',
+        fieldType: goog.proto2.Message.FieldType.STRING,
+        type: String
+      },
+      15: {
+        name: 'optional_bytes',
+        fieldType: goog.proto2.Message.FieldType.BYTES,
+        defaultValue: 'moo',
+        type: String
+      },
+      16: {
+        name: 'optionalgroup',
+        fieldType: goog.proto2.Message.FieldType.GROUP,
+        type: proto2.TestAllTypes.OptionalGroup
+      },
+      18: {
+        name: 'optional_nested_message',
+        fieldType: goog.proto2.Message.FieldType.MESSAGE,
+        type: proto2.TestAllTypes.NestedMessage
+      },
+      21: {
+        name: 'optional_nested_enum',
+        fieldType: goog.proto2.Message.FieldType.ENUM,
+        defaultValue: proto2.TestAllTypes.NestedEnum.FOO,
+        type: proto2.TestAllTypes.NestedEnum
+      },
+      50: {
+        name: 'optional_int64_number',
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        defaultValue: 1000000000000000001,
+        type: Number
+      },
+      51: {
+        name: 'optional_int64_string',
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        defaultValue: '1000000000000000001',
+        type: String
+      },
+      31: {
+        name: 'repeated_int32',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      },
+      32: {
+        name: 'repeated_int64',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        type: String
+      },
+      33: {
+        name: 'repeated_uint32',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.UINT32,
+        type: Number
+      },
+      34: {
+        name: 'repeated_uint64',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.UINT64,
+        type: String
+      },
+      35: {
+        name: 'repeated_sint32',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.SINT32,
+        type: Number
+      },
+      36: {
+        name: 'repeated_sint64',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.SINT64,
+        type: String
+      },
+      37: {
+        name: 'repeated_fixed32',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.FIXED32,
+        type: Number
+      },
+      38: {
+        name: 'repeated_fixed64',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.FIXED64,
+        type: String
+      },
+      39: {
+        name: 'repeated_sfixed32',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.SFIXED32,
+        type: Number
+      },
+      40: {
+        name: 'repeated_sfixed64',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.SFIXED64,
+        type: String
+      },
+      41: {
+        name: 'repeated_float',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.FLOAT,
+        type: Number
+      },
+      42: {
+        name: 'repeated_double',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.DOUBLE,
+        type: Number
+      },
+      43: {
+        name: 'repeated_bool',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.BOOL,
+        type: Boolean
+      },
+      44: {
+        name: 'repeated_string',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.STRING,
+        type: String
+      },
+      45: {
+        name: 'repeated_bytes',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.BYTES,
+        type: String
+      },
+      46: {
+        name: 'repeatedgroup',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.GROUP,
+        type: proto2.TestAllTypes.RepeatedGroup
+      },
+      48: {
+        name: 'repeated_nested_message',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.MESSAGE,
+        type: proto2.TestAllTypes.NestedMessage
+      },
+      49: {
+        name: 'repeated_nested_enum',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.ENUM,
+        defaultValue: proto2.TestAllTypes.NestedEnum.FOO,
+        type: proto2.TestAllTypes.NestedEnum
+      },
+      52: {
+        name: 'repeated_int64_number',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        type: Number
+      },
+      53: {
+        name: 'repeated_int64_string',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        type: String
+      },
+      54: {
+        name: 'packed_int32',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      },
+      55: {
+        name: 'packed_int64',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.INT64,
+        type: Number
+      },
+      56: {
+        name: 'packed_uint32',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.UINT32,
+        type: Number
+      },
+      57: {
+        name: 'packed_uint64',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.UINT64,
+        type: Number
+      },
+      58: {
+        name: 'packed_sint32',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.SINT32,
+        type: Number
+      },
+      59: {
+        name: 'packed_sint64',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.SINT64,
+        type: Number
+      },
+      60: {
+        name: 'packed_fixed32',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.FIXED32,
+        type: Number
+      },
+      61: {
+        name: 'packed_fixed64',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.FIXED64,
+        type: Number
+      },
+      62: {
+        name: 'packed_sfixed32',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.SFIXED32,
+        type: Number
+      },
+      63: {
+        name: 'packed_sfixed64',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.SFIXED64,
+        type: Number
+      },
+      64: {
+        name: 'packed_float',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.FLOAT,
+        type: Number
+      },
+      65: {
+        name: 'packed_double',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.DOUBLE,
+        type: Number
+      },
+      66: {
+        name: 'packed_bool',
+        repeated: true,
+        packed: true,
+        fieldType: goog.proto2.Message.FieldType.BOOL,
+        type: Boolean
+      }
+    };
+    proto2.TestAllTypes.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestAllTypes, descriptorObj);
   }
-});
+  return proto2.TestAllTypes.descriptor_;
+};
 
 
-goog.proto2.Message.set$Metadata(proto2.TestAllTypes.NestedMessage, {
-  0: {
-    name: 'NestedMessage',
-    containingType: proto2.TestAllTypes,
-    fullName: 'TestAllTypes.NestedMessage'
-  },
-  1: {
-    name: 'b',
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
-  },
-  2: {
-    name: 'c',
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
+proto2.TestAllTypes['ctor'] = proto2.TestAllTypes;proto2.TestAllTypes['ctor'].getDescriptor =
+    proto2.TestAllTypes.prototype.getDescriptor;
+
+
+/** @override */
+proto2.TestAllTypes.NestedMessage.prototype.getDescriptor = function() {
+  if (!proto2.TestAllTypes.NestedMessage.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'NestedMessage',
+        containingType: proto2.TestAllTypes,
+        fullName: 'TestAllTypes.NestedMessage'
+      },
+      1: {
+        name: 'b',
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      },
+      2: {
+        name: 'c',
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      }
+    };
+    proto2.TestAllTypes.NestedMessage.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestAllTypes.NestedMessage, descriptorObj);
   }
-});
+  return proto2.TestAllTypes.NestedMessage.descriptor_;
+};
 
 
-goog.proto2.Message.set$Metadata(proto2.TestAllTypes.OptionalGroup, {
-  0: {
-    name: 'OptionalGroup',
-    containingType: proto2.TestAllTypes,
-    fullName: 'TestAllTypes.OptionalGroup'
-  },
-  17: {
-    name: 'a',
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
+proto2.TestAllTypes.NestedMessage['ctor'] = proto2.TestAllTypes.NestedMessage;proto2.TestAllTypes.NestedMessage['ctor'].getDescriptor =
+    proto2.TestAllTypes.NestedMessage.prototype.getDescriptor;
+
+
+/** @override */
+proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor = function() {
+  if (!proto2.TestAllTypes.OptionalGroup.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'OptionalGroup',
+        containingType: proto2.TestAllTypes,
+        fullName: 'TestAllTypes.OptionalGroup'
+      },
+      17: {
+        name: 'a',
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      }
+    };
+    proto2.TestAllTypes.OptionalGroup.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestAllTypes.OptionalGroup, descriptorObj);
   }
-});
+  return proto2.TestAllTypes.OptionalGroup.descriptor_;
+};
 
 
-goog.proto2.Message.set$Metadata(proto2.TestAllTypes.RepeatedGroup, {
-  0: {
-    name: 'RepeatedGroup',
-    containingType: proto2.TestAllTypes,
-    fullName: 'TestAllTypes.RepeatedGroup'
-  },
-  47: {
-    name: 'a',
-    repeated: true,
-    fieldType: goog.proto2.Message.FieldType.INT32,
-    type: Number
+proto2.TestAllTypes.OptionalGroup['ctor'] = proto2.TestAllTypes.OptionalGroup;proto2.TestAllTypes.OptionalGroup['ctor'].getDescriptor =
+    proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor;
+
+
+/** @override */
+proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor = function() {
+  if (!proto2.TestAllTypes.RepeatedGroup.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'RepeatedGroup',
+        containingType: proto2.TestAllTypes,
+        fullName: 'TestAllTypes.RepeatedGroup'
+      },
+      47: {
+        name: 'a',
+        repeated: true,
+        fieldType: goog.proto2.Message.FieldType.INT32,
+        type: Number
+      }
+    };
+    proto2.TestAllTypes.RepeatedGroup.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestAllTypes.RepeatedGroup, descriptorObj);
   }
-});
+  return proto2.TestAllTypes.RepeatedGroup.descriptor_;
+};
 
 
-goog.proto2.Message.set$Metadata(proto2.TestDefaultParent, {
-  0: {
-    name: 'TestDefaultParent',
-    fullName: 'TestDefaultParent'
-  },
-  1: {
-    name: 'child',
-    fieldType: goog.proto2.Message.FieldType.MESSAGE,
-    type: proto2.TestDefaultChild
+proto2.TestAllTypes.RepeatedGroup['ctor'] = proto2.TestAllTypes.RepeatedGroup;proto2.TestAllTypes.RepeatedGroup['ctor'].getDescriptor =
+    proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor;
+
+
+/** @override */
+proto2.TestDefaultParent.prototype.getDescriptor = function() {
+  if (!proto2.TestDefaultParent.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'TestDefaultParent',
+        fullName: 'TestDefaultParent'
+      },
+      1: {
+        name: 'child',
+        fieldType: goog.proto2.Message.FieldType.MESSAGE,
+        type: proto2.TestDefaultChild
+      }
+    };
+    proto2.TestDefaultParent.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestDefaultParent, descriptorObj);
   }
-});
+  return proto2.TestDefaultParent.descriptor_;
+};
 
 
-goog.proto2.Message.set$Metadata(proto2.TestDefaultChild, {
-  0: {
-    name: 'TestDefaultChild',
-    fullName: 'TestDefaultChild'
-  },
-  1: {
-    name: 'foo',
-    fieldType: goog.proto2.Message.FieldType.BOOL,
-    defaultValue: true,
-    type: Boolean
+proto2.TestDefaultParent['ctor'] = proto2.TestDefaultParent;proto2.TestDefaultParent['ctor'].getDescriptor =
+    proto2.TestDefaultParent.prototype.getDescriptor;
+
+
+/** @override */
+proto2.TestDefaultChild.prototype.getDescriptor = function() {
+  if (!proto2.TestDefaultChild.descriptor_) {
+    // The descriptor is created lazily when we instantiate a new instance.
+    var descriptorObj = {
+      0: {
+        name: 'TestDefaultChild',
+        fullName: 'TestDefaultChild'
+      },
+      1: {
+        name: 'foo',
+        fieldType: goog.proto2.Message.FieldType.BOOL,
+        defaultValue: true,
+        type: Boolean
+      }
+    };
+    proto2.TestDefaultChild.descriptor_ =
+        goog.proto2.Message.createDescriptor(
+             proto2.TestDefaultChild, descriptorObj);
   }
-});
+  return proto2.TestDefaultChild.descriptor_;
+};
+
+
+proto2.TestDefaultChild['ctor'] = proto2.TestDefaultChild;proto2.TestDefaultChild['ctor'].getDescriptor =
+    proto2.TestDefaultChild.prototype.getDescriptor;

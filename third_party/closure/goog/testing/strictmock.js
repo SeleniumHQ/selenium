@@ -46,7 +46,7 @@ goog.testing.StrictMock = function(objectToMock, opt_mockStaticMethods,
 
   /**
    * An array of MockExpectations.
-   * @type {Array.<goog.testing.MockExpectation>}
+   * @type {Array<goog.testing.MockExpectation>}
    * @private
    */
   this.$expectations_ = [];

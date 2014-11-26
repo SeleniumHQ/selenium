@@ -88,7 +88,7 @@ goog.ui.ColorPicker.prototype.focusable_ = true;
 /**
  * Gets the array of colors displayed by the color picker.
  * Modifying this array will lead to unexpected behavior.
- * @return {Array.<string>?} The colors displayed by this widget.
+ * @return {Array<string>?} The colors displayed by this widget.
  */
 goog.ui.ColorPicker.prototype.getColors = function() {
   return this.colorPalette_ ? this.colorPalette_.getColors() : null;
@@ -97,7 +97,7 @@ goog.ui.ColorPicker.prototype.getColors = function() {
 
 /**
  * Sets the array of colors to be displayed by the color picker.
- * @param {Array.<string>} colors The array of colors to be added.
+ * @param {Array<string>} colors The array of colors to be added.
  */
 goog.ui.ColorPicker.prototype.setColors = function(colors) {
   // TODO(user): Don't add colors directly, we should add palettes and the
@@ -112,7 +112,7 @@ goog.ui.ColorPicker.prototype.setColors = function(colors) {
 
 /**
  * Sets the array of colors to be displayed by the color picker.
- * @param {Array.<string>} colors The array of colors to be added.
+ * @param {Array<string>} colors The array of colors to be added.
  * @deprecated Use setColors.
  */
 goog.ui.ColorPicker.prototype.addColors = function(colors) {
@@ -285,7 +285,7 @@ goog.ui.ColorPicker.prototype.onColorPaletteAction_ = function(e) {
 
 /**
  * Create a color palette for the color picker.
- * @param {Array.<string>} colors Array of colors.
+ * @param {Array<string>} colors Array of colors.
  * @private
  */
 goog.ui.ColorPicker.prototype.createColorPalette_ = function(colors) {
@@ -319,7 +319,7 @@ goog.ui.ColorPicker.createSimpleColorGrid = function(opt_domHelper) {
 
 /**
  * Array of colors for a 7-cell wide simple-grid color picker.
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 goog.ui.ColorPicker.SIMPLE_GRID_COLORS = [
   // grays

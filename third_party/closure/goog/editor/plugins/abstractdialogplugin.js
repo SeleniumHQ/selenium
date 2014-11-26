@@ -17,7 +17,6 @@
  * Trogedit dialog has its own plugin.
  *
  * @author nicksantos@google.com (Nick Santos)
- * @author marcosalmeida@google.com (Marcos Almeida)
  */
 
 goog.provide('goog.editor.plugins.AbstractDialogPlugin');
@@ -25,11 +24,11 @@ goog.provide('goog.editor.plugins.AbstractDialogPlugin.EventType');
 
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
-goog.require('goog.editor.Field.EventType');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.range');
 goog.require('goog.events');
-goog.require('goog.ui.editor.AbstractDialog.EventType');
+goog.require('goog.ui.editor.AbstractDialog');
 
 
 // *** Public interface ***************************************************** //

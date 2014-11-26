@@ -33,9 +33,9 @@ goog.require('goog.string');
  * Replaces tags not on the white-list with empty text nodes, dropping all
  * attributes, and drops other non-text nodes such as comments.
  *
- * @param {!Object.<string, boolean>} tagWhitelist a set of lower-case tag names
+ * @param {!Object<string, boolean>} tagWhitelist a set of lower-case tag names
  *    following the convention established by {@link goog.object.createSet}.
- * @param {!Object.<string, Object.<string, goog.labs.html.AttributeRewriter>>}
+ * @param {!Object<string, Object<string, goog.labs.html.AttributeRewriter>>}
  *        attrWhitelist
  *    maps lower-case tag names and the special string {@code "*"} to functions
  *    from decoded attribute values to sanitized values or {@code null} to
@@ -233,11 +233,11 @@ goog.labs.html.scrubber.ATTRS_RE_ = new RegExp(
 
 /**
  * Returns an array of HTML tokens including tags, text nodes and comments.
- * "Special" elements, like {@code <script>...</script>} whose bodies cannot
+ * "Special" elements, like {@code <script>..</script>} whose bodies cannot
  * include nested elements, are returned as single tokens.
  *
  * @param {string} html a string of HTML
- * @return {!Array.<string>}
+ * @return {!Array<string>}
  * @private
  */
 goog.labs.html.scrubber.lex_ = function(html) {
@@ -249,9 +249,9 @@ goog.labs.html.scrubber.lex_ = function(html) {
  * Replaces tags not on the white-list with empty text nodes, dropping all
  * attributes, and drops other non-text nodes such as comments.
  *
- * @param {!Object.<string, boolean>} tagWhitelist a set of lower-case tag names
+ * @param {!Object<string, boolean>} tagWhitelist a set of lower-case tag names
  *    following the convention established by {@link goog.object.createSet}.
- * @param {!Object.<string, Object.<string, goog.labs.html.AttributeRewriter>>
+ * @param {!Object<string, Object<string, goog.labs.html.AttributeRewriter>>
  *        } attrWhitelist
  *    maps lower-case tag names and the special string {@code "*"} to functions
  *    from decoded attribute values to sanitized values or {@code null} to
@@ -263,9 +263,9 @@ goog.labs.html.scrubber.lex_ = function(html) {
  *    If {@code attrWhitelist['*']['id']} is defined, and
  *    {@code attrWhitelist['div']['id']} is not, then the former is used to
  *    sanitize any {@code id} attribute on a {@code <div>} element.
- * @param {!Array.<string>} htmlTokens an array of HTML tokens as returned by
+ * @param {!Array<string>} htmlTokens an array of HTML tokens as returned by
  *    {@link goog.labs.html.scrubber.lex_}.
- * @return {!Array.<string>} the input array modified in place to have some
+ * @return {!Array<string>} the input array modified in place to have some
  *    tokens removed.
  * @private
  */
@@ -287,7 +287,7 @@ goog.labs.html.scrubber.filter_ = function(
       var attrs = '';
       if (!isCloseTag && tag[2]) {
         var tagSpecificAttrWhitelist =
-            /** @type {Object.<string, goog.labs.html.AttributeRewriter>} */ (
+            /** @type {Object<string, goog.labs.html.AttributeRewriter>} */ (
             goog.labs.html.scrubber.readOwnProperty_(
                 attrWhitelist, lowerCaseTagName));
         if (genericAttrWhitelist || tagSpecificAttrWhitelist) {
@@ -328,11 +328,11 @@ goog.labs.html.scrubber.filter_ = function(
  * @param {string} attrsText the text of a tag between the end of the tag name
  *   and the beginning of the tag end marker, so {@code " foo bar='baz'"} for
  *   the tag {@code <tag foo bar='baz'/>}.
- * @param {Object.<string, goog.labs.html.AttributeRewriter>}
+ * @param {Object<string, goog.labs.html.AttributeRewriter>}
  *   genericAttrWhitelist
  *   a whitelist of attribute transformations for attributes that are allowed
  *   on any element.
- * @param {Object.<string, goog.labs.html.AttributeRewriter>}
+ * @param {Object<string, goog.labs.html.AttributeRewriter>}
  *   tagSpecificAttrWhitelist
  *   a whitelist of attribute transformations for attributes that are allowed
  *   on the element started by the tag whose body is {@code tagBody}.
@@ -402,7 +402,7 @@ goog.labs.html.scrubber.readOwnProperty_ = function(o, k) {
  * This mitigates the HTML parsing equivalent of stack smashing attacks.
  * <br>
  * Otherwise, crafted inputs like
- * {@code <p><p><p><p>...Ad nauseam...</p></p></p></p>} could exploit
+ * {@code <p><p><p><p>...Ad nauseam..</p></p></p></p>} could exploit
  * browser bugs, and/or undocumented nesting limit recovery code to misnest
  * tags.
  * @private
@@ -413,9 +413,9 @@ goog.labs.html.scrubber.BALANCE_NESTING_LIMIT_ = 256;
 
 /**
  * Ensures that there are end-tags for all and only for non-void start tags.
- * @param {Array.<string>} htmlTokens an array of HTML tokens as returned by
+ * @param {Array<string>} htmlTokens an array of HTML tokens as returned by
  *    {@link goog.labs.html.scrubber.lex}.
- * @return {!Array.<string>} the input array modified in place to have some
+ * @return {!Array<string>} the input array modified in place to have some
  *    tokens removed.
  * @private
  */
@@ -530,7 +530,7 @@ goog.labs.html.scrubber.balance_ = function(htmlTokens) {
 
 /**
  * Normalizes HTML tokens and concatenates them into a string.
- * @param {Array.<string>} htmlTokens an array of HTML tokens as returned by
+ * @param {Array<string>} htmlTokens an array of HTML tokens as returned by
  *    {@link goog.labs.html.scrubber.lex}.
  * @return {string} a string of HTML.
  * @private
@@ -616,7 +616,7 @@ goog.labs.html.scrubber.ALL_SCOPES_ =
  *
  * @param {string}         lowerCaseTagName The name of the tag.
  * @param {boolean}        isCloseTag       True for a {@code </tagname>} tag.
- * @param {Array.<string>} openElementStack The names of elements that have been
+ * @param {Array<string>} openElementStack The names of elements that have been
  *                                          opened and not subsequently closed.
  * @return {number} the length of openElementStack after closing any tags that
  *               need to be closed.

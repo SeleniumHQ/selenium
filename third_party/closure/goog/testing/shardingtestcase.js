@@ -30,6 +30,7 @@
  *   </li>
  * </ol>
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.testing.ShardingTestCase');

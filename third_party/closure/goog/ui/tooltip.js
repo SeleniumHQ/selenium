@@ -103,7 +103,7 @@ goog.tagUnsealableClass(goog.ui.Tooltip);
  * List of active (open) tooltip widgets. Used to prevent multiple tooltips
  * from appearing at once.
  *
- * @type {!Array.<goog.ui.Tooltip>}
+ * @type {!Array<goog.ui.Tooltip>}
  * @private
  */
 goog.ui.Tooltip.activeInstances_ = [];

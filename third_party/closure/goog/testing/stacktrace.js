@@ -285,7 +285,7 @@ goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp('^   at ' +
 /**
  * Creates a stack trace by following the call chain. Based on
  * {@link goog.debug.getStacktrace}.
- * @return {!Array.<!goog.testing.stacktrace.Frame>} Stack frames.
+ * @return {!Array<!goog.testing.stacktrace.Frame>} Stack frames.
  * @private
  * @suppress {es5Strict}
  */
@@ -459,7 +459,7 @@ goog.testing.stacktrace.htmlEscape_ = function(text) {
 /**
  * Converts the stack frames into canonical format. Chops the beginning and the
  * end of it which come from the testing environment, not from the test itself.
- * @param {!Array.<goog.testing.stacktrace.Frame>} frames The frames.
+ * @param {!Array<goog.testing.stacktrace.Frame>} frames The frames.
  * @return {string} Canonical, pretty printed stack trace.
  * @private
  */
@@ -500,7 +500,7 @@ goog.testing.stacktrace.framesToString_ = function(frames) {
 /**
  * Parses the browser's native stack trace.
  * @param {string} stack Stack trace.
- * @return {!Array.<goog.testing.stacktrace.Frame>} Stack frames. The
+ * @return {!Array<goog.testing.stacktrace.Frame>} Stack frames. The
  *     unrecognized frames will be nulled out.
  * @private
  */
@@ -527,7 +527,7 @@ goog.testing.stacktrace.canonicalize = function(stack) {
 
 /**
  * Returns the native stack trace.
- * @return {string|!Array.<!CallSite>}
+ * @return {string|!Array<!CallSite>}
  * @private
  */
 goog.testing.stacktrace.getNativeStack_ = function() {
@@ -570,8 +570,8 @@ goog.testing.stacktrace.get = function() {
 /**
  * Converts an array of CallSite (elements of a stack trace in V8) to an array
  * of Frames.
- * @param {!Array.<!CallSite>} stack The stack as an array of CallSites.
- * @return {!Array.<!goog.testing.stacktrace.Frame>} The stack as an array of
+ * @param {!Array<!CallSite>} stack The stack as an array of CallSites.
+ * @return {!Array<!goog.testing.stacktrace.Frame>} The stack as an array of
  *     Frames.
  * @private
  */

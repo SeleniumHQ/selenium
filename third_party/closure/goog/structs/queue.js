@@ -58,11 +58,11 @@ goog.require('goog.array');
  */
 goog.structs.Queue = function() {
   /**
-   * @private {!Array.<T>} Front stack. Items are pop()'ed from here.
+   * @private {!Array<T>} Front stack. Items are pop()'ed from here.
    */
   this.front_ = [];
   /**
-   * @private {!Array.<T>} Back stack. Items are push()'ed here.
+   * @private {!Array<T>} Back stack. Items are push()'ed here.
    */
   this.back_ = [];
 };
@@ -171,7 +171,7 @@ goog.structs.Queue.prototype.remove = function(obj) {
 
 /**
  * Returns all the values in the queue.
- * @return {!Array.<T>} An array of the values in the queue.
+ * @return {!Array<T>} An array of the values in the queue.
  */
 goog.structs.Queue.prototype.getValues = function() {
   var res = [];

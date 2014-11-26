@@ -22,7 +22,6 @@ goog.provide('goog.fx.TransitionBase.State');
 
 goog.require('goog.events.EventTarget');
 goog.require('goog.fx.Transition');  // Unreferenced: interface
-goog.require('goog.fx.Transition.EventType');
 
 
 

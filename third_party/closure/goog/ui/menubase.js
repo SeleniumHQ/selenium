@@ -40,7 +40,7 @@ goog.ui.MenuBase = function(opt_element) {
 
   /**
    * Event handler for simplifiying adding/removing listeners.
-   * @type {goog.events.EventHandler.<!goog.ui.MenuBase>}
+   * @type {goog.events.EventHandler<!goog.ui.MenuBase>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

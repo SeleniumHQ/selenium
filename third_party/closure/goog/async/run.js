@@ -88,7 +88,7 @@ goog.async.run.schedule_;
 goog.async.run.workQueueScheduled_ = false;
 
 
-/** @private {!Array.<!goog.async.run.WorkItem_>} */
+/** @private {!Array<!goog.async.run.WorkItem_>} */
 goog.async.run.workQueue_ = [];
 
 

@@ -77,7 +77,7 @@ goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(content,
  * Wrap a caption in a div with the color-menu-button-indicator CSS class.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  */
 goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
   return dom.createDom('div',

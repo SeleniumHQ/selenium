@@ -104,7 +104,7 @@ goog.dom.animationFrame.State = function() {};
  * This list is initialized once before any event firing occurs. It is not
  * affected by the fired events or the requestAnimationFrame processing (unless
  * a new event is created during the processing).
- * @private {!Array.<!Array.<goog.dom.animationFrame.TaskSet_>>}
+ * @private {!Array<!Array<goog.dom.animationFrame.TaskSet_>>}
  */
 goog.dom.animationFrame.tasks_ = [[], []];
 

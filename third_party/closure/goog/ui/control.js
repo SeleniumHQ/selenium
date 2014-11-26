@@ -212,7 +212,7 @@ goog.ui.Control.prototype.keyHandler_;
 
 /**
  * Additional class name(s) to apply to the control's root element, if any.
- * @type {Array.<string>?}
+ * @type {Array<string>?}
  * @private
  */
 goog.ui.Control.prototype.extraClassNames_ = null;
@@ -339,7 +339,7 @@ goog.ui.Control.prototype.setRenderer = function(renderer) {
 /**
  * Returns any additional class name(s) to be applied to the component's
  * root element, or null if no extra class names are needed.
- * @return {Array.<string>?} Additional class names to be applied to
+ * @return {Array<string>?} Additional class names to be applied to
  *     the component's root element (null if none).
  */
 goog.ui.Control.prototype.getExtraClassNames = function() {

@@ -40,7 +40,7 @@ goog.proto2.Message = function() {
 
   /**
    * Stores the field information (i.e. metadata) about this message.
-   * @type {Object.<number, !goog.proto2.FieldDescriptor>}
+   * @type {Object<number, !goog.proto2.FieldDescriptor>}
    * @private
    */
   this.fields_ = this.getDescriptor().getFieldsMap();
@@ -104,6 +104,8 @@ goog.proto2.Message.FieldType = {
  *
  * This declaration is just here for documentation purposes.
  * goog.proto2.Message does not have its own descriptor.
+ *
+ * TODO(user): Delete after components update for cl/76695317.
  *
  * @type {undefined}
  * @private
@@ -186,6 +188,9 @@ goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
  *
  * This only works if we assume people never subclass protobufs.
  *
+ * TODO(user): Replace with goog.abstractMethod after components update
+ *     with cl/76695317.
+ *
  * @return {!goog.proto2.Descriptor} The descriptor.
  */
 goog.proto2.Message.prototype.getDescriptor = function() {
@@ -194,7 +199,7 @@ goog.proto2.Message.prototype.getDescriptor = function() {
   // in set$Metadata for more info.
   var Ctor = this.constructor;
   return Ctor.descriptor_ ||
-      (Ctor.descriptor_ = goog.proto2.Message.createDescriptor_(
+      (Ctor.descriptor_ = goog.proto2.Message.createDescriptor(
           Ctor, Ctor.descriptorObj_));
 };
 
@@ -223,7 +228,7 @@ goog.proto2.Message.prototype.has = function(field) {
  * @param {goog.proto2.FieldDescriptor} field The field for which to
  *     return the values.
  *
- * @return {!Array} The values found.
+ * @return {!Array<?>} The values found.
  */
 goog.proto2.Message.prototype.arrayOf = function(field) {
   goog.asserts.assert(
@@ -610,12 +615,12 @@ goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
  *
  * @param {number} tag The field's tag index.
  *
- * @return {!Array} The values found. If none, returns an empty array.
+ * @return {!Array<*>} The values found. If none, returns an empty array.
  * @protected
  */
 goog.proto2.Message.prototype.array$Values = function(tag) {
   var value = this.getValueForTag_(tag);
-  return /** @type {Array} */ (value) || [];
+  return /** @type {Array<*>} */ (value) || [];
 };
 
 
@@ -725,11 +730,10 @@ goog.proto2.Message.prototype.clear$Field = function(tag) {
  *
  * @param {function(new:goog.proto2.Message)} messageType Constructor for the
  *     message type to which this metadata applies.
- * @param {Object} metadataObj The object containing the metadata.
+ * @param {!Object} metadataObj The object containing the metadata.
  * @return {!goog.proto2.Descriptor} The new descriptor.
- * @private
  */
-goog.proto2.Message.createDescriptor_ = function(messageType, metadataObj) {
+goog.proto2.Message.createDescriptor = function(messageType, metadataObj) {
   var fields = [];
   var descriptorInfo = metadataObj[0];
 
@@ -749,6 +753,8 @@ goog.proto2.Message.createDescriptor_ = function(messageType, metadataObj) {
  * Sets the metadata that represents the definition of this message.
  *
  * GENERATED CODE USE ONLY. Called when constructing message classes.
+ *
+ * TODO(user): Delete after components update with cl/76695317.
  *
  * @param {!Function} messageType Constructor for the
  *     message type to which this metadata applies.

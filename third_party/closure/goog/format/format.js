@@ -203,8 +203,7 @@ goog.format.SCALED_NUMERIC_RE_ = /^([-]?\d+\.?\d*)([K,M,G,T,P,k,m,u,n]?)[B]?$/;
 
 /**
  * Ordered list of scaling prefixes in decreasing order.
- * @type {Array}
- * @private
+ * @private {Array<string>}
  */
 goog.format.NUMERIC_SCALE_PREFIXES_ = [
   'P', 'T', 'G', 'M', 'K', '', 'm', 'u', 'n'

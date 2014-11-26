@@ -140,13 +140,14 @@ goog.testing.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
   goog.asserts.assert(parent instanceof goog.testing.fs.DirectoryEntry);
   var msg = 'copying ' + this.getFullPath() + ' into ' + parent.getFullPath() +
       (opt_newName ? ', renaming to ' + opt_newName : '');
+  var self = this;
   return this.checkNotDeleted(msg).addCallback(function() {
-    var name = opt_newName || this.getName();
-    var entry = this.clone();
+    var name = opt_newName || self.getName();
+    var entry = self.clone();
     parent.children[name] = entry;
     parent.lastModifiedTimestamp_ = goog.now();
     entry.name_ = name;
-    entry.parent = parent;
+    entry.parent = /** @type {!goog.testing.fs.DirectoryEntry} */ (parent);
     return entry;
   });
 };
@@ -175,10 +176,11 @@ goog.testing.fs.Entry.prototype.wrapEntry = goog.abstractMethod;
 /** @override */
 goog.testing.fs.Entry.prototype.remove = function() {
   var msg = 'removing ' + this.getFullPath();
+  var self = this;
   return this.checkNotDeleted(msg).addCallback(function() {
-    delete this.parent.children[this.getName()];
-    this.parent.lastModifiedTimestamp_ = goog.now();
-    this.deleted = true;
+    delete this.parent.children[self.getName()];
+    self.parent.lastModifiedTimestamp_ = goog.now();
+    self.deleted = true;
     return;
   });
 };
@@ -228,7 +230,7 @@ goog.testing.fs.Entry.prototype.checkNotDeleted = function(action) {
  *     containing this entry. If this is null, that means this is the root
  *     directory and so is its own parent.
  * @param {string} name The name of this entry.
- * @param {!Object.<!goog.testing.fs.Entry>} children The map of child names to
+ * @param {!Object<!goog.testing.fs.Entry>} children The map of child names to
  *     entry objects.
  * @constructor
  * @extends {goog.testing.fs.Entry}
@@ -241,7 +243,7 @@ goog.testing.fs.DirectoryEntry = function(fs, parent, name, children) {
 
   /**
    * The map of child names to entry objects.
-   * @type {!Object.<!goog.testing.fs.Entry>}
+   * @type {!Object<!goog.testing.fs.Entry>}
    */
   this.children = children;
 

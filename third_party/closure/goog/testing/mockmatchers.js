@@ -359,9 +359,9 @@ goog.testing.mockmatchers.isNodeLike =
  * expectations.  The expectations array can be a mix of ArgumentMatcher
  * implementations and values.  True will be returned if values are identical or
  * if a matcher returns a positive result.
- * @param {Array} expectedArr An array of expectations which can be either
+ * @param {Array<?>} expectedArr An array of expectations which can be either
  *     values to check for equality or ArgumentMatchers.
- * @param {Array} arr The array to match.
+ * @param {Array<?>} arr The array to match.
  * @param {goog.testing.MockExpectation?=} opt_expectation The expectation
  *     for this match.
  * @return {boolean} Whether or not the given array matches the expectations.

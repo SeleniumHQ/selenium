@@ -100,7 +100,7 @@ goog.ui.HoverCard = function(isAnchor, opt_checkDescendants, opt_domHelper,
   /**
    * Array of anchor elements that should be detached when we are no longer
    * associated with them.
-   * @type {!Array.<Element>}
+   * @type {!Array<Element>}
    * @private
    */
   this.tempAttachedAnchors_ = [];

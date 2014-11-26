@@ -46,7 +46,7 @@ goog.labs.html.AttributeValue;
  *           value.</td>
  *   <tr><td>a {@link goog.html.SafeHtml}</td>
  *       <td>A fragment that is safe to be included as embedded HTML as in
- *           {@code <iframe srchtml="...">}.</td></tr>
+ *           {@code <iframe srchtml="...">}</td></tr>
  *   <tr><td>a {@link goog.html.SafeUrl}</td>
  *       <td>A URL that does not need to be further checked against the URL
  *           white-list.</td></tr>

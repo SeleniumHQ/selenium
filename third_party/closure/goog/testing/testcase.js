@@ -64,7 +64,7 @@ goog.testing.TestCase = function(opt_name) {
 
   /**
    * Array of test functions that can be executed.
-   * @type {!Array.<!goog.testing.TestCase.Test>}
+   * @type {!Array<!goog.testing.TestCase.Test>}
    * @private
    */
   this.tests_ = [];
@@ -115,7 +115,7 @@ goog.testing.TestCase = function(opt_name) {
 
   /**
    * Object used to encapsulate the test results.
-   * @type {goog.testing.TestCase.Result}
+   * @type {!goog.testing.TestCase.Result}
    * @protected
    * @suppress {underscore|visibility}
    */
@@ -315,7 +315,7 @@ goog.testing.TestCase.prototype.addNewTest = function(name, ref, opt_scope) {
 
 /**
  * Sets the tests.
- * @param {!Array.<goog.testing.TestCase.Test>} tests A new test array.
+ * @param {!Array<goog.testing.TestCase.Test>} tests A new test array.
  * @protected
  */
 goog.testing.TestCase.prototype.setTests = function(tests) {
@@ -325,7 +325,7 @@ goog.testing.TestCase.prototype.setTests = function(tests) {
 
 /**
  * Gets the tests.
- * @return {!Array.<goog.testing.TestCase.Test>} The test array.
+ * @return {!Array<goog.testing.TestCase.Test>} The test array.
  */
 goog.testing.TestCase.prototype.getTests = function() {
   return this.tests_;
@@ -554,6 +554,16 @@ goog.testing.TestCase.prototype.getReport = function(opt_verbose) {
 
 
 /**
+ * Returns the test results.
+ * @return {!goog.testing.TestCase.Result}
+ * @package
+ */
+goog.testing.TestCase.prototype.getResult = function() {
+  return this.result_;
+};
+
+
+/**
  * Returns the amount of time it took for the test to run.
  * @return {number} The run time, in milliseconds.
  */
@@ -574,7 +584,7 @@ goog.testing.TestCase.prototype.getNumFilesLoaded = function() {
 /**
  * Returns the test results object: a map from test names to a list of test
  * failures (if any exist).
- * @return {!Object.<string, !Array.<string>>} Tests results object.
+ * @return {!Object<string, !Array<string>>} Tests results object.
  */
 goog.testing.TestCase.prototype.getTestResults = function() {
   return this.result_.resultsByName;
@@ -599,7 +609,7 @@ goog.testing.TestCase.prototype.runTests = function() {
 
 /**
  * Reorders the tests depending on the {@code order} field.
- * @param {Array.<goog.testing.TestCase.Test>} tests An array of tests to
+ * @param {Array<goog.testing.TestCase.Test>} tests An array of tests to
  *     reorder.
  * @private
  */
@@ -643,7 +653,7 @@ goog.testing.TestCase.prototype.orderTests_ = function(tests) {
  *     supports the RuntimeObject:
  *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
  *     TODO: Remove this option.
- * @return {!Array.<!Object>} A list of objects that should be inspected.
+ * @return {!Array<!Object>} A list of objects that should be inspected.
  */
 goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
   return goog.testing.TestCase.getGlobals(opt_prefix);
@@ -661,7 +671,7 @@ goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
  *     supports the RuntimeObject:
  *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
  *     TODO: Remove this option.
- * @return {!Array.<!Object>} A list of objects that should be inspected.
+ * @return {!Array<!Object>} A list of objects that should be inspected.
  */
 goog.testing.TestCase.getGlobals = function(opt_prefix) {
   // Look in the global scope for most browsers, on IE we use the little known
@@ -1159,19 +1169,19 @@ goog.testing.TestCase.Result = function(testCase) {
    * as the key in the map, and the array of strings is an optional list
    * of failure messages. If the array is empty, the test passed. Otherwise,
    * the test failed.
-   * @type {!Object.<string, !Array.<string>>}
+   * @type {!Object<string, !Array<string>>}
    */
   this.resultsByName = {};
 
   /**
    * Errors encountered while running the test.
-   * @type {!Array.<goog.testing.TestCase.Error>}
+   * @type {!Array<goog.testing.TestCase.Error>}
    */
   this.errors = [];
 
   /**
    * Messages to show the user after running the test.
-   * @type {!Array.<string>}
+   * @type {!Array<string>}
    */
   this.messages = [];
 

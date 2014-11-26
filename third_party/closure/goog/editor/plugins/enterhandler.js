@@ -15,6 +15,7 @@
 /**
  * @fileoverview Plugin to handle enter keys.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.EnterHandler');

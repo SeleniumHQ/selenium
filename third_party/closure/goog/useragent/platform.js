@@ -18,6 +18,7 @@
 
 goog.provide('goog.userAgent.platform');
 
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 

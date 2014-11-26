@@ -103,7 +103,7 @@ goog.net.ChannelRequest = function(channel, channelDebug, opt_sessionId,
 
   /**
    * An object to keep track of the channel request event listeners.
-   * @type {!goog.events.EventHandler.<!goog.net.ChannelRequest>}
+   * @type {!goog.events.EventHandler<!goog.net.ChannelRequest>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

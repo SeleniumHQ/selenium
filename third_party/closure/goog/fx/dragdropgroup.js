@@ -99,7 +99,7 @@ goog.fx.DragDropGroup.prototype.removeItem = function(element) {
  * Marks the supplied list of items as selected. A drag operation for any of the
  * selected items will affect all of them.
  *
- * @param {Array.<goog.fx.DragDropItem>} list List of items to select or null to
+ * @param {Array<goog.fx.DragDropItem>} list List of items to select or null to
  *     clear selection.
  *
  * TODO(eae): Not yet implemented.

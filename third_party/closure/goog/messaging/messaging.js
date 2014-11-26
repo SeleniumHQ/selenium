@@ -19,8 +19,6 @@
 
 goog.provide('goog.messaging');
 
-goog.require('goog.messaging.MessageChannel');
-
 
 /**
  * Creates a bidirectional pipe between two message channels.

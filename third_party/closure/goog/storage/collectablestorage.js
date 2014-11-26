@@ -47,7 +47,7 @@ goog.inherits(goog.storage.CollectableStorage, goog.storage.ExpiringStorage);
  *
  * @param {goog.iter.Iterable} keys keys to iterate over.
  * @param {boolean=} opt_strict Also return invalid keys.
- * @return {!Array.<string>} Keys of values that expired.
+ * @return {!Array<string>} Keys of values that expired.
  * @private
  */
 goog.storage.CollectableStorage.prototype.getExpiredKeys_ =
@@ -106,9 +106,9 @@ goog.storage.CollectableStorage.prototype.getExpiredKeys_ =
 /**
  * Cleans up the storage by removing expired keys.
  *
- * @param {Array.<string>} keys List of all keys.
+ * @param {Array<string>} keys List of all keys.
  * @param {boolean=} opt_strict Also remove invalid keys.
- * @return {!Array.<string>} a list of expired keys.
+ * @return {!Array<string>} a list of expired keys.
  * @protected
  */
 goog.storage.CollectableStorage.prototype.collectInternal = function(

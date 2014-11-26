@@ -144,7 +144,7 @@ goog.i18n.DateTimeFormat.Format = {
 
 /**
  * regular expression pattern for parsing pattern string
- * @type {Array.<RegExp>}
+ * @type {Array<RegExp>}
  * @private
  */
 goog.i18n.DateTimeFormat.TOKENS_ = [

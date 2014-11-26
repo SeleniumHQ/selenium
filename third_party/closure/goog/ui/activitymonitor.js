@@ -38,7 +38,7 @@ goog.require('goog.events.EventType');
  * Once initialized with a document, the activity monitor can be queried for
  * the current idle time.
  *
- * @param {goog.dom.DomHelper|Array.<goog.dom.DomHelper>=} opt_domHelper
+ * @param {goog.dom.DomHelper|Array<goog.dom.DomHelper>=} opt_domHelper
  *     DomHelper which contains the document(s) to listen to.  If null, the
  *     default document is usedinstead.
  * @param {boolean=} opt_useBubble Whether to use the bubble phase to listen for
@@ -55,7 +55,7 @@ goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
 
   /**
    * Array of documents that are being listened to.
-   * @type {Array.<Document>}
+   * @type {Array<Document>}
    * @private
    */
   this.documents_ = [];
@@ -69,7 +69,7 @@ goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
 
   /**
    * The event handler.
-   * @type {goog.events.EventHandler.<!goog.ui.ActivityMonitor>}
+   * @type {goog.events.EventHandler<!goog.ui.ActivityMonitor>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -145,7 +145,7 @@ goog.ui.ActivityMonitor.MIN_EVENT_SPACING = 3 * 1000;
 
 /**
  * If a user executes one of these events, s/he is considered not idle.
- * @type {Array.<goog.events.EventType>}
+ * @type {Array<goog.events.EventType>}
  * @private
  */
 goog.ui.ActivityMonitor.userEventTypesBody_ = [
@@ -160,7 +160,7 @@ goog.ui.ActivityMonitor.userEventTypesBody_ = [
 /**
  * If a user executes one of these events, s/he is considered not idle.
  * Note: monitoring touch events within iframe cause problems in iOS.
- * @type {Array.<goog.events.EventType>}
+ * @type {Array<goog.events.EventType>}
  * @private
  */
 goog.ui.ActivityMonitor.userTouchEventTypesBody_ = [
@@ -172,7 +172,7 @@ goog.ui.ActivityMonitor.userTouchEventTypesBody_ = [
 
 /**
  * If a user executes one of these events, s/he is considered not idle.
- * @type {Array.<goog.events.EventType>}
+ * @type {Array<goog.events.EventType>}
  * @private
  */
 goog.ui.ActivityMonitor.userEventTypesDocuments_ =

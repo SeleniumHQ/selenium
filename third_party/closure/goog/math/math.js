@@ -230,8 +230,8 @@ goog.math.sign = function(x) {
  *
  * Returns the longest possible array that is subarray of both of given arrays.
  *
- * @param {Array.<Object>} array1 First array of objects.
- * @param {Array.<Object>} array2 Second array of objects.
+ * @param {Array<Object>} array1 First array of objects.
+ * @param {Array<Object>} array2 Second array of objects.
  * @param {Function=} opt_compareFn Function that acts as a custom comparator
  *     for the array ojects. Function should return true if objects are equal,
  *     otherwise false.
@@ -239,7 +239,7 @@ goog.math.sign = function(x) {
  *     as a result subsequence. It accepts 2 arguments: index of common element
  *     in the first array and index in the second. The default function returns
  *     element from the first array.
- * @return {!Array.<Object>} A list of objects that are common to both arrays
+ * @return {!Array<Object>} A list of objects that are common to both arrays
  *     such that there is no common subsequence with size greater than the
  *     length of the list.
  */

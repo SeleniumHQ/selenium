@@ -93,7 +93,7 @@ goog.testing.recordFunction = function(opt_f) {
   };
 
   /**
-   * @return {!Array.<!goog.testing.FunctionCall>} All calls of the recorded
+   * @return {!Array<!goog.testing.FunctionCall>} All calls of the recorded
    *     function.
    */
   recordedFunction.getCalls = function() {
@@ -182,7 +182,7 @@ goog.testing.FunctionCall.prototype.getThis = function() {
 
 
 /**
- * @return {!Array} Arguments of the called function.
+ * @return {!Array<?>} Arguments of the called function.
  */
 goog.testing.FunctionCall.prototype.getArguments = function() {
   return this.arguments_;

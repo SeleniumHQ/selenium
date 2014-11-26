@@ -19,6 +19,7 @@
  * sub-namespaces in goog.labs.userAgent, goog.labs.userAgent.platform,
  * goog.labs.userAgent.device respectively.)
  *
+ * @author martone@google.com (Andy Martone)
  */
 
 goog.provide('goog.labs.userAgent.browser');
@@ -71,6 +72,32 @@ goog.labs.userAgent.browser.matchSafari_ = function() {
 
 
 /**
+ * @return {boolean} Whether the user's browser is Coast (Opera's Webkit-based
+ *     iOS browser).
+ * @private
+ */
+goog.labs.userAgent.browser.matchCoast_ = function() {
+  return goog.labs.userAgent.util.matchUserAgent('Coast');
+};
+
+
+/**
+ * @return {boolean} Whether the user's browser is iOS Webview.
+ * @private
+ */
+goog.labs.userAgent.browser.matchIosWebview_ = function() {
+  // iOS Webview does not show up as Chrome or Safari. Also check for Opera's
+  // WebKit-based iOS browser, Coast.
+  return (goog.labs.userAgent.util.matchUserAgent('iPad') ||
+          goog.labs.userAgent.util.matchUserAgent('iPhone')) &&
+      !goog.labs.userAgent.browser.matchSafari_() &&
+      !goog.labs.userAgent.browser.matchChrome_() &&
+      !goog.labs.userAgent.browser.matchCoast_() &&
+      goog.labs.userAgent.util.matchUserAgent('AppleWebKit');
+};
+
+
+/**
  * @return {boolean} Whether the user's browser is Chrome.
  * @private
  */
@@ -117,6 +144,21 @@ goog.labs.userAgent.browser.isFirefox =
  */
 goog.labs.userAgent.browser.isSafari =
     goog.labs.userAgent.browser.matchSafari_;
+
+
+/**
+ * @return {boolean} Whether the user's browser is Coast (Opera's Webkit-based
+ *     iOS browser).
+ */
+goog.labs.userAgent.browser.isCoast =
+    goog.labs.userAgent.browser.matchCoast_;
+
+
+/**
+ * @return {boolean} Whether the user's browser is iOS Webview.
+ */
+goog.labs.userAgent.browser.isIosWebview =
+    goog.labs.userAgent.browser.matchIosWebview_;
 
 
 /**

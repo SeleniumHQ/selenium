@@ -48,7 +48,8 @@ goog.labs.userAgent.platform.isIpod = function() {
  */
 goog.labs.userAgent.platform.isIphone = function() {
   return goog.labs.userAgent.util.matchUserAgent('iPhone') &&
-      !goog.labs.userAgent.util.matchUserAgent('iPod');
+      !goog.labs.userAgent.util.matchUserAgent('iPod') &&
+      !goog.labs.userAgent.util.matchUserAgent('iPad');
 };
 
 

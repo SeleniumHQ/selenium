@@ -30,10 +30,11 @@
  *   <div class="goog-slider-thumb"></div>
  * </div>
  *
- * <script>
- * var slider = new goog.ui.Slider;
- * slider.decorate(document.getElementById('slider'));
- * </script>
+ * JavaScript code:
+ * <code>
+ *   var slider = new goog.ui.Slider;
+ *   slider.decorate(document.getElementById('slider'));
+ * </code>
  *
  * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/slider.html

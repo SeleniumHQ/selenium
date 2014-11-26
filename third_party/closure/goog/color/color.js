@@ -29,7 +29,7 @@ goog.require('goog.math');
  * RGB color representation. An array containing three elements [r, g, b],
  * each an integer in [0, 255], representing the red, green, and blue components
  * of the color respectively.
- * @typedef {Array.<number>}
+ * @typedef {Array<number>}
  */
 goog.color.Rgb;
 
@@ -39,7 +39,7 @@ goog.color.Rgb;
  * h (hue) must be an integer in [0, 360], cyclic.
  * s (saturation) must be a number in [0, 1].
  * v (value/brightness) must be an integer in [0, 255].
- * @typedef {Array.<number>}
+ * @typedef {Array<number>}
  */
 goog.color.Hsv;
 
@@ -49,7 +49,7 @@ goog.color.Hsv;
  * h (hue) must be an integer in [0, 360], cyclic.
  * s (saturation) must be a number in [0, 1].
  * l (lightness) must be a number in [0, 1].
- * @typedef {Array.<number>}
+ * @typedef {Array<number>}
  */
 goog.color.Hsl;
 
@@ -715,7 +715,7 @@ goog.color.lighten = function(rgb, factor) {
  * color. Uses W3C formula for judging readability and visual accessibility:
  * http://www.w3.org/TR/AERT#color-contrast
  * @param {goog.color.Rgb} prime Color represented as a rgb array.
- * @param {Array.<goog.color.Rgb>} suggestions Array of colors,
+ * @param {Array<goog.color.Rgb>} suggestions Array of colors,
  *     each representing a rgb array.
  * @return {!goog.color.Rgb} Highest-contrast color represented by an array..
  */

@@ -30,6 +30,7 @@ goog.require('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.log');
 goog.require('goog.net.WebChannel');
 goog.require('goog.net.WebChannelTransport');
+goog.require('goog.object');
 goog.require('goog.string.path');
 
 
@@ -107,18 +108,29 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
   this.logger_ = goog.log.getLogger(
       'goog.labs.net.webChannel.WebChannelBaseTransport');
 
-
   /**
-   * @private {Object.<string, string>} messageUrlParams_ Extra URL parameters
+   * @private {Object<string, string>} messageUrlParams_ Extra URL parameters
    * to be added to each HTTP request.
    */
   this.messageUrlParams_ =
       (opt_options && opt_options.messageUrlParams) || null;
 
   var messageHeaders = (opt_options && opt_options.messageHeaders) || null;
-  if (messageHeaders) {
-    this.channel_.setExtraHeaders(messageHeaders);
+
+  // default is false
+  if (opt_options && opt_options.clientProtocolHeaderRequired) {
+    if (messageHeaders) {
+      goog.object.set(messageHeaders,
+          goog.net.WebChannel.X_CLIENT_PROTOCOL,
+          goog.net.WebChannel.X_CLIENT_PROTOCOL_WEB_CHANNEL);
+    } else {
+      messageHeaders = goog.object.create(
+          goog.net.WebChannel.X_CLIENT_PROTOCOL,
+          goog.net.WebChannel.X_CLIENT_PROTOCOL_WEB_CHANNEL);
+    }
   }
+
+  this.channel_.setExtraHeaders(messageHeaders);
 
   /**
    * @private {boolean} supportsCrossDomainXhr_ Whether to enable CORS.
@@ -192,7 +204,7 @@ WebChannelBaseTransport.Channel.prototype.disposeInternal = function() {
 /**
  * The message event.
  *
- * @param {!Array} array The data array from the underlying channel.
+ * @param {!Array<?>} array The data array from the underlying channel.
  * @constructor
  * @extends {goog.net.WebChannel.MessageEvent}
  * @final

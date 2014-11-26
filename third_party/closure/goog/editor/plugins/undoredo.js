@@ -26,7 +26,7 @@ goog.require('goog.dom.NodeOffset');
 goog.require('goog.dom.Range');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
-goog.require('goog.editor.Field.EventType');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.editor.plugins.UndoRedoManager');
@@ -34,6 +34,7 @@ goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.log');
+goog.require('goog.object');
 
 
 

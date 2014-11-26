@@ -41,10 +41,10 @@ goog.net.XmlHttp = function() {
 /**
  * @define {boolean} Whether to assume XMLHttpRequest exists. Setting this to
  *     true bypasses the ActiveX probing code.
- * NOTE(user): Due to the way JSCompiler works, this define *will not* strip
+ * NOTE(ruilopes): Due to the way JSCompiler works, this define *will not* strip
  * out the ActiveX probing code from binaries.  To achieve this, use
  * {@code goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR} instead.
- * TODO(user): Collapse both defines.
+ * TODO(ruilopes): Collapse both defines.
  */
 goog.define('goog.net.XmlHttp.ASSUME_NATIVE_XHR', false);
 

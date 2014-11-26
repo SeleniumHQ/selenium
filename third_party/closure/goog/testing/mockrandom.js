@@ -27,7 +27,7 @@ goog.require('goog.Disposable');
 /**
  * Class for unit testing code that uses Math.random.
  *
- * @param {Array.<number>} sequence The sequence of numbers to return.
+ * @param {Array<number>} sequence The sequence of numbers to return.
  * @param {boolean=} opt_install Whether to install the MockRandom at
  *     construction time.
  * @extends {goog.Disposable}
@@ -39,7 +39,7 @@ goog.testing.MockRandom = function(sequence, opt_install) {
 
   /**
    * The sequence of numbers to be returned by calls to random()
-   * @type {Array.<number>}
+   * @type {Array<number>}
    * @private
    */
   this.sequence_ = sequence || [];
@@ -112,7 +112,7 @@ goog.testing.MockRandom.prototype.hasMoreValues = function() {
 
 /**
  * Injects new numbers into the beginning of the sequence.
- * @param {Array.<number>|number} values Number or array of numbers to inject.
+ * @param {Array<number>|number} values Number or array of numbers to inject.
  */
 goog.testing.MockRandom.prototype.inject = function(values) {
   if (goog.isArray(values)) {

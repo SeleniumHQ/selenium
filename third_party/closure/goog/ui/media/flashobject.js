@@ -83,7 +83,7 @@ goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
 
   /**
    * An event handler used to handle events consistently between browsers.
-   * @type {goog.events.EventHandler.<!goog.ui.media.FlashObject>}
+   * @type {goog.events.EventHandler<!goog.ui.media.FlashObject>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

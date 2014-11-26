@@ -122,7 +122,7 @@ goog.labs.i18n.ListFormat.prototype.patternBasedJoinTwoStrings_ =
  * Formats an array of strings into a string.
  * It is a user facing, locale-aware list (i.e. 'red, green, and blue').
  *
- * @param {!Array.<string|number>} items Items to format.
+ * @param {!Array<string|number>} items Items to format.
  * @return {string} The items formatted into a string, as a list.
  */
 goog.labs.i18n.ListFormat.prototype.format = function(items) {
@@ -204,7 +204,7 @@ goog.labs.i18n.GenderInfo.Gender = {
 /**
  * Determines the overal gender of a list based on the gender of all the list
  * items, in a locale-aware way.
- * @param {!Array.<!goog.labs.i18n.GenderInfo.Gender>} genders An array of
+ * @param {!Array<!goog.labs.i18n.GenderInfo.Gender>} genders An array of
  *        genders, will give the gender of the list.
  * @return {goog.labs.i18n.GenderInfo.Gender} Get the gender of the list.
 */

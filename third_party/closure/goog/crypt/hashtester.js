@@ -21,6 +21,7 @@ goog.provide('goog.crypt.hashTester');
 
 goog.require('goog.array');
 goog.require('goog.crypt');
+goog.require('goog.dom');
 goog.require('goog.testing.PerformanceTable');
 goog.require('goog.testing.PseudoRandom');
 goog.require('goog.testing.asserts');
@@ -210,7 +211,7 @@ goog.crypt.hashTester.runPerfTests = function(hashFactory, hashName) {
  * Creates and returns a random byte array.
  *
  * @param {number} length Length of the byte array.
- * @return {!Array.<number>} An array of bytes.
+ * @return {!Array<number>} An array of bytes.
  * @private
  */
 goog.crypt.hashTester.createRandomByteArray_ = function(length) {
@@ -230,7 +231,7 @@ goog.crypt.hashTester.createRandomByteArray_ = function(length) {
 /**
  * Creates a string from an array of bytes.
  *
- * @param {!Array.<number>} bytes An array of bytes.
+ * @param {!Array<number>} bytes An array of bytes.
  * @return {string} The string encoded by the bytes.
  * @private
  */

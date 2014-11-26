@@ -73,7 +73,7 @@ goog.net.xpc.DirectTransport = function(channel, opt_domHelper) {
    */
   this.channel_ = channel;
 
-  /** @private {!EventHandler.<!goog.net.xpc.DirectTransport>} */
+  /** @private {!EventHandler<!goog.net.xpc.DirectTransport>} */
   this.eventHandler_ = new EventHandler(this);
   this.registerDisposable(this.eventHandler_);
 
@@ -205,7 +205,7 @@ DirectTransport.isSupported = function(peerWindow) {
  * initialized but not disposed yet in a map keyed by the UID of the window
  * object.  This allows for multiple windows to be initiallized and listening
  * for messages.
- * @private {!Object.<number>}
+ * @private {!Object<number>}
  */
 DirectTransport.activeCount_ = {};
 
@@ -564,12 +564,12 @@ DirectTransport.prototype.disposeInternal = function() {
 /**
  * Parses a transport service payload message.
  * @param {string} payload The payload.
- * @return {!Array.<?string>} An array with the message type as the first member
+ * @return {!Array<?string>} An array with the message type as the first member
  *     and the endpoint id as the second, if one was sent, or null otherwise.
  * @private
  */
 DirectTransport.parseTransportPayload_ = function(payload) {
-  var transportParts = /** @type {!Array.<?string>} */ (payload.split(
+  var transportParts = /** @type {!Array<?string>} */ (payload.split(
       DirectTransport.MESSAGE_DELIMITER_));
   transportParts[1] = transportParts[1] || null; // Usually endpointId.
   return transportParts;

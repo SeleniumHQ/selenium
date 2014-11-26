@@ -416,7 +416,7 @@ goog.inherits(goog.ui.GraphicsRoundedPanel, goog.ui.BaseRoundedPanel);
 /**
  * A 4-element array containing the circle centers for the arcs in the
  * bottom-left, top-left, top-right, and bottom-right corners, respectively.
- * @type {Array.<goog.math.Coordinate>}
+ * @type {Array<goog.math.Coordinate>}
  * @private
  */
 goog.ui.GraphicsRoundedPanel.prototype.arcCenters_;
@@ -426,7 +426,7 @@ goog.ui.GraphicsRoundedPanel.prototype.arcCenters_;
  * A 4-element array containing the start coordinates for rendering the arcs
  * in the bottom-left, top-left, top-right, and bottom-right corners,
  * respectively.
- * @type {Array.<goog.math.Coordinate>}
+ * @type {Array<goog.math.Coordinate>}
  * @private
  */
 goog.ui.GraphicsRoundedPanel.prototype.cornerStarts_;
@@ -435,7 +435,7 @@ goog.ui.GraphicsRoundedPanel.prototype.cornerStarts_;
 /**
  * A 4-element array containing the arc end angles for the bottom-left,
  * top-left, top-right, and bottom-right corners, respectively.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 goog.ui.GraphicsRoundedPanel.prototype.endAngles_;
@@ -452,7 +452,7 @@ goog.ui.GraphicsRoundedPanel.prototype.graphics_;
 /**
  * A 4-element array containing the rounded corner radii for the bottom-left,
  * top-left, top-right, and bottom-right corners, respectively.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 goog.ui.GraphicsRoundedPanel.prototype.radii_;
@@ -461,7 +461,7 @@ goog.ui.GraphicsRoundedPanel.prototype.radii_;
 /**
  * A 4-element array containing the arc start angles for the bottom-left,
  * top-left, top-right, and bottom-right corners, respectively.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 goog.ui.GraphicsRoundedPanel.prototype.startAngles_;

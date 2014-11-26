@@ -174,7 +174,7 @@ goog.net.IframeIo = function() {
   /**
    * An array of iframes that have been finished with.  We need them to be
    * disposed async, so we don't confuse the browser (see below).
-   * @type {Array.<Element>}
+   * @type {Array<Element>}
    * @private
    */
   this.iframesForDisposal_ = [];

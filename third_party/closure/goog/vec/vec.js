@@ -48,7 +48,7 @@ goog.vec.Float32;
 goog.vec.Float64;
 
 
-/** @typedef {!Array.<number>} */
+/** @typedef {!Array<number>} */
 goog.vec.Number;
 
 
@@ -58,7 +58,7 @@ goog.vec.AnyType;
 
 /**
  * @deprecated Use AnyType.
- * @typedef {!Float32Array|!Array.<number>}
+ * @typedef {!Float32Array|!Array<number>}
  */
 goog.vec.ArrayType;
 

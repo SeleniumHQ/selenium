@@ -26,7 +26,7 @@ goog.require('goog.asserts');
  * Turns a string into an array of bytes; a "byte" being a JS number in the
  * range 0-255.
  * @param {string} str String value to arrify.
- * @return {!Array.<number>} Array of numbers corresponding to the
+ * @return {!Array<number>} Array of numbers corresponding to the
  *     UCS character codes of each character in str.
  */
 goog.crypt.stringToByteArray = function(str) {
@@ -46,7 +46,7 @@ goog.crypt.stringToByteArray = function(str) {
 /**
  * Turns an array of numbers into the string given by the concatenation of the
  * characters to which the numbers correspond.
- * @param {Array} bytes Array of numbers representing characters.
+ * @param {Array<number>} bytes Array of numbers representing characters.
  * @return {string} Stringification of the array.
  */
 goog.crypt.byteArrayToString = function(bytes) {
@@ -73,8 +73,8 @@ goog.crypt.byteArrayToString = function(bytes) {
 /**
  * Turns an array of numbers into the hex string given by the concatenation of
  * the hex values to which the numbers correspond.
- * @param {Uint8Array|Int8Array|Array.<number>} array Array of numbers
- *     representing characters.
+ * @param {Uint8Array|Array<number>} array Array of numbers representing
+ *     characters.
  * @return {string} Hex string.
  */
 goog.crypt.byteArrayToHex = function(array) {
@@ -89,7 +89,7 @@ goog.crypt.byteArrayToHex = function(array) {
  * Converts a hex string into an integer array.
  * @param {string} hexString Hex string of 16-bit integers (two characters
  *     per integer).
- * @return {!Array.<number>} Array of {0,255} integers for the given string.
+ * @return {!Array<number>} Array of {0,255} integers for the given string.
  */
 goog.crypt.hexToByteArray = function(hexString) {
   goog.asserts.assert(hexString.length % 2 == 0,
@@ -105,7 +105,7 @@ goog.crypt.hexToByteArray = function(hexString) {
 /**
  * Converts a JS string to a UTF-8 "byte" array.
  * @param {string} str 16-bit unicode string.
- * @return {!Array.<number>} UTF-8 byte array.
+ * @return {!Array<number>} UTF-8 byte array.
  */
 goog.crypt.stringToUtf8ByteArray = function(str) {
   // TODO(user): Use native implementations if/when available
@@ -130,7 +130,7 @@ goog.crypt.stringToUtf8ByteArray = function(str) {
 
 /**
  * Converts a UTF-8 byte array to JavaScript's 16-bit Unicode.
- * @param {Uint8Array|Int8Array|Array.<number>} bytes UTF-8 byte array.
+ * @param {Uint8Array|Array<number>} bytes UTF-8 byte array.
  * @return {string} 16-bit Unicode string.
  */
 goog.crypt.utf8ByteArrayToString = function(bytes) {
@@ -156,9 +156,9 @@ goog.crypt.utf8ByteArrayToString = function(bytes) {
 
 /**
  * XOR two byte arrays.
- * @param {!ArrayBufferView|!Array.<number>} bytes1 Byte array 1.
- * @param {!ArrayBufferView|!Array.<number>} bytes2 Byte array 2.
- * @return {!Array.<number>} Resulting XOR of the two byte arrays.
+ * @param {!ArrayBufferView|!Array<number>} bytes1 Byte array 1.
+ * @param {!ArrayBufferView|!Array<number>} bytes2 Byte array 2.
+ * @return {!Array<number>} Resulting XOR of the two byte arrays.
  */
 goog.crypt.xorByteArray = function(bytes1, bytes2) {
   goog.asserts.assert(

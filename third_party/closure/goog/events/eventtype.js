@@ -16,7 +16,6 @@
  * @fileoverview Event Types.
  *
  * @author arv@google.com (Erik Arvidsson)
- * @author mirkov@google.com (Mirko Visontai)
  */
 
 
@@ -59,6 +58,10 @@ goog.events.EventType = {
   // See http://msdn.microsoft.com/en-us/library/ie/ms536969(v=vs.85).aspx.
   SELECTSTART: 'selectstart', // IE, Safari, Chrome
 
+  // Wheel events
+  // http://www.w3.org/TR/DOM-Level-3-Events/#events-wheelevents
+  WHEEL: 'wheel',
+
   // Key events
   KEYPRESS: 'keypress',
   KEYDOWN: 'keydown',
@@ -95,7 +98,9 @@ goog.events.EventType = {
   DROP: 'drop',
   DRAGEND: 'dragend',
 
-  // WebKit touch events.
+  // Touch events
+  // Note that other touch events exist, but we should follow the W3C list here.
+  // http://www.w3.org/TR/touch-events/#list-of-touchevent-types
   TOUCHSTART: 'touchstart',
   TOUCHMOVE: 'touchmove',
   TOUCHEND: 'touchend',
@@ -191,7 +196,8 @@ goog.events.EventType = {
   MSPOINTERUP: 'MSPointerUp',
 
   // Native IMEs/input tools events.
-  TEXTINPUT: 'textinput',
+  TEXT: 'text',
+  TEXTINPUT: 'textInput',
   COMPOSITIONSTART: 'compositionstart',
   COMPOSITIONUPDATE: 'compositionupdate',
   COMPOSITIONEND: 'compositionend',

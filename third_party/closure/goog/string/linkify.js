@@ -28,7 +28,7 @@ goog.require('goog.string');
  * _blank and it will have a rel=nofollow attribute applied to it so that links
  * created by linkify will not be of interest to search engines.
  * @param {string} text Plain text.
- * @param {Object.<string, string>=} opt_attributes Attributes to add to all
+ * @param {Object<string, string>=} opt_attributes Attributes to add to all
  *      links created. Default are rel=nofollow and target=_blank. To clear
  *      those default attributes set rel='' and target=''.
  * @return {string} HTML Linkified HTML text. Any text that is not part of a
@@ -163,7 +163,7 @@ goog.string.linkify.ACCEPTABLE_URL_CHARS_ = '\\w~#-@!\\[\\]';
 /**
  * List of all protocols patterns recognized in urls (mailto is handled in email
  * matching).
- * @type {!Array.<string>}
+ * @type {!Array<string>}
  * @const
  * @private
  */

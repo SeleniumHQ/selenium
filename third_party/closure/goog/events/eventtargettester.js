@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview goog.events.EventTarget tester.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.events.eventTargetTester');
@@ -186,8 +187,8 @@ var EventType = {
 };
 
 
-var listen, unlisten, unlistenByKey, listenOnce, dispatchEvent;
-var removeAll, getListeners, getListener, hasListener;
+var listenableFactory, listen, unlisten, unlistenByKey, listenOnce;
+var dispatchEvent, removeAll, getListeners, getListener, hasListener;
 var keyType, unlistenReturnType, objectTypeListenerSupported;
 var eventTargets, listeners;
 
@@ -200,7 +201,7 @@ var eventTargets, listeners;
  * @final
  */
 var TestEvent = function() {
-  goog.base(this, EventType.A);
+  TestEvent.base(this, 'constructor', EventType.A);
 };
 goog.inherits(TestEvent, goog.events.Event);
 
@@ -1029,13 +1030,13 @@ function testFiringEventBeforeDisposeInternalWorks() {
    * @final
    */
   var MockTarget = function() {
-    goog.base(this);
+    MockTarget.base(this, 'constructor');
   };
   goog.inherits(MockTarget, goog.events.EventTarget);
 
   MockTarget.prototype.disposeInternal = function() {
     dispatchEvent(this, EventType.A);
-    goog.base(this, 'disposeInternal');
+    MockTarget.base(this, 'disposeInternal');
   };
 
   var t = new MockTarget();

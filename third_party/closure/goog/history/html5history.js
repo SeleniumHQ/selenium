@@ -30,7 +30,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.history.Event');
-goog.require('goog.history.EventType');
 
 
 

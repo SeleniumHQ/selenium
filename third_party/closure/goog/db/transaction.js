@@ -24,6 +24,7 @@ goog.provide('goog.db.Transaction.TransactionMode');
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Error');
 goog.require('goog.db.ObjectStore');
+goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 
@@ -63,7 +64,7 @@ goog.db.Transaction = function(tx, db) {
   /**
    * Event handler for this transaction.
    *
-   * @type {!goog.events.EventHandler.<!goog.db.Transaction>}
+   * @type {!goog.events.EventHandler<!goog.db.Transaction>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

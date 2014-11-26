@@ -134,7 +134,7 @@ goog.vec.mat3d.setFromMat3f = function(mat, src) {
  * Initializes mat3d mat from Array src.
  *
  * @param {goog.vec.mat3d.Type} mat The destination matrix.
- * @param {Array.<number>} src The source matrix.
+ * @param {Array<number>} src The source matrix.
  * @return {!goog.vec.mat3d.Type} Return mat so that operations can be
  *     chained together.
  */

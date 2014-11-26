@@ -65,7 +65,7 @@ goog.ui.CustomButtonRenderer.CSS_CLASS = goog.getCssName('goog-custom-button');
  *    </div>
  * Overrides {@link goog.ui.ButtonRenderer#createDom}.
  * @param {goog.ui.Control} control goog.ui.Button to render.
- * @return {Element} Root element for the button.
+ * @return {!Element} Root element for the button.
  * @override
  */
 goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {

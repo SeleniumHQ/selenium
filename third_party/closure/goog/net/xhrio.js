@@ -279,7 +279,7 @@ goog.net.XhrIo.XHR2_ON_TIMEOUT_ = 'ontimeout';
  * All non-disposed instances of goog.net.XhrIo created
  * by {@link goog.net.XhrIo.send} are in this Array.
  * @see goog.net.XhrIo.cleanup
- * @private {!Array.<!goog.net.XhrIo>}
+ * @private {!Array<!goog.net.XhrIo>}
  */
 goog.net.XhrIo.sendInstances_ = [];
 
@@ -289,8 +289,8 @@ goog.net.XhrIo.sendInstances_ = [];
  * request.
  * @see goog.net.XhrIo.cleanup
  * @param {string|goog.Uri} url Uri to make request to.
- * @param {Function=} opt_callback Callback function for when request is
- *     complete.
+ * @param {?function(this:goog.net.XhrIo, ?)=} opt_callback Callback function
+ *     for when request is complete.
  * @param {string=} opt_method Send method, default: GET.
  * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
  *     opt_content Body data.
@@ -1158,7 +1158,7 @@ goog.net.XhrIo.prototype.getAllResponseHeaders = function() {
  * include any case normalization logic, it will just return a key-value
  * representation of the headers.
  * See: http://www.w3.org/TR/XMLHttpRequest/#the-getresponseheader()-method
- * @return {!Object.<string, string>} An object with the header keys as keys
+ * @return {!Object<string, string>} An object with the header keys as keys
  *     and header values as values.
  */
 goog.net.XhrIo.prototype.getResponseHeaders = function() {

@@ -350,7 +350,6 @@ goog.editor.range.normalize = function(range) {
     focusPoint.node = null;
   }
 
-  /** @return {goog.dom.AbstractRange} The normalized range. */
   return function() {
     if (!anchorPoint.node && anchorPreviousSibling) {
       // If anchorPoint.node was previously an empty text node with no siblings,

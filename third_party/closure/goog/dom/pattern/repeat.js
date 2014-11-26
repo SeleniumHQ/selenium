@@ -97,7 +97,7 @@ goog.dom.pattern.Repeat.prototype.needsReset_ = false;
 /**
  * The matched nodes.
  *
- * @type {Array.<Node>}
+ * @type {Array<Node>}
  */
 goog.dom.pattern.Repeat.prototype.matches;
 

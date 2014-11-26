@@ -158,10 +158,10 @@ goog.userAgent.product.init_ = function() {
     goog.userAgent.product.detectedFirefox_ = true;
   } else if (ua.indexOf('Camino') != -1) {
     goog.userAgent.product.detectedCamino_ = true;
-  } else if (ua.indexOf('iPhone') != -1 || ua.indexOf('iPod') != -1) {
-    goog.userAgent.product.detectedIphone_ = true;
   } else if (ua.indexOf('iPad') != -1) {
     goog.userAgent.product.detectedIpad_ = true;
+  } else if (ua.indexOf('iPhone') != -1 || ua.indexOf('iPod') != -1) {
+    goog.userAgent.product.detectedIphone_ = true;
   } else if (ua.indexOf('Chrome') != -1) {
     goog.userAgent.product.detectedChrome_ = true;
   } else if (ua.indexOf('Android') != -1) {

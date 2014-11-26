@@ -216,7 +216,7 @@ goog.fs.getBlob = function(var_args) {
  * Creates a blob with the given properties.
  * See https://developer.mozilla.org/en-US/docs/Web/API/Blob for more details.
  *
- * @param {Array.<string|!Blob>} parts The values that will make up the
+ * @param {Array<string|!Blob>} parts The values that will make up the
  *     resulting blob.
  * @param {string=} opt_type The MIME type of the Blob.
  * @param {string=} opt_endings Specifies how strings containing newlines are to

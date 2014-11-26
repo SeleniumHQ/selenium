@@ -15,6 +15,7 @@
 /**
  * @fileoverview A dialog for editing/creating a link.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.ui.editor.LinkDialog');
@@ -63,7 +64,7 @@ goog.ui.editor.LinkDialog = function(domHelper, link) {
 
   /**
    * The event handler for this dialog.
-   * @type {goog.events.EventHandler.<!goog.ui.editor.LinkDialog>}
+   * @type {goog.events.EventHandler<!goog.ui.editor.LinkDialog>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -800,7 +801,7 @@ goog.ui.editor.LinkDialog.prototype.syncOkButton_ = function() {
   } else {
     return;
   }
-  this.getOkButtonElement().disabled = goog.string.isEmpty(inputValue);
+  this.getOkButtonElement().disabled = goog.string.isEmptyOrWhitespace(inputValue);
 };
 
 

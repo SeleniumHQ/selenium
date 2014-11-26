@@ -43,7 +43,7 @@ goog.graphics.ext.Group = function(group, opt_wrapper) {
 
   /**
    * Array of child elements this group contains.
-   * @type {Array.<goog.graphics.ext.Element>}
+   * @type {Array<goog.graphics.ext.Element>}
    * @private
    */
   this.children_ = [];

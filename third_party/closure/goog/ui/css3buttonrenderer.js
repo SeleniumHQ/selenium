@@ -24,7 +24,6 @@
  * Tested and verified to work in Gecko 1.9.2+ and WebKit 528+.
  *
  * @author eae@google.com (Emil A Eklund)
- * @author slightlyoff@google.com (Alex Russell)
  * @see ../demos/css3button.html
  */
 

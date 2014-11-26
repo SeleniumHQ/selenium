@@ -64,7 +64,7 @@ goog.i18n.TimeZone = function() {
    * are the long and short names for standard time in this time zone, and the
    * last two elements (if present) are the long and short names for daylight
    * time in this time zone.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.tzNames_;
@@ -77,7 +77,7 @@ goog.i18n.TimeZone = function() {
    * transition point given as a number of hours since 00:00 UTC, January 1,
    * 1970, and each adjustment is the adjustment to apply for times after the
    * DST transition, given as minutes EAST of UTC.
-   * @type {Array.<number>}
+   * @type {Array<number>}
    * @private
    */
   this.transitions_;

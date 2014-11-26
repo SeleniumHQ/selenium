@@ -470,7 +470,7 @@ goog.i18n.DateTimeParse.prototype.markAbutStart_ = function() {
  * Skip space in the string.
  *
  * @param {string} text input string.
- * @param {Array.<number>} pos where skip start, and return back where the skip
+ * @param {Array<number>} pos where skip start, and return back where the skip
  *     stops.
  * @private
  */
@@ -487,7 +487,7 @@ goog.i18n.DateTimeParse.prototype.skipSpace_ = function(text, pos) {
  * numeric field value.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {Object} part the pattern part for this field.
  * @param {number} digitCount when > 0, numeric parsing must obey the count.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object that holds parsed value.
@@ -584,7 +584,7 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
  * 3) year field participate in abut processing.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {number} start where this field start.
  * @param {number} value integer value of year.
  * @param {Object} part the pattern part for this field.
@@ -626,7 +626,7 @@ goog.i18n.DateTimeParse.prototype.subParseYear_ =
  * Parse Month field.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  * @param {number} value numeric value if this field is expressed using
  *      numeric pattern, or -1 if not.
@@ -663,7 +663,7 @@ goog.i18n.DateTimeParse.prototype.subParseMonth_ =
  * Parse Quarter field.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  * @param {number} value numeric value if this field is expressed using
  *      numeric pattern, or -1 if not.
@@ -696,7 +696,7 @@ goog.i18n.DateTimeParse.prototype.subParseQuarter_ =
 /**
  * Parse Day of week field.
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  *
  * @return {boolean} True if successful.
@@ -723,7 +723,7 @@ goog.i18n.DateTimeParse.prototype.subParseDayOfWeek_ =
  * Parse fractional seconds field.
  *
  * @param {number} value parsed numeric value.
- * @param {Array.<number>} pos current parse position.
+ * @param {Array<number>} pos current parse position.
  * @param {number} start where this field start.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  *
@@ -744,7 +744,7 @@ goog.i18n.DateTimeParse.prototype.subParseFractionalSeconds_ =
  * Parse GMT type timezone.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  *
  * @return {boolean} True if successful.
@@ -784,7 +784,7 @@ goog.i18n.DateTimeParse.prototype.subparseTimeZoneInGMT_ =
  * Parse time zone offset.
  *
  * @param {string} text the time text to be parsed.
- * @param {Array.<number>} pos Parse position.
+ * @param {Array<number>} pos Parse position.
  * @param {goog.i18n.DateTimeParse.MyDate_} cal object to hold parsed value.
  *
  * @return {boolean} True if successful.
@@ -843,7 +843,7 @@ goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
  * Parse a integer string and return integer value.
  *
  * @param {string} text string being parsed.
- * @param {Array.<number>} pos parse position.
+ * @param {Array<number>} pos parse position.
  *
  * @return {number} Converted integer value.
  * @private
@@ -881,8 +881,8 @@ goog.i18n.DateTimeParse.prototype.parseInt_ = function(text, pos) {
  * longest match is returned.
  *
  * @param {string} text The string to match to.
- * @param {Array.<number>} pos parsing position.
- * @param {Array.<string>} data The string array of matching patterns.
+ * @param {Array<number>} pos parsing position.
+ * @param {Array<string>} data The string array of matching patterns.
  *
  * @return {number} the new start position if matching succeeded; a negative
  *     number indicating matching failure.

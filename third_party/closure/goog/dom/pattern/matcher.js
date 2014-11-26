@@ -56,7 +56,7 @@ goog.dom.pattern.Matcher = function() {
 /**
  * Array of patterns to attempt to match in parallel.
  *
- * @type {Array.<goog.dom.pattern.AbstractPattern>}
+ * @type {Array<goog.dom.pattern.AbstractPattern>}
  * @private
  */
 goog.dom.pattern.Matcher.prototype.patterns_;
@@ -66,7 +66,7 @@ goog.dom.pattern.Matcher.prototype.patterns_;
  * Array of callbacks to call when a pattern is matched.  The indexing is the
  * same as the {@link #patterns_} array.
  *
- * @type {Array.<Function>}
+ * @type {Array<Function>}
  * @private
  */
 goog.dom.pattern.Matcher.prototype.callbacks_;

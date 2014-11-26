@@ -37,6 +37,7 @@
  * We currently do a bad job detecting when the IME closes on IE, and
  * make a "best effort" guess on when we know it's closed.
  *
+ * @author nicksantos@google.com (Nick Santos) (Ported to Closure)
  */
 
 goog.provide('goog.events.ImeHandler');
@@ -72,28 +73,31 @@ goog.events.ImeHandler = function(el) {
   /**
    * Tracks the keyup event only, because it has a different life-cycle from
    * other events.
-   * @type {goog.events.EventHandler.<!goog.events.ImeHandler>}
+   * @type {goog.events.EventHandler<!goog.events.ImeHandler>}
    * @private
    */
   this.keyUpHandler_ = new goog.events.EventHandler(this);
 
   /**
    * Tracks all the browser events.
-   * @type {goog.events.EventHandler.<!goog.events.ImeHandler>}
+   * @type {goog.events.EventHandler<!goog.events.ImeHandler>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
 
   if (goog.events.ImeHandler.USES_COMPOSITION_EVENTS) {
     this.handler_.
-        listen(el, 'compositionstart', this.handleCompositionStart_).
-        listen(el, 'compositionend', this.handleCompositionEnd_).
-        listen(el, 'compositionupdate', this.handleTextModifyingInput_);
+        listen(el, goog.events.EventType.COMPOSITIONSTART,
+            this.handleCompositionStart_).
+        listen(el, goog.events.EventType.COMPOSITIONEND,
+            this.handleCompositionEnd_).
+        listen(el, goog.events.EventType.COMPOSITIONUPDATE,
+            this.handleTextModifyingInput_);
   }
 
   this.handler_.
-      listen(el, 'textInput', this.handleTextInput_).
-      listen(el, 'text', this.handleTextModifyingInput_).
+      listen(el, goog.events.EventType.TEXTINPUT, this.handleTextInput_).
+      listen(el, goog.events.EventType.TEXT, this.handleTextModifyingInput_).
       listen(el, goog.events.EventType.KEYDOWN, this.handleKeyDown_);
 };
 goog.inherits(goog.events.ImeHandler, goog.events.EventTarget);

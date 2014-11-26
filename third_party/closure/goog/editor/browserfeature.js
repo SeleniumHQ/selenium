@@ -28,7 +28,7 @@ goog.require('goog.userAgent.product.isVersion');
 /**
  * Maps browser quirks to boolean values, detailing what the current
  * browser supports.
- * @type {Object}
+ * @const
  */
 goog.editor.BrowserFeature = {
   // Whether this browser uses the IE TextRange object.

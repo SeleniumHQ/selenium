@@ -20,6 +20,7 @@
 goog.provide('goog.math.interpolator.Linear1');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.math.interpolator.Interpolator1');
 
@@ -34,14 +35,14 @@ goog.require('goog.math.interpolator.Interpolator1');
 goog.math.interpolator.Linear1 = function() {
   /**
    * The abscissa of the data points.
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.x_ = [];
 
   /**
    * The ordinate of the data points.
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.y_ = [];

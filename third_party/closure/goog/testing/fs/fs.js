@@ -24,6 +24,7 @@ goog.provide('goog.testing.fs');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.async.Deferred');
+/** @suppress {extraRequire} */
 goog.require('goog.fs');
 goog.require('goog.testing.fs.Blob');
 goog.require('goog.testing.fs.FileSystem');
@@ -60,7 +61,7 @@ goog.testing.fs.getPersistent = function(size) {
 
 /**
  * Which object URLs have been granted for fake blobs.
- * @type {!Object.<boolean>}
+ * @type {!Object<boolean>}
  * @private
  */
 goog.testing.fs.objectUrls_ = {};
@@ -114,6 +115,23 @@ goog.testing.fs.getBlob = function(var_args) {
 
 
 /**
+ * Creates a blob with the given properties.
+ * See https://developer.mozilla.org/en-US/docs/Web/API/Blob for more details.
+ *
+ * @param {Array<string|!goog.testing.fs.Blob>} parts
+ *     The values that will make up the resulting blob.
+ * @param {string=} opt_type The MIME type of the Blob.
+ * @param {string=} opt_endings Specifies how strings containing newlines are to
+ *     be written out.
+ * @return {!goog.testing.fs.Blob} The blob.
+ */
+goog.testing.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
+  return new goog.testing.fs.Blob(goog.array.map(parts, String).join(''),
+      opt_type);
+};
+
+
+/**
  * Returns the string value of a fake blob.
  *
  * @param {!goog.testing.fs.Blob} blob The blob to convert to a string.
@@ -143,5 +161,9 @@ goog.testing.fs.install = function(stubs) {
   stubs.replace(fs, 'createObjectUrl', goog.testing.fs.createObjectUrl);
   stubs.replace(fs, 'revokeObjectUrl', goog.testing.fs.revokeObjectUrl);
   stubs.replace(fs, 'getBlob', goog.testing.fs.getBlob);
+  stubs.replace(fs, 'getBlobWithProperties',
+      goog.testing.fs.getBlobWithProperties);
   stubs.replace(fs, 'blobToString', goog.testing.fs.blobToString);
+  stubs.replace(fs, 'browserSupportsObjectUrls',
+      function() { return true; });
 };

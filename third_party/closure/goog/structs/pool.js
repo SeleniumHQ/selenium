@@ -60,13 +60,13 @@ goog.structs.Pool = function(opt_minCount, opt_maxCount) {
   /**
    * Set used to store objects that are currently in the pool and available
    * to be used.
-   * @private {goog.structs.Queue.<T>}
+   * @private {goog.structs.Queue<T>}
    */
   this.freeQueue_ = new goog.structs.Queue();
 
   /**
    * Set used to store objects that are currently in the pool and in use.
-   * @private {goog.structs.Set.<T>}
+   * @private {goog.structs.Set<T>}
    */
   this.inUseSet_ = new goog.structs.Set();
 

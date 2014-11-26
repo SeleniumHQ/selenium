@@ -343,7 +343,7 @@ goog.ui.ContainerRenderer.prototype.getCssClass = function() {
  * followed by any state-specific CSS classes.
  * @param {goog.ui.Container} container Container whose CSS classes are to be
  *     returned.
- * @return {!Array.<string>} Array of CSS class names applicable to the
+ * @return {!Array<string>} Array of CSS class names applicable to the
  *     container.
  */
 goog.ui.ContainerRenderer.prototype.getClassNames = function(container) {

@@ -60,7 +60,7 @@ goog.locale.genericFontNames.normalize_ = function(locale) {
  *     http://wiki/Main/IIISynonyms in all lowercase for easy matching.
  *     Smallest possible id is expected.
  *     Examples: 'zh', 'zh-tw', 'iw' instead of 'zh-CN', 'zh-Hant-TW', 'he'.
- * @return {Array.<Object>} List of objects with generic name as 'caption' and
+ * @return {Array<Object>} List of objects with generic name as 'caption' and
  *     corresponding font name lists as 'value' property.
  */
 goog.locale.genericFontNames.getList = function(locale) {

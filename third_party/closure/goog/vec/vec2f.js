@@ -105,7 +105,7 @@ goog.vec.vec2f.setFromVec2d = function(vec, src) {
  * Initializes vec2f vec from Array src.
  *
  * @param {goog.vec.vec2f.Type} vec The destination vector.
- * @param {Array.<number>} src The source vector.
+ * @param {Array<number>} src The source vector.
  * @return {!goog.vec.vec2f.Type} Return vec so that operations can be
  *     chained together.
  */

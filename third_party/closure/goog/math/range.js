@@ -46,7 +46,7 @@ goog.math.Range = function(a, b) {
 
 /**
  * Creates a goog.math.Range from an array of two numbers.
- * @param {!Array.<number>} pair
+ * @param {!Array<number>} pair
  * @return {!goog.math.Range}
  */
 goog.math.Range.fromPair = function(pair) {

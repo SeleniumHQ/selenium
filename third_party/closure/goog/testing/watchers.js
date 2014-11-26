@@ -21,7 +21,7 @@
 goog.provide('goog.testing.watchers');
 
 
-/** @private {!Array.<function()>} */
+/** @private {!Array<function()>} */
 goog.testing.watchers.resetWatchers_ = [];
 
 

@@ -95,10 +95,13 @@ goog.labs.testing.Environment = goog.defineClass(null, {
     //   with some new mock, adds a replayAll and BOOM the test fails
     //   because completely unrelated mocks now get replayed.
     if (this.mockControl) {
-      this.mockControl.$verifyAll();
-      this.mockControl.$replayAll();
-      this.mockControl.$verifyAll();
-      this.mockControl.$resetAll();
+      try {
+        this.mockControl.$verifyAll();
+        this.mockControl.$replayAll();
+        this.mockControl.$verifyAll();
+      } finally {
+        this.mockControl.$resetAll();
+      }
     }
     // Verifying the mockControl may throw, so if cleanup needs to happen,
     // add it further up in the function.
@@ -109,7 +112,7 @@ goog.labs.testing.Environment = goog.defineClass(null, {
    * Create a new {@see goog.testing.MockControl} accessible via
    * {@code env.mockControl} for each test. If your test has more than one
    * testing environment, don't call this on more than one of them.
-   * @return {goog.labs.testing.Environment} For chaining.
+   * @return {!goog.labs.testing.Environment} For chaining.
    */
   withMockControl: function() {
     if (!this.shouldMakeMockControl_) {
@@ -125,7 +128,7 @@ goog.labs.testing.Environment = goog.defineClass(null, {
    * installed (override i.e. setTimeout) by default. It can be accessed
    * using {@code env.mockClock}. If your test has more than one testing
    * environment, don't call this on more than one of them.
-   * @return {goog.labs.testing.Environment} For chaining.
+   * @return {!goog.labs.testing.Environment} For chaining.
    */
   withMockClock: function() {
     if (!this.shouldMakeMockClock_) {
@@ -171,7 +174,7 @@ goog.labs.testing.Environment.console_.setCapturing(true);
 goog.labs.testing.EnvironmentTestCase_ = function() {
   goog.labs.testing.EnvironmentTestCase_.base(this, 'constructor');
 
-  /** @private {!Array.<!goog.labs.testing.Environment>}> */
+  /** @private {!Array<!goog.labs.testing.Environment>}> */
   this.environments_ = [];
 
   // Automatically install this TestCase when any environment is used in a test.

@@ -24,8 +24,7 @@
 
 goog.provide('goog.storage.mechanism.mechanismSharingTester');
 
-goog.require('goog.iter.Iterator');
-goog.require('goog.storage.mechanism.IterableMechanism');
+goog.require('goog.iter.StopIteration');
 goog.require('goog.testing.asserts');
 goog.setTestOnly('goog.storage.mechanism.mechanismSharingTester');
 

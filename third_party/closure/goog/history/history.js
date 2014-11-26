@@ -288,7 +288,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
 
   /**
    * An object to keep track of the history event listeners.
-   * @type {goog.events.EventHandler.<!goog.History>}
+   * @type {goog.events.EventHandler<!goog.History>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -924,7 +924,7 @@ goog.History.prototype.operaDefibrillator_ = function() {
 /**
  * List of user input event types registered in Opera to restart the history
  * timer (@see goog.History#operaDefibrillator_).
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.History.INPUT_EVENTS_ = [

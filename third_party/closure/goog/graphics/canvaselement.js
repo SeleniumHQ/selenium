@@ -16,7 +16,6 @@
 /**
  * @fileoverview Objects representing shapes drawn on a canvas.
  * @author robbyw@google.com (Robby Walker)
- * @author wcrosby@google.com (Wayne Crosby)
  */
 
 goog.provide('goog.graphics.CanvasEllipseElement');
@@ -62,7 +61,7 @@ goog.graphics.CanvasGroupElement = function(graphics) {
 
   /**
    * Children contained by this group.
-   * @type {Array.<goog.graphics.Element>}
+   * @type {Array<goog.graphics.Element>}
    * @private
    */
   this.children_ = [];

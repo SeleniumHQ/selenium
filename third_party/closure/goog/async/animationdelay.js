@@ -16,6 +16,7 @@
  * @fileoverview A delayed callback that pegs to the next animation frame
  * instead of a user-configurable timeout.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.async.AnimationDelay');

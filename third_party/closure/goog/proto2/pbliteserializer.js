@@ -83,7 +83,7 @@ goog.proto2.PbLiteSerializer.prototype.setZeroIndexed = function(zeroIndexing) {
  * Serializes a message to a PB-Lite object.
  *
  * @param {goog.proto2.Message} message The message to be serialized.
- * @return {!Array} The serialized form of the message.
+ * @return {!Array<?>} The serialized form of the message.
  * @override
  */
 goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {

@@ -136,6 +136,24 @@ goog.functions.withReturnValue = function(f, retValue) {
 
 
 /**
+ * Creates a function that returns whether its arguement equals the given value.
+ *
+ * Example:
+ * var key = goog.object.findKey(obj, goog.functions.equalTo('needle'));
+ *
+ * @param {*} value The value to compare to.
+ * @param {boolean=} opt_useLooseComparison Whether to use a loose (==)
+ *     comparison rather than a strict (===) one. Defaults to false.
+ * @return {function(*):boolean} The new function.
+ */
+goog.functions.equalTo = function(value, opt_useLooseComparison) {
+  return function(other) {
+    return opt_useLooseComparison ? (value == other) : (value === other);
+  };
+};
+
+
+/**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
  * @param {function(...[?]):T} fn The final function.
@@ -244,11 +262,14 @@ goog.functions.not = function(f) {
  * Generic factory function to construct an object given the constructor
  * and the arguments. Intended to be bound to create object factories.
  *
- * Callers should cast the result to the appropriate type for proper type
- * checking by the compiler.
- * @param {!Function} constructor The constructor for the Object.
+ * Example:
+ *
+ * var factory = goog.partial(goog.functions.create, Class);
+ *
+ * @param {function(new:T, ...)} constructor The constructor for the Object.
  * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {!Object} A new instance of the class given in {@code constructor}.
+ * @return {!T} A new instance of the class given in {@code constructor}.
+ * @template T
  */
 goog.functions.create = function(constructor, var_args) {
   /**

@@ -50,21 +50,21 @@ goog.testing.MultiTestRunner = function(opt_domHelper) {
   /**
    * Array of tests to execute, when combined with the base path this should be
    * a relative path to the test from the page containing the multi testrunner.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.allTests_ = [];
 
   /**
    * Tests that match the filter function.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.activeTests_ = [];
 
   /**
    * An event handler for handling events.
-   * @type {goog.events.EventHandler.<!goog.testing.MultiTestRunner>}
+   * @type {goog.events.EventHandler<!goog.testing.MultiTestRunner>}
    * @private
    */
   this.eh_ = new goog.events.EventHandler(this);
@@ -88,7 +88,7 @@ goog.testing.MultiTestRunner.DEFAULT_TIMEOUT_MS = 45 * 1000;
 
 /**
  * Messages corresponding to the numeric states.
- * @type {Array.<string>}
+ * @type {Array<string>}
  */
 goog.testing.MultiTestRunner.STATES = [
   'waiting for test runner',
@@ -115,7 +115,7 @@ goog.testing.MultiTestRunner.prototype.basePath_ = '';
 
 /**
  * A set of tests that have finished.  All extant keys map to true.
- * @type {Object.<boolean>}
+ * @type {Object<boolean>}
  * @private
  */
 goog.testing.MultiTestRunner.prototype.finished_ = null;
@@ -206,7 +206,7 @@ goog.testing.MultiTestRunner.prototype.timeoutMs_ =
 
 /**
  * An array of objects containing stats about the tests.
- * @type {Array.<Object>?}
+ * @type {Array<Object>?}
  * @private
  */
 goog.testing.MultiTestRunner.prototype.stats_ = null;
@@ -489,7 +489,7 @@ goog.testing.MultiTestRunner.prototype.getFilterFunction = function() {
 
 /**
  * Adds an array of tests to the tests that the test runner should execute.
- * @param {Array.<string>} tests Adds tests to the test runner.
+ * @param {Array<string>} tests Adds tests to the test runner.
  * @return {!goog.testing.MultiTestRunner} Instance for chaining.
  */
 goog.testing.MultiTestRunner.prototype.addTests = function(tests) {
@@ -500,7 +500,7 @@ goog.testing.MultiTestRunner.prototype.addTests = function(tests) {
 
 /**
  * Returns the list of all tests added to the runner.
- * @return {Array.<string>} The list of all tests added to the runner.
+ * @return {Array<string>} The list of all tests added to the runner.
  */
 goog.testing.MultiTestRunner.prototype.getAllTests = function() {
   return this.allTests_;
@@ -509,7 +509,7 @@ goog.testing.MultiTestRunner.prototype.getAllTests = function() {
 
 /**
  * Returns the list of tests that will be run when start() is called.
- * @return {!Array.<string>} The list of tests that will be run when start() is
+ * @return {!Array<string>} The list of tests that will be run when start() is
  *     called.
  */
 goog.testing.MultiTestRunner.prototype.getTestsToRun = function() {
@@ -519,7 +519,7 @@ goog.testing.MultiTestRunner.prototype.getTestsToRun = function() {
 
 /**
  * Returns a list of tests from runner that have been marked as failed.
- * @return {!Array.<string>} A list of tests from runner that have been marked
+ * @return {!Array<string>} A list of tests from runner that have been marked
  *     as failed.
  */
 goog.testing.MultiTestRunner.prototype.getTestsThatFailed = function() {
@@ -1017,7 +1017,7 @@ goog.testing.MultiTestRunner.prototype.drawProgressSegment_ =
  */
 goog.testing.MultiTestRunner.prototype.drawTestResult_ = function(
     test, success, report) {
-  var text = goog.string.isEmpty(report) ?
+  var text = goog.string.isEmptyOrWhitespace(report) ?
       'No report for ' + test + '\n' : report;
   var el = this.dom_.createDom('div');
   text = goog.string.htmlEscape(text).replace(/\n/g, '<br>');
@@ -1193,7 +1193,7 @@ goog.testing.MultiTestRunner.TestFrame = function(
 
   /**
    * An event handler for handling events.
-   * @type {goog.events.EventHandler.<!goog.testing.MultiTestRunner.TestFrame>}
+   * @type {goog.events.EventHandler<!goog.testing.MultiTestRunner.TestFrame>}
    * @private
    */
   this.eh_ = new goog.events.EventHandler(this);

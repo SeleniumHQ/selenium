@@ -266,10 +266,11 @@ goog.net.Jsonp.newReplyHandler_ = function(id, replyCallback) {
    *
    * @param {...Object} var_args The response data sent from the server.
    */
-  return function(var_args) {
+  var handler = function(var_args) {
     goog.net.Jsonp.cleanup_(id, true);
     replyCallback.apply(undefined, arguments);
   };
+  return handler;
 };
 
 

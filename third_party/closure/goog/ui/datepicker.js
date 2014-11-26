@@ -118,7 +118,7 @@ goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols, opt_domHelper,
 
   /**
    * Class names to apply to the weekday columns.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.wdayStyles_ = ['', '', '', '', '', '', ''];
@@ -136,16 +136,16 @@ goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols, opt_domHelper,
 
   /**
    * Collection of dates that make up the date picker.
-   * @type {!Array.<!Array.<!goog.date.Date>>}
+   * @type {!Array<!Array<!goog.date.Date>>}
    * @private
    */
   this.grid_ = [];
 
-  /** @private {Array.<!Array.<Element>>} */
+  /** @private {Array<!Array<Element>>} */
   this.elTable_;
 
   /**
-   * TODO(user): Remove external references to this field,
+   * TODO(tbreisacher): Remove external references to this field,
    * and make it private.
    * @type {Element}
    */
@@ -329,7 +329,7 @@ goog.ui.DatePicker.YEAR_MENU_RANGE_ = 5;
 /**
  * Constants for event names
  *
- * @type {Object}
+ * @const
  */
 goog.ui.DatePicker.Events = {
   CHANGE: 'change',
@@ -1184,7 +1184,7 @@ goog.ui.DatePicker.prototype.handleYearMenuClick_ = function(target) {
  * Support function for menu creation.
  *
  * @param {Element} srcEl Button to create menu for.
- * @param {Array.<string>} items List of items to populate menu with.
+ * @param {Array<string>} items List of items to populate menu with.
  * @param {function(Element)} method Call back method.
  * @param {string} selected Item to mark as selected in menu.
  * @private

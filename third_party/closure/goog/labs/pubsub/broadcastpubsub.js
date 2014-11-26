@@ -85,7 +85,7 @@ goog.labs.pubsub.BroadcastPubSub = function() {
   /** @private {goog.storage.Storage} */
   this.storage_ = null;
 
-  /** @private {Object.<string, number>} */
+  /** @private {Object<string, number>} */
   this.ie8LastEventTimes_ = null;
 
   /** @private {number} */
@@ -108,7 +108,7 @@ goog.labs.pubsub.BroadcastPubSub = function() {
 goog.inherits(goog.labs.pubsub.BroadcastPubSub, goog.Disposable);
 
 
-/** @private @const {!Array.<!goog.labs.pubsub.BroadcastPubSub>} */
+/** @private @const {!Array<!goog.labs.pubsub.BroadcastPubSub>} */
 goog.labs.pubsub.BroadcastPubSub.instances_ = [];
 
 
@@ -151,7 +151,7 @@ goog.labs.pubsub.BroadcastPubSub.prototype.handleStorageEvent_ =
 
 /**
  * Dispatches args on the internal pubsub queue.
- * @param {!Array.<string>} args The arguments to publish.
+ * @param {!Array<string>} args The arguments to publish.
  * @private
  */
 goog.labs.pubsub.BroadcastPubSub.prototype.dispatch_ = function(args) {
@@ -398,7 +398,7 @@ goog.labs.pubsub.BroadcastPubSub.IE8_EVENTS_KEY_ =
  * attributes. Since we are communicating across browser tabs we could be
  * dealing with different versions of javascript and thus may have different
  * obfuscation in each tab.
- * @private @typedef {{'timestamp': number, 'args': !Array.<string>}}
+ * @private @typedef {{'timestamp': number, 'args': !Array<string>}}
  */
 goog.labs.pubsub.BroadcastPubSub.Ie8Event_;
 
@@ -426,8 +426,8 @@ goog.labs.pubsub.BroadcastPubSub.validateIe8Event_ = function(obj) {
 
 /**
  * Returns an array of valid IE8 events.
- * @param {!Array} events Possible IE8 events.
- * @return {!Array.<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>}
+ * @param {!Array<!Object>} events Possible IE8 events.
+ * @return {!Array<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>}
  *     Valid IE8 events.
  * @private
  */
@@ -442,9 +442,9 @@ goog.labs.pubsub.BroadcastPubSub.filterValidIe8Events_ = function(events) {
  * Returns the IE8 events that have a timestamp later than the provided
  * timestamp.
  * @param {number} timestamp Expired timestamp.
- * @param {!Array.<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>} events
+ * @param {!Array<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>} events
  *     Possible IE8 events.
- * @return {!Array.<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>}
+ * @return {!Array<!goog.labs.pubsub.BroadcastPubSub.Ie8Event_>}
  *     Unexpired IE8 events.
  * @private
  */
@@ -459,7 +459,7 @@ goog.labs.pubsub.BroadcastPubSub.filterNewIe8Events_ =
 /**
  * Processes the events array for key if all elements are valid IE8 events.
  * @param {string} key The key in localStorage where the event queue is stored.
- * @param {!Array} events Array of possible events stored at key.
+ * @param {!Array<!Object>} events Array of possible events stored at key.
  * @return {boolean} Return true if all elements in the array are valid
  *     events, false otherwise.
  * @private

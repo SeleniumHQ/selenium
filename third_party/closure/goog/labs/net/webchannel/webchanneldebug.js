@@ -242,7 +242,7 @@ WebChannelDebug.prototype.redactResponse_ = function(responseText) {
 
 /**
  * Removes data from a response array that may be sensitive.
- * @param {!Array} array The array to clean.
+ * @param {!Array<?>} array The array to clean.
  * @private
  */
 WebChannelDebug.prototype.maybeRedactArray_ = function(array) {

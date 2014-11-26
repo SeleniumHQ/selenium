@@ -36,7 +36,7 @@ goog.require('goog.testing.Mock');
 goog.testing.LooseExpectationCollection = function() {
   /**
    * The list of expectations. All of these should have the same name.
-   * @type {Array.<goog.testing.MockExpectation>}
+   * @type {Array<goog.testing.MockExpectation>}
    * @private
    */
   this.expectations_ = [];
@@ -55,7 +55,7 @@ goog.testing.LooseExpectationCollection.prototype.addExpectation =
 
 /**
  * Gets the list of expectations in this collection.
- * @return {Array.<goog.testing.MockExpectation>} The array of expectations.
+ * @return {Array<goog.testing.MockExpectation>} The array of expectations.
  */
 goog.testing.LooseExpectationCollection.prototype.getExpectations = function() {
   return this.expectations_;
@@ -95,7 +95,7 @@ goog.testing.LooseMock = function(objectToMock, opt_ignoreUnexpectedCalls,
    * The calls that have been made; we cache them to verify at the end. Each
    * element is an array where the first element is the name, and the second
    * element is the arguments.
-   * @type {Array.<Array.<*>>}
+   * @type {Array<Array<*>>}
    * @private
    */
   this.$calls_ = [];

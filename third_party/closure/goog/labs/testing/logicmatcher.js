@@ -31,7 +31,7 @@ goog.require('goog.labs.testing.Matcher');
 /**
  * The AllOf matcher.
  *
- * @param {!Array.<!goog.labs.testing.Matcher>} matchers Input matchers.
+ * @param {!Array<!goog.labs.testing.Matcher>} matchers Input matchers.
  *
  * @constructor
  * @struct
@@ -40,7 +40,7 @@ goog.require('goog.labs.testing.Matcher');
  */
 goog.labs.testing.AllOfMatcher = function(matchers) {
   /**
-   * @type {!Array.<!goog.labs.testing.Matcher>}
+   * @type {!Array<!goog.labs.testing.Matcher>}
    * @private
    */
   this.matchers_ = matchers;
@@ -82,7 +82,7 @@ goog.labs.testing.AllOfMatcher.prototype.describe =
 /**
  * The AnyOf matcher.
  *
- * @param {!Array.<!goog.labs.testing.Matcher>} matchers Input matchers.
+ * @param {!Array<!goog.labs.testing.Matcher>} matchers Input matchers.
  *
  * @constructor
  * @struct
@@ -91,7 +91,7 @@ goog.labs.testing.AllOfMatcher.prototype.describe =
  */
 goog.labs.testing.AnyOfMatcher = function(matchers) {
   /**
-   * @type {!Array.<!goog.labs.testing.Matcher>}
+   * @type {!Array<!goog.labs.testing.Matcher>}
    * @private
    */
   this.matchers_ = matchers;

@@ -93,7 +93,7 @@ goog.testing.MockClassRecord = function(namespace, className, originalClass,
   /**
    * A mocks that will be constructed by their argument list.  The entries are
    * objects with the format {'args': args, 'mock': mock}.
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.instancesByArgs_ = [];
@@ -167,7 +167,7 @@ goog.testing.MockClassRecord.prototype.setStaticMock = function(staticMock) {
 /**
  * Adds a new mock instance mapping.  The mapping connects a set of function
  * arguments to a specific mock instance.
- * @param {Array} args An array of function arguments.
+ * @param {Array<?>} args An array of function arguments.
  * @param {goog.testing.StrictMock|goog.testing.LooseMock} mock A mock
  *     associated with the supplied arguments.
  */
@@ -179,7 +179,7 @@ goog.testing.MockClassRecord.prototype.addMockInstance = function(args, mock) {
 /**
  * Finds the mock corresponding to a given argument set.  Throws an error if
  * there is no appropriate match found.
- * @param {Array} args An array of function arguments.
+ * @param {Array<?>} args An array of function arguments.
  * @return {goog.testing.StrictMock|goog.testing.LooseMock|null} The mock
  *     corresponding to a given argument set.
  */
@@ -239,7 +239,7 @@ goog.testing.MockClassFactory.instance_ = null;
 
 /**
  * The names of the fields that are defined on Object.prototype.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.testing.MockClassFactory.PROTOTYPE_FIELDS_ = [
@@ -335,7 +335,7 @@ goog.testing.MockClassFactory.prototype.getProxyFunction_ = function(fnName) {
 /**
  * Find a mock instance for a given class name and argument list.
  * @param {string} className The name of the class.
- * @param {Array} args The argument list to match.
+ * @param {Array<?>} args The argument list to match.
  * @return {goog.testing.StrictMock|goog.testing.LooseMock} The mock found for
  *     the given argument list.
  * @private

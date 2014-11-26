@@ -15,6 +15,7 @@
 /**
  * @fileoverview Functions to style text.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.plugins.BasicTextFormatter');
@@ -1012,6 +1013,15 @@ goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(range,
     if (anchors.length) {
       anchor = anchors.pop();
     }
+    var isLikelyUrl = function(a, i, anchors) {
+      return goog.editor.Link.isLikelyUrl(goog.dom.getRawTextContent(a));
+    };
+    if (anchors.length && goog.array.every(anchors, isLikelyUrl)) {
+      for (var i = 0, a; a = anchors[i]; i++) {
+        goog.editor.Link.createNewLinkFromText(a, opt_target);
+      }
+      anchors = null;
+    }
   }
 
   return goog.editor.Link.createNewLink(
@@ -1134,7 +1144,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.removeFontSizeFromStyleAttrs_ =
 /**
  * Apply pre-execCommand fixes for IE.
  * @param {string} command The command to execute.
- * @return {!Array.<Node>} Array of nodes to be removed after the execCommand.
+ * @return {!Array<Node>} Array of nodes to be removed after the execCommand.
  *     Will never be longer than 2 elements.
  * @private
  */

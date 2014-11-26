@@ -44,7 +44,7 @@ goog.require('goog.testing.StrictMock');
 goog.testing.MockControl = function() {
   /**
    * The list of mocks being controlled.
-   * @type {Array.<goog.testing.MockInterface>}
+   * @type {Array<goog.testing.MockInterface>}
    * @private
    */
   this.mocks_ = [];

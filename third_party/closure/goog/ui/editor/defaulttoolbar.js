@@ -16,7 +16,6 @@
  * @fileoverview Factory functions for creating a default editing toolbar.
  *
  * @author attila@google.com (Attila Bodis)
- * @author jparent@google.com (Julie Parent)
  * @see ../../demos/editor/editor.html
  */
 
@@ -53,7 +52,7 @@ goog.ui.editor.DefaultToolbar.MSG_FONT_NORMAL_SERIF =
  *   <li>{@code value} - Value for the corresponding 'font-family' CSS style
  *       (e.g. 'Tahoma, Arial, sans-serif')
  * </ul>
- * @type {!Array.<{caption:string, value:string}>}
+ * @type {!Array<{caption:string, value:string}>}
  * @private
  */
 goog.ui.editor.DefaultToolbar.FONTS_ = [
@@ -75,7 +74,7 @@ goog.ui.editor.DefaultToolbar.FONTS_ = [
 /**
  * Locale-specific font descriptors.  The object is a map of locale strings to
  * arrays of font descriptors.
- * @type {!Object.<!Array.<{caption:string, value:string}>>}
+ * @type {!Object<!Array<{caption:string, value:string}>>}
  * @private
  */
 goog.ui.editor.DefaultToolbar.I18N_FONTS_ = {
@@ -189,7 +188,7 @@ goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_HUGE = goog.getMsg('Huge');
  *   <li>{@code caption} - Caption to show in the font size menu (e.g. 'Huge')
  *   <li>{@code value} - Value for the corresponding HTML font size (e.g. 6)
  * </ul>
- * @type {!Array.<{caption:string, value:number}>}
+ * @type {!Array<{caption:string, value:number}>}
  * @private
  */
 goog.ui.editor.DefaultToolbar.FONT_SIZES_ = [
@@ -238,7 +237,7 @@ goog.ui.editor.DefaultToolbar.MSG_FORMAT_NORMAL = goog.getMsg('Normal');
  *   <li>{@code command} - Corresponding {@link goog.dom.TagName} (e.g.
  *       'H4')
  * </ul>
- * @type {!Array.<{caption: string, command: !goog.dom.TagName}>}
+ * @type {!Array<{caption: string, command: !goog.dom.TagName}>}
  * @private
  */
 goog.ui.editor.DefaultToolbar.FORMAT_OPTIONS_ = [
@@ -300,7 +299,7 @@ goog.ui.editor.DefaultToolbar.makeDefaultToolbar = function(elem,
  * item in the {@code items} array must either be a
  * {@link goog.editor.Command} (to create a built-in button) or a subclass
  * of {@link goog.ui.Control} (to create a custom control).
- * @param {!Array.<string|goog.ui.Control>} items Toolbar items; each must
+ * @param {!Array<string|goog.ui.Control>} items Toolbar items; each must
  *     be a {@link goog.editor.Command} or a {@link goog.ui.Control}.
  * @param {!Element} elem Toolbar parent element.
  * @param {boolean=} opt_isRightToLeft Whether the editor chrome is
@@ -347,7 +346,7 @@ goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton = function(command,
   if (descriptor) {
     // Default the factory method to makeToggleButton, since most built-in
     // toolbar buttons are toggle buttons. See also
-    // goog.ui.editor.DefaultToolbar.BUTTONS_.
+    // goog.ui.editor.DefaultToolbar.button_list_.
     var factory = descriptor.factory ||
         goog.ui.editor.ToolbarFactory.makeToggleButton;
     var id = descriptor.command;
@@ -370,7 +369,7 @@ goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton = function(command,
 
 /**
  * A set of built-in buttons to display in the default editor toolbar.
- * @type {!Array.<string>}
+ * @type {!Array<string>}
  */
 goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS = [
   goog.editor.Command.IMAGE,
@@ -391,7 +390,7 @@ goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS = [
 /**
  * A set of built-in buttons to display in the default editor toolbar when
  * the editor chrome is right-to-left (BiDi mode only).
- * @type {!Array.<string>}
+ * @type {!Array<string>}
  */
 goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS_RTL = [
   goog.editor.Command.IMAGE,
@@ -866,8 +865,7 @@ goog.ui.editor.DefaultToolbar.MSG_EDIT_HTML_CAPTION = goog.getMsg('Edit HTML');
  * Note that this object is only used for creating toolbar buttons for
  * built-in editor commands; custom buttons aren't listed here.  Please don't
  * try to hack this!
- * @type {Object.<!goog.ui.editor.ButtonDescriptor>}.
- * @private
+ * @private {!Object<!goog.ui.editor.ButtonDescriptor>}.
  */
 goog.ui.editor.DefaultToolbar.buttons_ = {};
 
@@ -888,10 +886,9 @@ goog.ui.editor.ButtonDescriptor;
  * descriptor objects.  This array is processed at JS parse time; each item is
  * inserted into {@link goog.ui.editor.DefaultToolbar.buttons_}, and the array
  * itself is deleted and (hopefully) garbage-collected.
- * @type {Array.<!goog.ui.editor.ButtonDescriptor>}.
- * @private
+ * @private {Array<!goog.ui.editor.ButtonDescriptor>}
  */
-goog.ui.editor.DefaultToolbar.BUTTONS_ = [{
+goog.ui.editor.DefaultToolbar.button_list_ = [{
   command: goog.editor.Command.UNDO,
   tooltip: goog.ui.editor.DefaultToolbar.MSG_UNDO_TITLE,
   classes: goog.getCssName('tr-icon') + ' ' + goog.getCssName('tr-undo'),
@@ -1057,14 +1054,13 @@ goog.ui.editor.DefaultToolbar.BUTTONS_ = [{
 
 (function() {
   // Create the goog.ui.editor.DefaultToolbar.buttons_ map from
-  // goog.ui.editor.DefaultToolbar.BUTTONS_.
+  // goog.ui.editor.DefaultToolbar.button_list_.
   for (var i = 0, button;
-      button = goog.ui.editor.DefaultToolbar.BUTTONS_[i]; i++) {
+      button = goog.ui.editor.DefaultToolbar.button_list_[i]; i++) {
     goog.ui.editor.DefaultToolbar.buttons_[button.command] = button;
   }
 
-  // goog.ui.editor.DefaultToolbar.BUTTONS_ is no longer needed
+  // goog.ui.editor.DefaultToolbar.button_list_ is no longer needed
   // once the map is ready.
-  delete goog.ui.editor.DefaultToolbar.BUTTONS_;
-
+  goog.ui.editor.DefaultToolbar.button_list_ = null;
 })();

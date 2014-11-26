@@ -24,12 +24,12 @@ goog.provide('goog.events.FileDropHandler.EventType');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
+goog.require('goog.log.Level');
 
 
 
@@ -50,7 +50,7 @@ goog.events.FileDropHandler = function(element, opt_preventDropOutside) {
 
   /**
    * Handler for drag/drop events.
-   * @type {!goog.events.EventHandler.<!goog.events.FileDropHandler>}
+   * @type {!goog.events.EventHandler<!goog.events.FileDropHandler>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

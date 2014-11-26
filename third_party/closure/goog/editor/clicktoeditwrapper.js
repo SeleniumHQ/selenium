@@ -27,15 +27,14 @@
 goog.provide('goog.editor.ClickToEditWrapper');
 
 goog.require('goog.Disposable');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
-goog.require('goog.editor.Field.EventType');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.range');
-goog.require('goog.events.BrowserEvent.MouseButton');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
@@ -74,7 +73,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for field related events.
-   * @type {!goog.events.EventHandler.<!goog.editor.ClickToEditWrapper>}
+   * @type {!goog.events.EventHandler<!goog.editor.ClickToEditWrapper>}
    * @private
    */
   this.fieldEventHandler_ = new goog.events.EventHandler(this);
@@ -88,7 +87,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for mouse events.
-   * @type {!goog.events.EventHandler.<!goog.editor.ClickToEditWrapper>}
+   * @type {!goog.events.EventHandler<!goog.editor.ClickToEditWrapper>}
    * @private
    */
   this.mouseEventHandler_ = new goog.events.EventHandler(this);

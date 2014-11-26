@@ -23,11 +23,15 @@
 
 goog.provide('goog.tweak.Registry');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.log');
-goog.require('goog.object');
 goog.require('goog.string');
-goog.require('goog.tweak.BaseEntry');
+goog.require('goog.tweak.BasePrimitiveSetting');
+goog.require('goog.tweak.BaseSetting');
+goog.require('goog.tweak.BooleanSetting');
+goog.require('goog.tweak.NumericSetting');
+goog.require('goog.tweak.StringSetting');
 goog.require('goog.uri.utils');
 
 
@@ -36,7 +40,7 @@ goog.require('goog.uri.utils');
  * Singleton that manages all tweaks. This should be instantiated only from
  * goog.tweak.getRegistry().
  * @param {string} queryParams Value of window.location.search.
- * @param {!Object.<string|number|boolean>} compilerOverrides Default value
+ * @param {!Object<string|number|boolean>} compilerOverrides Default value
  *     overrides set by the compiler.
  * @constructor
  * @final
@@ -44,21 +48,21 @@ goog.require('goog.uri.utils');
 goog.tweak.Registry = function(queryParams, compilerOverrides) {
   /**
    * A map of entry id -> entry object
-   * @type {!Object.<!goog.tweak.BaseEntry>}
+   * @type {!Object<!goog.tweak.BaseEntry>}
    * @private
    */
   this.entryMap_ = {};
 
   /**
    * The map of query params to use when initializing entry settings.
-   * @type {!Object.<string>}
+   * @type {!Object<string>}
    * @private
    */
   this.parsedQueryParams_ = goog.tweak.Registry.parseQueryParams(queryParams);
 
   /**
    * List of callbacks to call when a new entry is registered.
-   * @type {!Array.<!Function>}
+   * @type {!Array<!Function>}
    * @private
    */
   this.onRegisterListeners_ = [];
@@ -66,7 +70,7 @@ goog.tweak.Registry = function(queryParams, compilerOverrides) {
   /**
    * A map of entry ID -> default value override for overrides set by the
    * compiler.
-   * @type {!Object.<string|number|boolean>}
+   * @type {!Object<string|number|boolean>}
    * @private
    */
   this.compilerDefaultValueOverrides_ = compilerOverrides;
@@ -74,7 +78,7 @@ goog.tweak.Registry = function(queryParams, compilerOverrides) {
   /**
    * A map of entry ID -> default value override for overrides set by
    * goog.tweak.overrideDefaultValue().
-   * @type {!Object.<string|number|boolean>}
+   * @type {!Object<string|number|boolean>}
    * @private
    */
   this.defaultValueOverrides_ = {};
@@ -93,7 +97,7 @@ goog.tweak.Registry.prototype.logger_ =
 /**
  * Simple parser for query params. Makes all keys lower-case.
  * @param {string} queryParams The part of the url between the ? and the #.
- * @return {!Object.<string>} map of key->value.
+ * @return {!Object<string>} map of key->value.
  */
 goog.tweak.Registry.parseQueryParams = function(queryParams) {
   // Strip off the leading ? and split on &.
@@ -232,7 +236,7 @@ goog.tweak.Registry.prototype.getNumericSetting = function(id) {
  * @param {boolean} excludeChildEntries Exclude BooleanInGroupSettings.
  * @param {boolean} excludeNonSettings Exclude entries that are not subclasses
  *     of BaseSetting.
- * @return {!Array.<!goog.tweak.BaseSetting>} The settings.
+ * @return {!Array<!goog.tweak.BaseSetting>} The settings.
  */
 goog.tweak.Registry.prototype.extractEntries =
     function(excludeChildEntries, excludeNonSettings) {

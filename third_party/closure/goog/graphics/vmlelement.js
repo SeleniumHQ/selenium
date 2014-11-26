@@ -17,7 +17,6 @@
  * @fileoverview Thin wrappers around the DOM element returned from
  * the different draw methods of the graphics. This is the VML implementation.
  * @author arv@google.com (Erik Arvidsson)
- * @author yoah@google.com (Yoah Bar-David)
  */
 
 goog.provide('goog.graphics.VmlEllipseElement');

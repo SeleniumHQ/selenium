@@ -24,7 +24,6 @@
  * curves of arbitrary degree.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author wcrosby@google.com (Wayne Crosby)
  */
 
 goog.provide('goog.math.Bezier');

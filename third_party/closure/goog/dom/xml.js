@@ -131,7 +131,7 @@ goog.dom.xml.selectSingleNode = function(node, path) {
  * Selects multiple nodes using an Xpath expression and a root node
  * @param {Node} node The root node.
  * @param {string} path Xpath selector.
- * @return {(NodeList,Array.<Node>)} The selected nodes, or empty array if no
+ * @return {(NodeList,Array<Node>)} The selected nodes, or empty array if no
  *     matching nodes.
  */
 goog.dom.xml.selectNodes = function(node, path) {
@@ -164,7 +164,7 @@ goog.dom.xml.selectNodes = function(node, path) {
  * when you need to ensure that the exact property is available as an attribute
  * and can be read later by the native getAttribute method.
  * @param {!Element} element XML or DOM element to set attributes on.
- * @param {!Object.<string, string>} attributes Map of property:value pairs.
+ * @param {!Object<string, string>} attributes Map of property:value pairs.
  */
 goog.dom.xml.setAttributes = function(element, attributes) {
   for (var key in attributes) {

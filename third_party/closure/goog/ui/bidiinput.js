@@ -28,6 +28,7 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.InputHandler');
 goog.require('goog.i18n.bidi');
+goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.ui.Component');
 
 

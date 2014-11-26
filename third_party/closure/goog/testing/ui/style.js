@@ -57,7 +57,7 @@ goog.testing.ui.style.getReferenceNode = function(referenceId) {
 /**
  * Returns an array of all element children of a given node.
  * @param {Node} element The node to get element children of.
- * @return {!Array.<!Node>} An array of all the element children.
+ * @return {!Array<!Node>} An array of all the element children.
  */
 goog.testing.ui.style.getElementChildren = function(element) {
   var first = goog.dom.getFirstElementChild(element);

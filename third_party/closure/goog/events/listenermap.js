@@ -44,7 +44,7 @@ goog.events.ListenerMap = function(src) {
 
   /**
    * Maps of event type to an array of listeners.
-   * @type {Object.<string, !Array.<!goog.events.Listener>>}
+   * @type {Object<string, !Array<!goog.events.Listener>>}
    */
   this.listeners = {};
 
@@ -210,7 +210,7 @@ goog.events.ListenerMap.prototype.removeAll = function(opt_type) {
  * @param {string|!goog.events.EventId} type The type of the listeners
  *     to retrieve.
  * @param {boolean} capture The capture mode of the listeners to retrieve.
- * @return {!Array.<goog.events.ListenableKey>} An array of matching
+ * @return {!Array<goog.events.ListenableKey>} An array of matching
  *     listeners.
  */
 goog.events.ListenerMap.prototype.getListeners = function(type, capture) {
@@ -285,7 +285,7 @@ goog.events.ListenerMap.prototype.hasListener = function(
 /**
  * Finds the index of a matching goog.events.Listener in the given
  * listenerArray.
- * @param {!Array.<!goog.events.Listener>} listenerArray Array of listener.
+ * @param {!Array<!goog.events.Listener>} listenerArray Array of listener.
  * @param {!Function} listener The listener function.
  * @param {boolean=} opt_useCapture The capture flag for the listener.
  * @param {Object=} opt_listenerScope The listener scope.

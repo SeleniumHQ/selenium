@@ -16,6 +16,7 @@
  * @fileoverview Wrapper around {@link goog.ui.Dialog}, to provide
  * dialogs that are smarter about interacting with a rich text editor.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.ui.editor.AbstractDialog');

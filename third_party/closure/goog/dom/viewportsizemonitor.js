@@ -108,7 +108,7 @@ goog.dom.ViewportSizeMonitor.removeInstanceForWindow = function(opt_window) {
 /**
  * Map of window hash code to viewport size monitor for that window, if
  * created.
- * @type {Object.<number,goog.dom.ViewportSizeMonitor>}
+ * @type {Object<number,goog.dom.ViewportSizeMonitor>}
  * @private
  */
 goog.dom.ViewportSizeMonitor.windowInstanceMap_ = {};

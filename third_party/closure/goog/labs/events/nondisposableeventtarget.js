@@ -58,7 +58,7 @@ goog.require('goog.object');
  *   source.dispatchEvent('foo'); // will call handleEvent
  * </pre>
  *
- * TODO(user|johnlenz): Consider a more modern, less viral
+ * TODO(chrishenry|johnlenz): Consider a more modern, less viral
  * (not based on inheritance) replacement of goog.Disposable, which will allow
  * goog.events.EventTarget to not be disposable.
  *
@@ -177,7 +177,7 @@ goog.labs.events.NonDisposableEventTarget.prototype.removeAllListeners =
 /** @override */
 goog.labs.events.NonDisposableEventTarget.prototype.fireListeners = function(
     type, capture, eventObject) {
-  // TODO(user): Original code avoids array creation when there
+  // TODO(chrishenry): Original code avoids array creation when there
   // is no listener, so we do the same. If this optimization turns
   // out to be not required, we can replace this with
   // getListeners(type, capture) instead, which is simpler.
@@ -245,12 +245,12 @@ goog.labs.events.NonDisposableEventTarget.prototype.assertInitialized_ =
 /**
  * Dispatches the given event on the ancestorsTree.
  *
- * TODO(user): Look for a way to reuse this logic in
+ * TODO(chrishenry): Look for a way to reuse this logic in
  * goog.events, if possible.
  *
  * @param {!Object} target The target to dispatch on.
  * @param {goog.events.Event|Object|string} e The event object.
- * @param {Array.<goog.events.Listenable>=} opt_ancestorsTree The ancestors
+ * @param {Array<goog.events.Listenable>=} opt_ancestorsTree The ancestors
  *     tree of the target, in reverse order from the closest ancestor
  *     to the root event target. May be null if the target has no ancestor.
  * @return {boolean} If anyone called preventDefault on the event object (or

@@ -63,7 +63,7 @@ goog.ui.style.app.ButtonRenderer.CSS_CLASS = goog.getCssName('goog-button');
  * Array of arrays of CSS classes that we want composite classes added and
  * removed for in IE6 and lower as a workaround for lack of multi-class CSS
  * selector support.
- * @type {Array.<Array.<string>>}
+ * @type {Array<Array<string>>}
  */
 goog.ui.style.app.ButtonRenderer.IE6_CLASS_COMBINATIONS = [];
 

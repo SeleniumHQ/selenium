@@ -44,7 +44,7 @@ goog.require('goog.ui.Component');
 
 /**
  * A UI Control used for rating things, i.e. videos on Google Video.
- * @param {Array.<string>=} opt_ratings Ratings. Default: [1,2,3,4,5].
+ * @param {Array<string>=} opt_ratings Ratings. Default: [1,2,3,4,5].
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
  * @constructor
  * @extends {goog.ui.Component}
@@ -54,14 +54,14 @@ goog.ui.Ratings = function(opt_ratings, opt_domHelper) {
 
   /**
    * Ordered ratings that can be picked, Default: [1,2,3,4,5]
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.ratings_ = opt_ratings || ['1', '2', '3', '4', '5'];
 
   /**
    * Array containing references to the star elements
-   * @type {Array.<Element>}
+   * @type {Array<Element>}
    * @private
    */
   this.stars_ = [];
@@ -294,7 +294,7 @@ goog.ui.Ratings.prototype.getHighlightedValue = function() {
 
 /**
  * Sets the array of ratings that the comonent
- * @param {Array.<string>} ratings Array of value to use as ratings.
+ * @param {Array<string>} ratings Array of value to use as ratings.
  */
 goog.ui.Ratings.prototype.setRatings = function(ratings) {
   this.ratings_ = ratings;
@@ -304,7 +304,7 @@ goog.ui.Ratings.prototype.setRatings = function(ratings) {
 
 /**
  * Gets the array of ratings that the component
- * @return {Array.<string>} Array of ratings.
+ * @return {Array<string>} Array of ratings.
  */
 goog.ui.Ratings.prototype.getRatings = function() {
   return this.ratings_;

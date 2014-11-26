@@ -23,12 +23,12 @@ goog.provide('goog.editor.Plugin');
 
 // TODO(user): Remove the dependency on goog.editor.Command asap. Currently only
 // needed for execCommand issues with links.
-goog.require('goog.editor.Command');
 goog.require('goog.events.EventTarget');
 goog.require('goog.functions');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.reflect');
+goog.require('goog.userAgent');
 
 
 

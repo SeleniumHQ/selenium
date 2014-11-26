@@ -587,7 +587,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20140814.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler.jar"
           end
           arg :line => cmd
         end
@@ -756,7 +756,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20140814.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler.jar"
           end
           arg :line => flags.join(" ")
         end
@@ -882,7 +882,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20140814.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler.jar"
           end
           arg :line => cmd
         end

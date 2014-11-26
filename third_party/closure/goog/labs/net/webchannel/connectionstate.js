@@ -36,7 +36,7 @@ goog.provide('goog.labs.net.webChannel.ConnectionState');
 goog.labs.net.webChannel.ConnectionState = function() {
   /**
    * Handshake result.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
   this.handshakeResult = null;
 

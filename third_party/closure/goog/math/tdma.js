@@ -38,13 +38,13 @@ goog.provide('goog.math.tdma');
  *    |0 ... 0 sub(n-2) dia(n-1) sup(n-1)|
  *    |0 ... 0    0     sub(n-1)   dia(n)|
  *
- * @param {!Array.<number>} subDiag The sub diagonal of the matrix.
- * @param {!Array.<number>} mainDiag The main diagonal of the matrix.
- * @param {!Array.<number>} supDiag The super diagonal of the matrix.
- * @param {!Array.<number>} vecRight The right vector of the system
+ * @param {!Array<number>} subDiag The sub diagonal of the matrix.
+ * @param {!Array<number>} mainDiag The main diagonal of the matrix.
+ * @param {!Array<number>} supDiag The super diagonal of the matrix.
+ * @param {!Array<number>} vecRight The right vector of the system
  *     of equations.
- * @param {Array.<number>=} opt_result The optional array to store the result.
- * @return {!Array.<number>} The vector that is the solution to the system.
+ * @param {Array<number>=} opt_result The optional array to store the result.
+ * @return {!Array<number>} The vector that is the solution to the system.
  */
 goog.math.tdma.solve = function(
     subDiag, mainDiag, supDiag, vecRight, opt_result) {

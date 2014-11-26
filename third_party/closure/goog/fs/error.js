@@ -141,7 +141,7 @@ goog.fs.Error.getCodeFromName_ = function(name) {
 /**
  * Mapping from error names to values from the ErrorCode enum.
  * @see http://www.w3.org/TR/file-system-api/#definitions.
- * @private {!Object.<string, goog.fs.Error.ErrorCode>}
+ * @private {!Object<string, goog.fs.Error.ErrorCode>}
  */
 goog.fs.Error.NameToCodeMap_ = goog.object.create(
     goog.fs.Error.ErrorName.ABORT,

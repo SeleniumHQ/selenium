@@ -45,7 +45,7 @@ goog.require('goog.ui.SelectionModel');
  * pickers.  Use {@link #setContent} to set/change the items in the palette
  * after construction.  See palette.html demo for example usage.
  *
- * @param {Array.<Node>} items Array of DOM nodes to be displayed as items
+ * @param {Array<Node>} items Array of DOM nodes to be displayed as items
  *     in the palette grid (limited to one per cell).
  * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
@@ -138,7 +138,7 @@ goog.ui.Palette.prototype.disposeInternal = function() {
  * @override
  */
 goog.ui.Palette.prototype.setContentInternal = function(content) {
-  var items = /** @type {Array.<Node>} */ (content);
+  var items = /** @type {Array<Node>} */ (content);
   goog.ui.Palette.superClass_.setContentInternal.call(this, items);
 
   // Adjust the palette size.
@@ -438,7 +438,7 @@ goog.ui.Palette.prototype.setHighlightedIndex = function(index) {
  * @param {Node|undefined} item Item to highlight.
  */
 goog.ui.Palette.prototype.setHighlightedItem = function(item) {
-  var items = /** @type {Array.<Node>} */ (this.getContent());
+  var items = /** @type {Array<Node>} */ (this.getContent());
   this.setHighlightedIndex(items ? goog.array.indexOf(items, item) : -1);
 };
 

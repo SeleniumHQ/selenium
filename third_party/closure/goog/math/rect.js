@@ -201,7 +201,7 @@ goog.math.Rect.prototype.intersects = function(rect) {
  * rectangle after the second has been subtracted.
  * @param {goog.math.Rect} a A Rectangle.
  * @param {goog.math.Rect} b A Rectangle.
- * @return {!Array.<!goog.math.Rect>} An array with 0 to 4 rectangles which
+ * @return {!Array<!goog.math.Rect>} An array with 0 to 4 rectangles which
  *     together define the difference area of rectangle a minus rectangle b.
  */
 goog.math.Rect.difference = function(a, b) {
@@ -251,7 +251,7 @@ goog.math.Rect.difference = function(a, b) {
  * return value is an array of 0 to 4 rectangles defining the remaining regions
  * of this rectangle after the other has been subtracted.
  * @param {goog.math.Rect} rect A Rectangle.
- * @return {!Array.<!goog.math.Rect>} An array with 0 to 4 rectangles which
+ * @return {!Array<!goog.math.Rect>} An array with 0 to 4 rectangles which
  *     together define the difference area of rectangle a minus rectangle b.
  */
 goog.math.Rect.prototype.difference = function(rect) {

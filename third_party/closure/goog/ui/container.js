@@ -971,7 +971,7 @@ goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
     }
   }
 
-  control = /** @type {goog.ui.Control} */ (
+  control = /** @type {!goog.ui.Control} */ (
       goog.ui.Container.superClass_.removeChild.call(this, control,
           opt_unrender));
 

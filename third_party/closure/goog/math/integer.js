@@ -42,13 +42,13 @@ goog.provide('goog.math.Integer');
  * representation without overflow or change in sign.
  *
  * @constructor
- * @param {Array.<number>} bits Array containing the bits of the number.
+ * @param {Array<number>} bits Array containing the bits of the number.
  * @param {number} sign The sign of the number: -1 for negative and 0 positive.
  * @final
  */
 goog.math.Integer = function(bits, sign) {
   /**
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.bits_ = [];
@@ -133,7 +133,7 @@ goog.math.Integer.fromNumber = function(value) {
  * given entries, each is assumed to be 32 signed bits, given in little-endian
  * order (lowest order bits in the lowest index), and sign-extending the highest
  * order 32-bit value.
- * @param {Array.<number>} bits The bits of the number, in 32-bit signed pieces,
+ * @param {Array<number>} bits The bits of the number, in 32-bit signed pieces,
  *     in little-endian order.
  * @return {!goog.math.Integer} The corresponding Integer value.
  */
@@ -554,7 +554,7 @@ goog.math.Integer.prototype.multiply = function(other) {
 
 /**
  * Carries any overflow from the given index into later entries.
- * @param {Array.<number>} bits Array of 16-bit values in little-endian order.
+ * @param {Array<number>} bits Array of 16-bit values in little-endian order.
  * @param {number} index The index in question.
  * @private
  */

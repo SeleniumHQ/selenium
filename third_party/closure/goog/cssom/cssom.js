@@ -64,11 +64,11 @@ goog.cssom.getAllCssText = function(opt_styleSheet) {
  * CSSStyleSheet.
  * Note that this excludes any CSSImportRules, CSSMediaRules, etc..
  * @param {(CSSStyleSheet|StyleSheetList)=} opt_styleSheet The CSSStyleSheet.
- * @return {Array.<CSSStyleRule>} A list of CSSStyleRules.
+ * @return {Array<CSSStyleRule>} A list of CSSStyleRules.
  */
 goog.cssom.getAllCssStyleRules = function(opt_styleSheet) {
   var styleSheet = opt_styleSheet || document.styleSheets;
-  return /** @type {Array.<CSSStyleRule>} */ (
+  return /** @type {Array<CSSStyleRule>} */ (
       goog.cssom.getAllCss_(styleSheet, false));
 };
 
@@ -118,7 +118,7 @@ goog.cssom.getCssRulesFromStyleSheet = function(styleSheet) {
  * @param {(CSSStyleSheet|StyleSheetList)=} opt_styleSheet A CSSStyleSheet.
  * @param {boolean=} opt_includeDisabled If true, includes disabled stylesheets,
  *    defaults to false.
- * @return {!Array.<CSSStyleSheet>} A list of CSSStyleSheet objects.
+ * @return {!Array<CSSStyleSheet>} A list of CSSStyleSheet objects.
  */
 goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
     opt_includeDisabled) {
@@ -396,7 +396,7 @@ goog.cssom.getFileNameFromStyleSheet = function(styleSheet) {
  * Recursively gets all CSS text or rules.
  * @param {CSSStyleSheet|StyleSheetList} styleSheet The CSSStyleSheet.
  * @param {boolean} isTextOutput If true, output is cssText, otherwise cssRules.
- * @return {string|!Array.<CSSRule>} cssText or cssRules.
+ * @return {string|!Array<CSSRule>} cssText or cssRules.
  * @private
  */
 goog.cssom.getAllCss_ = function(styleSheet, isTextOutput) {

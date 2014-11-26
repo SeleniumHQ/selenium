@@ -64,7 +64,7 @@ goog.labs.net.webChannel.ForwardChannelRequestPool = function(opt_maxPoolSize) {
   /**
    * The container for all the pending request objects.
    *
-   * @private {goog.structs.Set.<ChannelRequest>}
+   * @private {goog.structs.Set<ChannelRequest>}
    */
   this.requestPool_ = null;
 

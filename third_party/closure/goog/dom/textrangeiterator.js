@@ -21,6 +21,7 @@
 goog.provide('goog.dom.TextRangeIterator');
 
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeIterator');
 goog.require('goog.dom.TagName');

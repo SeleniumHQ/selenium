@@ -157,7 +157,7 @@ goog.dom.AbstractRange.prototype.getTextRange = goog.abstractMethod;
 /**
  * Gets an array of all text ranges this range is comprised of.  For non-multi
  * ranges, returns a single element array containing this.
- * @return {!Array.<goog.dom.TextRange>} Array of text ranges.
+ * @return {!Array<goog.dom.TextRange>} Array of text ranges.
  */
 goog.dom.AbstractRange.prototype.getTextRanges = function() {
   var output = [];

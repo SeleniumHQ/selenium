@@ -24,7 +24,6 @@
 goog.provide('goog.messaging.AbstractChannel');
 
 goog.require('goog.Disposable');
-goog.require('goog.debug');
 goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.messaging.MessageChannel'); // interface
@@ -43,7 +42,7 @@ goog.messaging.AbstractChannel = function() {
 
   /**
    * The services registered for this channel.
-   * @type {Object.<string, {callback: function((string|!Object)),
+   * @type {Object<string, {callback: function((string|!Object)),
                              objectPayload: boolean}>}
    * @private
    */

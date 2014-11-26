@@ -46,14 +46,14 @@ goog.require('goog.ui.ac.RenderOptions');
  * @final
  */
 goog.ui.ac.CachingMatcher = function(baseMatcher) {
-  /** @private {!Array.<!Object>}} The cache. */
+  /** @private {!Array<!Object>}} The cache. */
   this.rows_ = [];
 
   /**
    * Set of stringified rows, for fast deduping. Each element of this.rows_
    * is stored in rowStrings_ as (' ' + row) to ensure we avoid builtin
    * properties like 'toString'.
-   * @private {Object.<string, boolean>}
+   * @private {Object<string, boolean>}
    */
   this.rowStrings_ = {};
 
@@ -69,7 +69,7 @@ goog.ui.ac.CachingMatcher = function(baseMatcher) {
 
   /**
    * Local matching function.
-   * @private {function(string, number, !Array.<!Object>): !Array.<!Object>}
+   * @private {function(string, number, !Array<!Object>): !Array<!Object>}
    */
   this.getMatchesForRows_ = goog.ui.ac.ArrayMatcher.getMatchesForRows;
 
@@ -100,7 +100,7 @@ goog.ui.ac.CachingMatcher = function(baseMatcher) {
    * We need to keep track of the last rows we displayed, because the "similar
    * matcher" we use locally might otherwise reorder results.
    *
-   * @private {Array.<!Object>}
+   * @private {Array<!Object>}
    */
   this.mostRecentMatches_ = [];
 };
@@ -158,7 +158,7 @@ goog.ui.ac.CachingMatcher.prototype.setMaxCacheSize = function(maxCacheSize) {
  *
  * Default value: {@link goog.ui.ac.ArrayMatcher.getMatchesForRows}.
  *
- * @param {function(string, number, !Array.<!Object>): !Array.<!Object>}
+ * @param {function(string, number, !Array<!Object>): !Array<!Object>}
  *     localMatcher
  */
 goog.ui.ac.CachingMatcher.prototype.setLocalMatcher = function(localMatcher) {
@@ -187,7 +187,7 @@ goog.ui.ac.CachingMatcher.prototype.requestMatchingRows =
 
 /**
  * Adds the specified rows to the cache.
- * @param {!Array.<!Object>} rows .
+ * @param {!Array<!Object>} rows .
  * @private
  */
 goog.ui.ac.CachingMatcher.prototype.addRows_ = function(rows) {
@@ -228,7 +228,7 @@ goog.ui.ac.CachingMatcher.prototype.triggerBaseMatch_ = function() {
 /**
  * Handles a match response from the base matcher.
  * @param {string} token The token against which the base match was called.
- * @param {!Array.<!Object>} matches The matches returned by the base matcher.
+ * @param {!Array<!Object>} matches The matches returned by the base matcher.
  * @private
  */
 goog.ui.ac.CachingMatcher.prototype.onBaseMatch_ = function(token, matches) {

@@ -1793,7 +1793,7 @@ goog.vec.Mat4.getTranslation = function(mat, translation) {
 
 
 /**
- * @type {!Array.<!goog.vec.Vec3.Type>}
+ * @type {!Array<!goog.vec.Vec3.Type>}
  * @private
  */
 goog.vec.Mat4.tmpVec3_ = [
@@ -1803,7 +1803,7 @@ goog.vec.Mat4.tmpVec3_ = [
 
 
 /**
- * @type {!Array.<!goog.vec.Vec4.Type>}
+ * @type {!Array<!goog.vec.Vec4.Type>}
  * @private
  */
 goog.vec.Mat4.tmpVec4_ = [
@@ -1814,7 +1814,7 @@ goog.vec.Mat4.tmpVec4_ = [
 
 
 /**
- * @type {!Array.<!goog.vec.Mat4.Type>}
+ * @type {!Array<!goog.vec.Mat4.Type>}
  * @private
  */
 goog.vec.Mat4.tmpMat4_ = [

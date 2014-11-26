@@ -61,7 +61,7 @@ goog.testing.MockExpectation = function(name) {
 
   /**
    * An array of error messages for expectations not met.
-   * @type {Array}
+   * @type {Array<string>}
    */
   this.errorMessages = [];
 };
@@ -97,7 +97,7 @@ goog.testing.MockExpectation.prototype.exceptionToThrow;
 
 /**
  * The arguments that are expected to be passed to this function
- * @type {Array.<*>}
+ * @type {Array<*>}
  */
 goog.testing.MockExpectation.prototype.argumentList;
 
@@ -219,7 +219,7 @@ goog.testing.Mock.STRICT = 0;
  * Object prototype.
  * Basically a copy of goog.object.PROTOTYPE_FIELDS_.
  * @const
- * @type {!Array.<string>}
+ * @type {!Array<string>}
  * @private
  */
 goog.testing.Mock.PROTOTYPE_FIELDS_ = [
@@ -362,7 +362,7 @@ goog.testing.Mock.prototype.$recordExpectation = function() {};
  * subclass. The subclass must find the pending expectation and return the
  * correct value.
  * @param {string} name The name of the method being called.
- * @param {Array} args The arguments to the method.
+ * @param {Array<?>} args The arguments to the method.
  * @return {*} The return expected by the mock.
  * @protected
  */
@@ -388,7 +388,7 @@ goog.testing.Mock.prototype.$maybeThrow = function(expectation) {
  * Otherwise, if the expectation expects to throw, it will throw.
  * Otherwise, this method will return defined value.
  * @param {goog.testing.MockExpectation} expectation The expectation.
- * @param {Array} args The arguments to the method.
+ * @param {Array<?>} args The arguments to the method.
  * @return {*} The return value expected by the mock.
  */
 goog.testing.Mock.prototype.$do = function(expectation, args) {
@@ -578,7 +578,7 @@ goog.testing.Mock.prototype.$verify = function() {
  * Verifies that a method call matches an expectation.
  * @param {goog.testing.MockExpectation} expectation The expectation to check.
  * @param {string} name The name of the called method.
- * @param {Array.<*>?} args The arguments passed to the mock.
+ * @param {Array<*>?} args The arguments passed to the mock.
  * @return {boolean} Whether the call matches the expectation.
  */
 goog.testing.Mock.prototype.$verifyCall = function(expectation, name, args) {
@@ -597,7 +597,7 @@ goog.testing.Mock.prototype.$verifyCall = function(expectation, name, args) {
 /**
  * Render the provided argument array to a string to help
  * clients with debugging tests.
- * @param {Array.<*>?} args The arguments passed to the mock.
+ * @param {Array<*>?} args The arguments passed to the mock.
  * @return {string} Human-readable string.
  */
 goog.testing.Mock.prototype.$argumentsAsString = function(args) {
@@ -616,7 +616,7 @@ goog.testing.Mock.prototype.$argumentsAsString = function(args) {
 /**
  * Throw an exception based on an incorrect method call.
  * @param {string} name Name of method called.
- * @param {Array.<*>?} args Arguments passed to the mock.
+ * @param {Array<*>?} args Arguments passed to the mock.
  * @param {goog.testing.MockExpectation=} opt_expectation Expected next call,
  *     if any.
  */

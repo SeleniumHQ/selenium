@@ -54,7 +54,7 @@ goog.events.actionEventWrapper = new goog.events.ActionEventWrapper_();
 /**
  * Event types used by the wrapper.
  *
- * @type {Array.<goog.events.EventType>}
+ * @type {Array<goog.events.EventType>}
  * @private
  */
 goog.events.ActionEventWrapper_.EVENT_TYPES_ = [

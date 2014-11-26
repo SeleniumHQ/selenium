@@ -17,6 +17,7 @@
  * coordinate math, useful for animation systems and point manipulation.
  *
  * Based heavily on code originally by:
+ * @author brenneman@google.com (Shawn Brenneman)
  */
 
 

@@ -16,7 +16,6 @@
  * @fileoverview Plain text spell checker implementation.
  *
  * @author eae@google.com (Emil A Eklund)
- * @author sergeys@google.com (Sergey Solyanik)
  * @see ../demos/plaintextspellchecker.html
  */
 
@@ -139,11 +138,11 @@ goog.ui.PlainTextSpellChecker.prototype.keyHandler_;
 goog.ui.PlainTextSpellChecker.prototype.textArrayIndex_;
 
 
-/** @private {!Array.<string>} */
+/** @private {!Array<string>} */
 goog.ui.PlainTextSpellChecker.prototype.textArray_;
 
 
-/** @private {!Array.<boolean>} */
+/** @private {!Array<boolean>} */
 goog.ui.PlainTextSpellChecker.prototype.textArrayProcess_;
 
 

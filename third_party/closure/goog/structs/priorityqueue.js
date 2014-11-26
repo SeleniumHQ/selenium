@@ -35,7 +35,7 @@ goog.require('goog.structs.Heap');
  * Class for Priority Queue datastructure.
  *
  * @constructor
- * @extends {goog.structs.Heap.<number, VALUE>}
+ * @extends {goog.structs.Heap<number, VALUE>}
  * @template VALUE
  * @final
  */

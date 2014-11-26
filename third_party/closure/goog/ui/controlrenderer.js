@@ -143,7 +143,7 @@ goog.ui.ControlRenderer.CSS_CLASS = goog.getCssName('goog-control');
  * Members of each class name combination will be joined with underscores in the
  * order that they're defined in the array. You should alphabetize them (for
  * compatibility with the CSS compiler) unless you are doing something special.
- * @type {Array.<Array.<string>>}
+ * @type {Array<Array<string>>}
  */
 goog.ui.ControlRenderer.IE6_CLASS_COMBINATIONS = [];
 
@@ -153,7 +153,7 @@ goog.ui.ControlRenderer.IE6_CLASS_COMBINATIONS = [];
  * of component states to ARIA attributes is neither component- nor
  * renderer-specific, this is a static property of the renderer class, and is
  * initialized on first use.
- * @type {Object.<goog.ui.Component.State, goog.a11y.aria.State>}
+ * @type {Object<goog.ui.Component.State, goog.a11y.aria.State>}
  * @private
  * @const
  */
@@ -164,7 +164,7 @@ goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_;
  * Map of certain ARIA states to ARIA roles that support them. Used for checked
  * and selected Component states because they are used on Components with ARIA
  * roles that do not support the corresponding ARIA state.
- * @private {!Object.<goog.a11y.aria.Role, goog.a11y.aria.State>}
+ * @private {!Object<goog.a11y.aria.Role, goog.a11y.aria.State>}
  * @const
  */
 goog.ui.ControlRenderer.TOGGLE_ARIA_STATE_MAP_ = goog.object.create(
@@ -321,9 +321,11 @@ goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
     } else {
       state |= this.getStateFromClass(className);
     }
-    if (this.getStateFromClass(className) == goog.ui.Component.State.
-        DISABLED && goog.dom.isFocusableTabIndex(contentElem)) {
-      goog.dom.setFocusableTabIndex(contentElem, false);
+    if (this.getStateFromClass(className) == goog.ui.Component.State.DISABLED) {
+      goog.asserts.assertElement(contentElem);
+      if (goog.dom.isFocusableTabIndex(contentElem)) {
+        goog.dom.setFocusableTabIndex(contentElem, false);
+      }
     }
   }, this);
   control.setStateInternal(state);
@@ -704,7 +706,7 @@ goog.ui.ControlRenderer.prototype.getCssClass = function() {
  * method doesn't reference {@link IE6_CLASS_COMBINATIONS} so that it can be
  * compiled out, but subclasses should return their IE6_CLASS_COMBINATIONS
  * static constant instead.
- * @return {Array.<Array.<string>>} Array of class name combinations.
+ * @return {Array<Array<string>>} Array of class name combinations.
  */
 goog.ui.ControlRenderer.prototype.getIe6ClassCombinations = function() {
   return [];
@@ -748,7 +750,7 @@ goog.ui.ControlRenderer.prototype.getStructuralCssClass = function() {
  * method is guaranteed to return an array of at least one element.
  * @param {goog.ui.Control} control Control whose CSS classes are to be
  *     returned.
- * @return {!Array.<string>} Array of CSS class names applicable to the control.
+ * @return {!Array<string>} Array of CSS class names applicable to the control.
  * @protected
  */
 goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
@@ -793,11 +795,11 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
  * If opt_includedClass is provided, return only the combined classes that have
  * all members contained in classes AND include opt_includedClass as well.
  * opt_includedClass is added to classes as well.
- * @param {goog.array.ArrayLike.<string>} classes Array-like thing of classes to
+ * @param {goog.array.ArrayLike<string>} classes Array-like thing of classes to
  *     return matching combined classes for.
  * @param {?string=} opt_includedClass If provided, get only the combined
  *     classes that include this one.
- * @return {!Array.<string>} Array of combined class names that should be
+ * @return {!Array<string>} Array of combined class names that should be
  *     applied.
  * @private
  */
@@ -825,7 +827,7 @@ goog.ui.ControlRenderer.prototype.getAppliedCombinedClassNames_ = function(
  * implementation uses the renderer's {@link getClassForState} method to
  * generate each state-specific class.
  * @param {number} state Bit mask of component states.
- * @return {!Array.<string>} Array of CSS class names representing the given
+ * @return {!Array<string>} Array of CSS class names representing the given
  *     state.
  * @protected
  */

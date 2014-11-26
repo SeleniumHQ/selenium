@@ -15,6 +15,7 @@
 /**
  * @fileoverview Definition of the Popup class.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/popup.html
  */
 
@@ -23,7 +24,6 @@ goog.provide('goog.ui.Popup.AbsolutePosition');
 goog.provide('goog.ui.Popup.AnchoredPosition');
 goog.provide('goog.ui.Popup.AnchoredViewPortPosition');
 goog.provide('goog.ui.Popup.ClientPosition');
-goog.provide('goog.ui.Popup.Corner');
 goog.provide('goog.ui.Popup.Overflow');
 goog.provide('goog.ui.Popup.ViewPortClientPosition');
 goog.provide('goog.ui.Popup.ViewPortPosition');
@@ -79,17 +79,6 @@ goog.ui.Popup = function(opt_element, opt_position) {
 };
 goog.inherits(goog.ui.Popup, goog.ui.PopupBase);
 goog.tagUnsealableClass(goog.ui.Popup);
-
-
-/**
- * Enum for representing an element corner for positioning the popup.
- *
- * @enum {number}
- *
- * @deprecated Use {@link goog.positioning.Corner} instead, this alias will be
- *     removed at the end of Q1 2009.
- */
-goog.ui.Popup.Corner = goog.positioning.Corner;
 
 
 /**

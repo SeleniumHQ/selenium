@@ -87,7 +87,7 @@ if (goog.userAgent.WEBKIT) {
    * Array to keep references to the relay-iframes. Used only if
    * there is no way to detect when the iframes are loaded. In that
    * case the relay-iframes are removed after a timeout.
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   goog.net.xpc.IframeRelayTransport.iframeRefs_ = [];
@@ -175,7 +175,7 @@ goog.net.xpc.IframeRelayTransport.IE_PAYLOAD_MAX_SIZE_ = 1800;
 
 
 /**
- * @typedef {{fragments: !Array.<string>, received: number, expected: number}}
+ * @typedef {{fragments: !Array<string>, received: number, expected: number}}
  */
 goog.net.xpc.IframeRelayTransport.FragmentInfo;
 
@@ -185,7 +185,7 @@ goog.net.xpc.IframeRelayTransport.FragmentInfo;
  * incoming fragments from several channels at a time, even if data is
  * out-of-order or interleaved.
  *
- * @type {!Object.<string, !goog.net.xpc.IframeRelayTransport.FragmentInfo>}
+ * @type {!Object<string, !goog.net.xpc.IframeRelayTransport.FragmentInfo>}
  * @private
  */
 goog.net.xpc.IframeRelayTransport.fragmentMap_ = {};

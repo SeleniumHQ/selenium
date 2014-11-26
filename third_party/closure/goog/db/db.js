@@ -43,7 +43,10 @@
 
 
 goog.provide('goog.db');
+goog.provide('goog.db.BlockedCallback');
+goog.provide('goog.db.UpgradeNeededCallback');
 
+goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Error');
 goog.require('goog.db.IndexedDb');

@@ -69,7 +69,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
   /**
    * Emoji that this picker displays.
    *
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.emoji_ = [];
@@ -77,7 +77,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
   /**
    * Pages of this emoji picker.
    *
-   * @type {Array.<goog.ui.emoji.EmojiPalette>}
+   * @type {Array<goog.ui.emoji.EmojiPalette>}
    * @private
    */
   this.pages_ = [];
@@ -86,7 +86,7 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
    * Keeps track of which pages in the picker have been loaded. Used for delayed
    * loading of tabs.
    *
-   * @type {Array.<boolean>}
+   * @type {Array<boolean>}
    * @private
    */
   this.pageLoadStatus_ = [];
@@ -261,7 +261,7 @@ goog.ui.emoji.EmojiPicker.prototype.activePage_ = -1;
  * Adds a group of emoji to the picker.
  *
  * @param {string|Element} title Title for the group.
- * @param {Array.<Array.<string>>} emojiGroup A new group of emoji to be added
+ * @param {Array<Array<string>>} emojiGroup A new group of emoji to be added
  *    Each internal array contains [emojiUrl, emojiId].
  */
 goog.ui.emoji.EmojiPicker.prototype.addEmojiGroup =
@@ -517,7 +517,7 @@ goog.ui.emoji.EmojiPicker.prototype.manuallyLoadAnimatedEmoji = function() {
  * Creates a page if it has not already been loaded. This has the side effects
  * of setting the load status of the page to true.
  *
- * @param {Array.<Array.<string>>} emoji Emoji for this page. See
+ * @param {Array<Array<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
  * @param {number} index Index of the page in the emojipicker.
  * @return {goog.ui.emoji.EmojiPalette} the emoji page.
@@ -551,8 +551,8 @@ goog.ui.emoji.EmojiPicker.prototype.createEmojiPage_ = function(emoji, index) {
  * Returns an array of emoji whose real URLs have been replaced with the
  * default img URL. Used for delayed loading.
  *
- * @param {Array.<Array.<string>>} emoji Original emoji array.
- * @return {!Array.<!Array.<string>>} emoji array with all emoji pointing to the
+ * @param {Array<Array<string>>} emoji Original emoji array.
+ * @return {!Array<!Array<string>>} emoji array with all emoji pointing to the
  *     default img.
  * @private
  */
@@ -571,7 +571,7 @@ goog.ui.emoji.EmojiPicker.prototype.getPlaceholderEmoji_ = function(emoji) {
  * Creates an emoji page using placeholder emoji pointing to the default
  * img instead of the real emoji. Used for delayed loading.
  *
- * @param {Array.<Array.<string>>} emoji Emoji for this page. See
+ * @param {Array<Array<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
  * @return {!goog.ui.emoji.EmojiPalette} the emoji page.
  * @private
@@ -724,7 +724,7 @@ goog.ui.emoji.EmojiPicker.prototype.getPage = function(index) {
  * Returns all the pages from the picker. This should be considered protected,
  * and is ONLY FOR TESTING.
  *
- * @return {Array.<goog.ui.emoji.EmojiPalette>?} the pages in the picker or
+ * @return {Array<goog.ui.emoji.EmojiPalette>?} the pages in the picker or
  *     null if none exist.
  */
 goog.ui.emoji.EmojiPicker.prototype.getPages = function() {

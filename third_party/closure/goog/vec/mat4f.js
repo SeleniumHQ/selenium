@@ -165,7 +165,7 @@ goog.vec.mat4f.setFromMat4d = function(mat, src) {
  * Initializes mat4f mat from Array src.
  *
  * @param {goog.vec.mat4f.Type} mat The destination matrix.
- * @param {Array.<number>} src The source matrix.
+ * @param {Array<number>} src The source matrix.
  * @return {!goog.vec.mat4f.Type} Return mat so that operations can be
  *     chained together.
  */
@@ -1740,7 +1740,7 @@ goog.vec.mat4f.getTranslation = function(mat, translation) {
 
 
 /**
- * @type {Array.<goog.vec.vec3f.Type>}
+ * @type {Array<goog.vec.vec3f.Type>}
  * @private
  */
 goog.vec.mat4f.tmpvec3f_ = [
@@ -1750,7 +1750,7 @@ goog.vec.mat4f.tmpvec3f_ = [
 
 
 /**
- * @type {Array.<goog.vec.vec4f.Type>}
+ * @type {Array<goog.vec.vec4f.Type>}
  * @private
  */
 goog.vec.mat4f.tmpvec4f_ = [
@@ -1761,7 +1761,7 @@ goog.vec.mat4f.tmpvec4f_ = [
 
 
 /**
- * @type {Array.<goog.vec.mat4f.Type>}
+ * @type {Array<goog.vec.mat4f.Type>}
  * @private
  */
 goog.vec.mat4f.tmpmat4f_ = [

@@ -44,7 +44,7 @@ goog.testing.messaging.MockPortNetwork = function(mockControl) {
 
   /**
    * The mock ports that have been created.
-   * @type {!Object.<!goog.testing.messaging.MockMessageChannel>}
+   * @type {!Object<!goog.testing.messaging.MockMessageChannel>}
    * @private
    */
   this.ports_ = {};

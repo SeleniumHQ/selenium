@@ -23,6 +23,7 @@ goog.provide('goog.messaging.LoggerServer');
 
 goog.require('goog.Disposable');
 goog.require('goog.log');
+goog.require('goog.log.Level');
 
 
 

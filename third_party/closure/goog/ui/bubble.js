@@ -462,7 +462,7 @@ goog.ui.Bubble.defaultConfig = {
 /**
  * An auxiliary array optimizing the corner computation.
  *
- * @type {Array.<goog.positioning.Corner>}
+ * @type {Array<goog.positioning.Corner>}
  * @private
  */
 goog.ui.Bubble.corners_ = [

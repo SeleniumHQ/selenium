@@ -34,8 +34,7 @@ goog.provide('goog.i18n.currencyCodeMapTier2');
  *     goog.object.extend(goog.i18n.currencyCodeMap,
  *                        goog.i18n.currencyCodeMapTier2);
  *
- * @type {Object}
- * @const
+ * @const {!Object<string, string>}
  */
 goog.i18n.currencyCodeMap = {
   'AED': '\u062F\u002e\u0625',
@@ -105,8 +104,7 @@ goog.i18n.currencyCodeMap = {
  * This group of currency data is unlikely to be used. In case they are,
  * program need to merge it into goog.locale.CurrencyCodeMap.
  *
- * @type {Object}
- * @const
+ * @const {!Object<string, string>}
  */
 goog.i18n.currencyCodeMapTier2 = {
   'AFN': '\u060b',

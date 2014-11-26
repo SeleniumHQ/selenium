@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Provides test helpers for Soy tests.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 /** @suppress {extraProvide} */

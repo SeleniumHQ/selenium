@@ -100,7 +100,7 @@ goog.i18n.CharListDecompressor.prototype.getCodeAt_ = function(str, start,
 /**
  * Add character(s) specified by the value and type to given list and return
  * the next character in the sequence.
- * @param {Array.<string>} list The list of characters to which the specified
+ * @param {Array<string>} list The list of characters to which the specified
  *     characters are appended.
  * @param {number} lastcode The last codepoint that was added to the list.
  * @param {number} value The value component that representing the delta or
@@ -131,7 +131,7 @@ goog.i18n.CharListDecompressor.prototype.addChars_ = function(list, lastcode,
 /**
  * Gets the list of characters specified in the given string by base 88 scheme.
  * @param {string} str The string encoding character list.
- * @return {!Array.<string>} The list of characters specified by the given
+ * @return {!Array<string>} The list of characters specified by the given
  *     string in base 88 scheme.
  */
 goog.i18n.CharListDecompressor.prototype.toCharList = function(str) {

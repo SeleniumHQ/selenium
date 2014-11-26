@@ -60,7 +60,7 @@ goog.require('goog.ui.Tooltip');
  * @param {!goog.i18n.uChar.NameFetcher} charNameFetcher Object which fetches
  *     the names of the characters that are shown in the widget. These names
  *     may be stored locally or come from an external source.
- * @param {Array.<string>=} opt_recents List of characters to be displayed in
+ * @param {Array<string>=} opt_recents List of characters to be displayed in
  *     resently selected characters area.
  * @param {number=} opt_initCategory Sequence number of initial category.
  * @param {number=} opt_initSubcategory Sequence number of initial subcategory.
@@ -127,14 +127,14 @@ goog.ui.CharPicker = function(charPickerData, charNameFetcher, opt_recents,
 
   /**
    * List of recently used characters.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.recents_ = opt_recents || [];
 
   /**
    * Handler for events.
-   * @type {goog.events.EventHandler.<!goog.ui.CharPicker>}
+   * @type {goog.events.EventHandler<!goog.ui.CharPicker>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -203,7 +203,7 @@ goog.ui.CharPicker.prototype.submenubutton_ = null;
 goog.ui.CharPicker.prototype.itempos;
 
 
-/** @type {!Array.<string>} */
+/** @type {!Array<string>} */
 goog.ui.CharPicker.prototype.items;
 
 
@@ -316,7 +316,7 @@ goog.ui.CharPicker.prototype.getSelectedChar = function() {
 
 /**
  * Gets the list of characters user selected recently.
- * @return {Array.<string>} The recent character list.
+ * @return {Array<string>} The recent character list.
  */
 goog.ui.CharPicker.prototype.getRecentChars = function() {
   return this.recents_;
@@ -624,17 +624,18 @@ goog.ui.CharPicker.prototype.handleScroll_ = function(e) {
  * @private
  */
 goog.ui.CharPicker.prototype.handleSelectedItem_ = function(e) {
-  if (e.target.getParent() == this.menu_) {
+  var parent = /** @type {goog.ui.Component} */ (e.target).getParent();
+  if (parent == this.menu_) {
     this.menu_.setVisible(false);
     this.setSelectedCategory_(e.target.getValue());
-  } else if (e.target.getParent() == this.submenu_) {
+  } else if (parent == this.submenu_) {
     this.submenu_.setVisible(false);
     this.setSelectedSubcategory_(e.target.getValue());
-  } else if (e.target.getParent() == this.grid_) {
+  } else if (parent == this.grid_) {
     var button = e.target.getElement();
     this.selectedChar_ = this.getChar_(button);
     this.updateRecents_(this.selectedChar_);
-  } else if (e.target.getParent() == this.recentgrid_) {
+  } else if (parent == this.recentgrid_) {
     this.selectedChar_ = this.getChar_(e.target.getElement());
   }
 };
@@ -780,7 +781,7 @@ goog.ui.CharPicker.prototype.setSelectedGrid_ = function(category,
  * Updates the grid with new character list.
  * @param {goog.ui.Component} grid The grid which is updated with a new set of
  *     characters.
- * @param {Array.<string>} items Characters to be added to the grid.
+ * @param {Array<string>} items Characters to be added to the grid.
  * @private
  */
 goog.ui.CharPicker.prototype.updateGrid_ = function(grid, items) {
@@ -817,7 +818,7 @@ goog.ui.CharPicker.prototype.updateGrid_ = function(grid, items) {
  * Updates the grid with new character list for a given starting point.
  * @param {goog.ui.Component} grid The grid which is updated with a new set of
  *     characters.
- * @param {Array.<string>} items Characters to be added to the grid.
+ * @param {Array<string>} items Characters to be added to the grid.
  * @param {number} start The index from which the characters should be
  *     displayed.
  * @private

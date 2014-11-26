@@ -86,7 +86,7 @@ goog.net.xpc.NativeMessagingTransport = function(channel, peerHostname,
 
   /**
    * The event handler.
-   * @type {!goog.events.EventHandler.<!goog.net.xpc.NativeMessagingTransport>}
+   * @type {!goog.events.EventHandler<!goog.net.xpc.NativeMessagingTransport>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -226,7 +226,7 @@ goog.net.xpc.NativeMessagingTransport.MESSAGE_DELIMITER_ = ',';
  * initialized but not disposed yet in a map keyed by the UID of the window
  * object.  This allows for multiple windows to be initiallized and listening
  * for messages.
- * @type {Object.<number>}
+ * @type {Object<number>}
  * @private
  */
 goog.net.xpc.NativeMessagingTransport.activeCount_ = {};
@@ -635,13 +635,13 @@ goog.net.xpc.NativeMessagingTransport.prototype.disposeInternal = function() {
  * 'SETUP_NTPV2,abc123', where the second part is the endpoint id.  The v2 setup
  * ack message is simply 'SETUP_ACK_NTPV2'.
  * @param {string} payload The payload.
- * @return {!Array.<?string>} An array with the message type as the first member
+ * @return {!Array<?string>} An array with the message type as the first member
  *     and the endpoint id as the second, if one was sent, or null otherwise.
  * @private
  */
 goog.net.xpc.NativeMessagingTransport.parseTransportPayload_ =
     function(payload) {
-  var transportParts = /** @type {!Array.<?string>} */ (payload.split(
+  var transportParts = /** @type {!Array<?string>} */ (payload.split(
       goog.net.xpc.NativeMessagingTransport.MESSAGE_DELIMITER_));
   transportParts[1] = transportParts[1] || null;
   return transportParts;

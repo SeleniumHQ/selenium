@@ -66,7 +66,7 @@ goog.define('goog.debug.LogBuffer.CAPACITY', 0);
 
 /**
  * The array to store the records.
- * @type {!Array.<!goog.debug.LogRecord|undefined>}
+ * @type {!Array<!goog.debug.LogRecord|undefined>}
  * @private
  */
 goog.debug.LogBuffer.prototype.buffer_;

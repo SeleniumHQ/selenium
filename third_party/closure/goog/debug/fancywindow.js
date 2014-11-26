@@ -355,7 +355,7 @@ goog.debug.FancyWindow.getStoredKeys_ = function() {
 
 /**
  * Gets a sorted array of all the loggers registered.
- * @return {!Array.<!goog.debug.Logger>} Array of logger instances.
+ * @return {!Array<!goog.debug.Logger>} Array of logger instances.
  * @private
  */
 goog.debug.FancyWindow.getLoggers_ = function() {

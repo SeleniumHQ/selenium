@@ -41,7 +41,7 @@ goog.proto2.Metadata;
  *      the message class that this descriptor describes.
  * @param {!goog.proto2.Metadata} metadata The metadata about the message that
  *      will be used to construct this descriptor.
- * @param {Array.<!goog.proto2.FieldDescriptor>} fields The fields of the
+ * @param {Array<!goog.proto2.FieldDescriptor>} fields The fields of the
  *      message described by this descriptor.
  *
  * @constructor
@@ -75,7 +75,7 @@ goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
   /**
    * The fields of the message described by this descriptor.
-   * @type {!Object.<number, !goog.proto2.FieldDescriptor>}
+   * @type {!Object<number, !goog.proto2.FieldDescriptor>}
    * @private
    */
   this.fields_ = {};
@@ -125,7 +125,7 @@ goog.proto2.Descriptor.prototype.getContainingType = function() {
  * Returns the fields in the message described by this descriptor ordered by
  * tag.
  *
- * @return {!Array.<!goog.proto2.FieldDescriptor>} The array of field
+ * @return {!Array<!goog.proto2.FieldDescriptor>} The array of field
  *     descriptors.
  */
 goog.proto2.Descriptor.prototype.getFields = function() {
@@ -152,7 +152,7 @@ goog.proto2.Descriptor.prototype.getFields = function() {
  * the actual, internal, fields map for performance reasons, and changing the
  * map can result in undefined behavior of this library.
  *
- * @return {!Object.<number, !goog.proto2.FieldDescriptor>} The field map.
+ * @return {!Object<number, !goog.proto2.FieldDescriptor>} The field map.
  */
 goog.proto2.Descriptor.prototype.getFieldsMap = function() {
   return this.fields_;

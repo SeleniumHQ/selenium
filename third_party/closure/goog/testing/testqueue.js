@@ -27,7 +27,7 @@ goog.provide('goog.testing.TestQueue');
 goog.testing.TestQueue = function() {
   /**
    * Events that have accumulated
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.events_ = [];

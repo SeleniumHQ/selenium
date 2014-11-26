@@ -33,7 +33,7 @@ goog.require('goog.iter');
 
 /**
  * Creates a set of strings.
- * @param {!Array=} opt_elements Elements to add to the set. The non-string
+ * @param {!Array<?>=} opt_elements Elements to add to the set. The non-string
  *     items will be converted to strings, so 15 and '15' will mean the same.
  * @constructor
  * @final
@@ -105,7 +105,7 @@ goog.structs.StringSet.prototype.add = function(element) {
 
 /**
  * Adds a the elements of an array to this set.
- * @param {!Array} arr The array to add the elements of.
+ * @param {!Array<?>} arr The array to add the elements of.
  */
 goog.structs.StringSet.prototype.addArray = function(arr) {
   for (var i = 0; i < arr.length; i++) {
@@ -171,7 +171,7 @@ goog.structs.StringSet.prototype.contains = function(element) {
 
 /**
  * Tells if the set contains all elements of the array.
- * @param {!Array} arr The elements to check.
+ * @param {!Array<?>} arr The elements to check.
  * @return {boolean} Whether they are in the set.
  */
 goog.structs.StringSet.prototype.containsArray = function(arr) {
@@ -288,7 +288,7 @@ goog.structs.StringSet.prototype.getUnion = function(stringSet) {
 
 
 /**
- * @return {!Array.<string>} The elements of the set.
+ * @return {!Array<string>} The elements of the set.
  */
 goog.structs.StringSet.prototype.getValues = Object.keys ?
     function() {
@@ -373,7 +373,7 @@ goog.structs.StringSet.prototype.remove = function(element) {
 
 /**
  * Removes all elements of the given array from this set.
- * @param {!Array} arr The elements to remove.
+ * @param {!Array<?>} arr The elements to remove.
  */
 goog.structs.StringSet.prototype.removeArray = function(arr) {
   for (var i = 0; i < arr.length; i++) {

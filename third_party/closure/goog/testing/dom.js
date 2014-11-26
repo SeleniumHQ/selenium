@@ -60,7 +60,7 @@ goog.testing.dom.END_TAG_MARKER_ = goog.testing.dom.createEndTagMarker_();
  * Tests if the given iterator over nodes matches the given Array of node
  * descriptors.  Throws an error if any match fails.
  * @param {goog.iter.Iterator} it  An iterator over nodes.
- * @param {Array.<Node|number|string>} array Array of node descriptors to match
+ * @param {Array<Node|number|string>} array Array of node descriptors to match
  *     against.  Node descriptors can be any of the following:
  *         Node: Test if the two nodes are equal.
  *         number: Test node.nodeType == number.
@@ -172,7 +172,7 @@ goog.testing.dom.checkUserAgents_ = function(userAgents) {
  * Map function that converts end tags to a specific object.
  * @param {Node} node The node to map.
  * @param {undefined} ignore Always undefined.
- * @param {!goog.iter.Iterator.<Node>} iterator The iterator.
+ * @param {!goog.iter.Iterator<Node>} iterator The iterator.
  * @return {Node} The resulting iteration item.
  * @private
  */
@@ -349,7 +349,7 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
       if (IE_TEXT_COLLAPSE) {
         // Collapse the leading whitespace, unless the string consists entirely
         // of whitespace.
-        if (collapsible && !goog.string.isEmpty(actualText)) {
+        if (collapsible && !goog.string.isEmptyOrWhitespace(actualText)) {
           actualText = goog.string.trimLeft(actualText);
         }
         // Prepare to collapse whitespace in the next Text node if this one does

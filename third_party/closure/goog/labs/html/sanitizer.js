@@ -51,7 +51,7 @@ goog.labs.html.Sanitizer = function() {
    * differs based on the element on which it appears:
    * e.g. {@code <input type=text>} vs {@code <style type=text/css>}.
    *
-   * @type {!Object.<string, !Object.<string, goog.labs.html.AttributeRewriter>>}
+   * @type {!Object<string, !Object<string, goog.labs.html.AttributeRewriter>>}
    * @private
    */
   this.whitelist_ = goog.labs.html.Sanitizer.createBlankObject_();
@@ -67,7 +67,7 @@ goog.labs.html.Sanitizer = function() {
    *
    * Built lazily and invalidated when the white-list is modified.
    *
-   * @type {Object.<string, boolean>}
+   * @type {Object<string, boolean>}
    * @private
    */
   this.allowedElementSet_ = null;
@@ -102,7 +102,7 @@ goog.labs.html.Sanitizer.prototype.sanitize = function(unsafeHtml) {
   var unsafeHtmlString = '' + unsafeHtml;
 
   /**
-   * @type {!Object.<string, !Object.<string, goog.labs.html.AttributeRewriter>>}
+   * @type {!Object<string, !Object<string, goog.labs.html.AttributeRewriter>>}
    */
   var whitelist = this.whitelist_;
   if (!this.allowedElementSet_) {
@@ -156,7 +156,7 @@ goog.labs.html.Sanitizer.prototype.allowElements = function(var_args) {
  * attribute by returning {@code null} or substitute a new value
  * by returning a string with the new value.
  *
- * @param {!Array.<string>|string} elementNames names (or name) on which the
+ * @param {!Array<string>|string} elementNames names (or name) on which the
  *     attributes are allowed.
  *
  *     Element names should be allowed via {@code allowElements(...)} prior
@@ -171,7 +171,7 @@ goog.labs.html.Sanitizer.prototype.allowElements = function(var_args) {
  *     differs based on the element on which it appears:
  *     e.g. {@code <input type=text>} vs {@code <style type=text/css>}.
  *
- * @param {!Array.<string>|string} attrNames names (or name) of the attribute
+ * @param {!Array<string>|string} attrNames names (or name) of the attribute
  *     that should be allowed.
  *
  * @param {goog.labs.html.AttributeRewriter=} opt_rewriteValue A function
@@ -247,7 +247,7 @@ goog.labs.html.Sanitizer.prototype.allowAttributes =
  * white-list, and reduces the chance of confusing a member of
  * {@code Object.prototype} with a whitelist entry.
  *
- * @return {!Object.<string, ?>} a reference to a newly allocated object that
+ * @return {!Object<string, ?>} a reference to a newly allocated object that
  *    does not alias any reference that existed prior.
  * @private
  */

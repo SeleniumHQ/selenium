@@ -16,7 +16,6 @@
  * @fileoverview Detects images dragged and dropped on to the window.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author wcrosby@google.com (Wayne Crosby)
  */
 
 goog.provide('goog.ui.DragDropDetector');
@@ -126,7 +125,8 @@ goog.ui.DragDropDetector.BASE_CSS_NAME_ = goog.getCssName('goog-dragdrop');
  * @desc Message shown to users to inform them that they can't drag and drop
  *     local files.
  */
-var MSG_DRAG_DROP_LOCAL_FILE_ERROR = goog.getMsg('It is not possible to drag ' +
+goog.ui.DragDropDetector.MSG_DRAG_DROP_LOCAL_FILE_ERROR = goog.getMsg(
+    'It is not possible to drag ' +
     'and drop image files at this time.\nPlease drag an image from your web ' +
     'browser.');
 
@@ -135,7 +135,8 @@ var MSG_DRAG_DROP_LOCAL_FILE_ERROR = goog.getMsg('It is not possible to drag ' +
  * @desc Message shown to users trying to drag and drop protected images from
  *     Flickr, etc.
  */
-var MSG_DRAG_DROP_PROTECTED_FILE_ERROR = goog.getMsg('The image you are ' +
+goog.ui.DragDropDetector.MSG_DRAG_DROP_PROTECTED_FILE_ERROR = goog.getMsg(
+    'The image you are ' +
     'trying to drag has been blocked by the hosting site.');
 
 
@@ -144,17 +145,17 @@ var MSG_DRAG_DROP_PROTECTED_FILE_ERROR = goog.getMsg('The image you are ' +
  * entry is of the form:
  *     regex: url regex
  *     message: user visible message about this special case
- * @type {Array.<{regex: RegExp, message: string}>}
+ * @type {Array<{regex: RegExp, message: string}>}
  * @private
  */
 goog.ui.DragDropDetector.SPECIAL_CASE_URLS_ = [
   {
     regex: /^file:\/\/\//,
-    message: MSG_DRAG_DROP_LOCAL_FILE_ERROR
+    message: goog.ui.DragDropDetector.MSG_DRAG_DROP_LOCAL_FILE_ERROR
   },
   {
     regex: /flickr(.*)spaceball.gif$/,
-    message: MSG_DRAG_DROP_PROTECTED_FILE_ERROR
+    message: goog.ui.DragDropDetector.MSG_DRAG_DROP_PROTECTED_FILE_ERROR
   }
 ];
 

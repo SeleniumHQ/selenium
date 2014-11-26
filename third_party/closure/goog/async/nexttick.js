@@ -53,9 +53,11 @@ goog.async.throwException = function(exception) {
  * @param {function(this:SCOPE)} callback Callback function to fire as soon as
  *     possible.
  * @param {SCOPE=} opt_context Object in whose scope to call the listener.
+ * @param {boolean=} opt_useSetImmediate Avoid the IE workaround that
+ *     ensures correctness at the cost of speed. See comments for details.
  * @template SCOPE
  */
-goog.async.nextTick = function(callback, opt_context) {
+goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
   var cb = callback;
   if (opt_context) {
     cb = goog.bind(callback, opt_context);
@@ -70,11 +72,17 @@ goog.async.nextTick = function(callback, opt_context) {
   // which we do want to support.
   // See
   // http://connect.microsoft.com/IE/feedback/details/801823/setimmediate-and-messagechannel-are-broken-in-ie10
-  if (goog.isFunction(goog.global.setImmediate) && (!goog.global.Window ||
-      goog.global.Window.prototype.setImmediate != goog.global.setImmediate)) {
+  //
+  // Note we do allow callers to also request setImmediate if they are willing
+  // to accept the possible tradeoffs of incorrectness in exchange for speed.
+  // The IE fallback of readystate change is much slower.
+  if (goog.isFunction(goog.global.setImmediate) &&
+      (opt_useSetImmediate || !goog.global.Window ||
+       goog.global.Window.prototype.setImmediate != goog.global.setImmediate)) {
     goog.global.setImmediate(cb);
     return;
   }
+
   // Look for and cache the custom fallback version of setImmediate.
   if (!goog.async.nextTick.setImmediate_) {
     goog.async.nextTick.setImmediate_ =
@@ -131,8 +139,10 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
           '*' : win.location.protocol + '//' + win.location.host;
       var onmessage = goog.bind(function(e) {
         // Validate origin and message to make sure that this message was
-        // intended for us.
-        if (e.origin != origin && e.data != message) {
+        // intended for us. If the origin is set to '*' (see above) only the
+        // message needs to match since, for example, '*' != 'file://'. Allowing
+        // the wildcard is ok, as we are not concerned with security here.
+        if ((origin != '*' && e.origin != origin) || e.data != message) {
           return;
         }
         this['port1'].onmessage();
@@ -147,21 +157,23 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     };
   }
   if (typeof Channel !== 'undefined' &&
-      // Exclude all of IE due to
-      // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
-      // which allows starving postMessage with a busy setTimeout loop.
-      // This currently affects IE10 and IE11 which would otherwise be able
-      // to use the postMessage based fallbacks.
-      !goog.labs.userAgent.browser.isIE()) {
+      (!goog.labs.userAgent.browser.isIE())) {
+    // Exclude all of IE due to
+    // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
+    // which allows starving postMessage with a busy setTimeout loop.
+    // This currently affects IE10 and IE11 which would otherwise be able
+    // to use the postMessage based fallbacks.
     var channel = new Channel();
     // Use a fifo linked list to call callbacks in the right order.
     var head = {};
     var tail = head;
     channel['port1'].onmessage = function() {
-      head = head.next;
-      var cb = head.cb;
-      head.cb = null;
-      cb();
+      if (goog.isDef(head.next)) {
+        head = head.next;
+        var cb = head.cb;
+        head.cb = null;
+        cb();
+      }
     };
     return function(cb) {
       tail.next = {

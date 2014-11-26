@@ -61,11 +61,11 @@ goog.crypt.Cbc = function(cipher, opt_blockSize) {
 /**
  * Encrypt a message.
  *
- * @param {!Array.<number>} plainText Message to encrypt. An array of bytes.
+ * @param {!Array<number>} plainText Message to encrypt. An array of bytes.
  *     The length should be a multiple of the block size.
- * @param {!Array.<number>} initialVector Initial vector for the CBC mode.
+ * @param {!Array<number>} initialVector Initial vector for the CBC mode.
  *     An array of bytes with the same length as the block size.
- * @return {!Array.<number>} Encrypted message.
+ * @return {!Array<number>} Encrypted message.
  */
 goog.crypt.Cbc.prototype.encrypt = function(plainText, initialVector) {
 
@@ -108,11 +108,11 @@ goog.crypt.Cbc.prototype.encrypt = function(plainText, initialVector) {
 /**
  * Decrypt a message.
  *
- * @param {!Array.<number>} cipherText Message to decrypt. An array of bytes.
+ * @param {!Array<number>} cipherText Message to decrypt. An array of bytes.
  *     The length should be a multiple of the block size.
- * @param {!Array.<number>} initialVector Initial vector for the CBC mode.
+ * @param {!Array<number>} initialVector Initial vector for the CBC mode.
  *     An array of bytes with the same length as the block size.
- * @return {!Array.<number>} Decrypted message.
+ * @return {!Array<number>} Decrypted message.
  */
 goog.crypt.Cbc.prototype.decrypt = function(cipherText, initialVector) {
 

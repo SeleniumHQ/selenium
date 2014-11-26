@@ -94,14 +94,14 @@ goog.define('goog.Disposable.INCLUDE_STACK_ON_CREATION', true);
 /**
  * Maps the unique ID of every undisposed {@code goog.Disposable} object to
  * the object itself.
- * @type {!Object.<number, !goog.Disposable>}
+ * @type {!Object<number, !goog.Disposable>}
  * @private
  */
 goog.Disposable.instances_ = {};
 
 
 /**
- * @return {!Array.<!goog.Disposable>} All {@code goog.Disposable} objects that
+ * @return {!Array<!goog.Disposable>} All {@code goog.Disposable} objects that
  *     haven't been disposed of.
  */
 goog.Disposable.getUndisposedObjects = function() {
@@ -133,7 +133,7 @@ goog.Disposable.prototype.disposed_ = false;
 
 /**
  * Callbacks to invoke when this object is disposed.
- * @type {Array.<!Function>}
+ * @type {Array<!Function>}
  * @private
  */
 goog.Disposable.prototype.onDisposeCallbacks_;

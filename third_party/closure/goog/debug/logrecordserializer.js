@@ -22,7 +22,7 @@
 goog.provide('goog.debug.logRecordSerializer');
 
 goog.require('goog.debug.LogRecord');
-goog.require('goog.debug.Logger.Level');
+goog.require('goog.debug.Logger');
 goog.require('goog.json');
 goog.require('goog.object');
 

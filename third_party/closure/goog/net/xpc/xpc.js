@@ -67,7 +67,7 @@ goog.net.xpc.TransportTypes = {
 /**
  * Enum containing transport names. These need to correspond to the
  * transport class names for createTransport_() to work.
- * @type {Object}
+ * @const {!Object<string,string>}
  */
 goog.net.xpc.TransportNames = {
   '1': 'NativeMessagingTransport',
@@ -85,7 +85,7 @@ goog.net.xpc.TransportNames = {
 
 /**
  * Field names used on configuration object.
- * @type {Object}
+ * @const
  */
 goog.net.xpc.CfgFields = {
   /**
@@ -201,7 +201,7 @@ goog.net.xpc.CfgFields = {
 
 /**
  * Config properties that need to be URL sanitized.
- * @type {Array}.<string>
+ * @type {Array<string>}
  */
 goog.net.xpc.UriCfgFields = [
   goog.net.xpc.CfgFields.PEER_URI,
@@ -262,7 +262,7 @@ goog.net.xpc.SETUP_ACK_NTPV2 = 'SETUP_ACK_NTPV2';
 /**
  * Object holding active channels.
  *
- * @package {Object.<string, goog.net.xpc.CrossPageChannel>}
+ * @package {Object<string, goog.net.xpc.CrossPageChannel>}
  */
 goog.net.xpc.channels = {};
 

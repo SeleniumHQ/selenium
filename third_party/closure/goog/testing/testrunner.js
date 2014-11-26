@@ -24,7 +24,7 @@
  *  - Boolean G_testRunner.isSuccess()
  *  - String G_testRunner.getReport()
  *  - number G_testRunner.getRunTime()
- *  - Object.<string, Array.<string>> G_testRunner.getTestResults()
+ *  - Object<string, Array<string>> G_testRunner.getTestResults()
  *
  * Testing code should not have dependencies outside of goog.testing so as to
  * reduce the chance of masking missing dependencies.
@@ -49,7 +49,7 @@ goog.require('goog.testing.TestCase');
 goog.testing.TestRunner = function() {
   /**
    * Errors that occurred in the window.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    */
   this.errors = [];
 };
@@ -290,7 +290,7 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
   // Highlight the page to indicate the overall outcome.
   this.writeLog(log);
 
-  // TODO(user): Make this work with multiple test cases (b/8603638).
+  // TODO(chrishenry): Make this work with multiple test cases (b/8603638).
   var runAgainLink = document.createElement('a');
   runAgainLink.style.display = 'inline-block';
   runAgainLink.style.fontSize = 'small';
@@ -414,7 +414,7 @@ goog.testing.TestRunner.prototype.log = function(s) {
 // TODO(nnaze): Properly handle serving test results when multiple test cases
 // are run.
 /**
- * @return {Object.<string, !Array.<string>>} A map of test names to a list of
+ * @return {Object<string, !Array<string>>} A map of test names to a list of
  * test failures (if any) to provide formatted data for the test runner.
  */
 goog.testing.TestRunner.prototype.getTestResults = function() {

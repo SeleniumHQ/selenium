@@ -118,7 +118,7 @@ goog.ui.Gauge = function(width, height, opt_domHelper) {
 
   /**
    * Colors to paint the background of certain ranges (optional).
-   * @type {Array.<goog.ui.GaugeColoredRange>}
+   * @type {Array<goog.ui.GaugeColoredRange>}
    * @private
    */
   this.rangeColors_ = [];
@@ -425,7 +425,7 @@ goog.ui.Gauge.prototype.needleValuePosition_ = null;
 
 /**
  * Text labels to display by major tick marks.
- * @type {Array.<string>?}
+ * @type {Array<string>?}
  * @private
  */
 goog.ui.Gauge.prototype.majorTickLabels_ = null;
@@ -541,7 +541,7 @@ goog.ui.Gauge.prototype.setTicks = function(majorUnits, minorUnits) {
 
 /**
  * Sets the labels of the major ticks.
- * @param {Array.<string>} tickLabels A text label for each major tick value.
+ * @param {Array<string>} tickLabels A text label for each major tick value.
  */
 goog.ui.Gauge.prototype.setMajorTickLabels = function(tickLabels) {
   this.majorTickLabels_ = tickLabels;

@@ -42,7 +42,7 @@ goog.require('goog.userAgent');
  * reporter see the {@see #install} method below.
  *
  * @param {string} handlerUrl The URL to which all errors will be reported.
- * @param {function(!Error, !Object.<string, string>)=}
+ * @param {function(!Error, !Object<string, string>)=}
  *     opt_contextProvider When a report is to be sent to the server,
  *     this method will be called, and given an opportunity to modify the
  *     context object before submission to the server.
@@ -59,7 +59,7 @@ goog.debug.ErrorReporter = function(
 
   /**
    * Context provider, if one was provided.
-   * @type {?function(!Error, !Object.<string, string>)}
+   * @type {?function(!Error, !Object<string, string>)}
    * @private
    */
   this.contextProvider_ = opt_contextProvider || null;
@@ -79,7 +79,7 @@ goog.debug.ErrorReporter = function(
 
   /**
    * Additional arguments to append to URL before sending XHR.
-   * @private {!Object.<string,string>}
+   * @private {!Object<string,string>}
    */
   this.additionalArguments_ = {};
 
@@ -133,7 +133,7 @@ goog.define('goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT', true);
 /**
  * Event broadcast when an exception is logged.
  * @param {Error} error The exception that was was reported.
- * @param {!Object.<string, string>} context The context values sent to the
+ * @param {!Object<string, string>} context The context values sent to the
  *     server alongside this error.
  * @constructor
  * @extends {goog.events.Event}
@@ -150,7 +150,7 @@ goog.debug.ErrorReporter.ExceptionEvent = function(error, context) {
 
   /**
    * Context values sent to the server alongside this report.
-   * @type {!Object.<string, string>}
+   * @type {!Object<string, string>}
    */
   this.context = context;
 };
@@ -188,7 +188,7 @@ goog.debug.ErrorReporter.logger_ =
  *
  * @param {string} loggingUrl The URL to which the errors caught will be
  *     reported.
- * @param {function(!Error, !Object.<string, string>)=}
+ * @param {function(!Error, !Object<string, string>)=}
  *     opt_contextProvider When a report is to be sent to the server,
  *     this method will be called, and given an opportunity to modify the
  *     context object before submission to the server.
@@ -304,7 +304,7 @@ goog.debug.ErrorReporter.prototype.setXhrSender = function(xhrSender) {
  * notifies any listeners.
  *
  * @param {Object} e The exception.
- * @param {!Object.<string, string>=} opt_context Context values to optionally
+ * @param {!Object<string, string>=} opt_context Context values to optionally
  *     include in the error report.
  */
 goog.debug.ErrorReporter.prototype.handleException = function(e,
@@ -344,7 +344,7 @@ goog.debug.ErrorReporter.prototype.handleException = function(e,
  * @param {string} fileName URL of the JavaScript file with the error.
  * @param {number} line Line number of the error.
  * @param {string=} opt_trace Call stack trace of the error.
- * @param {!Object.<string, string>=} opt_context Context information to include
+ * @param {!Object<string, string>=} opt_context Context information to include
  *     in the request.
  */
 goog.debug.ErrorReporter.prototype.sendErrorReport =
@@ -412,7 +412,7 @@ goog.debug.ErrorReporter.prototype.setTruncationLimit = function(limit) {
 
 
 /**
- * @param {!Object.<string,string>} urlArgs Set of key-value pairs to append
+ * @param {!Object<string,string>} urlArgs Set of key-value pairs to append
  *     to handlerUrl_ before sending XHR.
  */
 goog.debug.ErrorReporter.prototype.setAdditionalArguments = function(urlArgs) {

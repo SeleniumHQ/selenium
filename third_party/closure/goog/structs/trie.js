@@ -33,7 +33,7 @@ goog.require('goog.structs');
  * Class for a Trie datastructure.  Trie data structures are made out of trees
  * of Trie classes.
  *
- * @param {goog.structs.Trie.<VALUE>|Object.<string, VALUE>=} opt_trie Optional
+ * @param {goog.structs.Trie<VALUE>|Object<string, VALUE>=} opt_trie Optional
  *     goog.structs.Trie or Object to initialize trie with.
  * @constructor
  * @template VALUE
@@ -48,7 +48,7 @@ goog.structs.Trie = function(opt_trie) {
 
   /**
    * This trie's child nodes.
-   * @private {!Object.<!goog.structs.Trie.<VALUE>>}
+   * @private {!Object<!goog.structs.Trie<VALUE>>}
    */
   this.childNodes_ = {};
 
@@ -111,7 +111,7 @@ goog.structs.Trie.prototype.setOrAdd_ = function(key, value, opt_add) {
 /**
  * Adds multiple key/value pairs from another goog.structs.Trie or Object.
  * O(N) where N is the number of nodes in the trie.
- * @param {!Object.<string, VALUE>|!goog.structs.Trie.<VALUE>} trie Object
+ * @param {!Object<string, VALUE>|!goog.structs.Trie<VALUE>} trie Object
  *     containing the data to add.
  */
 goog.structs.Trie.prototype.setAll = function(trie) {
@@ -128,7 +128,7 @@ goog.structs.Trie.prototype.setAll = function(trie) {
  * Traverse along the given path, returns the child node at ending.
  * Returns undefined if node for the path doesn't exist.
  * @param {string} path The path to traverse.
- * @return {!goog.structs.Trie.<VALUE>|undefined}
+ * @return {!goog.structs.Trie<VALUE>|undefined}
  * @private
  */
 goog.structs.Trie.prototype.getChildNode_ = function(path) {
@@ -166,7 +166,7 @@ goog.structs.Trie.prototype.get = function(key) {
  *     prefixes of the key are retrieved.
  * @param {?number=} opt_keyStartIndex Optional position in key to start lookup
  *     from. Defaults to 0 if not specified.
- * @return {!Object.<string, VALUE>} Map of end index of matching prefixes and
+ * @return {!Object<string, VALUE>} Map of end index of matching prefixes and
  *     corresponding values. Empty if no match found.
  */
 goog.structs.Trie.prototype.getKeyAndPrefixes = function(key,
@@ -197,7 +197,7 @@ goog.structs.Trie.prototype.getKeyAndPrefixes = function(key,
 /**
  * Gets the values of the trie.  Not returned in any reliable order.  O(N) where
  * N is the number of nodes in the trie.  Calls getValuesInternal_.
- * @return {!Array.<VALUE>} The values in the trie.
+ * @return {!Array<VALUE>} The values in the trie.
  */
 goog.structs.Trie.prototype.getValues = function() {
   var allValues = [];
@@ -209,7 +209,7 @@ goog.structs.Trie.prototype.getValues = function() {
 /**
  * Gets the values of the trie.  Not returned in any reliable order.  O(N) where
  * N is the number of nodes in the trie.  Builds the values as it goes.
- * @param {!Array.<VALUE>} allValues Array to place values into.
+ * @param {!Array<VALUE>} allValues Array to place values into.
  * @private
  */
 goog.structs.Trie.prototype.getValuesInternal_ = function(allValues) {
@@ -226,7 +226,7 @@ goog.structs.Trie.prototype.getValuesInternal_ = function(allValues) {
  * Gets the keys of the trie.  Not returned in any reliable order.  O(N) where
  * N is the number of nodes in the trie (or prefix subtree).
  * @param {string=} opt_prefix Find only keys with this optional prefix.
- * @return {!Array.<string>} The keys in the trie.
+ * @return {!Array<string>} The keys in the trie.
  */
 goog.structs.Trie.prototype.getKeys = function(opt_prefix) {
   var allKeys = [];
@@ -253,7 +253,7 @@ goog.structs.Trie.prototype.getKeys = function(opt_prefix) {
 /**
  * Private method to get keys from the trie.  Builds the keys as it goes.
  * @param {string} keySoFar The partial key (prefix) traversed so far.
- * @param {!Array.<string>} allKeys The partially built array of keys seen so
+ * @param {!Array<string>} allKeys The partially built array of keys seen so
  *     far.
  * @private
  */
@@ -366,7 +366,7 @@ goog.structs.Trie.prototype.remove = function(key) {
 /**
  * Clones a trie and returns a new trie.  O(N), where N is the number of nodes
  * in the trie.
- * @return {!goog.structs.Trie.<VALUE>} A new goog.structs.Trie with the same
+ * @return {!goog.structs.Trie<VALUE>} A new goog.structs.Trie with the same
  *     key value pairs.
  */
 goog.structs.Trie.prototype.clone = function() {

@@ -69,6 +69,9 @@ goog.fx.Dragger = function(target, opt_handle, opt_limits) {
       this.startDrag, false, this);
 };
 goog.inherits(goog.fx.Dragger, goog.events.EventTarget);
+// Dragger is meant to be extended, but defines most properties on its
+// prototype, thus making it unsuitable for sealing.
+goog.tagUnsealableClass(goog.fx.Dragger);
 
 
 /**
@@ -313,12 +316,15 @@ goog.fx.Dragger.prototype.enableRightPositioningForRtl =
 
 /**
  * Returns the event handler, intended for subclass use.
- * @return {goog.events.EventHandler.<T>} The event handler.
+ * @return {!goog.events.EventHandler<T>} The event handler.
  * @this T
  * @template T
  */
 goog.fx.Dragger.prototype.getHandler = function() {
-  return this.eventHandler_;
+  // TODO(user): templated "this" values currently result in "this" being
+  // "unknown" in the body of the function.
+  var self = /** @type {goog.fx.Dragger} */ (this);
+  return self.eventHandler_;
 };
 
 

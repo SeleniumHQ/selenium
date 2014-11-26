@@ -20,6 +20,7 @@
  *   sha384.update(bytes);
  *   var hash = sha384.digest();
  *
+ * @author fy@google.com (Frank Yellin)
  */
 
 goog.provide('goog.crypt.Sha384');
@@ -43,7 +44,7 @@ goog.crypt.Sha384 = function() {
 goog.inherits(goog.crypt.Sha384, goog.crypt.Sha2_64bit);
 
 
-/** @private {!Array.<number>} */
+/** @private {!Array<number>} */
 goog.crypt.Sha384.INIT_HASH_BLOCK_ = [
   // Section 5.3.4 of
   // csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf

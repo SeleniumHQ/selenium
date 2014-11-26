@@ -26,9 +26,9 @@ goog.require('goog.array');
 
 /**
  * Maps ranges to values.
- * @param {Array.<number>} rangeArray An array of monotonically
+ * @param {Array<number>} rangeArray An array of monotonically
  *     increasing integer values, with at least one instance.
- * @param {Array.<T>} valueArray An array of corresponding values.
+ * @param {Array<T>} valueArray An array of corresponding values.
  *     Length must be the same as rangeArray.
  * @param {boolean=} opt_delta If true, saves only delta from previous value.
  * @constructor
@@ -36,7 +36,7 @@ goog.require('goog.array');
  */
 goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
   /**
-   * @protected {Array}
+   * @protected {Array<number>}
    */
   this.rangeArray = null;
 
@@ -46,7 +46,7 @@ goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
   }
   this.storeInversion_(rangeArray, opt_delta);
 
-  /** @protected {Array.<T>} */
+  /** @protected {Array<T>} */
   this.values = valueArray;
 };
 
@@ -56,7 +56,7 @@ goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
  * If delta is true, the integers are delta from the previous value and
  * will be restored to the absolute value.
  * When used as a set, even indices are IN, and odd are OUT.
- * @param {Array.<number?>} rangeArray An array of monotonically
+ * @param {Array<number?>} rangeArray An array of monotonically
  *     increasing integer values, with at least one instance.
  * @param {boolean=} opt_delta If true, saves only delta from previous value.
  * @private
@@ -77,9 +77,9 @@ goog.structs.InversionMap.prototype.storeInversion_ = function(rangeArray,
 
 /**
  * Splices a range -> value map into this inversion map.
- * @param {Array.<number>} rangeArray An array of monotonically
+ * @param {Array<number>} rangeArray An array of monotonically
  *     increasing integer values, with at least one instance.
- * @param {Array.<T>} valueArray An array of corresponding values.
+ * @param {Array<T>} valueArray An array of corresponding values.
  *     Length must be the same as rangeArray.
  * @param {boolean=} opt_delta If true, saves only delta from previous value.
  */

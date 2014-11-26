@@ -20,7 +20,6 @@
 
 goog.provide('goog.labs.testing.ContainsStringMatcher');
 goog.provide('goog.labs.testing.EndsWithMatcher');
-goog.provide('goog.labs.testing.EqualToIgnoringCaseMatcher');
 goog.provide('goog.labs.testing.EqualToIgnoringWhitespaceMatcher');
 goog.provide('goog.labs.testing.EqualsMatcher');
 goog.provide('goog.labs.testing.RegexMatcher');
@@ -282,7 +281,7 @@ goog.labs.testing.StartsWithMatcher.prototype.describe =
 /**
  * The StringContainsInOrdermatcher.
  *
- * @param {Array.<string>} values The expected string values.
+ * @param {Array<string>} values The expected string values.
  *
  * @constructor
  * @struct
@@ -291,7 +290,7 @@ goog.labs.testing.StartsWithMatcher.prototype.describe =
  */
 goog.labs.testing.StringContainsInOrderMatcher = function(values) {
   /**
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.values_ = values;
@@ -406,7 +405,7 @@ function startsWith(value) {
 /**
  * Matches a string that contains the given strings in order.
  *
- * @param {Array.<string>} values The expected value.
+ * @param {Array<string>} values The expected value.
  *
  * @return {!goog.labs.testing.StringContainsInOrderMatcher} A
  *     StringContainsInOrderMatcher.

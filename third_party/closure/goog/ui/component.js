@@ -16,6 +16,7 @@
  * @fileoverview Abstract class for all UI components. This defines the standard
  * design pattern that all UI components should follow.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/samplecomponent.html
  * @see http://code.google.com/p/closure-library/wiki/IntroToComponents
  */
@@ -109,7 +110,7 @@ goog.ui.Component = function(opt_domHelper) {
    * Array of child components.  Lazily initialized on first use.  Must be kept
    * in sync with {@code childIndex_}.  This property is strictly private and
    * must not be accessed directly outside of this class!
-   * @private {Array.<goog.ui.Component>?}
+   * @private {Array<goog.ui.Component>?}
    */
   this.children_ = null;
 
@@ -542,16 +543,19 @@ goog.ui.Component.prototype.getRequiredElementByClass = function(className) {
 /**
  * Returns the event handler for this component, lazily created the first time
  * this method is called.
- * @return {!goog.events.EventHandler.<T>} Event handler for this component.
+ * @return {!goog.events.EventHandler<T>} Event handler for this component.
  * @protected
  * @this T
  * @template T
  */
 goog.ui.Component.prototype.getHandler = function() {
-  if (!this.googUiComponentHandler_) {
-    this.googUiComponentHandler_ = new goog.events.EventHandler(this);
+  // TODO(user): templated "this" values currently result in "this" being
+  // "unknown" in the body of the function.
+  var self = /** @type {goog.ui.Component} */ (this);
+  if (!self.googUiComponentHandler_) {
+    self.googUiComponentHandler_ = new goog.events.EventHandler(self);
   }
-  return this.googUiComponentHandler_;
+  return self.googUiComponentHandler_;
 };
 
 
@@ -1136,7 +1140,7 @@ goog.ui.Component.prototype.getChildCount = function() {
 /**
  * Returns an array containing the IDs of the children of this component, or an
  * empty array if the component has no children.
- * @return {!Array.<string>} Child component IDs.
+ * @return {!Array<string>} Child component IDs.
  */
 goog.ui.Component.prototype.getChildIds = function() {
   var ids = [];
@@ -1280,7 +1284,7 @@ goog.ui.Component.prototype.removeChildAt = function(index, opt_unrender) {
  * @see goog.ui.Component#removeChild
  * @param {boolean=} opt_unrender If true, calls {@link #exitDocument} on the
  *    removed child components, and detaches their DOM from the document.
- * @return {!Array.<goog.ui.Component>} The removed components if any.
+ * @return {!Array<goog.ui.Component>} The removed components if any.
  */
 goog.ui.Component.prototype.removeChildren = function(opt_unrender) {
   var removedChildren = [];

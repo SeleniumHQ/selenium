@@ -312,7 +312,7 @@ goog.ds.Expr.prototype.canBeEmpty_ = false;
 /**
  * The parsed paths in the expression
  *
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.ds.Expr.prototype.parts_ = [];

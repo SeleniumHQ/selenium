@@ -51,7 +51,7 @@ goog.messaging.PortOperator = function(name) {
    * populated as the user requests communication with other contexts, or other
    * contexts request communication with the operator.
    *
-   * @type {!Object.<!goog.messaging.PortChannel>}
+   * @type {!Object<!goog.messaging.PortChannel>}
    * @private
    */
   this.connections_ = {};
@@ -61,7 +61,7 @@ goog.messaging.PortOperator = function(name) {
    * contexts. This is not lazily populated, and always contains entries for
    * each member of the network.
    *
-   * @type {!Object.<!goog.messaging.MessageChannel>}
+   * @type {!Object<!goog.messaging.MessageChannel>}
    * @private
    */
   this.switchboard_ = {};

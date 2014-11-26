@@ -80,14 +80,14 @@ goog.i18n.MessageFormat = function(pattern) {
   /**
    * All encountered literals during parse stage. Indices tell us the order of
    * replacement.
-   * @type {!Array.<string>}
+   * @type {!Array<string>}
    * @private
    */
   this.literals_ = [];
 
   /**
    * Input pattern gets parsed into objects for faster formatting.
-   * @type {!Array.<!Object>}
+   * @type {!Array<!Object>}
    * @private
    */
   this.parsedPattern_ = [];
@@ -236,13 +236,13 @@ goog.i18n.MessageFormat.prototype.format_ =
 
 /**
  * Parses generic block and returns a formatted string.
- * @param {!Array.<!Object>} parsedPattern Holds parsed tree.
+ * @param {!Array<!Object>} parsedPattern Holds parsed tree.
  * @param {!Object} namedParameters Parameters that either influence
  *     the formatting or are used as actual data.
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
  *     literary character, else treat it as an ICU syntax character, resolving
  *     to the number (plural_variable - offset).
- * @param {!Array.<!string>} result Each formatting stage appends its product
+ * @param {!Array<!string>} result Each formatting stage appends its product
  *     to the result.
  * @private
  */
@@ -288,7 +288,7 @@ goog.i18n.MessageFormat.prototype.formatBlock_ = function(
  * Formats simple placeholder.
  * @param {!Object} parsedPattern JSON object containing placeholder info.
  * @param {!Object} namedParameters Parameters that are used as actual data.
- * @param {!Array.<!string>} result Each formatting stage appends its product
+ * @param {!Array<!string>} result Each formatting stage appends its product
  *     to the result.
  * @private
  */
@@ -315,7 +315,7 @@ goog.i18n.MessageFormat.prototype.formatSimplePlaceholder_ = function(
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
  *     literary character, else treat it as an ICU syntax character, resolving
  *     to the number (plural_variable - offset).
- * @param {!Array.<!string>} result Each formatting stage appends its product
+ * @param {!Array<!string>} result Each formatting stage appends its product
  *     to the result.
  * @private
  */
@@ -350,7 +350,7 @@ goog.i18n.MessageFormat.prototype.formatSelectBlock_ = function(
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
  *     literary character, else treat it as an ICU syntax character, resolving
  *     to the number (plural_variable - offset).
- * @param {!Array.<!string>} result Each formatting stage appends its product
+ * @param {!Array<!string>} result Each formatting stage appends its product
  *     to the result.
  * @private
  */
@@ -457,7 +457,7 @@ goog.i18n.MessageFormat.prototype.insertPlaceholders_ = function(pattern) {
 /**
  * Breaks pattern into strings and top level {...} blocks.
  * @param {string} pattern (sub)Pattern to be broken.
- * @return {!Array.<Object>} Each item is {type, value}.
+ * @return {!Array<Object>} Each item is {type, value}.
  * @private
  */
 goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {
@@ -576,7 +576,7 @@ goog.i18n.MessageFormat.prototype.parseBlockType_ = function(pattern) {
 /**
  * Parses generic block.
  * @param {string} pattern Content of the block to parse.
- * @return {!Array.<!Object>} Subblocks marked as strings, select...
+ * @return {!Array<!Object>} Subblocks marked as strings, select...
  * @private
  */
 goog.i18n.MessageFormat.prototype.parseBlock_ = function(pattern) {
@@ -768,7 +768,7 @@ goog.i18n.MessageFormat.prototype.parseOrdinalBlock_ = function(pattern) {
 
 /**
  * Builds a placeholder from the last index of the array.
- * @param {!Array} literals All literals encountered during parse.
+ * @param {!Array<string>} literals All literals encountered during parse.
  * @return {string} \uFDDF_ + last index + _.
  * @private
  */

@@ -78,7 +78,7 @@ goog.tweak.BaseEntry = function(id, description) {
   /**
    * Functions to be called whenever a setting is changed or a button is
    * clicked.
-   * @type {!Array.<!Function>}
+   * @type {!Array<!Function>}
    * @private
    */
   this.callbacks_ = [];
@@ -470,7 +470,7 @@ goog.tweak.StringSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, '');
   /**
    * Valid values for the setting.
-   * @type {Array.<string>|undefined}
+   * @type {Array<string>|undefined}
    */
   this.validValues_;
 };
@@ -532,7 +532,7 @@ goog.tweak.StringSetting.prototype.encodeNewValue = function() {
 
 /**
  * Sets the valid values for the setting.
- * @param {Array.<string>|undefined} values Valid values.
+ * @param {Array<string>|undefined} values Valid values.
  */
 goog.tweak.StringSetting.prototype.setValidValues = function(values) {
   this.assertNotInitialized('setValidValues');
@@ -547,7 +547,7 @@ goog.tweak.StringSetting.prototype.setValidValues = function(values) {
 
 /**
  * Returns the valid values for the setting.
- * @return {Array.<string>|undefined} Valid values.
+ * @return {Array<string>|undefined} Valid values.
  */
 goog.tweak.StringSetting.prototype.getValidValues = function() {
   return this.validValues_;
@@ -595,7 +595,7 @@ goog.tweak.NumericSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, 0);
   /**
    * Valid values for the setting.
-   * @type {Array.<number>|undefined}
+   * @type {Array<number>|undefined}
    */
   this.validValues_;
 };
@@ -657,7 +657,7 @@ goog.tweak.NumericSetting.prototype.encodeNewValue = function() {
 
 /**
  * Sets the valid values for the setting.
- * @param {Array.<number>|undefined} values Valid values.
+ * @param {Array<number>|undefined} values Valid values.
  */
 goog.tweak.NumericSetting.prototype.setValidValues =
     function(values) {
@@ -673,7 +673,7 @@ goog.tweak.NumericSetting.prototype.setValidValues =
 
 /**
  * Returns the valid values for the setting.
- * @return {Array.<number>|undefined} Valid values.
+ * @return {Array<number>|undefined} Valid values.
  */
 goog.tweak.NumericSetting.prototype.getValidValues = function() {
   return this.validValues_;
@@ -883,7 +883,7 @@ goog.tweak.BooleanGroup = function(id, description) {
 
   /**
    * A map of token->child entry.
-   * @type {!Object.<!goog.tweak.BooleanSetting>}
+   * @type {!Object<!goog.tweak.BooleanSetting>}
    * @private
    */
   this.entriesByToken_ = {};
@@ -892,7 +892,7 @@ goog.tweak.BooleanGroup = function(id, description) {
   /**
    * A map of token->true/false for all tokens that appeared in the query
    * parameter.
-   * @type {!Object.<boolean>}
+   * @type {!Object<boolean>}
    * @private
    */
   this.queryParamValues_ = {};
@@ -913,7 +913,7 @@ goog.tweak.BooleanGroup.prototype.logger =
 
 /**
  * Returns the map of token->boolean settings.
- * @return {!Object.<!goog.tweak.BooleanSetting>} The child settings.
+ * @return {!Object<!goog.tweak.BooleanSetting>} The child settings.
  */
 goog.tweak.BooleanGroup.prototype.getChildEntries = function() {
   return this.entriesByToken_;

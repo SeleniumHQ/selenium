@@ -14,18 +14,17 @@
 
 /**
  * @fileoverview Utilities for manipulating objects/maps/hashes.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.object');
-
-goog.require('goog.array');
 
 
 /**
  * Calls a function for each element in an object/map/hash.
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):?} f The function to call
+ * @param {Object<K,V>} obj The object over which to iterate.
+ * @param {function(this:T,V,?,Object<K,V>):?} f The function to call
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the object) and the return value is ignored.
  * @param {T=} opt_obj This is used as the 'this' object within f.
@@ -42,15 +41,15 @@ goog.object.forEach = function(obj, f, opt_obj) {
  * Calls a function for each element in an object/map/hash. If that call returns
  * true, adds the element to a new object.
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):boolean} f The function to call
+ * @param {Object<K,V>} obj The object over which to iterate.
+ * @param {function(this:T,V,?,Object<K,V>):boolean} f The function to call
  *     for every element. This
  *     function takes 3 arguments (the element, the index and the object)
  *     and should return a boolean. If the return value is true the
  *     element is added to the result object. If it is false the
  *     element is not included.
  * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {!Object.<K,V>} a new object in which only elements that passed the
+ * @return {!Object<K,V>} a new object in which only elements that passed the
  *     test are present.
  * @template T,K,V
  */
@@ -69,14 +68,14 @@ goog.object.filter = function(obj, f, opt_obj) {
  * For every element in an object/map/hash calls a function and inserts the
  * result into a new object.
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):R} f The function to call
+ * @param {Object<K,V>} obj The object over which to iterate.
+ * @param {function(this:T,V,?,Object<K,V>):R} f The function to call
  *     for every element. This function
  *     takes 3 arguments (the element, the index and the object)
  *     and should return something. The result will be inserted
  *     into a new object.
  * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {!Object.<K,R>} a new object with the results from f.
+ * @return {!Object<K,R>} a new object with the results from f.
  * @template T,K,V,R
  */
 goog.object.map = function(obj, f, opt_obj) {
@@ -93,8 +92,8 @@ goog.object.map = function(obj, f, opt_obj) {
  * call returns true, returns true (without checking the rest). If
  * all calls return false, returns false.
  *
- * @param {Object.<K,V>} obj The object to check.
- * @param {function(this:T,V,?,Object.<K,V>):boolean} f The function to
+ * @param {Object<K,V>} obj The object to check.
+ * @param {function(this:T,V,?,Object<K,V>):boolean} f The function to
  *     call for every element. This function
  *     takes 3 arguments (the element, the index and the object) and should
  *     return a boolean.
@@ -117,8 +116,8 @@ goog.object.some = function(obj, f, opt_obj) {
  * all calls return true, returns true. If any call returns false, returns
  * false at this point and does not continue to check the remaining elements.
  *
- * @param {Object.<K,V>} obj The object to check.
- * @param {?function(this:T,V,?,Object.<K,V>):boolean} f The function to
+ * @param {Object<K,V>} obj The object to check.
+ * @param {?function(this:T,V,?,Object<K,V>):boolean} f The function to
  *     call for every element. This function
  *     takes 3 arguments (the element, the index and the object) and should
  *     return a boolean.
@@ -175,7 +174,7 @@ goog.object.getAnyKey = function(obj) {
  * For map literals the returned value will be the first one in most of the
  * browsers (a know exception is Konqueror).
  *
- * @param {Object.<K,V>} obj The object to pick a value from.
+ * @param {Object<K,V>} obj The object to pick a value from.
  * @return {V|undefined} The value or undefined if the object is empty.
  * @template K,V
  */
@@ -190,7 +189,7 @@ goog.object.getAnyValue = function(obj) {
  * Whether the object/hash/map contains the given object as a value.
  * An alias for goog.object.containsValue(obj, val).
  *
- * @param {Object.<K,V>} obj The object in which to look for val.
+ * @param {Object<K,V>} obj The object in which to look for val.
  * @param {V} val The object for which to check.
  * @return {boolean} true if val is present.
  * @template K,V
@@ -203,8 +202,8 @@ goog.object.contains = function(obj, val) {
 /**
  * Returns the values of the object/map/hash.
  *
- * @param {Object.<K,V>} obj The object from which to get the values.
- * @return {!Array.<V>} The values in the object/map/hash.
+ * @param {Object<K,V>} obj The object from which to get the values.
+ * @return {!Array<V>} The values in the object/map/hash.
  * @template K,V
  */
 goog.object.getValues = function(obj) {
@@ -221,7 +220,7 @@ goog.object.getValues = function(obj) {
  * Returns the keys of the object/map/hash.
  *
  * @param {Object} obj The object from which to get the keys.
- * @return {!Array.<string>} Array of property keys.
+ * @return {!Array<string>} Array of property keys.
  */
 goog.object.getKeys = function(obj) {
   var res = [];
@@ -239,7 +238,7 @@ goog.object.getKeys = function(obj) {
  * Example usage: getValueByKeys(jsonObj, 'foo', 'entries', 3)
  *
  * @param {!Object} obj An object to get the value from.  Can be array-like.
- * @param {...(string|number|!Array.<number|string>)} var_args A number of keys
+ * @param {...(string|number|!Array<number|string>)} var_args A number of keys
  *     (as strings, or numbers, for array-like objects).  Can also be
  *     specified as a single array of keys.
  * @return {*} The resulting value.  If, at any point, the value for a key
@@ -276,7 +275,7 @@ goog.object.containsKey = function(obj, key) {
 /**
  * Whether the object/map/hash contains the given value. This is O(n).
  *
- * @param {Object.<K,V>} obj The object in which to look for val.
+ * @param {Object<K,V>} obj The object in which to look for val.
  * @param {V} val The value for which to check.
  * @return {boolean} true If the map contains the value.
  * @template K,V
@@ -294,8 +293,8 @@ goog.object.containsValue = function(obj, val) {
 /**
  * Searches an object for an element that satisfies the given condition and
  * returns its key.
- * @param {Object.<K,V>} obj The object to search in.
- * @param {function(this:T,V,string,Object.<K,V>):boolean} f The
+ * @param {Object<K,V>} obj The object to search in.
+ * @param {function(this:T,V,string,Object<K,V>):boolean} f The
  *      function to call for every element. Takes 3 arguments (the value,
  *     the key and the object) and should return a boolean.
  * @param {T=} opt_this An optional "this" context for the function.
@@ -316,8 +315,8 @@ goog.object.findKey = function(obj, f, opt_this) {
 /**
  * Searches an object for an element that satisfies the given condition and
  * returns its value.
- * @param {Object.<K,V>} obj The object to search in.
- * @param {function(this:T,V,string,Object.<K,V>):boolean} f The function
+ * @param {Object<K,V>} obj The object to search in.
+ * @param {function(this:T,V,string,Object<K,V>):boolean} f The function
  *     to call for every element. Takes 3 arguments (the value, the key
  *     and the object) and should return a boolean.
  * @param {T=} opt_this An optional "this" context for the function.
@@ -377,7 +376,7 @@ goog.object.remove = function(obj, key) {
  * Adds a key-value pair to the object. Throws an exception if the key is
  * already in use. Use set if you want to change an existing pair.
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
+ * @param {Object<K,V>} obj The object to which to add the key-value pair.
  * @param {string} key The key to add.
  * @param {V} val The value to add.
  * @template K,V
@@ -393,7 +392,7 @@ goog.object.add = function(obj, key, val) {
 /**
  * Returns the value for the given key.
  *
- * @param {Object.<K,V>} obj The object from which to get the value.
+ * @param {Object<K,V>} obj The object from which to get the value.
  * @param {string} key The key for which to get the value.
  * @param {R=} opt_val The value to return if no item is found for the given
  *     key (default is undefined).
@@ -411,7 +410,7 @@ goog.object.get = function(obj, key, opt_val) {
 /**
  * Adds a key-value pair to the object/map/hash.
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
+ * @param {Object<K,V>} obj The object to which to add the key-value pair.
  * @param {string} key The key to add.
  * @param {V} value The value to add.
  * @template K,V
@@ -424,7 +423,7 @@ goog.object.set = function(obj, key, value) {
 /**
  * Adds a key-value pair to the object/map/hash if it doesn't exist yet.
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
+ * @param {Object<K,V>} obj The object to which to add the key-value pair.
  * @param {string} key The key to add.
  * @param {V} value The value to add if the key wasn't present.
  * @return {V} The value of the entry at the end of the function.
@@ -438,17 +437,19 @@ goog.object.setIfUndefined = function(obj, key, value) {
 /**
  * Compares two objects for equality using === on the values.
  *
- * @param {!Object.<K,V>} a
- * @param {!Object.<K,V>} b
+ * @param {!Object<K,V>} a
+ * @param {!Object<K,V>} b
  * @return {boolean}
  * @template K,V
  */
 goog.object.equals = function(a, b) {
-  if (!goog.array.equals(goog.object.getKeys(a), goog.object.getKeys(b))) {
-    return false;
-  }
   for (var k in a) {
-    if (a[k] !== b[k]) {
+    if (!(k in b) || a[k] !== b[k]) {
+      return false;
+    }
+  }
+  for (var k in b) {
+    if (!(k in a)) {
       return false;
     }
   }
@@ -459,8 +460,8 @@ goog.object.equals = function(a, b) {
 /**
  * Does a flat clone of the object.
  *
- * @param {Object.<K,V>} obj Object to clone.
- * @return {!Object.<K,V>} Clone of the input object.
+ * @param {Object<K,V>} obj Object to clone.
+ * @return {!Object<K,V>} Clone of the input object.
  * @template K,V
  */
 goog.object.clone = function(obj) {
@@ -526,7 +527,7 @@ goog.object.transpose = function(obj) {
 
 /**
  * The names of the fields that are defined on Object.prototype.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.object.PROTOTYPE_FIELDS_ = [
@@ -636,8 +637,8 @@ goog.object.createSet = function(var_args) {
  * In default mode, writes to this view will fail silently. In strict mode,
  * they will throw an error.
  *
- * @param {!Object.<K,V>} obj An object.
- * @return {!Object.<K,V>} An immutable view of that object, or the
+ * @param {!Object<K,V>} obj An object.
+ * @return {!Object<K,V>} An immutable view of that object, or the
  *     original object if this browser does not support immutables.
  * @template K,V
  */

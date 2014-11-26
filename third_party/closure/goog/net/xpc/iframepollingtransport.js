@@ -78,7 +78,7 @@ goog.net.xpc.IframePollingTransport = function(channel, opt_domHelper) {
 
   /**
    * The queue to hold messages which can't be sent immediately.
-   * @type {Array}
+   * @type {Array<string>}
    * @private
    */
   this.sendQueue_ = [];
@@ -237,7 +237,7 @@ goog.net.xpc.IframePollingTransport.prototype.isChannelAvailable = function() {
 /**
  * Safely retrieves the frames from the peer window. If an error is thrown
  * (e.g. the window is closing) an empty frame object is returned.
- * @return {!Object.<!Window>} The frames from the peer window.
+ * @return {!Object<!Window>} The frames from the peer window.
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.getPeerFrames_ = function() {
@@ -763,7 +763,7 @@ goog.net.xpc.IframePollingTransport.prototype.disposeInternal = function() {
 
 /**
  * Array holding all Receiver-instances.
- * @type {Array.<goog.net.xpc.IframePollingTransport.Receiver>}
+ * @type {Array<goog.net.xpc.IframePollingTransport.Receiver>}
  * @private
  */
 goog.net.xpc.IframePollingTransport.receivers_ = [];

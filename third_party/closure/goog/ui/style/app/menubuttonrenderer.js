@@ -17,7 +17,6 @@
  * subclasses.
  *
  * @author attila@google.com (Attila Bodis)
- * @author gveen@google.com (Greg Veen)
  */
 
 goog.provide('goog.ui.style.app.MenuButtonRenderer');
@@ -61,7 +60,7 @@ goog.ui.style.app.MenuButtonRenderer.CSS_CLASS =
  * Array of arrays of CSS classes that we want composite classes added and
  * removed for in IE6 and lower as a workaround for lack of multi-class CSS
  * selector support.
- * @type {Array.<Array.<string>>}
+ * @type {Array<Array<string>>}
  */
 goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS = [
   [goog.getCssName('goog-button-base-rtl'),
@@ -195,7 +194,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
  * Inserts dropdown element as last child of existing content.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document ineraction.
- * @return {Array.<Node>} DOM structure to be set as the button's content.
+ * @return {Array<Node>} DOM structure to be set as the button's content.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
     function(content, dom) {

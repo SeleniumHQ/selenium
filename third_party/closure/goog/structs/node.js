@@ -65,7 +65,7 @@ goog.structs.Node.prototype.getValue = function() {
 
 /**
  * Clones a node and returns a new node.
- * @return {!goog.structs.Node.<K, V>} A new goog.structs.Node with the same
+ * @return {!goog.structs.Node<K, V>} A new goog.structs.Node with the same
  *     key value pair.
  */
 goog.structs.Node.prototype.clone = function() {

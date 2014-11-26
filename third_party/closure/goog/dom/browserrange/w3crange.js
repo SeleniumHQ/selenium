@@ -18,8 +18,6 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author ojan@google.com (Ojan Vafai)
- * @author jparent@google.com (Julie Parent)
  */
 
 

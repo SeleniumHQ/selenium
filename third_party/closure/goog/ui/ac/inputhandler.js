@@ -175,14 +175,14 @@ goog.ui.ac.InputHandler = function(opt_separators, opt_literals,
 
   /**
    * Event handler used by the input handler to manage events.
-   * @type {goog.events.EventHandler.<!goog.ui.ac.InputHandler>}
+   * @type {goog.events.EventHandler<!goog.ui.ac.InputHandler>}
    * @private
    */
   this.eh_ = new goog.events.EventHandler(this);
 
   /**
    * Event handler to help us find an input element that already has the focus.
-   * @type {goog.events.EventHandler.<!goog.ui.ac.InputHandler>}
+   * @type {goog.events.EventHandler<!goog.ui.ac.InputHandler>}
    * @private
    */
   this.activateHandler_ = new goog.events.EventHandler(this);
@@ -557,7 +557,7 @@ goog.ui.ac.InputHandler.prototype.setTokenText =
     // Ensure there's whitespace wrapping the entries, if whitespaceWrapEntries_
     // has been set to true.
     if (this.whitespaceWrapEntries_) {
-      if (index != 0 && !goog.string.isEmpty(entries[index - 1])) {
+      if (index != 0 && !goog.string.isEmptyOrWhitespace(entries[index - 1])) {
         replaceValue = ' ' + replaceValue;
       }
       // Add a space only if it's the last token; otherwise, we assume the
@@ -1291,7 +1291,7 @@ goog.ui.ac.InputHandler.prototype.getTokenIndex_ = function(text, caret) {
  * entries.
  *
  * @param {string} text Input text.
- * @return {!Array} Parsed array.
+ * @return {!Array<string>} Parsed array.
  * @private
  */
 goog.ui.ac.InputHandler.prototype.splitInput_ = function(text) {

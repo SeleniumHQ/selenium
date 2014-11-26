@@ -37,7 +37,7 @@ goog.require('goog.locale');
  *    this parameter is not speficied, current locale is used to
  *    extract this information.
  *
- * @return {!Array.<Object>} Localized and relevant list of timezone names
+ * @return {!Array<Object>} Localized and relevant list of timezone names
  *    and ids.
  */
 goog.locale.getTimeZoneSelectedShortNames = function(opt_regionOrLang) {
@@ -60,7 +60,7 @@ goog.locale.getTimeZoneSelectedShortNames = function(opt_regionOrLang) {
  *    this parameter is not speficied, current locale is used to
  *    extract this information.
  *
- * @return {!Array.<Object>} Localized and relevant list of timezone names
+ * @return {!Array<Object>} Localized and relevant list of timezone names
  *    and ids.
  */
 goog.locale.getTimeZoneSelectedLongNames = function(opt_regionOrLang) {
@@ -77,12 +77,12 @@ goog.locale.getTimeZoneSelectedLongNames = function(opt_regionOrLang) {
  * from http://go/js_locale_data. Users of this method must add a dependency on
  * this.
  *
- * @return {Array.<Object>} localized and relevant list of timezone names
+ * @return {Array<Object>} localized and relevant list of timezone names
  *    and ids.
  */
 goog.locale.getTimeZoneAllLongNames = function() {
   var locale = goog.locale.getLocale();
-  return /** @type {Array} */ (
+  return /** @type {Array<Object>} */ (
       goog.locale.getResource('TimeZoneAllLongNames', locale));
 };
 
@@ -102,7 +102,7 @@ goog.locale.getTimeZoneAllLongNames = function() {
  *    for which this language is defacto official is considered. If it is
  *    undefined, current locale is used to extract this information.
  *
- * @return {!Array.<Object>} Localized and relevant list of timezone names
+ * @return {!Array<Object>} Localized and relevant list of timezone names
  *    and ids.
  * @private
  */

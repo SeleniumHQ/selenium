@@ -42,26 +42,38 @@ goog.require('goog.math');
 goog.testing.PerformanceTimer = function(opt_numSamples, opt_timeoutInterval) {
   /**
    * Number of times the test function is to be run; defaults to 10.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.numSamples_ = opt_numSamples || 10;
 
   /**
    * Number of milliseconds after which the test is to be aborted; defaults to
    * 5,000ms.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.timeoutInterval_ = opt_timeoutInterval || 5000;
 
   /**
    * Whether to discard outliers (i.e. the smallest and the largest values)
    * from the sample set before computing statistics.  Defaults to false.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.discardOutliers_ = false;
+};
+
+
+/**
+ * A function whose subsequent calls differ in milliseconds. Used to calculate
+ * the start and stop checkpoint times for runs. Note that high performance
+ * timers do not necessarily return the current time in milliseconds.
+ * @return {number}
+ * @private
+ */
+goog.testing.PerformanceTimer.now_ = function() {
+  // goog.now is used in DEBUG mode to make the class easier to test.
+  return !goog.DEBUG && window.performance && window.performance.now ?
+      window.performance.now() :
+      goog.now();
 };
 
 
@@ -155,7 +167,7 @@ goog.testing.PerformanceTimer.prototype.run = function(testFn) {
  */
 goog.testing.PerformanceTimer.prototype.runTask = function(task) {
   var samples = [];
-  var testStart = goog.now();
+  var testStart = goog.testing.PerformanceTimer.now_();
   var totalRunTime = 0;
 
   var testFn = task.getTest();
@@ -165,9 +177,9 @@ goog.testing.PerformanceTimer.prototype.runTask = function(task) {
   for (var i = 0; i < this.numSamples_ && totalRunTime <= this.timeoutInterval_;
        i++) {
     setUpFn();
-    var sampleStart = goog.now();
+    var sampleStart = goog.testing.PerformanceTimer.now_();
     testFn();
-    var sampleEnd = goog.now();
+    var sampleEnd = goog.testing.PerformanceTimer.now_();
     tearDownFn();
     samples[i] = sampleEnd - sampleStart;
     totalRunTime = sampleEnd - testStart;
@@ -209,7 +221,7 @@ goog.testing.PerformanceTimer.prototype.finishTask_ = function(samples) {
  */
 goog.testing.PerformanceTimer.prototype.runAsyncTask = function(task) {
   var samples = [];
-  var testStart = goog.now();
+  var testStart = goog.testing.PerformanceTimer.now_();
 
   var testFn = task.getTest();
   var setUpFn = task.getSetUp();
@@ -236,7 +248,7 @@ goog.testing.PerformanceTimer.prototype.runAsyncTask = function(task) {
  *     function that will be called once after the test function completed.
  * @param {!goog.async.Deferred} result The deferred result, eventually an
  *     object containing performance stats.
- * @param {!Array.<number>} samples The time samples from all runs of the test
+ * @param {!Array<number>} samples The time samples from all runs of the test
  *     function so far.
  * @param {number} testStart The timestamp when the first sample was started.
  * @private
@@ -245,9 +257,9 @@ goog.testing.PerformanceTimer.prototype.runAsyncTaskSample_ = function(testFn,
     setUpFn, tearDownFn, result, samples, testStart) {
   var timer = this;
   timer.handleOptionalDeferred_(setUpFn, function() {
-    var sampleStart = goog.now();
+    var sampleStart = goog.testing.PerformanceTimer.now_();
     timer.handleOptionalDeferred_(testFn, function() {
-      var sampleEnd = goog.now();
+      var sampleEnd = goog.testing.PerformanceTimer.now_();
       timer.handleOptionalDeferred_(tearDownFn, function() {
         samples.push(sampleEnd - sampleStart);
         var totalRunTime = sampleEnd - testStart;
@@ -288,7 +300,7 @@ goog.testing.PerformanceTimer.prototype.handleOptionalDeferred_ = function(
 /**
  * Creates a performance timer results object by analyzing a given array of
  * sample timings.
- * @param {Array.<number>} samples The samples to analyze.
+ * @param {Array<number>} samples The samples to analyze.
  * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.createResults = function(samples) {

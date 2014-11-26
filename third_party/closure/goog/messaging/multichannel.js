@@ -24,7 +24,6 @@ goog.provide('goog.messaging.MultiChannel');
 goog.provide('goog.messaging.MultiChannel.VirtualChannel');
 
 goog.require('goog.Disposable');
-goog.require('goog.events.EventHandler');
 goog.require('goog.log');
 goog.require('goog.messaging.MessageChannel'); // interface
 goog.require('goog.object');
@@ -58,7 +57,7 @@ goog.messaging.MultiChannel = function(underlyingChannel) {
   /**
    * All the virtual channels that are registered for this MultiChannel.
    * These are null if they've been disposed.
-   * @type {Object.<?goog.messaging.MultiChannel.VirtualChannel>}
+   * @type {Object<?goog.messaging.MultiChannel.VirtualChannel>}
    * @private
    */
   this.virtualChannels_ = {};

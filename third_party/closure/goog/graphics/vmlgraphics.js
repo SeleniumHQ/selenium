@@ -16,7 +16,6 @@
 /**
  * @fileoverview VmlGraphics sub class that uses VML to draw the graphics.
  * @author arv@google.com (Erik Arvidsson)
- * @author yoah@google.com (Yoah Bar-David)
  */
 
 
@@ -70,6 +69,7 @@ goog.graphics.VmlGraphics = function(width, height,
                                       opt_coordWidth, opt_coordHeight,
                                       opt_domHelper);
   this.handler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.handler_);
 };
 goog.inherits(goog.graphics.VmlGraphics, goog.graphics.AbstractGraphics);
 

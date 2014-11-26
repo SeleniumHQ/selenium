@@ -21,8 +21,6 @@
  * and input field show up.
  *
  * @author arv@google.com (Erik Arvidsson)
- * @author smcbride@google.com (Sean McBride)
- * @author manucornet@google.com (Manu Cornet)
  * @see ../demos/hsvpalette.html
  */
 

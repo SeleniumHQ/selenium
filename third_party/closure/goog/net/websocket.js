@@ -407,7 +407,7 @@ goog.net.WebSocket.prototype.onClose_ = function(event) {
 /**
  * Called when a new message arrives from the server.
  *
- * @param {MessageEvent.<string>} event The web socket message event.
+ * @param {MessageEvent<string>} event The web socket message event.
  * @private
  */
 goog.net.WebSocket.prototype.onMessage_ = function(event) {

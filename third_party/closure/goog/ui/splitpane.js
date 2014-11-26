@@ -593,11 +593,29 @@ goog.ui.SplitPane.prototype.getFirstComponentSize = function() {
 /**
  * Set the size of the left/top component, and resize the other component based
  * on that size and handle size.
- * @param {?number=} opt_size The size of the top or left, in pixels.
+ * @param {?number=} opt_size The size of the top or left, in pixels. If
+ *     unspecified, leaves the size of the first component unchanged but adjusts
+ *     the size of the second component to fit the split pane size.
  */
 goog.ui.SplitPane.prototype.setFirstComponentSize = function(opt_size) {
+  this.setFirstComponentSize_(
+      goog.style.getBorderBoxSize(this.getElement()), opt_size);
+};
+
+
+/**
+ * Set the size of the left/top component, and resize the other component based
+ * on that size and handle size. Unlike the public method, this takes the
+ * current pane size which avoids the expensive getBorderBoxSize() call
+ * when we have the size available.
+ *
+ * @param {!goog.math.Size} splitpaneSize The current size of the splitpane.
+ * @param {?number=} opt_size The size of the top or left, in pixels.
+ * @private
+ */
+goog.ui.SplitPane.prototype.setFirstComponentSize_ = function(
+    splitpaneSize, opt_size) {
   var top = 0, left = 0;
-  var splitpaneSize = goog.style.getBorderBoxSize(this.getElement());
 
   var isVertical = this.isVertical();
   // Figure out first component size; it's either passed in, taken from the
@@ -682,16 +700,18 @@ goog.ui.SplitPane.prototype.setFirstComponentSize = function(opt_size) {
 
 
 /**
-  * Set the size of the splitpane.  This is usually called by the controlling
-  * application.  This will set the SplitPane BorderBoxSize.
-  * @param {goog.math.Size} size The size to set the splitpane.
-  */
-goog.ui.SplitPane.prototype.setSize = function(size) {
+ * Set the size of the splitpane.  This is usually called by the controlling
+ * application.  This will set the SplitPane BorderBoxSize.
+ * @param {!goog.math.Size} size The size to set the splitpane.
+ * @param {?number=} opt_firstComponentSize The size of the top or left
+ *     component, in pixels.
+ */
+goog.ui.SplitPane.prototype.setSize = function(size, opt_firstComponentSize) {
   goog.style.setBorderBoxSize(this.getElement(), size);
   if (this.iframeOverlay_) {
     goog.style.setBorderBoxSize(this.iframeOverlay_, size);
   }
-  this.setFirstComponentSize();
+  this.setFirstComponentSize_(size, opt_firstComponentSize);
 };
 
 

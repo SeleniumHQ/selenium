@@ -119,7 +119,7 @@ goog.cssom.iframe.style.CssRuleSet_ = function() {
   /**
    * Array of CssSelector objects, one for each selector.
    * Example: [h1, h2]
-   * @type {Array.<goog.cssom.iframe.style.CssSelector_>}
+   * @type {Array<goog.cssom.iframe.style.CssSelector_>}
    */
   this.selectors = [];
 };
@@ -231,7 +231,7 @@ goog.cssom.iframe.style.CssRuleSet_.prototype.setDeclarationTextFromObject =
  * Serializes this CssRuleSet_ into an array as a series of strings.
  * The array can then be join()-ed to get a string representation
  * of this ruleset.
- * @param {Array.<string>} array The array to which to append strings.
+ * @param {Array<string>} array The array to which to append strings.
  */
 goog.cssom.iframe.style.CssRuleSet_.prototype.writeToArray = function(array) {
   var selectorCount = this.selectors.length;
@@ -308,7 +308,7 @@ goog.cssom.iframe.style.CssSelector_ = function(opt_selectorString) {
   /**
    * Array of CssSelectorPart objects representing the parts of this selector
    * Example: for the selector 'body h1' the parts would be [body, h1].
-   * @type {Array.<goog.cssom.iframe.style.CssSelectorPart_>}
+   * @type {Array<goog.cssom.iframe.style.CssSelectorPart_>}
    * @private
    */
   this.parts_ = [];
@@ -538,7 +538,7 @@ goog.cssom.iframe.style.NodeAncestry_ = function(el) {
   /**
    * Array of nodes in order of hierarchy from the top of the document
    * to the node passed to the constructor
-   * @type {Array.<Node>}
+   * @type {Array<Node>}
    */
   this.nodes = nodes;
 
@@ -567,7 +567,7 @@ goog.cssom.iframe.style.resetDomCache = function() {
 /**
  * Inspects a document and returns all active rule sets
  * @param {Document} doc The document from which to read CSS rules.
- * @return {!Array.<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
+ * @return {!Array<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
  *     objects representing all the active rule sets in the document.
  * @private
  */
@@ -623,7 +623,7 @@ goog.cssom.iframe.style.ruleSetCache_.loadRuleSetsForDocument = function(doc) {
  * Retrieves the array of css rulesets for this document. A cached
  * version will be used when possible.
  * @param {Document} doc The document for which to get rulesets.
- * @return {!Array.<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
+ * @return {!Array<goog.cssom.iframe.style.CssRuleSet_>} An array of CssRuleSet
  *     objects representing the css rule sets in the supplied document.
  */
 goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
@@ -648,7 +648,7 @@ goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
  * Array of CSS properties that are inherited by child nodes, according to
  * the CSS 2.1 spec. Properties that may be set to relative values, such
  * as font-size, and line-height, are omitted.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.cssom.iframe.style.inheritedProperties_ = [
@@ -680,7 +680,7 @@ goog.cssom.iframe.style.inheritedProperties_ = [
 
 /**
  * Array of CSS 2.1 properties that directly effect text nodes.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.cssom.iframe.style.textProperties_ = [
@@ -895,7 +895,7 @@ goog.cssom.iframe.style.valueWithUnitsRegEx_ = /^(-?)([0-9]+)([a-z]*|%)/;
  * Given an object containing a set of styles, returns a two-element array
  * containing the values of background-position-x and background-position-y.
  * @param {Object} styleObject Object from which to read style properties.
- * @return {Array.<string>} The background-position values in the order [x, y].
+ * @return {Array<string>} The background-position values in the order [x, y].
  * @private
  */
 goog.cssom.iframe.style.getBackgroundXYValues_ = function(styleObject) {

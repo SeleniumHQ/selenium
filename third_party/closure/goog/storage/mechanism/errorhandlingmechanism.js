@@ -15,6 +15,7 @@
 /**
  * @fileoverview Wraps a storage mechanism with a custom error handler.
  *
+ * @author ruilopes@google.com (Rui do Nascimento Dias Lopes)
  */
 
 goog.provide('goog.storage.mechanism.ErrorHandlingMechanism');

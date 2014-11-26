@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Class for showing simple modal popup.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.ui.ModalPopup');
@@ -168,7 +169,7 @@ goog.ui.ModalPopup.prototype.bgHideTransition_;
 
 /**
  * The elements set to aria-hidden when the popup was made visible.
- * @type {Array.<!Element>}
+ * @type {Array<!Element>}
  * @private
  */
 goog.ui.ModalPopup.prototype.hiddenElements_;
@@ -368,7 +369,6 @@ goog.ui.ModalPopup.prototype.exitDocument = function() {
 
 /**
  * Sets the visibility of the modal popup box and focus to the popup.
- * Lazily renders the component if needed.
  * @param {boolean} visible Whether the modal popup should be visible.
  */
 goog.ui.ModalPopup.prototype.setVisible = function(visible) {
@@ -653,7 +653,7 @@ goog.ui.ModalPopup.prototype.resizeBackground_ = function() {
  * Centers the modal popup in the viewport, taking scrolling into account.
  */
 goog.ui.ModalPopup.prototype.reposition = function() {
-  // TODO(user): Make this use goog.positioning as in goog.ui.PopupBase?
+  // TODO(chrishenry): Make this use goog.positioning as in goog.ui.PopupBase?
 
   // Get the current viewport to obtain the scroll offset.
   var doc = this.getDomHelper().getDocument();

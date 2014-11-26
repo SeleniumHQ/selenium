@@ -312,7 +312,7 @@ goog.proto2.TextFormatSerializer.Printer_ = function() {
 
   /**
    * The buffer of string pieces.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.buffer_ = [];
@@ -459,7 +459,7 @@ goog.proto2.TextFormatSerializer.Tokenizer_.TokenTypes = {
   END: /---end---/,
   // Leading "-" to identify "-infinity"."
   IDENTIFIER: /^-?[a-zA-Z][a-zA-Z0-9_]*/,
-  NUMBER: /^(0x[0-9a-f]+)|(([-])?[0-9][0-9]*(\.?[0-9]+)?(e-?[0-9]+|[f])?)/,
+  NUMBER: /^(0x[0-9a-f]+)|(([-])?[0-9][0-9]*(\.?[0-9]+)?(e[+-]?[0-9]+|[f])?)/,
   COMMENT: /^#.*/,
   OPEN_BRACE: /^{/,
   CLOSE_BRACE: /^}/,
@@ -520,9 +520,9 @@ goog.proto2.TextFormatSerializer.Tokenizer_.prototype.nextInternal_ =
 
   // Loop through each token type and try to match the beginning of the string
   // with the token's regular expression.
-  goog.object.forEach(types, function(type, id) {
+  goog.object.some(types, function(type, id) {
     if (next || type == types.END) {
-      return;
+      return false;
     }
 
     // Note: This regular expression check is at, minimum, O(n).
@@ -533,6 +533,8 @@ goog.proto2.TextFormatSerializer.Tokenizer_.prototype.nextInternal_ =
         value: info[0]
       };
     }
+
+    return !!next;
   });
 
   // Advance the index by the length of the token.

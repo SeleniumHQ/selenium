@@ -50,7 +50,7 @@ goog.a11y.aria.Announcer = function(opt_domHelper) {
   /**
    * Map of priority to live region elements to use for communicating updates.
    * Elements are created on demand.
-   * @type {Object.<goog.a11y.aria.LivePriority, !Element>}
+   * @type {Object<goog.a11y.aria.LivePriority, !Element>}
    * @private
    */
   this.liveRegions_ = {};
@@ -76,8 +76,9 @@ goog.a11y.aria.Announcer.prototype.disposeInternal = function() {
  *     message. Defaults to POLITE.
  */
 goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
-  goog.dom.setTextContent(this.getLiveRegion_(
-      opt_priority || goog.a11y.aria.LivePriority.POLITE), message);
+  var priority = opt_priority || goog.a11y.aria.LivePriority.POLITE;
+  var liveRegion = this.getLiveRegion_(priority);
+  goog.dom.setTextContent(liveRegion, message);
 };
 
 
@@ -88,13 +89,12 @@ goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
  * @private
  */
 goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
-  var liveRegion = this.liveRegions_[priority];
-  if (liveRegion) {
-    // Make sure the live region is not aria-hidden.
-    goog.a11y.aria.removeState(liveRegion, goog.a11y.aria.State.HIDDEN);
-    return liveRegion;
-  }
-  liveRegion = this.domHelper_.createElement('div');
+  // Removing the previous live region ensures that the newest message is always
+  // read without delay, even if the message is an exact duplicate of the prior
+  // message.
+  this.removeLiveRegion_(priority);
+
+  var liveRegion = this.domHelper_.createElement('div');
   // Note that IE has a habit of declaring things that aren't display:none as
   // invisible to third-party tools like JAWs, so we can't just use height:0.
   liveRegion.style.position = 'absolute';
@@ -108,4 +108,18 @@ goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
   this.domHelper_.getDocument().body.appendChild(liveRegion);
   this.liveRegions_[priority] = liveRegion;
   return liveRegion;
+};
+
+
+/**
+ * Removes any previous live region that was used to communicate announcements.
+ * @param {!goog.a11y.aria.LivePriority} priority The required priority.
+ * @private
+ */
+goog.a11y.aria.Announcer.prototype.removeLiveRegion_ = function(priority) {
+  var liveRegion = this.liveRegions_[priority];
+  if (liveRegion) {
+    this.domHelper_.removeNode(liveRegion);
+    delete this.liveRegions_[priority];
+  }
 };

@@ -52,14 +52,14 @@ goog.crypt.Md5 = function() {
 
   /**
    * Holds the current values of accumulated A-D variables (MD buffer).
-   * @type {Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.chain_ = new Array(4);
 
   /**
    * A buffer holding the data until the whole block can be processed.
-   * @type {Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.block_ = new Array(this.blockSize);
@@ -87,7 +87,7 @@ goog.inherits(goog.crypt.Md5, goog.crypt.Hash);
  * Integer rotation constants used by the abbreviated implementation.
  * They are hardcoded in the unrolled implementation, so it is left
  * here commented out.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  *
 goog.crypt.Md5.S_ = [
@@ -102,7 +102,7 @@ goog.crypt.Md5.S_ = [
  * Sine function constants used by the abbreviated implementation.
  * They are hardcoded in the unrolled implementation, so it is left
  * here commented out.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  *
 goog.crypt.Md5.T_ = [
@@ -141,7 +141,7 @@ goog.crypt.Md5.prototype.reset = function() {
 /**
  * Internal compress helper function. It takes a block of data (64 bytes)
  * and updates the accumulator.
- * @param {Array.<number>|Uint8Array|string} buf The block to compress.
+ * @param {Array<number>|Uint8Array|string} buf The block to compress.
  * @param {number=} opt_offset Offset of the block in the buffer.
  * @private
  */

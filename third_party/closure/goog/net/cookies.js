@@ -221,7 +221,7 @@ goog.net.Cookies.prototype.remove = function(name, opt_path, opt_domain) {
 
 /**
  * Gets the names for all the cookies.
- * @return {Array.<string>} An array with the names of the cookies.
+ * @return {Array<string>} An array with the names of the cookies.
  */
 goog.net.Cookies.prototype.getKeys = function() {
   return this.getKeyValues_().keys;
@@ -230,7 +230,7 @@ goog.net.Cookies.prototype.getKeys = function() {
 
 /**
  * Gets the values for all the cookies.
- * @return {Array.<string>} An array with the values of the cookies.
+ * @return {Array<string>} An array with the values of the cookies.
  */
 goog.net.Cookies.prototype.getValues = function() {
   return this.getKeyValues_().values;
@@ -323,7 +323,7 @@ goog.net.Cookies.prototype.getCookie_ = function() {
 
 
 /**
- * @return {!Array.<string>} The cookie split on semi colons.
+ * @return {!Array<string>} The cookie split on semi colons.
  * @private
  */
 goog.net.Cookies.prototype.getParts_ = function() {

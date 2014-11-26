@@ -243,7 +243,7 @@ goog.net.ChannelDebug.prototype.redactResponse_ = function(responseText) {
 
 /**
  * Removes data from a response array that may be sensitive.
- * @param {Array} array The array to clean.
+ * @param {Array<?>} array The array to clean.
  * @private
  */
 goog.net.ChannelDebug.prototype.maybeRedactArray_ = function(array) {

@@ -73,7 +73,7 @@ goog.messaging.PortCaller = function(operatorPort) {
    * If a value exists for a given key, it must contain a channel, but it
    * doesn't necessarily contain a Deferred.
    *
-   * @type {!Object.<{deferred: goog.async.Deferred,
+   * @type {!Object<{deferred: goog.async.Deferred,
    *                  channel: !goog.messaging.MessageChannel}>}
    * @private
    */

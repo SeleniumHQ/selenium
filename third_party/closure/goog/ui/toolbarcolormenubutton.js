@@ -16,7 +16,6 @@
  * @fileoverview A toolbar color menu button control.
  *
  * @author attila@google.com (Attila Bodis)
- * @author ssaviano@google.com (Steven Saviano)
  */
 
 goog.provide('goog.ui.ToolbarColorMenuButton');

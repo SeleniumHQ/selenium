@@ -21,9 +21,7 @@
 goog.provide('goog.labs.testing.MatcherError');
 goog.provide('goog.labs.testing.assertThat');
 
-goog.require('goog.asserts');
 goog.require('goog.debug.Error');
-goog.require('goog.labs.testing.Matcher');
 
 
 /**

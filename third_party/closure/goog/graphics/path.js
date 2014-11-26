@@ -16,7 +16,6 @@
 /**
  * @fileoverview Represents a path used with a Graphics implementation.
  * @author arv@google.com (Erik Arvidsson)
- * @author glenning@google.com (Anthony Glenning)
  */
 
 goog.provide('goog.graphics.Path');
@@ -40,21 +39,21 @@ goog.require('goog.math');
 goog.graphics.Path = function() {
   /**
    * The segment types that constitute this path.
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.segments_ = [];
 
   /**
    * The number of repeated segments of the current type.
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.count_ = [];
 
   /**
    * The arguments corresponding to each of the segments.
-   * @type {!Array.<number>}
+   * @type {!Array<number>}
    * @private
    */
   this.arguments_ = [];
@@ -64,7 +63,7 @@ goog.graphics.Path = function() {
 /**
  * The coordinates of the point which closes the path (the point of the
  * last moveTo command).
- * @type {Array.<number>?}
+ * @type {Array<number>?}
  * @private
  */
 goog.graphics.Path.prototype.closePoint_ = null;
@@ -72,7 +71,7 @@ goog.graphics.Path.prototype.closePoint_ = null;
 
 /**
  * The coordinates most recently added to the end of the path.
- * @type {Array.<number>?}
+ * @type {Array<number>?}
  * @private
  */
 goog.graphics.Path.prototype.currentPoint_ = null;
@@ -101,7 +100,7 @@ goog.graphics.Path.Segment = {
 
 /**
  * The number of points for each segment type.
- * @type {!Array.<number>}
+ * @type {!Array<number>}
  * @private
  */
 goog.graphics.Path.segmentArgCounts_ = (function() {
@@ -392,7 +391,7 @@ goog.graphics.Path.prototype.forEachSegment = function(callback) {
 /**
  * Returns the coordinates most recently added to the end of the path.
  *
- * @return {Array.<number>?} An array containing the ending coordinates of the
+ * @return {Array<number>?} An array containing the ending coordinates of the
  *     path of the form {@code [x, y]}.
  */
 goog.graphics.Path.prototype.getCurrentPoint = function() {

@@ -101,7 +101,7 @@ goog.testing.ExpectedFailures.prototype.failureMessage_;
 
 /**
  * An array of suppressed failures.
- * @type {Array}
+ * @type {Array<!Error>}
  * @private
  */
 goog.testing.ExpectedFailures.prototype.suppressedFailures_;

@@ -54,7 +54,7 @@ goog.db.IndexedDb = function(db) {
 
   /**
    * Internal event handler that listens to IDBDatabase events.
-   * @type {!goog.events.EventHandler.<!goog.db.IndexedDb>}
+   * @type {!goog.events.EventHandler<!goog.db.IndexedDb>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -255,7 +255,7 @@ goog.db.IndexedDb.prototype.setVersion = function(version) {
 /**
  * Creates a new transaction.
  *
- * @param {!Array.<string>} storeNames A list of strings that contains the
+ * @param {!Array<string>} storeNames A list of strings that contains the
  *     transaction's scope, the object stores that this transaction can operate
  *     on.
  * @param {goog.db.Transaction.TransactionMode=} opt_mode The mode of the

@@ -158,7 +158,7 @@ goog.string.path.normalizePath = function(path) {
  * is everything after the final slash. Either part may return an empty string.
  * See http://docs.python.org/library/os.path.html#os.path.split
  * @param {string} path A pathname.
- * @return {!Array.<string>} An array of [dirname, basename].
+ * @return {!Array<string>} An array of [dirname, basename].
  */
 goog.string.path.split = function(path) {
   var head = goog.string.path.dirname(path);

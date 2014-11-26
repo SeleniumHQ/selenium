@@ -23,7 +23,6 @@ goog.provide('goog.graphics.ext.Path');
 
 goog.require('goog.graphics.AffineTransform');
 goog.require('goog.graphics.Path');
-goog.require('goog.math');
 goog.require('goog.math.Rect');
 
 

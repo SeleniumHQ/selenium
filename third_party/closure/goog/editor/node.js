@@ -16,6 +16,7 @@
  * @fileoverview Utilties for working with DOM nodes related to rich text
  * editing.  Many of these are not general enough to go into goog.dom.
  *
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.node');

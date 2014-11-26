@@ -38,7 +38,7 @@ var requestStats = goog.labs.net.webChannel.requestStats;
 
 /**
  * Events fired.
- * @type {Object}
+ * @const
  */
 requestStats.Event = {};
 

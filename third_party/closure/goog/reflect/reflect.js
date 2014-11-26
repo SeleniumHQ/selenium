@@ -15,6 +15,7 @@
 /**
  * @fileoverview Useful compiler idioms.
  *
+ * @author johnlenz@google.com (John Lenz)
  */
 
 goog.provide('goog.reflect');

@@ -38,8 +38,6 @@ goog.require('goog.json.Serializer');
 goog.require('goog.storage.CollectableStorage');
 goog.require('goog.storage.ErrorCode');
 goog.require('goog.storage.RichStorage');
-goog.require('goog.storage.RichStorage.Wrapper');
-goog.require('goog.storage.mechanism.IterableMechanism');
 
 
 
@@ -76,7 +74,7 @@ goog.storage.EncryptedStorage.SALT_KEY = 'salt';
 /**
  * The secret used to encrypt the storage.
  *
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 goog.storage.EncryptedStorage.prototype.secret_ = null;
@@ -111,7 +109,7 @@ goog.storage.EncryptedStorage.prototype.hashKeyWithSecret_ = function(key) {
 /**
  * Encrypts a value using a key, a salt, and the secret.
  *
- * @param {!Array.<number>} salt The salt.
+ * @param {!Array<number>} salt The salt.
  * @param {string} key The key.
  * @param {string} value The cleartext value.
  * @return {string} The encrypted value.
@@ -139,7 +137,7 @@ goog.storage.EncryptedStorage.prototype.encryptValue_ = function(
 /**
  * Decrypts a value using a key, a salt, and the secret.
  *
- * @param {!Array.<number>} salt The salt.
+ * @param {!Array<number>} salt The salt.
  * @param {string} key The key.
  * @param {string} value The encrypted value.
  * @return {string} The decrypted value.
@@ -177,7 +175,7 @@ goog.storage.EncryptedStorage.prototype.set = function(
 goog.storage.EncryptedStorage.prototype.getWrapper = function(
     key, opt_expired) {
   var wrapper = goog.storage.EncryptedStorage.base(this, 'getWrapper',
-                          this.hashKeyWithSecret_(key), opt_expired);
+      this.hashKeyWithSecret_(key), opt_expired);
   if (!wrapper) {
     return undefined;
   }

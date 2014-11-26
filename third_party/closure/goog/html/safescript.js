@@ -52,12 +52,12 @@ goog.require('goog.string.TypedString');
  * conversions. In this case producers of SafeScript must ensure themselves that
  * the SafeScript does not contain unsafe script. Note in particular that
  * {@code &lt;} is dangerous, even when inside JavaScript strings, and so should
- * always be forbidden or JavaScript escaped in user controlled input. Within an
- * HTML script (raw text) element, HTML character references, such as
- * {@code &amp;lt;}, are not allowed. For example, if
- * {@code &lt;/script&gt;&lt;script&gt;evil&lt;/script&gt;"} were interpolated
- * inside a JavaScript string, it would break out of the context of the original
- * script element and {@code evil} would execute. See
+ * always be forbidden or JavaScript escaped in user controlled input. For
+ * example, if {@code &lt;/script&gt;&lt;script&gt;evil&lt;/script&gt;"} were
+ * interpolated inside a JavaScript string, it would break out of the context
+ * of the original script element and {@code evil} would execute. Also note
+ * that within an HTML script (raw text) element, HTML character references,
+ * such as "&lt;" are not allowed. See
  * http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements.
  *
  * @see goog.html.SafeScript#fromConstant

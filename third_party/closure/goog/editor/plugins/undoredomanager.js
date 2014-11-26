@@ -23,6 +23,7 @@ goog.provide('goog.editor.plugins.UndoRedoManager');
 goog.provide('goog.editor.plugins.UndoRedoManager.EventType');
 
 goog.require('goog.editor.plugins.UndoRedoState');
+goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 
 
@@ -48,14 +49,14 @@ goog.editor.plugins.UndoRedoManager = function() {
 
   /**
    * The undo stack.
-   * @type {Array.<goog.editor.plugins.UndoRedoState>}
+   * @type {Array<goog.editor.plugins.UndoRedoState>}
    * @private
    */
   this.undoStack_ = [];
 
   /**
    * The redo stack.
-   * @type {Array.<goog.editor.plugins.UndoRedoState>}
+   * @type {Array<goog.editor.plugins.UndoRedoState>}
    * @private
    */
   this.redoStack_ = [];
@@ -65,7 +66,7 @@ goog.editor.plugins.UndoRedoManager = function() {
    * properties: func and state. The func property stores the undo or redo
    * function to be called, the state property stores the state that method
    * came from.
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.pendingActions_ = [];
@@ -215,9 +216,9 @@ goog.editor.plugins.UndoRedoManager.prototype.hasRedoState = function() {
  * Move a state from one stack to the other, performing the appropriate undo
  * or redo action.
  *
- * @param {Array.<goog.editor.plugins.UndoRedoState>} fromStack Stack to move
+ * @param {Array<goog.editor.plugins.UndoRedoState>} fromStack Stack to move
  *     the state from.
- * @param {Array.<goog.editor.plugins.UndoRedoState>} toStack Stack to move
+ * @param {Array<goog.editor.plugins.UndoRedoState>} toStack Stack to move
  *     the state to.
  * @private
  */

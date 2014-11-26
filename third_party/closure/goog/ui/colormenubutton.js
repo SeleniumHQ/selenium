@@ -103,7 +103,7 @@ goog.ui.ColorMenuButton.NO_COLOR = 'none';
 /**
  * Factory method that creates and returns a new {@link goog.ui.Menu} instance
  * containing default color palettes.
- * @param {Array.<goog.ui.Control>=} opt_extraItems Optional extra menu items to
+ * @param {Array<goog.ui.Control>=} opt_extraItems Optional extra menu items to
  *     add before the color palettes.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.

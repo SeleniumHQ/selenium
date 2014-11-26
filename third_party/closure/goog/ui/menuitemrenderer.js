@@ -48,7 +48,7 @@ goog.ui.MenuItemRenderer = function() {
   /**
    * Commonly used CSS class names, cached here for convenience (and to avoid
    * unnecessary string concatenation).
-   * @type {!Array.<string>}
+   * @type {!Array<string>}
    * @private
    */
   this.classNameCache_ = [];

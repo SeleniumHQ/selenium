@@ -20,6 +20,7 @@ goog.provide('goog.style.transform');
 
 goog.require('goog.functions');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Coordinate3');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product.isVersion');
@@ -70,6 +71,7 @@ goog.style.transform.getTranslation = function(element) {
 
 /**
  * Translates an element's position using the CSS3 transform property.
+ * NOTE: This replaces all other transforms already defined on the element.
  * @param {Element} element The element to translate.
  * @param {number} x The horizontal translation.
  * @param {number} y The vertical translation.
@@ -84,11 +86,66 @@ goog.style.transform.setTranslation = function(element, x, y) {
   var translation = goog.style.transform.is3dSupported() ?
       'translate3d(' + x + 'px,' + y + 'px,' + '0px)' :
       'translate(' + x + 'px,' + y + 'px)';
-  var property = goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE == 9 ?
-      '-ms-transform' : 'transform';
-  goog.style.setStyle(element, property, translation);
+  goog.style.setStyle(element,
+      goog.style.transform.getTransformProperty_(), translation);
   return true;
 };
+
+
+/**
+ * Returns the scale of the x, y and z dimensions of CSS transforms applied to
+ * the element.
+ *
+ * @param {!Element} element The element to get the scale of.
+ * @return {!goog.math.Coordinate3} The scale of the element.
+ */
+goog.style.transform.getScale = function(element) {
+  var transform = goog.style.getComputedTransform(element);
+  var matrixConstructor = goog.style.transform.matrixConstructor_();
+  if (transform && matrixConstructor) {
+    var matrix = new matrixConstructor(transform);
+    if (matrix) {
+      return new goog.math.Coordinate3(matrix.m11, matrix.m22, matrix.m33);
+    }
+  }
+  return new goog.math.Coordinate3(0, 0, 0);
+};
+
+
+/**
+ * Scales an element using the CSS3 transform property.
+ * NOTE: This replaces all other transforms already defined on the element.
+ * @param {!Element} element The element to scale.
+ * @param {number} x The horizontal scale.
+ * @param {number} y The vertical scale.
+ * @param {number} z The depth scale.
+ * @return {boolean} Whether the CSS scale was set.
+ */
+goog.style.transform.setScale = function(element, x, y, z) {
+  if (!goog.style.transform.isSupported()) {
+    return false;
+  }
+  var scale = goog.style.transform.is3dSupported() ?
+      'scale3d(' + x + ',' + y + ',' + z + ')' :
+      'scale(' + x + ',' + y + ')';
+  goog.style.setStyle(element,
+      goog.style.transform.getTransformProperty_(), scale);
+  return true;
+};
+
+
+/**
+ * A cached value of the transform property depending on whether the useragent
+ * is IE9.
+ * @return {string} The transform property depending on whether the useragent
+ *     is IE9.
+ * @private
+ */
+goog.style.transform.getTransformProperty_ =
+    goog.functions.cacheReturnValue(function() {
+  return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE == 9 ?
+      '-ms-transform' : 'transform';
+});
 
 
 /**

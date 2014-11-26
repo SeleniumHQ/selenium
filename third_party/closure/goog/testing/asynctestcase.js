@@ -111,7 +111,6 @@ goog.provide('goog.testing.AsyncTestCase');
 goog.provide('goog.testing.AsyncTestCase.ControlBreakingException');
 
 goog.require('goog.testing.TestCase');
-goog.require('goog.testing.TestCase.Test');
 goog.require('goog.testing.asserts');
 
 
@@ -141,15 +140,20 @@ goog.testing.AsyncTestCase.TopStackFuncResult_;
  * An exception class used solely for control flow.
  * @param {string=} opt_message Error message.
  * @constructor
+ * @extends {Error}
  * @final
  */
 goog.testing.AsyncTestCase.ControlBreakingException = function(opt_message) {
+  goog.testing.AsyncTestCase.ControlBreakingException.base(
+      this, 'constructor', opt_message);
+
   /**
    * The exception message.
    * @type {string}
    */
   this.message = opt_message || '';
 };
+goog.inherits(goog.testing.AsyncTestCase.ControlBreakingException, Error);
 
 
 /**

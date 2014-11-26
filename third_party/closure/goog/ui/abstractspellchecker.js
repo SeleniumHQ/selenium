@@ -32,7 +32,6 @@
  * different stack (for example by calling setInterval(0)).
  *
  * @author eae@google.com (Emil A Eklund)
- * @author sergeys@google.com (Sergey Solyanik)
  */
 
 goog.provide('goog.ui.AbstractSpellChecker');
@@ -89,7 +88,7 @@ goog.ui.AbstractSpellChecker = function(spellCheck, opt_domHelper) {
 
   /**
    * List of all 'edit word' input elements.
-   * @type {Array.<Element>}
+   * @type {Array<Element>}
    * @private
    */
   this.inputElements_ = [];
@@ -287,7 +286,7 @@ goog.ui.AbstractSpellChecker.prototype.processedElementsCount_ = 0;
  *
  * Used exclusively by the derived classes
  *
- * @type {Array.<string>|string|RegExp|undefined}
+ * @type {Array<string>|string|RegExp|undefined}
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.excludeMarker;
@@ -392,7 +391,7 @@ goog.ui.AbstractSpellChecker.prototype.getNextIndex = function() {
  *
  * {@see goog.ui.AbstractSpellChecker.prototype.excludeMarker}
  *
- * @param {Array.<string>|string|RegExp|null} marker A RegExp for plain text
+ * @param {Array<string>|string|RegExp|null} marker A RegExp for plain text
  *        or class names for the rich text spell checker for the elements to
  *        exclude from checking.
  */
@@ -543,7 +542,7 @@ goog.ui.AbstractSpellChecker.prototype.replaceWord = function(el, old, word) {
 /**
  * Retrieves the array of suggested spelling choices.
  *
- * @return {Array.<string>} Suggested spelling choices.
+ * @return {Array<string>} Suggested spelling choices.
  * @private
  */
 goog.ui.AbstractSpellChecker.prototype.getSuggestions_ = function() {

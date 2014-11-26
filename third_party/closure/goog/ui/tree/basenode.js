@@ -17,7 +17,6 @@
  *
  * @author arv@google.com (Erik Arvidsson)
  * @author eae@google.com (Emil A Eklund)
- * @author jonp@google.com (Jon Perlow)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -230,7 +229,7 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
 
 /** @override */
 goog.ui.tree.BaseNode.prototype.createDom = function() {
-  // TODO(user): Use safeHtmlToDocumentFragment() once it is ready.
+  // TODO(jakubvrana): Use safeHtmlToDocumentFragment() once it is ready.
   var element = this.getDomHelper().htmlToDocumentFragment(
       goog.html.SafeHtml.unwrap(this.toSafeHtml()));
   this.setElementInternal(/** @type {Element} */ (element));
@@ -510,7 +509,7 @@ goog.ui.tree.BaseNode.prototype.contains = function(node) {
 
 /**
  * An array of empty children to return for nodes that have no children.
- * @type {!Array.<!goog.ui.tree.BaseNode>}
+ * @type {!Array<!goog.ui.tree.BaseNode>}
  * @private
  */
 goog.ui.tree.BaseNode.EMPTY_CHILDREN_ = [];
@@ -525,7 +524,7 @@ goog.ui.tree.BaseNode.prototype.getChildAt;
 
 /**
  * Returns the children of this node.
- * @return {!Array.<!goog.ui.tree.BaseNode>} The children.
+ * @return {!Array<!goog.ui.tree.BaseNode>} The children.
  */
 goog.ui.tree.BaseNode.prototype.getChildren = function() {
   var children = [];
@@ -922,7 +921,7 @@ goog.ui.tree.BaseNode.prototype.getAfterLabelSafeHtml = function() {
 };
 
 
-// TODO(user): Deprecate in favor of setSafeHtml, once developer docs on
+// TODO(jakubvrana): Deprecate in favor of setSafeHtml, once developer docs on
 // using goog.html.SafeHtml are in place.
 /**
  * Sets the html that appears after the label. This is useful if you want to
@@ -1218,7 +1217,7 @@ goog.ui.tree.BaseNode.prototype.getText = function() {
 };
 
 
-// TODO(user): Deprecate in favor of setSafeHtml, once developer docs on
+// TODO(jakubvrana): Deprecate in favor of setSafeHtml, once developer docs on
 // using goog.html.SafeHtml are in place.
 /**
  * Sets the html of the label.

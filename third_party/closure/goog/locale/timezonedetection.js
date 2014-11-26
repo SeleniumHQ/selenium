@@ -19,13 +19,12 @@
  */
 goog.provide('goog.locale.timeZoneDetection');
 
-goog.require('goog.locale');
 goog.require('goog.locale.TimeZoneFingerprint');
 
 
 /**
  * Array of time instances for checking the time zone offset.
- * @type {Array.<number>}
+ * @type {Array<number>}
  * @private
  */
 goog.locale.timeZoneDetection.TZ_POKE_POINTS_ = [
@@ -97,7 +96,7 @@ goog.locale.timeZoneDetection.detectTimeZone = function(opt_country, opt_date) {
  *     a better guess for user's time zone.
  * @param {Date=} opt_date Date for retrieving timezone list. Defaults to the
  *     current date.
- * @return {!Array.<string>} Array of time zone IDs.
+ * @return {!Array<string>} Array of time zone IDs.
  */
 goog.locale.timeZoneDetection.getTimeZoneList = function(opt_country,
     opt_date) {

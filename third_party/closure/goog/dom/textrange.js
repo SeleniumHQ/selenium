@@ -16,8 +16,6 @@
  * @fileoverview Utilities for working with text ranges in HTML documents.
  *
  * @author robbyw@google.com (Robby Walker)
- * @author ojan@google.com (Ojan Vafai)
- * @author jparent@google.com (Julie Parent)
  */
 
 

@@ -20,6 +20,7 @@
  *   sha512.update(bytes);
  *   var hash = sha512.digest();
  *
+ * @author fy@google.com (Frank Yellin)
  */
 
 goog.provide('goog.crypt.Sha512');
@@ -43,7 +44,7 @@ goog.crypt.Sha512 = function() {
 goog.inherits(goog.crypt.Sha512, goog.crypt.Sha2_64bit);
 
 
-/** @private {!Array.<number>} */
+/** @private {!Array<number>} */
 goog.crypt.Sha512.INIT_HASH_BLOCK_ = [
   // Section 5.3.5 of
   // csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf

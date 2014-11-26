@@ -48,7 +48,7 @@ goog.ui.editor.TabPane = function(dom, opt_caption) {
 
   /**
    * The event handler used to register events.
-   * @type {goog.events.EventHandler.<!goog.ui.editor.TabPane>}
+   * @type {goog.events.EventHandler<!goog.ui.editor.TabPane>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

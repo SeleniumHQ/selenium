@@ -68,7 +68,7 @@ goog.testing.PropertyReplacer = function() {
    * Its items are objects with 3 fields: 'object', 'key', 'value'. The
    * original value for the given key in the given object is stored under the
    * 'value' key.
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.original_ = [];
@@ -77,8 +77,7 @@ goog.testing.PropertyReplacer = function() {
 
 /**
  * Indicates that a key didn't exist before having been set by the set() method.
- * @type {Object}
- * @private
+ * @private @const
  */
 goog.testing.PropertyReplacer.NO_SUCH_KEY_ = {};
 

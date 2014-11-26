@@ -66,7 +66,7 @@ goog.testing.MockClock = function(opt_autoInstall) {
    * right.  For example, the expiration times for each element of the queue
    * might be in the order 300, 200, 200.
    *
-   * @type {Array.<Object>}
+   * @type {Array<Object>}
    * @private
    */
   this.queue_ = [];
@@ -296,6 +296,43 @@ goog.testing.MockClock.prototype.tick = function(opt_millis) {
 
 
 /**
+ * Takes a promise and then ticks the mock clock. If the promise successfully
+ * resolves, returns the value produced by the promise. If the promise is
+ * rejected, it throws the rejection as an exception. If the promise is not
+ * resolved at all, throws an exception.
+ * Also ticks the general clock by the specified amount.
+ *
+ * @param {!goog.Thenable<T>} promise A promise that should be resolved after
+ *     the mockClock is ticked for the given opt_millis.
+ * @param {number=} opt_millis Number of milliseconds to increment the counter.
+ *     If not specified, clock ticks 1 millisecond.
+ * @return {T}
+ * @template T
+ */
+goog.testing.MockClock.prototype.tickPromise = function(promise, opt_millis) {
+  var value;
+  var error;
+  var resolved = false;
+  promise.then(function(v) {
+    value = v;
+    resolved = true;
+  }, function(e) {
+    error = e;
+    resolved = true;
+  });
+  this.tick(opt_millis);
+  if (!resolved) {
+    throw new Error(
+        'Promise was expected to be resolved after mock clock tick.');
+  }
+  if (error) {
+    throw error;
+  }
+  return value;
+};
+
+
+/**
  * @return {number} The number of timeouts that have been scheduled.
  */
 goog.testing.MockClock.prototype.getTimeoutsMade = function() {
@@ -392,7 +429,7 @@ goog.testing.MockClock.prototype.scheduleFunction_ = function(
  *
  * @param {Object} timeout The timeout to insert, with numerical runAtMillis
  *     property.
- * @param {Array.<Object>} queue The queue to insert into, with each element
+ * @param {Array<Object>} queue The queue to insert into, with each element
  *     having a numerical runAtMillis property.
  * @private
  */
@@ -518,7 +555,7 @@ goog.testing.MockClock.prototype.clearTimeout_ = function(timeoutKey) {
   // key before we've allocated it.
   // Ideally, we should throw an exception if we see this happening.
   //
-  // TODO(user): We might also try allocating timeout ids from a global
+  // TODO(chrishenry): We might also try allocating timeout ids from a global
   // pool rather than a local pool.
   if (this.isTimeoutSet(timeoutKey)) {
     this.deletedKeys_[timeoutKey] = true;

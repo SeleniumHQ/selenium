@@ -37,7 +37,7 @@ goog.require('goog.ui.emoji.EmojiPaletteRenderer');
 /**
  * A page of emoji to be displayed in an EmojiPicker.
  *
- * @param {Array.<Array>} emoji List of emoji for this page.
+ * @param {Array<Array<?>>} emoji List of emoji for this page.
   * @param {?string=} opt_urlPrefix Prefix that should be prepended to all URL.
  * @param {goog.ui.PaletteRenderer=} opt_renderer Renderer used to render or
  *     decorate the palette; defaults to {@link goog.ui.PaletteRenderer}.
@@ -77,7 +77,7 @@ goog.ui.emoji.EmojiPalette = function(emoji,
    * [HTMLDivElement, goog.ui.emoji.Emoji], and represents the palette item
    * for that animated emoji, and the Emoji object.
    *
-   * @type {Array.<Array.<(HTMLDivElement|goog.ui.emoji.Emoji)>>}
+   * @type {Array<Array<(HTMLDivElement|goog.ui.emoji.Emoji)>>}
    * @private
    */
   this.animatedEmoji_ = [];
@@ -88,7 +88,7 @@ goog.ui.emoji.EmojiPalette = function(emoji,
    * Palette items that are displayed on this page of the emoji picker. Each
    * item is a div wrapped around a div or an img.
    *
-   * @type {Array.<HTMLDivElement>}
+   * @type {Array<HTMLDivElement>}
    * @private
    */
   this.emoji_ = this.getEmojiArrayFromProperties_(emoji);
@@ -135,7 +135,7 @@ goog.ui.emoji.EmojiPalette.prototype.imageLoader_;
  * centering the inner div).
  *
  * @param {Object} emojiGroup The group of emoji for this page.
- * @return {!Array.<!HTMLDivElement>} The emoji items.
+ * @return {!Array<!HTMLDivElement>} The emoji items.
  * @private
  */
 goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ =

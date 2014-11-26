@@ -75,7 +75,7 @@ goog.structs.SimplePool = function(initialCount, maxCount) {
   /**
    * Queue used to store objects that are currently in the pool and available
    * to be used.
-   * @private {Array.<T>}
+   * @private {Array<T>}
    */
   this.freeQueue_ = [];
 

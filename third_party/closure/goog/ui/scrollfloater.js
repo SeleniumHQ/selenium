@@ -196,7 +196,7 @@ goog.ui.ScrollFloater.FloatMode_ = {
 /**
  * The style properties which are stored when we float an element, so they
  * can be restored when it 'docks' again.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.ui.ScrollFloater.STORED_STYLE_PROPS_ = [
@@ -205,7 +205,7 @@ goog.ui.ScrollFloater.STORED_STYLE_PROPS_ = [
 
 /**
  * The style elements managed for the placeholder object.
- * @type {Array.<string>}
+ * @type {Array<string>}
  * @private
  */
 goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_ = [

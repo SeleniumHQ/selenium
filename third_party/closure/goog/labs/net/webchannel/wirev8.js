@@ -26,7 +26,7 @@ goog.provide('goog.labs.net.webChannel.WireV8');
 
 goog.require('goog.asserts');
 goog.require('goog.json');
-goog.require('goog.json.EvalJsonProcessor');
+goog.require('goog.json.NativeJsonProcessor');
 goog.require('goog.structs');
 
 
@@ -42,7 +42,7 @@ goog.labs.net.webChannel.WireV8 = function() {
    * Parser for a response payload. The parser should return an array.
    * @private {!goog.string.Parser}
    */
-  this.parser_ = new goog.json.EvalJsonProcessor(null, true);
+  this.parser_ = new goog.json.NativeJsonProcessor();
 };
 
 
@@ -58,7 +58,7 @@ var Wire = goog.labs.net.webChannel.Wire;
  *
  * @param {!Object|!goog.structs.Map} message The message data.
  *     V8 only support JS objects (or Map).
- * @param {!Array.<string>} buffer The text buffer to write the message to.
+ * @param {!Array<string>} buffer The text buffer to write the message to.
  * @param {string=} opt_prefix The prefix for each field of the object.
  */
 WireV8.prototype.encodeMessage = function(message, buffer, opt_prefix) {
@@ -83,7 +83,7 @@ WireV8.prototype.encodeMessage = function(message, buffer, opt_prefix) {
 /**
  * Encodes all the buffered messages of the forward channel.
  *
- * @param {!Array.<Wire.QueuedMap>} messageQueue The message data.
+ * @param {!Array<Wire.QueuedMap>} messageQueue The message data.
  *     V8 only support JS objects.
  * @param {number} count The number of messages to be encoded.
  * @param {?function(!Object)} badMapHandler Callback for bad messages.
@@ -120,12 +120,10 @@ WireV8.prototype.encodeMessageQueue = function(messageQueue, count,
  * Decodes a standalone message received from the wire. May throw exception
  * if text is ill-formatted.
  *
- * We use eval() to decode as the server may generate JS literals,
- * which don't necessarily comply with the JSON format, such as
- * double quota, null array element.
+ * Must be valid JSON as it is insecure to use eval() to decode JS literals;
+ * and eval() is disallowed in Chrome apps too.
  *
- * Over time we will phase out servers that don't generate JSON formatted
- * messages.
+ * Invalid JS literals include null array elements, quotas etc.
  *
  * @param {string} messageText The string content as received from the wire.
  * @return {*} The decoded message object.

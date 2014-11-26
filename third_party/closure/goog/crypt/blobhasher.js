@@ -31,8 +31,6 @@ goog.provide('goog.crypt.BlobHasher');
 goog.provide('goog.crypt.BlobHasher.EventType');
 
 goog.require('goog.asserts');
-goog.require('goog.crypt');
-goog.require('goog.crypt.Hash');
 goog.require('goog.events.EventTarget');
 goog.require('goog.fs');
 goog.require('goog.log');
@@ -67,7 +65,7 @@ goog.crypt.BlobHasher = function(hashFn, opt_blockSize) {
 
   /**
    * Computed hash value.
-   * @type {Array.<number>}
+   * @type {Array<number>}
    * @private
    */
   this.hashVal_ = null;
@@ -188,7 +186,7 @@ goog.crypt.BlobHasher.prototype.getBytesProcessed = function() {
 
 
 /**
- * @return {Array.<number>} The computed hash value or null if not ready.
+ * @return {Array<number>} The computed hash value or null if not ready.
  */
 goog.crypt.BlobHasher.prototype.getHash = function() {
   return this.hashVal_;

@@ -127,7 +127,7 @@ goog.ui.FilteredMenu.prototype.allowMultiple_ = false;
 
 /**
  * List of items entered in the search box if multiple entries are allowed.
- * @type {Array.<string>|undefined}
+ * @type {Array<string>|undefined}
  * @private
  */
 goog.ui.FilteredMenu.prototype.enteredItems_;
@@ -341,7 +341,7 @@ goog.ui.FilteredMenu.prototype.getFilterFromIndex = function() {
 
 /**
  * Gets a list of items entered in the search box.
- * @return {!Array.<string>} The entered items.
+ * @return {!Array<string>} The entered items.
  */
 goog.ui.FilteredMenu.prototype.getEnteredItems = function() {
   return this.enteredItems_ || [];

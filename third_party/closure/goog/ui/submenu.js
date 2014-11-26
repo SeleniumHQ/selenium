@@ -574,7 +574,7 @@ goog.ui.SubMenu.prototype.getItemCount = function() {
 
 /**
  * Returns the menu items contained in the sub menu.
- * @return {!Array.<!goog.ui.MenuItem>} An array of menu items.
+ * @return {!Array<!goog.ui.MenuItem>} An array of menu items.
  * @deprecated Use getItemAt/getItemCount instead.
  */
 goog.ui.SubMenu.prototype.getItems = function() {

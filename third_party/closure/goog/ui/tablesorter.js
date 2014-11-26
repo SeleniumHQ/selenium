@@ -71,7 +71,7 @@ goog.ui.TableSorter = function(opt_domHelper) {
 
   /**
    * Array of custom sorting functions per colun.
-   * @type {Array.<function(*, *) : number>}
+   * @type {Array<function(*, *) : number>}
    * @private
    */
   this.sortFunctions_ = [];
@@ -284,13 +284,21 @@ goog.ui.TableSorter.noSort = goog.functions.error('no sort');
 
 
 /**
- * A numeric sort function.
+ * A numeric sort function.  NaN values (or values that do not parse as float
+ * numbers) compare equal to each other and greater to any other number.
  * @param {*} a First sort value.
  * @param {*} b Second sort value.
  * @return {number} Negative if a < b, 0 if a = b, and positive if a > b.
  */
 goog.ui.TableSorter.numericSort = function(a, b) {
-  return parseFloat(a) - parseFloat(b);
+  a = parseFloat(a);
+  b = parseFloat(b);
+  // foo == foo is false if and only if foo is NaN.
+  if (a == a) {
+    return b == b ? a - b : -1;
+  } else {
+    return b == b ? 1 : 0;
+  }
 };
 
 

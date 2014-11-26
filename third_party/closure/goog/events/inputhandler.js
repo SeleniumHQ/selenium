@@ -20,7 +20,7 @@
  * <br>
  * Note: this does not guarantee the correctness of {@code keyCode} or
  * {@code charCode}, or attempt to unify them across browsers. See
- * {@code goog.events.KeyHandler} for that functionality.<br>
+ * {@code goog.events.KeyHandler} for that functionality<br>
  * <br>
  * Known issues:
  * <ul>
@@ -87,7 +87,7 @@ goog.events.InputHandler = function(element) {
           element.tagName == 'TEXTAREA');
 
   /**
-   * @type {goog.events.EventHandler.<!goog.events.InputHandler>}
+   * @type {goog.events.EventHandler<!goog.events.InputHandler>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

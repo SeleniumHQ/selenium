@@ -97,6 +97,14 @@ goog.ui.MenuButton = function(opt_content, opt_menu, opt_renderer,
     this.setFocusablePopupMenu(true);
   }
 
+  /**
+   * Whether the enter or space key should close the menu, if it is already
+   * open. This should be true for accessibility reasons, but is provided as an
+   * option for backward compatibility.
+   * @private {boolean}
+   */
+  this.closeOnEnterOrSpace_ = true;
+
   /** @private {!goog.ui.MenuRenderer} */
   this.menuRenderer_ = opt_menuRenderer || goog.ui.MenuRenderer.getInstance();
 };
@@ -181,6 +189,16 @@ goog.ui.MenuButton.prototype.originalSize_;
  * @private
  */
 goog.ui.MenuButton.prototype.renderMenuAsSibling_ = false;
+
+
+/**
+ * Whether to select the first item in the menu when it is opened using
+ * enter or space. By default, the first item is selected only when
+ * opened by a key up or down event. When this is on, the first item will
+ * be selected due to any of the four events.
+ * @private
+ */
+goog.ui.MenuButton.prototype.selectFirstOnEnterOrSpace_ = false;
 
 
 /**
@@ -330,8 +348,11 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
   if (this.menu_ && this.menu_.isVisible()) {
     // Menu is open.
+    var isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
+        e.keyCode == goog.events.KeyCodes.SPACE;
     var handledByMenu = this.menu_.handleKeyEvent(e);
-    if (e.keyCode == goog.events.KeyCodes.ESC) {
+    if (e.keyCode == goog.events.KeyCodes.ESC ||
+        isEnterOrSpace && this.closeOnEnterOrSpace_) {
       // Dismiss the menu.
       this.setOpen(false);
       return true;
@@ -484,6 +505,29 @@ goog.ui.MenuButton.prototype.setPositionElement = function(
  */
 goog.ui.MenuButton.prototype.setMenuMargin = function(margin) {
   this.menuMargin_ = margin;
+};
+
+
+/**
+ * Sets whether the enter or space key should close the menu, if it is already
+ * open. By default, only the ESC key will close an open menu.
+ * @param {boolean} close Whether pressing Enter or Space when the button has
+ *     focus will close the menu if it is already open.
+ */
+goog.ui.MenuButton.prototype.setCloseOnEnterOrSpace = function(close) {
+  this.closeOnEnterOrSpace_ = close;
+};
+
+
+/**
+ * Sets whether to select the first item in the menu when it is opened using
+ * enter or space. By default, the first item is selected only when
+ * opened by a key up or down event. When this is on, the first item will
+ * be selected due to any of the four events.
+ * @param {boolean} select
+ */
+goog.ui.MenuButton.prototype.setSelectFirstOnEnterOrSpace = function(select) {
+  this.selectFirstOnEnterOrSpace_ = select;
 };
 
 
@@ -739,10 +783,21 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
 
       // As per aria spec, highlight the first element in the menu when
       // keyboarding up or down. Thus, the first menu item will be announced
-      // for screen reader users.
-      var focus = !!opt_e && (opt_e.keyCode == goog.events.KeyCodes.DOWN ||
-          opt_e.keyCode == goog.events.KeyCodes.UP);
-      this.menu_.setHighlightedIndex(focus ? 0 : -1);
+      // for screen reader users. If selectFirstOnEnterOrSpace is set, do this
+      // for enter or space as well.
+      var isEnterOrSpace = !!opt_e &&
+          (opt_e.keyCode == goog.events.KeyCodes.ENTER ||
+           opt_e.keyCode == goog.events.KeyCodes.SPACE);
+      var isUpOrDown = !!opt_e &&
+          (opt_e.keyCode == goog.events.KeyCodes.DOWN ||
+           opt_e.keyCode == goog.events.KeyCodes.UP);
+      var focus = isUpOrDown ||
+          (isEnterOrSpace && this.selectFirstOnEnterOrSpace_);
+      if (focus) {
+        this.menu_.highlightFirst();
+      } else {
+        this.menu_.setHighlightedIndex(-1);
+      }
     } else {
       this.setActive(false);
       this.menu_.setMouseButtonPressed(false);
@@ -774,6 +829,12 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
     if (!this.isDisposed()) {
       this.attachPopupListeners_(open);
     }
+  }
+  if (this.menu_ && this.menu_.getElement()) {
+    // Remove the aria-hidden state on the menu element so that it won't be
+    // hidden to screen readers if it's inside a dialog (see b/17610491).
+    goog.a11y.aria.removeState(
+        this.menu_.getElementStrict(), goog.a11y.aria.State.HIDDEN);
   }
 };
 

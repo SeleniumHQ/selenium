@@ -16,6 +16,7 @@
  * @fileoverview TrogEdit plugin to handle enter keys by inserting the
  * specified block level tag.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.TagOnEnterHandler');
@@ -30,7 +31,8 @@ goog.require('goog.editor.plugins.EnterHandler');
 goog.require('goog.editor.range');
 goog.require('goog.editor.style');
 goog.require('goog.events.KeyCodes');
-goog.require('goog.string');
+goog.require('goog.functions');
+goog.require('goog.string.Unicode');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 

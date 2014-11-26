@@ -18,6 +18,7 @@
 
 goog.module('goog.test_module');
 goog.setTestOnly('goog.test_module');
+goog.module.declareLegacyNamespace();
 
 var dep = goog.require('goog.test_module_dep');
 

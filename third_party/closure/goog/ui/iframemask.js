@@ -64,7 +64,7 @@ goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
 
   /**
    * An event handler for listening to popups and the like.
-   * @type {goog.events.EventHandler.<!goog.ui.IframeMask>}
+   * @type {goog.events.EventHandler<!goog.ui.IframeMask>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);

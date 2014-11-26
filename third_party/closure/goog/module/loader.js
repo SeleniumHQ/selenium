@@ -82,7 +82,7 @@ goog.module.Loader = function() {
    * unknown. The modules that are requested before init() are
    * therefore stored in this array, and they are loaded at init()
    * time.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.pendingBeforeInit_ = [];

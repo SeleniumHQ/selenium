@@ -76,7 +76,7 @@ goog.net.xpc.Transport.prototype.getWindow = function() {
  * @return {string} the transport name.
  */
 goog.net.xpc.Transport.prototype.getName = function() {
-  return goog.net.xpc.TransportNames[this.transportType] || '';
+  return goog.net.xpc.TransportNames[String(this.transportType)] || '';
 };
 
 

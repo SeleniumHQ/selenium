@@ -103,14 +103,14 @@ goog.ui.ac.Renderer = function(opt_parentNode, opt_customRenderer,
 
   /**
    * Array used to store the current set of rows being displayed
-   * @type {Array}
+   * @type {Array<!Object>}
    * @private
    */
   this.rows_ = [];
 
   /**
    * Array of the node divs that hold each result that is being displayed.
-   * @type {Array.<Element>}
+   * @type {Array<Element>}
    * @protected
    * @suppress {underscore|visibility}
    */
@@ -409,7 +409,7 @@ goog.ui.ac.Renderer.prototype.getAnchorElement = function() {
 /**
  * Render the autocomplete UI
  *
- * @param {Array} rows Matching UI rows.
+ * @param {Array<!Object>} rows Matching UI rows.
  * @param {string} token Token we are currently matching against.
  * @param {Element=} opt_target Current HTML node, will position popup beneath
  *     this node.
@@ -787,7 +787,7 @@ goog.ui.ac.Renderer.prototype.renderRowContents_ =
  * this.highlightAllTokens_ value.
  *
  * @param {Node} node Node to match.
- * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
+ * @param {string|Array<string>} tokenOrArray Token to match or array of tokens
  *     to match.  By default, only the first match will be highlighted.  If
  *     highlightAllTokens is set, then all tokens appearing at the start of a
  *     word, in whatever order and however many times, will be highlighted.
@@ -802,7 +802,7 @@ goog.ui.ac.Renderer.prototype.startHiliteMatchingText_ =
 
 /**
  * @param {Node} node Node to match.
- * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
+ * @param {string|Array<string>} tokenOrArray Token to match or array of tokens
  *     to match.
  * @private
  */
@@ -901,7 +901,7 @@ goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
 /**
  * Transforms a token into a string ready to be put into the regular expression
  * in hiliteMatchingText_.
- * @param {string|Array.<string>} tokenOrArray The token or array to get the
+ * @param {string|Array<string>} tokenOrArray The token or array to get the
  *     regex string from.
  * @return {string} The regex-ready token.
  * @private
@@ -916,7 +916,7 @@ goog.ui.ac.Renderer.prototype.getTokenRegExp_ = function(tokenOrArray) {
   if (goog.isArray(tokenOrArray)) {
     // Remove invalid tokens from the array, which may leave us with nothing.
     tokenOrArray = goog.array.filter(tokenOrArray, function(str) {
-      return !goog.string.isEmptySafe(str);
+      return !goog.string.isEmptyOrWhitespace(goog.string.makeSafe(str));
     });
   }
 
@@ -947,7 +947,7 @@ goog.ui.ac.Renderer.prototype.getTokenRegExp_ = function(tokenOrArray) {
       // For the single-match string token, we refuse to match anything if
       // the string begins with a non-word character, as matches by definition
       // can only occur at the start of a word. (This also handles the
-      // goog.string.isEmptySafe(tokenOrArray) case.)
+      // goog.string.isEmptyOrWhitespace(goog.string.makeSafe(tokenOrArray)) case.)
       if (!/^\W/.test(tokenOrArray)) {
         token = goog.string.regExpEscape(tokenOrArray);
       }

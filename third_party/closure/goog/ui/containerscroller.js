@@ -59,7 +59,7 @@ goog.ui.ContainerScroller = function(container) {
 
   /**
    * Event handler for this object.
-   * @type {!goog.events.EventHandler.<!goog.ui.ContainerScroller>}
+   * @type {!goog.events.EventHandler<!goog.ui.ContainerScroller>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

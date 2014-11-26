@@ -193,7 +193,7 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
 
 /**
  * Recursively outputs a nested array as a string.
- * @param {Array} arr The array.
+ * @param {Array<?>} arr The array.
  * @return {string} String representing nested array.
  */
 goog.debug.exposeArray = function(arr) {
@@ -440,7 +440,7 @@ goog.debug.getStacktrace = function(opt_fn) {
 /**
  * Private helper for getStacktrace().
  * @param {Function} fn Function to start getting the trace from.
- * @param {Array} visited List of functions visited so far.
+ * @param {Array<!Function>} visited List of functions visited so far.
  * @return {string} Stack trace starting from function fn.
  * @suppress {es5Strict}
  * @private

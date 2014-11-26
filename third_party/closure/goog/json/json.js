@@ -26,7 +26,7 @@ goog.provide('goog.json.Serializer');
 
 /**
  * @define {boolean} If true, use the native JSON parsing API.
- * NOTE(user): EXPERIMENTAL, handle with care.  Setting this to true might
+ * NOTE(ruilopes): EXPERIMENTAL, handle with care.  Setting this to true might
  * break your code.  The default {@code goog.json.parse} implementation is able
  * to handle invalid JSON, such as JSPB.
  */
@@ -202,7 +202,7 @@ goog.json.Serializer.prototype.serialize = function(object) {
  * Serializes a generic value to a JSON string
  * @protected
  * @param {*} object The object to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<string>} sb Array used as a string builder.
  * @throws Error if there are loops in the object graph.
  */
 goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
@@ -225,7 +225,7 @@ goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
         break;
       }
       if (goog.isArray(object)) {
-        this.serializeArray(/** @type {!Array} */ (object), sb);
+        this.serializeArray(/** @type {!Array<?>} */ (object), sb);
         break;
       }
       // should we allow new String, new Number and new Boolean to be treated
@@ -278,7 +278,7 @@ goog.json.Serializer.charsToReplace_ = /\uffff/.test('\uffff') ?
  * Serializes a string to a JSON string
  * @private
  * @param {string} s The string to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<string>} sb Array used as a string builder.
  */
 goog.json.Serializer.prototype.serializeString_ = function(s, sb) {
   // The official JSON implementation does not work with international
@@ -307,7 +307,7 @@ goog.json.Serializer.prototype.serializeString_ = function(s, sb) {
  * Serializes a number to a JSON string
  * @private
  * @param {number} n The number to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<string>} sb Array used as a string builder.
  */
 goog.json.Serializer.prototype.serializeNumber_ = function(n, sb) {
   sb.push(isFinite(n) && !isNaN(n) ? n : 'null');
@@ -316,8 +316,8 @@ goog.json.Serializer.prototype.serializeNumber_ = function(n, sb) {
 
 /**
  * Serializes an array to a JSON string
- * @param {Array} arr The array to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<string>} arr The array to serialize.
+ * @param {Array<string>} sb Array used as a string builder.
  * @protected
  */
 goog.json.Serializer.prototype.serializeArray = function(arr, sb) {
@@ -342,7 +342,7 @@ goog.json.Serializer.prototype.serializeArray = function(arr, sb) {
  * Serializes an object to a JSON string
  * @private
  * @param {Object} obj The object to serialize.
- * @param {Array} sb Array used as a string builder.
+ * @param {Array<string>} sb Array used as a string builder.
  */
 goog.json.Serializer.prototype.serializeObject_ = function(obj, sb) {
   sb.push('{');

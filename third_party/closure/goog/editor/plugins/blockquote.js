@@ -15,6 +15,7 @@
 /**
  * @fileoverview goog.editor plugin to handle splitting block quotes.
  *
+ * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.Blockquote');
@@ -226,7 +227,7 @@ goog.editor.plugins.Blockquote.findAndRemoveSingleChildAncestor_ = function(
 
 /**
  * Remove every nodes from the DOM tree that are all white space nodes.
- * @param {Array.<Node>} nodes Nodes to be checked.
+ * @param {Array<Node>} nodes Nodes to be checked.
  * @private
  */
 goog.editor.plugins.Blockquote.removeAllWhiteSpaceNodes_ = function(nodes) {

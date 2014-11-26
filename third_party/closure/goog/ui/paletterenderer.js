@@ -94,7 +94,7 @@ goog.ui.PaletteRenderer.prototype.createDom = function(palette) {
   var classNames = this.getClassNames(palette);
   var element = palette.getDomHelper().createDom(
       goog.dom.TagName.DIV, classNames ? classNames.join(' ') : null,
-      this.createGrid(/** @type {Array.<Node>} */(palette.getContent()),
+      this.createGrid(/** @type {Array<Node>} */(palette.getContent()),
           palette.getSize(), palette.getDomHelper()));
   goog.a11y.aria.setRole(element, goog.a11y.aria.Role.GRID);
   return element;
@@ -106,11 +106,11 @@ goog.ui.PaletteRenderer.prototype.createDom = function(palette) {
  * {@code size.height} rows.  If the table is too big, empty cells will be
  * created as needed.  If the table is too small, the items that don't fit
  * will not be rendered.
- * @param {Array.<Node>} items Palette items.
+ * @param {Array<Node>} items Palette items.
  * @param {goog.math.Size} size Palette size (columns x rows); both dimensions
  *     must be specified as numbers.
  * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
- * @return {Element} Palette table element.
+ * @return {!Element} Palette table element.
  */
 goog.ui.PaletteRenderer.prototype.createGrid = function(items, size, dom) {
   var rows = [];
@@ -129,7 +129,7 @@ goog.ui.PaletteRenderer.prototype.createGrid = function(items, size, dom) {
 
 /**
  * Returns a table element (or equivalent) that wraps the given rows.
- * @param {Array.<Element>} rows Array of row elements.
+ * @param {Array<Element>} rows Array of row elements.
  * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
  * @return {!Element} Palette table element.
  */
@@ -146,7 +146,7 @@ goog.ui.PaletteRenderer.prototype.createTable = function(rows, dom) {
 
 /**
  * Returns a table row element (or equivalent) that wraps the given cells.
- * @param {Array.<Element>} cells Array of cell elements.
+ * @param {Array<Element>} cells Array of cell elements.
  * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
  * @return {!Element} Row element.
  */
@@ -245,7 +245,7 @@ goog.ui.PaletteRenderer.prototype.decorate = function(palette, element) {
  * @override
  */
 goog.ui.PaletteRenderer.prototype.setContent = function(element, content) {
-  var items = /** @type {Array.<Node>} */ (content);
+  var items = /** @type {Array<Node>} */ (content);
   if (element) {
     var tbody = goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.TBODY,
         goog.getCssName(this.getCssClass(), 'body'), element)[0];

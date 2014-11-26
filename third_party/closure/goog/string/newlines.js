@@ -32,7 +32,7 @@ goog.require('goog.array');
  * @param {string} str String to split.
  * @param {boolean=} opt_keepNewlines Whether to keep the newlines in the
  *     resulting strings. Defaults to false.
- * @return {!Array.<string>} String split into lines.
+ * @return {!Array<string>} String split into lines.
  */
 goog.string.newlines.splitLines = function(str, opt_keepNewlines) {
   var lines = goog.string.newlines.getLines(str);
@@ -123,7 +123,7 @@ goog.string.newlines.Line.prototype.getNewline = function() {
 /**
  * Splits a string into an array of line metadata.
  * @param {string} str String to split.
- * @return {!Array.<!goog.string.newlines.Line>} Array of line metadata.
+ * @return {!Array<!goog.string.newlines.Line>} Array of line metadata.
  */
 goog.string.newlines.getLines = function(str) {
   // We use the constructor because literals are evaluated only once in

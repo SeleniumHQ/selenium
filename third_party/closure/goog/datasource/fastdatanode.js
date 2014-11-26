@@ -177,7 +177,7 @@ goog.ds.FastDataNode.emptyList_ = new goog.ds.EmptyNodeList();
  * @override
  */
 goog.ds.FastDataNode.prototype.set = function(value) {
-  throw 'Not implemented yet';
+  throw new Error('Not implemented yet');
 };
 
 
@@ -508,7 +508,7 @@ goog.ds.PrimitiveFastDataNode.prototype.getJsObject = function() {
 
 /**
  * Creates a new list node from an array.
- * @param {Array} values values hold by this list node.
+ * @param {Array<?>} values values hold by this list node.
  * @param {string} dataName name of this node.
  * @param {goog.ds.DataNode=} opt_parent parent of this node.
  * @extends {goog.ds.AbstractFastDataNode}

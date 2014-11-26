@@ -89,7 +89,7 @@ goog.labs.net.webChannel.ChannelRequest = function(channel, channelDebug,
 
   /**
    * An object to keep track of the channel request event listeners.
-   * @private {!goog.events.EventHandler.<
+   * @private {!goog.events.EventHandler<
    *     !goog.labs.net.webChannel.ChannelRequest>}
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

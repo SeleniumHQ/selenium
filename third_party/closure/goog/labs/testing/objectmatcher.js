@@ -28,7 +28,6 @@ goog.provide('goog.labs.testing.ObjectEqualsMatcher');
 
 
 goog.require('goog.labs.testing.Matcher');
-goog.require('goog.string');
 
 
 

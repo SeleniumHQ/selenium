@@ -85,42 +85,42 @@ goog.ui.ServerChart = function(type, opt_width, opt_height, opt_domHelper,
 
   /**
    * Two-dimensional array of the data sets on the chart.
-   * @type {Array.<Array.<number>>}
+   * @type {Array<Array<number>>}
    * @private
    */
   this.dataSets_ = [];
 
   /**
    * Colors for each data set.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.setColors_ = [];
 
   /**
    * Legend texts for each data set.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.setLegendTexts_ = [];
 
   /**
    * Labels on the X-axis.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.xLabels_ = [];
 
   /**
    * Labels on the left along the Y-axis.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.leftLabels_ = [];
 
   /**
    * Labels on the right along the Y-axis.
-   * @type {Array.<string>}
+   * @type {Array<string>}
    * @private
    */
   this.rightLabels_ = [];
@@ -128,7 +128,7 @@ goog.ui.ServerChart = function(type, opt_width, opt_height, opt_domHelper,
   /**
    * Axis type for each multi-axis in the chart. The indices into this array
    * also work as the reference index for all other multi-axis properties.
-   * @type {Array.<goog.ui.ServerChart.MultiAxisType>}
+   * @type {Array<goog.ui.ServerChart.MultiAxisType>}
    * @private
    */
   this.multiAxisType_ = [];
@@ -289,7 +289,7 @@ goog.ui.ServerChart.prototype.titleColor_ = '333333';
 
 /**
  * Chart legend.
- * @type {Array.<string>?}
+ * @type {Array<string>?}
  * @private
  */
 goog.ui.ServerChart.prototype.legend_ = null;
@@ -616,7 +616,7 @@ goog.ui.ServerChart.UriParam = {
 /**
  * Sets the background fill.
  *
- * @param {Array.<Object>} fill An array of background fill specification
+ * @param {Array<Object>} fill An array of background fill specification
  *     objects. Each object may have the following properties:
  *     {string} area The area to fill, either 'bg' for background or 'c' for
  *         chart area.  The default is 'bg'.
@@ -639,7 +639,7 @@ goog.ui.ServerChart.prototype.setBackgroundFill = function(fill) {
 /**
  * Returns the background fill.
  *
- * @return {!Array.<Object>} An array of background fill specifications.
+ * @return {!Array<Object>} An array of background fill specifications.
  *     If the fill specification string is in an unsupported format, the method
  *    returns an empty array.
  */
@@ -721,7 +721,7 @@ goog.ui.ServerChart.prototype.setSize = function(opt_width, opt_height) {
 /**
  * Returns the chart size.
  *
- * @return {!Array.<string>} [Width, Height].
+ * @return {!Array<string>} [Width, Height].
  */
 goog.ui.ServerChart.prototype.getSize = function() {
   var sizeStr = this.uri_.getParameterValue(goog.ui.ServerChart.UriParam.SIZE);
@@ -839,7 +839,7 @@ goog.ui.ServerChart.prototype.setGrids_ = function(x, y) {
 /**
  * Sets the X Labels for the chart.
  *
- * @param {Array.<string>} labels The X Labels for the chart.
+ * @param {Array<string>} labels The X Labels for the chart.
  */
 goog.ui.ServerChart.prototype.setXLabels = function(labels) {
   this.xLabels_ = labels;
@@ -849,7 +849,7 @@ goog.ui.ServerChart.prototype.setXLabels = function(labels) {
 
 
 /**
- * @return {Array.<string>} The X Labels for the chart.
+ * @return {Array<string>} The X Labels for the chart.
  */
 goog.ui.ServerChart.prototype.getXLabels = function() {
   return this.xLabels_;
@@ -952,7 +952,7 @@ goog.ui.ServerChart.prototype.isVerticalBarChart = function() {
  *       from 0 to 100 with 0 at bottom of the graph, then you would
  *       want to pass something like [0,25,50,75,100].
  *
- * @param {Array.<string>} labels The Left Labels for the chart.
+ * @param {Array<string>} labels The Left Labels for the chart.
  */
 goog.ui.ServerChart.prototype.setLeftLabels = function(labels) {
   this.leftLabels_ = labels;
@@ -962,7 +962,7 @@ goog.ui.ServerChart.prototype.setLeftLabels = function(labels) {
 
 
 /**
- * @return {Array.<string>} The Left Labels for the chart.
+ * @return {Array<string>} The Left Labels for the chart.
  */
 goog.ui.ServerChart.prototype.getLeftLabels = function() {
   return this.leftLabels_;
@@ -998,7 +998,7 @@ goog.ui.ServerChart.prototype.removeParameter = function(key) {
  *       from 0 to 100 with 0 at bottom of the graph, then you would
  *       want to pass something like [0,25,50,75,100].
  *
- * @param {Array.<string>} labels The Right Labels for the chart.
+ * @param {Array<string>} labels The Right Labels for the chart.
  */
 goog.ui.ServerChart.prototype.setRightLabels = function(labels) {
   this.rightLabels_ = labels;
@@ -1008,7 +1008,7 @@ goog.ui.ServerChart.prototype.setRightLabels = function(labels) {
 
 
 /**
- * @return {Array.<string>} The Right Labels for the chart.
+ * @return {Array<string>} The Right Labels for the chart.
  */
 goog.ui.ServerChart.prototype.getRightLabels = function() {
   return this.rightLabels_;
@@ -1080,9 +1080,9 @@ goog.ui.ServerChart.prototype.getNumVisibleDataSets = function() {
  *     weights[1] is relative area of circle B.
  *     weights[2] is relative area of overlap of circles A and B.
  *
- * @param {Array.<number>} weights The relative weights of the circles.
- * @param {Array.<string>=} opt_legendText The legend labels for the circles.
- * @param {Array.<string>=} opt_colors The colors for the circles.
+ * @param {Array<number>} weights The relative weights of the circles.
+ * @param {Array<string>=} opt_legendText The legend labels for the circles.
+ * @param {Array<string>=} opt_colors The colors for the circles.
  */
 goog.ui.ServerChart.prototype.setVennSeries = function(
     weights, opt_legendText, opt_colors) {
@@ -1181,7 +1181,7 @@ goog.ui.ServerChart.prototype.getTitleColor = function() {
 /**
  * Adds a legend to the chart.
  *
- * @param {Array.<string>} legend The legend to add.
+ * @param {Array<string>} legend The legend to add.
  */
 goog.ui.ServerChart.prototype.setLegend = function(legend) {
   this.legend_ = legend;
@@ -1282,7 +1282,7 @@ goog.ui.ServerChart.prototype.addMultiAxis = function(axisType) {
  *
  * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
  * @return {goog.ui.ServerChart.MultiAxisType|
- *     Array.<goog.ui.ServerChart.MultiAxisType>}
+ *     Array<goog.ui.ServerChart.MultiAxisType>}
  *     The axis type for the given axis, or all of them in an array if the
  *     axis number is not given.
  */
@@ -1299,7 +1299,7 @@ goog.ui.ServerChart.prototype.getMultiAxisType = function(opt_axisNumber) {
  * any existing values.
  *
  * @param {number} axisNumber The axis index, as returned by addMultiAxis.
- * @param {Array.<string>} labelText The actual label text to be added.
+ * @param {Array<string>} labelText The actual label text to be added.
  */
 goog.ui.ServerChart.prototype.setMultiAxisLabelText = function(axisNumber,
                                                                labelText) {
@@ -1320,7 +1320,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelText = function(axisNumber,
  * axis number is not given.
  *
  * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
- * @return {Object|Array.<string>} The label text, or all of them in a
+ * @return {Object|Array<string>} The label text, or all of them in a
  *     two-dimensional array if the axis number is not given.
  */
 goog.ui.ServerChart.prototype.getMultiAxisLabelText = function(opt_axisNumber) {
@@ -1337,7 +1337,7 @@ goog.ui.ServerChart.prototype.getMultiAxisLabelText = function(opt_axisNumber) {
  * range of the axis.
  *
  * @param {number} axisNumber The axis index, as returned by addMultiAxis.
- * @param {Array.<number>} labelPosition The actual label positions to be added.
+ * @param {Array<number>} labelPosition The actual label positions to be added.
  */
 goog.ui.ServerChart.prototype.setMultiAxisLabelPosition = function(
     axisNumber, labelPosition) {
@@ -1359,7 +1359,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelPosition = function(
  * two-dimensional array if the axis number is not given.
  *
  * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
- * @return {Object|Array.<number>} The label positions for a given axis number,
+ * @return {Object|Array<number>} The label positions for a given axis number,
  *     or all of them in a two-dimensional array if the axis number is not
  *     given.
  */
@@ -1408,7 +1408,7 @@ goog.ui.ServerChart.prototype.setMultiAxisRange = function(axisNumber,
  * axis number is not given.
  *
  * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
- * @return {Object|Array.<number>} The label range for a given axis number as a
+ * @return {Object|Array<number>} The label range for a given axis number as a
  *     two-element array of (range start, range end), or all of them in a
  *     two-dimensional array if the axis number is not given.
  */
@@ -1465,7 +1465,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelStyle = function(
  * given.
  *
  * @param {number=} opt_axisNumber The axis index, as returned by addMultiAxis.
- * @return {Object|Array.<number>} The label style for a given axis number as a
+ * @return {Object|Array<number>} The label style for a given axis number as a
  *     one- to three-element array, or all of them in a two-dimensional array if
  *     the axis number is not given.
  */
@@ -1482,7 +1482,7 @@ goog.ui.ServerChart.prototype.getMultiAxisLabelStyle =
  * Adds a data set.
  * NOTE: The color string should NOT have a '#' at the beginning of it.
  *
- * @param {Array.<number|null>} data An array of numbers (values can be
+ * @param {Array<number|null>} data An array of numbers (values can be
  *     NaN or null).
  * @param {string} color The hex value for this data set's color.
  * @param {string=} opt_legendText The legend text, if any, for this data
@@ -1539,8 +1539,8 @@ goog.ui.ServerChart.prototype.clearDataSets = function() {
  * the set number is not given.
  *
  * @param {number=} opt_setNumber Optional data set number to get.
- * @return {Array} The given data set or all of them in a two-dimensional array
- *     if the set number is not given.
+ * @return {Array<?>} The given data set or all of them in a two-dimensional
+ *     array if the set number is not given.
  */
 goog.ui.ServerChart.prototype.getData = function(opt_setNumber) {
   if (goog.isDef(opt_setNumber)) {
@@ -1721,7 +1721,7 @@ goog.ui.ServerChart.prototype.getConvertedValue_ = function(value,
  * Creates the chd string for chartserver.
  *
  * @private
- * @param {Array.<number>} values An array of numbers to graph.
+ * @param {Array<number>} values An array of numbers to graph.
  * @param {number} minValue The minimum value (used for normalization).
  * @param {number} maxValue The maximum value (used for normalization).
  * @param {goog.ui.ServerChart.EncodingType} encoding The data encoding to use;
@@ -1746,7 +1746,7 @@ goog.ui.ServerChart.prototype.getChartServerValues_ = function(values,
  * Finds the minimum value in an array and returns it.
  * Needed because Math.min does not handle sparse arrays the way we want.
  *
- * @param {Array.<number?>} ary An array of values.
+ * @param {Array<number?>} ary An array of values.
  * @return {number} The minimum value.
  * @private
  */
@@ -1766,7 +1766,7 @@ goog.ui.ServerChart.prototype.arrayMin_ = function(ary) {
  * Finds the maximum value in an array and returns it.
  * Needed because Math.max does not handle sparse arrays the way we want.
  *
- * @param {Array.<number?>} ary An array of values.
+ * @param {Array<number?>} ary An array of values.
  * @return {number} The maximum value.
  * @private
  */

@@ -13,6 +13,7 @@
 // limitations under the License.
 goog.provide('goog.testing.JsUnitException');
 goog.provide('goog.testing.asserts');
+goog.provide('goog.testing.asserts.ArrayLike');
 
 goog.require('goog.testing.stacktrace');
 
@@ -61,7 +62,7 @@ goog.testing.asserts.numberRoughEqualityPredicate_ = function(
 
 
 /**
- * @type {Object.<string, function(*, *, number): boolean>}
+ * @type {Object<string, function(*, *, number): boolean>}
  * @private
  */
 goog.testing.asserts.primitiveRoughEqualityPredicates_ = {
@@ -544,7 +545,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
   // To avoid infinite recursion when the two parameters are self-referential
   // along the same path of properties, keep track of the object pairs already
   // seen in this call subtree, and abort when a cycle is detected.
-  function innerAssert(var1, var2, path) {
+  function innerAssertWithCycleCheck(var1, var2, path) {
     // This is used for testing, so we can afford to be slow (but more
     // accurate). So we just check whether var1 is in seen1. If we
     // found var1 in index i, we simply need to check whether var2 is
@@ -554,7 +555,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
     //
     // This is based on the fact that values at index i in seen1 and
     // seen2 will be checked for equality eventually (when
-    // innerAssert_(seen1[i], seen2[i], path) finishes).
+    // innerAssertImplementation(seen1[i], seen2[i], path) finishes).
     for (var i = 0; i < seen1.length; ++i) {
       var match1 = seen1[i] === var1;
       var match2 = seen2[i] === var2;
@@ -569,7 +570,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
 
     seen1.push(var1);
     seen2.push(var2);
-    innerAssert_(var1, var2, path);
+    innerAssertImplementation(var1, var2, path);
     seen1.pop();
     seen2.pop();
   }
@@ -591,7 +592,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
    * @suppress {missingProperties} The map_ property is unknown to the compiler
    *     unless goog.structs.Map is loaded.
    */
-  function innerAssert_(var1, var2, path) {
+  function innerAssertImplementation(var1, var2, path) {
     if (var1 === var2) {
       return;
     }
@@ -628,8 +629,8 @@ goog.testing.asserts.findDifferences = function(expected, actual,
             }
 
             if (prop in var2) {
-              innerAssert(var1[prop], var2[prop],
-                          childPath.replace('%s', prop));
+              innerAssertWithCycleCheck(var1[prop], var2[prop],
+                  childPath.replace('%s', prop));
             } else {
               failures.push('property ' + prop +
                             ' not present in actual ' + (path || typeOfVar2));
@@ -663,8 +664,8 @@ goog.testing.asserts.findDifferences = function(expected, actual,
           // populated with 'undefined'.
           if (isArray) {
             for (prop = 0; prop < var1.length; prop++) {
-              innerAssert(var1[prop], var2[prop],
-                          childPath.replace('%s', String(prop)));
+              innerAssertWithCycleCheck(var1[prop], var2[prop],
+                  childPath.replace('%s', String(prop)));
             }
           }
         } else {
@@ -679,7 +680,8 @@ goog.testing.asserts.findDifferences = function(expected, actual,
           } else if (var1.map_) {
             // assume goog.structs.Map or goog.structs.Set, where comparing
             // their private map_ field is sufficient
-            innerAssert(var1.map_, var2.map_, childPath.replace('%s', 'map_'));
+            innerAssertWithCycleCheck(var1.map_, var2.map_,
+                childPath.replace('%s', 'map_'));
           } else {
             // else die, so user knows we can't do anything
             failures.push('unable to check ' + (path || typeOfVar1) +
@@ -694,7 +696,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
     }
   }
 
-  innerAssert(expected, actual, '');
+  innerAssertWithCycleCheck(expected, actual, '');
   return failures.length == 0 ? null :
       goog.testing.asserts.getDefaultErrorMsg_(expected, actual) +
           '\n   ' + failures.join('\n   ');
@@ -1099,7 +1101,7 @@ var assertRegExp = function(a, b, opt_c) {
 /**
  * Converts an array like object to array or clones it if it's already array.
  * @param {goog.testing.asserts.ArrayLike} arrayLike The collection.
- * @return {!Array} Copy of the collection as array.
+ * @return {!Array<?>} Copy of the collection as array.
  * @private
  */
 goog.testing.asserts.toArray_ = function(arrayLike) {

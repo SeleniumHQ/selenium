@@ -49,7 +49,7 @@ goog.require('goog.testing.jsunit');
 /**
  * A map of known tests where locale data changed, but the old values are
  * still tested for by various clients.
- * @const {!Object.<string, string>}
+ * @const {!Object<string, string>}
  * @private
  */
 goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_ = {

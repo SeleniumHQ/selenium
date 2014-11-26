@@ -17,6 +17,7 @@
  * See http://go/useragentexamples and http://www.useragentstring.com/ for
  * examples.
  *
+ * @author martone@google.com (Andy Martone)
  */
 
 goog.provide('goog.labs.userAgent.testAgents');
@@ -174,7 +175,7 @@ testAgents.SAFARI_6 =
 
 /** @const {string} */
 testAgents.SAFARI_IPHONE_32 =
-    'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; en-us)' +
+    'Mozilla/5.0(iPhone; U; CPU iPhone OS 3_2 like Mac OS X; en-us)' +
     ' AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B314' +
     ' Safari/531.21.10';
 
@@ -216,6 +217,24 @@ testAgents.SAFARI_MAC =
 testAgents.SAFARI_WINDOWS =
     'Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25' +
     ' (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27';
+
+
+/** @const {string} */
+testAgents.COAST =
+    'Mozilla/5.0 (iPad; CPU OS 7_0_2 like Mac OS X) AppleWebKit/537.51.1' +
+    ' (KHTML like Gecko) Coast/1.1.2.64598 Mobile/11B511 Safari/7534.48.3';
+
+
+/** @const {string} */
+testAgents.WEBVIEW_IPHONE =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26' +
+    ' (KHTML, like Gecko) Mobile/10A403';
+
+
+/** @const {string} */
+testAgents.WEBVIEW_IPAD =
+    'Mozilla/5.0 (iPad; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26' +
+    ' (KHTML, like Gecko) Mobile/10A403';
 
 
 /** @const {string} */

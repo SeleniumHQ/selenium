@@ -63,7 +63,7 @@ goog.net.xpc.FrameElementMethodTransport = function(channel, opt_domHelper) {
 
   /**
    * Array for queued messages.
-   * @type {Array}
+   * @type {Array<{serviceName: string, payload: string}>}
    * @private
    */
   this.queue_ = [];

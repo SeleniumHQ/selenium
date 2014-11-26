@@ -113,7 +113,7 @@ goog.labs.userAgent.engine.isVersionOrHigher = function(version) {
 
 
 /**
- * @param {!Array.<!Array.<string>>} tuples Version tuples.
+ * @param {!Array<!Array<string>>} tuples Version tuples.
  * @param {string} key The key to look for.
  * @return {string} The version string of the given key, if present.
  *     Otherwise, the empty string.

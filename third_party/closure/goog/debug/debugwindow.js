@@ -50,7 +50,7 @@ goog.debug.DebugWindow = function(opt_identifier, opt_prefix) {
 
   /**
    * Array used to buffer log output
-   * @protected {!Array}
+   * @protected {!Array<string>}
    */
   this.outputBuffer = [];
 
@@ -423,9 +423,9 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
 
   this.winOpening_ = true;
   this.win = window.open('', this.getWindowName_(), 'width=' + w +
-                          ',height=' + h + ',toolbar=no,resizable=yes,' +
-                          'scrollbars=yes,left=' + x + ',top=' + y +
-                          ',status=no,screenx=' + x + ',screeny=' + y);
+                         ',height=' + h + ',toolbar=no,resizable=yes,' +
+                         'scrollbars=yes,left=' + x + ',top=' + y +
+                         ',status=no,screenx=' + x + ',screeny=' + y);
 
   if (!this.win) {
     if (!this.showedBlockedAlert_) {

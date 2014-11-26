@@ -15,6 +15,7 @@
 /**
  * @fileoverview Utility methods to deal with CSS3 transitions
  * programmatically.
+ * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.style.transition');
@@ -52,7 +53,7 @@ goog.style.transition.Css3Property;
  * Sets the element CSS3 transition to properties.
  * @param {Element} element The element to set transition on.
  * @param {goog.style.transition.Css3Property|
- *     Array.<goog.style.transition.Css3Property>} properties A single CSS3
+ *     Array<goog.style.transition.Css3Property>} properties A single CSS3
  *     transition property or array of properties.
  */
 goog.style.transition.set = function(element, properties) {

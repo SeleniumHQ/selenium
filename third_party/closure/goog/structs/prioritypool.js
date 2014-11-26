@@ -32,7 +32,7 @@ goog.require('goog.structs.PriorityQueue');
  * @param {number=} opt_minCount Min. number of objects (Default: 1).
  * @param {number=} opt_maxCount Max. number of objects (Default: 10).
  * @constructor
- * @extends {goog.structs.Pool.<VALUE>}
+ * @extends {goog.structs.Pool<VALUE>}
  * @template VALUE
  */
 goog.structs.PriorityPool = function(opt_minCount, opt_maxCount) {
@@ -44,7 +44,7 @@ goog.structs.PriorityPool = function(opt_minCount, opt_maxCount) {
 
   /**
    * Queue of requests for pool objects.
-   * @private {goog.structs.PriorityQueue.<VALUE>}
+   * @private {goog.structs.PriorityQueue<VALUE>}
    */
   this.requestQueue_ = new goog.structs.PriorityQueue();
 

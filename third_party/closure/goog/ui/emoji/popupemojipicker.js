@@ -108,7 +108,7 @@ goog.ui.emoji.PopupEmojiPicker.prototype.toggleMode_ = true;
  * Adds a group of emoji to the picker.
  *
  * @param {string|Element} title Title for the group.
- * @param {Array.<Array>} emojiGroup A new group of emoji to be added. Each
+ * @param {Array<Array<?>>} emojiGroup A new group of emoji to be added. Each
  *    internal array contains [emojiUrl, emojiId].
  */
 goog.ui.emoji.PopupEmojiPicker.prototype.addEmojiGroup =

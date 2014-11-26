@@ -373,7 +373,7 @@ goog.ui.PopupColorPicker.prototype.getRememberSelection = function() {
 /**
  * Add an array of colors to the colors displayed by the color picker.
  * Does not add duplicated colors.
- * @param {Array.<string>} colors The array of colors to be added.
+ * @param {Array<string>} colors The array of colors to be added.
  */
 goog.ui.PopupColorPicker.prototype.addColors = function(colors) {
 
