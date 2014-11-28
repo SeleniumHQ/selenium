@@ -70,7 +70,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
-          new Class[] {WebDriverEventListener.class},
+          new Class[] {WebDriverEventListener.class, WebDriverInputDeviceEventListener.class},
           new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
               try {

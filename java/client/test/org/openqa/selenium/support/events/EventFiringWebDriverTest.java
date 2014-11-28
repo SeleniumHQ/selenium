@@ -22,26 +22,35 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.StubElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Michael Tamm
@@ -433,7 +442,243 @@ public class EventFiringWebDriverTest {
     assertEquals(stubElement.toString(), firingElement.toString());
   }
 
+  @Test
+  public void mouseEvents() {
+      final EventFiringWebDriver mockedDriver = mock(EventFiringWebDriver.class);
+      final StringBuilder log = new StringBuilder();
+      final Mouse phoneyMouse = mock(Mouse.class);
+      when(mockedDriver.getMouse()).thenReturn(phoneyMouse);
+      EventFiringWebDriver testedDriver =
+              new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+                  @Override
+                public void beforeClick(Coordinates where) {
+                    log.append("beforeClick\n");
+                }
+                @Override
+                public void afterClick(Coordinates where) {
+                    log.append("afterClick\n");
+                }
+                @Override
+                public void beforeDoubleClick(Coordinates where) {
+                    log.append("beforeDoubleClick\n");
+                }
+                @Override
+                public void afterDoubleClick(Coordinates where) {
+                    log.append("afterDoubleClick\n");
+                }
+                @Override
+                public void beforeMouseDown(Coordinates where) {
+                    log.append("beforeMouseDown\n");
+                }
+                @Override
+                public void afterMouseDown(Coordinates where) {
+                    log.append("afterMouseDown\n");
+                }
+                @Override
+                public void beforeMouseUp(Coordinates where) {
+                    log.append("beforeMouseUp\n");
+                }
+                @Override
+                public void afterMouseUp(Coordinates where) {
+                    log.append("afterMouseUp\n");
+                }
+                @Override
+                public void beforeMouseMove(Coordinates where) {
+                    log.append("beforeMouseMove\n");
+                }
+                @Override
+                public void afterMouseMove(Coordinates where) {
+                    log.append("afterMouseMove\n");
+                }
+                @Override
+                public void beforeMouseMove(Coordinates where, long xOffset, long yOffset) {
+                    log.append("beforeMouseMove to").append(where.inViewPort().toString()).append("\n");
+                }
+                @Override
+                public void afterMouseMove(Coordinates where, long xOffset, long yOffset) {
+                    log.append("afterMouseMove to").append(where.inViewPort().toString()).append("\n");
+                }
+                @Override
+                public void beforeContextClick(Coordinates where) {
+                    log.append("beforeContextClick\n");
+                }
+                @Override
+                public void afterContextClick(Coordinates where) {
+                    log.append("afterContextClick\n");
+                }
+              });
+      Actions action = new Actions(testedDriver);
+      DummyElement element = new DummyElement();
+      action.click().clickAndHold().release().doubleClick().contextClick().moveToElement(element).
+      moveToElement(element,10, 10).build().perform();
+      assertEquals(
+              "beforeClick\n" +
+              "afterClick\n" +
+              "beforeMouseDown\n" +
+              "afterMouseDown\n" +
+              "beforeMouseUp\n" +
+              "afterMouseUp\n" +
+              "beforeDoubleClick\n" +
+              "afterDoubleClick\n" +
+              "beforeContextClick\n" +
+              "afterContextClick\n" +
+              "beforeMouseMove\n" +
+              "afterMouseMove\n" +
+              "beforeMouseMove to(10, 10)\n" +
+              "afterMouseMove to(10, 10)\n",
+          log.toString());
+  }
+
+  @Test
+  public void keyboardEvents() {
+      final EventFiringWebDriver mockedDriver = mock(EventFiringWebDriver.class);
+      final StringBuilder log = new StringBuilder();
+      final Keyboard phoneyKeyboard = mock(Keyboard.class);
+      when(mockedDriver.getKeyboard()).thenReturn(phoneyKeyboard);
+
+      EventFiringWebDriver testedDriver =
+          new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+            @Override
+            public void beforePressKey(CharSequence... keysToSend) {
+              log.append("beforePressKey\n");
+            }
+
+            @Override
+            public void afterPressKey(CharSequence... keysToSend) {
+              log.append("afterPressKey\n");
+            }
+            @Override
+            public void beforeSendKeys(CharSequence... keysToSend) {
+                log.append("beforeSendKeys\n");
+            }
+            @Override
+            public void afterSendKeys(CharSequence... keysToSend) {
+                log.append("afterSendKeys\n");
+            }
+            @Override
+            public void beforeReleaseKey(CharSequence... keysToSend) {
+                log.append("beforeReleaseKey\n");
+            }
+            @Override
+            public void afterReleaseKey(CharSequence... keysToSend) {
+                log.append("afterReleaseKey\n");
+            }
+          });
+
+      Actions action = new Actions(testedDriver);
+      action.keyDown(Keys.SHIFT).keyUp(Keys.SHIFT).sendKeys("tested").build().perform();
+      assertEquals(
+              "beforePressKey\n" +
+              "afterPressKey\n" +
+              "beforeReleaseKey\n" +
+              "afterReleaseKey\n" +
+              "beforeSendKeys\n" +
+              "afterSendKeys\n",
+          log.toString());
+
+  }
+
   private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 
   private static class ChildDriver extends StubDriver {}
+
+  private static class DummyElement implements WebElement, Locatable {
+
+      @Override
+      public Coordinates getCoordinates() {
+          return new Coordinates() {
+
+              @Override
+              public Point onScreen() {
+                  return new Point(10, 10);
+              }
+              @Override
+              public Point onPage() {
+                  return new Point(10, 10);
+              }
+
+              @Override
+              public Point inViewPort() {
+                  return new Point(10, 10);
+              }
+
+              @Override
+              public Object getAuxiliary() {
+                  return new Point(10, 10);
+              }
+          };
+      }
+
+      @Override
+      public void click() {
+      }
+
+      @Override
+      public void submit() {
+      }
+
+      @Override
+      public void sendKeys(CharSequence... keysToSend) {
+      }
+
+      @Override
+      public void clear() {
+      }
+
+      @Override
+      public String getTagName() {
+          return null;
+      }
+
+      @Override
+      public String getAttribute(String name) {
+          return null;
+      }
+
+      @Override
+      public boolean isSelected() {
+          return false;
+      }
+
+      @Override
+      public boolean isEnabled() {
+          return false;
+      }
+
+      @Override
+      public String getText() {
+          return null;
+      }
+
+      @Override
+      public List<WebElement> findElements(By by) {
+          return null;
+      }
+
+      @Override
+      public WebElement findElement(By by) {
+          return null;
+      }
+
+      @Override
+      public boolean isDisplayed() {
+          return false;
+      }
+
+      @Override
+      public Point getLocation() {
+          return null;
+      }
+
+      @Override
+      public Dimension getSize() {
+          return null;
+      }
+
+      @Override
+      public String getCssValue(String propertyName) {
+          return null;
+      }
+
+    }
 }

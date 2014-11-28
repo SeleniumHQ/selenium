@@ -19,12 +19,14 @@ package org.openqa.selenium.support.events;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
- * Use this class as base class, if you want to implement a {@link WebDriverEventListener} and are
- * only interested in some events. All methods provided by this class have an empty method body.
+ * Use this class as base class, if you want to implement a {@link WebDriverEventListener}, 
+ * {@link WebDriverInputDeviceEventListener} and are only interested in some events.
+ * All methods provided by this class have an empty method body.
  */
-public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
+public abstract class AbstractWebDriverEventListener implements WebDriverEventListener, WebDriverInputDeviceEventListener {
 
   public void beforeNavigateTo(String url, WebDriver driver) {
     // Do nothing.
@@ -85,4 +87,85 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
   public void onException(Throwable throwable, WebDriver driver) {
     // Do nothing
   }
+
+  public void beforePressKey(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void afterPressKey(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void beforeReleaseKey(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void afterReleaseKey(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void beforeSendKeys(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void afterSendKeys(CharSequence... keysToSend) {
+      // Do nothing
+  }
+
+  public void beforeClick(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterClick(Coordinates where) {
+      // Do nothing
+  }
+
+  public void beforeDoubleClick(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterDoubleClick(Coordinates where) {
+      // Do nothing
+  }
+
+  public void beforeMouseDown(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterMouseDown(Coordinates where) {
+      // Do nothing
+  }
+
+  public void beforeMouseUp(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterMouseUp(Coordinates where) {
+      // Do nothing
+  }
+
+  public void beforeMouseMove(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterMouseMove(Coordinates where) {
+      // Do nothing
+  }
+
+  public void beforeMouseMove(Coordinates where, long xOffset, long yOffset) {
+      // Do nothing
+  }
+
+  public void afterMouseMove(Coordinates where, long xOffset, long yOffset) {
+      // Do nothing
+  }
+
+  public void beforeContextClick(Coordinates where) {
+      // Do nothing
+  }
+
+  public void afterContextClick(Coordinates where) {
+      // Do nothing
+  }
+
 }
