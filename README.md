@@ -22,7 +22,7 @@ which may be found at https://github.com/SeleniumHQ/selenium.
 We accept pull requests from GitHub.  When making the pull request,
 please indicate that you have filled in the
 [CLA](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0),
-otherwise it will take longer for us land your patch.
+otherwise it will take longer for us to land your patch.
 
 Merging pull requests cannot be done with the GitHub GUI.  The email
 sent from GitHub can be used on your local repository or you can use
