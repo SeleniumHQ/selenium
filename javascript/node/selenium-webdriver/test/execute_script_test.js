@@ -241,6 +241,62 @@ test.suite(function(env) {
         execute('return arguments[0];', input).then(verifyJson(input));
       });
     });
+
+    describe('https://code.google.com/p/selenium/issues/detail?id=8223', function() {
+      test.it('a for loop can build an array out of the index var, and return it', function() {
+        execute('var ret=[]; for (var i=0; i < 3; i++) {ret.push(i)}; return ret;')
+        .then(verifyJson[0, 1, 2]);
+      });
+
+      test.it('a for loop can return an array built from elements passed in a list', function() {
+        execute(function(thearray) {
+            var ret=[];
+            for (i in thearray) {
+              ret.push(thearray[i]);
+            }
+            return ret;
+          }, ['fa', 'fe', 'fi'])
+        .then(verifyJson(['fa', 'fe', 'fi']));
+      });
+
+      test.it('a for loop can return an array built from elements passed in a nested object', function() {
+        execute(function(thing) {
+            var ret=[];
+            for (w in thing.words) {
+              ret.push(thing.words[w].word);
+            }
+            return ret;
+          }, {words: [{word: 'fa'}, {word: 'fe'}, {word: 'fi'}]})
+        .then(verifyJson(['fa', 'fe', 'fi']));
+      });
+
+      test.it('nested recursive functions can return an array built from elements passed in a list', function() {
+        execute(function(thearray) {
+          var ret = [];
+          function build_response(thearray, ret) {
+            ret.push(thearray.shift());
+            return (!thearray.length && ret || build_response(thearray, ret));
+          }
+          return build_response(thearray, ret);
+        }, ['fa', 'fe', 'fi'])
+        .then(verifyJson(['fa', 'fe', 'fi']));
+      });
+
+      test.it('nested recursive functions can return an array built from elements passed in a nested object', function() {
+        execute(function(thing) {
+          var ret = [];
+          function build_response(thing, ret) {
+            var item = thing.words.shift();
+            ret.push(item.word);
+            return (!thing.words.length && ret || build_response(thing, ret));
+          }
+          return build_response(thing, ret);
+        }, {words: [{word: 'fa'}, {word: 'fe'}, {word: 'fi'}]})
+        .then(verifyJson(['fa', 'fe', 'fi']));
+      });
+
+    });
+
   });
 
   function verifyJson(expected) {
