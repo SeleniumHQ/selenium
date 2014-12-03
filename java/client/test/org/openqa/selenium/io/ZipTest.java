@@ -18,9 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
@@ -30,10 +36,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+@RunWith(JUnit4.class)
 public class ZipTest {
   private File inputDir;
   private File outputDir;

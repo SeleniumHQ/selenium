@@ -16,15 +16,19 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import org.junit.Test;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import org.openqa.selenium.remote.internal.CircularOutputStream;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+@RunWith(JUnit4.class)
 public class StreamsTest {
 
   @Test

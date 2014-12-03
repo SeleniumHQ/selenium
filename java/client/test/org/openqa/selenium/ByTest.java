@@ -23,6 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -32,6 +34,7 @@ import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class ByTest {
 
   @Test

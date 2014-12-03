@@ -18,14 +18,17 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * {@link FirefoxLocator} unit test class.
  */
+@RunWith(JUnit4.class)
 public class FirefoxLocatorUnitTest {
 
   @Test

@@ -18,10 +18,13 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Small test for name extraction
  */
+@RunWith(JUnit4.class)
 public class WebDriverExceptionTest {
   @Test
   public void testExtractsADriverName() {

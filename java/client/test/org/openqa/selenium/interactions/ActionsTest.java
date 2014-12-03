@@ -23,6 +23,8 @@ import static org.mockito.Mockito.times;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -35,6 +37,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 /**
  * Tests the builder for advanced user interaction, the Actions class.
  */
+@RunWith(JUnit4.class)
 public class ActionsTest {
 
   @Mock private Mouse mockMouse;

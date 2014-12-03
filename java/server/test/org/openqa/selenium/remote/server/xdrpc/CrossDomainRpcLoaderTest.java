@@ -27,6 +27,8 @@ import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Unit tests for {@link CrossDomainRpcLoader}.
  */
+@RunWith(JUnit4.class)
 public class CrossDomainRpcLoaderTest {
 
   private HttpServletRequest mockRequest;

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -35,6 +37,7 @@ import org.openqa.selenium.internal.FindsByXPath;
 import java.util.ArrayList;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class ByAllTest {
 
   @Test

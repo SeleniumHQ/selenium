@@ -26,6 +26,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Function;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
@@ -34,11 +38,9 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.concurrent.TimeUnit;
 
+@RunWith(JUnit4.class)
 public class FluentWaitTest{
 
   private static final Object ARBITRARY_VALUE = new Object();

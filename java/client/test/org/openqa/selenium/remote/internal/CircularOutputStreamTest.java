@@ -20,11 +20,14 @@ package org.openqa.selenium.remote.internal;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+@RunWith(JUnit4.class)
 public class CircularOutputStreamTest {
   @Test
   public void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {

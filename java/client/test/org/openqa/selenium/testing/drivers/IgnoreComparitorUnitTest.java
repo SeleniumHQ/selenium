@@ -29,12 +29,15 @@ import com.google.common.collect.Sets;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Ignore.Driver;
 
 import java.util.Set;
 
+@RunWith(JUnit4.class)
 public class IgnoreComparitorUnitTest {
 
   private static final Platform CURRENT_PLATFORM = Platform.MAC;

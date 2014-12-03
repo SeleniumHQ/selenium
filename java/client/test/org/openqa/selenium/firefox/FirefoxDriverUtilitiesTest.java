@@ -6,6 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 
@@ -13,6 +15,7 @@ import org.openqa.selenium.internal.SocketLock;
  * FirefoxDriverUtilitiesTest is responsible for tests of FirefoxDriver
  * utilities that do not require a browser.
  */
+@RunWith(JUnit4.class)
 public class FirefoxDriverUtilitiesTest {
 
   @Test

@@ -18,13 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * {@link org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocator} unit test class.
  */
+@RunWith(JUnit4.class)
 public class SingleBrowserLocatorUnitTest {
 
   @Test

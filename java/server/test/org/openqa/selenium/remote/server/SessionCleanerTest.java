@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
@@ -37,6 +39,7 @@ import java.util.logging.Logger;
 /**
  * @author Kristian Rosenvold
  */
+@RunWith(JUnit4.class)
 public class SessionCleanerTest {
   private final static Logger log = Logger.getLogger(SessionCleanerTest.class.getName());
 

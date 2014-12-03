@@ -18,13 +18,16 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven;
 
+import static org.junit.Assert.fail;
+
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriver;
 
-import static org.junit.Assert.fail;
-
+@RunWith(JUnit4.class)
 public class TimerTest {
 
   @Test

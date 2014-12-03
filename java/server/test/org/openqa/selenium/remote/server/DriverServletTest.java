@@ -28,6 +28,8 @@ import com.google.gson.JsonParser;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -49,6 +51,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+@RunWith(JUnit4.class)
 public class DriverServletTest {
   
   private static final String BASE_URL = "http://localhost:4444";

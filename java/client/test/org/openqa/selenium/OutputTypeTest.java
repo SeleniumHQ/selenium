@@ -15,13 +15,16 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
-import org.junit.Test;
-
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.io.File;
+
+@RunWith(JUnit4.class)
 public class OutputTypeTest {
   public static final String TEST_BASE64 = "ABADABAD";
   public static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};

@@ -24,12 +24,15 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RunWith(JUnit4.class)
 public class WindowsUtilsUnitTest {
 
   private int majorVersion;

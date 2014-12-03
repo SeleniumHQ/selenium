@@ -19,6 +19,8 @@ import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
@@ -34,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Tests for {@link ExpectedConditions}.
  */
+@RunWith(JUnit4.class)
 @SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
 

@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */
+@RunWith(JUnit4.class)
 public class SocketLockTest {
   private int freePort;
 

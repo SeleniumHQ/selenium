@@ -20,9 +20,12 @@ package org.openqa.selenium.logging;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.logging.Level;
 
+@RunWith(JUnit4.class)
 public class LoggingTest {
 
   @Test

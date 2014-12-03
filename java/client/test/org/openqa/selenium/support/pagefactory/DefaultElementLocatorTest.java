@@ -23,6 +23,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -32,12 +35,11 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-import org.junit.Test;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class DefaultElementLocatorTest {
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {

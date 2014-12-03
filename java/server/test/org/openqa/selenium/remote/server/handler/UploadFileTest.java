@@ -27,6 +27,8 @@ import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
@@ -40,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+@RunWith(JUnit4.class)
 public class UploadFileTest {
 
   private StubDriverFactory driverFactory;

@@ -14,10 +14,13 @@
 //package com.thoughtworks.xstream.core.util;
 package org.openqa.selenium.internal;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+@RunWith(JUnit4.class)
 public class Base64EncoderTest {
 
   private Base64Encoder encoder = new Base64Encoder();
