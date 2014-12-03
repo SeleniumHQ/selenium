@@ -98,8 +98,8 @@ limitations under the License.
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
       var tolerance = 1;
-      assertRoughlyEquals(281, coord.x, tolerance);
-      assertRoughlyEquals(281, coord.y, tolerance);
+      assertRoughlyEquals(280, coord.x, tolerance);
+      assertRoughlyEquals(280, coord.y, tolerance);
       assertEquals(408, frames[0].document.body.scrollLeft);
       assertEquals(408, frames[0].document.body.scrollTop);
     }
