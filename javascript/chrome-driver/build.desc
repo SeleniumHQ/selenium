@@ -24,6 +24,21 @@ js_fragment(name = "get_page_zoom",
   function = "webdriver.chrome.getPageZoom",
   deps = [ ":lib" ])
 
+js_fragment(name = "is_element_displayed",
+  module = "webdriver.chrome",
+  function = "webdriver.chrome.isElementDisplayed",
+  deps = [
+    ":deps",
+    "//javascript/atoms/fragments:is_displayed:chrome",
+    ])
+
+js_fragment(name = "find_element",
+  module = "webdriver.chrome",
+  function = "webdriver.chrome.findElement",
+  deps = [
+    ":deps",
+    ])
+
 js_test(name = "test",
   srcs = [ "test/*_test.html" ],
   deps = [
@@ -40,7 +55,6 @@ js_fragment_cpp(name = "atoms",
     "//javascript/atoms/fragments:execute_async_script:chrome",
     "//javascript/atoms/fragments:execute_script:chrome",
     "//javascript/atoms/fragments:execute_sql:chrome",
-    "//javascript/atoms/fragments:find_element:chrome",
     "//javascript/atoms/fragments:find_elements:chrome",
     "//javascript/atoms/fragments:get_effective_style:chrome",
     "//javascript/atoms/fragments:get_location:chrome",
@@ -48,10 +62,12 @@ js_fragment_cpp(name = "atoms",
     "//javascript/atoms/fragments:is_displayed:chrome",
     "//javascript/atoms/fragments:is_enabled:chrome",
     "//javascript/atoms/fragments:submit:chrome",
+    "//javascript/chrome-driver:find_element:chrome",
     "//javascript/chrome-driver:get_first_client_rect:chrome",
     "//javascript/chrome-driver:get_location_in_view:chrome",
     "//javascript/chrome-driver:get_page_zoom:chrome",
     "//javascript/chrome-driver:is_element_clickable:chrome",
+    "//javascript/chrome-driver:is_element_displayed:chrome",
     "//javascript/webdriver/atoms/fragments:clear_local_storage:chrome",
     "//javascript/webdriver/atoms/fragments:clear_session_storage:chrome",
     "//javascript/webdriver/atoms/fragments:get_appcache_status:chrome",
