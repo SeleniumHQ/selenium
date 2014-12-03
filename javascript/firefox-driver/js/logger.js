@@ -215,7 +215,7 @@ fxdriver.logging.addClosureToConsoleLogger_ = function(logger) {
     sb.push('[', logRecord.getLoggerName(), '] ');
     sb.push(logRecord.getMessage(), '\n');
     if (logRecord.getException()) {
-      sb.push(logRecord.getExceptionText(), '\n');
+      sb.push(logRecord.getException().message, '\n');
     }
     consoleService.logStringMessage(sb.join(''));
   });
