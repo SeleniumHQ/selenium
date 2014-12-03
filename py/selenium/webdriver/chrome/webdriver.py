@@ -47,7 +47,7 @@ class WebDriver(RemoteWebDriver):
         if chrome_options is None:
             # desired_capabilities stays as passed in
             if desired_capabilities is None:
-                desired_capabilities = Options().to_capabilities()
+                desired_capabilities = self.create_options().to_capabilities()
         else:
             if desired_capabilities is None:
                 desired_capabilities = chrome_options.to_capabilities()
@@ -80,3 +80,6 @@ class WebDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
+
+    def create_options(self):
+        return Options()
