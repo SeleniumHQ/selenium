@@ -53,7 +53,7 @@ mozilla_lib(name = "webdriver_firefox_previous",
     "webdriver-firefox/*.cpp"],
   args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="32")
+  geckoversion="33")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
@@ -61,7 +61,7 @@ mozilla_lib(name = "webdriver_firefox_previous_64",
     "webdriver-firefox/*.cpp"],
   args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="32")
+  geckoversion="33")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
@@ -69,7 +69,7 @@ mozilla_lib(name = "webdriver_firefox_latest",
     "webdriver-firefox/*.cpp"],
   args = "-Icpp/webdriver-server",
   arch = "i386",
-  geckoversion="33")
+  geckoversion="34")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
@@ -77,7 +77,7 @@ mozilla_lib(name = "webdriver_firefox_latest_64",
     "webdriver-firefox/*.cpp"],
   args = "-Icpp/webdriver-server",
   arch = "amd64",
-  geckoversion="33")
+  geckoversion="34")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
