@@ -278,12 +278,30 @@ goog.userAgent.WINDOWS = goog.userAgent.PLATFORM_KNOWN_ ?
 
 
 /**
+ * Whether the user agent is Linux per the legacy behavior of
+ * goog.userAgent.LINUX, which considered ChromeOS to also be
+ * Linux.
+ * @return {boolean}
+ * @private
+ */
+goog.userAgent.isLegacyLinux_ = function() {
+  return goog.labs.userAgent.platform.isLinux() ||
+      goog.labs.userAgent.platform.isChromeOS();
+};
+
+
+/**
  * Whether the user agent is running on a Linux operating system.
+ *
+ * Note that goog.userAgent.LINUX considers ChromeOS to be Linux,
+ * while goog.labs.userAgent.platform considers ChromeOS and
+ * Linux to be different OSes.
+ *
  * @type {boolean}
  */
 goog.userAgent.LINUX = goog.userAgent.PLATFORM_KNOWN_ ?
     goog.userAgent.ASSUME_LINUX :
-    goog.labs.userAgent.platform.isLinux();
+    goog.userAgent.isLegacyLinux_();
 
 
 /**

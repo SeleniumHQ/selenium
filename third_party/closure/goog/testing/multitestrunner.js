@@ -1387,7 +1387,7 @@ goog.testing.MultiTestRunner.TestFrame.prototype.finish_ = function() {
  */
 goog.testing.MultiTestRunner.TestFrame.prototype.createIframe_ = function() {
   this.iframeEl_ =
-      /** @type {HTMLIFrameElement} */ (this.dom_.createDom('iframe'));
+      /** @type {!HTMLIFrameElement} */ (this.dom_.createDom('iframe'));
   this.getElement().appendChild(this.iframeEl_);
   this.eh_.listen(this.iframeEl_, 'load', this.onIframeLoaded_);
 };

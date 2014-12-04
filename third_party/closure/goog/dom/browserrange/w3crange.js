@@ -227,7 +227,7 @@ goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
       container.parentNode;
 
   var html = goog.dom.getOuterHtml(
-      /** @type {Element} */ (container.cloneNode(false)));
+      /** @type {!Element} */ (container.cloneNode(false)));
   return html.replace('>', '>' + result);
 };
 

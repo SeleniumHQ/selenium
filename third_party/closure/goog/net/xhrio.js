@@ -1165,7 +1165,7 @@ goog.net.XhrIo.prototype.getResponseHeaders = function() {
   var headersObject = {};
   var headersArray = this.getAllResponseHeaders().split('\r\n');
   for (var i = 0; i < headersArray.length; i++) {
-    if (goog.string.isEmpty(headersArray[i])) {
+    if (goog.string.isEmptyOrWhitespace(headersArray[i])) {
       continue;
     }
     var keyValue = goog.string.splitLimit(headersArray[i], ': ', 2);

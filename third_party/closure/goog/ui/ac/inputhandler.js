@@ -465,7 +465,7 @@ goog.ui.ac.InputHandler.prototype.attachInput = function(target) {
       var ownerDocument = goog.dom.getOwnerDocument(
           /** @type {Element} */ (target));
       if (goog.dom.getActiveElement(ownerDocument) == target) {
-        this.processFocus(/** @type {Element} */ (target));
+        this.processFocus(/** @type {!Element} */ (target));
       }
     }
   }

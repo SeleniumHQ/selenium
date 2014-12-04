@@ -199,7 +199,7 @@ goog.ui.HoverCard.prototype.handleTriggerMouseOver_ = function(e) {
                                        this.maxSearchSteps_);
     if (trigger) {
       this.setPosition(null);
-      this.triggerForElement(/** @type {Element} */ (trigger));
+      this.triggerForElement(/** @type {!Element} */ (trigger));
     }
   }
 };

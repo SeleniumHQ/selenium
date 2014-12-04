@@ -27,8 +27,8 @@ goog.require('goog.structs.Map');
  * Returns form data as a map of name to value arrays. This doesn't
  * support file inputs.
  * @param {HTMLFormElement} form The form.
- * @return {!goog.structs.Map} A map of the form data as form name to arrays of
- *     values.
+ * @return {!goog.structs.Map.<string, !Array.<string>>} A map of the form data
+ *     as field name to arrays of values.
  */
 goog.dom.forms.getFormDataMap = function(form) {
   var map = new goog.structs.Map();
@@ -117,7 +117,7 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
 
 /**
  * Adds the name/value pair to the map.
- * @param {goog.structs.Map} map The map to add to.
+ * @param {!goog.structs.Map.<string, !Array.<string>>} map The map to add to.
  * @param {string} name The name.
  * @param {string} value The value.
  * @private
@@ -247,6 +247,7 @@ goog.dom.forms.getValue = function(el) {
  * Alias for goog.dom.form.element.getValue
  * @type {Function}
  * @deprecated Use {@link goog.dom.forms.getValue} instead.
+ * @suppress {missingProvide}
  */
 goog.dom.$F = goog.dom.forms.getValue;
 

@@ -831,8 +831,8 @@ goog.net.xpc.CrossPageChannel.prototype.updateChannelNameAndCatalog = function(
 goog.net.xpc.CrossPageChannel.prototype.isMessageOriginAcceptable_ = function(
     opt_origin) {
   var peerHostname = this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME];
-  return goog.string.isEmptySafe(opt_origin) ||
-      goog.string.isEmptySafe(peerHostname) ||
+  return goog.string.isEmptyOrWhitespace(goog.string.makeSafe(opt_origin)) ||
+      goog.string.isEmptyOrWhitespace(goog.string.makeSafe(peerHostname)) ||
       opt_origin == this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME];
 };
 

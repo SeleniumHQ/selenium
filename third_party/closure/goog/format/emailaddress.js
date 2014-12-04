@@ -405,7 +405,7 @@ goog.format.EmailAddress.parseListInternal = function(
     token = goog.format.EmailAddress.getToken_(str, i);
     if (separatorChecker(token) ||
         (token == ' ' && parser(email).isValid())) {
-      if (!goog.string.isEmpty(email)) {
+      if (!goog.string.isEmptyOrWhitespace(email)) {
         result.push(parser(email));
       }
       email = '';
@@ -417,7 +417,7 @@ goog.format.EmailAddress.parseListInternal = function(
   }
 
   // Add the final token.
-  if (!goog.string.isEmpty(email)) {
+  if (!goog.string.isEmptyOrWhitespace(email)) {
     result.push(parser(email));
   }
   return result;

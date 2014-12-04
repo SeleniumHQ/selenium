@@ -79,7 +79,7 @@ goog.ui.emoji.EmojiPaletteRenderer.getCssClass = function() {
  * @param {goog.ui.emoji.SpriteInfo} spriteInfo Spriting info for the emoji.
  * @param {string} displayUrl URL of the image served for this cell, whether
  *     an individual emoji image or a sprite.
- * @return {HTMLDivElement} The palette item for this emoji.
+ * @return {!HTMLDivElement} The palette item for this emoji.
  */
 goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem =
     function(dom, id, spriteInfo, displayUrl) {
@@ -99,7 +99,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem =
   var outerdiv =
       dom.createDom('div', goog.getCssName('goog-palette-cell-wrapper'), el);
   outerdiv.setAttribute(goog.ui.emoji.Emoji.ATTRIBUTE, id);
-  return /** @type {HTMLDivElement} */ (outerdiv);
+  return /** @type {!HTMLDivElement} */ (outerdiv);
 };
 
 
@@ -159,7 +159,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.buildElementFromSpriteMetadata =
     'background-position': x + ' ' + y
   });
 
-  return /** @type {HTMLDivElement} */ (el);
+  return /** @type {!HTMLDivElement} */ (el);
 };
 
 

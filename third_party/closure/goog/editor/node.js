@@ -211,7 +211,7 @@ goog.editor.node.getChildHelper_ = function(parent, isReversed) {
   return (!parent || parent.nodeType != goog.dom.NodeType.ELEMENT) ? null :
       /** @type {Node} */ (goog.editor.node.getFirstValue_(goog.iter.filter(
           new goog.dom.iter.ChildIterator(
-              /** @type {Element} */ (parent), isReversed),
+              /** @type {!Element} */ (parent), isReversed),
           goog.editor.node.isImportant)));
 };
 

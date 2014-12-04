@@ -518,6 +518,9 @@ goog.ui.Control.prototype.decorateInternal = function(element) {
 goog.ui.Control.prototype.enterDocument = function() {
   goog.ui.Control.superClass_.enterDocument.call(this);
 
+  // Call the renderer's setAriaStates method to set element's aria attributes.
+  this.renderer_.setAriaStates(this, this.getElementStrict());
+
   // Call the renderer's initializeDom method to configure properties of the
   // control's DOM that can only be done once it's in the document.
   this.renderer_.initializeDom(this);

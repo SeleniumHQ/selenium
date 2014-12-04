@@ -115,7 +115,7 @@ goog.structs.contains = function(col, val) {
     return col.containsValue(val);
   }
   if (goog.isArrayLike(col) || goog.isString(col)) {
-    return goog.array.contains(/** @type {Array<?>} */ (col), val);
+    return goog.array.contains(/** @type {!Array<?>} */ (col), val);
   }
   return goog.object.containsValue(col, val);
 };
@@ -135,7 +135,7 @@ goog.structs.isEmpty = function(col) {
   // collection and as such even whitespace matters
 
   if (goog.isArrayLike(col) || goog.isString(col)) {
-    return goog.array.isEmpty(/** @type {Array<?>} */ (col));
+    return goog.array.isEmpty(/** @type {!Array<?>} */ (col));
   }
   return goog.object.isEmpty(col);
 };
@@ -177,7 +177,7 @@ goog.structs.forEach = function(col, f, opt_obj) {
   if (typeof col.forEach == 'function') {
     col.forEach(f, opt_obj);
   } else if (goog.isArrayLike(col) || goog.isString(col)) {
-    goog.array.forEach(/** @type {Array<?>} */ (col), f, opt_obj);
+    goog.array.forEach(/** @type {!Array<?>} */ (col), f, opt_obj);
   } else {
     var keys = goog.structs.getKeys(col);
     var values = goog.structs.getValues(col);

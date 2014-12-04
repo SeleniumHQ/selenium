@@ -325,7 +325,7 @@ goog.net.IframeIo.getNextName_ = function() {
 goog.net.IframeIo.getForm_ = function() {
   if (!goog.net.IframeIo.form_) {
     goog.net.IframeIo.form_ =
-        /** @type {HTMLFormElement} */(goog.dom.createDom('form'));
+        /** @type {!HTMLFormElement} */(goog.dom.createDom('form'));
     goog.net.IframeIo.form_.acceptCharset = 'utf-8';
 
     // Hide the form and move it off screen
@@ -1012,7 +1012,7 @@ goog.net.IframeIo.prototype.onIeReadyStateChange_ = function(e) {
       this.handleError_(goog.net.ErrorCode.ACCESS_DENIED);
       return;
     }
-    this.handleLoad_(/** @type {HTMLDocument} */(doc));
+    this.handleLoad_(/** @type {!HTMLDocument} */(doc));
   }
 };
 
@@ -1166,7 +1166,7 @@ goog.net.IframeIo.prototype.createIframe_ = function() {
     iframeAttributes.src = 'javascript:""';
   }
 
-  this.iframe_ = /** @type {HTMLIFrameElement} */(
+  this.iframe_ = /** @type {!HTMLIFrameElement} */(
       goog.dom.getDomHelper(this.form_).createDom('iframe', iframeAttributes));
 
   var s = this.iframe_.style;
@@ -1294,7 +1294,7 @@ goog.net.IframeIo.prototype.disposeForm_ = function() {
  */
 goog.net.IframeIo.prototype.getContentDocument_ = function() {
   if (this.iframe_) {
-    return /** @type {HTMLDocument} */(goog.dom.getFrameContentDocument(
+    return /** @type {!HTMLDocument} */(goog.dom.getFrameContentDocument(
         this.getRequestIframe()));
   }
   return null;

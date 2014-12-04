@@ -1821,7 +1821,7 @@ goog.net.BrowserChannel.prototype.onRequestData =
     if (this.backChannelRequest_ == request) {
       this.clearDeadBackchannelTimer_();
     }
-    if (!goog.string.isEmpty(responseText)) {
+    if (!goog.string.isEmptyOrWhitespace(responseText)) {
       var response = this.parser_.parse(responseText);
       goog.asserts.assert(goog.isArray(response));
       this.onInput_(/** @type {!Array<?>} */ (response));

@@ -1326,7 +1326,7 @@ goog.string.createUniqueString = function() {
  */
 goog.string.toNumber = function(str) {
   var num = Number(str);
-  if (num == 0 && goog.string.isEmpty(str)) {
+  if (num == 0 && goog.string.isEmptyOrWhitespace(str)) {
     return NaN;
   }
   return num;

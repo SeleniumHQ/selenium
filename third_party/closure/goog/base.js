@@ -275,6 +275,17 @@ goog.constructNamespace_ = function(name, opt_obj) {
 
 
 /**
+ * Module identifier validation regexp.
+ * Note: This is a conservative check, it is very possible to be more lienent,
+ *   the primary exclusion here is "/" and "\" and a leading ".", these
+ *   restrictions are intended to leave the door open for using goog.require
+ *   with relative file paths rather than module identifiers.
+ * @private
+ */
+goog.VALID_MODULE_RE_ = /^[a-zA-Z_$][a-zA-Z0-9._$]*$/;
+
+
+/**
  * goog.module serves two purposes:
  * - marks a file that must be loaded as a module
  * - reserves a namespace (it can not also be goog.provided)
@@ -296,7 +307,9 @@ goog.constructNamespace_ = function(name, opt_obj) {
  *     "goog.package.part", is expected but not required.
  */
 goog.module = function(name) {
-  if (!goog.isString(name) || !name) {
+  if (!goog.isString(name) ||
+      !name ||
+      name.search(goog.VALID_MODULE_RE_) == -1) {
     throw Error('Invalid module identifier');
   }
   if (!goog.isInModuleLoader_()) {
@@ -889,58 +902,6 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * Retrieve and execute a module.
-   * @param {string} src Script source URL.
-   * @private
-   */
-  goog.retrieveAndExecModule_ = function(src) {
-    // The full but non-canonicalized URL for later use.
-    var originalPath = src;
-
-    // Canonicalize the path, removing any /./ or /../ since Chrome's debugging
-    // console doesn't auto-canonicalize XHR loads as it does <script> srcs.
-    var separator;
-    while ((separator = src.indexOf('/./')) != -1) {
-      src = src.substr(0, separator) + src.substr(separator + '/.'.length);
-    }
-    while ((separator = src.indexOf('/../')) != -1) {
-      var previousComponent = src.lastIndexOf('/', separator - 1);
-      src = src.substr(0, previousComponent) +
-          src.substr(separator + '/..'.length);
-    }
-
-    var importScript = goog.global.CLOSURE_IMPORT_SCRIPT ||
-        goog.writeScriptTag_;
-
-    var scriptText = null;
-
-    var xhr = new goog.global['XMLHttpRequest']();
-
-    /** @this {Object} */
-    xhr.onload = function() {
-      scriptText = this.responseText;
-    };
-    xhr.open('get', src, false);
-    xhr.send();
-
-    scriptText = xhr.responseText;
-
-    if (scriptText != null) {
-      var execModuleScript = goog.wrapModule_(src, scriptText);
-      var isOldIE = goog.IS_OLD_IE_;
-      if (isOldIE) {
-        goog.dependencies_.deferred[originalPath] = execModuleScript;
-        goog.queuedModules_.push(originalPath);
-      } else {
-        importScript(src, execModuleScript);
-      }
-    } else {
-      throw new Error('load of ' + src + 'failed');
-    }
-  };
-
-
-  /**
    * Return an appropriate module text. Suitable to insert into
    * a script tag (that is unescaped).
    * @param {string} srcUrl
@@ -1323,6 +1284,74 @@ if (goog.DEPENDENCIES_ENABLED) {
   }
 }
 
+
+/**
+ * Normalize a file path by removing redundant ".." and extraneous "." file
+ * path components.
+ * @param {string} path
+ * @return {string}
+ * @private
+ */
+goog.normalizePath_ = function(path) {
+  var components = path.split('/');
+  var i = 0;
+  while (i < components.length) {
+    if (components[i] == '.') {
+      components.splice(i, 1);
+    } else if (i && components[i] == '..' &&
+        components[i - 1] && components[i - 1] != '..') {
+      components.splice(--i, 2);
+    } else {
+      i++;
+    }
+  }
+  return components.join('/');
+};
+
+
+/**
+ * Retrieve and execute a module.
+ * @param {string} src Script source URL.
+ * @private
+ */
+goog.retrieveAndExecModule_ = function(src) {
+  if (!COMPILED) {
+    // The full but non-canonicalized URL for later use.
+    var originalPath = src;
+    // Canonicalize the path, removing any /./ or /../ since Chrome's debugging
+    // console doesn't auto-canonicalize XHR loads as it does <script> srcs.
+    src = goog.normalizePath_(src);
+
+    var importScript = goog.global.CLOSURE_IMPORT_SCRIPT ||
+        goog.writeScriptTag_;
+
+    var scriptText = null;
+
+    var xhr = new goog.global['XMLHttpRequest']();
+
+    /** @this {Object} */
+    xhr.onload = function() {
+      scriptText = this.responseText;
+    };
+    xhr.open('get', src, false);
+    xhr.send();
+
+    scriptText = xhr.responseText;
+
+    if (scriptText != null) {
+      var execModuleScript = goog.wrapModule_(src, scriptText);
+      var isOldIE = goog.IS_OLD_IE_;
+      if (isOldIE) {
+        goog.dependencies_.deferred[originalPath] = execModuleScript;
+        goog.queuedModules_.push(originalPath);
+      } else {
+        importScript(src, execModuleScript);
+      }
+    } else {
+      throw new Error('load of ' + src + 'failed');
+    }
+  }
+};
 
 
 //==============================================================================

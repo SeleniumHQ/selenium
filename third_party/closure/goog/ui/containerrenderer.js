@@ -247,17 +247,17 @@ goog.ui.ContainerRenderer.prototype.decorateChildren = function(container,
       next = node.nextSibling;
       if (node.nodeType == goog.dom.NodeType.ELEMENT) {
         // Decorate element node.
-        var child = this.getDecoratorForChild(/** @type {Element} */(node));
+        var child = this.getDecoratorForChild(/** @type {!Element} */(node));
         if (child) {
           // addChild() may need to look at the element.
-          child.setElementInternal(/** @type {Element} */(node));
+          child.setElementInternal(/** @type {!Element} */(node));
           // If the container is disabled, mark the child disabled too.  See
           // bug 1263729.  Note that this must precede the call to addChild().
           if (!container.isEnabled()) {
             child.setEnabled(false);
           }
           container.addChild(child);
-          child.decorate(/** @type {Element} */(node));
+          child.decorate(/** @type {!Element} */(node));
         }
       } else if (!node.nodeValue || goog.string.trim(node.nodeValue) == '') {
         // Remove empty text node, otherwise madness ensues (e.g. controls that

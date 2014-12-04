@@ -1316,7 +1316,7 @@ WebChannelBase.prototype.onRequestData = function(request, responseText) {
     if (this.backChannelRequest_ == request) {
       this.clearDeadBackchannelTimer_();
     }
-    if (!goog.string.isEmpty(responseText)) {
+    if (!goog.string.isEmptyOrWhitespace(responseText)) {
       var response = this.wireCodec_.decodeMessage(responseText);
       this.onInput_(/** @type {!Array<?>} */ (response));
     }

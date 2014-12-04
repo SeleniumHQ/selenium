@@ -525,10 +525,10 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleRegularEnterGecko_ =
       // it out of the anchor.
       var anchorToRemove = goog.editor.node.isEmpty(leftAnchor, false) ?
           leftAnchor : rightAnchor;
-      goog.dom.flattenElement(/** @type {Element} */ (anchorToRemove));
+      goog.dom.flattenElement(/** @type {!Element} */ (anchorToRemove));
     }
   }
-  return /** @type {Element} */ (newNode);
+  return /** @type {!Element} */ (newNode);
 };
 
 

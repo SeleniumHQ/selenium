@@ -2584,7 +2584,7 @@ goog.editor.Field.prototype.makeIframeField_ = function(opt_iframeSrc) {
     html = this.reduceOp_(goog.editor.Plugin.Op.PREPARE_CONTENTS_HTML,
         html, styles);
 
-    var iframe = /** @type {HTMLIFrameElement} */(
+    var iframe = /** @type {!HTMLIFrameElement} */(
         this.originalDomHelper.createDom(goog.dom.TagName.IFRAME,
             this.getIframeAttributes()));
 

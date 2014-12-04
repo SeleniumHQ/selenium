@@ -72,21 +72,21 @@ goog.db.Transaction = function(tx, db) {
   // TODO(user): remove these casts once the externs file is updated to
   // correctly reflect that IDBTransaction extends EventTarget
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'complete',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.COMPLETE));
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'abort',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.ABORT));
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'error',
       this.dispatchError_);
 };

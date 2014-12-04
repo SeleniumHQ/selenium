@@ -124,13 +124,13 @@ goog.ui.Slider.prototype.createThumbs = function() {
 
 /**
  * Creates the thumb element.
- * @return {HTMLDivElement} The created thumb element.
+ * @return {!HTMLDivElement} The created thumb element.
  * @private
  */
 goog.ui.Slider.prototype.createThumb_ = function() {
   var thumb =
       this.getDomHelper().createDom('div', goog.ui.Slider.THUMB_CSS_CLASS);
   goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
-  return /** @type {HTMLDivElement} */ (thumb);
+  return /** @type {!HTMLDivElement} */ (thumb);
 };
 

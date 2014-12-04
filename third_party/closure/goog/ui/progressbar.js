@@ -129,7 +129,7 @@ goog.ui.ProgressBar.prototype.exitDocument = function() {
  * @return {HTMLDivElement} The created thumb element.
  */
 goog.ui.ProgressBar.prototype.createThumb_ = function() {
-  return /** @type {HTMLDivElement} */ (this.getDomHelper().createDom('div',
+  return /** @type {!HTMLDivElement} */ (this.getDomHelper().createDom('div',
       goog.getCssName('progress-bar-thumb')));
 };
 

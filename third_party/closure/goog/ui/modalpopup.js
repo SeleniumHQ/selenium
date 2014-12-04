@@ -475,7 +475,7 @@ goog.ui.ModalPopup.prototype.show_ = function() {
 
   if (this.popupShowTransition_ && this.bgShowTransition_) {
     goog.events.listenOnce(
-        /** @type {goog.events.EventTarget} */ (this.popupShowTransition_),
+        /** @type {!goog.events.EventTarget} */ (this.popupShowTransition_),
         goog.fx.Transition.EventType.END, this.onShow, false, this);
     this.bgShowTransition_.play();
     this.popupShowTransition_.play();
@@ -507,7 +507,7 @@ goog.ui.ModalPopup.prototype.hide_ = function() {
 
   if (this.popupHideTransition_ && this.bgHideTransition_) {
     goog.events.listenOnce(
-        /** @type {goog.events.EventTarget} */ (this.popupHideTransition_),
+        /** @type {!goog.events.EventTarget} */ (this.popupHideTransition_),
         goog.fx.Transition.EventType.END, this.onHide, false, this);
     this.bgHideTransition_.play();
     // The transition whose END event you are listening to must be played last

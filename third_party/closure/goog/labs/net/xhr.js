@@ -280,10 +280,15 @@ xhr.send = function(method, url, data, opt_options) {
       contentType = options.headers[xhr.CONTENT_TYPE_HEADER];
     }
 
-    // If a content type hasn't been set, and hasn't been explicitly set to
-    // null, default to form-urlencoded/UTF8 for POSTs.  This is because some
-    // proxies have been known to reject posts without a content-type.
-    if (method == 'POST' && contentType === undefined) {
+    // Browsers will automatically set the content type to multipart/form-data
+    // when passed a FormData object.
+    var dataIsFormData = (goog.global['FormData'] &&
+        (data instanceof goog.global['FormData']));
+    // If a content type hasn't been set, it hasn't been explicitly set to null,
+    // and the data isn't a FormData, default to form-urlencoded/UTF8 for POSTs.
+    // This is because some proxies have been known to reject posts without a
+    // content-type.
+    if (method == 'POST' && contentType === undefined && !dataIsFormData) {
       request.setRequestHeader(xhr.CONTENT_TYPE_HEADER, xhr.FORM_CONTENT_TYPE);
     }
 

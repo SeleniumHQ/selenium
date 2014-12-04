@@ -78,7 +78,6 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {
       this.createButton(button.getContent(), button.getDomHelper()));
   this.setTooltip(
       buttonElement, /** @type {!string}*/ (button.getTooltip()));
-  this.setAriaStates(button, buttonElement);
 
   return buttonElement;
 };

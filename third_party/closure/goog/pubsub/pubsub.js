@@ -247,11 +247,19 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
     // array.
     this.publishDepth_++;
 
+    // Copy var_args to a new array so they can be passed to subscribers.
+    // Note that we can't use Array.slice or goog.array.toArray for this for
+    // performance reasons. Using those with the arguments object will cause
+    // deoptimization.
+    var args = new Array(arguments.length - 1);
+    for (var i = 1, len = arguments.length; i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
     // For each key in the list of subscription keys for the topic, apply the
     // function to the arguments in the appropriate context.  The length of the
     // array mush be fixed during the iteration, since subscribers may add new
     // subscribers during publishing.
-    var args = goog.array.slice(arguments, 1);
     for (var i = 0, len = keys.length; i < len; i++) {
       var key = keys[i];
       this.subscriptions_[key + 1].apply(this.subscriptions_[key + 2], args);

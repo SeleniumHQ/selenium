@@ -68,7 +68,7 @@ goog.cssom.getAllCssText = function(opt_styleSheet) {
  */
 goog.cssom.getAllCssStyleRules = function(opt_styleSheet) {
   var styleSheet = opt_styleSheet || document.styleSheets;
-  return /** @type {Array<CSSStyleRule>} */ (
+  return /** @type {!Array<CSSStyleRule>} */ (
       goog.cssom.getAllCss_(styleSheet, false));
 };
 
@@ -146,7 +146,7 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
     // to see if there are styleSheets buried in there.
     // If we have a CSSStyleSheet within CssRules.
     var cssRuleList = goog.cssom.getCssRulesFromStyleSheet(
-        /** @type {CSSStyleSheet} */ (styleSheet));
+        /** @type {!CSSStyleSheet} */ (styleSheet));
     if (cssRuleList && cssRuleList.length) {
       // Chrome does not evaluate cssRuleList[i] to undefined when i >=n;
       // so we use a (i < n) check instead of cssRuleList[i] in the loop below

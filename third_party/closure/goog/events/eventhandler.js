@@ -211,8 +211,6 @@ goog.events.EventHandler.prototype.listen_ = function(src, type, opt_fn,
  */
 goog.events.EventHandler.prototype.listenOnce = function(
     src, type, opt_fn, opt_capture) {
-  // TODO(mknichel): Remove the opt_scope from this function and then
-  // templatize it.
   return this.listenOnce_(src, type, opt_fn, opt_capture);
 };
 

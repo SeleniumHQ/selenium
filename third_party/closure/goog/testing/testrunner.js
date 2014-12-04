@@ -264,7 +264,21 @@ goog.testing.TestRunner.prototype.execute = function() {
   }
 
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
-  this.testCase.runTests();
+  if (goog.testing.TestRunner.shouldUsePromises_(this.testCase)) {
+    this.testCase.runTestsReturningPromise();
+  } else {
+    this.testCase.runTests();
+  }
+};
+
+
+/**
+ * @param {!goog.testing.TestCase} testCase
+ * @return {boolean}
+ * @private
+ */
+goog.testing.TestRunner.shouldUsePromises_ = function(testCase) {
+  return testCase.constructor === goog.testing.TestCase;
 };
 
 

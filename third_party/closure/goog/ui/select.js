@@ -336,7 +336,7 @@ goog.ui.Select.prototype.setValue = function(value) {
     for (var i = 0, item; item = this.selectionModel_.getItemAt(i); i++) {
       if (item && typeof item.getValue == 'function' &&
           item.getValue() == value) {
-        this.setSelectedItem(/** @type {goog.ui.MenuItem} */ (item));
+        this.setSelectedItem(/** @type {!goog.ui.MenuItem} */ (item));
         return;
       }
     }

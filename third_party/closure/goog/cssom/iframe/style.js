@@ -941,7 +941,7 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
   while ((ancestor = ancestor.parentNode) &&
          ancestor.nodeType == goog.dom.NodeType.ELEMENT) {
     var computedStyle = goog.cssom.iframe.style.getComputedStyleObject_(
-        /** @type {Element} */ (ancestor));
+        /** @type {!Element} */ (ancestor));
     // Copy background color if a non-transparent value is found.
     var backgroundColorValue = computedStyle['backgroundColor'];
     if (!goog.cssom.iframe.style.isTransparentValue_(backgroundColorValue)) {
@@ -962,8 +962,8 @@ goog.cssom.iframe.style.getBackgroundContext = function(element) {
             element, currentIframeWindow);
         var frameElement = currentIframeWindow.frameElement;
         var iframeRelativePosition = goog.style.getRelativePosition(
-            /** @type {Element} */ (frameElement),
-            /** @type {Element} */ (ancestor));
+            /** @type {!Element} */ (frameElement),
+            /** @type {!Element} */ (ancestor));
         var iframeBorders = goog.style.getBorderBox(frameElement);
         relativePosition.x += iframeRelativePosition.x + iframeBorders.left;
         relativePosition.y += iframeRelativePosition.y + iframeBorders.top;

@@ -181,7 +181,7 @@ goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ =
 goog.ui.emoji.EmojiPalette.prototype.loadAnimatedEmoji = function() {
   if (this.animatedEmoji_.length > 0) {
     for (var i = 0; i < this.animatedEmoji_.length; i++) {
-      var paletteItem = /** @type {Element} */ (this.animatedEmoji_[i][0]);
+      var paletteItem = /** @type {!Element} */ (this.animatedEmoji_[i][0]);
       var emoji =
           /** @type {goog.ui.emoji.Emoji} */ (this.animatedEmoji_[i][1]);
       var url = this.urlPrefix_ + emoji.getUrl();

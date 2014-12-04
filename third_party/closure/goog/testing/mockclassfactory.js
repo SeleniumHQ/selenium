@@ -440,11 +440,11 @@ goog.testing.MockClassFactory.prototype.getMockClass_ =
  * @param {Function} classToMock The class that will be mocked.
  * @param {...*} var_args The arguments associated with this instance's
  *     constructor.
- * @return {goog.testing.StrictMock} The mock created for the provided class.
+ * @return {!goog.testing.StrictMock} The mock created for the provided class.
  */
 goog.testing.MockClassFactory.prototype.getStrictMockClass =
     function(namespace, classToMock, var_args) {
-  return /** @type {goog.testing.StrictMock} */ (this.getMockClass_(namespace,
+  return /** @type {!goog.testing.StrictMock} */ (this.getMockClass_(namespace,
       classToMock, true, arguments));
 };
 

@@ -135,7 +135,7 @@ goog.testing.events.setEventClientXY_ = function(event, opt_coords) {
       event.target.nodeType == goog.dom.NodeType.ELEMENT) {
     try {
       opt_coords =
-          goog.style.getClientPosition(/** @type {Element} **/ (event.target));
+          goog.style.getClientPosition(/** @type {!Element} **/ (event.target));
     } catch (ex) {
       // IE sometimes throws if it can't get the position.
     }

@@ -181,7 +181,7 @@ goog.events.listen = function(src, type, listener, opt_capt, opt_handler) {
         listener, opt_capt, opt_handler);
   } else {
     return goog.events.listen_(
-        /** @type {EventTarget} */ (src),
+        /** @type {!EventTarget} */ (src),
         /** @type {string|!goog.events.EventId} */ (type),
         listener, /* callOnce */ false, opt_capt, opt_handler);
   }
@@ -329,7 +329,7 @@ goog.events.listenOnce = function(src, type, listener, opt_capt, opt_handler) {
         listener, opt_capt, opt_handler);
   } else {
     return goog.events.listen_(
-        /** @type {EventTarget} */ (src),
+        /** @type {!EventTarget} */ (src),
         /** @type {string|!goog.events.EventId} */ (type),
         listener, /* callOnce */ true, opt_capt, opt_handler);
   }
@@ -397,7 +397,7 @@ goog.events.unlisten = function(src, type, listener, opt_capt, opt_handler) {
 
   var capture = !!opt_capt;
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (src));
+      /** @type {!EventTarget} */ (src));
   if (listenerMap) {
     var listenerObj = listenerMap.getListener(
         /** @type {string|!goog.events.EventId} */ (type),
@@ -446,7 +446,7 @@ goog.events.unlistenByKey = function(key) {
   goog.events.listenerCountEstimate_--;
 
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (src));
+      /** @type {!EventTarget} */ (src));
   // TODO(chrishenry): Try to remove this conditional and execute the
   // first branch always. This should be safe.
   if (listenerMap) {
@@ -509,7 +509,7 @@ goog.events.removeAll = function(obj, opt_type) {
   }
 
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (obj));
+      /** @type {!EventTarget} */ (obj));
   if (!listenerMap) {
     return 0;
   }
@@ -551,7 +551,7 @@ goog.events.getListeners = function(obj, type, capture) {
     }
 
     var listenerMap = goog.events.getListenerMap_(
-        /** @type {EventTarget} */ (obj));
+        /** @type {!EventTarget} */ (obj));
     return listenerMap ? listenerMap.getListeners(type, capture) : [];
   }
 };
@@ -589,7 +589,7 @@ goog.events.getListener = function(src, type, listener, opt_capt, opt_handler) {
   }
 
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (src));
+      /** @type {!EventTarget} */ (src));
   if (listenerMap) {
     return listenerMap.getListener(type, listener, capture, opt_handler);
   }
@@ -616,7 +616,7 @@ goog.events.hasListener = function(obj, opt_type, opt_capture) {
   }
 
   var listenerMap = goog.events.getListenerMap_(
-      /** @type {EventTarget} */ (obj));
+      /** @type {!EventTarget} */ (obj));
   return !!listenerMap && listenerMap.hasListener(opt_type, opt_capture);
 };
 

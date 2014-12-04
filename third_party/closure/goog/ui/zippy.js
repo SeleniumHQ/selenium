@@ -96,7 +96,7 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
    * @private
    */
   this.elContent_ = this.lazyCreateFunc_ || !opt_content ? null :
-      this.dom_.getElement(/** @type {Element} */ (opt_content));
+      this.dom_.getElement(/** @type {!Element} */ (opt_content));
 
   /**
    * Expanded state.

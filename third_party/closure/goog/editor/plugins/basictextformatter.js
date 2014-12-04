@@ -1307,7 +1307,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.fixSafariLists_ = function() {
       var range = node.ownerDocument.createRange();
       range.setStartAfter(previousElementSibling);
       range.setEndBefore(node);
-      if (!goog.string.isEmpty(range.toString())) {
+      if (!goog.string.isEmptyOrWhitespace(range.toString())) {
         return;
       }
       // Make sure both are lists of the same type (ordered or unordered)

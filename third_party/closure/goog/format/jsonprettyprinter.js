@@ -87,7 +87,7 @@ goog.format.JsonPrettyPrinter.prototype.format = function(json) {
     return '';
   }
   if (goog.isString(json)) {
-    if (goog.string.isEmpty(json)) {
+    if (goog.string.isEmptyOrWhitespace(json)) {
       return '';
     }
     // Try to coerce a string into a JSON object.

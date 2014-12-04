@@ -97,14 +97,6 @@ goog.ui.MenuButton = function(opt_content, opt_menu, opt_renderer,
     this.setFocusablePopupMenu(true);
   }
 
-  /**
-   * Whether the enter or space key should close the menu, if it is already
-   * open. This should be true for accessibility reasons, but is provided as an
-   * option for backward compatibility.
-   * @private {boolean}
-   */
-  this.closeOnEnterOrSpace_ = true;
-
   /** @private {!goog.ui.MenuRenderer} */
   this.menuRenderer_ = opt_menuRenderer || goog.ui.MenuRenderer.getInstance();
 };
@@ -351,8 +343,7 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
     var isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
         e.keyCode == goog.events.KeyCodes.SPACE;
     var handledByMenu = this.menu_.handleKeyEvent(e);
-    if (e.keyCode == goog.events.KeyCodes.ESC ||
-        isEnterOrSpace && this.closeOnEnterOrSpace_) {
+    if (e.keyCode == goog.events.KeyCodes.ESC || isEnterOrSpace) {
       // Dismiss the menu.
       this.setOpen(false);
       return true;
@@ -505,17 +496,6 @@ goog.ui.MenuButton.prototype.setPositionElement = function(
  */
 goog.ui.MenuButton.prototype.setMenuMargin = function(margin) {
   this.menuMargin_ = margin;
-};
-
-
-/**
- * Sets whether the enter or space key should close the menu, if it is already
- * open. By default, only the ESC key will close an open menu.
- * @param {boolean} close Whether pressing Enter or Space when the button has
- *     focus will close the menu if it is already open.
- */
-goog.ui.MenuButton.prototype.setCloseOnEnterOrSpace = function(close) {
-  this.closeOnEnterOrSpace_ = close;
 };
 
 
@@ -1051,7 +1031,7 @@ goog.ui.MenuButton.prototype.attachPopupListeners_ = function(attach) {
 
   // Only listen for blur events dispatched by the menu if it is focusable.
   if (this.isFocusablePopupMenu()) {
-    method.call(handler, /** @type {goog.events.EventTarget} */ (this.menu_),
+    method.call(handler, /** @type {!goog.events.EventTarget} */ (this.menu_),
         goog.ui.Component.EventType.BLUR, this.handleMenuBlur);
   }
 

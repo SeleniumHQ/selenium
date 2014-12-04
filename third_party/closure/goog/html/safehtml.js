@@ -375,112 +375,8 @@ goog.html.SafeHtml.create = function(tagName, opt_attributes, opt_content) {
   if (tagName.toLowerCase() in goog.html.SafeHtml.NOT_ALLOWED_TAG_NAMES_) {
     throw Error('Tag name <' + tagName + '> is not allowed for SafeHtml.');
   }
-  return goog.html.SafeHtml.create_(
-      tagName, null, opt_attributes, opt_content);
-};
-
-
-/**
- * Creates a SafeHtml representing an "embed" tag. All restrictions
- * imposed by goog.html.SafeHtml.create() also apply.
- *
- * @param {!goog.html.TrustedResourceUrl} src Value of "src" attribute.
- * @param {!goog.string.Const} type Value of "type" attribute. Should be a
- *     valid MIME type, see
- *     http://www.w3.org/TR/html5/embedded-content-0.html#attr-embed-type.
- * @param {!Object<string, goog.html.SafeHtml.AttributeValue_>=}
- *     opt_attributes Mapping from other attribute names to their values. Only
- *     attribute names consisting of [a-zA-Z0-9-] are allowed. Value of null or
- *     undefined causes the attribute to be omitted.
- * @return {!goog.html.SafeHtml} The SafeHtml content with the embed tag.
- * @throws {Error} If invalid attribute name, or attribute value is
- *     provided. Also if opt_attributes contains src or type.
- * @see http://www.w3.org/TR/html5/embedded-content-0.html#the-embed-element
- */
-goog.html.SafeHtml.createEmbed = function(src, type, opt_attributes) {
-  if (goog.string.isEmpty(goog.string.Const.unwrap(type))) {
-    throw Error('Must provide non-empty "type"');
-  }
-  for (var attr in opt_attributes) {
-    var attrLower = attr.toLowerCase();
-    if (attrLower == 'src' || attrLower == 'type') {
-      throw Error('Cannot override "src" nor "type" attributes, got "' +
-          attr + '" with value "' + opt_attributes[attr] + '"');
-    }
-  }
-
-  var srcValue =
-      goog.string.htmlEscape(goog.html.TrustedResourceUrl.unwrap(src));
-  var typeValue = goog.string.htmlEscape(goog.string.Const.unwrap(type));
-  var srcAndType = 'src="' + srcValue + '" type="' + typeValue + '"';
-  return goog.html.SafeHtml.create_('embed', srcAndType, opt_attributes);
-};
-
-
-/**
- * @param {string} tagName Tag name. Set or validated by caller.
- * @param {?string} processedAttributes Already processed attributes which are
- *     not in opt_attributes.
- * @param {!Object<string, goog.html.SafeHtml.AttributeValue_>=} opt_attributes
- * @param {(!goog.html.SafeHtml.TextOrHtml_|
- *     !Array<!goog.html.SafeHtml.TextOrHtml_>)=} opt_content
- * @return {!goog.html.SafeHtml}
- * @throws {Error} If invalid or unsafe attribute name or value is provided.
- * @throws {goog.asserts.AssertionError} If content for void tag is provided.
- * @private
- */
-goog.html.SafeHtml.create_ = function(
-    tagName, processedAttributes, opt_attributes, opt_content) {
-  var dir = null;
-  var result = '<' + tagName;
-  if (processedAttributes) {
-    result += ' ' + processedAttributes;
-  }
-
-  if (opt_attributes) {
-    for (var name in opt_attributes) {
-      if (!goog.html.SafeHtml.VALID_NAMES_IN_TAG_.test(name)) {
-        throw Error('Invalid attribute name "' + name + '".');
-      }
-      var value = opt_attributes[name];
-      if (!goog.isDefAndNotNull(value)) {
-        continue;
-      }
-      result += ' ' +
-          goog.html.SafeHtml.getAttrNameAndValue_(tagName, name, value);
-    }
-  }
-
-  var content = opt_content;
-  if (!goog.isDef(content)) {
-    content = [];
-  } else if (!goog.isArray(content)) {
-    content = [content];
-  }
-
-  if (goog.dom.tags.isVoidTag(tagName.toLowerCase())) {
-    goog.asserts.assert(!content.length,
-        'Void tag <' + tagName + '> does not allow content.');
-    result += '>';
-  } else {
-    var html = goog.html.SafeHtml.concat(content);
-    result += '>' + goog.html.SafeHtml.unwrap(html) + '</' + tagName + '>';
-    dir = html.getDirection();
-  }
-
-  var dirAttribute = opt_attributes && opt_attributes['dir'];
-  if (dirAttribute) {
-    if (/^(ltr|rtl|auto)$/i.test(dirAttribute)) {
-      // If the tag has the "dir" attribute specified then its direction is
-      // neutral because it can be safely used in any context.
-      dir = goog.i18n.bidi.Dir.NEUTRAL;
-    } else {
-      dir = null;
-    }
-  }
-
-  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
-      result, dir);
+  return goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse(
+      tagName, opt_attributes, opt_content);
 };
 
 
@@ -647,6 +543,70 @@ goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse = function(
   safeHtml.privateDoNotAccessOrElseSafeHtmlWrappedValue_ = html;
   safeHtml.dir_ = dir;
   return safeHtml;
+};
+
+
+/**
+ * Like create() but does not restrict which tags can be constructed.
+ *
+ * @param {string} tagName Tag name. Set or validated by caller.
+ * @param {!Object<string, goog.html.SafeHtml.AttributeValue_>=} opt_attributes
+ * @param {(!goog.html.SafeHtml.TextOrHtml_|
+ *     !Array<!goog.html.SafeHtml.TextOrHtml_>)=} opt_content
+ * @return {!goog.html.SafeHtml}
+ * @throws {Error} If invalid or unsafe attribute name or value is provided.
+ * @throws {goog.asserts.AssertionError} If content for void tag is provided.
+ * @package
+ */
+goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse =
+    function(tagName, opt_attributes, opt_content) {
+  var dir = null;
+  var result = '<' + tagName;
+
+  if (opt_attributes) {
+    for (var name in opt_attributes) {
+      if (!goog.html.SafeHtml.VALID_NAMES_IN_TAG_.test(name)) {
+        throw Error('Invalid attribute name "' + name + '".');
+      }
+      var value = opt_attributes[name];
+      if (!goog.isDefAndNotNull(value)) {
+        continue;
+      }
+      result += ' ' +
+          goog.html.SafeHtml.getAttrNameAndValue_(tagName, name, value);
+    }
+  }
+
+  var content = opt_content;
+  if (!goog.isDef(content)) {
+    content = [];
+  } else if (!goog.isArray(content)) {
+    content = [content];
+  }
+
+  if (goog.dom.tags.isVoidTag(tagName.toLowerCase())) {
+    goog.asserts.assert(!content.length,
+        'Void tag <' + tagName + '> does not allow content.');
+    result += '>';
+  } else {
+    var html = goog.html.SafeHtml.concat(content);
+    result += '>' + goog.html.SafeHtml.unwrap(html) + '</' + tagName + '>';
+    dir = html.getDirection();
+  }
+
+  var dirAttribute = opt_attributes && opt_attributes['dir'];
+  if (dirAttribute) {
+    if (/^(ltr|rtl|auto)$/i.test(dirAttribute)) {
+      // If the tag has the "dir" attribute specified then its direction is
+      // neutral because it can be safely used in any context.
+      dir = goog.i18n.bidi.Dir.NEUTRAL;
+    } else {
+      dir = null;
+    }
+  }
+
+  return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
+      result, dir);
 };
 
 

@@ -171,7 +171,8 @@ goog.a11y.aria.setState = function(element, stateName, value) {
  */
 goog.a11y.aria.toggleState = function(el, attr) {
   var val = goog.a11y.aria.getState(el, attr);
-  if (!goog.string.isEmptySafe(val) && !(val == 'true' || val == 'false')) {
+  if (!goog.string.isEmptyOrWhitespace(goog.string.makeSafe(val)) &&
+      !(val == 'true' || val == 'false')) {
     goog.a11y.aria.removeState(el, /** @type {!goog.a11y.aria.State} */ (attr));
     return;
   }

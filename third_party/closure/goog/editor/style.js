@@ -49,7 +49,7 @@ goog.require('goog.userAgent');
  * for text nodes (instead of throwing an exception), and never reads
  * inline style. These two functions may need to be reconciled.
  *
- * @param {Node} node Node to get style of.
+ * @param {!Node} node Node to get style of.
  * @param {string} stylePropertyName Property to get (must be camelCase,
  *     not css-style).
  * @return {?string} Style value, or null if this is not an element node.
@@ -62,16 +62,16 @@ goog.editor.style.getComputedOrCascadedStyle_ = function(
     return null;
   }
   return goog.userAgent.IE ?
-      goog.style.getCascadedStyle(/** @type {Element} */ (node),
+      goog.style.getCascadedStyle(/** @type {!Element} */ (node),
           stylePropertyName) :
-      goog.style.getComputedStyle(/** @type {Element} */ (node),
+      goog.style.getComputedStyle(/** @type {!Element} */ (node),
           stylePropertyName);
 };
 
 
 /**
  * Checks whether the given element inherits display: block.
- * @param {Node} node The Node to check.
+ * @param {!Node} node The Node to check.
  * @return {boolean} Whether the element inherits CSS display: block.
  */
 goog.editor.style.isDisplayBlock = function(node) {

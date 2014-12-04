@@ -1256,7 +1256,7 @@ goog.ui.Component.prototype.removeChild = function(child, opt_unrender) {
     throw Error(goog.ui.Component.Error.NOT_OUR_CHILD);
   }
 
-  return /** @type {goog.ui.Component} */(child);
+  return /** @type {!goog.ui.Component} */(child);
 };
 
 

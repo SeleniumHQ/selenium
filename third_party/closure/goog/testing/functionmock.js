@@ -39,7 +39,7 @@ goog.require('goog.testing.StrictMock');
  *     Set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
  *     goog.testing.Mock.STRICT. The default is STRICT.
- * @return {goog.testing.MockInterface} The mocked function.
+ * @return {!goog.testing.MockInterface} The mocked function.
  * @suppress {missingProperties} Mocks do not fit in the type system well.
  */
 goog.testing.FunctionMock = function(opt_functionName, opt_strictness) {
@@ -52,7 +52,7 @@ goog.testing.FunctionMock = function(opt_functionName, opt_strictness) {
       goog.testing.LooseMock : goog.testing.StrictMock;
   goog.object.extend(fn, new base({}));
 
-  return /** @type {goog.testing.MockInterface} */ (fn);
+  return /** @type {!goog.testing.MockInterface} */ (fn);
 };
 
 

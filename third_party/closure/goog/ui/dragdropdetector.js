@@ -61,7 +61,7 @@ goog.ui.DragDropDetector = function(opt_filePath) {
           goog.ui.DragDropDetector.BASE_CSS_NAME_, 'w3c-editable-iframe');
   iframe.src = opt_filePath || goog.ui.DragDropDetector.DEFAULT_FILE_PATH_;
 
-  this.element_ = /** @type {HTMLIFrameElement} */ (iframe);
+  this.element_ = /** @type {!HTMLIFrameElement} */ (iframe);
 
   this.handler_ = new goog.events.EventHandler(this);
   this.handler_.listen(iframe, goog.events.EventType.LOAD, this.initIframe_);

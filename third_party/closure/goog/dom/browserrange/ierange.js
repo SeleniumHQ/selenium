@@ -900,7 +900,7 @@ goog.dom.browserrange.IeRange.insertNode_ = function(clone, node,
 
   clone.collapse(before);
   node = goog.dom.browserrange.IeRange.pasteElement_(clone,
-      /** @type {Element} */ (node), opt_domHelper);
+      /** @type {!Element} */ (node), opt_domHelper);
 
   // If we didn't want an element, unwrap the element and return the node.
   if (isNonElement) {

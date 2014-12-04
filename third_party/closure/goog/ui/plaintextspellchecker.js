@@ -53,10 +53,9 @@ goog.ui.PlainTextSpellChecker = function(handler, opt_domHelper) {
 
   /**
    * Correction UI container.
-   * @type {HTMLDivElement}
-   * @private
+   * @private {!HTMLDivElement}
    */
-  this.overlay_ = /** @type {HTMLDivElement} */
+  this.overlay_ = /** @type {!HTMLDivElement} */
       (this.getDomHelper().createDom('div'));
   goog.style.setPreWrap(this.overlay_);
 
@@ -468,7 +467,7 @@ goog.ui.PlainTextSpellChecker.prototype.getElementProperties =
 goog.ui.PlainTextSpellChecker.prototype.onWordClick_ = function(event) {
   if (event.target.className == this.invalidWordClassName ||
       event.target.className == this.correctedWordClassName) {
-    this.showSuggestionsMenu(/** @type {Element} */ (event.target), event);
+    this.showSuggestionsMenu(/** @type {!Element} */ (event.target), event);
 
     // Prevent document click handler from closing the menu.
     event.stopPropagation();
