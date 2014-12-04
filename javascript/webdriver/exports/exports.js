@@ -38,7 +38,6 @@ goog.require('webdriver.http.Executor');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.Response');
 goog.require('webdriver.http.XhrClient');
-goog.require('webdriver.process');
 goog.require('webdriver.promise');
 goog.require('webdriver.stacktrace');
 goog.require('webdriver.testing.assert');
@@ -70,11 +69,6 @@ exports.http.CorsClient = webdriver.http.CorsClient;
 exports.http.XhrClient = webdriver.http.XhrClient;
 
 exports.response = bot.response;
-
-exports.process = {
-  getEnv: webdriver.process.getEnv,
-  setEnv: webdriver.process.setEnv
-};
 
 exports.promise = webdriver.promise;
 exports.stacktrace = webdriver.stacktrace;
