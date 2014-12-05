@@ -225,13 +225,16 @@ limitations under the License.
     }
 
     function testCanFindByIdWithSpecialCharacters() {
-      var els = bot.locators.findElements({id: 'span+#foo>a:active+[lang|=it]'});
-      assertEquals(1, els.length);
-      assertEquals('special_foo', els[0].getAttribute('name'));
+      function findById(id, expectedName) {
+        var els = bot.locators.findElements({id: id});
+        assertEquals("Expected exactly one element with ID " + id, 1, els.length);
+        assertEquals(expectedName, els[0].getAttribute('name'));
+      }
 
-      els = bot.locators.findElements({id: 'p:lang(es)>a[href~=baño],div^$-/'});
-      assertEquals(1, els.length);
-      assertEquals('special_bar', els[0].getAttribute('name'));
+      findById("'", 'apóstrofo');
+      findById('"', 'comilla');
+      findById('\\', 'barra_invertida');
+      findById('#.:;,!?+<>=~*^$|%&@`{}-/[]()', 'remaining_css_special_symbols');
     }
 
     function testCanFindManyElementsViaXPath() {
@@ -379,8 +382,10 @@ limitations under the License.
     <li id="illegal">item
     <li id="illegal">item
   </ul>
-  <div name="special_foo" id="span+#foo>a:active+[lang|=it]">foo</div>
-  <div name="special_bar" id="p:lang(es)>a[href~=baño],div^$-/">bar</div>
+  <div name="apóstrofo" id="'">apóstrofo</div>
+  <div name="comilla" id='"'>comilla</div>
+  <div name="barra_invertida" id="\">barra invertida</div>
+  <div name="remaining_css_special_symbols" id="#.:;,!?+<>=~*^$|%&@`{}-/[]()">queso!</div>
 
   <a id="link" href="#">this is a link</a>
   <a name="fishsticks">this is a link</a>
