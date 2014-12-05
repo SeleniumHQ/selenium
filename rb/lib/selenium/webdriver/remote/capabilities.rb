@@ -46,7 +46,8 @@ module Selenium
               :browser_name     => "android",
               :platform         => :android,
               :rotatable        => true,
-              :takes_screenshot => true
+              :takes_screenshot => true,
+              :javascript_enabled => true
             }.merge(opts))
           end
 
