@@ -28,16 +28,14 @@ js_fragment(name = "is_element_displayed",
   module = "webdriver.chrome",
   function = "webdriver.chrome.isElementDisplayed",
   deps = [
-    ":deps",
+    ":lib",
     "//javascript/atoms/fragments:is_displayed:chrome",
     ])
 
 js_fragment(name = "find_element",
   module = "webdriver.chrome",
   function = "webdriver.chrome.findElement",
-  deps = [
-    ":deps",
-    ])
+  deps = [ ":lib" ])
 
 js_test(name = "test",
   srcs = [ "test/*_test.html" ],
