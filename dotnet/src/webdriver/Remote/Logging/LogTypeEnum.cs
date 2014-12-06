@@ -1,4 +1,4 @@
-﻿// <copyright file="IWindow.cs" company="WebDriver Committers">
+﻿// <copyright file="LogTypeEnum.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -16,32 +16,36 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Provides methods for getting and setting the size and position of the browser window.
+    /// Selenium Log Types
     /// </summary>
-    public interface IWindow
+    public enum LogTypeEnum
     {
         /// <summary>
-        /// Gets or sets the position of the browser window relative to the upper-left corner of the screen.
+        /// This log type pertains to logs from the browser.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.moveTo() method.</remarks>
-        Point Position { get; set; }
-
+        Browser,
         /// <summary>
-        /// Gets or sets the size of the outer browser window, including title bars and window borders.
+        /// This log pertains to logs from the WebDriver implementation.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
-        Size Size { get; set; }
-
+        Driver,
         /// <summary>
-        /// Maximizes the current window if it is not already maximized.
+        /// This log type pertains to logs from the client.
         /// </summary>
-        void Maximize();
+        Client,
+        /// <summary>
+        /// This log type pertains to logs from the remote server.
+        /// </summary>
+        Server,
+        /// <summary>
+        /// This log type pertains to logs relating to performance timings.
+        /// </summary>
+        Performance,
+        /// <summary>
+        /// This log type pertains to logs relating to performance timings.
+        /// </summary>
+        Profiler,
     }
 }

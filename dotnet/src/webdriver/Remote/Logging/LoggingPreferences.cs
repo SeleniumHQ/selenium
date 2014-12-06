@@ -1,4 +1,4 @@
-﻿// <copyright file="IWindow.cs" company="WebDriver Committers">
+// <copyright file="LoggingPreferences.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -16,32 +16,34 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Provides methods for getting and setting the size and position of the browser window.
+    /// Represents the logging preferences.
     /// </summary>
-    public interface IWindow
+    /// <code>
+    /// DesiredCapabilities caps = DesiredCapabilities.Firefox();
+    /// LoggingPreferences logs = new LoggingPreferences();
+    /// logs.enable(LogType.Driver, Level.Info);
+    /// caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
+    /// </code>
+    public class LoggingPreferences
     {
         /// <summary>
-        /// Gets or sets the position of the browser window relative to the upper-left corner of the screen.
+        /// The prefs that are set
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.moveTo() method.</remarks>
-        Point Position { get; set; }
+        internal readonly IDictionary<string, Level> prefs = new Dictionary<string, Level>();
 
         /// <summary>
-        /// Gets or sets the size of the outer browser window, including title bars and window borders.
+        /// Enables the specified log type to be set.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
-        Size Size { get; set; }
-
-        /// <summary>
-        /// Maximizes the current window if it is not already maximized.
-        /// </summary>
-        void Maximize();
+        /// <param name="logTypeEnum">The log type.</param>
+        /// <param name="level">The level to log.</param>
+        public void Enable(LogTypeEnum logTypeEnum, Level level)
+        {
+            prefs.Add(new KeyValuePair<string, Level>(logTypeEnum.ToString().ToLower(), level));
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="IWindow.cs" company="WebDriver Committers">
+﻿// <copyright file="ILogs.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -16,32 +16,29 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Provides methods for getting and setting the size and position of the browser window.
+    /// Contains the logs for a session divided by supported log types.
     /// </summary>
-    public interface IWindow
+    public interface ILogs
     {
         /// <summary>
-        /// Gets or sets the position of the browser window relative to the upper-left corner of the screen.
+        /// Queries for available log types.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.moveTo() method.</remarks>
-        Point Position { get; set; }
+        /// <value>
+        /// The available log types.
+        /// </value>
+        /// <returns>A list of available log types</returns>
+        IEnumerable<LogTypeEnum> AvailableLogTypes { get; }
 
         /// <summary>
-        /// Gets or sets the size of the outer browser window, including title bars and window borders.
+        /// Fetches available log entries for the given log type.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
-        Size Size { get; set; }
-
-        /// <summary>
-        /// Maximizes the current window if it is not already maximized.
-        /// </summary>
-        void Maximize();
+        /// <param name="logType">Type of the log.</param>
+        /// <returns>Available log entries for the specified log type.</returns>
+        IEnumerable<LogEntry> LogEntries(LogTypeEnum logType);
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="IWindow.cs" company="WebDriver Committers">
+// <copyright file="LogEntry.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -17,31 +17,43 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Provides methods for getting and setting the size and position of the browser window.
+    /// Represents a single log statement.
     /// </summary>
-    public interface IWindow
+    public class LogEntry
     {
-        /// <summary>
-        /// Gets or sets the position of the browser window relative to the upper-left corner of the screen.
-        /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.moveTo() method.</remarks>
-        Point Position { get; set; }
+        internal LogEntry(Level level, string message, DateTime eventDateTime)
+        {
+            Level = level;
+            Message = message;
+            EventDateTime = eventDateTime;
+        }
 
         /// <summary>
-        /// Gets or sets the size of the outer browser window, including title bars and window borders.
+        /// Gets the logging entry's severity.
         /// </summary>
-        /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
-        Size Size { get; set; }
+        /// <value>
+        /// Severity of log statement
+        /// </value>
+        public Level Level { get; private set; }
 
         /// <summary>
-        /// Maximizes the current window if it is not already maximized.
+        /// Gets the log entry's message.
         /// </summary>
-        void Maximize();
+        /// <value>
+        /// The log statement
+        /// </value>
+        public string Message { get; private set; }
+
+        /// <summary>
+        /// Gets the UTC Time of the log statement.
+        /// </summary>
+        /// <value>
+        /// UTC Time of Log Event
+        /// </value>
+        public DateTime EventDateTime { get; private set; }
     }
 }

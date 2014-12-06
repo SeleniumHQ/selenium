@@ -94,6 +94,7 @@
     <Compile Include="AtomsInjectionTest.cs" />
     <Compile Include="CssValueTest.cs" />
     <Compile Include="Interactions\DragAndDropTest.cs" />
+    <Compile Include="LogTest.cs" />
     <Compile Include="PositionAndSizeTest.cs" />
     <Compile Include="SvgElementTest.cs" />
     <Compile Include="SvgDocumentTest.cs" />

@@ -41,6 +41,12 @@ namespace OpenQA.Selenium
         IWindow Window { get; }
 
         /// <summary>
+        /// Gets the logs from the current driver [Beta].
+        /// </summary>
+        /// <returns>An object implementing the <see cref="ILogs"/> interface.</returns>
+        ILogs Logs { get; }
+
+        /// <summary>
         /// Provides access to the timeouts defined for this driver.
         /// </summary>
         /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
