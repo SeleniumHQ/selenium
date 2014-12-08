@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-import time
+from time import time
 import unittest
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -82,15 +82,15 @@ class WebDriverWaitTest(unittest.TestCase):
         self._loadPage("dynamic")
         self.driver.implicitly_wait(0.5)
         try:
-            start = time.time()
+            start = time()
             try:
                 WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "box0")))
                 self.fail("Expected TimeoutException to have been thrown")
             except TimeoutException as e:
                 pass
-            self.assertTrue(time.time() - start < 1.5, 
-                "Expected to take just over 1 second to execute, but took %f" % 
-                (time.time() - start))
+            self.assertTrue(time() - start < 1.5,
+                "Expected to take just over 1 second to execute, but took %f" %
+                (time() - start))
         finally:
             self.driver.implicitly_wait(0)
 

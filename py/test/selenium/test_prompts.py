@@ -1,6 +1,5 @@
 from selenium import selenium
 import unittest
-import time
 
 class TestPrompts(unittest.TestCase):
     def setUp(self):

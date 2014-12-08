@@ -1,9 +1,9 @@
 import os
 import socket
-import time
 import urllib
 import subprocess
 import signal
+from time import sleep, time
 
 
 SERVER_ADDR = "localhost"
@@ -28,13 +28,13 @@ def start_server(module):
         print("Server should be online")
 
 def wait_for_server(url, timeout):
-    start = time.time()
-    while time.time() - start < timeout:
+    start = time()
+    while time() - start < timeout:
         try:
             urllib.urlopen(url)
             return 1
         except IOError:
-            time.sleep(0.2)
+            sleep(0.2)
 
     return 0
 
@@ -42,6 +42,6 @@ def stop_server(module):
 # FIXME: This does not seem to work, the server process lingers
     try:
         os.kill(module.server_proc.pid, signal.SIGTERM)
-        time.sleep(5)
+        sleep(5)
     except:
         pass
