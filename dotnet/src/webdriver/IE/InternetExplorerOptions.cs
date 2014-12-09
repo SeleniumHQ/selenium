@@ -239,8 +239,8 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public bool ValidateCookieDocumentType
         {
-            get { return validateCookieDocumentType; }
-            set { validateCookieDocumentType = value; }
+            get { return this.validateCookieDocumentType; }
+            set { this.validateCookieDocumentType = value; }
         }
 
         /// <summary>

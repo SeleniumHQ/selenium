@@ -189,7 +189,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("arguments", "arguments must not be null");
+                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
             }
 
             this.arguments.AddRange(argumentsToAdd);
@@ -224,15 +224,15 @@ namespace OpenQA.Selenium.Opera
         /// Adds arguments to be excluded from the list of arguments passed by default 
         /// to the Opera.exe command line by operadriver.exe.
         /// </summary>
-        /// <param name="arguments">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
-        public void AddExcludedArguments(IEnumerable<string> arguments)
+        /// <param name="argumentsToExclude">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
+        public void AddExcludedArguments(IEnumerable<string> argumentsToExclude)
         {
-            if (arguments == null)
+            if (argumentsToExclude == null)
             {
-                throw new ArgumentNullException("arguments", "arguments must not be null");
+                throw new ArgumentNullException("argumentsToExclude", "argumentsToExclude must not be null");
             }
 
-            this.excludedSwitches.AddRange(arguments);
+            this.excludedSwitches.AddRange(argumentsToExclude);
         }
 
         /// <summary>

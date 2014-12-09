@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.IE
     public enum InternetExplorerDriverEngine
     {
         /// <summary>
-        /// Represents the Legacy value, forcing the driver tu use only the open-source
+        /// Represents the Legacy value, forcing the driver to use only the open-source
         /// driver engine implementation.
         /// </summary>
         Legacy,

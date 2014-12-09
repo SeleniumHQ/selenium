@@ -189,7 +189,7 @@ namespace OpenQA.Selenium.Chrome
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("arguments", "arguments must not be null");
+                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
             }
 
             this.arguments.AddRange(argumentsToAdd);
@@ -214,25 +214,25 @@ namespace OpenQA.Selenium.Chrome
         /// Adds arguments to be excluded from the list of arguments passed by default 
         /// to the Chrome.exe command line by chromedriver.exe.
         /// </summary>
-        /// <param name="arguments">An array of arguments to exclude.</param>
-        public void AddExcludedArguments(params string[] arguments)
+        /// <param name="argumentsToExclude">An array of arguments to exclude.</param>
+        public void AddExcludedArguments(params string[] argumentsToExclude)
         {
-            this.AddExcludedArguments(new List<string>(arguments));
+            this.AddExcludedArguments(new List<string>(argumentsToExclude));
         }
 
         /// <summary>
         /// Adds arguments to be excluded from the list of arguments passed by default 
         /// to the Chrome.exe command line by chromedriver.exe.
         /// </summary>
-        /// <param name="arguments">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
-        public void AddExcludedArguments(IEnumerable<string> arguments)
+        /// <param name="argumentsToExclude">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
+        public void AddExcludedArguments(IEnumerable<string> argumentsToExclude)
         {
-            if (arguments == null)
+            if (argumentsToExclude == null)
             {
-                throw new ArgumentNullException("arguments", "arguments must not be null");
+                throw new ArgumentNullException("argumentsToExclude", "argumentsToExclude must not be null");
             }
 
-            this.excludedSwitches.AddRange(arguments);
+            this.excludedSwitches.AddRange(argumentsToExclude);
         }
 
         /// <summary>
