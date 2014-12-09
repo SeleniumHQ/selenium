@@ -74,6 +74,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-latest", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "civetweb", "third_party\cpp\civetweb\civetweb.vcxproj", "{231A8BED-6F2D-4688-A3BD-920310621BBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Opera.Tests", "dotnet\test\opera\WebDriver.Opera.Tests.csproj", "{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -456,6 +458,20 @@ Global
 		{231A8BED-6F2D-4688-A3BD-920310621BBF}.Release|Win32.Build.0 = Release|Win32
 		{231A8BED-6F2D-4688-A3BD-920310621BBF}.Release|x64.ActiveCfg = Release|x64
 		{231A8BED-6F2D-4688-A3BD-920310621BBF}.Release|x64.Build.0 = Release|x64
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|.NET.ActiveCfg = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|Win32.ActiveCfg = Release|Any CPU
+		{52FA53EC-6F39-4893-9E73-9F6A2D09E2A6}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -102,6 +102,10 @@
     <Compile Include="Interactions\SingleTapAction.cs" />
     <Compile Include="Interactions\TouchActions.cs" />
     <Compile Include="ITouchScreen.cs" />
+    <Compile Include="Opera\OperaDriver.cs" />
+    <Compile Include="Opera\OperaDriverService.cs" />
+    <Compile Include="Opera\OperaOptions.cs" />
+    <Compile Include="Opera\OperaWebElement.cs" />
     <Compile Include="PhantomJS\CommandLineArgumentNameAttribute.cs" />
     <Compile Include="PhantomJS\PhantomJSDriver.cs" />
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
