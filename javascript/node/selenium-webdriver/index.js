@@ -67,6 +67,8 @@ exports.WebDriver = base.require('webdriver.WebDriver');
 /** @type {function(new: webdriver.WebElement)} */
 exports.WebElement = base.require('webdriver.WebElement');
 
+/** @type {function(new: webdriver.FileDetector)} */
+exports.FileDetector = base.require('webdriver.FileDetector');
 
 /** @type {function(new: webdriver.WebElementPromise)} */
 exports.WebElementPromise = base.require('webdriver.WebElementPromise');
