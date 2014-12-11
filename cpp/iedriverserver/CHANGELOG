@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.44.0.3
+=========
+ * Fixed finding elements by XPath for IE 9 where document mode is less than
+   IE9.
+
 v2.44.0.2
 =========
  * Updates to JavaScript automation atoms.

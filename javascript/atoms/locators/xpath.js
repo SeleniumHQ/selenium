@@ -106,7 +106,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
       return doc.evaluate.call(doc, path, node, resolver, resultType, null);
 
     } else {
-      if (!goog.userAgent.IE || goog.userAgent.isVersionOrHigher(9)) {
+      if (!goog.userAgent.IE || goog.userAgent.isDocumentModeOrHigher(9)) {
         var reversedNamespaces = {};
         var allNodes = doc.getElementsByTagName("*");
         for (var i = 0; i < allNodes.length; ++i) {
