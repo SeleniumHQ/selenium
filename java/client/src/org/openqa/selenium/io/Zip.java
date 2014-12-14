@@ -103,7 +103,7 @@ public class Zip {
       FileInputStream fis = new FileInputStream(toAdd);
       String name = toAdd.getAbsolutePath().substring(basePath.length() + 1);
 
-      ZipEntry entry = new ZipEntry(name);
+      ZipEntry entry = new ZipEntry(name.replace('\\', '/'));
       zos.putNextEntry(entry);
 
       int len;
