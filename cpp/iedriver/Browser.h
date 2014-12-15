@@ -91,7 +91,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   std::string GetWindowName(void);
   std::string GetTitle(void);
   std::string GetBrowserUrl(void);
-  HWND GetWindowHandle(void);
+  HWND GetContentWindowHandle(void);
   HWND GetTopLevelWindowHandle(void);
   HWND GetActiveDialogWindowHandle(void);
 

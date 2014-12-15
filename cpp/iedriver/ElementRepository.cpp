@@ -62,7 +62,7 @@ void ElementRepository::AddManagedElement(BrowserHandle current_browser,
   if (!element_already_managed) {
     LOG(DEBUG) << "Element is not yet managed";
     ElementHandle new_wrapper(new Element(element,
-                                          current_browser->GetWindowHandle()));
+                                          current_browser->GetContentWindowHandle()));
     this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
     *element_wrapper = new_wrapper;
   } else {

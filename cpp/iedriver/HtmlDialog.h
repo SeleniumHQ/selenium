@@ -50,7 +50,7 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   void Close(void);
   bool Wait(void);
   bool IsBusy(void);
-  HWND GetWindowHandle(void);
+  HWND GetContentWindowHandle(void);
   std::string GetWindowName(void);
   std::string GetTitle(void);
   std::string GetBrowserUrl(void);

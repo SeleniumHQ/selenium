@@ -127,8 +127,8 @@ bool HtmlDialog::Wait() {
   return !this->is_navigating_;
 }
 
-HWND HtmlDialog::GetWindowHandle() {
-  LOG(TRACE) << "Entering HtmlDialog::GetWindowHandle";
+HWND HtmlDialog::GetContentWindowHandle() {
+  LOG(TRACE) << "Entering HtmlDialog::GetContentWindowHandle";
   return this->window_handle();
 }
 

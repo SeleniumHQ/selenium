@@ -188,8 +188,8 @@ std::string Browser::GetBrowserUrl() {
   return current_url;
 }
 
-HWND Browser::GetWindowHandle() {
-  LOG(TRACE) << "Entering Browser::GetWindowHandle";
+HWND Browser::GetContentWindowHandle() {
+  LOG(TRACE) << "Entering Browser::GetContentWindowHandle";
 
   // If, for some reason, the window handle is no longer valid,
   // set the member variable to NULL so that we can reacquire
@@ -650,7 +650,7 @@ HWND Browser::GetActiveDialogWindowHandle() {
   HWND active_dialog_handle = NULL;
 
   DWORD process_id;
-  ::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
+  ::GetWindowThreadProcessId(this->GetContentWindowHandle(), &process_id);
 
   ProcessWindowInfo process_win_info;
   process_win_info.dwProcessId = process_id;

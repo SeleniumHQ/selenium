@@ -70,7 +70,7 @@ class SendKeysCommandHandler : public IECommandHandler {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
-      HWND window_handle = browser_wrapper->GetWindowHandle();
+      HWND window_handle = browser_wrapper->GetContentWindowHandle();
       HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
       ElementHandle element_wrapper;

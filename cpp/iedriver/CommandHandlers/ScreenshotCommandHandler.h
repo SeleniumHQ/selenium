@@ -109,7 +109,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureBrowser";
 
     ie_window_handle = browser->GetTopLevelWindowHandle();
-    HWND content_window_handle = browser->GetWindowHandle();
+    HWND content_window_handle = browser->GetContentWindowHandle();
 
     CComPtr<IHTMLDocument2> document;
     browser->GetDocument(&document);

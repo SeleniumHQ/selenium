@@ -235,7 +235,7 @@ bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::SetFocusToBrowser";
   DWORD lock_timeout = 0;
   DWORD process_id = 0;
-  DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetWindowHandle(), &process_id);
+  DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(), &process_id);
   DWORD current_thread_id = ::GetCurrentThreadId();
   HWND current_foreground_window = ::GetForegroundWindow();
   if (current_foreground_window != browser_wrapper->GetTopLevelWindowHandle()) {
@@ -257,7 +257,7 @@ bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
 int InputManager::MouseClick(BrowserHandle browser_wrapper, int button) {
   LOG(TRACE) << "Entering InputManager::MouseClick";
   if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       LOG(DEBUG) << "Queueing SendInput structure for mouse click";
       int down_flag = MOUSEEVENTF_LEFTDOWN;
@@ -325,7 +325,7 @@ int InputManager::MouseClick(BrowserHandle browser_wrapper, int button) {
 int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::MouseButtonDown";
   if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       LOG(DEBUG) << "Queuing SendInput structure for mouse button down";
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTDOWN, this->last_known_mouse_x_, this->last_known_mouse_y_);
@@ -362,7 +362,7 @@ int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
 int InputManager::MouseButtonUp(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::MouseButtonUp";
   if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       LOG(DEBUG) << "Queuing SendInput structure for mouse button up";
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTUP, this->last_known_mouse_x_, this->last_known_mouse_y_);
@@ -399,7 +399,7 @@ int InputManager::MouseButtonUp(BrowserHandle browser_wrapper) {
 int InputManager::MouseDoubleClick(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::MouseDoubleClick";
   if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       LOG(DEBUG) << "Queueing SendInput structure for mouse double click";
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTDOWN, this->last_known_mouse_x_, this->last_known_mouse_y_);
@@ -492,7 +492,7 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       end_y += y_offset;
     }
 
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       if (end_x == this->last_known_mouse_x_ && end_y == this->last_known_mouse_y_) {
         LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required";
@@ -556,7 +556,7 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
     keys.append(StringUtilities::ToWString(key));
   }
   if (this->enable_native_events()) {
-    HWND window_handle = browser_wrapper->GetWindowHandle();
+    HWND window_handle = browser_wrapper->GetContentWindowHandle();
     if (this->require_window_focus_) {
       LOG(DEBUG) << "Queueing Sendinput structures for sending keys";
       for (unsigned int char_index = 0; char_index < keys.size(); ++char_index) {
