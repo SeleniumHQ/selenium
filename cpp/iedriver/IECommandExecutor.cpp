@@ -257,11 +257,16 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
     return 1;
   }
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
-  // TODO: This is a big assumption that this will work. We need a test case
-  // to validate that it will or won't.
-  SHANDLE_PTR hwnd;
-  browser->get_HWND(&hwnd);
-  this->proxy_manager_->SetProxySettings(reinterpret_cast<HWND>(hwnd));
+  // It is acceptable to set the proxy settings here, as the newly-created
+  // browser window has not yet been navigated to any page. Only after the
+  // interface has been marshaled back across the thread boundary to the
+  // NewWindow3 event handler will the navigation begin, which ensures that
+  // even the initial navigation will get captured by the proxy, if one is
+  // set.
+  // N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
+  // for IE 7 and above, and the top-level window for IE6. This is the window
+  // required for setting the proxy settings.
+  this->proxy_manager_->SetProxySettings(new_window_wrapper->GetBrowserWindowHandle());
   this->AddManagedBrowser(new_window_wrapper);
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
