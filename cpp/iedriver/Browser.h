@@ -92,6 +92,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   std::string GetTitle(void);
   std::string GetBrowserUrl(void);
   HWND GetContentWindowHandle(void);
+  HWND GetBrowserWindowHandle(void);
   HWND GetTopLevelWindowHandle(void);
   HWND GetActiveDialogWindowHandle(void);
 
@@ -114,7 +115,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   void DetachEvents(void);
   bool IsDocumentNavigating(IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
-  HWND GetTabWindowHandle(void);
+  //HWND GetTabWindowHandle(void);
   void CheckDialogType(HWND dialog_window_handle);
 
   static unsigned int WINAPI GoBackThreadProc(LPVOID param);

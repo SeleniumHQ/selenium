@@ -34,6 +34,7 @@ class DocumentHost {
   virtual bool Wait(void) = 0;
   virtual bool IsBusy(void) = 0;
   virtual HWND GetContentWindowHandle(void) = 0;
+  virtual HWND GetBrowserWindowHandle(void) = 0;
   virtual std::string GetWindowName(void) = 0;
   virtual std::string GetTitle(void) = 0;
   virtual std::string GetBrowserUrl(void) = 0;

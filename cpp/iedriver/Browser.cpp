@@ -203,7 +203,12 @@ HWND Browser::GetContentWindowHandle() {
 
   if (this->window_handle() == NULL) {
     LOG(INFO) << "Restore window handle from tab";
-    this->set_window_handle(this->GetTabWindowHandle());
+    // GetBrowserWindowHandle gets the TabWindowClass window in IE 7 and 8,
+    // and the top-level window frame in IE 6. The window we need is the
+    // InternetExplorer_Server window.
+    HWND tab_window_handle = this->GetBrowserWindowHandle();
+    HWND content_window_handle = this->FindContentWindowHandle(tab_window_handle);
+    this->set_window_handle(content_window_handle);
   }
 
   return this->window_handle();
@@ -616,8 +621,8 @@ bool Browser::GetDocumentFromWindow(IHTMLWindow2* window,
   return false;
 }
 
-HWND Browser::GetTabWindowHandle() {
-  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
+HWND Browser::GetBrowserWindowHandle() {
+  LOG(TRACE) << "Entering Browser::GetBrowserWindowHandle";
 
   HWND hwnd = NULL;
   CComPtr<IServiceProvider> service_provider;
@@ -630,10 +635,8 @@ HWND Browser::GetTabWindowHandle() {
                                         reinterpret_cast<void**>(&window));
     if (SUCCEEDED(hr)) {
       // This gets the TabWindowClass window in IE 7 and 8,
-      // and the top-level window frame in IE 6. The window
-      // we need is the InternetExplorer_Server window.
+      // and the top-level window frame in IE 6.
       window->GetWindow(&hwnd);
-      hwnd = this->FindContentWindowHandle(hwnd);
     } else {
       LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
     }
@@ -643,6 +646,34 @@ HWND Browser::GetTabWindowHandle() {
 
   return hwnd;
 }
+
+//HWND Browser::GetTabWindowHandle() {
+//  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
+//
+//  HWND hwnd = NULL;
+//  CComPtr<IServiceProvider> service_provider;
+//  HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
+//                                              reinterpret_cast<void**>(&service_provider));
+//  if (SUCCEEDED(hr)) {
+//    CComPtr<IOleWindow> window;
+//    hr = service_provider->QueryService(SID_SShellBrowser,
+//                                        IID_IOleWindow,
+//                                        reinterpret_cast<void**>(&window));
+//    if (SUCCEEDED(hr)) {
+//      // This gets the TabWindowClass window in IE 7 and 8,
+//      // and the top-level window frame in IE 6. The window
+//      // we need is the InternetExplorer_Server window.
+//      window->GetWindow(&hwnd);
+//      hwnd = this->FindContentWindowHandle(hwnd);
+//    } else {
+//      LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
+//    }
+//  } else {
+//    LOGHR(WARN, hr) << "Unable to get service, call to IWebBrowser2::QueryInterface for IID_IServiceProvider failed";
+//  }
+//
+//  return hwnd;
+//}
 
 HWND Browser::GetActiveDialogWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetActiveDialogWindowHandle";

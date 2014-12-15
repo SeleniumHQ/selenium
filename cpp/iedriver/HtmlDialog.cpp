@@ -132,6 +132,11 @@ HWND HtmlDialog::GetContentWindowHandle() {
   return this->window_handle();
 }
 
+HWND HtmlDialog::GetBrowserWindowHandle() {
+  LOG(TRACE) << "Entering HtmlDialog::GetBrowserWindowHandle";
+  return this->window_handle();
+}
+
 std::string HtmlDialog::GetWindowName() {
   LOG(TRACE) << "Entering HtmlDialog::GetWindowName";
   return "";
