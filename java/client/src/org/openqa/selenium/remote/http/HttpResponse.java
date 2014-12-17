@@ -21,6 +21,8 @@ import static java.net.HttpURLConnection.HTTP_OK;
 
 public class HttpResponse extends HttpMessage {
 
+  public static final String HTTP_TARGET_HOST = "http.target.host";
+
   private int status = HTTP_OK;
 
   public int getStatus() {
@@ -29,5 +31,19 @@ public class HttpResponse extends HttpMessage {
 
   public void setStatus(int status) {
     this.status = status;
+  }
+
+  /**
+   * Sets the host this response was received from.
+   */
+  public void setTargetHost(String host) {
+    setAttribute(HTTP_TARGET_HOST, host);
+  }
+
+  /**
+   * Returns the host this response was received from, or null if it was not set.
+   */
+  public String getTargetHost() {
+    return (String) getAttribute(HTTP_TARGET_HOST);
   }
 }

@@ -13,6 +13,7 @@ import com.google.common.net.MediaType;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 class HttpMessage {
 
@@ -24,7 +25,25 @@ class HttpMessage {
         }
       });
 
+  private final Map<String, Object> attributes = Maps.newHashMap();
+
   private byte[] content = new byte[0];
+
+  /**
+   * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
+   * pairs and are not included in a message's serialized form.
+   */
+  public Object getAttribute(String key) {
+    return attributes.get(key);
+  }
+
+  public void setAttribute(String key, Object value) {
+    attributes.put(key, value);
+  }
+
+  public void removeAttribute(String key) {
+    attributes.remove(key);
+  }
 
   public Iterable<String> getHeaderNames() {
     return headers.keySet();
