@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-18.0.jar" sourcepath="/third-party/java/guava-libraries/guava-18.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmxutils/jmxutils-1.18.jar" sourcepath="/third-party/java/jmxutils/jmxutils-1.18-sources.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
