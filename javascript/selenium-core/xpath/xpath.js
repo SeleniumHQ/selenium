@@ -12,7 +12,7 @@
 // The API of the parser has several parts:
 //
 // 1. The parser function xpathParse() that takes a string and returns
-// an expession object.
+// an expression object.
 //
 // 2. The expression object that has an evaluate() method to evaluate the
 // XPath expression it represents. (It is actually a hierarchy of

@@ -34,7 +34,7 @@ SeleniumParameterTest.prototype.testSimpleVariableSubstitution = function() {
     this.assertEquals('_value another value_', selenium.preprocessParameter('_${var} ${var2}_'));
 }
 
-SeleniumParameterTest.prototype.testUnkownVariableNotSubstituted = function() {
+SeleniumParameterTest.prototype.testUnknownVariableNotSubstituted = function() {
     storedVars['var'] = 'value';
     this.assertEquals('_${bar}_',
                  selenium.preprocessParameter('_${bar}_'));

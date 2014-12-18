@@ -37,7 +37,7 @@ module Selenium
       # loaded and the caller should verify that a new page has been loaded.
       #
       # There are some preconditions for an element to be clicked.  The element
-      # must be visible and it must have a height and width greater then 0.
+      # must be visible and it must have a height and width greater than 0.
       #
       # Equivalent to:
       #   driver.action.click(element)

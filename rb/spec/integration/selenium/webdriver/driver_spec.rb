@@ -105,9 +105,9 @@ describe "Driver" do
       child.attribute("id").should == "2"
     end
 
-    it "should raise on nonexistant element" do
+    it "should raise on nonexistent element" do
       driver.navigate.to url_for("xhtmlTest.html")
-      lambda { driver.find_element("nonexistant") }.should raise_error
+      lambda { driver.find_element("nonexistent") }.should raise_error
     end
 
     it "should find elements with a hash selector" do

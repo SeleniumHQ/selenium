@@ -737,7 +737,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test(expected = NoSuchElementException.class)
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
-    driver.findElement(By.id("nonExistantButton"));
+    driver.findElement(By.id("nonExistentButton"));
   }
 
   @Ignore(value = {OPERA, OPERA_MOBILE, MARIONETTE}, reason = "Just not working")

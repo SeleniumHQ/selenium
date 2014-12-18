@@ -319,7 +319,7 @@ function UIElement(uiElementShorthand)
         // construct a new getLocator() method based on the locator property,
         // or use the provided function. We're deprecating the xpath property
         // and getXPath() function, but still allow for them for backwards
-        // compatability.
+        // compatibility.
         if (uiElementShorthand.locator) {
             this.getLocator = function(args) {
                 return uiElementShorthand.locator;

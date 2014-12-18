@@ -283,7 +283,7 @@ namespace OpenQA.Selenium
             try
             {
                 driver.SwitchTo().Window("i will never exist");
-                Assert.Fail("Should not be ablt to change to a non-existant window");
+                Assert.Fail("Should not be able to change to a non-existent window");
             }
             catch (NoSuchWindowException)
             {

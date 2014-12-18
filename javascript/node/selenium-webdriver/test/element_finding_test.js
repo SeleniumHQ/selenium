@@ -59,7 +59,7 @@ test.suite(function(env) {
 
       test.it('should fail if ID not present on page', function() {
         driver.get(Pages.formPage);
-        driver.findElement(By.id('nonExistantButton')).
+        driver.findElement(By.id('nonExistentButton')).
             then(fail, function(e) {
               assert(e.code).equalTo(error.ErrorCode.NO_SUCH_ELEMENT);
             });

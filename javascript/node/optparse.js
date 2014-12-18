@@ -112,7 +112,7 @@ var HELP_TEXT_POSITION = MAX_HELP_POSITION + IDENTATION.length;
 
 /**
  * Formats a help message for the given parser.
- * @param {string} usage The usage string. All occurences of "$0" will be
+ * @param {string} usage The usage string. All occurrences of "$0" will be
  *     replaced with the name of the current program.
  * @param {!Object.<!Option>} options The options to format.
  * @return {string} The formatted help message.
@@ -263,7 +263,7 @@ function OptionParser() {
   var extraArgs = [];
 
   /**
-   * Sets the usage string. All occurences of "$0" will be replaced with the
+   * Sets the usage string. All occurrences of "$0" will be replaced with the
    * current executable's name.
    * @param {string} usageStr The new usage string.
    * @return {!OptionParser} A self reference.

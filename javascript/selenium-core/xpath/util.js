@@ -355,7 +355,7 @@ function xmlFullNodeName(n) {
   }
 }
 
-// Escape XML special markup chracters: tag delimiter < > and entity
+// Escape XML special markup characters: tag delimiter < > and entity
 // reference start delimiter &. The escaped string can be used in XML
 // text portions (i.e. between tags).
 function xmlEscapeText(s) {

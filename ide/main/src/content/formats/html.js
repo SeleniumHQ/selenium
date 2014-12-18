@@ -145,7 +145,7 @@ function parse(testCase, source) {
 		//log.debug("commands.length=" + commands.length);
 		testCase.commands = commands;
 	}else {
-		//Samit: Fix: Atleast try to allow empty test cases, before screaming murder
+		//Samit: Fix: At least try to allow empty test cases, before screaming murder
 		//Note: This implementation will work with empty test cases saved with this formatter only
 		var templateVars = matchTemplateAndExtractVars(source, options.testTemplate);
 		if (templateVars) {

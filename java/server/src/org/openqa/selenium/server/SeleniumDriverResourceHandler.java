@@ -617,7 +617,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   protected String commandResultsLogMessage(String cmd, String sessionId, String results) {
-    final String trucatedResults;
+    final String truncatedResults;
 
     if (CaptureScreenshotToStringCommand.ID.equals(cmd)
         || CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)
@@ -629,8 +629,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
     if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
       /* Trim logs to avoid Larsen effect (see remote control stability tests) */
-      trucatedResults = results.length() > 30 ? results.substring(0, 30) : results;
-      return "Got result:" + trucatedResults + "... on session " + sessionId;
+      truncatedResults = results.length() > 30 ? results.substring(0, 30) : results;
+      return "Got result:" + truncatedResults + "... on session " + sessionId;
     }
 
     return "Got result: " + results + " on session " + sessionId;

@@ -1,7 +1,7 @@
 module Selenium
   module Client
 
-    # Convenience methods not explicitely part of the protocol
+    # Convenience methods not explicitly part of the protocol
     module Extensions
 
 	    # These for all Ajax request to finish (Only works if you are using prototype, the wait happens in the browser)

@@ -72,7 +72,7 @@ public class HtmlUnitCapabilitiesTest {
   }
 
   @Test
-  public void tetsDefautlBrowserVersion() {
+  public void testDefaultBrowserVersion() {
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(capabilities),

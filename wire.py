@@ -1168,7 +1168,7 @@ at the end of the sequence.
       AddUrlParameter(':other', 'ID of the element to compare against.').
       SetReturnType('{boolean}', 'Whether the two IDs refer to the same element.').
       AddError('StaleElementReference',
-               'If either the element refered to by `:id` or `:other` is no '
+               'If either the element referred to by `:id` or `:other` is no '
                'longer attached to the page\'s DOM.').
       AddError('NoSuchWindow',
                'If the currently selected window has been closed.'))

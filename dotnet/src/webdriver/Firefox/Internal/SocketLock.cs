@@ -128,7 +128,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             catch (IOException e)
             {
-                throw new WebDriverException("An error occured unlocking the object", e);
+                throw new WebDriverException("An error occurred unlocking the object", e);
             }
         }
         #endregion

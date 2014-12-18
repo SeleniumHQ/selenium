@@ -35,7 +35,7 @@ public class Sleeper {
   /**
    * Sleeps without explicitly throwing an InterruptedException
    *
-   * @param timeout the amout of time to sleep
+   * @param timeout the amount of time to sleep
    * @throws RuntimeException wrapping an InterruptedException if one gets thrown
    */
   public static void sleepTight(long timeout) {

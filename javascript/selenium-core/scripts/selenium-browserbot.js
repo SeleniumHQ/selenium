@@ -1619,7 +1619,7 @@ BrowserBot.prototype.locateElementByName = function(locator, document, inWindow)
 };
 
 /**
- * Finds an element using by evaluating the specfied string.
+ * Finds an element using by evaluating the specified string.
  */
 BrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, document, window) {
 

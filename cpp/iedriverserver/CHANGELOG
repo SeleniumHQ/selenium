@@ -344,7 +344,7 @@ v2.33.0.9
 =========
  * Added error checking in DocumentHost::GetPageSource. Fixes issue #5967.
  * Removed StringUtilities methods to create strings from longs. The C++
-   standard type libary already provides std::to_string() and std::to_wstring()
+   standard type library already provides std::to_string() and std::to_wstring()
    for this purpose.
  * Introduced ability to clean browser cache before launching IE. This version
    introduces the ie.ensureCleanSession capability, which will clear the

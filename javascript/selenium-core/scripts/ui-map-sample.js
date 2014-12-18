@@ -112,7 +112,7 @@ myMap.addElement('allPages', {
         }
     ]
     // getXPath has been deprecated by getLocator, but verify backward
-    // compatability here
+    // compatibility here
     , getXPath: function(args) {
         return "//li[@id=" + args.section.quoteForXPath() + "]/a";
     }
@@ -124,7 +124,7 @@ myMap.addElement('allPages', {
 myMap.addElement('allPages', {
     name: 'search_box'
     , description: 'site search input field'
-    // xpath has been deprecated by locator, but verify backward compatability
+    // xpath has been deprecated by locator, but verify backward compatibility
     , xpath: "//input[@id='search']"
     , testcase1: {
         xhtml: '<input id="search" expected-result="1" />'

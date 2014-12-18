@@ -105,7 +105,7 @@ core.text.normalizeNewlines_ = function(text) {
  * @param {string} text The text to perform the replacement on.
  * @param {string} oldText The string to replace.
  * @param {string} newText The replacement text.
- * @return {string} 'text' with all occurances of 'oldText' replaced by
+ * @return {string} 'text' with all occurrences of 'oldText' replaced by
  *     'newText'.
  * @private
  */

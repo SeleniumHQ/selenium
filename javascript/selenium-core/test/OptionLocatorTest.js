@@ -126,7 +126,7 @@ OptionLocatorTest.prototype.testIsSelectedWithIndexOutOfBounds = function() {
 OptionLocatorTest.prototype.testOptionLocatorWithBadLocatorType = function() {
     var self = this;
     this.assertCallFails(
-        "Should not be able to create a locator with an unkown type",
+        "Should not be able to create a locator with an unknown type",
         function() {self.optionLocatorFactory.fromLocatorString("badtype=foo");});
 }
 

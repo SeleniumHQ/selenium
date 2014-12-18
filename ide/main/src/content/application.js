@@ -329,7 +329,7 @@ Application.prototype = {
             }
             return false;
         } catch (error) {
-            if (noErrorAlert) {   //Samit: Enh: allow error messages to be supressed, so caller can make intelligent ux decisions
+            if (noErrorAlert) {   //Samit: Enh: allow error messages to be suppressed, so caller can make intelligent ux decisions
                 throw error;
             }
             alert("error loading test case: " + error);
@@ -356,7 +356,7 @@ Application.prototype = {
                 }
             }
         } catch (error) {
-            if (noErrorAlert) {   //Samit: Enh: allow error messages to be supressed, so caller can make intelligent ux decisions
+            if (noErrorAlert) {   //Samit: Enh: allow error messages to be suppressed, so caller can make intelligent ux decisions
                 throw error;
             }
             alert("error loading test suite: " + error);
