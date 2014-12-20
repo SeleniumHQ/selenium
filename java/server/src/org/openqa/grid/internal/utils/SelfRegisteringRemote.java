@@ -281,8 +281,7 @@ public class SelfRegisteringRemote {
     URL api = new URL(hubApi);
     HttpHost host = new HttpHost(api.getHost(), api.getPort());
     String url = api.toExternalForm();
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
-
+    BasicHttpRequest r = new BasicHttpRequest("GET", url);
     HttpResponse response = client.execute(host, r);
     return extractObject(response);
   }
