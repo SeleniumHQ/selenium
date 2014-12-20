@@ -43,10 +43,11 @@ module Selenium
         class << self
           def android(opts = {})
             new({
-              :browser_name     => "android",
-              :platform         => :android,
-              :rotatable        => true,
-              :takes_screenshot => true
+              :browser_name       => "android",
+              :platform           => :android,
+              :javascript_enabled => true,
+              :rotatable          => true,
+              :takes_screenshot   => true
             }.merge(opts))
           end
 
