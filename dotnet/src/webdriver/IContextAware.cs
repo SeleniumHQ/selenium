@@ -11,7 +11,7 @@ namespace OpenQA.Selenium
     /// to switch between the native and web-based contexts. This can be achieved by using this
     /// interface.
     /// </summary>
-    interface IContextAware
+    public interface IContextAware
     {
         /// <summary>
         /// Switches the focus of future commands for this driver to the context with the given name
