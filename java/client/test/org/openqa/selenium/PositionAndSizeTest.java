@@ -25,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -85,6 +87,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Ignore(value = {OPERA, SAFARI}, reason = "Opera: window().getSize() is not implemented")
   @Test
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
+    assumeFalse(
+        "window().getSize() is not implemented for Chrome for Android. "
+        + "https://code.google.com/p/chromedriver/issues/detail?id=1005",
+        TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
     Point location = getLocationInViewPort(By.id("box"));

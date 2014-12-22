@@ -186,6 +186,18 @@ public class TestUtilities {
     return Platform.getCurrent();
   }
 
+  /**
+   * Returns Platform where the browser (driven by given WebDriver) runs on.
+   */
+  public static Platform getEffectivePlatform(WebDriver driver) {
+    if (!(driver instanceof HasCapabilities)) {
+      throw new RuntimeException("WebDriver must implement HasCapabilities");
+    }
+
+    Capabilities caps = ((HasCapabilities) driver).getCapabilities();
+    return caps.getPlatform();
+  }
+
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
   }
