@@ -7,13 +7,13 @@
   goog.require('bot.Mouse');
   goog.require('bot.action');
   goog.require('bot.userAgent');
+  goog.require('goog.Promise');
   goog.require('goog.array');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
   goog.require('goog.math.Coordinate');
   goog.require('goog.style');
-  goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
 </script>
@@ -29,8 +29,6 @@ position: relative; top:25px;">Red</div>
   </div>
 </div>
 <script type="text/javascript">
-  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-
   // The goog.events.EventType enum is missing mouse scrolling event types.
   // This a little hacky but gives us some stylistic consistency :).
   goog.events.EventType.MOUSEWHEEL =
@@ -324,22 +322,20 @@ position: relative; top:25px;">Red</div>
     var coord = new goog.math.Coordinate(0, 0);
     var iframe = document.createElement('iframe');
 
-    goog.events.listenOnce(iframe, 'load', function() {
-      asyncTestCase.continueTesting();
+    return new goog.Promise(function(loaded) {
+      goog.events.listenOnce(iframe, 'load', loaded);
+      iframe.src = 'testdata/blank_page.html';
+      document.body.appendChild(iframe);
+    }).then(function() {
       mouse.move(iframe.contentWindow.document.body, coord);
-      goog.events.listenOnce(iframe, 'load', function() {
-        asyncTestCase.continueTesting();
-        mouse.move(iframe.contentWindow.document.body, coord);
-        document.body.removeChild(iframe);
+      return new goog.Promise(function(loaded) {
+        goog.events.listenOnce(iframe, 'load', loaded);
+        iframe.src = 'testdata/iframe_page.html';
       });
-
-      asyncTestCase.waitForAsync('waiting for second iframe page to load');
-      iframe.src = 'testdata/iframe_page.html';
+    }).then(function() {
+      mouse.move(iframe.contentWindow.document.body, coord);
+      document.body.removeChild(iframe);
     });
-
-    asyncTestCase.waitForAsync('waiting for first iframe page to load');
-    iframe.src = 'testdata/blank_page.html';
-    document.body.appendChild(iframe);
   }
 
   function testMoveMouseFiresAllEventsOnElementHiddenMidSequence() {

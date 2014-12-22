@@ -16,14 +16,10 @@
 goog.provide('webdriver.test.WebDriver.generator.test');
 goog.setTestOnly('webdriver.test.WebDriver.generator.test');
 
-goog.require('goog.testing.AsyncTestCase');
 goog.require('goog.testing.jsunit');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 
-
-var test = goog.testing.AsyncTestCase.createAndInstall(
-    'webdriver_generator_test');
 
 var driver;
 
@@ -35,49 +31,40 @@ function setUp() {
 
 
 function testCanUseGeneratorsWithWebDriverCall() {
-  test.waitForAsync();
-
-  driver.call(function* () {
+  return driver.call(function* () {
     var x = yield webdriver.promise.fulfilled(1);
     var y = yield webdriver.promise.fulfilled(2);
     return x + y;
   }).then(function(value) {
     assertEquals(3, value);
-    test.continueTesting();
   });
 }
 
 
 function testCanDefineScopeOnGeneratorCall() {
-  test.waitForAsync();
-
-  driver.call(function* () {
+  return driver.call(function* () {
     var x = yield webdriver.promise.fulfilled(1);
     return this.name + x;
   }, {name: 'Bob'}).then(function(value) {
     assertEquals('Bob1', value);
-    test.continueTesting();
   });
 }
 
 
 function testCanSpecifyArgsOnGeneratorCall() {
-  test.waitForAsync();
-
-  driver.call(function* (a, b) {
+  return driver.call(function* (a, b) {
     var x = yield webdriver.promise.fulfilled(1);
     var y = yield webdriver.promise.fulfilled(2);
     return [x + y, a, b];
   }, null, 'abc', 123).then(function(value) {
     assertArrayEquals([3, 'abc', 123], value);
-    test.continueTesting();
   });
 }
 
 
 function testCanUseGeneratorWithWebDriverWait() {
   var values = [];
-  driver.wait(function* () {
+  return driver.wait(function* () {
     yield values.push(1);
     values.push(yield webdriver.promise.delayed(10).then(function() {
       return 2;
@@ -86,9 +73,7 @@ function testCanUseGeneratorWithWebDriverWait() {
     return values.length === 6;
   }, 250).then(function() {
     assertArrayEquals([1, 2, 3, 1, 2, 3], values);
-    test.continueTesting();
   });
-  test.waitForAsync();
 }
 
 

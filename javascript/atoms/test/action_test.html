@@ -5,15 +5,14 @@
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
+    goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
   </script>
   <script type="text/javascript">
-    var asyncTestCase = null;
     var submitted = goog.nullFunction;
 
     var counts;
@@ -196,28 +195,24 @@
       var form = goog.dom.$('form_one');
       expectSubmitEvent(form);
 
-      goog.global.submitted = function() {
-        asyncTestCase.continueTesting();
-      };
-
       // Firefox executes submit() in the next event loop, so we must go async.
-      asyncTestCase.waitForAsync('if this times out, the form did not submit');
-      bot.action.submit(form);
-      assertSubmitFired();
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
+        bot.action.submit(form);
+        assertSubmitFired();
+      });
     }
 
     function testShouldBeAbleToSubmitFromAnyElementThatIsAChildOfTheForm() {
       var form = goog.dom.$('form_one');
       expectSubmitEvent(form);
 
-      goog.global.submitted = function() {
-        asyncTestCase.continueTesting();
-      };
-
       // Firefox executes submit() in the next event loop, so we must go async.
-      asyncTestCase.waitForAsync('if this times out, the form did not submit');
-      bot.action.submit(goog.dom.$('typer'));
-      assertSubmitFired();
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
+        bot.action.submit(goog.dom.$('typer'));
+        assertSubmitFired();
+      });
     }
 
     function testShouldBeAbleToSubmitFromAFormWithAnElementNamedSubmit() {
@@ -225,18 +220,17 @@
       var submitButton = goog.dom.getElement('submit');
       expectSubmitEvent(form);
 
-      goog.global.submitted = function() {
-        asyncTestCase.continueTesting();
-      };
-
       // Firefox executes submit() in the next event loop, so we must go async.
-      asyncTestCase.waitForAsync('if this times out, the form did not submit');
-      bot.action.submit(goog.dom.getElement('typer2'));
-      assertSubmitFired();
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
 
-      // Make sure the submit button is returned to normal.
-      assertEquals(submitButton.id, 'submit');
-      assertEquals(submitButton.name, 'submit');
+        bot.action.submit(goog.dom.getElement('typer2'));
+        assertSubmitFired();
+
+        // Make sure the submit button is returned to normal.
+        assertEquals(submitButton.id, 'submit');
+        assertEquals(submitButton.name, 'submit');
+      });
     }
   </script>
 </head>
@@ -274,8 +268,5 @@
     <div id="child-not-content-editable">child not content editable
     </div>
   </div>
-  <script type="text/javascript">
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-  </script>
 </body>
 </html>
