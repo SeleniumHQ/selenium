@@ -86,7 +86,7 @@ namespace OpenQA.Selenium.Support.Extensions
             }
 
             object result = executor.ExecuteScript(script, args);
-            if (!result.GetType().IsAssignableFrom(typeof(T)))
+            if (typeof (T).IsInstanceOfType(result) == false)
             {
                 throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
             }
