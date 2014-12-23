@@ -130,7 +130,7 @@ If you plan to compile the
 [IE driver](http://code.google.com/p/selenium/wiki/InternetExplorerDriver)
 you also need:
 
-* [Visual Studio 2008](http://www.microsoft.com/visualstudio/en-gb/products/2008-editions)
+* [Visual Studio 2010](http://www.microsoft.com/visualstudio/en-gb/products/2010-editions)
 * 32 and 64 bit cross compilers
 
 The build will work on any platform, but the tests for IE will be skipped
