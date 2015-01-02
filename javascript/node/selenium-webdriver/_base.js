@@ -93,8 +93,12 @@ function Context(opt_configureForTesting) {
     Buffer: Buffer,
     Error: Error,
     CLOSURE_BASE_PATH: path.dirname(CLOSURE_BASE_FILE_PATH) + '/',
-    CLOSURE_IMPORT_SCRIPT: function(src) {
-      loadScript(src);
+    CLOSURE_IMPORT_SCRIPT: function(src, opt_srcText) {
+      if (opt_srcText !== undefined) {
+        vm.runInContext(opt_srcText, closure, src);
+      } else {
+        loadScript(src);
+      }
       return true;
     },
     CLOSURE_NO_DEPS: !isDevMode(),
@@ -113,6 +117,16 @@ function Context(opt_configureForTesting) {
 
   loadScript(CLOSURE_BASE_FILE_PATH);
   loadScript(DEPS_FILE_PATH);
+
+  // Redefine retrieveAndExecModule_ to load modules. Closure's version
+  // assumes XMLHttpRequest is defined (and by extension that scripts
+  // are being loaded from a server).
+  closure.goog.retrieveAndExecModule_ = function(src) {
+    var normalizedSrc = path.normalize(src);
+    var contents = fs.readFileSync(normalizedSrc, 'utf8');
+    contents = closure.goog.wrapModule_(src, contents);
+    vm.runInContext(contents, closure, normalizedSrc);
+  };
 
   /**
    * Synchronously loads a script into the protected Closure context.
