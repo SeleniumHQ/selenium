@@ -45,6 +45,8 @@ var DeferredExecutor = function(delegate) {
 // PUBLIC API
 
 
+exports.DeferredExecutor = DeferredExecutor;
+
 /**
  * Creates a command executor that uses WebDriver's JSON wire protocol.
  * @param {(string|!webdriver.promise.Promise.<string>)} url The server's URL,

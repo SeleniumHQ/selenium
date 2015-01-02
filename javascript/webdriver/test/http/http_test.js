@@ -328,6 +328,36 @@ function testExecute_attemptsToParseBodyWhenNoContentTypeSpecified() {
   });
 }
 
+function testCanDefineNewCommands() {
+  executor.defineCommand('greet', 'GET', '/person/:name');
+
+  var command = new webdriver.Command('greet').
+      setParameter('name', 'Bob');
+
+  expectRequest('GET', '/person/Bob', {},
+      {'Accept': 'application/json; charset=utf-8'}).
+      $does(respondsWith(null, response(200, {}, '')));
+  control.$replayAll();
+
+  assertSendsSuccessfully(command);
+}
+
+function testCanRedefineStandardCommands() {
+  executor.defineCommand(webdriver.CommandName.GO_BACK,
+      'POST', '/custom/back');
+
+  var command = new webdriver.Command(webdriver.CommandName.GO_BACK).
+      setParameter('times', 3);
+
+  expectRequest('POST', '/custom/back',
+      {'times': 3},
+      {'Accept': 'application/json; charset=utf-8'}).
+      $does(respondsWith(null, response(200, {}, '')));
+  control.$replayAll();
+
+  assertSendsSuccessfully(command);
+}
+
 function FakeXmlHttpRequest(headers, status, responseText) {
   return {
     getAllResponseHeaders: function() { return headers; },

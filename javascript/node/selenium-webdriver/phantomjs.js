@@ -20,6 +20,7 @@ var fs = require('fs'),
 
 var webdriver = require('./index'),
     executors = require('./executors'),
+    http = require('./http'),
     io = require('./io'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -56,6 +57,15 @@ var CLI_ARGS_CAPABILITY = 'phantomjs.cli.args';
  * @const
  */
 var DEFAULT_LOG_FILE = 'phantomjsdriver.log';
+
+
+/**
+ * Custom command names supported by PhantomJS.
+ * @enum {string}
+ */
+var Command = {
+  EXECUTE_PHANTOM_SCRIPT: 'executePhantomScript'
+};
 
 
 /**
@@ -110,6 +120,24 @@ function createDriver(opt_capabilities, opt_flow) {
   return new Driver(opt_capabilities, opt_flow);
 }
 
+
+/**
+ * Creates a command executor with support for PhantomJS' custom commands.
+ * @param {!webdriver.promise.Promise<string>} url The server's URL.
+ * @return {!webdriver.CommandExecutor} The new command executor.
+ */
+function createExecutor(url) {
+  return new executors.DeferredExecutor(url.then(function(url) {
+    var client = new http.HttpClient(url);
+    var executor = new http.Executor(client);
+
+    executor.defineCommand(
+        Command.EXECUTE_PHANTOM_SCRIPT,
+        'POST', '/session/:sessionId/phantom/execute');
+
+    return executor;
+  }));
+}
 
 /**
  * Creates a new WebDriver client for PhantomJS.
@@ -169,7 +197,7 @@ var Driver = function(opt_capabilities, opt_flow) {
     })
   });
 
-  var executor = executors.createExecutor(service.start());
+  var executor = createExecutor(service.start());
   var driver = webdriver.WebDriver.createSession(
       executor, capabilities, opt_flow);
 
@@ -184,6 +212,54 @@ var Driver = function(opt_capabilities, opt_flow) {
   };
 };
 util.inherits(Driver, webdriver.WebDriver);
+
+
+/**
+ * Executes a PhantomJS fragment. This method is similar to
+ * {@link #executeScript}, except it exposes the
+ * <a href="http://phantomjs.org/api/">PhantomJS API</a> to the injected
+ * script.
+ *
+ * <p>The injected script will execute in the context of PhantomJS's
+ * {@code page} variable. If a page has not been loaded before calling this
+ * method, one will be created.</p>
+ *
+ * <p>Be sure to wrap callback definitions in a try/catch block, as failures
+ * may cause future WebDriver calls to fail.</p>
+ *
+ * <p>Certain callbacks are used by GhostDriver (the PhantomJS WebDriver
+ * implementation) and overriding these may cause the script to fail. It is
+ * recommended that you check for existing callbacks before defining your own.
+ * </p>
+ *
+ * As with {@link #executeScript}, the injected script may be defined as
+ * a string for an anonymous function body (e.g. "return 123;"), or as a
+ * function. If a function is provided, it will be decompiled to its original
+ * source. Note that injecting functions is provided as a convenience to
+ * simplify defining complex scripts. Care must be taken that the function
+ * only references variables that will be defined in the page's scope and
+ * that the function does not override {@code Function.prototype.toString}
+ * (overriding toString() will interfere with how the function is
+ * decompiled.
+ *
+ * @param {(string|!Function)} script The script to execute.
+ * @param {...*} var_args The arguments to pass to the script.
+ * @return {!webdriver.promise.Promise<T>} A promise that resolve to the
+ *     script's return value.
+ * @template T
+ */
+Driver.prototype.executePhantomJS = function(script, args) {
+  if (typeof script === 'function') {
+    script = 'return (' + script + ').apply(this, arguments);';
+  }
+  var args = arguments.length > 1
+      ? Array.prototype.slice.call(arguments, 1) : [];
+  return this.schedule(
+      new webdriver.Command(Command.EXECUTE_PHANTOM_SCRIPT)
+          .setParameter('script', script)
+          .setParameter('args', args),
+      'Driver.executePhantomJS()');
+};
 
 
 // PUBLIC API

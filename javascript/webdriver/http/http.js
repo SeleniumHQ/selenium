@@ -70,12 +70,38 @@ webdriver.http.Executor = function(client) {
    * @private {!webdriver.http.Client}
    */
   this.client_ = client;
+
+  /**
+   * @private {!Object<{method:string, path:string}>}
+   */
+  this.customCommands_ = {};
+};
+
+
+/**
+ * Defines a new command for use with this executor. When a command is sent,
+ * the {@code path} will be preprocessed using the command's parameters; any
+ * path segments prefixed with ":" will be replaced by the parameter of the
+ * same name. For example, given "/person/:name" and the parameters
+ * "{name: 'Bob'}", the final command path will be "/person/Bob".
+ *
+ * @param {string} name The command name.
+ * @param {string} method The HTTP method to use when sending this command.
+ * @param {string} pathPattern The path to send the command to, relative to
+ *     the WebDriver server's command root and of the form
+ *     "/path/:variable/segment".
+ */
+webdriver.http.Executor.prototype.defineCommand = function(
+    name, method, path) {
+  this.customCommands_[name] = {method: method, path: path};
 };
 
 
 /** @override */
 webdriver.http.Executor.prototype.execute = function(command, callback) {
-  var resource = webdriver.http.Executor.COMMAND_MAP_[command.getName()];
+  var resource =
+      this.customCommands_[command.getName()] ||
+      webdriver.http.Executor.COMMAND_MAP_[command.getName()];
   if (!resource) {
     throw new Error('Unrecognized command: ' + command.getName());
   }

@@ -3,6 +3,9 @@
 * Promise rejections are now always coerced to Error-like objects (an object
     with a string `message` property). We do not guarantee `instanceof Error`
     since the rejection value may come from another context.
+* FIXED: 8221: Added support for defining custom command mappings. Includes
+    support for PhantomJS's `executePhantomJS` (requires PhantomJS 1.9.7 or
+    GhostDriver 1.1.0).
 * FIXED: 8128: When the FirefoxDriver marshals an object to the page for
     `executeScript`, it defines additional properties (required by the driver's
     implementation). These properties will no longer be enumerable and should
