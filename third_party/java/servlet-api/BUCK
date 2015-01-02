@@ -3,5 +3,6 @@ prebuilt_jar(name = 'servlet-api',
   visibility = [
     '//java/client/test/org/openqa/selenium/environment:environment',
     '//third_party/java/jetty:jetty',
+    '//third_party/java/jetty:jetty-for-rc',
   ],
 )
