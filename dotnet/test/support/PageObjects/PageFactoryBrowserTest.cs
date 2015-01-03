@@ -5,6 +5,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System.Collections.ObjectModel;
 using System;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -35,33 +36,53 @@ namespace OpenQA.Selenium.Support.PageObjects
 
             driver.Navigate().Refresh();
 
-            Assert.True(page.formElement.Displayed);
+            Assert.True(page.formTestElement.Displayed);
+        }
+
+        [Test]
+        public void CheckThatListIsFoundByIdOrName()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new Page();
+
+            PageFactory.InitElements(driver, page);
+            Assert.GreaterOrEqual(1, page.someForm.Count);
+        }
+
+        [Test]
+        public void CheckThatElementIsFoundByIdOrName()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new Page();
+
+            PageFactory.InitElements(driver, page);
+            Assert.IsTrue(page.parent.Displayed);
         }
 
         [Test]
         public void ElementEqualityWorks()
         {
             driver.Url = xhtmlTestPage;
-            var page = new PageFactoryTest.Page();
+            var page = new Page();
 
             PageFactory.InitElements(driver, page);
 
             var expectedElement = driver.FindElement(By.Name("someForm"));
+            var result = ((IWrapsElement)page.formTestElement).WrappedElement;
 
-            Assert.True(page.formElement.Equals(expectedElement));
-            Assert.True(expectedElement.Equals(page.formElement));
-            Assert.AreEqual(expectedElement.GetHashCode(), page.formElement.GetHashCode());
+            Assert.True(result.Equals(expectedElement));
+            Assert.AreEqual(expectedElement.GetHashCode(), result.GetHashCode());
         }
 
         [Test]
         public void UsesElementAsScriptArgument()
         {
             driver.Url = xhtmlTestPage;
-            var page = new PageFactoryTest.Page();
+            var page = new Page();
 
             PageFactory.InitElements(driver, page);
 
-            var tagName = (string)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].tagName", page.formElement);
+            var tagName = (string)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].tagName", page.formTestElement);
 
             Assert.AreEqual("form", tagName.ToLower());
         }
@@ -105,7 +126,10 @@ namespace OpenQA.Selenium.Support.PageObjects
         private class Page
         {
             [FindsBy(How = How.Name, Using = "someForm")]
-            public IWebElement formElement;
+            public IWebElement formTestElement;
+
+            public IList<IWebElement> someForm;
+            public IWebElement parent;
 
             [FindsBySequence]
             [FindsBy(How = How.Id, Using = "parent", Priority = 0)]
