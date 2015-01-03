@@ -16,7 +16,7 @@ namespace OpenQA.Selenium.Support.PageObjects.Interfaces
         /// </summary>
         IWebElement Element { get; }
         /// <summary>
-        /// This property should return a read only collection of  IWebElement instances
+        /// This property should return a read-only collection of  IWebElement instances
         /// </summary>
         ReadOnlyCollection<IWebElement> Elements { get; }
     }

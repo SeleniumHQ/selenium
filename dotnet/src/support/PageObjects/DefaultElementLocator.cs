@@ -12,8 +12,8 @@ namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
     /// The default element locator, which will lazily locate an element or an element list on a page. This class is
-    /// designed for use with the <see cref="PageFactory"/> and understands the
-    /// annotations <see cref="FindsByAttribute"/> and <see cref="CacheLookupAttribute"/>.
+    /// designed for use with the <see cref="PageFactory"/> and uses
+    /// attributes <see cref="FindsByAttribute"/> and <see cref="CacheLookupAttribute"/>.
     /// </summary>
     public class DefaultElementLocator: IElementLocator, IWrapsDriver
     {

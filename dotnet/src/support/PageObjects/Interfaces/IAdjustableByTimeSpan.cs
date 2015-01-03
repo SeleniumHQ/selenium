@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Support.PageObjects.Interfaces
     public interface IAdjustableByTimeSpan
     {
         /// <summary>
-        /// This property should get or set a time aou for the waiting.
+        /// This property should get or set a timeout for the waiting.
         /// </summary>
         TimeSpan WaitingTimeSpan
         {
@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Support.PageObjects.Interfaces
         }
 
         /// <summary>
-        /// This property should get or set a time aou for the sleeping.
+        /// This property should get or set a timeout for the sleeping.
         /// </summary>
         TimeSpan TimeForSleeping
         {

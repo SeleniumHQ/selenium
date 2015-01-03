@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
     /// Default decorator for use with <see cref="PageFactory"/>. Will decorate 1) all of the
-    /// <see cref="IWebElement"/> fields and 2) ReadOnlyCollection of <see cref="IWebElement"/> fields that have 
+    /// <see cref="IWebElement"/> fields/properties and 2) IList of <see cref="IWebElement"/> fields/properties that have 
     /// <see cref="FindsByAttribute"/>, <see cref="FindsBySequenceAttribute"/>,
     /// attributes with a proxy that locates the elements using the passed
     /// in <see cref="ILocatorFactory"/>.
@@ -61,9 +61,9 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         /// <summary>
         /// This decorator returns values if :
-        /// - The declared type of field or property is IWebElement or any IWebElement implementor
-        /// - The declared type of field or property is IList or ReadOnlyCollection. The declared 
-        /// generic parameter type should be IWebElement or any IWebElement implementor.
+        /// - The declared type of field or property is IWebElement or any interface implemented by <see cref="RemoteWebElement"/>
+        /// - The declared type of field or property is IList. The declared 
+        /// generic parameter type should be IWebElement or any interface implemented by <see cref="RemoteWebElement"/>.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -74,7 +74,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         /// <summary>
         /// This method creates proxies in order to populate 
-        /// fields of page object. It can be overridden when it is needed.
+        /// fields/set properties of page object. It can be overridden when it is needed.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>

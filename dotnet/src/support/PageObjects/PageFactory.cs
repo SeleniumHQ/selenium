@@ -96,10 +96,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// </summary>
         /// <param name="searchContext">The IWebDriver or IWebElement implementation used to find elements on the page.</param>
         /// <param name="page">The Page Object to be populated with elements.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
-        /// <see cref="IWebElement"/> or IList{IWebElement}.
-        /// </exception>
         public static void InitElements(ISearchContext searchContext, object page)
         {
             InitElements(page, new DefaultLocatorFactory(searchContext));
