@@ -1,11 +1,11 @@
-﻿using Castle.DynamicProxy;
-using OpenQA.Selenium.Internal;
+﻿using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.PageObjects.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -102,13 +102,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
 
             IElementLocator locator = Factory.CreateElementLocator(member);
-            ProxyGenerator proxyGenerator = new ProxyGenerator();
 
             if (InterfacesThatCanBeProxiedAsWebElement.Contains(targetType))
             {
-                return proxyGenerator.CreateInterfaceProxyWithoutTarget(typeof(IWebElement), 
-                    InterfacesThatCanBeProxiedAsWebElement.ToArray(),
-                    new ElementInterceptor(locator));
+                ElementProxy ep = new ElementProxy(CreateTypeForASingleElement(), locator);
+                return ep.GetTransparentProxy();
             }
 
             foreach (var type in InterfacesThatCanBeProxiedAsWebElement)
@@ -116,8 +114,9 @@ namespace OpenQA.Selenium.Support.PageObjects
                 Type listType = typeof(IList<>).MakeGenericType(type);
                 if (listType.Equals(targetType))
                 {
-                    return proxyGenerator.CreateInterfaceProxyWithoutTarget(targetType,
-                        new ElementCollectionInterceptor(locator));
+
+                    ElementListProxy ep = new ElementListProxy(targetType, locator);
+                    return ep.GetTransparentProxy();
                 }
             }
             return null;
@@ -180,6 +179,33 @@ namespace OpenQA.Selenium.Support.PageObjects
         public bool IsAdjustableByTimeSpan()
         {
             return ((Factory as IAdjustableByTimeSpan) != null);
+        }
+
+        private Type CreateTypeForASingleElement()
+        {
+            var orginalAssemblyName = typeof(IWebElement).Assembly.GetName().Name;
+            ModuleBuilder moduleBuilder;
+
+            var tempAssemblyName = new AssemblyName(Guid.NewGuid().ToString());
+
+            var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                tempAssemblyName,
+                System.Reflection.Emit.AssemblyBuilderAccess.RunAndCollect);
+
+            moduleBuilder = dynamicAssembly.DefineDynamicModule(
+                tempAssemblyName.Name,
+                tempAssemblyName + ".dll");
+
+            var typeBuilder = moduleBuilder.DefineType(
+            typeof(IWebElement).FullName,
+            TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract);
+
+            foreach (Type type in InterfacesThatCanBeProxiedAsWebElement)
+            {
+                typeBuilder.AddInterfaceImplementation(type);
+            }
+
+            return typeBuilder.CreateType();
         }
     }
 }

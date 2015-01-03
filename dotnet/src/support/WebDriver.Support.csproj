@@ -84,12 +84,12 @@
     <Compile Include="PageObjects\DefaultElementLocator.cs" />
     <Compile Include="PageObjects\DefaultFieldDecorator.cs" />
     <Compile Include="PageObjects\DefaultLocatorFactory.cs" />
-    <Compile Include="PageObjects\ElementCollectionInterceptor.cs" />
-    <Compile Include="PageObjects\ElementInterceptor.cs" />
+    <Compile Include="PageObjects\ElementListProxy.cs" />
+    <Compile Include="PageObjects\ElementProxy.cs" />
     <Compile Include="PageObjects\FindsByAttribute.cs" />
     <Compile Include="PageObjects\FindsBySequenceAttribute.cs" />
     <Compile Include="PageObjects\How.cs" />
-    <Compile Include="PageObjects\Interceptor.cs" />
+    <Compile Include="PageObjects\Proxy.cs" />
     <Compile Include="PageObjects\Interfaces\IAdjustableByTimeSpan.cs" />
     <Compile Include="PageObjects\Interfaces\IElementLocator.cs" />
     <Compile Include="PageObjects\Interfaces\IFieldDecorator.cs" />
