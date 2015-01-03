@@ -67,4 +67,3 @@ GTAGS
 .project
 Gemfile.lock
 /rb/.bundle
-/dotnet/src/support/packages/
