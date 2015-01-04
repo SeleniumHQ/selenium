@@ -78,6 +78,12 @@ treechildren::-moz-tree-cell-text(currentTestCase)
   font-weight: bold;
 }
 
+/*
+ * Autocomplete show deprecated
+ */
+treechildren.autocomplete-treebody::-moz-tree-cell-text(deprecated) {
+    color: red;
+}
 
 /*
  * Log Console
