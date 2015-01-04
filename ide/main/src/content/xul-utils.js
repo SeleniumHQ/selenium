@@ -23,13 +23,13 @@ var XulUtils = {
     },
 
     appendMenuItem: function(e, attributes) {
-		var menuitem = document.createElement("menuitem");
+        var menuitem = document.createElement("menuitem");
         for (var key in attributes) {
             if (attributes[key] != null) {
                 menuitem.setAttribute(key, attributes[key]);
             }
         }
-		e.appendChild(menuitem);
+        return e.appendChild(menuitem);
     },
     
     toXPCOMArray: function(data) {
