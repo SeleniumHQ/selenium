@@ -162,8 +162,7 @@ function Editor(window) {
   this.loadSeleniumAPI();
   //TODO show plugin errors
   if (this.pluginManager.errors.hasErrors()) {
-    this.showAlert("The following plugins were disabled due to errors while loading their code. See the Plugins section in the Selenium IDE Options dialog for individual plugin details.\n\n"
-        + this.pluginManager.errors.getPluginIdsWithErrors().join("\n"));
+    this.showAlert(Editor.getString('plugin.disabled.message') + "\n\n" + this.pluginManager.errors.getPluginIdsWithErrors().join("\n"));
   }
   this.selectDefaultReference();
   this.treeView = new TreeView(this, document, document.getElementById("commands"));
@@ -476,12 +475,12 @@ Editor.prototype.confirmClose = function () {
     if (saveSuite || changedTestCases > 0) {
       var promptType = (saveSuite ? 1 : 0) + (changedTestCases > 0 ? 2 : 0) - 1;
       var prompt = [
-        "Would you like to save the test suite?",
-        "Would you like to save the " + changedTestCases + " changed test case/s?",
-        "Would you like to save the test suite and the " + changedTestCases + " changed test case/s?"
+        Editor.getString('saveTestSuite.confirm'),
+        Editor.getFormattedString('saveTestCase.confirm', [changedTestCases]),
+        Editor.getFormattedString('saveTestSuiteAndCase.confirm', [changedTestCases])
       ][promptType];
 
-      var result = PromptService.save(prompt, "Save?");
+      var result = PromptService.save(prompt, Editor.getString('save'));
       if (result.save) {
         if (curSuite.isTempSuite()) {
           //For temp suites, just save the test case (as there is only one test case)
@@ -703,7 +702,7 @@ Editor.prototype.showFormatsPopup = function (e) {
   } else {
     XulUtils.clearChildren(e);
     XulUtils.appendMenuItem(e, {
-      label: "Want the formats back? Click to read more",
+      label: Editor.getString('format.switch.read'),
       value: "stuff"
     });
   }
@@ -1032,7 +1031,7 @@ Editor.prototype.loadExtensions = function () {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().ideExtensionsPaths, window);
     } catch (error) {
       this.health.addException('editor', 'ide-extensions: ' + this.getOptions().ideExtensionsPaths, error);
-      this.showAlert("error loading Selenium IDE extensions: " + error);
+      this.showAlert(Editor.getFormattedString('ide.extensions.failed', [error.toString()]));
     }
   }
   var pluginManager = this.pluginManager;
@@ -1068,11 +1067,7 @@ Editor.prototype.loadSeleniumAPI = function () {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, seleniumAPI);
     } catch (error) {
       this.health.addException('editor', 'user-extensions: ' + this.getOptions().userExtensionsURL, error);
-      this.showAlert("Failed to load user-extensions.js!"
-          + "\nfiles=" + this.getOptions().userExtensionsURL
-          + "\nlineNumber=" + error.lineNumber
-          + "\nerror=" + error
-      );
+      this.showAlert(Editor.getFormattedString('user.extensions.failed', [error.toString()]));
     }
   }
 
