@@ -686,6 +686,20 @@ Editor.prototype.resetWindow = function () {
     }
   }
 };
+Editor.prototype.submitDiagInfo = function(){
+  this.health.runDiagnostics();
+  var data = {
+    data: this.health.getJSON()
+  };
+  window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
+  if (data.data.length > 0) {
+    GitHub.createGist("Selenium IDE diagnostic information", data).done(function(url){
+      alert("Gist created with diagnostic information.\nPlease update the issue on https://code.google.com/p/selenium/issues/ with this url.\nURL: " + url);
+    }, function(response, success, status){
+      alert("Gist creation failed with status " + status + "\nResponse:-\n" + (response || ''));
+    });
+  }
+};
 
 //Samit: Enh: Introduced experimental features to enable or disable experimental and unstable features
 Editor.prototype.updateExperimentalFeatures = function (show) {
@@ -1034,12 +1048,14 @@ Editor.prototype.loadExtensions = function () {
       this.showAlert(Editor.getFormattedString('ide.extensions.failed', [error.toString()]));
     }
   }
+  var health = this.health;
   var pluginManager = this.pluginManager;
   pluginManager.getEnabledIDEExtensions().forEach(function (plugin) {
     for (var i = 0; i < plugin.code.length; i++) {
       try {
         ExtensionsLoader.loadSubScript(subScriptLoader, plugin.code[i], window);
       } catch (error) {
+        health.addException('editor', 'plugin: ' + plugin.id, error);
         pluginManager.setPluginError(plugin.id, plugin.code[i], error);
         break;
       }

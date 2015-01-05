@@ -57,6 +57,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/storedHistory.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/deferred.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/http.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/gist.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/browser/mozilla/prompt-service.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sidebar-editor.js"/>
@@ -241,6 +242,8 @@ limitations under the License.
       <menuseparator/>
       <menuitem label="&helpReportIssue.label;" oncommand="openTabOrWindow('https://code.google.com/p/selenium/issues/entry?template=Defect report from user&amp;labels=Component-IDE,Priority-Medium,Type-Defect')"/>
       <menuitem label="&helpSearchIssues.label;" oncommand="openTabOrWindow('https://code.google.com/p/selenium/issues/list?can=1&amp;q=&amp;sort=-id&amp;colspec=ID+Stars+Type+Status+Priority+Owner+Summary&amp;cells=tiles')"/>
+      <menuitem label="&helpSubmitDiagInfo.label;" oncommand="window.editor.submitDiagInfo();"/>
+      <menuseparator/>
       <menuitem label="&helpReleaseNotes.label;" oncommand="openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes')"/>
       <menuitem label="&helpBlog.label;" oncommand="openTabOrWindow('http://seleniumhq.wordpress.com/')"/>
       <menuitem label="&helpWebsite.label;" oncommand="openTabOrWindow('http://seleniumhq.org/')"/>
