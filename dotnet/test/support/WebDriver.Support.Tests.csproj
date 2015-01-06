@@ -80,9 +80,12 @@
     <Compile Include="Events\EventFiringWebDriverTest.cs" />
     <Compile Include="PageObjects\ByChainedBrowserTests.cs" />
     <Compile Include="PageObjects\ByChainedTests.cs" />
+    <Compile Include="PageObjects\DefaultLocatorTest.cs" />
+    <Compile Include="PageObjects\FieldPopulationByDefaultFieldDecoratorTest.cs" />
     <Compile Include="PageObjects\FindsByAttributeTests.cs" />
     <Compile Include="PageObjects\PageFactoryBrowserTest.cs" />
-    <Compile Include="PageObjects\PageFactoryTest.cs" />
+    <Compile Include="PageObjects\ThePropertySettingByDefaultFieldDecoratorTest.cs" />
+    <Compile Include="PageObjects\TimeOutOfTheWaitingChangeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\SelectBrowserTests.cs" />
     <Compile Include="UI\DefaultWaitTest.cs" />
