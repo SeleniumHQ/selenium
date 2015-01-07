@@ -143,7 +143,7 @@ limitations under the License.
       <menuitem label="&newTestCmd.label;" command="cmd_new" key="new-key"/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" />
       <menuitem label="&contextMenu.delete.label;" command="cmd_delete_suite" />
-      <menuitem label="Play test suite from here" command="cmd_play_suite_from_here"/>
+      <menuitem label="&contextMenu.playSuiteHere.label;" command="cmd_play_suite_from_here"/>
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </menupopup>
   </popupset>
