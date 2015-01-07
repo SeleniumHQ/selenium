@@ -363,7 +363,7 @@ class WebElement(object):
 
     @property
     def parent(self):
-        """Parent element."""
+        """Internal reference to the WebDriver instance this element was found from."""
         return self._parent
 
     @property
