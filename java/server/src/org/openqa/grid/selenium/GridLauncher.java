@@ -29,9 +29,11 @@ import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import org.weakref.jmx.MBeanExporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -101,6 +103,7 @@ public class GridLauncher {
         try {
           GridHubConfiguration c = GridHubConfiguration.build(args);
           Hub h = new Hub(c);
+
           h.start();
         } catch (GridConfigurationException e) {
           GridDocHelper.printHelp(e.getMessage());
