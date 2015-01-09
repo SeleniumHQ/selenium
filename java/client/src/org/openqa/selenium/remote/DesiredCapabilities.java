@@ -192,42 +192,69 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return Collections.unmodifiableMap(capabilities);
   }
 
+  public static DesiredCapabilities android(String version) {
+    return new DesiredCapabilities(BrowserType.ANDROID, version, Platform.ANDROID);
+  }
+  
   public static DesiredCapabilities android() {
-    return new DesiredCapabilities(BrowserType.ANDROID, "", Platform.ANDROID);
+    return android("");
+  }
+
+  public static DesiredCapabilities chrome(String version) {
+    return new DesiredCapabilities(BrowserType.CHROME, version, Platform.ANY);
   }
 
   public static DesiredCapabilities chrome() {
-    return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
+    return chrome("");
   }
-
+  
+  public static DesiredCapabilities firefox(String version) {
+    return new DesiredCapabilities(BrowserType.FIREFOX, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
+    return firefox("");
   }
 
+  public static DesiredCapabilities htmlUnit(String version) {
+    return new DesiredCapabilities(BrowserType.HTMLUNIT, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
+    return htmlUnit("");
   }
 
   public static DesiredCapabilities htmlUnitWithJs() {
-    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.HTMLUNIT,
-                                                               "", Platform.ANY);
+    DesiredCapabilities capabilities = htmlUnit();
     capabilities.setJavascriptEnabled(true);
     return capabilities;
   }
 
-  public static DesiredCapabilities internetExplorer() {
+  public static DesiredCapabilities internetExplorer(String version) {
     DesiredCapabilities capabilities = new DesiredCapabilities(
-        BrowserType.IE, "", Platform.WINDOWS);
+        BrowserType.IE, version, Platform.WINDOWS);
     capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
     return capabilities;
   }
-
-  public static DesiredCapabilities iphone() {
-    return new DesiredCapabilities(BrowserType.IPHONE, "", Platform.MAC);
+  
+  public static DesiredCapabilities internetExplorer() {
+    return internetExplorer("");
   }
 
+  public static DesiredCapabilities iphone(String version) {
+    return new DesiredCapabilities(BrowserType.IPHONE, version, Platform.MAC);
+  }
+  
+  public static DesiredCapabilities iphone() {
+    return iphone("");
+  }
+
+  public static DesiredCapabilities ipad(String version) {
+    return new DesiredCapabilities(BrowserType.IPAD, version, Platform.MAC);
+  }
+  
   public static DesiredCapabilities ipad() {
-    return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
+    return ipad("");
   }
 
   /**
@@ -238,20 +265,36 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
   }
 
+  public static DesiredCapabilities operaPresto(String version) {
+    return new DesiredCapabilities(BrowserType.OPERA_PRESTO, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities operaPresto() {
-    return new DesiredCapabilities(BrowserType.OPERA_PRESTO, "", Platform.ANY);
+    return operaPresto("");
   }
 
+  public static DesiredCapabilities operaBlink(String version) {
+    return new DesiredCapabilities(BrowserType.OPERA_BLINK, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities operaBlink() {
-    return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
+    return operaBlink("");
   }
 
+  public static DesiredCapabilities safari(String version) {
+    return new DesiredCapabilities(BrowserType.SAFARI, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.ANY);
+    return safari("");
   }
 
+  public static DesiredCapabilities phantomjs(String version) {
+    return new DesiredCapabilities(BrowserType.PHANTOMJS, version, Platform.ANY);
+  }
+  
   public static DesiredCapabilities phantomjs() {
-    return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
+    return phantomjs("");
   }
 
   @Override
