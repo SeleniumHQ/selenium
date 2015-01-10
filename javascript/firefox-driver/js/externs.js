@@ -50,6 +50,9 @@ nsIPrefBranch.prototype.getCharPref;
 nsIPrefBranch.prototype.getIntPref;
 
 
+var AddonManager;
+AddonManager.getAddonByID;
+
 
 // Constants on constants
 Components.resources.NS_ERROR_NO_INTERFACE;
