@@ -47,7 +47,9 @@ goog.require('webdriver.promise.Promise');
  * @extends {webdriver.promise.Promise}
  */
 webdriver.testing.Window = function(driver, handle, opt_window) {
-  webdriver.promise.Promise.call(this);
+  webdriver.promise.Promise.call(this, function(fulfill, reject) {
+    handle.then(fulfill, reject);
+  });
 
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
@@ -150,12 +152,6 @@ webdriver.testing.Window.focusOnWindow = function(driver, opt_window) {
 /** @override */
 webdriver.testing.Window.prototype.cancel = function() {
   return this.handle_.cancel();
-};
-
-
-/** @override */
-webdriver.testing.Window.prototype.then = function(callback, errback) {
-  return this.handle_.then(callback, errback);
 };
 
 
