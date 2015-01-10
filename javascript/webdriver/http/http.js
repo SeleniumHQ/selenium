@@ -87,7 +87,7 @@ webdriver.http.Executor = function(client) {
  *
  * @param {string} name The command name.
  * @param {string} method The HTTP method to use when sending this command.
- * @param {string} pathPattern The path to send the command to, relative to
+ * @param {string} path The path to send the command to, relative to
  *     the WebDriver server's command root and of the form
  *     "/path/:variable/segment".
  */
