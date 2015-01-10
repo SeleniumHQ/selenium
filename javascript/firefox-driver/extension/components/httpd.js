@@ -761,7 +761,9 @@ nsHttpServer.prototype =
     this._stopCallback = null;
     try
     {
-      callback();
+      if (typeof callback === "function") {
+        callback();
+      }
     }
     catch (e)
     {
