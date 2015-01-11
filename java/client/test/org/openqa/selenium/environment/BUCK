@@ -1,6 +1,7 @@
 java_library(name = 'environment',
   srcs = glob(['*.java', 'webserver/*.java'], excludes = ['**/*Test.java']),
   deps = [
+    '//java/client/src/org/openqa/selenium:codecs',
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',

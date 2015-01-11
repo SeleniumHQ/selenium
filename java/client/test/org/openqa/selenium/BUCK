@@ -87,6 +87,7 @@ java_library(name = 'tests',
   ],
   deps = [
     ':helpers',
+    '//java/client/src/org/openqa/selenium:codecs',
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/ie:ie',
     '//java/client/src/org/openqa/selenium/io:io',

@@ -19,7 +19,11 @@ java_library(
     'internal/Base64Encoder.java',
   ],
   visibility = [
+    '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/opera:opera',
+    '//java/client/test/org/openqa/selenium:tests',
+    '//java/client/test/org/openqa/selenium/environment:environment',
   ],
 )
 
