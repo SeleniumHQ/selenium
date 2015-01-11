@@ -27,7 +27,7 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
-public class SnapshotScreenListener extends AbstractWebDriverEventListener {
+class SnapshotScreenListener extends AbstractWebDriverEventListener {
 
   private final Session session;
 

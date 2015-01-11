@@ -17,4 +17,7 @@ prebuilt_jar(name = 'jetty-for-rc',
     '//third_party/java/mx4j:mx4j',
     '//third_party/java/servlet-api:servlet-api',
   ],
+  visibility = [
+    '//java/server/src/org/openqa/selenium/server:server',
+  ],
 )

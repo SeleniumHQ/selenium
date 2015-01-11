@@ -9,5 +9,6 @@ java_library(name = 'locators',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/safari:safari',
+    '//java/server/src/org/openqa/selenium/server:server',
   ],
 )

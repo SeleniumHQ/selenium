@@ -22,4 +22,5 @@
   remote   = //java/client/src/org/openqa/selenium/remote:remote
   safari   = //java/client/src/org/openqa/selenium/safari:safari
 
+  selenium-java = //java/client/src/org/openqa/selenium:selenium-java
   leg-rc   = //java/client/src/com/thoughtworks/selenium:legacy-selenium-client

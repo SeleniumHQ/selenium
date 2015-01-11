@@ -48,7 +48,8 @@ java_library(name = 'core',
     'internal/WrapsElement.java',
   ] + glob([
      'html5/*.java',
-     'internal/FindsBy*.java'
+     'internal/FindsBy*.java',
+     'mobile/*.java',
   ]),
   deps = [
     ':beta',

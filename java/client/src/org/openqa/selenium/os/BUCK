@@ -14,6 +14,7 @@ java_library(
     '//java/client/src/org/openqa/selenium/safari:safari',
     '//java/client/test/org/openqa/selenium:tests',
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//java/server/src/org/openqa/selenium/server:server',
   ],
 )
 

@@ -1,12 +1,17 @@
-package org.openqa.selenium.remote;
+package org.openqa.selenium.remote.server.rest;
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
+
 /**
- * Contains factory methods for creating {@link Response} objects.
+ * Contains factory methods for creating {@link org.openqa.selenium.remote.Response} objects.
  */
-public class Responses {
+class Responses {
 
   private static final ErrorCodes ERROR_CODES = new ErrorCodes();
 

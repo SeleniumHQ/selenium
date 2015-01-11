@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.remote.server.rest;
+
+import org.openqa.selenium.remote.SimplePropertyDescriptor;
 
 import java.lang.reflect.Method;
 
-public class PropertyMunger {
+class PropertyMunger {
 
   public static Object get(String name, Object on) throws Exception {
     SimplePropertyDescriptor[] properties =
