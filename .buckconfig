@@ -20,5 +20,6 @@
   firefox  = //java/client/src/org/openqa/selenium/firefox:firefox
   htmlunit = //java/client/src/org/openqa/selenium/htmlunit:htmlunit
   remote   = //java/client/src/org/openqa/selenium/remote:remote
+  safari   = //java/client/src/org/openqa/selenium/safari:safari
 
   leg-rc   = //java/client/src/com/thoughtworks/selenium:legacy-selenium-client

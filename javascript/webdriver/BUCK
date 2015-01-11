@@ -1,5 +1,5 @@
 
-js_library(name = 'base-lib',
+js_library(name = 'base',
   srcs = [
     'command.js',
     'events.js',
@@ -8,6 +8,9 @@ js_library(name = 'base-lib',
   ],
   deps = [
     '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/safari-driver/...',
   ],
 )
 

@@ -20,22 +20,22 @@ package org.openqa.selenium.safari;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Joiner;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebElement;
-
-import com.google.common.base.Joiner;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.concurrent.TimeUnit;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-public class AlertTests extends SafariTestBase {
+public class AlertsTest extends SafariTestBase {
 
   @AfterClass
   public static void quitDriver() {
