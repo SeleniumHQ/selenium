@@ -1,0 +1,7 @@
+prebuilt_jar(name = 'yaml',
+  binary_jar = 'snakeyaml-1.8.jar',
+  visibility = [
+    '//java/server/src/org/openqa/grid:grid',
+  ],
+)
+

@@ -6,6 +6,7 @@ prebuilt_jar(name = 'jetty',
   ],
   visibility = [
     '//java/client/test/org/openqa/selenium/environment:environment',
+    '//java/server/src/org/openqa/grid:grid',
   ],
 )
 
@@ -19,5 +20,6 @@ prebuilt_jar(name = 'jetty-for-rc',
   ],
   visibility = [
     '//java/server/src/org/openqa/selenium/server:server',
+    '//java/server/src/org/openqa/grid:grid',
   ],
 )

@@ -35,6 +35,11 @@ java_library(name = 'server',
     'rest/*.java',
     'xdrpc/*.java',
   ]),
+  resources = [
+    ':client',
+    ':hub',
+    ':style',
+  ],
   deps = [
     ':sessions',
     '//java/client/src/org/openqa/selenium:codecs',
@@ -51,4 +56,19 @@ java_library(name = 'server',
   visibility = [
     '//java/server/src/org/openqa/selenium/server:server',
   ],
+)
+
+export_file(name = 'client',
+  src = '//javascript/remote:client',
+  out = 'client.js',
+)
+
+export_file(name = 'hub',
+  src = '//javascript/remote:hub',
+  out = 'hub.html',
+)
+
+export_file(name = 'style',
+  src = '//javascript/remote:style',
+  out = 'style.css',
 )
