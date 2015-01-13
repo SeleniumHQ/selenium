@@ -594,7 +594,7 @@ promise.Deferred.prototype.thenCatch = function(opt_eb) {
  * @deprecated Use {@code thenFinally} from the promise property directly.
  */
 promise.Deferred.prototype.thenFinally = function(opt_cb) {
-  this.promise.thenFinally(opt_cb);
+  return this.promise.thenFinally(opt_cb);
 };
 
 
