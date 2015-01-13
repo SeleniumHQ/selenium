@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* AUTO GENERATED - DO NOT EDIT BY HAND */
+/* AUTO GENERATED - DO NOT EDIT BY HAND! */
 #ifndef WEBDRIVER_ATOMS_H_
 #define WEBDRIVER_ATOMS_H_
 
