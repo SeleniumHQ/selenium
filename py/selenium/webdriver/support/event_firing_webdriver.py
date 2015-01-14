@@ -155,7 +155,7 @@ class EventFiringWebDriver(FinderBase):
         raise AttributeError(name)
     
     
-class EventFiringWebElement(object):
+class EventFiringWebElement(FinderBase):
     """"
     A wrapper around WebElement instance which supports firing events
     """
@@ -188,54 +188,6 @@ class EventFiringWebElement(object):
     
     def find_elements(self, by=By.ID, value=None):
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
-    
-    def find_element_by_id(self, id_):
-        return self.find_element(by=By.ID, value=id_)
-    
-    def find_elements_by_id(self, id_):
-        return self.find_elements(by=By.ID, value=id_)
-    
-    def find_element_by_name(self, name):
-        return self.find_element(by=By.NAME, value=name)
-    
-    def find_elements_by_name(self, name):
-        return self.find_elements(by=By.NAME, value=name)
-    
-    def find_element_by_link_text(self, link_text):
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-    
-    def find_elements_by_link_text(self, link_text):
-        return self.find_elements(by=By.LINK_TEXT, value=link_text)
-    
-    def find_element_by_partial_link_text(self, link_text):
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_elements_by_partial_link_text(self, link_text):
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_element_by_tag_name(self, name):
-        return self.find_element(by=By.TAG_NAME, value=name)
-    
-    def find_elements_by_tag_name(self, name):
-        return self.find_elements(by=By.TAG_NAME, value=name)
-    
-    def find_element_by_xpath(self, xpath):
-        return self.find_element(by=By.XPATH, value=xpath)
-    
-    def find_elements_by_xpath(self, xpath):
-        return self.find_elements(by=By.XPATH, value=xpath)
-    
-    def find_element_by_class_name(self, name):
-        return self.find_element(by=By.CLASS_NAME, value=name)
-    
-    def find_elements_by_class_name(self, name):
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-    
-    def find_element_by_css_selector(self, css_selector):
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-    
-    def find_elements_by_css_selector(self, css_selector):
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
     
     def _dispatch(self, l_call, l_args, d_call, d_args):
         getattr(self._listener, "before_%s" % l_call)(*l_args)
