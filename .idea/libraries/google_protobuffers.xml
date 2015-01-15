@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="google-protobuffers">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/google-protobuffers/protobuf-java-2.4.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -67,3 +67,4 @@ GTAGS
 .project
 Gemfile.lock
 /rb/.bundle
+.idea/

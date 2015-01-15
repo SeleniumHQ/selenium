@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="mx4j">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/mx4j/mx4j-tools-3.0.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
