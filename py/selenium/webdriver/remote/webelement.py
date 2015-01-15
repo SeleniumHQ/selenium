@@ -22,7 +22,7 @@ from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.finderbase import FinderBase
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import keys_to_typing
 
 
 class WebElement(FinderBase):
@@ -136,17 +136,7 @@ class WebElement(FinderBase):
             if local_file is not None:
                 value = self._upload(local_file)
 
-        typing = []
-        for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
+        typing = keys_to_typing(value)
         self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
 
     # RenderedWebElement Items
