@@ -1,8 +1,9 @@
 """
 The ApplicationCache implementaion.
 """
-
+from __future__ import absolute_import
 from selenium.webdriver.remote.command import Command
+
 
 class ApplicationCache(object):
     """

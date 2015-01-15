@@ -14,6 +14,8 @@
 """
 The WebDriver implementation.
 """
+from __future__ import absolute_import
+
 import base64
 import warnings
 from .command import Command
@@ -24,7 +26,6 @@ from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.finderbase import FinderBase
 from selenium.webdriver.common.html5.application_cache import ApplicationCache

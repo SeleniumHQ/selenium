@@ -16,8 +16,10 @@
 """
 The ActionChains implementation,
 """
+from __future__ import absolute_import
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.common.keys import Keys
+
 
 class ActionChains(object):
     """

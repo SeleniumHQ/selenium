@@ -17,6 +17,7 @@
 The Desired Capabilities implementation.
 """
 
+
 class DesiredCapabilities(object):
     """
     Set of default supported desired capabilities.
