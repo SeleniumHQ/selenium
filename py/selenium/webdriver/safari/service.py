@@ -66,16 +66,4 @@ class Service(BaseService):
         """
         Gets the url of the SafariDriver Service
         """
-        return "http://localhost:%d/wd/hub" % self.port
-
-    def stop(self):
-        """
-        Tells the SafariDriver to stop and cleans up the process
-        """
-        # If it's dead don't worry
-        if self.process is None:
-            return
-
-        self.process.kill()
-        self.process.wait()
-
+        return '{0}/wd/hub'.format(super(Service, self).service_url)

@@ -15,7 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import absolute_import
+
 import os
+import six
 import subprocess
 from subprocess import PIPE
 
@@ -43,7 +45,7 @@ class Service(BaseService):
         self.service_args = service_args or []
         if log_path:
             self.service_args.append('--log-path=%s' % log_path)
-        self.env = env
+        self.env = env or os.environ
 
     def start(self):
         """
@@ -53,12 +55,11 @@ class Service(BaseService):
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
-        env = self.env or os.environ
         try:
             self.process = subprocess.Popen([
               self.path,
               "--port=%d" % self.port] +
-              self.service_args, env=env, stdout=PIPE, stderr=PIPE)
+              self.service_args, env=self.env, stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
                 "'" + os.path.basename(self.path) + "' executable needs to be \
@@ -67,13 +68,6 @@ class Service(BaseService):
                 and read up at \
                 http://code.google.com/p/selenium/wiki/ChromeDriver")
         self.wait_for_open_port()
-
-    @property
-    def service_url(self):
-        """
-        Gets the url of the ChromeDriver Service
-        """
-        return "http://localhost:%d" % self.port
 
     def stop(self):
         """
@@ -84,10 +78,5 @@ class Service(BaseService):
             return
 
         #Tell the Server to die!
-        try:
-            from urllib import request as url_request
-        except ImportError:
-            import urllib2 as url_request
-
-        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        six.moves.urllib.request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         self.wait_for_close_or_force()

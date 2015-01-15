@@ -36,13 +36,21 @@ class BaseService(object):
     def start(self):
         pass
 
-    @abc.abstractmethod
     def stop(self):
-        pass
+        """
+        Tells the driver to stop and cleans up the process
+        """
+        self._kill_process()
 
     @property
     def service_url(self):
         return "http://localhost:%d" % self.port
+
+    def _kill_process(self):
+        if self.process is None:
+            return
+        self.process.kill()
+        self.process.wait()
 
     def wait_for_open_port(self, wait_open=True):
         """
@@ -73,8 +81,6 @@ class BaseService(object):
 
         # Tell the Server to properly die in case
         try:
-            if self.process:
-                self.process.kill()
-                self.process.wait()
+            self._kill_process()
         except OSError:
             pass  # kill may not be available under windows environment

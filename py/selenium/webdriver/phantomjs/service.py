@@ -80,7 +80,7 @@ class Service(BaseService):
         """
         Gets the url of the GhostDriver Service
         """
-        return "http://localhost:%d/wd/hub" % self.port
+        return "{0}/wd/hub".format(super(Service, self).service_url)
 
     def stop(self):
         """
