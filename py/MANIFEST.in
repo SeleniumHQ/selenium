@@ -1,20 +1,19 @@
 prune *
-recursive-include py/selenium/webdriver *.py
-recursive-include py/selenium/webdriver/common *.py
-recursive-include py/selenium/webdriver/common/html5 *.py
-recursive-include py/selenium/common *.py
-recursive-include py/selenium/webdriver/chrome *.py
-recursive-include py/selenium/webdriver/opera *.py
-recursive-include py/selenium/webdriver/phantomjs *.py
-recursive-include py/selenium/webdriver/firefox *.py *.xpi *.json
-recursive-include py/selenium/webdriver/firefox/x86 *.so
-recursive-include py/selenium/webdriver/firefox/amd64 *.so
-recursive-include py/selenium/webdriver/ie *.py 
-recursive-include py/selenium/webdriver/remote *.py
-recursive-include py/selenium/webdriver/support *.py
-include py/selenium/selenium.py
-include py/selenium/__init__.py
-include py/CHANGES
-include py/README
-recursive-include selenium.egg-info *
-
+recursive-include selenium/webdriver *.py
+recursive-include selenium/webdriver/common *.py
+recursive-include selenium/webdriver/common/html5 *.py
+recursive-include selenium/common *.py
+recursive-include selenium/webdriver/chrome *.py
+recursive-include selenium/webdriver/opera *.py
+recursive-include selenium/webdriver/phantomjs *.py
+recursive-include selenium/webdriver/firefox *.py *.xpi *.json
+recursive-include selenium/webdriver/firefox/x86 *.so
+recursive-include selenium/webdriver/firefox/amd64 *.so
+recursive-include selenium/webdriver/ie *.py
+recursive-include selenium/webdriver/remote *.py
+recursive-include selenium/webdriver/support *.py
+include selenium/selenium.py
+include selenium/__init__.py
+include CHANGES
+include README
+include VERSION
