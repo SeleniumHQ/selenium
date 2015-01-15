@@ -26,6 +26,7 @@ from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.finderbase import FinderBase
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
@@ -33,7 +34,8 @@ try:
 except NameError:
     pass
 
-class WebDriver(object):
+
+class WebDriver(FinderBase):
     """
     Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol as defined
@@ -195,197 +197,6 @@ class WebDriver(object):
         """
         resp = self.execute(Command.GET_TITLE)
         return resp['value'] if resp['value'] is not None else ""
-
-    def find_element_by_id(self, id_):
-        """Finds an element by id.
-
-        :Args:
-         - id\_ - The id of the element to be found.
-
-        :Usage:
-            driver.find_element_by_id('foo')
-        """
-        return self.find_element(by=By.ID, value=id_)
-
-    def find_elements_by_id(self, id_):
-        """
-        Finds multiple elements by id.
-
-        :Args:
-         - id\_ - The id of the elements to be found.
-
-        :Usage:
-            driver.find_element_by_id('foo')
-        """
-        return self.find_elements(by=By.ID, value=id_)
-
-    def find_element_by_xpath(self, xpath):
-        """
-        Finds an element by xpath.
-
-        :Args:
-         - xpath - The xpath locator of the element to find.
-
-        :Usage:
-            driver.find_element_by_xpath('//div/td[1]')
-        """
-        return self.find_element(by=By.XPATH, value=xpath)
-
-    def find_elements_by_xpath(self, xpath):
-        """
-        Finds multiple elements by xpath.
-
-        :Args:
-         - xpath - The xpath locator of the elements to be found.
-
-        :Usage:
-            driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
-        """
-        return self.find_elements(by=By.XPATH, value=xpath)
-
-    def find_element_by_link_text(self, link_text):
-        """
-        Finds an element by link text.
-
-        :Args:
-         - link_text: The text of the element to be found.
-
-        :Usage:
-            driver.find_element_by_link_text('Sign In')
-        """
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-
-    def find_elements_by_link_text(self, text):
-        """
-        Finds elements by link text.
-
-        :Args:
-         - link_text: The text of the elements to be found.
-
-        :Usage:
-            driver.find_elements_by_link_text('Sign In')
-        """
-        return self.find_elements(by=By.LINK_TEXT, value=text)
-
-    def find_element_by_partial_link_text(self, link_text):
-        """
-        Finds an element by a partial match of its link text.
-
-        :Args:
-         - link_text: The text of the element to partially match on.
-
-        :Usage:
-            driver.find_element_by_partial_link_text('Sign')
-        """
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_elements_by_partial_link_text(self, link_text):
-        """
-        Finds elements by a partial match of their link text.
-
-        :Args:
-         - link_text: The text of the element to partial match on.
-
-        :Usage:
-            driver.find_element_by_partial_link_text('Sign')
-        """
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_element_by_name(self, name):
-        """
-        Finds an element by name.
-
-        :Args:
-         - name: The name of the element to find.
-
-        :Usage:
-            driver.find_element_by_name('foo')
-        """
-        return self.find_element(by=By.NAME, value=name)
-
-    def find_elements_by_name(self, name):
-        """
-        Finds elements by name.
-
-        :Args:
-         - name: The name of the elements to find.
-
-        :Usage:
-            driver.find_elements_by_name('foo')
-        """
-        return self.find_elements(by=By.NAME, value=name)
-
-    def find_element_by_tag_name(self, name):
-        """
-        Finds an element by tag name.
-
-        :Args:
-         - name: The tag name of the element to find.
-
-        :Usage:
-            driver.find_element_by_tag_name('foo')
-        """
-        return self.find_element(by=By.TAG_NAME, value=name)
-
-    def find_elements_by_tag_name(self, name):
-        """
-        Finds elements by tag name.
-
-        :Args:
-         - name: The tag name the use when finding elements.
-
-        :Usage:
-            driver.find_elements_by_tag_name('foo')
-        """
-        return self.find_elements(by=By.TAG_NAME, value=name)
-
-    def find_element_by_class_name(self, name):
-        """
-        Finds an element by class name.
-
-        :Args:
-         - name: The class name of the element to find.
-
-        :Usage:
-            driver.find_element_by_class_name('foo')
-        """
-        return self.find_element(by=By.CLASS_NAME, value=name)
-
-    def find_elements_by_class_name(self, name):
-        """
-        Finds elements by class name.
-
-        :Args:
-         - name: The class name of the elements to find.
-
-        :Usage:
-            driver.find_elements_by_class_name('foo')
-        """
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-
-    def find_element_by_css_selector(self, css_selector):
-        """
-        Finds an element by css selector.
-
-        :Args:
-         - css_selector: The css selector to use when finding elements.
-
-        :Usage:
-            driver.find_element_by_css_selector('#foo')
-        """
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-
-    def find_elements_by_css_selector(self, css_selector):
-        """
-        Finds elements by css selector.
-
-        :Args:
-         - css_selector: The css selector to use when finding elements.
-
-        :Usage:
-            driver.find_elements_by_css_selector('.foo')
-        """
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
         """
@@ -657,8 +468,7 @@ class WebDriver(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
+        super(self, WebDriver).find_element(by=by, value=value)  # validate the arguments
 
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
@@ -672,8 +482,7 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
-            raise InvalidSelectorException("Invalid locator values passed in")
+        super(self, WebDriver).find_element(by=by, value=value)  # validate the arguments
 
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']

@@ -55,7 +55,7 @@ class presence_of_element_located(object):
         self.locator = locator
 
     def __call__(self, driver):
-        return _find_element(driver, self.locator)
+        return driver.find_element(*self.locator)
 
 class visibility_of_element_located(object):
     """ An expectation for checking that an element is present on the DOM of a
@@ -69,7 +69,7 @@ class visibility_of_element_located(object):
 
     def __call__(self, driver):
         try:
-            return _element_if_visible(_find_element(driver, self.locator))
+            return _element_if_visible(driver.find_element(*self.locator))
         except StaleElementReferenceException:
             return False
 
@@ -99,7 +99,7 @@ class presence_of_all_elements_located(object):
         self.locator = locator
 
     def __call__(self, driver):
-        return _find_elements(driver, self.locator)
+        return driver.find_elements(*self.locator)
 
 class text_to_be_present_in_element(object):
     """ An expectation for checking if the given text is present in the
@@ -111,8 +111,8 @@ class text_to_be_present_in_element(object):
         self.text = text_
 
     def __call__(self, driver):
-        try :
-            element_text = _find_element(driver, self.locator).text
+        try:
+            element_text = driver.find_element(*self.locator).text
             return self.text in element_text
         except StaleElementReferenceException:
             return False
@@ -128,8 +128,7 @@ class text_to_be_present_in_element_value(object):
 
     def __call__(self, driver):
         try:
-            element_text = _find_element(driver,
-                                         self.locator).get_attribute("value")
+            element_text = driver.find_element(*self.locator).get_attribute("value")
             if element_text:
                 return self.text in element_text
             else:
@@ -148,8 +147,7 @@ class frame_to_be_available_and_switch_to_it(object):
     def __call__(self, driver):
         try:
             if isinstance(self.frame_locator, tuple):
-                driver.switch_to.frame(_find_element(driver,
-                                                     self.frame_locator))
+                driver.switch_to.frame(driver.find_element(*self.frame_locator))
             else:
                 driver.switch_to.frame(self.frame_locator)
             return True
@@ -167,7 +165,7 @@ class invisibility_of_element_located(object):
 
     def __call__(self, driver):
         try:
-            return not _find_element(driver, self.locator).is_displayed()
+            return not driver.find_element(*self.locator).is_displayed()
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -222,7 +220,7 @@ class element_located_to_be_selected(object):
         self.locator = locator
 
     def __call__(self, driver):
-        return _find_element(driver, self.locator).is_selected()
+        return driver.find_element(*self.locator).is_selected()
 
 class element_selection_state_to_be(object):
     """ An expectation for checking if the given element is selected.
@@ -248,7 +246,7 @@ class element_located_selection_state_to_be(object):
 
     def __call__(self, driver):
         try:
-            element = _find_element(driver, self.locator)
+            element = driver.find_element(*self.locator)
             return element.is_selected() == self.is_selected
         except StaleElementReferenceException:
             return False
@@ -265,23 +263,3 @@ class alert_is_present(object):
             return alert
         except NoAlertPresentException:
             return False
-
-def _find_element(driver, by):
-    """ Looks up an element. Logs and re-raises WebDriverException if thrown.
-    Method exists to gather data for
-    http://code.google.com/p/selenium/issues/detail?id=1800
-    """
-    try :
-      return driver.find_element(*by)
-    except NoSuchElementException as e:
-        raise e
-    except WebDriverException as e:
-        raise e
-
-
-def _find_elements(driver, by):
-    try :
-        return driver.find_elements(*by)
-    except WebDriverException as e:
-        raise e
-
