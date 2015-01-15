@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import absolute_import
+import six
 import subprocess
 from subprocess import PIPE
 import time
@@ -82,12 +83,8 @@ class Service(BaseService):
             return
 
         #Tell the Server to die!
-        try:
-            from urllib import request as url_request
-        except ImportError:
-            import urllib2 as url_request
 
-        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        six.moves.urllib.request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         try:
             self.wait_for_open_port(wait_open=False)
         except WebDriverException:
