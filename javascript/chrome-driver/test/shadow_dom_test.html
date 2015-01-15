@@ -14,7 +14,12 @@
 The page has a shadow root that in turn contains two shadow roots. So we can
 check behaviour with both nested roots and younger/older sibling roots. The
 various sections are highlighted with colored borders to make it more obvious
-where each element comes from.
+where each element comes from. Default to pushing the content off the first 
+screen, to test that scrolling to the elements works.
+<div id="padding"></div>
+<script>
+document.getElementById('padding').style.height = window.innerHeight;
+</script>
 <div id="outerDiv">
   <div id="innerDiv" style="border-style:solid;border-color:yellow">
     stuff
@@ -84,12 +89,14 @@ function buttonWasClicked() {
     return new goog.math.Coordinate(x, y);
   }
 
-
   function testShadowRootIsElementClickable() {
     // check isElementClickable works as expected on elements within a shadow
     // DOM
     var elemButton = document.querySelector("* /deep/ #olderButton");
     var elemText = document.querySelector("* /deep/ #olderTextBox");
+
+    // scroll to the element
+    webdriver.chrome.getLocationInView(elemButton, true);
     assertTrue(
         "Button #olderButton should be clickable",
         webdriver.chrome.isElementClickable(elemButton,

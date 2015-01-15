@@ -128,6 +128,9 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
                                            container.clientHeight);
     scrollHelper(container, containerSize, offset, region, center);
     container = container.parentNode;
+    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
+      container = container.host;
+    }
   }
 
   offset = goog.style.getClientPosition(elem);
