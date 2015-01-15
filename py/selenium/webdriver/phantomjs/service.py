@@ -58,22 +58,15 @@ class Service(BaseService):
         # we have to try to stop the launched process.
         self.stop()
 
-    def start(self):
-        """
-        Starts PhantomJS with GhostDriver.
+    @property
+    def _start_kwargs(self):
+        return dict(stdin=subprocess.PIPE,
+                    close_fds=platform.system() != 'Windows',
+                    stdout=self._log, stderr=self._log)
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        try:
-            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self._log, stderr=self._log)
-
-        except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
-        self.wait_for_open_port()
+    @property
+    def _start_args(self):
+        return self.service_args
 
     @property
     def service_url(self):

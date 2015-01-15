@@ -47,27 +47,13 @@ class Service(BaseService):
             self.service_args.append('--log-path=%s' % log_path)
         self.env = env or os.environ
 
-    def start(self):
-        """
-        Starts the ChromeDriver Service.
+    @property
+    def _start_args(self):
+        return [self.path, "--port=%d" % self.port] + self.service_args
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        try:
-            self.process = subprocess.Popen([
-              self.path,
-              "--port=%d" % self.port] +
-              self.service_args, env=self.env, stdout=PIPE, stderr=PIPE)
-        except:
-            raise WebDriverException(
-                "'" + os.path.basename(self.path) + "' executable needs to be \
-                available in the path. Please look at \
-                http://docs.seleniumhq.org/download/#thirdPartyDrivers \
-                and read up at \
-                http://code.google.com/p/selenium/wiki/ChromeDriver")
-        self.wait_for_open_port()
+    @property
+    def _start_kwargs(self):
+        return dict(env=self.env, stdout=PIPE, stderr=PIPE)
 
     def stop(self):
         """

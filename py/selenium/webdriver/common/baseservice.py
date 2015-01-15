@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import abc
 import os
 import six
+import subprocess
 import time
 
 from selenium.common.exceptions import WebDriverException
@@ -32,9 +33,41 @@ class BaseService(object):
         self.path = executable_path
         self.process = None
 
-    @abc.abstractmethod
-    def start(self):
+    @abc.abstractproperty
+    def _start_args(self):
+        """
+
+        :return:
+        :rtype: list
+        """
         pass
+
+    @abc.abstractproperty
+    def _start_kwargs(self):
+        """
+
+        :return:
+        :rtype: dict
+        """
+        pass
+
+    def start(self):
+        """
+        Starts the Service.
+
+        :Exceptions:
+         - WebDriverException : Raised either when it can't start the service
+           or when it can't connect to the service
+        """
+        try:
+            self.process = subprocess.Popen(self._start_args, **self._start_kwargs)
+        except:  # TODO shouldn't be this general of an exception
+            raise WebDriverException("'{0}' executable needs to be "
+                                     "available in the path. \nChrome Driver: Please look at"
+                                     "http://docs.seleniumhq.org/download/#thirdPartyDrivers "
+                                     "and read up at "
+                                     "http://code.google.com/p/selenium/wiki/ChromeDriver")
+
 
     def stop(self):
         """

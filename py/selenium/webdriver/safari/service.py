@@ -34,32 +34,21 @@ class Service(BaseService):
 
         :Args:
          - executable_path : Path to the SafariDriver
-         - port : Port the service is running on """
-
+         - port : Port the service is running on
+        """
         super(Service, self).__init__(executable_path, port=port)
         self.quiet = quiet
 
-    def start(self):
-        """
-        Starts the SafariDriver Service.
+    @property
+    def _start_args(self):
+        return ["java", "-jar", self.path, "-port", "%s" % self.port]
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        kwargs = dict()
-        if self.quiet:
-            devnull_out = open(devnull, 'w')
-            kwargs.update(stdout=devnull_out,
-                          stderr=devnull_out)
-        try:
-            self.process = subprocess.Popen(["java", "-jar", self.path, "-port", "%s" % self.port],
-                                            **kwargs)
-        except:
-            raise WebDriverException(
-                "SafariDriver executable needs to be available in the path.")
-        time.sleep(10)
-        self.wait_for_open_port()
+    @property
+    def _start_kwargs(self):
+        if not self.quiet:
+            return {}
+        devnull_out = open(devnull, 'w')
+        return dict(stdout=devnull_out, stderr=devnull_out)
 
     @property
     def service_url(self):

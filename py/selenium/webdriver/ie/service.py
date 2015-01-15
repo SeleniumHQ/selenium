@@ -47,6 +47,21 @@ class Service(BaseService):
         self.log_level = log_level
         self.log_file = log_file
 
+    @property
+    def _start_args(self):
+        cmd = [self.path, "--port=%d" % self.port]
+        if self.host is not None:
+            cmd.append("--host=%s" % self.host)
+        if self.log_level is not None:
+            cmd.append("--log-level=%s" % self.log_level)
+        if self.log_file is not None:
+            cmd.append("--log-file=%s" % self.log_file)
+        return cmd
+
+    @property
+    def _start_kwargs(self):
+        return dict(stdout=PIPE, stderr=PIPE)
+
     def start(self):
         """
         Starts the IEDriver Service. 
@@ -56,15 +71,8 @@ class Service(BaseService):
            or when it can't connect to the service
         """
         try:
-            cmd = [self.path, "--port=%d" % self.port]
-            if self.host is not None:
-                cmd.append("--host=%s" % self.host)
-            if self.log_level is not None:
-                cmd.append("--log-level=%s" % self.log_level)
-            if self.log_file is not None:
-                cmd.append("--log-file=%s" % self.log_file)
-            self.process = subprocess.Popen(cmd,
-                    stdout=PIPE, stderr=PIPE)
+
+            self.process = subprocess.Popen(self._start_args, **self._start_kwargs)
         except TypeError:
             raise
         except:
@@ -72,7 +80,7 @@ class Service(BaseService):
                 "IEDriver executable needs to be available in the path. "
                 "Please download from http://selenium-release.storage.googleapis.com/index.html "
                 "and read up at http://code.google.com/p/selenium/wiki/InternetExplorerDriver")
-        self.wait_for_open_url()
+        self.wait_for_open_url()  # TODO: Why use a url instead of port?
                 
     def stop(self):
         """ 
