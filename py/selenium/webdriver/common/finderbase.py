@@ -17,6 +17,13 @@ from abc import ABCMeta, abstractmethod
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 
+# TODO use six package so as not to be hacky like this.  Duplicated in WebDriver and WebElement
+# classes
+try:
+    str = basestring
+except NameError:
+    pass
+
 
 class FinderBase(object):
     """
@@ -48,7 +55,7 @@ class FinderBase(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, basestring):
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
     @abstractmethod
@@ -61,7 +68,7 @@ class FinderBase(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, basestring):
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
     def find_element_by_id(self, id_):
