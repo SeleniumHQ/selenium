@@ -15,15 +15,16 @@ from __future__ import absolute_import
 
 import abc
 import os
+import six
 from selenium.webdriver.common.keys import Keys
 
 
+@six.with_metaclass(abc.ABCMeta)
 class FileDetector(object):
     """
     Used for identifying whether a sequence of chars represents the path to a
     file.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def is_local_file(self, *keys):

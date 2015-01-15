@@ -14,6 +14,8 @@
 # limitations under the License.
 from __future__ import absolute_import
 
+import six
+
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import InvalidElementStateException
@@ -30,11 +32,6 @@ from selenium.common.exceptions import ErrorInResponseException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
-
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
 
 class ErrorCode(object):
@@ -129,7 +126,7 @@ class ErrorHandler(object):
         else:
             exception_class = WebDriverException
         value = response['value']
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)

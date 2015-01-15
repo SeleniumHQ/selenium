@@ -17,7 +17,9 @@ The WebDriver implementation.
 from __future__ import absolute_import
 
 import base64
+import six
 import warnings
+
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
@@ -29,11 +31,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.finderbase import FinderBase
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
-
-try:
-    str = basestring
-except NameError:
-    pass
 
 
 class WebDriver(FinderBase):
@@ -67,7 +64,7 @@ class WebDriver(FinderBase):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
+        if type(self.command_executor) is bytes or isinstance(self.command_executor, six.string_types):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None

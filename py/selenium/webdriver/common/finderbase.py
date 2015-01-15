@@ -13,18 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import absolute_import
+
+import six
+
 from abc import ABCMeta, abstractmethod
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 
-# TODO use six package so as not to be hacky like this.  Duplicated in WebDriver and WebElement
-# classes
-try:
-    str = basestring
-except NameError:
-    pass
 
-
+@six.with_metaclass(ABCMeta)
 class FinderBase(object):
     """
     And abstract base class responsible for implementing the common find methods that are used
@@ -43,7 +40,6 @@ class FinderBase(object):
     Calls to super on either of these methods will validate the inputs.  In particular it checks if the by
     parameter is valid and if the value parameter is a str object
     """
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def find_element(self, by=By.ID, value=None):
@@ -55,7 +51,7 @@ class FinderBase(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
+        if not By.is_valid(by) or not isinstance(value, six.string_types):
             raise InvalidSelectorException("Invalid locator values passed in")
 
     @abstractmethod
@@ -68,7 +64,7 @@ class FinderBase(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
+        if not By.is_valid(by) or not isinstance(value, six.string_types):
             raise InvalidSelectorException("Invalid locator values passed in")
 
     def find_element_by_id(self, id_):

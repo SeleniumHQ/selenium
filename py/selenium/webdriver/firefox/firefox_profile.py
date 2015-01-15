@@ -21,17 +21,11 @@ import copy
 import json
 import os
 import re
+import six
 import shutil
 import sys
 import tempfile
 import zipfile
-
-try:
-    from cStringIO import StringIO as BytesIO
-    bytes = str
-    str = basestring
-except ImportError:
-    from io import BytesIO
 
 from xml.dom import minidom
 from selenium.webdriver.common.proxy import ProxyType
@@ -166,7 +160,7 @@ class FirefoxProfile(object):
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
-        fp = BytesIO()
+        fp = six.BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         path_root = len(self.path) + 1  # account for trailing slash
         for base, dirs, files in os.walk(self.path):
@@ -343,7 +337,7 @@ class FirefoxProfile(object):
             else:
                 raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
         except (IOError, KeyError) as e:
-            raise AddonFormatError(str(e), sys.exc_info()[2])
+            raise AddonFormatError(six.string_types(e), sys.exc_info()[2])
 
         try:
             doc = minidom.parseString(manifest)
@@ -364,10 +358,10 @@ class FirefoxProfile(object):
                     if attribute.name == em + 'id':
                         details.update({'id': attribute.value})
         except Exception as e:
-            raise AddonFormatError(str(e), sys.exc_info()[2])
+            raise AddonFormatError(six.string_types(e), sys.exc_info()[2])
 
         # turn unpack into a true/false value
-        if isinstance(details['unpack'], str):
+        if isinstance(details['unpack'], six.string_types):
             details['unpack'] = details['unpack'].lower() == 'true'
 
         # If no ID is set, the add-on is invalid

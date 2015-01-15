@@ -15,24 +15,14 @@ from __future__ import absolute_import
 
 import hashlib
 import os
+import six
 import zipfile
-try:
-    from StringIO import StringIO as IOStream
-except ImportError:  # 3+
-    from io import BytesIO as IOStream
-import base64
 
 from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.finderbase import FinderBase
 from selenium.webdriver.common.keys import Keys
-
-
-try:
-    str = basestring
-except NameError:
-    pass
 
 
 class WebElement(FinderBase):
@@ -258,12 +248,12 @@ class WebElement(FinderBase):
         return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
-        fp = IOStream()
+        fp = six.BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
         content = base64.encodestring(fp.getvalue())
-        if not isinstance(content, str):
+        if not isinstance(content, six.string_types):
             content = content.decode('utf-8')
         try:
             return self._execute(Command.UPLOAD_FILE,
