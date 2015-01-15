@@ -20,9 +20,11 @@ from os import devnull
 import subprocess
 import time
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.baseservice import BaseService
 from selenium.webdriver.common import utils
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of the SafariDriver
     """
@@ -35,10 +37,7 @@ class Service(object):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on """
 
-        self.port = port
-        self.path = executable_path
-        if self.port == 0:
-            self.port = utils.free_port()
+        super(Service, self).__init__(executable_path, port=port)
         self.quiet = quiet
 
     def start(self):
@@ -61,12 +60,7 @@ class Service(object):
             raise WebDriverException(
                 "SafariDriver executable needs to be available in the path.")
         time.sleep(10)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to the SafariDriver")
+        self.wait_for_open_port()
 
     @property
     def service_url(self):

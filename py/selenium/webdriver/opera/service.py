@@ -19,9 +19,11 @@ from __future__ import absolute_import
 import subprocess
 import time
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.baseservice import BaseService
 from selenium.webdriver.common import utils
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of the OperaDriver 
     """
@@ -32,12 +34,9 @@ class Service(object):
         
         :Args:
          - executable_path : Path to the OperaDriver
-         - port : Port the service is running on """
-
-        self.port = port
-        self.path = executable_path
-        if self.port == 0:
-            self.port = utils.free_port()
+         - port : Port the service is running on
+        """
+        super(Service, self).__init__(executable_path, port=port)
 
     def start(self):
         """
@@ -53,12 +52,7 @@ class Service(object):
             raise WebDriverException(
                 "OperaDriver executable needs to be available in the path.")
         time.sleep(10)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to the OperaDriver")
+        self.wait_for_open_port()
                 
     @property
     def service_url(self):

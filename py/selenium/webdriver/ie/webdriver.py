@@ -26,6 +26,7 @@ DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_LOG_FILE = None
 
+
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
@@ -39,7 +40,8 @@ class WebDriver(RemoteWebDriver):
         self.log_file = log_file
 
         self.iedriver = Service(executable_path, port=self.port,
-             host=self.host, log_level=self.log_level, log_file=self.log_file)
+                                host=self.host, log_level=self.log_level,
+                                log_file=self.log_file)
 
         self.iedriver.start()
 

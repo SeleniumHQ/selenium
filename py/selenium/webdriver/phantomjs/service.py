@@ -21,9 +21,11 @@ import subprocess
 import time
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.baseservice import BaseService
 from selenium.webdriver.common import utils
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of PhantomJS / Ghostdriver
     """
@@ -38,16 +40,12 @@ class Service(object):
          - service_args : A List of other command line options to pass to PhantomJS
          - log_path: Path for PhantomJS service to log to
         """
-
-        self.port = port
-        self.path = executable_path
-        self.service_args= service_args
-        if self.port == 0:
-            self.port = utils.free_port()
+        super(Service, self).__init__(executable_path, port=port)
+        self.service_args = service_args
         if self.service_args is None:
             self.service_args = []
         else:
-            self.service_args=service_args[:]
+            self.service_args = service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         self.process = None
@@ -75,12 +73,7 @@ class Service(object):
 
         except Exception as e:
             raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to GhostDriver")
+        self.wait_for_open_port()
 
     @property
     def service_url(self):

@@ -12,6 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+This module is responsible for the common find_element_* and find_elements_*
+It defines the FinderBase abstract class which can be implemented to commonly expose these methods.
+"""
 from __future__ import absolute_import
 
 import six
@@ -25,19 +29,22 @@ from selenium.webdriver.common.by import By
 class FinderBase(object):
     """
     And abstract base class responsible for implementing the common find methods that are used
-    both in the WebDriver and the WebElement.  This includes finding elements by id, class, xpath, etc.
+    both in the WebDriver and the WebElement.
+    This includes finding elements by id, class, xpath, etc.
 
     There are two methods that must be overridden if you wish to implement this class:
 
     find_element(self, by=By.ID, value=None)
 
-    Should find a single element that matches the "value" parameter as dictated by the "by" parameter
+    Should find a single element that matches the "value"
+     parameter as dictated by the "by" parameter
 
     find_elements(self, by=By.ID, value=None)
 
     Should return a list of elements that match the inputs
 
-    Calls to super on either of these methods will validate the inputs.  In particular it checks if the by
+    Calls to super on either of these methods will validate the inputs.
+    In particular it checks if the by
     parameter is valid and if the value parameter is a str object
     """
 
@@ -71,7 +78,7 @@ class FinderBase(object):
         """Finds an element by id.
 
         :Args:
-         - id\_ - The id of the element to be found.
+         - id_ - The id of the element to be found.
 
         :Usage:
             driver.find_element_by_id('foo')
@@ -83,7 +90,7 @@ class FinderBase(object):
         Finds multiple elements by id.
 
         :Args:
-         - id\_ - The id of the elements to be found.
+         - id_ - The id of the elements to be found.
 
         :Usage:
             driver.find_element_by_id('foo')

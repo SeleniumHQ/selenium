@@ -21,9 +21,11 @@ from subprocess import PIPE
 import time
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.baseservice import BaseService
 from selenium.webdriver.common import utils
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of the ChromeDriver
     """
@@ -37,15 +39,12 @@ class Service(object):
          - executable_path : Path to the ChromeDriver
          - port : Port the service is running on
          - service_args : List of args to pass to the chromedriver service
-         - log_path : Path for the chromedriver service to log to"""
-
-        self.port = port
-        self.path = executable_path
+         - log_path : Path for the chromedriver service to log to
+        """
+        super(Service, self).__init__(executable_path, port=port)
         self.service_args = service_args or []
         if log_path:
-          self.service_args.append('--log-path=%s' % log_path)
-        if self.port == 0:
-            self.port = utils.free_port()
+            self.service_args.append('--log-path=%s' % log_path)
         self.env = env
 
     def start(self):
@@ -69,13 +68,7 @@ class Service(object):
                 http://docs.seleniumhq.org/download/#thirdPartyDrivers \
                 and read up at \
                 http://code.google.com/p/selenium/wiki/ChromeDriver")
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                raise WebDriverException("Can not connect to the '" +
-                                         os.path.basename(self.path) + "'")
+        self.wait_for_open_port()
 
     @property
     def service_url(self):
@@ -99,12 +92,10 @@ class Service(object):
             import urllib2 as url_request
 
         url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
-        count = 0
-        while utils.is_connectable(self.port):
-            if count == 30:
-               break
-            count += 1
-            time.sleep(1)
+        try:
+            self.wait_for_open_port(wait_open=False)
+        except WebDriverException:
+            pass  # emulating the original behavior.  I feel like this should return if it doesn't hit this.
 
         #Tell the Server to properly die in case
         try:
