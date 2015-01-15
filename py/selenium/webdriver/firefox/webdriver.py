@@ -14,10 +14,7 @@
 
 from __future__ import absolute_import
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+from six.moves import http_client
 
 import logging
 import shutil
