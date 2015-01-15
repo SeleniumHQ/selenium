@@ -85,19 +85,7 @@ class Service(BaseService):
         #Tell the Server to die!
 
         six.moves.urllib.request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
-        try:
-            self.wait_for_open_port(wait_open=False)
-        except WebDriverException:
-            pass
-        
-        #Tell the Server to properly die in case
-        try:
-            if self.process:
-                self.process.kill()
-                self.process.wait()
-        except WindowsError:
-            # kill may not be available under windows environment
-            pass
+        self.wait_for_close_or_force()
 
     def wait_for_open_url(self):
         count = 0

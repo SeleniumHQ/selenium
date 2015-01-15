@@ -21,7 +21,6 @@ import subprocess
 import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.baseservice import BaseService
-from selenium.webdriver.common import utils
 
 
 class Service(BaseService):

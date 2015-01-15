@@ -30,6 +30,7 @@ class BaseService(object):
             port = utils.free_port()
         self.port = port
         self.path = executable_path
+        self.process = None
 
     @abc.abstractmethod
     def start(self):
@@ -60,3 +61,20 @@ class BaseService(object):
             if count >= 30:
                 raise WebDriverException("Can not connect to "
                                          "the '{0}'".format(os.path.basename(self.path)))
+
+    def wait_for_close_or_force(self):
+        """
+        Waits for the port to no longer be open and then kills the process
+        """
+        try:
+            self.wait_for_open_port(wait_open=False)
+        except WebDriverException:
+            pass
+
+        # Tell the Server to properly die in case
+        try:
+            if self.process:
+                self.process.kill()
+                self.process.wait()
+        except OSError:
+            pass  # kill may not be available under windows environment

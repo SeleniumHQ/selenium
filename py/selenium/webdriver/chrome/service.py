@@ -18,11 +18,9 @@ from __future__ import absolute_import
 import os
 import subprocess
 from subprocess import PIPE
-import time
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.baseservice import BaseService
-from selenium.webdriver.common import utils
 
 
 class Service(BaseService):
@@ -92,16 +90,4 @@ class Service(BaseService):
             import urllib2 as url_request
 
         url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
-        try:
-            self.wait_for_open_port(wait_open=False)
-        except WebDriverException:
-            pass  # emulating the original behavior.  I feel like this should return if it doesn't hit this.
-
-        #Tell the Server to properly die in case
-        try:
-            if self.process:
-                self.process.kill()
-                self.process.wait()
-        except OSError:
-            # kill may not be available under windows environment
-            pass
+        self.wait_for_close_or_force()
