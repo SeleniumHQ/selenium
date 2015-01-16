@@ -174,4 +174,26 @@ describe('io', function() {
       });
     });
   });
+
+  describe('rmDir', function() {
+    it('succeeds if the designated directory does not exist', function() {
+      return io.tmpDir().then(function(d) {
+        return io.rmDir(path.join(d, 'i/do/not/exist'));
+      });
+    });
+
+    it('deletes recursively', function() {
+      return io.tmpDir().then(function(dir) {
+        fs.writeFileSync(path.join(dir, 'file1'), 'hello');
+        fs.mkdirSync(path.join(dir, 'sub'));
+        fs.mkdirSync(path.join(dir, 'sub/folder'));
+        fs.writeFileSync(path.join(dir, 'sub/folder/file2'), 'goodbye');
+
+        return io.rmDir(dir).then(function() {
+          assert.ok(!fs.existsSync(dir));
+          assert.ok(!fs.existsSync(path.join(dir, 'sub/folder/file2')));
+        });
+      });
+    });
+  });
 });

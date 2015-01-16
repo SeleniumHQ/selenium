@@ -3,6 +3,7 @@
 * Promise rejections are now always coerced to Error-like objects (an object
     with a string `message` property). We do not guarantee `instanceof Error`
     since the rejection value may come from another context.
+* FIXED: 8380: `firefox.Driver` will delete its temporary profile on `quit`.
 * FIXED: 8221: Added support for defining custom command mappings. Includes
     support for PhantomJS's `executePhantomJS` (requires PhantomJS 1.9.7 or
     GhostDriver 1.1.0).

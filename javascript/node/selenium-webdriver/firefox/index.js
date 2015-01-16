@@ -24,6 +24,7 @@ var Binary = require('./binary').Binary,
     webdriver = require('..'),
     executors = require('../executors'),
     httpUtil = require('../http/util'),
+    io = require('../io'),
     net = require('../net'),
     portprober = require('../net/portprober');
 
@@ -156,6 +157,10 @@ var Driver = function(opt_config, opt_flow) {
   caps.set('firefox_binary', null);
   caps.set('firefox_profile', null);
 
+  /** @private {?string} */
+  this.profilePath_ = null;
+
+  var self = this;
   var serverUrl = portprober.findFreePort().then(function(port) {
     var prepareProfile;
     if (typeof profile === 'string') {
@@ -170,6 +175,7 @@ var Driver = function(opt_config, opt_flow) {
     }
 
     return prepareProfile.then(function(dir) {
+      self.profilePath_ = dir;
       return binary.launch(dir);
     }).then(function() {
       var serverUrl = url.format({
@@ -191,6 +197,19 @@ var Driver = function(opt_config, opt_flow) {
   webdriver.WebDriver.call(this, driver.getSession(), executor, opt_flow);
 };
 util.inherits(Driver, webdriver.WebDriver);
+
+
+/** @override */
+Driver.prototype.quit = function() {
+  return this.call(function() {
+    var self = this;
+    return Driver.super_.prototype.quit.call(this).thenFinally(function() {
+      if (self.profilePath_) {
+        return io.rmDir(self.profilePath_);
+      }
+    });
+  }, this);
+};
 
 
 // PUBLIC API
