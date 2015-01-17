@@ -85,6 +85,8 @@ module Selenium
             DriverExtensions::HasSessionId,
             DriverExtensions::Rotatable,
             DriverExtensions::HasTouchScreen,
+            DriverExtensions::HasLocation,
+            DriverExtensions::HasNetworkConnection,
             DriverExtensions::HasRemoteStatus
           ]
         end
@@ -326,7 +328,7 @@ module Selenium
         end
 
         def setNetworkConnection(type)
-          execute :setNetworkConnection, {}, :type => type
+          execute :setNetworkConnection, {}, :parameters => {:type => type}
         end
 
         #
