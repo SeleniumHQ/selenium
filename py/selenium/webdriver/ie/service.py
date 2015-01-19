@@ -86,16 +86,15 @@ class Service(BaseService):
         """ 
         Tells the IEDriver to stop and cleans up the process
         """
-        #If its dead dont worry
+        # If its dead dont worry
         if self.process is None:
             return
 
-        #Tell the Server to die!
-
+        # Tell the Server to die!
         six.moves.urllib.request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         self.wait_for_close_or_force()
 
-    def wait_for_open_url(self):
+    def wait_for_open_url(self):  # TODO with injection we could remove this method
         count = 0
         while not utils.is_url_connectable(self.port):
             count += 1

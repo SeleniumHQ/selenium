@@ -17,8 +17,6 @@
 The ActionChains implementation,
 """
 from __future__ import absolute_import
-from selenium.webdriver.remote.command import Command
-from selenium.webdriver.common.keys import keys_to_typing
 
 
 class ActionChains(object):
@@ -64,6 +62,9 @@ class ActionChains(object):
         self._driver = driver
         self._actions = []
 
+    def execute(self, command, kwargs):
+        self._actions.append(lambda: self._driver.execute(command, kwargs))
+
     def perform(self):
         """
         Performs all stored actions.
@@ -71,209 +72,16 @@ class ActionChains(object):
         for action in self._actions:
             action()
 
-    def click(self, on_element=None):
-        """
-        Clicks an element.
-
-        :Args:
-         - on_element: The element to click.
-           If None, clicks on current mouse position.
-        """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.CLICK, {'button': 0}))
-        return self
-
-    def click_and_hold(self, on_element=None):
-        """
-        Holds down the left mouse button on an element.
-
-        :Args:
-         - on_element: The element to mouse down.
-           If None, clicks on current mouse position.
-        """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOUSE_DOWN, {}))
-        return self
-
-    def context_click(self, on_element=None):
-        """
-        Performs a context-click (right click) on an element.
-
-        :Args:
-         - on_element: The element to context-click.
-           If None, clicks on current mouse position.
-        """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.CLICK, {'button': 2}))
-        return self
-
-    def double_click(self, on_element=None):
-        """
-        Double-clicks an element.
-
-        :Args:
-         - on_element: The element to double-click.
-           If None, clicks on current mouse position.
-        """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.DOUBLE_CLICK, {}))
-        return self
-
-    def drag_and_drop(self, source, target):
-        """
-        Holds down the left mouse button on the source element,
-           then moves to the target element and releases the mouse button.
-
-        :Args:
-         - source: The element to mouse down.
-         - target: The element to mouse up.
-        """
-        self.click_and_hold(source)
-        self.release(target)
-        return self
-
-    def drag_and_drop_by_offset(self, source, xoffset, yoffset):
-        """
-        Holds down the left mouse button on the source element,
-           then moves to the target offset and releases the mouse button.
-
-        :Args:
-         - source: The element to mouse down.
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
-        """
-        self.click_and_hold(source)
-        self.move_by_offset(xoffset, yoffset)
-        self.release()
-        return self
-
-    def key_down(self, value, element=None):
-        """
-        Sends a key press only, without releasing it.
-           Should only be used with modifier keys (Control, Alt and Shift).
-
-        :Args:
-         - value: The modifier key to send. Values are defined in `Keys` class.
-         - element: The element to send keys.
-           If None, sends a key to current focused element.
-        
-        Example, pressing ctrl+c::
-
-            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
-
-        """
-        if element:
-            self.click(element)
-        self._actions.append(lambda:
-                             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                                 "value": keys_to_typing(value)
-                             })
-        )
-        return self
-
-    def key_up(self, value, element=None):
-        """
-        Releases a modifier key.
-
-        :Args:
-         - value: The modifier key to send. Values are defined in Keys class.
-         - element: The element to send keys.
-           If None, sends a key to current focused element.
-
-        Example, pressing ctrl+c::
-
-            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
-
-        """
-        if element: self.click(element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": keys_to_typing(value) }))
-        return self
-
-    def move_by_offset(self, xoffset, yoffset):
-        """
-        Moving the mouse to an offset from current mouse position.
-
-        :Args:
-         - xoffset: X offset to move to, as a positive or negative integer.
-         - yoffset: Y offset to move to, as a positive or negative integer.
-        """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {
-                'xoffset': int(xoffset),
-                'yoffset': int(yoffset)}))
-        return self
-
-    def move_to_element(self, to_element):
-        """
-        Moving the mouse to the middle of an element.
-
-        :Args:
-         - to_element: The WebElement to move to.
-        """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {'element': to_element.id}))
-        return self
-
-    def move_to_element_with_offset(self, to_element, xoffset, yoffset):
-        """
-        Move the mouse by an offset of the specified element.
-           Offsets are relative to the top-left corner of the element.
-
-        :Args:
-         - to_element: The WebElement to move to.
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
-        """
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOVE_TO, {
-                'element': to_element.id,
-                'xoffset': int(xoffset),
-                'yoffset': int(yoffset)}))
-        return self
-
-    def release(self, on_element=None):
-        """
-        Releasing a held mouse button on an element.
-
-        :Args:
-         - on_element: The element to mouse up.
-           If None, releases on current mouse position.
-        """
-        if on_element: self.move_to_element(on_element)
-        self._actions.append(lambda:
-            self._driver.execute(Command.MOUSE_UP, {}))
-        return self
-
-    def send_keys(self, *keys_to_send):
-        """
-        Sends keys to current focused element.
-
-        :Args:
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
-         'Keys' class.
-        """
-        self._actions.append(lambda:
-            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
-              { 'value': keys_to_typing(keys_to_send)}))
-        return self
-
     def send_keys_to_element(self, element, *keys_to_send):
         """
         Sends keys to an element.
 
         :Args:
          - element: The element to send keys.
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the
          'Keys' class.
         """
-        self._actions.append(lambda:
-            element.send_keys(*keys_to_send))
+        self._actions.append(lambda: element.send_keys(*keys_to_send))
         return self
 
 
@@ -282,4 +90,4 @@ class ActionChains(object):
         return self # Return created instance of self.
 
     def __exit__(self, _type, _value, _traceback):
-        pass # Do nothing, does not require additional cleanup.
+        pass

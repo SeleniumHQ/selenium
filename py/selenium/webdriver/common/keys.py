@@ -99,7 +99,7 @@ def keys_to_typing(value):
     Utility function for flattening a list of keys and strings
 
     :param value: a list of value to type
-    :type value: list
+    :type value: list|tuple
     :return: The flattened list
     :rtype: list
     """
