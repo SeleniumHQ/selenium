@@ -17,16 +17,7 @@ goog.require('webdriver.test.testutil');
 
 // Aliases for readability.
 var callbackHelper = webdriver.test.testutil.callbackHelper,
-    callbackPair = webdriver.test.testutil.callbackPair,
-    clock;
-
-function setUp() {
-  clock = webdriver.test.testutil.createMockClock();
-}
-
-function tearDown() {
-  clock.dispose();
-}
+    callbackPair = webdriver.test.testutil.callbackPair;
 
 function testCallbackHelper_functionCalled() {
   var callback = callbackHelper();
@@ -107,25 +98,4 @@ function testCallbackPair_neitherExpected() {
   assertThrows(pair.assertNeither);
   pair.errback();
   assertThrows(pair.assertNeither);
-}
-
-function testZeroBasedTimeoutsRunInNextEventLoop() {
-  var count = 0;
-  setTimeout(function() {
-    count += 1;
-    setTimeout(function() { count += 1; }, 0);
-    setTimeout(function() { count += 1; }, 0);
-  }, 0);
-  clock.tick();
-  assertEquals(1, count);  // Fails; count == 3
-  clock.tick();
-  assertEquals(3, count);
-}
-
-function testNewZeroBasedTimeoutsRunInNextEventLoopAfterExistingTasks() {
-  var events = [];
-  setInterval(function() { events.push('a'); }, 1);
-  setTimeout(function() { events.push('b'); }, 0);
-  clock.tick();
-  assertEquals('ab', events.join(''));
 }

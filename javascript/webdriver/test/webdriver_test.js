@@ -13,6 +13,7 @@
 // limitations under the License.
 
 goog.require('bot.ErrorCode');
+goog.require('goog.Promise');
 goog.require('goog.functions');
 goog.require('goog.json');
 goog.require('goog.testing.PropertyReplacer');
@@ -32,7 +33,6 @@ goog.require('webdriver.promise.ControlFlow');
 goog.require('webdriver.promise.Deferred');
 goog.require('webdriver.promise.Promise');
 goog.require('webdriver.test.testutil');
-goog.require('webdriver.testing.promise.FlowTester');
 
 var SESSION_ID = 'test_session_id';
 
@@ -43,36 +43,78 @@ var STUB_DRIVER = {
 // Alias some long names that interfere with test readability.
 var CName = webdriver.CommandName,
     ECode = bot.ErrorCode,
-    STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
+    StubError = webdriver.test.testutil.StubError,
     throwStubError = webdriver.test.testutil.throwStubError,
-    assertIsStubError = webdriver.test.testutil.assertIsStubError,
-    callbackHelper = webdriver.test.testutil.callbackHelper,
-    callbackPair = webdriver.test.testutil.callbackPair;
+    assertIsStubError = webdriver.test.testutil.assertIsStubError;
 
 // By is exported by webdriver.By, but IDEs don't recognize
 // goog.exportSymbol. Explicitly define it here to make the
 // IDE stop complaining.
 var By = webdriver.By;
 
-var clock;
 var driver;
-var flowTester;
+var flow;
 var mockControl;
-var verifyAll;
+var uncaughtExceptions;
 
 function setUp() {
-  clock = webdriver.test.testutil.createMockClock();
-  flowTester = new webdriver.testing.promise.FlowTester(clock, goog.global);
   mockControl = new goog.testing.MockControl();
-  verifyAll = callbackHelper(goog.bind(mockControl.$verifyAll, mockControl));
+  flow = webdriver.promise.controlFlow();
+  uncaughtExceptions = [];
+  flow.on('uncaughtException', onUncaughtException);
 }
 
 
 function tearDown() {
-  flowTester.dispose();
-  verifyAll.assertCalled('Never verified mocks');
-  clock.uninstall();
-  mockControl.$tearDown();
+  return waitForIdle(flow).then(function() {
+    mockControl.$verifyAll();
+    mockControl.$tearDown();
+
+    assertArrayEquals('There were uncaught exceptions',
+        [], uncaughtExceptions);
+    flow.reset();
+  });
+}
+
+
+function onUncaughtException(e) {
+  uncaughtExceptions.push(e);
+}
+
+
+function waitForIdle(opt_flow) {
+  var theFlow = opt_flow || flow;
+  return new goog.Promise(function(fulfill, reject) {
+    if (!theFlow.activeFrame_ && !theFlow.yieldCount_) {
+      fulfill();
+      return;
+    }
+    theFlow.once('idle', fulfill);
+    theFlow.once('uncaughtException', reject);
+  });
+}
+
+
+function waitForAbort(opt_flow, opt_n) {
+  var n = opt_n || 1;
+  var theFlow = opt_flow || flow;
+  theFlow.removeAllListeners(
+      webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
+  return new goog.Promise(function(fulfill, reject) {
+    theFlow.once('idle', function() {
+      reject(Error('expected flow to report an unhandled error'));
+    });
+
+    var errors = [];
+    theFlow.on('uncaughtException', onError);
+    function onError(e) {
+      errors.push(e);
+      if (errors.length === n) {
+        theFlow.removeListener('uncaughtException', onError);
+        fulfill(n === 1 ? errors[0] : errors);
+      }
+    }
+  });
 }
 
 
@@ -101,41 +143,6 @@ function createCommandMatcher(commandName, parameters) {
 
 TestHelper = function() {
   this.executor = mockControl.createStrictMock(webdriver.CommandExecutor);
-  this.execute = function() {
-    fail('Expectations not set!');
-  };
-};
-
-
-TestHelper.expectingFailure = function(opt_errback) {
-  var helper = new TestHelper();
-
-  helper.execute = function() {
-    flowTester.run();
-    flowTester.verifyFailure();
-    verifyAll();
-    if (opt_errback) {
-      opt_errback(flowTester.getFailure());
-    }
-  };
-
-  return helper;
-};
-
-
-TestHelper.expectingSuccess = function(opt_callback) {
-  var helper = new TestHelper();
-
-  helper.execute = function() {
-    flowTester.run();
-    flowTester.verifySuccess();
-    verifyAll();
-    if (opt_callback) {
-      opt_callback();
-    }
-  };
-
-  return helper;
 };
 
 
@@ -154,6 +161,8 @@ TestHelper.Command = function(testHelper, commandName, opt_parameters) {
   this.helper_ = testHelper;
   this.name_ = commandName;
   this.toDo_ = null;
+  this.anyTimes_ = false;
+  this.times_ = 0;
   this.sessionId_ = SESSION_ID;
   this.withParameters(opt_parameters || {});
 };
@@ -171,9 +180,17 @@ TestHelper.Command.prototype.withParameters = function(parameters) {
 TestHelper.Command.prototype.buildExpectation_ = function() {
   var commandMatcher = createCommandMatcher(this.name_, this.parameters_);
   assertNotNull(this.toDo_);
-  this.helper_.executor.
+  var expectation = this.helper_.executor.
       execute(commandMatcher, goog.testing.mockmatchers.isFunction).
       $does(this.toDo_);
+  if (this.anyTimes_) {
+    assertEquals(0, this.times_);
+    expectation.$anyTimes();
+  }
+  if (this.times_) {
+    assertFalse(this.anyTimes_);
+    expectation.$times(this.times_);
+  }
 };
 
 
@@ -187,6 +204,18 @@ TestHelper.Command.prototype.andReturn = function(code, opt_value) {
       'value': goog.isDef(opt_value) ? opt_value : null
     });
   };
+  return this;
+};
+
+
+TestHelper.Command.prototype.anyTimes = function() {
+  this.anyTimes_ = true;
+  return this;
+};
+
+
+TestHelper.Command.prototype.times = function(n) {
+  this.times_ = n;
   return this;
 };
 
@@ -237,47 +266,41 @@ TestHelper.prototype.createDriver = function(opt_session) {
 //////////////////////////////////////////////////////////////////////////////
 
 function testAttachToSession_sessionIsAvailable() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.DESCRIBE_SESSION).
       withParameters({'sessionId': SESSION_ID}).
       andReturnSuccess({'browserName': 'firefox'}).
       replayAll();
 
-  var callback;
   var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
       SESSION_ID);
-  driver.getSession().then(callback = callbackHelper(function(session) {
+  return driver.getSession().then(function(session) {
     webdriver.test.testutil.assertObjectEquals({
       'value':'test_session_id'
     }, session.getId());
     assertEquals('firefox', session.getCapability('browserName'));
-  }));
-  testHelper.execute();
-  callback.assertCalled();
+  });
 }
 
 
 function testAttachToSession_failsToGetSessionInfo() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.DESCRIBE_SESSION).
       withParameters({'sessionId': SESSION_ID}).
       andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
       replayAll();
 
-  var errback;
   var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
       SESSION_ID);
-  driver.getSession().then(null, errback = callbackHelper(function(e) {
+  return driver.getSession().then(fail, function(e) {
     assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
     assertEquals('boom', e.message);
-  }));
-  testHelper.execute();
-  errback.assertCalled();
+  });
 }
 
 
 function testAttachToSession_usesActiveFlowByDefault() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.DESCRIBE_SESSION).
       withParameters({'sessionId': SESSION_ID}).
       andReturnSuccess({}).
@@ -286,28 +309,30 @@ function testAttachToSession_usesActiveFlowByDefault() {
   var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
       SESSION_ID);
   assertEquals(driver.controlFlow(), webdriver.promise.controlFlow());
-  testHelper.execute();
+
+  return waitForIdle(driver.controlFlow());
 }
 
 
 function testAttachToSession_canAttachInCustomFlow() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.DESCRIBE_SESSION).
       withParameters({'sessionId': SESSION_ID}).
       andReturnSuccess({}).
       replayAll();
 
-  var otherFlow = new webdriver.promise.ControlFlow(goog.global);
-  var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
-      SESSION_ID, otherFlow);
+  var otherFlow = new webdriver.promise.ControlFlow();
+  var driver = webdriver.WebDriver.attachToSession(
+      testHelper.executor, SESSION_ID, otherFlow);
   assertEquals(otherFlow, driver.controlFlow());
   assertNotEquals(otherFlow, webdriver.promise.controlFlow());
-  testHelper.execute();
+
+  return waitForIdle(otherFlow);
 }
 
 
 function testCreateSession_happyPathWithCapabilitiesHashObject() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.NEW_SESSION).
       withParameters({
         'desiredCapabilities': {'browserName': 'firefox'}
@@ -315,23 +340,20 @@ function testCreateSession_happyPathWithCapabilitiesHashObject() {
       andReturnSuccess({'browserName': 'firefox'}).
       replayAll();
 
-  var callback;
   var driver = webdriver.WebDriver.createSession(testHelper.executor, {
     'browserName': 'firefox'
   });
-  driver.getSession().then(callback = callbackHelper(function(session) {
+  return driver.getSession().then(function(session) {
     webdriver.test.testutil.assertObjectEquals({
       'value':'test_session_id'
     }, session.getId());
     assertEquals('firefox', session.getCapability('browserName'));
-  }));
-  testHelper.execute();
-  callback.assertCalled();
+  });
 }
 
 
 function testCreateSession_happyPathWithCapabilitiesInstance() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.NEW_SESSION).
       withParameters({
         'desiredCapabilities': {'browserName': 'firefox'}
@@ -339,22 +361,19 @@ function testCreateSession_happyPathWithCapabilitiesInstance() {
       andReturnSuccess({'browserName': 'firefox'}).
       replayAll();
 
-  var callback;
   var driver = webdriver.WebDriver.createSession(
       testHelper.executor, webdriver.Capabilities.firefox());
-  driver.getSession().then(callback = callbackHelper(function(session) {
+  return driver.getSession().then(function(session) {
     webdriver.test.testutil.assertObjectEquals({
       'value':'test_session_id'
     }, session.getId());
     assertEquals('firefox', session.getCapability('browserName'));
-  }));
-  testHelper.execute();
-  callback.assertCalled();
+  });
 }
 
 
 function testCreateSession_failsToCreateSession() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.NEW_SESSION).
       withParameters({
         'desiredCapabilities': {'browserName': 'firefox'}
@@ -362,21 +381,18 @@ function testCreateSession_failsToCreateSession() {
       andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
       replayAll();
 
-  var errback;
   var driver = webdriver.WebDriver.createSession(testHelper.executor, {
     'browserName': 'firefox'
   });
-  driver.getSession().then(null, errback = callbackHelper(function(e) {
+  return driver.getSession().then(fail, function(e) {
     assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
     assertEquals('boom', e.message);
-  }));
-  testHelper.execute();
-  errback.assertCalled();
+  });
 }
 
 
 function testCreateSession_usesActiveFlowByDefault() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.NEW_SESSION).
       withParameters({'desiredCapabilities': {}}).
       andReturnSuccess({}).
@@ -384,12 +400,13 @@ function testCreateSession_usesActiveFlowByDefault() {
 
   var driver = webdriver.WebDriver.createSession(testHelper.executor, {});
   assertEquals(webdriver.promise.controlFlow(), driver.controlFlow());
-  testHelper.execute();
+
+  return waitForIdle(driver.controlFlow());
 }
 
 
 function testCreateSession_canCreateInCustomFlow() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.NEW_SESSION).
       withParameters({'desiredCapabilities': {}}).
       andReturnSuccess({}).
@@ -400,62 +417,49 @@ function testCreateSession_canCreateInCustomFlow() {
       testHelper.executor, {}, otherFlow);
   assertEquals(otherFlow, driver.controlFlow());
   assertNotEquals(otherFlow, webdriver.promise.controlFlow());
-  testHelper.execute();
+
+  return waitForIdle(otherFlow);
 }
 
 
 function testToWireValue_function() {
   var fn = function() { return 'foo'; };
-  var callback;
-  webdriver.WebDriver.toWireValue_(fn).
-      then(callback = callbackHelper(function(value) {
-        assertEquals(fn + '', value);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+  return webdriver.WebDriver.toWireValue_(fn).then(function(value) {
+    assertEquals(fn + '', value);
+  });
 }
 
 
 function testToWireValue_date() {
   if (goog.userAgent.IE) {
-    verifyAll();  // Expected by tear down.
     return;  // Because IE...
   }
-  var callback;
-  webdriver.WebDriver.toWireValue_(new Date(605728511546)).
-      then(callback = callbackHelper(function(value) {
+  return webdriver.WebDriver.toWireValue_(new Date(605728511546)).
+      then(function(value) {
         assertEquals('1989-03-12T17:55:11.546Z', value);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
 function testToWireValue_simpleObject() {
   var expected = {'sessionId': 'foo'};
-  var callback;
-  webdriver.WebDriver.toWireValue_({
+  return webdriver.WebDriver.toWireValue_({
     'sessionId': new webdriver.Session('foo', {})
-  }).then(callback = callbackHelper(function(actual) {
+  }).then(function(actual) {
     webdriver.test.testutil.assertObjectEquals(expected, actual);
-  }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+  });
 }
 
 
 function testToWireValue_nestedObject() {
   var expected = {'sessionId': {'value': 'foo'}};
-  var callback;
-  webdriver.WebDriver.toWireValue_({
+  return webdriver.WebDriver.toWireValue_({
     'sessionId': {
       'value': new webdriver.Session('foo', {})
     }
-  }).then(callback = callbackHelper(function(actual) {
+  }).then(function(actual) {
     webdriver.test.testutil.assertObjectEquals(expected, actual);
-  }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+  });
 }
 
 
@@ -467,7 +471,7 @@ function testToWireValue_capabilities() {
   var caps = webdriver.Capabilities.chrome();
   caps.set(webdriver.Capability.LOGGING_PREFS, prefs);
 
-  var callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_(caps).then(function(actual) {
     webdriver.test.testutil.assertObjectEquals({
       'browserName': 'chrome',
       'loggingPrefs': {
@@ -475,11 +479,6 @@ function testToWireValue_capabilities() {
       }
     }, actual);
   });
-
-  webdriver.WebDriver.toWireValue_(caps).then(callback);
-
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -488,13 +487,9 @@ function testToWireValue_webElement() {
   expected[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
   var element = new webdriver.WebElement(STUB_DRIVER, expected);
-  var callback;
-  webdriver.WebDriver.toWireValue_(element).
-      then(callback = callbackHelper(function(actual) {
-        webdriver.test.testutil.assertObjectEquals(expected, actual);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+  return webdriver.WebDriver.toWireValue_(element).then(function(actual) {
+    webdriver.test.testutil.assertObjectEquals(expected, actual);
+  });
 }
 
 
@@ -505,20 +500,16 @@ function testToWireValue_webElementPromise() {
   var element = new webdriver.WebElement(STUB_DRIVER, expected);
   var elementPromise = new webdriver.WebElementPromise(STUB_DRIVER,
       webdriver.promise.fulfilled(element));
-  var callback;
-  webdriver.WebDriver.toWireValue_(elementPromise).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_(elementPromise).
+      then(function(actual) {
         webdriver.test.testutil.assertObjectEquals(expected, actual);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
 function testToWireValue_domElement() {
   assertThrows(
       goog.partial(webdriver.WebDriver.toWireValue_, document.body));
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -529,44 +520,32 @@ function testToWireValue_serializableObject() {
    */
   var CustomSerializable = function () {
     webdriver.Serializable.call(this);
-
-    this.d = webdriver.promise.defer();
   };
   goog.inherits(CustomSerializable, webdriver.Serializable);
 
   /** @override */
   CustomSerializable.prototype.serialize = function() {
-    return this.d.promise;
+    return webdriver.promise.fulfilled({
+      name: webdriver.promise.fulfilled('bob'),
+      age: 30
+    });
   };
 
-
   var obj = new CustomSerializable();
-  var callback;
-  webdriver.WebDriver.toWireValue_(obj).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_(obj).
+      then(function(actual) {
         webdriver.test.testutil.assertObjectEquals(
             {name: 'bob', age: 30}, actual);
-      }));
-
-  callback.assertNotCalled();
-  obj.d.fulfill({
-    name: webdriver.promise.fulfilled('bob'),
-    age: 30
-  });
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
 function testToWireValue_simpleArray() {
   var expected = ['foo'];
-  var callback;
-  webdriver.WebDriver.toWireValue_([new webdriver.Session('foo', {})]).then(
-      callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_([new webdriver.Session('foo', {})]).
+      then(function(actual) {
         assertArrayEquals(expected, actual);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
@@ -575,15 +554,12 @@ function testToWireValue_arrayWithWebElement() {
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
   var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
-  var callback;
-  webdriver.WebDriver.toWireValue_([element]).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_([element]).
+      then(function(actual) {
         assertTrue(goog.isArray(actual));
         assertEquals(1, actual.length);
         webdriver.test.testutil.assertObjectEquals(elementJson, actual[0]);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
@@ -595,15 +571,12 @@ function testToWireValue_arrayWithWebElementPromise() {
   var elementPromise = new webdriver.WebElementPromise(STUB_DRIVER,
       webdriver.promise.fulfilled(element));
 
-  var callback;
-  webdriver.WebDriver.toWireValue_([elementPromise]).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_([elementPromise]).
+      then(function(actual) {
         assertTrue(goog.isArray(actual));
         assertEquals(1, actual.length);
         webdriver.test.testutil.assertObjectEquals(elementJson, actual[0]);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
@@ -614,31 +587,25 @@ function testToWireValue_complexArray() {
 
   var element = new webdriver.WebElement(STUB_DRIVER, elementJson);
   var input = ['abc', 123, true, element, [123, {'foo': 'bar'}]];
-  var callback;
-  webdriver.WebDriver.toWireValue_(input).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_(input).
+      then(function(actual) {
         webdriver.test.testutil.assertObjectEquals(expected, actual);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
 function testToWireValue_arrayWithNestedPromises() {
-  var callback;
-  webdriver.WebDriver.toWireValue_([
+  return webdriver.WebDriver.toWireValue_([
     'abc',
     webdriver.promise.fulfilled([
       123,
      webdriver.promise.fulfilled(true)
     ])
-  ]).then(callback = callbackHelper(function(actual) {
+  ]).then(function(actual) {
     assertEquals(2, actual.length);
     assertEquals('abc', actual[0]);
     assertArrayEquals([123, true], actual[1]);
-  }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+  });
 }
 
 
@@ -658,13 +625,10 @@ function testToWireValue_complexHash() {
     'sessionId': new webdriver.Session('foo', {})
   };
 
-  var callback;
-  webdriver.WebDriver.toWireValue_(parameters).
-      then(callback = callbackHelper(function(actual) {
+  return webdriver.WebDriver.toWireValue_(parameters).
+      then(function(actual) {
         webdriver.test.testutil.assertObjectEquals(expected, actual);
-      }));
-  callback.assertCalled();
-  verifyAll();  // Expected by tear down.
+      });
 }
 
 
@@ -675,8 +639,6 @@ function testFromWireValue_primitives() {
 
   assertUndefined(webdriver.WebDriver.fromWireValue_({}, undefined));
   assertNull(webdriver.WebDriver.fromWireValue_({}, null));
-
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -687,13 +649,9 @@ function testFromWireValue_webElements() {
   var element = webdriver.WebDriver.fromWireValue_(STUB_DRIVER, json);
   assertEquals(STUB_DRIVER, element.getDriver());
 
-  var callback;
-  webdriver.promise.when(element.id_, callback = callbackHelper(function(id) {
+  return element.getId().then(function(id) {
     webdriver.test.testutil.assertObjectEquals(json, id);
-  }));
-  callback.assertCalled();
-
-  verifyAll();  // Expected by tear down.
+  });
 }
 
 
@@ -701,7 +659,6 @@ function testFromWireValue_simpleObject() {
   var json = {'sessionId': 'foo'};
   var out = webdriver.WebDriver.fromWireValue_({}, json);
   webdriver.test.testutil.assertObjectEquals(json, out);
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -709,7 +666,6 @@ function testFromWireValue_nestedObject() {
   var json = {'foo': {'bar': 123}};
   var out = webdriver.WebDriver.fromWireValue_({}, json);
   webdriver.test.testutil.assertObjectEquals(json, out);
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -717,7 +673,6 @@ function testFromWireValue_array() {
   var json = [{'foo': {'bar': 123}}];
   var out = webdriver.WebDriver.fromWireValue_({}, json);
   webdriver.test.testutil.assertObjectEquals(json, out);
-  verifyAll();  // Expected by tear down.
 }
 
 
@@ -725,40 +680,31 @@ function testFromWireValue_passesThroughFunctionProperties() {
   var json = [{'foo': {'bar': 123}, 'func': goog.nullFunction}];
   var out = webdriver.WebDriver.fromWireValue_({}, json);
   webdriver.test.testutil.assertObjectEquals(json, out);
-  verifyAll();  // Expected by tear down.
 }
 
 
 function testDoesNotExecuteCommandIfSessionDoesNotResolve() {
-  var session = webdriver.promise.rejected(STUB_ERROR);
-  var testHelper = TestHelper.
-      expectingFailure(assertIsStubError).
-      replayAll();
+  var session = webdriver.promise.rejected(new StubError);
+  var testHelper = new TestHelper().replayAll();
   testHelper.createDriver(session).getTitle();
-  testHelper.execute();
+  return waitForAbort().then(assertIsStubError);
 }
 
 
 function testCommandReturnValuesArePassedToFirstCallback() {
-  var testHelper = TestHelper.expectingSuccess().
-      expect(CName.GET_TITLE).
-      andReturnSuccess('Google Search').
+  var testHelper = new TestHelper().
+      expect(CName.GET_TITLE).andReturnSuccess('Google Search').
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.getTitle().then(callback = callbackHelper(function(title) {
+  return driver.getTitle().then(function(title) {
     assertEquals('Google Search', title);
-  }));
-
-  testHelper.execute();
-  callback.assertCalled();
+  });
 }
 
 
 function testStopsCommandExecutionWhenAnErrorOccurs() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.NO_SUCH_WINDOW, 'window not found')).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW).
       withParameters({'name': 'foo'}).
       andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
@@ -768,74 +714,59 @@ function testStopsCommandExecutionWhenAnErrorOccurs() {
   driver.switchTo().window('foo');
   driver.getTitle();  // mock should blow if this gets executed
 
-  testHelper.execute();
+  return waitForAbort().
+      then(expectedError(ECode.NO_SUCH_WINDOW, 'window not found'));
 }
 
 
 function testCanSuppressCommandFailures() {
-  var callback;
-  var testHelper = TestHelper.
-      expectingSuccess(function() {
-        callback.assertCalled();
-      }).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW).
-      withParameters({'name': 'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
+          withParameters({'name': 'foo'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
       expect(CName.GET_TITLE).
-      andReturnSuccess('Google Search').
+          andReturnSuccess('Google Search').
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.switchTo().window('foo').
-      thenCatch(callback = callbackHelper(function(e) {
-        assertEquals(ECode.NO_SUCH_WINDOW, e.code);
-        assertEquals('window not found', e.message);
-        return true;  // suppress expected failure
-      }));
+  driver.switchTo().window('foo').thenCatch(function(e) {
+    assertEquals(ECode.NO_SUCH_WINDOW, e.code);
+    assertEquals('window not found', e.message);
+  });
   driver.getTitle();
-
-  // The mock will verify that getTitle was executed, which is what we want.
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testErrorsPropagateUpToTheRunningApplication() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.NO_SUCH_WINDOW, 'window not found')).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW).
-      withParameters({'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
+          withParameters({'name':'foo'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
       replayAll();
 
   testHelper.createDriver().switchTo().window('foo');
-
-  testHelper.execute();
+  return waitForAbort().
+      then(expectedError(ECode.NO_SUCH_WINDOW, 'window not found'));
 }
 
 
 function testErrbacksThatReturnErrorsStillSwitchToCallbackChain() {
-  var callback;
-  var testHelper = TestHelper.
-      expectingSuccess(function() {
-        callback.assertCalled();
-      }).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW).
-      withParameters({'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          withParameters({'name':'foo'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.switchTo().window('foo').
-      thenCatch(function() { return STUB_ERROR; }).
-      then(callback = callbackHelper(assertIsStubError));
-
-  testHelper.execute();
+  return driver.switchTo().window('foo').
+      thenCatch(function() { return new StubError; });
+      then(assertIsStubError);
 }
 
 
 function testErrbacksThrownCanOverrideOriginalError() {
-  var testHelper = TestHelper.
-      expectingFailure(assertIsStubError).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
       andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       replayAll();
@@ -843,51 +774,48 @@ function testErrbacksThrownCanOverrideOriginalError() {
   var driver = testHelper.createDriver();
   driver.switchTo().window('foo').thenCatch(throwStubError);
 
-  testHelper.execute();
+  return waitForAbort().then(assertIsStubError);
 }
 
 
 function testCannotScheduleCommandsIfTheSessionIdHasBeenDeleted() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
   delete driver.session_;
   assertThrows(goog.bind(driver.get, driver, 'http://www.google.com'));
-  verifyAll();
 }
 
 
 function testDeletesSessionIdAfterQuitting() {
   var driver;
-  var testHelper = TestHelper.
-      expectingSuccess(function() {
-        assertUndefined('Session ID should have been deleted', driver.session_);
-      }).
+  var testHelper = new TestHelper().
       expect(CName.QUIT).
       replayAll();
 
   driver = testHelper.createDriver();
-  driver.quit();
-  testHelper.execute();
+  return driver.quit().then(function() {
+    assertUndefined('Session ID should have been deleted', driver.session_);
+  });
 }
 
 
 function testReportsErrorWhenExecutingCommandsAfterExecutingAQuit() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(undefined,
-          'This driver instance does not have a valid session ID ' +
-          '(did you call WebDriver.quit()?) and may no longer be used.')).
+  var testHelper = new TestHelper().
       expect(CName.QUIT).
       replayAll();
 
   var driver = testHelper.createDriver();
   driver.quit();
   driver.get('http://www.google.com');
-  testHelper.execute();
+  return waitForAbort().
+      then(expectedError(undefined,
+          'This driver instance does not have a valid session ID ' +
+          '(did you call WebDriver.quit()?) and may no longer be used.'));
 }
 
 
 function testCallbackCommandsExecuteBeforeNextCommand() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_CURRENT_URL).
       expect(CName.GET, {'url': 'http://www.google.com'}).
       expect(CName.CLOSE).
@@ -902,12 +830,12 @@ function testCallbackCommandsExecuteBeforeNextCommand() {
   });
   driver.getTitle();
 
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testEachCallbackFrameRunsToCompletionBeforeTheNext() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.GET_CURRENT_URL).
       expect(CName.GET_CURRENT_WINDOW_HANDLE).
@@ -929,79 +857,72 @@ function testEachCallbackFrameRunsToCompletionBeforeTheNext() {
   // This should execute after everything above
   driver.quit();
 
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testNestedCommandFailuresBubbleUpToGlobalHandlerIfUnsuppressed() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.NO_SUCH_WINDOW, 'window not found')).
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.getTitle().
-      then(function(){
-        driver.switchTo().window('foo');
-      });
+  driver.getTitle().then(function() {
+    driver.switchTo().window('foo');
+  });
 
-  testHelper.execute();
+  return waitForAbort().
+      then(expectedError(ECode.NO_SUCH_WINDOW, 'window not found'));
 }
 
 
 function testNestedCommandFailuresCanBeSuppressWhenTheyOccur() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       expect(CName.CLOSE).
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.getTitle().
-      then(function(){
-        driver.switchTo().window('foo').
-          thenCatch(goog.functions.TRUE);
-      });
+  driver.getTitle().then(function() {
+    driver.switchTo().window('foo').thenCatch(goog.nullFunction);
+  });
   driver.close();
-  testHelper.execute();
+
+  return waitForIdle();
 }
 
 
 function testNestedCommandFailuresBubbleUpThroughTheFrameStack() {
-  var callback;
-  var testHelper = TestHelper.
-      expectingSuccess(function() {
-          callback.assertCalled('Error did not bubble up');
-      }).
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       replayAll();
 
   var driver = testHelper.createDriver();
   driver.getTitle().
-      then(function(){
+      then(function() {
         return driver.switchTo().window('foo');
       }).
-      thenCatch(callback = callbackHelper(function(e) {
+      thenCatch(function(e) {
         assertEquals(ECode.NO_SUCH_WINDOW, e.code);
         assertEquals('window not found', e.message);
-        return true;  // Suppress the error.
-      }));
+      });
 
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testNestedCommandFailuresCanBeCaughtAndSuppressed() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.GET_CURRENT_URL).
       expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       expect(CName.CLOSE).
       replayAll();
 
@@ -1011,20 +932,19 @@ function testNestedCommandFailuresCanBeCaughtAndSuppressed() {
         then(function() {
           return driver.switchTo().window('foo');
         }).
-        thenCatch(goog.functions.TRUE);
+        thenCatch(goog.nullFunction);
     driver.close();
   });
 
-  // Let the mock verify everything.
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testReturningADeferredResultFromACallback() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.GET_CURRENT_URL).
-      andReturnSuccess('http://www.google.com').
+          andReturnSuccess('http://www.google.com').
       replayAll();
 
   var driver = testHelper.createDriver();
@@ -1035,19 +955,17 @@ function testReturningADeferredResultFromACallback() {
       then(function(value) {
         assertEquals('http://www.google.com', value);
       });
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testReturningADeferredResultFromAnErrbackSuppressesTheError() {
   var count = 0;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals(2, count);
-      }).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       expect(CName.GET_CURRENT_URL).
-      andReturnSuccess('http://www.google.com').
+          andReturnSuccess('http://www.google.com').
       replayAll();
 
   var driver = testHelper.createDriver();
@@ -1062,31 +980,25 @@ function testReturningADeferredResultFromAnErrbackSuppressesTheError() {
         count += 1;
         assertEquals('http://www.google.com', url);
       });
-  testHelper.execute();
+  return waitForIdle().then(function() {
+    assertEquals(2, count);
+  });
 }
 
 
 function testExecutingACustomFunctionThatReturnsANonDeferred() {
-  var called = false;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertTrue('Callback not called', called);
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
 
   var driver = testHelper.createDriver();
-  driver.call(goog.functions.constant('abc123')).then(function(value) {
-    called = true;
+  return driver.call(goog.functions.constant('abc123')).then(function(value) {
     assertEquals('abc123', value);
   });
-  testHelper.execute();
 }
 
 
 function testExecutionOrderwithCustomFunctions() {
   var msg = [];
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals('cheese is tasty!', msg.join(''));
-      }).
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).andReturnSuccess('cheese ').
       expect(CName.GET_CURRENT_URL).andReturnSuccess('tasty').
       replayAll();
@@ -1099,44 +1011,35 @@ function testExecutionOrderwithCustomFunctions() {
   driver.getCurrentUrl().then(pushMsg);
   driver.call(goog.functions.constant('!')).then(pushMsg);
 
-  testHelper.execute();
+  return waitForIdle().then(function() {
+    assertEquals('cheese is tasty!', msg.join(''));
+  });
 }
 
 
 function testPassingArgumentsToACustomFunction() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var add = callbackHelper(function(a, b) {
+  var add = function(a, b) {
     return a + b;
-  });
+  };
   var driver = testHelper.createDriver();
-  driver.call(add, null, 1, 2).
-      then(function(value) {
-        assertEquals(3, value);
-      });
-  testHelper.execute();
-  add.assertCalled();
+  return driver.call(add, null, 1, 2).then(function(value) {
+    assertEquals(3, value);
+  });
 }
 
 function testPassingPromisedArgumentsToACustomFunction() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var promisedArg = new webdriver.promise.Deferred;
-  var add = callbackHelper(function(a, b) {
+  var promisedArg = webdriver.promise.fulfilled(2);
+  var add = function(a, b) {
     return a + b;
-  });
+  };
   var driver = testHelper.createDriver();
-  driver.call(add, null, 1, promisedArg).
-      then(function(value) {
-        assertEquals(3, value);
-      });
-
-  flowTester.turnEventLoop();
-  add.assertNotCalled();
-
-  promisedArg.fulfill(2);
-  add.assertCalled();
-  testHelper.execute();
+  return driver.call(add, null, 1, promisedArg).then(function(value) {
+    assertEquals(3, value);
+  });
 }
 
 function testPassingArgumentsAndScopeToACustomFunction() {
@@ -1148,39 +1051,26 @@ function testPassingArgumentsAndScopeToACustomFunction() {
   };
   var foo = new Foo('foo');
 
-  var called = false;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertTrue('Callback not called', called);
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
-  driver.call(foo.getName, foo).then(function(value) {
+  return driver.call(foo.getName, foo).then(function(value) {
     assertEquals('foo', value);
-    called = true;
   });
-  testHelper.execute();
 }
 
 
 function testExecutingACustomFunctionThatThrowsAnError() {
-  var called = false;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertTrue('Callback not called', called);
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
-  driver.call(goog.functions.error('bam!')).thenCatch(function(e) {
+  return driver.call(goog.functions.error('bam!')).then(fail, function(e) {
     assertTrue(e instanceof Error);
     assertEquals('bam!', e.message);
-    called = true;
-    return true;  // suppress the error.
   });
-  testHelper.execute();
 }
 
 
 function testExecutingACustomFunctionThatSchedulesCommands() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.CLOSE).
       expect(CName.QUIT).
@@ -1192,92 +1082,78 @@ function testExecutingACustomFunctionThatSchedulesCommands() {
     driver.close();
   });
   driver.quit();
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testExecutingAFunctionThatReturnsATaskResultAfterSchedulingAnother() {
-  var called = false;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertTrue(called);
-      }).
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
           andReturnSuccess('Google Search').
       expect(CName.CLOSE).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var result = driver.call(function() {
+  return driver.call(function() {
     var title = driver.getTitle();
     driver.close();
     return title;
-  });
-
-  result.then(function(title) {
-    called = true;
+  }).then(function(title) {
     assertEquals('Google Search', title);
   });
-
-  testHelper.execute();
 }
 
 
 function testExecutingACustomFunctionWhoseNestedCommandFails() {
-  var called = false;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertTrue('Callback not called', called);
-      }).
+  var testHelper = new TestHelper().
       expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-      andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
+          andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var result = driver.call(function() {
+  return driver.call(function() {
     return driver.switchTo().window('foo');
-  });
-
-  result.thenCatch(function(e) {
+  }).then(fail, function(e) {
     assertEquals(ECode.NO_SUCH_WINDOW, e.code);
     assertEquals('window not found', e.message);
-    called = true;
-    return true;  // suppress the error.
   });
-
-  testHelper.execute();
 }
 
 
 function testCustomFunctionDoesNotCompleteUntilReturnedPromiseIsResolved() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var d = new webdriver.promise.Deferred(),
-      stepOne = callbackHelper(function() { return d.promise; }),
-      stepTwo = callbackHelper();
-
+  var order = [];
   var driver = testHelper.createDriver();
-  driver.call(stepOne);
-  driver.call(stepTwo);
 
-  flowTester.turnEventLoop();
-  stepOne.assertCalled();
-  stepTwo.assertNotCalled();
+  var d = webdriver.promise.defer();
+  d.promise.then(function() {
+    order.push('b');
+  });
 
-  flowTester.turnEventLoop();
-  stepOne.assertCalled();
-  stepTwo.assertNotCalled();
+  driver.call(function() {
+    order.push('a');
+    return d.promise;
+  });
+  driver.call(function() {
+    order.push('c');
+  });
 
-  d.fulfill();
-  testHelper.execute();
-  stepTwo.assertCalled();
+  // timeout to ensure the first function starts its execution before we
+  // trigger d's callbacks.
+  return webdriver.promise.delayed(0).then(function() {
+    assertArrayEquals(['a'], order);
+    d.fulfill();
+    return waitForIdle().then(function() {
+      assertArrayEquals(['a', 'b', 'c'], order);
+    });
+  });
 }
 
 
 function testNestedFunctionCommandExecutionOrder() {
   var msg = [];
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals('acefdb', msg.join(''));
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
 
   var driver = testHelper.createDriver();
   driver.call(msg.push, msg, 'a');
@@ -1290,16 +1166,15 @@ function testNestedFunctionCommandExecutionOrder() {
     driver.call(msg.push, msg, 'd');
   });
   driver.call(msg.push, msg, 'b');
-  testHelper.execute();
+  return waitForIdle().then(function() {
+    assertEquals('acefdb', msg.join(''));
+  });
 }
 
 
 function testExecutingNestedFunctionCommands() {
   var msg = [];
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals('cheese is tasty!', msg.join(''));
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
   var pushMsg = goog.bind(msg.push, msg);
   driver.call(goog.functions.constant('cheese ')).then(pushMsg);
@@ -1308,35 +1183,28 @@ function testExecutingNestedFunctionCommands() {
     driver.call(goog.functions.constant('tasty')).then(pushMsg);
   });
   driver.call(goog.functions.constant('!')).then(pushMsg);
-  testHelper.execute();
+  return waitForIdle().then(function() {
+    assertEquals('cheese is tasty!', msg.join(''));
+  });
 }
 
 
 function testReturnValuesFromNestedFunctionCommands() {
-  var count = 0;
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals('not called', 1, count);
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
-  var result = driver.call(function() {
+  return driver.call(function() {
     return driver.call(function() {
       return driver.call(goog.functions.constant('foobar'));
     });
-  });
-  result.then(function(value) {
+  }).then(function(value) {
     assertEquals('foobar', value);
-    count += 1;
   });
-  testHelper.execute();
 }
 
 
 function testExecutingANormalCommandAfterNestedCommandsThatReturnsAnAction() {
   var msg = [];
-  var testHelper = TestHelper.expectingSuccess(function() {
-        assertEquals('ab', msg.join(''));
-      }).
+  var testHelper = new TestHelper().
       expect(CName.CLOSE).
       replayAll();
   var driver = testHelper.createDriver();
@@ -1349,27 +1217,38 @@ function testExecutingANormalCommandAfterNestedCommandsThatReturnsAnAction() {
   driver.close().then(function() {
     msg.push('b');
   });
-
-  testHelper.execute();
+  return waitForIdle().then(function() {
+    assertEquals('ab', msg.join(''));
+  });
 }
 
 
-function testNestedCommandErrorsBubbleUp() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(undefined, 'bam!')).
-      replayAll();
+function testNestedCommandErrorsBubbleUp_caught() {
+  var testHelper = new TestHelper().replayAll();
+  var driver = testHelper.createDriver();
+  var result = driver.call(function() {
+    return driver.call(function() {
+      return driver.call(goog.functions.error('bam!'));
+    });
+  }).then(fail, expectedError(undefined, 'bam!'));
+  return goog.Promise.all([waitForIdle(), result]);
+}
+
+
+function testNestedCommandErrorsBubbleUp_uncaught() {
+  var testHelper = new TestHelper().replayAll();
   var driver = testHelper.createDriver();
   driver.call(function() {
     return driver.call(function() {
       return driver.call(goog.functions.error('bam!'));
     });
   });
-  testHelper.execute();
+  return waitForAbort().then(expectedError(undefined, 'bam!'));
 }
 
 
 function testExecutingNestedCustomFunctionsThatSchedulesCommands() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).
       expect(CName.CLOSE).
       replayAll();
@@ -1381,12 +1260,12 @@ function testExecutingNestedCustomFunctionsThatSchedulesCommands() {
     });
     driver.close();
   });
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testExecutingACustomFunctionThatReturnsADeferredAction() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_TITLE).andReturnSuccess('Google').
       replayAll();
 
@@ -1396,71 +1275,50 @@ function testExecutingACustomFunctionThatReturnsADeferredAction() {
   }).then(function(title) {
     assertEquals('Google', title);
   });
-
-  testHelper.execute();
+  return waitForIdle();
 }
 
 function testWebElementPromise_resolvesWhenUnderlyingElementDoes() {
   var el = new webdriver.WebElement(STUB_DRIVER, {'ELEMENT': 'foo'});
-  var d = webdriver.promise.defer();
-  var callback;
-  new webdriver.WebElementPromise(STUB_DRIVER, d.promise).then(
-      callback = callbackHelper(function(e) {
+  var promise = webdriver.promise.fulfilled(el);
+  return new webdriver.WebElementPromise(STUB_DRIVER, promise).
+      then(function(e) {
         assertEquals(e, el);
-      }));
-  callback.assertNotCalled();
-  d.fulfill(el);
-  callback.assertCalled();
-  verifyAll();  // Make tearDown happy.
+      });
 }
 
 function testWebElement_resolvesBeforeCallbacksOnWireValueTrigger() {
   var el = new webdriver.promise.Deferred();
 
-  var callback, idCallback;
   var element = new webdriver.WebElementPromise(STUB_DRIVER, el.promise);
   var messages = [];
 
-  webdriver.promise.when(element, function() {
+  element.then(function() {
     messages.push('element resolved');
   });
-
-  webdriver.promise.when(element.getId(), function() {
+  element.getId().then(function() {
     messages.push('wire value resolved');
   });
 
   assertArrayEquals([], messages);
   el.fulfill(new webdriver.WebElement(STUB_DRIVER, {'ELEMENT': 'foo'}));
-  assertArrayEquals([
-    'element resolved',
-    'wire value resolved'
-  ], messages);
-  verifyAll();  // Make tearDown happy.
+  return waitForIdle().then(function() {
+    assertArrayEquals([
+      'element resolved',
+      'wire value resolved'
+    ], messages);
+  });
 }
 
 function testWebElement_isRejectedIfUnderlyingIdIsRejected() {
-  var id = new webdriver.promise.Deferred();
-
-  var callback, errback;
-  var element = new webdriver.WebElementPromise(STUB_DRIVER, id.promise);
-
-  webdriver.promise.when(element,
-      callback = callbackHelper(),
-      errback = callbackHelper(assertIsStubError));
-
-  callback.assertNotCalled();
-  errback.assertNotCalled();
-
-  id.reject(STUB_ERROR);
-
-  callback.assertNotCalled();
-  errback.assertCalled();
-  verifyAll();  // Make tearDown happy.
+  var element = new webdriver.WebElementPromise(
+      STUB_DRIVER, webdriver.promise.rejected(new StubError));
+  return element.then(fail, assertIsStubError);
 }
 
 
 function testExecuteScript_nullReturnValue() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return document.body;',
@@ -1470,18 +1328,14 @@ function testExecuteScript_nullReturnValue() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.executeScript('return document.body;').
-      then(callback = callbackHelper(function(result) {
-        assertNull(result);
-      }));
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.executeScript('return document.body;').then(function(result) {
+    assertNull(result);
+  });
 }
 
 
 function testExecuteScript_primitiveReturnValue() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return document.body;',
@@ -1491,13 +1345,9 @@ function testExecuteScript_primitiveReturnValue() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.executeScript('return document.body;').
-      then(callback = callbackHelper(function(result) {
-        assertEquals(123, result);
-      }));
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.executeScript('return document.body;').then(function(result) {
+    assertEquals(123, result);
+  });
 }
 
 
@@ -1505,7 +1355,7 @@ function testExecuteScript_webElementReturnValue() {
   var json = {};
   json[webdriver.WebElement.ELEMENT_KEY] = 'foo';
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return document.body;',
@@ -1515,16 +1365,12 @@ function testExecuteScript_webElementReturnValue() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.executeScript('return document.body;').
+  return driver.executeScript('return document.body;').
       then(function(webelement) {
-        webdriver.promise.when(webelement.id_,
-            callback = callbackHelper(function(id) {
-              webdriver.test.testutil.assertObjectEquals(id, json);
-            }));
+        return webdriver.promise.when(webelement.id_, function(id) {
+          webdriver.test.testutil.assertObjectEquals(id, json);
+        });
       });
-  testHelper.execute();
-  callback.assertCalled();
 }
 
 
@@ -1532,7 +1378,7 @@ function testExecuteScript_arrayReturnValue() {
   var json = [{}];
   json[0][webdriver.WebElement.ELEMENT_KEY] = 'foo';
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return document.body;',
@@ -1542,16 +1388,12 @@ function testExecuteScript_arrayReturnValue() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.executeScript('return document.body;').
+  return driver.executeScript('return document.body;').
       then(function(array) {
-        webdriver.promise.when(array[0].id_,
-            callback = callbackHelper(function(id) {
-              webdriver.test.testutil.assertObjectEquals(id, json[0]);
-            }));
+        return webdriver.promise.when(array[0].id_, function(id) {
+          webdriver.test.testutil.assertObjectEquals(id, json[0]);
+        });
       });
-  testHelper.execute();
-  callback.assertCalled();
 }
 
 
@@ -1559,7 +1401,7 @@ function testExecuteScript_objectReturnValue() {
   var json = {'foo':{}};
   json['foo'][webdriver.WebElement.ELEMENT_KEY] = 'foo';
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return document.body;',
@@ -1570,20 +1412,17 @@ function testExecuteScript_objectReturnValue() {
 
   var driver = testHelper.createDriver();
   var callback;
-  driver.executeScript('return document.body;').
+  return driver.executeScript('return document.body;').
       then(function(obj) {
-        webdriver.promise.when(obj['foo'].id_,
-            callback = callbackHelper(function(id) {
-              webdriver.test.testutil.assertObjectEquals(id, json['foo']);
-            }));
+        return webdriver.promise.when(obj['foo'].id_, function(id) {
+          webdriver.test.testutil.assertObjectEquals(id, json['foo']);
+        });
       });
-  testHelper.execute();
-  callback.assertCalled();
 }
 
 
 function testExecuteScript_scriptAsFunction() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return (' + goog.nullFunction +
@@ -1594,13 +1433,12 @@ function testExecuteScript_scriptAsFunction() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.executeScript(goog.nullFunction);
-  testHelper.execute();
+  return driver.executeScript(goog.nullFunction);
 }
 
 
 function testExecuteScript_simpleArgumentConversion() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return 1;',
@@ -1610,8 +1448,8 @@ function testExecuteScript_simpleArgumentConversion() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.executeScript('return 1;', 'abc', 123, true, [123, {'foo': 'bar'}]);
-  testHelper.execute();
+  return driver.executeScript(
+      'return 1;', 'abc', 123, true, [123, {'foo': 'bar'}]);
 }
 
 
@@ -1619,7 +1457,7 @@ function testExecuteScript_webElementArgumentConversion() {
   var elementJson = {};
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return 1;',
@@ -1629,16 +1467,15 @@ function testExecuteScript_webElementArgumentConversion() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  driver.executeScript('return 1;',
+  return driver.executeScript('return 1;',
       new webdriver.WebElement(driver, elementJson));
-  testHelper.execute();
 }
 
 
 function testExecuteScript_webElementPromiseArgumentConversion() {
   var elementJson = {'ELEMENT':'bar'};
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
           andReturnSuccess(elementJson).
       expect(CName.EXECUTE_SCRIPT).
@@ -1651,8 +1488,7 @@ function testExecuteScript_webElementPromiseArgumentConversion() {
 
   var driver = testHelper.createDriver();
   var element = driver.findElement(By.id('foo'));
-  driver.executeScript('return 1;', element);
-  testHelper.execute();
+  return driver.executeScript('return 1;', element);
 }
 
 
@@ -1660,7 +1496,7 @@ function testExecuteScript_argumentConversion() {
   var elementJson = {};
   elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
 
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'return 1;',
@@ -1671,15 +1507,13 @@ function testExecuteScript_argumentConversion() {
 
   var driver = testHelper.createDriver();
   var element = new webdriver.WebElement(driver, elementJson);
-  driver.executeScript('return 1;',
+  return driver.executeScript('return 1;',
       'abc', 123, true, element, [123, {'foo': 'bar'}]);
-  testHelper.execute();
 }
 
 
 function testExecuteScript_scriptReturnsAnError() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.UNKNOWN_ERROR, 'bam')).
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT).
           withParameters({
             'script': 'throw Error(arguments[0]);',
@@ -1688,44 +1522,37 @@ function testExecuteScript_scriptReturnsAnError() {
           andReturnError(ECode.UNKNOWN_ERROR, {'message':'bam'}).
       replayAll();
   var driver = testHelper.createDriver();
-  driver.executeScript('throw Error(arguments[0]);', 'bam');
-  testHelper.execute();
+  return driver.executeScript('throw Error(arguments[0]);', 'bam').
+      then(fail, expectedError(ECode.UNKNOWN_ERROR, 'bam'));
 }
 
 
 function testExecuteScript_failsIfArgumentIsARejectedPromise() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var callback = callbackHelper(assertIsStubError);
-
-  var arg = webdriver.promise.rejected(STUB_ERROR);
+  var arg = webdriver.promise.rejected(new StubError);
   arg.thenCatch(goog.nullFunction);  // Suppress default handler.
 
   var driver = testHelper.createDriver();
-  driver.executeScript(goog.nullFunction, arg).thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.executeScript(goog.nullFunction, arg).
+      then(fail, assertIsStubError);
 }
 
 
 function testExecuteAsyncScript_failsIfArgumentIsARejectedPromise() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var callback = callbackHelper(assertIsStubError);
-
-  var arg = webdriver.promise.rejected(STUB_ERROR);
+  var arg = webdriver.promise.rejected(new StubError);
   arg.thenCatch(goog.nullFunction);  // Suppress default handler.
 
   var driver = testHelper.createDriver();
-  driver.executeAsyncScript(goog.nullFunction, arg).thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.executeAsyncScript(goog.nullFunction, arg).
+      then(fail, assertIsStubError);
 }
 
 
 function testFindElement_elementNotFound() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element')).
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
       andReturnError(ECode.NO_SUCH_ELEMENT, {
           'message':'Unable to find element'
@@ -1735,14 +1562,13 @@ function testFindElement_elementNotFound() {
   var driver = testHelper.createDriver();
   var element = driver.findElement(By.id('foo'));
   element.click();  // This should never execute.
-  testHelper.execute();
+  return waitForAbort().then(
+      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
 }
 
 
 function testFindElement_elementNotFoundInACallback() {
-  var testHelper = TestHelper.
-      expectingFailure(
-          expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element')).
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
       andReturnError(
           ECode.NO_SUCH_ELEMENT, {'message':'Unable to find element'}).
@@ -1753,12 +1579,13 @@ function testFindElement_elementNotFoundInACallback() {
     var element = driver.findElement(By.id('foo'));
     return element.click();  // Should not execute.
   });
-  testHelper.execute();
+  return waitForAbort().then(
+      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
 }
 
 
 function testFindElement_elementFound() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
           andReturnSuccess({'ELEMENT':'bar'}).
       expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'bar'}}).
@@ -1768,12 +1595,12 @@ function testFindElement_elementFound() {
   var driver = testHelper.createDriver();
   var element = driver.findElement(By.id('foo'));
   element.click();
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testFindElement_canUseElementInCallback() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
           andReturnSuccess({'ELEMENT':'bar'}).
       expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'bar'}}).
@@ -1784,12 +1611,12 @@ function testFindElement_canUseElementInCallback() {
   driver.findElement(By.id('foo')).then(function(element) {
     element.click();
   });
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testFindElement_byJs() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': 'return document.body',
         'args': []
@@ -1801,17 +1628,12 @@ function testFindElement_byJs() {
   var driver = testHelper.createDriver();
   var element = driver.findElement(By.js('return document.body'));
   element.click();  // just to make sure
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testFindElement_byJs_returnsNonWebElementValue() {
-  var testHelper = TestHelper.
-      expectingFailure(function(e) {
-        assertEquals(
-            'Not the expected error message',
-            'Custom locator did not return a WebElement', e.message);
-      }).
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
       andReturnSuccess(123).
       replayAll();
@@ -1819,13 +1641,17 @@ function testFindElement_byJs_returnsNonWebElementValue() {
   var driver = testHelper.createDriver();
   var element = driver.findElement(By.js('return 123'));
   element.click();  // Should not execute.
-  testHelper.execute();
+  return waitForAbort().then(function(e) {
+    assertEquals(
+        'Not the expected error message',
+        'Custom locator did not return a WebElement', e.message);
+  });
 }
 
 
 function testFindElement_byJs_canPassArguments() {
   var script = 'return document.getElementsByTagName(arguments[0]);';
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': script,
         'args': ['div']
@@ -1834,12 +1660,12 @@ function testFindElement_byJs_canPassArguments() {
       replayAll();
   var driver = testHelper.createDriver();
   driver.findElement(By.js(script, 'div'));
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testFindElement_customLocator() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'tag name', 'value':'a'}).
       andReturnSuccess([{'ELEMENT':'foo'}, {'ELEMENT':'bar'}]).
       expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'foo'}}).
@@ -1852,92 +1678,74 @@ function testFindElement_customLocator() {
     return d.findElements(By.tagName('a'));
   });
   element.click();
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testFindElement_customLocatorThrowsIfResultIsNotAWebElement() {
-  var testHelper = TestHelper.
-      expectingFailure(function(e) {
-        assertEquals(
-            'Not the expected error message',
-            'Custom locator did not return a WebElement', e.message);
-      }).
-      replayAll();
+  var testHelper = new TestHelper().replayAll();
 
   var driver = testHelper.createDriver();
   driver.findElement(function() {
     return 1;
   });
-  testHelper.execute();
+  return waitForAbort().then(function(e) {
+    assertEquals(
+        'Not the expected error message',
+        'Custom locator did not return a WebElement', e.message);
+  });
 }
 
 
 function testIsElementPresent_elementNotFound() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
       andReturnSuccess([]).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.isElementPresent(By.id('foo')).
-      then(callback = callbackHelper(function(result) {
-        assertFalse(result);
-      }));
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.isElementPresent(By.id('foo')).then(assertFalse);
 }
 
 
 function testIsElementPresent_elementFound() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
       andReturnSuccess([{'ELEMENT':'bar'}]).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.isElementPresent(By.id('foo')).
-      then(callback = callbackHelper(assertTrue));
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.isElementPresent(By.id('foo')).then(assertTrue);
 }
 
 
 function testIsElementPresent_letsErrorsPropagate() {
-  var testHelper = TestHelper.
-      expectingFailure(expectedError(ECode.UNKNOWN_ERROR, 'There is no spoon')).
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
       andReturnError(ECode.UNKNOWN_ERROR, {'message':'There is no spoon'}).
       replayAll();
 
   var driver = testHelper.createDriver();
   driver.isElementPresent(By.id('foo'));
-  testHelper.execute();
+  return waitForAbort().then(
+      expectedError(ECode.UNKNOWN_ERROR, 'There is no spoon'));
 }
 
 
 function testIsElementPresent_byJs() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
       andReturnSuccess([{'ELEMENT':'bar'}]).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback;
-  driver.isElementPresent(By.js('return 123')).
-      then(callback = callbackHelper(function(result) {
-        assertTrue(result);
-      }));
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.isElementPresent(By.js('return 123')).then(assertTrue);
 }
 
 
 function testIsElementPresent_byJs_canPassScriptArguments() {
   var script = 'return document.getElementsByTagName(arguments[0]);';
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': script,
         'args': ['div']
@@ -1947,7 +1755,7 @@ function testIsElementPresent_byJs_canPassScriptArguments() {
 
   var driver = testHelper.createDriver();
   driver.isElementPresent(By.js(script, 'div'));
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
@@ -1957,35 +1765,30 @@ function testFindElements() {
       {'ELEMENT':'bar'},
       {'ELEMENT':'baz'}
   ];
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'tag name', 'value':'a'}).
       andReturnSuccess(json).
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callbacks = [];
   driver.findElements(By.tagName('a')).then(function(elements) {
     assertEquals(3, elements.length);
+
+    var callbacks = new Array(3);
+    assertTypeAndId(0);
+    assertTypeAndId(1);
+    assertTypeAndId(2);
+
+    return webdriver.promise.all(callbacks);
 
     function assertTypeAndId(index) {
       assertTrue('Not a WebElement at index ' + index,
           elements[index] instanceof webdriver.WebElement);
-      elements[index].getId().
-          then(callbacks[index] = callbackHelper(function(id) {
-            webdriver.test.testutil.assertObjectEquals(json[index], id);
-          }));
+      callbacks[index] = elements[index].getId().then(function(id) {
+        webdriver.test.testutil.assertObjectEquals(json[index], id);
+      });
     }
-
-    assertTypeAndId(0);
-    assertTypeAndId(1);
-    assertTypeAndId(2);
   });
-
-  testHelper.execute();
-  assertEquals(3, callbacks.length);
-  callbacks[0].assertCalled();
-  callbacks[1].assertCalled();
-  callbacks[2].assertCalled();
 }
 
 
@@ -1995,7 +1798,7 @@ function testFindElements_byJs() {
       {'ELEMENT':'bar'},
       {'ELEMENT':'baz'}
   ];
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': 'return document.getElementsByTagName("div");',
         'args': []
@@ -2004,30 +1807,26 @@ function testFindElements_byJs() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callbacks = [];
-  driver.findElements(By.js('return document.getElementsByTagName("div");')).
-      then(function(elements) {
-        assertEquals(3, elements.length);
 
-        function assertTypeAndId(index) {
-          assertTrue('Not a WebElement at index ' + index,
-              elements[index] instanceof webdriver.WebElement);
-          elements[index].getId().
-              then(callbacks[index] = callbackHelper(function(id) {
-                webdriver.test.testutil.assertObjectEquals(json[index], id);
-              }));
-        }
+  return driver.
+      findElements(By.js('return document.getElementsByTagName("div");')).
+      then(function(elements) {
+        var callbacks = new Array(3);
+        assertEquals(3, elements.length);
 
         assertTypeAndId(0);
         assertTypeAndId(1);
         assertTypeAndId(2);
-      });
+        return webdriver.promise.all(callbacks);
 
-  testHelper.execute();
-  assertEquals(3, callbacks.length);
-  callbacks[0].assertCalled();
-  callbacks[1].assertCalled();
-  callbacks[2].assertCalled();
+        function assertTypeAndId(index) {
+          assertTrue('Not a WebElement at index ' + index,
+              elements[index] instanceof webdriver.WebElement);
+          callbacks[index] = elements[index].getId().then(function(id) {
+            webdriver.test.testutil.assertObjectEquals(json[index], id);
+          });
+        }
+      });
 }
 
 
@@ -2041,7 +1840,7 @@ function testFindElements_byJs_filtersOutNonWebElementResponses() {
       {'not a web element': 1},
       {'ELEMENT':'baz'}
   ];
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': 'return document.getElementsByTagName("div");',
         'args': []
@@ -2050,36 +1849,30 @@ function testFindElements_byJs_filtersOutNonWebElementResponses() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callbacks = [];
   driver.findElements(By.js('return document.getElementsByTagName("div");')).
       then(function(elements) {
         assertEquals(3, elements.length);
+        var callbacks = new Array(3);
+        assertTypeAndId(0, 0);
+        assertTypeAndId(1, 4);
+        assertTypeAndId(2, 6);
+        return webdriver.promise.all(callbacks);
 
         function assertTypeAndId(index, jsonIndex) {
           assertTrue('Not a WebElement at index ' + index,
               elements[index] instanceof webdriver.WebElement);
-          elements[index].getId().
-              then(callbacks[index] = callbackHelper(function(id) {
-                webdriver.test.testutil.assertObjectEquals(json[jsonIndex], id);
-              }));
+          callbacks[index] = elements[index].getId().then(function(id) {
+            webdriver.test.testutil.assertObjectEquals(json[jsonIndex], id);
+          });
         }
-
-        assertTypeAndId(0, 0);
-        assertTypeAndId(1, 4);
-        assertTypeAndId(2, 6);
       });
-
-  testHelper.execute();
-  assertEquals(3, callbacks.length);
-  callbacks[0].assertCalled();
-  callbacks[1].assertCalled();
-  callbacks[2].assertCalled();
+  return waitForIdle();
 }
 
 
 function testFindElements_byJs_convertsSingleWebElementResponseToArray() {
   var json = {'ELEMENT':'foo'};
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': 'return document.getElementsByTagName("div");',
         'args': []
@@ -2088,26 +1881,21 @@ function testFindElements_byJs_convertsSingleWebElementResponseToArray() {
       replayAll();
 
   var driver = testHelper.createDriver();
-  var callback1, callback2;
-  driver.findElements(By.js('return document.getElementsByTagName("div");')).
-      then(callback1 = callbackHelper(function(elements) {
+  return driver.
+      findElements(By.js('return document.getElementsByTagName("div");')).
+      then(function(elements) {
         assertEquals(1, elements.length);
         assertTrue(elements[0] instanceof webdriver.WebElement);
-        elements[0].getId().
-            then(callback2 = callbackHelper(function(id) {
-              webdriver.test.testutil.assertObjectEquals(json, id);
-            }));
-      }));
-
-  testHelper.execute();
-  callback1.assertCalled();
-  callback2.assertCalled();
+        return elements[0].getId().then(function(id) {
+          webdriver.test.testutil.assertObjectEquals(json, id);
+        });
+      });
 }
 
 
 function testFindElements_byJs_canPassScriptArguments() {
   var script = 'return document.getElementsByTagName(arguments[0]);';
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.EXECUTE_SCRIPT, {
         'script': script,
         'args': ['div']
@@ -2117,13 +1905,12 @@ function testFindElements_byJs_canPassScriptArguments() {
 
   var driver = testHelper.createDriver();
   driver.findElements(By.js(script, 'div'));
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testSendKeysConvertsVarArgsIntoStrings_simpleArgs() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.SEND_KEYS_TO_ELEMENT, {'id':{'ELEMENT':'one'},
                                           'value':['1','2','abc','3']}).
           andReturnSuccess().
@@ -2132,13 +1919,12 @@ function testSendKeysConvertsVarArgsIntoStrings_simpleArgs() {
   var driver = testHelper.createDriver();
   var element = new webdriver.WebElement(driver, {'ELEMENT': 'one'});
   element.sendKeys(1, 2, 'abc', 3);
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
 function testSendKeysConvertsVarArgsIntoStrings_promisedArgs() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
           andReturnSuccess({'ELEMENT':'one'}).
       expect(CName.SEND_KEYS_TO_ELEMENT, {'id':{'ELEMENT':'one'},
@@ -2151,120 +1937,112 @@ function testSendKeysConvertsVarArgsIntoStrings_promisedArgs() {
   element.sendKeys(
       webdriver.promise.fulfilled('abc'), 123,
       webdriver.promise.fulfilled('def'));
-  testHelper.execute();
+  return waitForIdle();
 }
 
 function testElementEquality_isReflexive() {
   var a = new webdriver.WebElement(STUB_DRIVER, 'foo');
-  var callback;
-  webdriver.WebElement.equals(a, a).then(
-      callback = callbackHelper(assertTrue));
-  callback.assertCalled();
-  verifyAll();  // for tearDown()
+  return webdriver.WebElement.equals(a, a).then(assertTrue);
 }
 
 function testElementEquals_doesNotSendRpcIfElementsHaveSameId() {
   var a = new webdriver.WebElement(STUB_DRIVER, 'foo'),
       b = new webdriver.WebElement(STUB_DRIVER, 'foo'),
-      c = new webdriver.WebElement(STUB_DRIVER, 'foo'),
-      callback;
-
-  webdriver.WebElement.equals(a, b).then(
-      callback = callbackHelper(assertTrue));
-  callback.assertCalled('a should == b!');
-  webdriver.WebElement.equals(b, a).then(
-      callback = callbackHelper(assertTrue));
-  callback.assertCalled('symmetry check failed');
-  webdriver.WebElement.equals(a, c).then(
-      callback = callbackHelper(assertTrue));
-  callback.assertCalled('a should == c!');
-  webdriver.WebElement.equals(b, c).then(
-      callback = callbackHelper(assertTrue));
-  callback.assertCalled('transitive check failed');
-
-  verifyAll();  // for tearDown()
+      c = new webdriver.WebElement(STUB_DRIVER, 'foo');
+  return webdriver.promise.all([
+    webdriver.WebElement.equals(a, b).then(
+        goog.partial(assertTrue, 'a should == b!')),
+    webdriver.WebElement.equals(b, a).then(
+        goog.partial(assertTrue, 'symmetry check failed')),
+    webdriver.WebElement.equals(a, c).then(
+        goog.partial(assertTrue, 'a should == c!')),
+    webdriver.WebElement.equals(b, c).then(
+        goog.partial(assertTrue, 'transitive check failed'))
+  ]);
 }
 
 function testElementEquals_sendsRpcIfElementsHaveDifferentIds() {
   var id1 = {'ELEMENT':'foo'};
   var id2 = {'ELEMENT':'bar'};
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.ELEMENT_EQUALS, {'id':id1, 'other':id2}).
       andReturnSuccess(true).
       replayAll();
 
   var driver = testHelper.createDriver();
   var a = new webdriver.WebElement(driver, id1),
-      b = new webdriver.WebElement(driver, id2),
-      callback;
-
-  webdriver.WebElement.equals(a, b).then(
-      callback = callbackHelper(assertTrue));
-
-  testHelper.execute();
-  callback.assertCalled();
+      b = new webdriver.WebElement(driver, id2);
+  return webdriver.WebElement.equals(a, b).then(assertTrue);
 }
 
 
 function testElementEquals_failsIfAnInputElementCouldNotBeFound() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var callback = callbackHelper(assertIsStubError);
-  var id = webdriver.promise.rejected(STUB_ERROR);
+  var id = webdriver.promise.rejected(new StubError);
   id.thenCatch(goog.nullFunction);  // Suppress default handler.
 
   var driver = testHelper.createDriver();
   var a = new webdriver.WebElement(driver, {'ELEMENT': 'foo'});
   var b = new webdriver.WebElementPromise(driver, id);
 
-  webdriver.WebElement.equals(a, b).thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+  return webdriver.WebElement.equals(a, b).then(fail, assertIsStubError);
 }
+
 
 function testWaiting_waitSucceeds() {
-  var testHelper = TestHelper.expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([]).
+          andReturnSuccess([]).
+          times(2).
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([]).
-      expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([{'ELEMENT':'bar'}]).
+          andReturnSuccess([{'ELEMENT':'bar'}]).
       replayAll();
 
   var driver = testHelper.createDriver();
   driver.wait(function() {
     return driver.isElementPresent(By.id('foo'));
   }, 200);
-  testHelper.execute();
+  return waitForIdle();
 }
 
 
-function testWaiting_waitTimesout() {
-  var testHelper = TestHelper.
-      expectingFailure(function(e) {
-        assertEquals('Wait timed out after ',
-            e.message.substring(0, 'Wait timed out after '.length));
-      }).
+function testWaiting_waitTimesout_timeoutCaught() {
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([]).
+          andReturnSuccess([]).
+          anyTimes().
+      replayAll();
+
+  var driver = testHelper.createDriver();
+  return driver.wait(function() {
+    return driver.isElementPresent(By.id('foo'));
+  }, 25).then(fail, function(e) {
+    assertEquals('Wait timed out after ',
+        e.message.substring(0, 'Wait timed out after '.length));
+  });
+}
+
+
+function testWaiting_waitTimesout_timeoutNotCaught() {
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([]).
-      expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
-      andReturnSuccess([]).
+          andReturnSuccess([]).
+          anyTimes().
       replayAll();
 
   var driver = testHelper.createDriver();
   driver.wait(function() {
     return driver.isElementPresent(By.id('foo'));
-  }, 200);
-  testHelper.execute();
+  }, 25);
+  return waitForAbort().then(function(e) {
+    assertEquals('Wait timed out after ',
+        e.message.substring(0, 'Wait timed out after '.length));
+  });
 }
 
 function testInterceptsAndTransformsUnhandledAlertErrors() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
       andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {
         'message': 'boom',
@@ -2272,39 +2050,29 @@ function testInterceptsAndTransformsUnhandledAlertErrors() {
       }).
       replayAll();
 
-  var pair = callbackPair(null, function(e) {
-    assertTrue(e instanceof webdriver.UnhandledAlertError);
-
-    var pair = callbackPair(goog.partial(assertEquals, 'hello'));
-    e.getAlert().getText().then(pair.callback, pair.errback);
-    pair.assertCallback();
-  });
-
   var driver = testHelper.createDriver();
-  driver.findElement(By.id('foo')).then(pair.callback, pair.errback);
-  testHelper.execute();
-  pair.assertErrback();
+  return driver.findElement(By.id('foo')).then(fail, function(e) {
+    assertTrue(e instanceof webdriver.UnhandledAlertError);
+    return e.getAlert().getText();
+  }).then(function(text) {
+    assertEquals('hello', text);
+  });
 }
 
-function testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+function
+testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse() {
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
       andReturnError(ECode.UNEXPECTED_ALERT_OPEN, {'message': 'boom'}).
       replayAll();
 
-  var pair = callbackPair(null, function(e) {
-    assertTrue(e instanceof webdriver.UnhandledAlertError);
-
-    var pair = callbackPair(goog.partial(assertEquals, ''));
-    e.getAlert().getText().then(pair.callback, pair.errback);
-    pair.assertCallback();
-  });
-
   var driver = testHelper.createDriver();
-  driver.findElement(By.id('foo')).then(pair.callback, pair.errback);
-  testHelper.execute();
-  pair.assertErrback();
+  return driver.findElement(By.id('foo')).then(fail, function(e) {
+    assertTrue(e instanceof webdriver.UnhandledAlertError);
+    return e.getAlert().getText();
+  }).then(function(text) {
+    assertEquals('', text);
+  });
 }
 
 function testAlertHandleResolvesWhenPromisedTextResolves() {
@@ -2313,30 +2081,22 @@ function testAlertHandleResolvesWhenPromisedTextResolves() {
   var alert = new webdriver.AlertPromise(STUB_DRIVER, promise);
   assertTrue(alert.isPending());
 
-  var callback;
-  webdriver.promise.when(alert.getText(),
-      callback = callbackHelper(function(text) {
-        assertEquals('foo', text);
-      }));
-
-  callback.assertNotCalled();
-
   promise.fulfill(new webdriver.Alert(STUB_DRIVER, 'foo'));
-
-  callback.assertCalled();
-  verifyAll();  // Make tearDown happy.
+  return alert.getText().then(function(text) {
+    assertEquals('foo', text);
+  });
 }
 
 
 function testWebElementsBelongToSameFlowAsParentDriver() {
-  var testHelper = TestHelper
-      .expectingSuccess()
+  var testHelper = new TestHelper()
       .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'})
       .andReturnSuccess({'ELEMENT': 'abc123'})
       .replayAll();
 
   var driver = testHelper.createDriver();
-  webdriver.promise.createFlow(function() {
+  var otherFlow = new webdriver.promise.ControlFlow();
+  otherFlow.execute(function() {
     driver.findElement({id: 'foo'}).then(function() {
       assertEquals(
           'WebElement should belong to the same flow as its parent driver',
@@ -2344,13 +2104,16 @@ function testWebElementsBelongToSameFlowAsParentDriver() {
     });
   });
 
-  testHelper.execute();
+  assertNotEquals(otherFlow, driver.controlFlow);
+  return goog.Promise.all([
+    waitForIdle(otherFlow),
+    waitForIdle(driver.controlFlow())
+  ]);
 }
 
 
 function testSwitchToAlertThatIsNotPresent() {
-  var testHelper = TestHelper
-      .expectingFailure(expectedError(ECode.NO_SUCH_ALERT, 'no alert'))
+  var testHelper = new TestHelper()
       .expect(CName.GET_ALERT_TEXT)
       .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
       .replayAll();
@@ -2358,18 +2121,18 @@ function testSwitchToAlertThatIsNotPresent() {
   var driver = testHelper.createDriver();
   var alert = driver.switchTo().alert();
   alert.dismiss();  // Should never execute.
-  testHelper.execute();
+  return waitForAbort().then(expectedError(ECode.NO_SUCH_ALERT, 'no alert'));
 }
 
 
 function testAlertsBelongToSameFlowAsParentDriver() {
-  var testHelper = TestHelper
-      .expectingSuccess()
+  var testHelper = new TestHelper()
       .expect(CName.GET_ALERT_TEXT).andReturnSuccess('hello')
       .replayAll();
 
   var driver = testHelper.createDriver();
-  webdriver.promise.createFlow(function() {
+  var otherFlow = new webdriver.promise.ControlFlow();
+  otherFlow.execute(function() {
     driver.switchTo().alert().then(function() {
       assertEquals(
           'Alert should belong to the same flow as its parent driver',
@@ -2377,12 +2140,15 @@ function testAlertsBelongToSameFlowAsParentDriver() {
     });
   });
 
-  testHelper.execute();
+  assertNotEquals(otherFlow, driver.controlFlow);
+  return goog.Promise.all([
+    waitForIdle(otherFlow),
+    waitForIdle(driver.controlFlow())
+  ]);
 }
 
 function testFetchingLogs() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.GET_LOG, {'type': 'browser'}).
       andReturnSuccess([
         new webdriver.logging.Entry(
@@ -2391,7 +2157,8 @@ function testFetchingLogs() {
       ]).
       replayAll();
 
-  var pair = callbackPair(function(entries) {
+  var driver = testHelper.createDriver();
+  return driver.manage().logs().get('browser').then(function(entries) {
     assertEquals(2, entries.length);
 
     assertTrue(entries[0] instanceof webdriver.logging.Entry);
@@ -2404,110 +2171,87 @@ function testFetchingLogs() {
     assertEquals('abc123', entries[1].message);
     assertEquals(5678, entries[1].timestamp);
   });
-
-  var driver = testHelper.createDriver();
-  driver.manage().logs().get('browser').then(pair.callback, pair.errback);
-  testHelper.execute();
-  pair.assertCallback();
 }
 
 
 function testCommandsFailIfInitialSessionCreationFailed() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
-  var navigateResult = callbackPair(null, assertIsStubError);
-  var quitResult = callbackPair(null, assertIsStubError);
+  var testHelper = new TestHelper().replayAll();
 
-  var session = webdriver.promise.rejected(STUB_ERROR);
+  var session = webdriver.promise.rejected(new StubError);
 
   var driver = testHelper.createDriver(session);
-  driver.get('some-url').then(navigateResult.callback, navigateResult.errback);
-  driver.quit().then(quitResult.callback, quitResult.errback);
+  var navigateResult = driver.get('some-url').then(fail, assertIsStubError);
+  var quitResult = driver.quit().then(fail, assertIsStubError);
 
-  testHelper.execute();
-  navigateResult.assertErrback();
-  quitResult.assertErrback();
+  return waitForIdle().then(function() {
+    return webdriver.promise.all(navigateResult, quitResult);
+  });
 }
 
 
 function testWebElementCommandsFailIfInitialDriverCreationFailed() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var session = webdriver.promise.rejected(STUB_ERROR);
-  var callback = callbackHelper(assertIsStubError);
+  var session = webdriver.promise.rejected(new StubError);
 
   var driver = testHelper.createDriver(session);
-  driver.findElement(By.id('foo')).click().thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.findElement(By.id('foo')).click().
+      then(fail, assertIsStubError);
 }
 
 
 function testWebElementCommansFailIfElementCouldNotBeFound() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
           andReturnError(ECode.NO_SUCH_ELEMENT,
                          {'message':'Unable to find element'}).
       replayAll();
 
-  var callback = callbackHelper(
-      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
-
   var driver = testHelper.createDriver();
-  driver.findElement(By.id('foo')).click().thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+  return driver.findElement(By.id('foo')).click().
+      then(fail,
+            expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
 }
 
 
 function testCannotFindChildElementsIfParentCouldNotBeFound() {
-  var testHelper = TestHelper.
-      expectingSuccess().
+  var testHelper = new TestHelper().
       expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
       andReturnError(ECode.NO_SUCH_ELEMENT,
                      {'message':'Unable to find element'}).
       replayAll();
 
-  var callback = callbackHelper(
-      expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
-
   var driver = testHelper.createDriver();
-  driver.findElement(By.id('foo'))
+  return driver.findElement(By.id('foo'))
       .findElement(By.id('bar'))
       .findElement(By.id('baz'))
-      .thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+      .then(fail,
+            expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element'));
 }
 
 
 function testActionSequenceFailsIfInitialDriverCreationFailed() {
-  var testHelper = TestHelper.expectingSuccess().replayAll();
+  var testHelper = new TestHelper().replayAll();
 
-  var session = webdriver.promise.rejected(STUB_ERROR);
+  var session = webdriver.promise.rejected(new StubError);
 
   // Suppress the default error handler so we can verify it propagates
   // to the perform() call below.
   session.thenCatch(goog.nullFunction);
 
-  var callback = callbackHelper(assertIsStubError);
-
-  var driver = testHelper.createDriver(session);
-  driver.actions().
+  return testHelper.createDriver(session).
+      actions().
       mouseDown().
       mouseUp().
       perform().
-      thenCatch(callback);
-  testHelper.execute();
-  callback.assertCalled();
+      thenCatch(assertIsStubError);
 }
 
 
 function testAlertCommandsFailIfAlertNotPresent() {
-  var testHelper = TestHelper
-      .expectingSuccess()
+  var testHelper = new TestHelper()
       .expect(CName.GET_ALERT_TEXT)
-      .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
+          .andReturnError(ECode.NO_SUCH_ALERT, {'message': 'no alert'})
       .replayAll();
 
   var driver = testHelper.createDriver();
@@ -2517,15 +2261,11 @@ function testAlertCommandsFailIfAlertNotPresent() {
   var callbacks = [];
   for (var key in webdriver.Alert.prototype) {
     if (webdriver.Alert.prototype.hasOwnProperty(key)) {
-      var helper = callbackHelper(expectError);
-      callbacks.push(key, helper);
-      alert[key].call(alert).thenCatch(helper);
+      callbacks.push(key, alert[key].call(alert).thenCatch(expectError));
     }
   }
 
-  testHelper.execute();
-  for (var i = 0; i < callbacks.length - 1; i += 2) {
-    callbacks[i + 1].assertCalled(
-            'Error did not propagate for ' + callbacks[i]);
-  }
+  return waitForIdle().then(function() {
+    return webdriver.promise.all(callbacks);
+  });
 }

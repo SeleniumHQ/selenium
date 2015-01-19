@@ -105,21 +105,18 @@ function wrapped(globalFn) {
 
   function asyncTestFn(fn) {
     var ret = function(done) {
-      function cleanupBeforeCallback() {
+      var mochaCallback = this.runnable().callback;
+      this.runnable().callback = function() {
         flow.reset();
-        return cleanupBeforeCallback.mochaCallback.apply(this, arguments);
-      }
-      // We set this as an attribute of the callback function to allow us to
-      // test this properly.
-      cleanupBeforeCallback.mochaCallback = this.runnable().callback;
-
-      this.runnable().callback = cleanupBeforeCallback;
+        return mochaCallback.apply(this, arguments);
+      };
 
       var testFn = fn.bind(this);
       flow.execute(function() {
-        var done = promise.defer();
-        promise.asap(testFn(done.reject), done.fulfill, done.reject);
-        return done.promise;
+        return new promise.Promise(function(fulfill, reject) {
+          var result = testFn(reject);
+          fulfill(result);
+        }, flow);
       }).then(seal(done), done);
     };
 

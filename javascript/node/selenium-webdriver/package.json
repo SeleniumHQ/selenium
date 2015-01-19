@@ -28,7 +28,8 @@
     "xml2js": "0.4.4"
   },
   "devDependencies": {
-    "mocha": ">= 1.21.x"
+    "mocha": ">= 1.21.x",
+    "promises-aplus-tests": "^2.1.0"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"

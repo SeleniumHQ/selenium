@@ -64,7 +64,7 @@ webdriver.stacktrace.Snapshot = function(opt_slice) {
    * computes the context correctly.
    * @private {string}
    */
-  this.stack_ = webdriver.stacktrace.getStack_(error);
+  this.stack_ = webdriver.stacktrace.getStack(error);
 };
 
 
@@ -569,9 +569,8 @@ webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
  * consistently with the other JS engines.
  * @param {(Error|goog.testing.JsUnitException)} error The error.
  * @return {string} The stack trace string.
- * @private
  */
-webdriver.stacktrace.getStack_ = function(error) {
+webdriver.stacktrace.getStack = function(error) {
   if (!error) {
     return '';
   }
@@ -590,7 +589,7 @@ webdriver.stacktrace.getStack_ = function(error) {
  * @return {!(Error|goog.testing.JsUnitException)} The formatted error.
  */
 webdriver.stacktrace.format = function(error) {
-  var stack = webdriver.stacktrace.getStack_(error);
+  var stack = webdriver.stacktrace.getStack(error);
   var frames = webdriver.stacktrace.parse_(stack);
 
   // If the original stack is in an unexpected format, our formatted stack

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.require('goog.Promise');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.mockmatchers');
@@ -19,23 +20,19 @@ goog.require('goog.testing.jsunit');
 goog.require('goog.testing.recordFunction');
 goog.require('webdriver.test.testutil');
 goog.require('webdriver.testing.TestCase');
-goog.require('webdriver.testing.promise.FlowTester');
 
 
 // Aliases for readability.
 var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument,
     IS_ARRAY_ARGUMENT = goog.testing.mockmatchers.isArray,
-    STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
+    StubError = webdriver.test.testutil.StubError,
     throwStubError = webdriver.test.testutil.throwStubError,
     assertIsStubError = webdriver.test.testutil.assertIsStubError;
 
 var control = new goog.testing.MockControl();
-var flowTester, clock, mockTestCase, testStub, mockOnComplete, mockOnError;
+var mockTestCase, testStub, mockOnComplete, mockOnError, uncaughtExceptions;
 
 function setUp() {
-  clock = webdriver.test.testutil.createMockClock();
-  flowTester = new webdriver.testing.promise.FlowTester(clock, goog.global);
-
   // Use one master mock so we can assert execution order.
   mockTestCase = control.createStrictMock({
     setUp: goog.nullFunction,
@@ -55,13 +52,27 @@ function setUp() {
   };
 
   webdriver.test.testutil.messages = [];
+  uncaughtExceptions = [];
+
+  webdriver.promise.controlFlow().
+      on('uncaughtExceptions', onUncaughtException);
 }
 
 function tearDown() {
-  flowTester.verifySuccess();
-  flowTester.dispose();
-  control.$tearDown();
-  clock.dispose();
+  var flow = webdriver.promise.controlFlow();
+  return new goog.Promise(function(fulfill) {
+    flow.execute(goog.nullFunction);  // Flush.
+    flow.once('idle', fulfill);
+  }).then(function() {
+    assertArrayEquals('There were uncaught exceptions',
+        [], uncaughtExceptions);
+    control.$tearDown();
+    flow.reset();
+  });
+}
+
+function onUncaughtException(e) {
+  uncaughtExceptions.push(e);
 }
 
 function schedule(msg, opt_fn) {
@@ -70,11 +81,9 @@ function schedule(msg, opt_fn) {
 }
 
 function runTest() {
-  webdriver.testing.TestCase.prototype.runSingleTest_.
+  return webdriver.testing.TestCase.prototype.runSingleTest_.
       call(mockTestCase, testStub, mockOnError).
       then(mockOnComplete);
-  flowTester.run();
-  control.$verifyAll();
 }
 
 function testExecutesTheBasicTestFlow() {
@@ -84,7 +93,7 @@ function testExecutesTheBasicTestFlow() {
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testExecutingAHappyTestWithScheduledActions() {
@@ -94,55 +103,59 @@ function testExecutingAHappyTestWithScheduledActions() {
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testShouldSkipTestFnIfSetupThrows() {
-  mockTestCase.setUp().$does(throwStubError);
-  mockOnError(STUB_ERROR);
+  var e = Error();
+  mockTestCase.setUp().$does(function() { throw e; });
+  mockOnError(e);
   mockTestCase.tearDown();
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testShouldSkipTestFnIfSetupActionFails_1() {
+  var e = Error();
   mockTestCase.setUp().$does(function() {
-    schedule('an explosion', throwStubError);
+    schedule('an explosion', function() { throw e; });
   });
-  mockOnError(STUB_ERROR);
+  mockOnError(e);
   mockTestCase.tearDown();
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testShouldSkipTestFnIfSetupActionFails_2() {
+  var e = Error();
   mockTestCase.setUp().$does(function() {
-    schedule('an explosion', throwStubError);
+    schedule('an explosion', function() { throw e; });
   });
-  mockOnError(STUB_ERROR);
+  mockOnError(e);
   mockTestCase.tearDown();
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testShouldSkipTestFnIfNestedSetupActionFails() {
+  var e = Error();
   mockTestCase.setUp().$does(function() {
     schedule('a', goog.nullFunction).then(function() {
-      schedule('b', throwStubError);
+      schedule('b', function() { throw e; });
     });
   });
-  mockOnError(STUB_ERROR);
+  mockOnError(e);
   mockTestCase.tearDown();
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testRunsAllTasksForEachPhaseBeforeTheNextPhase() {
@@ -153,40 +166,44 @@ function testRunsAllTasksForEachPhaseBeforeTheNextPhase() {
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testRecordsErrorsFromTestFnBeforeTearDown() {
+  var e = Error();
   mockTestCase.setUp();
-  mockTestCase.testFn().$does(throwStubError);
-  mockOnError(STUB_ERROR);
+  mockTestCase.testFn().$does(function() { throw e; });
+  mockOnError(e);
   mockTestCase.tearDown();
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testRecordsErrorsFromTearDown() {
+  var e = Error();
   mockTestCase.setUp();
   mockTestCase.testFn();
-  mockTestCase.tearDown().$does(throwStubError);
-  mockOnError(STUB_ERROR);
+  mockTestCase.tearDown().$does(function() { throw e; });
+  mockOnError(e);
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testErrorFromSetUpAndTearDown() {
-  mockTestCase.setUp().$does(throwStubError);
-  mockOnError(STUB_ERROR);
-  mockTestCase.tearDown().$does(throwStubError);
-  mockOnError(STUB_ERROR);
+  var e1 = Error();
+  var e2 = Error();
+  mockTestCase.setUp().$does(function() { throw e1; });
+  mockOnError(e1);
+  mockTestCase.tearDown().$does(function() { throw e2; });
+  mockOnError(e2);
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }
 
 function testErrorFromTestFnAndTearDown() {
@@ -199,5 +216,5 @@ function testErrorFromTestFnAndTearDown() {
   mockOnComplete(IGNORE_ARGUMENT);
   control.$replayAll();
 
-  runTest();
+  return runTest();
 }

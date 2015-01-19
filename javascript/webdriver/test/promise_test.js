@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.require('goog.testing.MockClock');
 goog.require('goog.testing.jsunit');
 goog.require('webdriver.promise');
 goog.require('webdriver.promise.Deferred');
+goog.require('webdriver.stacktrace');
 goog.require('webdriver.test.testutil');
+
 
 // Aliases for readability.
 var assertIsPromise = webdriver.test.testutil.assertIsPromise,
@@ -24,31 +27,36 @@ var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     callbackPair = webdriver.test.testutil.callbackPair,
     assertIsStubError = webdriver.test.testutil.assertIsStubError,
     throwStubError = webdriver.test.testutil.throwStubError,
-    STUB_ERROR = webdriver.test.testutil.STUB_ERROR;
+    StubError = webdriver.test.testutil.StubError;
 
 var app, clock, uncaughtExceptions;
 
 function setUp() {
-  clock = webdriver.test.testutil.createMockClock();
+  webdriver.promise.LONG_STACK_TRACES = false;
+  clock = new goog.testing.MockClock(true);
   uncaughtExceptions = [];
 
   app = webdriver.promise.controlFlow();
   app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
          goog.bind(uncaughtExceptions.push, uncaughtExceptions));
-
-  // The application timer defaults to a protected copies of the native
-  // timing functions. Reset it to use |window|, which has been modified
-  // by the MockClock above.
-  app.timer = window;
 }
 
 
 function tearDown() {
-  webdriver.test.testutil.consumeTimeouts();
+  clock.tick(Infinity);
   clock.dispose();
   app.reset();
+  webdriver.promise.setDefaultFlow(new webdriver.promise.ControlFlow);
   assertArrayEquals(
       'Did not expect any uncaught exceptions', [], uncaughtExceptions);
+  webdriver.promise.LONG_STACK_TRACES = false;
+}
+
+
+function createRejectedPromise(reason) {
+  var p = webdriver.promise.rejected(reason);
+  p.thenCatch(goog.nullFunction);
+  return p;
 }
 
 
@@ -70,7 +78,6 @@ function testCanDetectPromiseLikeObjects() {
   assertNotPromise({then:1});
   assertNotPromise({then:true});
   assertNotPromise({then:''});
-
 }
 
 
@@ -84,6 +91,7 @@ function testSimpleResolveScenario() {
 
   callback.assertNotCalled();
   deferred.fulfill(123);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -95,11 +103,14 @@ function testRegisteringACallbackPostResolution() {
     assertEquals(123, value);
   })));
   deferred.fulfill(123);
+  clock.tick();
   callback.assertCalled();
 
   deferred.then((callback = callbackHelper(function(value) {
     assertEquals(123, value);
   })));
+  callback.assertNotCalled();
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -111,11 +122,13 @@ function testRegisterACallbackViaDeferredPromise() {
     assertEquals(123, value);
   })));
   deferred.fulfill(123);
+  clock.tick();
   callback.assertCalled();
 
   deferred.promise.then((callback = callbackHelper(function(value) {
     assertEquals(123, value);
   })));
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -132,11 +145,13 @@ function testTwoStepResolvedChain() {
 
   callback.assertNotCalled();
   start.fulfill(123);
+  clock.tick();
   callback.assertCalled();
 
   next.then((callback = callbackHelper(function(value) {
     assertEquals(124, value);
   })));
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -151,18 +166,20 @@ function testCanResolveOnlyOnce_resolved() {
   deferred.then(callback = callbackHelper(function(value) {
     assertEquals(1, value);
   }));
+  clock.tick();
   callback.assertCalled();
 }
 
 
 function testCanResolveOnlyOnce_rejected() {
   var deferred = new webdriver.promise.Deferred();
-  deferred.reject(STUB_ERROR);
+  deferred.reject(new StubError);
   deferred.fulfill(1);
   deferred.reject(2);
 
   var callback;
   deferred.then(null, callback = callbackHelper(assertIsStubError));
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -182,6 +199,7 @@ function testIfFulfilledWithOtherPromiseCannotChangeValueWhileWaiting() {
   callback.assertNotCalled();
 
   other.fulfill(123);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -191,6 +209,7 @@ function testOnlyGoesDownListenerPath_resolved() {
   var errback = callbackHelper();
 
   webdriver.promise.fulfilled().then(callback, errback);
+  clock.tick();
   callback.assertCalled();
   errback.assertNotCalled();
 }
@@ -201,6 +220,7 @@ function testOnlyGoesDownListenerPath_rejected() {
   var errback = callbackHelper();
 
   webdriver.promise.rejected().then(callback, errback);
+  clock.tick();
   callback.assertNotCalled();
   errback.assertCalled();
 }
@@ -212,9 +232,10 @@ function testCatchingAndSuppressingRejectionErrors() {
     assertUndefined(arguments[0]);
   });
 
-  webdriver.promise.rejected(STUB_ERROR).
+  webdriver.promise.rejected(new StubError).
       thenCatch(errback).
       then(callback);
+  clock.tick();
   errback.assertCalled();
   callback.assertCalled();
 }
@@ -227,12 +248,13 @@ function testThrowingNewRejectionErrors() {
     assertEquals(error2, error);
   });
 
-  webdriver.promise.rejected(STUB_ERROR).
+  webdriver.promise.rejected(new StubError).
       thenCatch(function(error) {
         errback1(error);
         throw error2;
       }).
       thenCatch(errback2);
+  clock.tick();
   errback1.assertCalled();
   errback2.assertCalled();
 }
@@ -240,9 +262,10 @@ function testThrowingNewRejectionErrors() {
 
 function testThenFinally_nonFailingCallbackDoesNotSuppressOriginalError() {
   var done = callbackHelper(assertIsStubError);
-  webdriver.promise.rejected(STUB_ERROR).
+  webdriver.promise.rejected(new StubError).
       thenFinally(goog.nullFunction).
       thenCatch(done);
+  clock.tick();
   done.assertCalled();
 }
 
@@ -252,6 +275,7 @@ function testThenFinally_failingCallbackSuppressesOriginalError() {
   webdriver.promise.rejected(new Error('original')).
       thenFinally(throwStubError).
       thenCatch(done);
+  clock.tick();
   done.assertCalled();
 }
 
@@ -261,6 +285,7 @@ function testThenFinally_callbackThrowsAfterFulfilledPromise() {
   webdriver.promise.fulfilled().
       thenFinally(throwStubError).
       thenCatch(done);
+  clock.tick();
   done.assertCalled();
 }
 
@@ -269,9 +294,10 @@ function testThenFinally_callbackReturnsRejectedPromise() {
   var done = callbackHelper(assertIsStubError);
   webdriver.promise.fulfilled().
       thenFinally(function() {
-        return webdriver.promise.rejected(STUB_ERROR);
+        return webdriver.promise.rejected(new StubError);
       }).
       thenCatch(done);
+  clock.tick();
   done.assertCalled();
 }
 
@@ -303,6 +329,7 @@ function testChainingThen_AllResolved() {
 
   deferred.fulfill(128);
 
+  clock.tick();
   callbacks[0].assertCalled();
   callbacks[1].assertCalled();
   callbacks[2].assertCalled();
@@ -317,6 +344,7 @@ function testWhen_ReturnsAResolvedPromiseIfGivenANonPromiseValue() {
   ret.then(callback = callbackHelper(function (value) {
     assertEquals('abc', value);
   }));
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -326,6 +354,7 @@ function testWhen_PassesRawErrorsToCallbacks() {
   webdriver.promise.when(error, callback = callbackHelper(function(value) {
     assertEquals(error, value);
   }));
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -337,6 +366,7 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
   }));
   callback.assertNotCalled();
   d.fulfill('hi');
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -359,6 +389,7 @@ function testWhen_canCancelReturnedPromise() {
 
   assertTrue(promise.isPending());
   promise.cancel('just because');
+  clock.tick();
   callbacks.assertErrback();
 
   // The following should have no effect.
@@ -368,7 +399,7 @@ function testWhen_canCancelReturnedPromise() {
 
 
 function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
-  webdriver.promise.rejected(STUB_ERROR);
+  webdriver.promise.rejected(new StubError);
   var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
@@ -392,9 +423,11 @@ function testWaitsIfCallbackReturnsAPromiseObject() {
         assertEquals('bye', value);
       }));
 
+  clock.tick();
   callback1.assertCalled();
   callback2.assertNotCalled();
   callback1Return.fulfill('bye');
+  clock.tick();
   callback2.assertCalled();
 }
 
@@ -419,9 +452,11 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
         assertEquals('bye', value);
       }));
 
+  clock.tick();
   callback1.assertCalled();
   callback2.assertNotCalled();
   callback1Return.fulfill('bye');
+  clock.tick();
   callback2.assertCalled();
 }
 
@@ -444,10 +479,12 @@ function testResolvingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   callback2.assertNotCalled();
 
   d2.fulfill(2);
+  clock.tick();
   callback1.assertNotCalled();
   callback2.assertCalled();
 
   d1.fulfill(d2promise);
+  clock.tick();
   callback1.assertCalled();
   callback2.assertCalled();
 }
@@ -471,6 +508,7 @@ function testResolvingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   callback.assertNotCalled();
   d.fulfill(otherPromise);
   otherPromise.fulfill(4);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -480,7 +518,8 @@ function testRejectForcesValueToAnError_errorInstance() {
   var callback = callbackHelper(assertIsStubError);
 
   d.thenCatch(callback);
-  d.reject(STUB_ERROR);
+  d.reject(new StubError);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -494,6 +533,7 @@ function testRejectForcesValueToAnError_errorSubTypeInstance() {
 
   d.thenCatch(callback);
   d.reject(e);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -507,6 +547,7 @@ function testRejectForcesValueToAnError_customErrorInstance() {
 
   d.thenCatch(callback);
   d.reject(e);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -520,6 +561,7 @@ function testRejectForcesValueToAnError_errorLike() {
 
   d.thenCatch(callback);
   d.reject(e);
+  clock.tick();
   callback.assertCalled();
 }
 
@@ -527,36 +569,33 @@ function testRejectForcesValueToAnError_errorLike() {
 function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   var d1 = new webdriver.promise.Deferred();
   var d2 = new webdriver.promise.Deferred();
-  var callback1, errback1, callback2;
-
-  d1.then(callback1 = callbackHelper(),
-          errback1 = callbackHelper(assertIsStubError));
-
-  var d2promise = d2.then(callback2 = callbackHelper(function(value) {
+  var pair1 = callbackPair(assertIsStubError, null);
+  var pair2 = callbackPair(function(value) {
     assertEquals(2, value);
-    return STUB_ERROR;
-  }));
+    return new StubError;
+  });
 
-  callback1.assertNotCalled();
-  errback1.assertNotCalled();
-  callback2.assertNotCalled();
+  d1.then(pair1.callback, pair1.errback);
+  var d2promise = d2.then(pair2.callback, pair2.errback);
+
+  pair1.assertNeither();
+  pair2.assertNeither();
 
   d2.fulfill(2);
-  callback1.assertNotCalled();
-  errback1.assertNotCalled();
-  callback2.assertCalled();
+  clock.tick();
+  pair1.assertNeither();
+  pair2.assertCallback();
 
   d1.reject(d2promise);
-  callback1.assertNotCalled();
-  errback1.assertCalled();
-  callback2.assertCalled();
+  clock.tick();
+  pair1.assertCallback();
 }
 
 
 function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   var d = new webdriver.promise.Deferred(), callback, errback;
-  d.then(callback = callbackHelper(),
-         errback = callbackHelper(assertIsStubError));
+  d.then(callback = callbackHelper(assertIsStubError),
+         errback = callbackHelper());
 
   var otherPromise = {
     then: function(callback) {
@@ -568,12 +607,14 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   };
 
   d.reject(otherPromise);
+  clock.tick();
   callback.assertNotCalled();
   errback.assertNotCalled();
 
-  otherPromise.fulfill(STUB_ERROR);
-  callback.assertNotCalled();
-  errback.assertCalled();
+  otherPromise.fulfill(new StubError);
+  clock.tick();
+  callback.assertCalled();
+  errback.assertNotCalled();
 }
 
 
@@ -592,10 +633,12 @@ function testResolvingADeferredWithAnotherCopiesTheResolvedValue() {
   }));
 
   d1.fulfill(d2);
+  clock.tick();
   callback1.assertNotCalled();
   callback2.assertNotCalled();
 
   d2.fulfill(2);
+  clock.tick();
   callback1.assertCalled();
   callback2.assertCalled();
 }
@@ -621,6 +664,7 @@ function testCannotResolveAPromiseWithItself() {
 function testCannotResolveADeferredWithItself() {
   var deferred = new webdriver.promise.Deferred();
   assertThrows(goog.bind(deferred.fulfill, deferred, deferred));
+  assertThrows(goog.bind(deferred.reject, deferred, deferred));
 }
 
 
@@ -633,6 +677,7 @@ function testSkipsNullPointsInPromiseChain_callbacks() {
         assertEquals('hi', value);
       }));
 
+  clock.tick();
   errback1.assertNotCalled();
   errback2.assertNotCalled();
   callback.assertCalled();
@@ -648,6 +693,7 @@ function testSkipsNullPointsInPromiseChain_errbacks() {
         assertEquals('hi', value);
       }));
 
+  clock.tick();
   errback1.assertNotCalled();
   errback2.assertNotCalled();
   callback.assertCalled();
@@ -663,6 +709,7 @@ function testFullyResolved_primitives() {
         }),
         errback = callbackHelper());
 
+    clock.tick();
     errback.assertNotCalled(
         'Did not expect errback to be called for: ' + value);
     callback.assertCalled('Expected callback to be called for: ' + value);
@@ -688,6 +735,7 @@ function testFullyResolved_arrayOfPrimitives() {
   webdriver.promise.fullyResolved(array).then(
       callbacks.callback, callbacks.errback);
 
+  clock.tick();
   callbacks.assertCallback();
 }
 
@@ -703,6 +751,7 @@ function testFullyResolved_nestedArrayOfPrimitives() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -715,6 +764,8 @@ function testFullyResolved_arrayWithPromisedPrimitive() {
         assertArrayEquals([123], resolved);
       }),
       errback = callbackHelper());
+
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -729,6 +780,7 @@ function testFullyResolved_promiseResolvesToPrimitive() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -738,7 +790,9 @@ function testFullyResolved_promiseResolvesToArray() {
   var array = [true, [goog.nullFunction, null, 123], '', undefined];
   var promise = webdriver.promise.fulfilled(array);
   var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
+
+  var result = webdriver.promise.fullyResolved(promise);
+  result.then(
       callback = callbackHelper(function(resolved) {
         assertEquals(array, resolved);
         assertArrayEquals([true, [goog.nullFunction, null, 123], '', undefined],
@@ -747,6 +801,7 @@ function testFullyResolved_promiseResolvesToArray() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -763,19 +818,17 @@ function testFullyResolved_promiseResolvesToArrayWithPromises() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
 
 
 function testFullyResolved_rejectsIfArrayPromiseRejects() {
-  var e = new Error('foo');
-  var nestedPromise = webdriver.promise.rejected(e);
+  var nestedPromise = createRejectedPromise(new StubError);
   var promise = webdriver.promise.fulfilled([true, nestedPromise]);
 
-  var pair = callbackPair(null, function(error) {
-    assertEquals(e, error);
-  });
+  var pair = callbackPair(null, assertIsStubError);
   webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
   clock.tick();
@@ -787,8 +840,8 @@ function testFullyResolved_rejectsOnFirstArrayRejection() {
   var e1 = new Error('foo');
   var e2 = new Error('bar');
   var promise = webdriver.promise.fulfilled([
-    webdriver.promise.rejected(e1),
-    webdriver.promise.rejected(e2)
+    createRejectedPromise(e1),
+    createRejectedPromise(e2)
   ]);
 
   var pair = callbackPair(null, function(error) {
@@ -802,20 +855,15 @@ function testFullyResolved_rejectsOnFirstArrayRejection() {
 
 
 function testFullyResolved_rejectsIfNestedArrayPromiseRejects() {
-  var e = new Error('foo');
   var promise = webdriver.promise.fulfilled([
     webdriver.promise.fulfilled([
-      webdriver.promise.rejected(e)
+      createRejectedPromise(new StubError)
     ])
   ]);
 
-  var pair = callbackPair(null, function(error) {
-    assertEquals(e, error);
-  });
+  var pair = callbackPair(null, assertIsStubError);
   webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
-  clock.tick();
-  clock.tick();
   clock.tick();
   pair.assertErrback();
 }
@@ -832,6 +880,7 @@ function testFullyResolved_simpleHash() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -851,6 +900,7 @@ function testFullyResolved_nestedHash() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -867,6 +917,7 @@ function testFullyResolved_promiseResolvesToSimpleHash() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -885,6 +936,7 @@ function testFullyResolved_promiseResolvesToNestedHash() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -902,6 +954,7 @@ function testFullyResolved_promiseResolvesToHashWithPromises() {
       }),
       errback = callbackHelper());
 
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -910,13 +963,12 @@ function testFullyResolved_promiseResolvesToHashWithPromises() {
 function testFullyResolved_rejectsIfHashPromiseRejects() {
   var e = new Error('foo');
   var promise = webdriver.promise.fulfilled({
-      'a': webdriver.promise.rejected(e)
+      'a': createRejectedPromise(new StubError)
   });
 
-  var pair = callbackPair(null, function(error) {
-    assertEquals(e, error);
-  });
-  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
+  var pair = callbackPair(null, assertIsStubError);
+  webdriver.promise.fullyResolved(promise).then(
+    pair.callback, pair.errback);
 
   clock.tick();
   pair.assertErrback();
@@ -925,12 +977,10 @@ function testFullyResolved_rejectsIfHashPromiseRejects() {
 function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
   var e = new Error('foo');
   var promise = webdriver.promise.fulfilled({
-      'a': {'b': webdriver.promise.rejected(e)}
+      'a': {'b': createRejectedPromise(new StubError)}
   });
 
-  var pair = callbackPair(null, function(error) {
-    assertEquals(e, error);
-  });
+  var pair = callbackPair(null, assertIsStubError);
   webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
   clock.tick();
@@ -952,6 +1002,8 @@ function testFullyResolved_instantiatedObject() {
       webdriver.test.testutil.assertObjectEquals(new Foo, resolvedFoo);
     }),
     errback = callbackHelper());
+
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -964,6 +1016,8 @@ function testFullyResolved_withEmptyArray() {
       assertArrayEquals([], resolved);
     }),
     errback = callbackHelper());
+
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -976,6 +1030,8 @@ function testFullyResolved_withEmptyHash() {
       webdriver.test.testutil.assertObjectEquals({}, resolved);
     }),
     errback = callbackHelper());
+
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -993,6 +1049,8 @@ function testFullyResolved_arrayWithPromisedHash() {
       }),
       errback = callbackHelper());
 
+
+  clock.tick();
   errback.assertNotCalled();
   callback.assertCalled();
 }
@@ -1006,6 +1064,8 @@ function testFullyResolved_aDomElement() {
 
   webdriver.promise.fullyResolved(e).
       then(callbacks.callback, callbacks.errback);
+
+  clock.tick();
   callbacks.assertCallback();
 }
 
@@ -1020,6 +1080,7 @@ function testCallbackChain_nonSplit() {
       then(stage2.callback, stage2.errback).
       then(stage3.callback, stage3.errback);
 
+  clock.tick();
   stage1.assertErrback('Wrong function for stage 1');
   stage2.assertCallback('Wrong function for stage 2');
   stage3.assertCallback('Wrong function for final stage');
@@ -1038,6 +1099,7 @@ function testCallbackChain_split() {
       thenCatch(stage2.errback).
       then(stage3.callback, stage3.errback);
 
+  clock.tick();
   stage1.assertErrback('Wrong function for stage 1');
   stage2.assertCallback('Wrong function for stage 2');
   stage3.assertCallback('Wrong function for final stage');
@@ -1054,6 +1116,7 @@ function testCheckedNodeCall_functionThrows() {
     throw error;
   }).then(pair.callback, pair.errback);
 
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1066,6 +1129,7 @@ function testCheckedNodeCall_functionReturnsAnError() {
   webdriver.promise.checkedNodeCall(function(callback) {
     callback(error);
   }).then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1078,6 +1142,7 @@ function testCheckedNodeCall_functionReturnsSuccess() {
   webdriver.promise.checkedNodeCall(function(callback) {
     callback(null, success);
   }).then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1092,6 +1157,7 @@ function testCheckedNodeCall_functionReturnsAndThrows() {
     callback(error);
     throw error2;
   }).then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1103,12 +1169,13 @@ function testCheckedNodeCall_functionThrowsAndReturns() {
     assertEquals(error2, e);
   });
   webdriver.promise.checkedNodeCall(function(callback) {
-    setTimeout(goog.partial(callback, error), 0);
+    setTimeout(goog.partial(callback, error), 10);
     throw error2;
   }).then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
   pair.reset();
-  webdriver.test.testutil.consumeTimeouts();
+  clock.tick(Infinity);
   pair.assertNeither();
 }
 
@@ -1121,6 +1188,7 @@ function testCancel_passesTheCancellationReasonToReject() {
   var d = new webdriver.promise.Deferred();
   d.then(pair.callback, pair.errback);
   d.cancel('because i said so');
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1137,6 +1205,7 @@ function testCancel_canCancelADeferredFromAChainedPromise() {
   p.then(pair2.callback, pair2.errback);
 
   p.cancel('because i said so');
+  clock.tick();
   pair1.assertErrback('The first errback should have fired.');
   pair2.assertCallback();
 }
@@ -1149,6 +1218,7 @@ function testCancel_canCancelATimeout() {
   var p = webdriver.promise.delayed(250).
       then(pair.callback, pair.errback);
   p.cancel();
+  clock.tick();
   pair.assertErrback();
   clock.tick(250);  // Just to make sure nothing happens.
   pair.assertErrback();
@@ -1161,16 +1231,18 @@ function testCancel_cancelIsANoopOnceAPromiseHasBeenFulfilled() {
 
   var pair = callbackPair(goog.partial(assertEquals, 123));
   p.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
 
 function testCancel_cancelIsANoopOnceAPromiseHasBeenRejected() {
-  var p = webdriver.promise.rejected(STUB_ERROR);
+  var p = webdriver.promise.rejected(new StubError);
   p.cancel();
 
   var pair = callbackPair(null, assertIsStubError);
   p.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1197,7 +1269,8 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPreResolve() {
     messages.push('b');
   });
   d.fulfill();
-  assertArrayEquals(['a', 'c', 'b'], messages);
+  clock.tick();
+  assertArrayEquals(['a', 'b', 'c'], messages);
 }
 
 
@@ -1213,11 +1286,33 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPostResolve() {
   p.then(function() {
     messages.push('b');
   });
-  assertArrayEquals(['a', 'c', 'b'], messages);
+  clock.tick();
+  assertArrayEquals(['a', 'b', 'c'], messages);
 }
 
 
-function testCallbackRegistersAnotherListener_recursiveCallbacks() {
+function testCallbackRegistersAnotherListener_recursive() {
+  var order = [];
+  var promise = webdriver.promise.fulfilled();
+
+  promise.then(function() {
+    push();
+    promise.then(push);
+  }).then(function() {
+    push();
+  });
+
+  assertArrayEquals([], order);
+  clock.tick();
+  assertArrayEquals([0, 1, 2], order);
+
+  function push() {
+    order.push(order.length);
+  }
+}
+
+
+function testCallbackRegistersAnotherListener_recursiveCallbacks_many() {
   var messages = [];
   var start = 97;  // 'a'
 
@@ -1233,6 +1328,7 @@ function testCallbackRegistersAnotherListener_recursiveCallbacks() {
     }
   }
 
+  clock.tick();
   assertArrayEquals(['a', 'b', 'c', 'd', 'done'], messages);
 }
 
@@ -1245,7 +1341,7 @@ function testThenReturnsOwnPromiseIfNoCallbacksWereGiven() {
 
 
 function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
-  webdriver.promise.rejected(STUB_ERROR).then();
+  webdriver.promise.rejected(new StubError).then();
   var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
@@ -1263,27 +1359,30 @@ function testResolvedReturnsInputValueIfItIsAPromise() {
 
 
 function testADeferredsParentControlFlowIsActiveForCallbacks() {
-  var flow = new webdriver.promise.ControlFlow();
-  var d = new webdriver.promise.Deferred(flow);
+  var defaultFlow = webdriver.promise.controlFlow();
+
+  var flow1 = new webdriver.promise.ControlFlow();
+  var d = new webdriver.promise.Deferred(flow1);
   d.fulfill();
 
   var flow2 = new webdriver.promise.ControlFlow();
   var d2 = new webdriver.promise.Deferred(flow2);
   d2.fulfill();
 
-  assertIsFlow(webdriver.promise.defaultFlow_)();
+  assertIsFlow(defaultFlow);
 
   var callbacks = callbackPair();
-  d.promise.then(assertIsFlow(flow)).
-      then(assertIsFlow(flow)).
+  d.promise.then(assertIsFlow(flow1)).
+      then(assertIsFlow(flow1)).
       then(function() {
         return d2.promise.then(assertIsFlow(flow2));
       }).
-      then(assertIsFlow(flow)).
+      then(assertIsFlow(flow1)).
       then(callbacks.callback, callbacks.errback);
 
+  clock.tick();
   callbacks.assertCallback();
-  assertIsFlow(webdriver.promise.defaultFlow_)();
+  assertIsFlow(defaultFlow);
 
   function assertIsFlow(flow) {
     return function() {
@@ -1299,6 +1398,7 @@ function testPromiseAll_emptyArray() {
   });
 
   webdriver.promise.all([]).then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1325,6 +1425,7 @@ function testPromiseAll() {
   pair.assertNeither();
 
   a[3].fulfill(3);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1340,10 +1441,12 @@ function testPromiseAll_usesFirstRejection() {
   webdriver.promise.all(a).then(pair.callback, pair.errback);
   pair.assertNeither();
 
-  a[1].reject(STUB_ERROR);
+  a[1].reject(new StubError);
+  clock.tick();
   pair.assertErrback();
 
   a[0].reject(Error('ignored'));
+  clock.tick(Infinity);
 }
 
 
@@ -1360,6 +1463,7 @@ function testMappingAnArray() {
   });
 
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1386,6 +1490,7 @@ function testMappingAnArray_omitsDeleted() {
   });
 
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1400,6 +1505,7 @@ function testMappingAnArray_emptyArray() {
   });
 
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1417,6 +1523,7 @@ function testMappingAnArray_inputIsPromise() {
   result.then(pair.callback, pair.errback);
   pair.assertNeither();
   input.fulfill([1, 2, 3]);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1439,9 +1546,11 @@ function testMappingAnArray_waitsForFunctionResultToResolve() {
   pair.assertNeither();
 
   innerResults[0].fulfill('a');
+  clock.tick();
   pair.assertNeither();
 
   innerResults[1].fulfill('b');
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1450,17 +1559,19 @@ function testMappingAnArray_rejectsPromiseIfFunctionThrows() {
   var result = webdriver.promise.map([1], throwStubError);
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
 
 function testMappingAnArray_rejectsPromiseIfFunctionReturnsRejectedPromise() {
   var result = webdriver.promise.map([1], function() {
-    return webdriver.promise.rejected(STUB_ERROR);
+    return webdriver.promise.rejected(new StubError);
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1470,12 +1581,13 @@ function testMappingAnArray_stopsCallingFunctionIfPreviousIterationFailed() {
   var result = webdriver.promise.map([1, 2, 3, 4], function() {
     count++;
     if (count == 3) {
-      throw STUB_ERROR;
+      throw new StubError;
     }
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
   assertEquals(3, count);
 }
@@ -1483,25 +1595,22 @@ function testMappingAnArray_stopsCallingFunctionIfPreviousIterationFailed() {
 
 function testMappingAnArray_rejectsWithFirstRejectedPromise() {
   var innerResult = [
-      webdriver.promise.defer(),
-      webdriver.promise.defer(),
-      webdriver.promise.defer(),
-      webdriver.promise.defer()
+      webdriver.promise.fulfilled(),
+      createRejectedPromise(new StubError),
+      createRejectedPromise(Error('should be ignored'))
   ];
+  var count = 0;
   var result = webdriver.promise.map([1, 2, 3, 4], function(value, index) {
-    return innerResult[index].promise;
+    count += 1;
+    return innerResult[index];
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
-  pair.assertNeither();
 
-  innerResult[2].reject(STUB_ERROR);
-  innerResult[1].reject(Error('other error'));  // Should be ignored.
-
+  clock.tick();
   pair.assertErrback();
-
-  innerResult[0].reject('should also be ignored');
+  assertEquals(2, count);
 }
 
 
@@ -1520,11 +1629,13 @@ function testMappingAnArray_preservesOrderWhenMapReturnsPromise() {
     assertArrayEquals([0, 1, 2, 3], value);
   });
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertNeither();
 
   goog.array.forEachRight(deferreds, function(d, i) {
     d.fulfill(i);
   });
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1541,6 +1652,7 @@ function testFilteringAnArray() {
     assertArrayEquals([2, 3], val);
   });
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1558,6 +1670,7 @@ function testFilteringAnArray_omitsDeleted() {
     assertArrayEquals([2, 5], val);
   });
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1577,6 +1690,7 @@ function testFilteringAnArray_preservesInputs() {
     assertArrayEquals([2, 3], val);
   });
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1594,6 +1708,7 @@ function testFilteringAnArray_inputIsPromise() {
   result.then(pair.callback, pair.errback);
   pair.assertNeither();
   input.fulfill([1, 2, 3]);
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1616,20 +1731,23 @@ function testFilteringAnArray_waitsForFunctionResultToResolve() {
   pair.assertNeither();
 
   innerResults[0].fulfill(false);
+  clock.tick();
   pair.assertNeither();
 
   innerResults[1].fulfill(true);
+  clock.tick();
   pair.assertCallback();
 }
 
 
 function testFilteringAnArray_rejectsPromiseIfFunctionReturnsRejectedPromise() {
   var result = webdriver.promise.filter([1], function() {
-    return webdriver.promise.rejected(STUB_ERROR);
+    return webdriver.promise.rejected(new StubError);
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
 }
 
@@ -1639,12 +1757,13 @@ function testFilteringAnArray_stopsCallingFunctionIfPreviousIterationFailed() {
   var result = webdriver.promise.filter([1, 2, 3, 4], function() {
     count++;
     if (count == 3) {
-      throw STUB_ERROR;
+      throw new StubError;
     }
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertErrback();
   assertEquals(3, count);
 }
@@ -1652,25 +1771,21 @@ function testFilteringAnArray_stopsCallingFunctionIfPreviousIterationFailed() {
 
 function testFilteringAnArray_rejectsWithFirstRejectedPromise() {
   var innerResult = [
-    webdriver.promise.defer(),
-    webdriver.promise.defer(),
-    webdriver.promise.defer(),
-    webdriver.promise.defer()
+    webdriver.promise.fulfilled(),
+    createRejectedPromise(new StubError),
+    createRejectedPromise(Error('should be ignored'))
   ];
   var result = webdriver.promise.filter([1, 2, 3, 4], function(value, index) {
-    return innerResult[index].promise;
+    assertTrue(index < innerResult.length);
+    return innerResult[index];
   });
 
   var pair = callbackPair(null, assertIsStubError);
   result.then(pair.callback, pair.errback);
   pair.assertNeither();
 
-  innerResult[2].reject(STUB_ERROR);
-  innerResult[1].reject(Error('other error'));  // Should be ignored.
-
+  clock.tick();
   pair.assertErrback();
-
-  innerResult[0].reject('should also be ignored');
 }
 
 
@@ -1689,11 +1804,13 @@ function testFilteringAnArray_preservesOrderWhenFilterReturnsPromise() {
     assertArrayEquals([1, 2], value);
   });
   result.then(pair.callback, pair.errback);
+  clock.tick();
   pair.assertNeither();
 
   goog.array.forEachRight(deferreds, function(d, i) {
     d.fulfill(i > 0 && i < 3);
   });
+  clock.tick();
   pair.assertCallback();
 }
 
@@ -1703,4 +1820,154 @@ function testAddThenableImplementation() {
   assertFalse(webdriver.promise.Thenable.isImplementation(new tmp()));
   webdriver.promise.Thenable.addImplementation(tmp);
   assertTrue(webdriver.promise.Thenable.isImplementation(new tmp()));
+}
+
+
+function testLongStackTraces_doesNotAppendStackIfFeatureDisabled() {
+  webdriver.promise.LONG_STACK_TRACES = false;
+
+  var error = Error('hello');
+  var originalStack = error.stack;
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+    assertEquals(originalStack, e.stack);
+  });
+  webdriver.promise.rejected(error).
+      then(fail).
+      then(fail).
+      then(fail).
+      then(pair.callback, pair.errback);
+  clock.tick();
+  pair.assertErrback();
+}
+
+
+function getStackMessages(error) {
+  var stack = webdriver.stacktrace.getStack(error);
+  return goog.array.filter(stack.split(/\n/), function(line) {
+    return /^From: /.test(line);
+  });
+}
+
+
+function testLongStackTraces_appendsInitialPromiseCreation_resolverThrows() {
+  webdriver.promise.LONG_STACK_TRACES = true;
+
+  var error = Error('hello');
+  var originalStack = error.stack;
+
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+    if (!goog.isString(originalStack)) {
+      return;
+    }
+    assertNotEquals(originalStack, e.stack);
+    assertTrue('should start with original stack',
+        goog.string.startsWith(e.stack, originalStack));
+    assertArrayEquals(['From: Promise: new'], getStackMessages(e));
+  });
+
+  new webdriver.promise.Promise(function() {
+    throw error;
+  }).then(pair.callback, pair.errback);
+
+  clock.tick();
+  pair.assertErrback();
+}
+
+
+function testLongStackTraces_appendsInitialPromiseCreation_rejectCalled() {
+  webdriver.promise.LONG_STACK_TRACES = true;
+
+  var error = Error('hello');
+  var originalStack = error.stack;
+
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+    if (!goog.isString(originalStack)) {
+      return;
+    }
+    assertNotEquals(originalStack, e.stack);
+    assertTrue('should start with original stack',
+        goog.string.startsWith(e.stack, originalStack));
+    assertArrayEquals(['From: Promise: new'], getStackMessages(e));
+  });
+
+  new webdriver.promise.Promise(function(_, reject) {
+    reject(error);
+  }).then(pair.callback, pair.errback);
+
+  clock.tick();
+  pair.assertErrback();
+}
+
+
+function testLongStackTraces_appendsEachStepToRejectionError() {
+  webdriver.promise.LONG_STACK_TRACES = true;
+
+  var error = Error('hello');
+  var originalStack = error.stack;
+
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+    if (!goog.isString(originalStack)) {
+      return;
+    }
+    assertNotEquals(originalStack, e.stack);
+    assertTrue('should start with original stack',
+        goog.string.startsWith(e.stack, originalStack));
+    assertArrayEquals([
+      'From: Promise: new',
+      'From: Promise: then',
+      'From: Promise: thenCatch',
+      'From: Promise: then',
+      'From: Promise: thenCatch',
+    ], getStackMessages(e));
+  });
+
+  new webdriver.promise.Promise(function() {
+    throw error;
+  }).
+  then(fail).
+  thenCatch(function(e) { throw e; }).
+  then(fail).
+  thenCatch(function(e) { throw e; }).
+  then(pair.callback, pair.errback);
+
+  clock.tick();
+  pair.assertErrback();
+}
+
+
+function testLongStackTraces_errorOccursInCallbackChain() {
+  webdriver.promise.LONG_STACK_TRACES = true;
+
+  var error = Error('hello');
+  var originalStack = error.stack;
+
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+    if (!goog.isString(originalStack)) {
+      return;
+    }
+    assertNotEquals(originalStack, e.stack);
+    assertTrue('should start with original stack',
+        goog.string.startsWith(e.stack, originalStack));
+    assertArrayEquals([
+      'From: Promise: then',
+      'From: Promise: thenCatch',
+    ], getStackMessages(e));
+  });
+
+  webdriver.promise.fulfilled().
+      then(goog.nullFunction).
+      then(goog.nullFunction).
+      then(function() {
+        throw error;
+      }).
+      thenCatch(function(e) { throw e; }).
+      then(pair.callback, pair.errback);
+
+  clock.tick();
+  pair.assertErrback();
 }

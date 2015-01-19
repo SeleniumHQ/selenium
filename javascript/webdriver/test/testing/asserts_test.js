@@ -38,29 +38,23 @@ function testAssertion_nonPromiseValue_notValueMatches() {
 
 
 function testAssertion_promiseValue_valueMatches() {
-  var d = new webdriver.promise.Deferred();
-  assert(d).equalTo('foo').then(result.callback, result.errback);
-  result.assertNeither();
-  d.fulfill('foo');
-  result.assertCallback();
+  return assert(webdriver.promise.fulfilled('foo')).equalTo('foo');
 }
 
 
 function testAssertion_promiseValue_notValueMatches() {
   var d = new webdriver.promise.Deferred();
-  assert(d).equalTo('foo').then(result.callback, result.errback);
-  result.assertNeither();
-  d.fulfill('bar');
-  result.assertErrback();
+  return assert(webdriver.promise.fulfilled('bar')).equalTo('foo').
+      then(fail, goog.nullFunction);
 }
 
 
 function testAssertion_promiseValue_promiseRejected() {
-  var d = new webdriver.promise.Deferred();
-  assert(d).equalTo('foo').then(result.callback, result.errback);
-  result.assertNeither();
-  d.reject();
-  result.assertErrback();
+  var err = Error();
+  return assert(webdriver.promise.rejected(err)).equalTo('foo').
+      then(fail, function(e) {
+        assertEquals(err, e);
+      });
 }
 
 
@@ -71,7 +65,7 @@ function testAssertion_decoration() {
 
 
 function testAssertion_negation() {
-  var a = assert('foo');
+  var a = assert('false');
 
   a.not.equalTo('bar');  // OK if this does not throw.
   a.is.not.equalTo('bar');  // OK if this does not throw.
@@ -85,44 +79,30 @@ function testAssertion_negation() {
 
 
 function testApplyMatcher_nonPromiseValue_valueMatches() {
-  assertThat('foo', equals('foo')).
-      then(result.callback, result.errback);
-  result.assertCallback();
+  return assertThat('foo', equals('foo'));
 }
 
 
 function testApplyMatcher_nonPromiseValue_notValueMatches() {
-  assertThat('foo', equals('bar')).
-      then(result.callback, result.errback);
-  result.assertErrback();
+  return assertThat('foo', equals('bar')).then(fail, goog.nullFunction);
 }
 
 
 function testApplyMatcher_promiseValue_valueMatches() {
-  var d = new webdriver.promise.Deferred();
-  assertThat(d, equals('foo')).
-      then(result.callback, result.errback);
-  result.assertNeither();
-  d.fulfill('foo');
-  result.assertCallback();
+  return assertThat(webdriver.promise.fulfilled('foo'), equals('foo'));
 }
 
 
 function testApplyMatcher_promiseValue_notValueMatches() {
-  var d = new webdriver.promise.Deferred();
-  assertThat(d, equals('foo')).
-      then(result.callback, result.errback);
-  result.assertNeither();
-  d.fulfill('bar');
-  result.assertErrback();
+  return assertThat(webdriver.promise.fulfilled('bar'), equals('foo')).
+      then(fail, goog.nullFunction);
 }
 
 
 function testApplyMatcher_promiseValue_promiseRejected() {
-  var d = new webdriver.promise.Deferred();
-  assertThat(d, equals('foo')).
-      then(result.callback, result.errback);
-  result.assertNeither();
-  d.reject();
-  result.assertErrback();
+  var err = Error();
+  return assertThat(webdriver.promise.rejected(err), equals('foo')).
+      then(fail, function(e) {
+        assertEquals(err, e);
+      });
 }

@@ -92,6 +92,7 @@ function Context(opt_configureForTesting) {
     require: require,
     Buffer: Buffer,
     Error: Error,
+    TypeError: TypeError,
     CLOSURE_BASE_PATH: path.dirname(CLOSURE_BASE_FILE_PATH) + '/',
     CLOSURE_IMPORT_SCRIPT: function(src, opt_srcText) {
       if (opt_srcText !== undefined) {

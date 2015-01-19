@@ -343,7 +343,6 @@ function generateDocs(outputDir, callback) {
 
   var excludedFiles = [
     path.join(libDir, 'webdriver/testing/client.js'),
-    path.join(libDir, 'webdriver/testing/flowtester.js'),
     path.join(libDir, 'webdriver/testing/jsunit.js'),
     path.join(libDir, 'webdriver/testing/window.js'),
   ];

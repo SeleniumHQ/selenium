@@ -1,9 +1,60 @@
 ## v2.45.0-dev
 
-* Promise rejections are now always coerced to Error-like objects (an object
-    with a string `message` property). We do not guarantee `instanceof Error`
-    since the rejection value may come from another context.
+* The `promise` module is now [Promises/A+](https://promisesaplus.com/)
+    compliant. The biggest compliance change is that promise callbacks are now
+    invoked in a future turn of the JS event loop. For example:
+
+        var promise = require('selenium-webdriver').promise;
+        console.log('start');
+        promise.fulfilled().then(function() {
+          console.log('middle');
+        });
+        console.log('end');
+
+        // Output in selenium-webdriver@2.44.0
+        // start
+        // middle
+        // end
+        //
+        // Output in selenium-webdriver@2.45.0
+        // start
+        // end
+        // middle
+
+    The `promise.ControlFlow` class has been updated to track the asynchronous
+    breaks required by Promises/A+, so there are no changes to task execution
+    order.
+* Updated how errors are annotated on failures. When a task fails, the
+    stacktrace from when that task was scheduled is appended to the rejection
+    reason with a `From: ` prefix (if it is an Error object). For example:
+
+        var driver = new webdriver.Builder().forBrowser('chrome').build();
+        driver.get('http://www.google.com/ncr');
+        driver.call(function() {
+          driver.wait(function() {
+            return driver.isElementPresent(webdriver.By.id('not-there'));
+          }, 2000, 'element not found');
+        });
+
+    This code will fail an error like:        
+
+        Error: element not found
+        Wait timed out after 2002ms
+            at <stack trace>
+        From: Task: element not found
+            at <stack trace>
+        From: Task: WebDriver.call(function)
+            at <stack trace>
+
+* Changed the format of strings returned by `promise.ControlFlow#getSchedule`.
+    This function now accepts a boolean to control whether the returned string
+    should include the stacktraces for when each task was scheduled.
+* Deprecating `promise.ControlFlow#getHistory`,
+    `promise.ControlFlow#clearHistory`, and `promise.ControlFlow#annotateError`.
+    These functions were all intended for internal use and are no longer
+    necessary, so they have been made no-ops.
 * FIXED: 8380: `firefox.Driver` will delete its temporary profile on `quit`.
+* FIXED: 8306: Stack overflow in promise callbacks eliminated.
 * FIXED: 8221: Added support for defining custom command mappings. Includes
     support for PhantomJS's `executePhantomJS` (requires PhantomJS 1.9.7 or
     GhostDriver 1.1.0).
@@ -11,6 +62,8 @@
     `executeScript`, it defines additional properties (required by the driver's
     implementation). These properties will no longer be enumerable and should
     be omitted (i.e. they won't show up in JSON.stringify output).
+* FIXED: 8094: The control flow will no longer deadlock when a task returns
+    a promise that depends on the completion of sub-tasks.
 
 ## v2.44.0
 
