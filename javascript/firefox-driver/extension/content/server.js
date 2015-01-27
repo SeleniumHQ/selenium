@@ -35,12 +35,35 @@ try {
 // _browser window_ (not chrome window). Multiple tabs in the same window will
 // share a FirefoxDriver and DomMessenger instance.
 window.addEventListener('load', function(e) {
+  // http://w3c.github.io/webdriver/webdriver-spec.html#security-and-privacy
+  var appcontent = document.getElementById('appcontent');
+  if (appcontent) {
+    appcontent.addEventListener('DOMContentLoaded', function(e) {
+      var doc = e.originalTarget || e.target;
+      var isSvg = doc.documentElement.nodeName == 'svg';
+      var script = isSvg ?
+          doc.createElementNS('http://www.w3.org/2000/svg', 'script') :
+          doc.createElement('script');
+      script.setAttribute('type', 'text/javascript');
+      script.textContent = '(' + function() {
+        Object.defineProperty(window.navigator, 'webdriver', {
+          value: true,
+          configurable: false,
+          enumerable: true,
+          writable: false
+        });
+      } + ')()';
+      doc.documentElement.appendChild(script);
+      doc.documentElement.removeChild(script);
+    });
+  }
+
+  // old fingerprinting path
   var server = Components.classes['@googlecode.com/webdriver/fxdriver;1']
       .createInstance()
       .wrappedJSObject;
 
   if (!domMessenger) {
-    var appcontent = document.getElementById('appcontent');
     if (appcontent) {
       try {
         var commandProcessor = Components.
