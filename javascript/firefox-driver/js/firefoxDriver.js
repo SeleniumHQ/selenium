@@ -192,6 +192,30 @@ FirefoxDriver.prototype.close = function(respond) {
 };
 
 
+/**
+ * Clones objects from this privileged scope into a less-privileged scope.
+ * Returns the original object for Gecko < 29, which does not support cloning.
+ * Note, this is required for Gecko 35+.
+ *
+ * @param {!Object} origianlObject The object to clone.
+ * @param {!Object} targetScope The object to attach to.
+ * @return {!Object} The cloned object.
+ * @see https://developer.mozilla.org/en-US/docs/Components.utils.cloneInto
+ * @see https://code.google.com/p/selenium/issues/detail?id=8390
+ */
+function cloneInto(originalObject, targetScope) {
+  // TODO: this check for FF29 and be removed when we drop support for
+  // Firefox 24 ESR (when Firefox 38 ESR is released). Hopefully Mozilla's
+  // Marionette will replace this entire thing by then (doubtful).
+  if (bot.userAgent.isProductVersion(29)) {
+    return Components.utils.cloneInto(originalObject, targetScope, {
+      wrapReflectors:true
+    });
+  }
+  return originalObject;
+}
+
+
 function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var doc = respond.session.getDocument();
   var unwrappedDoc = fxdriver.moz.unwrap(doc);
@@ -218,9 +242,9 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     sandbox.window = window;
     sandbox.document = doc.wrappedJSObject ? doc.wrappedJSObject : doc;
     sandbox.navigator = window.navigator;
-    sandbox.__webdriverParams = converted;
 
     try {
+      sandbox.__webdriverParams = cloneInto(converted, sandbox);
       var scriptSrc = 'with(window) { var __webdriverFunc = function(){' + parameters.script +
           '};  __webdriverFunc.apply(null, __webdriverParams); }';
       var res = Components.utils.evalInSandbox(scriptSrc, sandbox);
@@ -273,7 +297,8 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       }
     });
 
-    unwrappedDoc['__webdriver_evaluate']['args'] = converted;
+    unwrappedDoc['__webdriver_evaluate']['args'] =
+        cloneInto(converted, unwrappedDoc['__webdriver_evaluate']);
     unwrappedDoc['__webdriver_evaluate']['async'] = isAsync;
     unwrappedDoc['__webdriver_evaluate']['script'] = script;
     unwrappedDoc['__webdriver_evaluate']['timeout'] = respond.session.getScriptTimeout();
