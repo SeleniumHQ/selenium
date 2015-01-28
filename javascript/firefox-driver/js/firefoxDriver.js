@@ -204,10 +204,13 @@ FirefoxDriver.prototype.close = function(respond) {
  * @see https://code.google.com/p/selenium/issues/detail?id=8390
  */
 function cloneInto(originalObject, targetScope) {
-  // TODO: this check for FF29 and be removed when we drop support for
-  // Firefox 24 ESR (when Firefox 38 ESR is released). Hopefully Mozilla's
-  // Marionette will replace this entire thing by then (doubtful).
-  if (bot.userAgent.isProductVersion(29)) {
+  // While cloneInto was introduced with Gecko 29 and only became required in
+  // Gecko 35, we only use it for 33+ as cloneInto fails up to Gecko 32 when
+  // DOM elements are included in the cloned object.
+  // TODO: this check may be removed when we drop support for Gecko 32 (when
+  // Firefox 45 ESR is released). Hopefully Mozilla's Marionette will replace
+  // this entire thing by then.
+  if (bot.userAgent.isProductVersion(33)) {
     return Components.utils.cloneInto(originalObject, targetScope, {
       wrapReflectors:true
     });
