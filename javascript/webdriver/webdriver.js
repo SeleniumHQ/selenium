@@ -148,14 +148,38 @@ webdriver.WebDriver.createSession = function(
 webdriver.WebDriver.acquireSession_ = function(
     executor, command, description, opt_flow) {
   var flow = opt_flow || webdriver.promise.controlFlow();
-  var session = flow.execute(function() {
-    return webdriver.WebDriver.executeCommand_(executor, command).
-        then(function(response) {
-          bot.response.checkResponse(response);
-          return new webdriver.Session(response['sessionId'],
-              response['value']);
-        });
-  }, description);
+
+  var config = {
+    retry: true,
+    maxTries: 300,
+    retryTimeout: 4000,
+    sleepBetweenRetries: 500,
+  };
+  var count = 0;
+  var session = flow.wait(function() {
+    return flow.execute(function() {
+      return webdriver.WebDriver.executeCommand_(executor, command).
+          then(function(response) {
+            bot.response.checkResponse(response);
+            return new webdriver.Session(response['sessionId'],
+                response['value']);
+          });
+    }, description).then(function(s) {
+      return s;
+    }, function(e) {
+      if (config.retry && ++count < config.maxTries) {
+        console.error('Acquire session current retry count: ' + count);
+        console.error('    ' + e.message);
+        if (config.sleepBetweenRetries) {
+          flow.timeout(config.sleepBetweenRetries);
+        }
+        return false;
+      } else {
+        throw e;
+      }
+    });
+  }, config.retryTimeout, 'WebDriver acquireSession retry loop.');
+
   return new webdriver.WebDriver(session, executor, flow);
 };
 
