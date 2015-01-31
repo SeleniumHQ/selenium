@@ -356,7 +356,10 @@ module Javascript
     ].each {|r| r.to_s}.join('')
     @@MODULE_REGEX = /^goog\.module\s*\(\s*['"]([^'"]+)['"]\s*\)/
     @@PROVIDE_REGEX = /^goog\.provide\s*\(\s*['"]([^'"]+)['"]\s*\)/
-    @@REQUIRE_REGEX = /^goog\.require\s*\(\s*['"]([^'"]+)['"]\s*\)/
+    # goog.require statement may have a LHS assignment if inside a goog.module
+    # file. This is a simplified version of:
+    # https://github.com/google/closure-compiler/blob/master/src/com/google/javascript/jscomp/deps/JsFileParser.java#L41
+    @@REQUIRE_REGEX = /^\s*(?:(?:var|let|const)\s+[a-zA-Z_$][a-zA-Z0-9$_]*\s*=\s*)?goog\.require\s*\(\s*['"]([^'"]+)['"]\s*\)/
 
     # Global cache used to avoid parsing files multiple times. The parsed
     # information is copied into the individual instance's local graph so we

@@ -28,7 +28,7 @@ var optparse = require('./optparse');
 
 
 var CLOSURE_BASE_REGEX = /^var goog = goog \|\| \{\};/;
-var REQUIRE_REGEX = /^goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
+var REQUIRE_REGEX = /^\s*(?:(?:var|let|const)\s+[a-zA-Z_$][a-zA-Z0-9$_]*\s*=\s*)?goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
 var PROVIDE_REGEX = /^goog\.provide\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
 
 
