@@ -83,7 +83,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   function onError(e) {
     hadError = true;
-    self.doError(test, app.annotateError(e));
+    self.doError(test, e);
     // Note: result_ is a @protected field but still uses the trailing
     // underscore.
     var err = self.result_.errors[self.result_.errors.length - 1];
@@ -101,9 +101,6 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
     if (goog.isString(opt_e)) {
       errMsg = opt_e;
     } else {
-      // In case someone calls this function directly, make sure we have a
-      // properly annotated error.
-      webdriver.promise.controlFlow().annotateError(opt_e);
       errMsg = opt_e.toString();
       stack = opt_e.stack.substring(errMsg.length + 1);
     }
