@@ -37,13 +37,22 @@ var PATH_SEPARATOR = process.platform === 'win32' ? ';' : ':';
  */
 exports.rmDir = function(path) {
   return new promise.Promise(function(fulfill, reject) {
-    rimraf(path, function(err) {
-      if (err) {
-        reject(err);
-      } else {
-        fulfill();
-      }
-    });
+    var numAttempts = 0;
+    attemptRm();
+    function attemptRm() {
+      numAttempts += 1;
+      rimraf(path, function(err) {
+        if (err) {
+          if (err.code === 'ENOTEMPTY' && numAttempts < 2) {
+            attemptRm();
+            return;
+          }
+          reject(err);
+        } else {
+          fulfill();
+        }
+      });
+    }
   });
 };
 
