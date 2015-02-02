@@ -1,6 +1,9 @@
 java_library(name = "safari",
   srcs = [
     "*.java",
+    "helpers/*.java",
+    "installers/*.java",
+    "applescripts/*.java"
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
