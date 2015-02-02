@@ -12,10 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Exceptions that may happen in all the webdriver code.
 """
+
 
 class WebDriverException(Exception):
     """
@@ -23,6 +23,7 @@ class WebDriverException(Exception):
     """
 
     def __init__(self, msg=None, screen=None, stacktrace=None):
+        super(WebDriverException, self).__init__(msg=msg, screen=screen, stacktrace=stacktrace)
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
@@ -36,6 +37,7 @@ class WebDriverException(Exception):
             exception_msg += "Stacktrace:\n%s" % stacktrace
         return exception_msg
 
+
 class ErrorInResponseException(WebDriverException):
     """
     Thrown when an error has occurred on the server side.
@@ -47,11 +49,13 @@ class ErrorInResponseException(WebDriverException):
         WebDriverException.__init__(self, msg)
         self.response = response
 
+
 class InvalidSwitchToTargetException(WebDriverException):
     """
     Thrown when frame or window target to be switched doesn't exist.
     """
     pass
+
 
 class NoSuchFrameException(InvalidSwitchToTargetException):
     """
@@ -59,17 +63,19 @@ class NoSuchFrameException(InvalidSwitchToTargetException):
     """
     pass
 
+
 class NoSuchWindowException(InvalidSwitchToTargetException):
     """
     Thrown when window target to be switched doesn't exist.
 
     To find the current set of active window handles, you can get a list 
-    of the active window handles in the following way::
+        of the active window handles in the following way::
 
         print driver.window_handles
 
     """
     pass
+
 
 class NoSuchElementException(WebDriverException):
     """
@@ -78,20 +84,22 @@ class NoSuchElementException(WebDriverException):
     If you encounter this exception, you may want to check the following:
         * Check your selector used in your find_by...
         * Element may not yet be on the screen at the time of the find operation,
-        (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() 
-        for how to write a wait wrapper to wait for an element to appear.
+            (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
+            for how to write a wait wrapper to wait for an element to appear.
     """
     pass
+
 
 class NoSuchAttributeException(WebDriverException):
     """
     Thrown when the attribute of element could not be found.
 
     You may want to check if the attribute exists in the particular browser you are 
-    testing against.  Some browsers may have different property names for the same 
-    property.  (IE8's .innerText vs. Firefox .textContent)
+        testing against.  Some browsers may have different property names for the same
+        property.  (IE8's .innerText vs. Firefox .textContent)
     """
     pass
+
 
 class StaleElementReferenceException(WebDriverException):
     """
@@ -99,22 +107,24 @@ class StaleElementReferenceException(WebDriverException):
 
     Stale means the element no longer appears on the DOM of the page.
 
-
     Possible causes of StaleElementReferenceException include, but not limited to:
         * You are no longer on the same page, or the page may have refreshed since the element 
-        was located.
+            was located.
         * The element may have been removed and re-added to the screen, since it was located.
-        Such as an element being relocated. 
-        This can happen typically with a javascript framework when values are updated and the 
-        node is rebuilt.
+            Such as an element being relocated.
+            This can happen typically with a javascript framework when values are updated and the
+            node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
     pass
 
+
 class InvalidElementStateException(WebDriverException):  
     """
+    TODO need documentation with this.
     """
     pass
+
 
 class UnexpectedAlertPresentException(WebDriverException):
     """
@@ -130,6 +140,7 @@ class UnexpectedAlertPresentException(WebDriverException):
     def __str__(self):
         return "Alert Text: %s\n%s" % (self.alert_text, str(super(WebDriverException, self)))
 
+
 class NoAlertPresentException(WebDriverException):
     """
     Thrown when switching to no presented alert.
@@ -138,6 +149,7 @@ class NoAlertPresentException(WebDriverException):
     not yet on the screen.
     """
     pass
+
 
 class ElementNotVisibleException(InvalidElementStateException):
     """
@@ -149,6 +161,7 @@ class ElementNotVisibleException(InvalidElementStateException):
     """
     pass
 
+
 class ElementNotSelectableException(InvalidElementStateException):
     """
     Thrown when trying to select an unselectable element.
@@ -157,6 +170,7 @@ class ElementNotSelectableException(InvalidElementStateException):
     """
     pass
 
+
 class InvalidCookieDomainException(WebDriverException):
     """
     Thrown when attempting to add a cookie under a different domain
@@ -164,22 +178,27 @@ class InvalidCookieDomainException(WebDriverException):
     """
     pass
 
+
 class UnableToSetCookieException(WebDriverException):
     """
     Thrown when a driver fails to set a cookie.
     """
     pass
 
+
 class RemoteDriverServerException(WebDriverException):
     """
+    TODO documentation
     """
     pass
+
 
 class TimeoutException(WebDriverException):
     """
     Thrown when a command does not complete in enough time.
     """
     pass
+
 
 class MoveTargetOutOfBoundsException(WebDriverException):
     """
@@ -188,11 +207,13 @@ class MoveTargetOutOfBoundsException(WebDriverException):
     """
     pass
 
+
 class UnexpectedTagNameException(WebDriverException):
     """
     Thrown when a support class did not get an expected web element.
     """
     pass
+
 
 class InvalidSelectorException(NoSuchElementException):
     """
@@ -204,12 +225,14 @@ class InvalidSelectorException(NoSuchElementException):
     """
     pass
 
+
 class ImeNotAvailableException(WebDriverException):
     """
     Thrown when IME support is not available. This exception is thrown for every IME-related
     method call if IME support is not available on the machine.
     """
     pass
+
 
 class ImeActivationFailedException(WebDriverException):
     """

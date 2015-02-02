@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
@@ -42,7 +43,7 @@ class Select:
     @property
     def options(self):
         """Returns a list of all options belonging to this select tag"""
-        return self._el.find_elements(By.TAG_NAME, 'option')
+        return self._el.find_elements_by_tag_name('option')
         
     @property
     def all_selected_options(self):
@@ -72,7 +73,7 @@ class Select:
             - value - The value to match against
            """
         css = "option[value =%s]" % self._escapeString(value)
-        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        opts = self._el.find_elements_by_css_selector(css)
         matched = False
         for opt in opts:
             self._setSelected(opt)
@@ -110,7 +111,7 @@ class Select:
             - text - The visible text to match against
            """
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
-        opts = self._el.find_elements(By.XPATH, xpath)
+        opts = self._el.find_elements_by_xpath(xpath)
         matched = False
         for opt in opts:
             self._setSelected(opt)
@@ -156,7 +157,7 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         css = "option[value = %s]" % self._escapeString(value)
-        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        opts = self._el.find_elements_by_css_selector(css)
         for opt in opts:
             self._unsetSelected(opt)
 
@@ -185,7 +186,7 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
-        opts = self._el.find_elements(By.XPATH, xpath)
+        opts = self._el.find_elements_by_xpath(xpath)
         for opt in opts:
             self._unsetSelected(opt)
 

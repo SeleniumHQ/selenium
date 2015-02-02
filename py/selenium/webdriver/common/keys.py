@@ -16,8 +16,9 @@
 """
 The Keys implementation.
 """
-
+from __future__ import absolute_import
 from __future__ import unicode_literals
+
 
 class Keys(object):
     """
@@ -91,3 +92,25 @@ class Keys(object):
 
     META         = '\ue03d'
     COMMAND      = '\ue03d'
+
+
+def keys_to_typing(value):
+    """
+    Utility function for flattening a list of keys and strings
+
+    :param value: a list of value to type
+    :type value: list|tuple
+    :return: The flattened list
+    :rtype: list
+    """
+    typing = []
+    for val in value:
+        if isinstance(val, Keys):
+            typing.append(val)
+        else:
+            # TODO duplicated in file_detector and webelement
+            if isinstance(val, int):
+                val = str(val)
+            for i in val:
+                typing.append(i)
+    return typing

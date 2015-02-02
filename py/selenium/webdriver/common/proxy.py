@@ -2,6 +2,7 @@
 The Proxy implementation.
 """
 
+
 class ProxyTypeFactory:
     """
     Factory for proxy types.
@@ -10,6 +11,7 @@ class ProxyTypeFactory:
     @staticmethod
     def make(ff_value, string):
         return {'ff_value': ff_value, 'string': string}
+
 
 class ProxyType:
     """
@@ -39,6 +41,7 @@ class ProxyType:
                 attr_value['string'] is not None and attr_value['string'] == value:
                 return attr_value
         raise Exception("No proxy type is found for %s" % (value))
+
 
 class Proxy(object):
     """
@@ -282,7 +285,6 @@ class Proxy(object):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
             raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % \
                                                 (compatibleProxy, self.proxyType))
-
 
     def add_to_capabilities(self, capabilities):
         """

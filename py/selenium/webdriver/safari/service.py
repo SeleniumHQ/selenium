@@ -14,14 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
+
 from os import devnull
 import subprocess
-from subprocess import PIPE
 import time
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
+from selenium.webdriver.common.baseservice import BaseService
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of the SafariDriver
     """
@@ -32,56 +34,25 @@ class Service(object):
 
         :Args:
          - executable_path : Path to the SafariDriver
-         - port : Port the service is running on """
-
-        self.port = port
-        self.path = executable_path
-        if self.port == 0:
-            self.port = utils.free_port()
+         - port : Port the service is running on
+        """
+        super(Service, self).__init__(executable_path, port=port)
         self.quiet = quiet
 
-    def start(self):
-        """
-        Starts the SafariDriver Service.
+    @property
+    def _start_args(self):
+        return ["java", "-jar", self.path, "-port", "%s" % self.port]
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        kwargs = dict()
-        if self.quiet:
-            devnull_out = open(devnull, 'w')
-            kwargs.update(stdout=devnull_out,
-                          stderr=devnull_out)
-        try:
-            self.process = subprocess.Popen(["java", "-jar", self.path, "-port", "%s" % self.port],
-                                            **kwargs)
-        except:
-            raise WebDriverException(
-                "SafariDriver executable needs to be available in the path.")
-        time.sleep(10)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to the SafariDriver")
+    @property
+    def _start_kwargs(self):
+        if not self.quiet:
+            return {}
+        devnull_out = open(devnull, 'w')
+        return dict(stdout=devnull_out, stderr=devnull_out)
 
     @property
     def service_url(self):
         """
         Gets the url of the SafariDriver Service
         """
-        return "http://localhost:%d/wd/hub" % self.port
-
-    def stop(self):
-        """
-        Tells the SafariDriver to stop and cleans up the process
-        """
-        # If it's dead don't worry
-        if self.process is None:
-            return
-
-        self.process.kill()
-        self.process.wait()
-
+        return '{0}/wd/hub'.format(super(Service, self).service_url)

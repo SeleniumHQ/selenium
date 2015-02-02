@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import division
 
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
@@ -60,12 +61,12 @@ class Color(object):
         if m.match(RGB_PATTERN, str_):
             return Color(*m.groups)
         elif m.match(RGB_PCT_PATTERN, str_):
-            rgb = tuple([float(each) / 100 * 255 for each in m.groups])
+            rgb = tuple([each / 100 * 255 for each in m.groups])
             return Color(*rgb)
         elif m.match(RGBA_PATTERN, str_):
             return Color(*m.groups)
         elif m.match(RGBA_PCT_PATTERN, str_):
-            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])
+            rgba = tuple([each / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])
             return Color(*rgba)
         elif m.match(HEX_PATTERN, str_):
             rgb = tuple([int(each, 16) for each in m.groups])
@@ -82,9 +83,9 @@ class Color(object):
 
     @staticmethod
     def _from_hsl(h, s, l, a=1):
-        h = float(h) / 360
-        s = float(s) / 100
-        l = float(l) / 100
+        h /= 360
+        s /= 100
+        l /= 100
 
         if s == 0:
             r = l
@@ -102,7 +103,7 @@ class Color(object):
 
                 if hue < 1.0 / 6.0:
                     return (lum1 + (lum2 - lum1) * 6.0 * hue)
-                elif  hue < 1.0 / 2.0:
+                elif hue < 1.0 / 2.0:
                     return lum2
                 elif hue < 2.0 / 3.0:
                     return lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0

@@ -16,17 +16,12 @@ limitations under the License.
 """
 from __future__ import unicode_literals
 
+import six
+from six.moves import http_client
+from six.moves.urllib import parse as urllib_parse
+
 __docformat__ = "restructuredtext en"
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
-
-try:
-    import urllib.parse as urllib_parse
-except ImportError:
-    import urllib as urllib_parse
 
 class selenium(object):
     """
@@ -212,12 +207,12 @@ class selenium(object):
     def do_command(self, verb, args):
         conn = http_client.HTTPConnection(self.host, self.port, timeout=self.http_timeout)
         try:
-            body = 'cmd=' + urllib_parse.quote_plus(unicode(verb).encode('utf-8'))
+            body = 'cmd=' + urllib_parse.quote_plus(six.text_type(verb).encode('utf-8'))
             for i in range(len(args)):
-                body += '&' + unicode(i+1) + '=' + \
-                        urllib_parse.quote_plus(unicode(args[i]).encode('utf-8'))
+                body += '&' + six.text_type(i+1) + '=' + \
+                        urllib_parse.quote_plus(six.text_type(args[i]).encode('utf-8'))
             if (None != self.sessionId):
-                body += "&sessionId=" + unicode(self.sessionId)
+                body += "&sessionId=" + six.text_type(self.sessionId)
             headers = {
                 "Content-Type":
                 "application/x-www-form-urlencoded; charset=utf-8"
@@ -225,7 +220,7 @@ class selenium(object):
             conn.request("POST", "/selenium-server/driver/", body, headers)
 
             response = conn.getresponse()
-            data = unicode(response.read(), "UTF-8")
+            data = six.text_type(response.read(), "UTF-8")
             if (not data.startswith('OK')):
                 raise Exception(data)
             return data

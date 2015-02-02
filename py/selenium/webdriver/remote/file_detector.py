@@ -11,18 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 
 import abc
 import os
-from selenium.webdriver.common.keys import Keys
+import six
+from selenium.webdriver.common.keys import keys_to_typing
 
 
+@six.with_metaclass(abc.ABCMeta)
 class FileDetector(object):
     """
     Used for identifying whether a sequence of chars represents the path to a
     file.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def is_local_file(self, *keys):
@@ -43,17 +45,7 @@ class LocalFileDetector(FileDetector):
     """
     def is_local_file(self, *keys):
         file_path = ''
-        typing = []
-        for val in keys:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
+        typing = keys_to_typing(keys)
         file_path = ''.join(typing)
 
         if file_path is '':

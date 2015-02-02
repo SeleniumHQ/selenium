@@ -13,15 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
+
 import platform
 import signal
 import subprocess
 import time
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.baseservice import BaseService
 from selenium.webdriver.common import utils
 
-class Service(object):
+
+class Service(BaseService):
     """
     Object that manages the starting and stopping of PhantomJS / Ghostdriver
     """
@@ -36,16 +40,12 @@ class Service(object):
          - service_args : A List of other command line options to pass to PhantomJS
          - log_path: Path for PhantomJS service to log to
         """
-
-        self.port = port
-        self.path = executable_path
-        self.service_args= service_args
-        if self.port == 0:
-            self.port = utils.free_port()
+        super(Service, self).__init__(executable_path, port=port)
+        self.service_args = service_args
         if self.service_args is None:
             self.service_args = []
         else:
-            self.service_args=service_args[:]
+            self.service_args = service_args[:]
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
         self.process = None
@@ -58,34 +58,22 @@ class Service(object):
         # we have to try to stop the launched process.
         self.stop()
 
-    def start(self):
-        """
-        Starts PhantomJS with GhostDriver.
+    @property
+    def _start_kwargs(self):
+        return dict(stdin=subprocess.PIPE,
+                    close_fds=platform.system() != 'Windows',
+                    stdout=self._log, stderr=self._log)
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        try:
-            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self._log, stderr=self._log)
-
-        except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to GhostDriver")
+    @property
+    def _start_args(self):
+        return self.service_args
 
     @property
     def service_url(self):
         """
         Gets the url of the GhostDriver Service
         """
-        return "http://localhost:%d/wd/hub" % self.port
+        return "{0}/wd/hub".format(super(Service, self).service_url)
 
     def stop(self):
         """

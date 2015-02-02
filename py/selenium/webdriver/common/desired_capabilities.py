@@ -12,10 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 The Desired Capabilities implementation.
 """
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from selenium.webdriver.common import platforms
+
 
 class DesiredCapabilities(object):
     """
@@ -45,79 +51,57 @@ class DesiredCapabilities(object):
 
     """
 
-    FIREFOX = {
-        "browserName": "firefox",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
+    @property
+    def FIREFOX(self):
+        return dict(browserName='firefox', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)
 
-    INTERNETEXPLORER = {
-        "browserName": "internet explorer",
-        "version": "",
-        "platform": "WINDOWS",
-        "javascriptEnabled": True,
-    }
+    @property
+    def INTERNETEXPLORER(self):
+        return dict(browserName='internet explorer', version='',
+                    platform=platforms.WINDOWS, javascriptEnabled=True)
 
-    CHROME = {
-        "browserName": "chrome",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
+    @property
+    def CHROME(self):
+        return dict(browserName='chrome', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)
 
-    OPERA = {
-        "browserName": "opera",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
+    @property
+    def OPERA(self):
+        return dict(browserName='opera', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)
 
-    SAFARI = {
-        "browserName": "safari",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
+    @property
+    def SAFARI(self):
+        return dict(browserName='safari', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)
 
-    HTMLUNIT = {
-        "browserName": "htmlunit",
-        "version": "",
-        "platform": "ANY",
-    }
+    @property
+    def HTMLUNIT(self):
+        return dict(browserName='htmlunit', version='',
+                    platform=platforms.ANY, javascriptEnabled=False)
 
-    HTMLUNITWITHJS = {
-        "browserName": "htmlunit",
-        "version": "firefox",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
+    @property
+    def HTMLUNITWITHJS(self):
+        return dict(browserName='htmlunit', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)
 
-    IPHONE = {
-        "browserName": "iPhone",
-        "version": "",
-        "platform": "MAC",
-        "javascriptEnabled": True,
-    }
+    @property
+    def IPHONE(self):
+        return dict(browserName='iPhone', version='',
+                    platform=platforms.MAC, javascriptEnabled=True)
 
-    IPAD = {
-        "browserName": "iPad",
-        "version": "",
-        "platform": "MAC",
-        "javascriptEnabled": True,
-    }
+    @property
+    def IPAD(self):
+        return dict(browserName='iPad', version='',
+                    platform=platforms.MAC, javascriptEnabled=True)
 
-    ANDROID = {
-        "browserName": "android",
-        "version": "",
-        "platform": "ANDROID",
-        "javascriptEnabled": True,
-    }
+    @property
+    def ANDROID(self):
+        return dict(browserName='android', version='',
+                    platform=platforms.ANDROID, javascriptEnabled=True)
 
-    PHANTOMJS = {
-        "browserName":"phantomjs",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
-
+    @property
+    def PHANTOMJS(self):
+        return dict(browserName='phantomjs', version='',
+                    platform=platforms.ANY, javascriptEnabled=True)

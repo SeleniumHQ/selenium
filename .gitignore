@@ -67,3 +67,18 @@ GTAGS
 .project
 Gemfile.lock
 /rb/.bundle
+
+# PyCharm
+.idea/
+
+# IntelliJ IDE
+*.iml
+ide.iml
+
+*.iml
+
+java/client/client.iml
+
+java/server/server.iml
+
+javascript/javascript.iml

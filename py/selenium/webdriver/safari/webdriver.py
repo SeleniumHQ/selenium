@@ -13,18 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 
-import base64
-
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+from six.moves import http_client
 
 import os
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
+
 
 class WebDriver(RemoteWebDriver):
     """

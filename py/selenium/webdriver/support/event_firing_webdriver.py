@@ -13,9 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.finderbase import FinderBase
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from .abstract_event_listener import AbstractEventListener
@@ -29,7 +31,8 @@ def _wrap_elements(result, ef_driver):
     else:
         return result
 
-class EventFiringWebDriver(object):
+
+class EventFiringWebDriver(FinderBase):
     """
     A wrapper around an arbitrary WebDriver instance which supports firing events
     """
@@ -100,54 +103,6 @@ class EventFiringWebDriver(object):
     def find_elements(self, by=By.ID, value=None):
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
     
-    def find_element_by_id(self, id_):
-        return self.find_element(by=By.ID, value=id_)
-    
-    def find_elements_by_id(self, id_):
-        return self.find_elements(by=By.ID, value=id_)
-    
-    def find_element_by_xpath(self, xpath):
-        return self.find_element(by=By.XPATH, value=xpath)
-    
-    def find_elements_by_xpath(self, xpath):
-        return self.find_elements(by=By.XPATH, value=xpath)
-    
-    def find_element_by_link_text(self, link_text):
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-    
-    def find_elements_by_link_text(self, text):
-        return self.find_elements(by=By.LINK_TEXT, value=text)
-    
-    def find_element_by_partial_link_text(self, link_text):
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_elements_by_partial_link_text(self, link_text):
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_element_by_name(self, name):
-        return self.find_element(by=By.NAME, value=name)
-    
-    def find_elements_by_name(self, name):
-        return self.find_elements(by=By.NAME, value=name)
-    
-    def find_element_by_tag_name(self, name):
-        return self.find_element(by=By.TAG_NAME, value=name)
-    
-    def find_elements_by_tag_name(self, name):
-        return self.find_elements(by=By.TAG_NAME, value=name)
-    
-    def find_element_by_class_name(self, name):
-        return self.find_element(by=By.CLASS_NAME, value=name)
-    
-    def find_elements_by_class_name(self, name):
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-    
-    def find_element_by_css_selector(self, css_selector):
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-    
-    def find_elements_by_css_selector(self, css_selector):
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
-    
     def _dispatch(self, l_call, l_args, d_call, d_args):
         getattr(self._listener, "before_%s" % l_call)(*l_args)
         try:
@@ -201,7 +156,7 @@ class EventFiringWebDriver(object):
         raise AttributeError(name)
     
     
-class EventFiringWebElement(object):
+class EventFiringWebElement(FinderBase):
     """"
     A wrapper around WebElement instance which supports firing events
     """
@@ -234,54 +189,6 @@ class EventFiringWebElement(object):
     
     def find_elements(self, by=By.ID, value=None):
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
-    
-    def find_element_by_id(self, id_):
-        return self.find_element(by=By.ID, value=id_)
-    
-    def find_elements_by_id(self, id_):
-        return self.find_elements(by=By.ID, value=id_)
-    
-    def find_element_by_name(self, name):
-        return self.find_element(by=By.NAME, value=name)
-    
-    def find_elements_by_name(self, name):
-        return self.find_elements(by=By.NAME, value=name)
-    
-    def find_element_by_link_text(self, link_text):
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-    
-    def find_elements_by_link_text(self, link_text):
-        return self.find_elements(by=By.LINK_TEXT, value=link_text)
-    
-    def find_element_by_partial_link_text(self, link_text):
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_elements_by_partial_link_text(self, link_text):
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
-    def find_element_by_tag_name(self, name):
-        return self.find_element(by=By.TAG_NAME, value=name)
-    
-    def find_elements_by_tag_name(self, name):
-        return self.find_elements(by=By.TAG_NAME, value=name)
-    
-    def find_element_by_xpath(self, xpath):
-        return self.find_element(by=By.XPATH, value=xpath)
-    
-    def find_elements_by_xpath(self, xpath):
-        return self.find_elements(by=By.XPATH, value=xpath)
-    
-    def find_element_by_class_name(self, name):
-        return self.find_element(by=By.CLASS_NAME, value=name)
-    
-    def find_elements_by_class_name(self, name):
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-    
-    def find_element_by_css_selector(self, css_selector):
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-    
-    def find_elements_by_css_selector(self, css_selector):
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
     
     def _dispatch(self, l_call, l_args, d_call, d_args):
         getattr(self._listener, "before_%s" % l_call)(*l_args)

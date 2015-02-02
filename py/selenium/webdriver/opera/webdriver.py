@@ -13,18 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+from six.moves import http_client
 
 import os
+import logging
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
 from .service import Service
 from .options import Options
+
+logger = logging.getLogger(__name__)
 
 
 class OperaDriver(ChromiumDriver):
@@ -91,8 +92,8 @@ class PrestoDriver(RemoteWebDriver):
             try:
                 executable_path = os.environ["SELENIUM_SERVER_JAR"]
             except:
-                raise Exception("No executable path given, please add one \
-                      to Environment Variable 'SELENIUM_SERVER_JAR'")
+                raise Exception("No executable path given, please add one "
+                                "to Environment Variable 'SELENIUM_SERVER_JAR'")
         self.service = Service(executable_path, port=port)
         self.service.start()
 
@@ -138,14 +139,14 @@ class WebDriver(PrestoDriver, OperaDriver):
                                  service_log_path=service_log_path)
         else:
             if service_log_path:
-                print("Warning! service_log_path shouldn't be used " +
-                      "with Presto based Opera")
+                logger.warning("Warning! service_log_path shouldn't be used "
+                               "with Presto based Opera")
             if service_args:
-                print("Warning! service_args shouldn't be used with " +
-                      "Presto based Opera")
+                logger.warning("Warning! service_args shouldn't be used with "
+                               "Presto based Opera")
             if opera_options:
-                print("Warning! opera_options shouldn't be used with " +
-                      "Presto based Opera")
+                logger.warning("Warning! opera_options shouldn't be used with "
+                               "Presto based Opera")
             if not desired_capabilities:
                 desired_capabilities = DesiredCapabilities.OPERA
             PrestoDriver.__init__(self, executable_path=executable_path,

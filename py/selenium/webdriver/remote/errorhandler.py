@@ -12,10 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
+
+import six
 
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidCookieDomainException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import ImeNotAvailableException
@@ -24,18 +26,12 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnableToSetCookieException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import ErrorInResponseException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
-
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
 
 class ErrorCode(object):
@@ -130,7 +126,7 @@ class ErrorHandler(object):
         else:
             exception_class = WebDriverException
         value = response['value']
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
