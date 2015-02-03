@@ -35,6 +35,7 @@ goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
 goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
+goog.require('webdriver.TouchSequence');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 goog.require('webdriver.until');
@@ -453,6 +454,23 @@ webdriver.WebDriver.prototype.quit = function() {
 webdriver.WebDriver.prototype.actions = function() {
   return new webdriver.ActionSequence(this);
 };
+
+
+/**
+ * Creates a new touch sequence using this driver. The sequence will not be
+ * scheduled for execution until {@link webdriver.TouchSequence#perform} is
+ * called. Example:
+ * <pre><code>
+ *   driver.touchActions().
+ *       tap(element1).
+ *       doubleTap(element2).
+ *       perform();
+ * </code></pre>
+ * @return {!webdriver.TouchSequence} A new touch sequence for this instance.
+ */
+webdriver.WebDriver.prototype.touchActions = function() {
+  return new webdriver.TouchSequence(this);
+}
 
 
 /**
@@ -1721,6 +1739,17 @@ webdriver.WebElement.prototype.getDriver = function() {
  */
 webdriver.WebElement.prototype.getId = function() {
   return this.id_;
+};
+
+
+/**
+ * @return {!webdriver.promise.Promise.<string>} A promise that resolves to this
+ *     element's raw ID as a string value.
+ */
+webdriver.WebElement.prototype.getRawId = function() {
+  return this.id_.then(function(value) {
+    return value['ELEMENT'];
+  });
 };
 
 
