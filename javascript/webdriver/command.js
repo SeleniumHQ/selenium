@@ -216,7 +216,10 @@ webdriver.CommandName = {
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
-  GET_SESSION_LOGS: 'getSessionLogs'
+  GET_SESSION_LOGS: 'getSessionLogs',
+  // This one considered to be undocumented feature, but yet
+  // very important for remote testing
+  FILE: 'uploadFile'
 };
 
 

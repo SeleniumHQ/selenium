@@ -28,6 +28,7 @@
     "xml2js": "0.4.4"
   },
   "devDependencies": {
+    "tinyzip": "",
     "mocha": ">= 1.21.x",
     "promises-aplus-tests": "^2.1.0"
   },
