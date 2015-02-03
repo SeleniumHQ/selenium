@@ -624,28 +624,59 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
 
 
 /**
- * Schedules a command to wait for a condition to hold, as defined by some
- * user supplied function. If any errors occur while evaluating the wait, they
- * will be allowed to propagate.
+ * Schedules a command to wait for a condition to hold. The condition may be
+ * specified by a {@link webdriver.until.Condition}, as a custom function, or
+ * as a {@link webdriver.promise.Promise}.
  *
- * <p>In the event a condition returns a {@link webdriver.promise.Promise}, the
+ * For a {@link webdriver.until.Condition} or function, the wait will repeatedly
+ * evaluate the condition until it returns a truthy value. If any errors occur
+ * while evaluating the condition, they will be allowed to propagate. In the
+ * event a condition returns a {@link webdriver.promise.Promise promise}, the
  * polling loop will wait for it to be resolved and use the resolved value for
- * evaluating whether the condition has been satisfied. The resolution time for
+ * whether the condition has been satisified. Note the resolution time for
  * a promise is factored into whether a wait has timed out.
  *
- * @param {!(webdriver.until.Condition.<T>|
- *           function(!webdriver.WebDriver): T)} condition Either a condition
- *     object, or a function to evaluate as a condition.
- * @param {number} timeout How long to wait for the condition to be true.
+ * *Example:* waiting up to 10 seconds for an element to be present and visible
+ * on the page.
+ *
+ *     var button = driver.wait(until.elementLocated(By.id('foo'), 10000);
+ *     button.click();
+ *
+ * This function may also be used to block the command flow on the resolution
+ * of a {@link webdriver.promise.Promise promise}. When given a promise, the
+ * command will simply wait for its resolution before completing. A timeout may
+ * be provided to fail the command if the promise does not resolve before the
+ * timeout expires.
+ *
+ * *Example:* Suppose you have a function, `startTestServer`, that returns a
+ * promise for when a server is ready for requests. You can block a `WebDriver`
+ * client on this promise with:
+ *
+ *     var started = startTestServer();
+ *     driver.wait(started, 5 * 1000, 'Server should start within 5 seconds');
+ *     driver.get(getServerUrl());
+ *
+ * @param {!(webdriver.promise.Promise<T>|
+ *           webdriver.until.Condition<T>|
+ *           function(!webdriver.WebDriver): T)} condition The condition to
+ *     wait on, defined as a promise, condition object, or  a function to
+ *     evaluate as a condition.
+ * @param {number=} opt_timeout How long to wait for the condition to be true.
  * @param {string=} opt_message An optional message to use if the wait times
  *     out.
- * @return {!webdriver.promise.Promise.<T>} A promise that will be fulfilled
+ * @return {!webdriver.promise.Promise<T>} A promise that will be fulfilled
  *     with the first truthy value returned by the condition function, or
  *     rejected if the condition times out.
  * @template T
  */
 webdriver.WebDriver.prototype.wait = function(
-    condition, timeout, opt_message) {
+    condition, opt_timeout, opt_message) {
+  if (webdriver.promise.isPromise(condition)) {
+    return this.flow_.wait(
+        /** @type {!webdriver.promise.Promise<T>} */(condition),
+        opt_timeout, opt_message);
+  }
+
   var message = opt_message;
   var fn = /** @type {!Function} */(condition);
   if (condition instanceof webdriver.until.Condition) {
@@ -659,7 +690,7 @@ webdriver.WebDriver.prototype.wait = function(
       return webdriver.promise.consume(fn, null, [driver]);
     }
     return fn(driver);
-  }, timeout, message);
+  }, opt_timeout, message);
 };
 
 

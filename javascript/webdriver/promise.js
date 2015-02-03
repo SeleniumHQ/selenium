@@ -1533,17 +1533,63 @@ promise.ControlFlow.prototype.timeout = function(ms, opt_description) {
  * <p>If the condition function throws, or returns a rejected promise, the
  * wait task will fail.
  *
- * @param {function(): T} condition The condition function to poll.
- * @param {number} timeout How long to wait, in milliseconds, for the condition
- *     to hold before timing out.
+ * <p>If the condition is defined as a promise, the flow will block on that
+ * promise's resolution, up to {@code timeout} milliseconds. If
+ * {@code timeout === 0}, the flow will block indefinitely on the promise's
+ * resolution.
+ *
+ * @param {(!promise.Promise<T>|function())} condition The condition to poll,
+ *     or a promise to wait on.
+ * @param {number=} opt_timeout How long to wait, in milliseconds, for the
+ *     condition to hold before timing out; defaults to 0.
  * @param {string=} opt_message An optional error message to include if the
  *     wait times out; defaults to the empty string.
  * @return {!promise.Promise<T>} A promise that will be fulfilled
  *     when the condition has been satisified. The promise shall be rejected if
  *     the wait times out waiting for the condition.
+ * @throws {TypeError} If condition is not a function or promise or if timeout
+ *     is not a number >= 0.
  * @template T
  */
-promise.ControlFlow.prototype.wait = function(condition, timeout, opt_message) {
+promise.ControlFlow.prototype.wait = function(
+    condition, opt_timeout, opt_message) {
+  var timeout = opt_timeout || 0;
+  if (!goog.isNumber(timeout) || timeout < 0) {
+    throw TypeError('timeout must be a number >= 0: ' + timeout);
+  }
+
+  if (promise.isPromise(condition)) {
+    return this.execute(function() {
+      if (!timeout) {
+        return condition;
+      }
+      return new promise.Promise(function(fulfill, reject) {
+        var start = goog.now();
+        var timer = setTimeout(function() {
+          timer = null;
+          reject(Error((opt_message ? opt_message + '\n' : '') +
+              'Timed out waiting for promise to resolve after ' +
+              (goog.now() - start) + 'ms'));
+        }, timeout);
+
+        /** @type {Thenable} */(condition).then(
+            function(value) {
+              timer && clearTimeout(timer);
+              fulfill(value);
+            },
+            function(error) {
+              timer && clearTimeout(timer);
+              reject(error);
+            });
+      });
+    }, opt_message || '<anonymous wait: promise resolution>');
+  }
+
+  if (!goog.isFunction(condition)) {
+    throw TypeError('Invalid condition; must be a function or promise: ' +
+        goog.typeOf(condition));
+  }
+
   if (promise.isGenerator(condition)) {
     condition = goog.partial(promise.consume, condition);
   }
@@ -1557,7 +1603,7 @@ promise.ControlFlow.prototype.wait = function(condition, timeout, opt_message) {
 
       function pollCondition() {
         self.resume_();
-        self.execute(condition).then(function(value) {
+        self.execute(/**@type {function()}*/(condition)).then(function(value) {
           var elapsed = goog.now() - startTime;
           if (!!value) {
             fulfill(value);
@@ -1584,6 +1630,7 @@ promise.ControlFlow.prototype.wait = function(condition, timeout, opt_message) {
  * @param {!promise.Promise} promise The promise to wait on.
  * @return {!promise.Promise} A promise that will resolve when the
  *     task has completed.
+ * @deprecated Use {@link #wait() wait(promise)} instead.
  */
 promise.ControlFlow.prototype.await = function(promise) {
   return this.execute(function() {

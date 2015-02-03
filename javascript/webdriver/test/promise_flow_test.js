@@ -1149,7 +1149,53 @@ function testWaiting_scheduleWithIntermittentAndNestedWaits() {
         '0: wait 4');
   });
 }
-  
+
+
+function testWait_requiresConditionToBeAPromiseOrFunction() {
+  assertThrows(function() {
+    flow.wait(1234, 0);
+  });
+  flow.wait(function() { return true;}, 0);
+  flow.wait(webdriver.promise.fulfilled(), 0);
+  return waitForIdle();
+}
+
+
+function testWait_promiseThatDoesNotResolveBeforeTimeout() {
+  var d = webdriver.promise.defer();
+  flow.wait(d.promise, 5).then(fail, function(e) {
+    assertRegExp(/Timed out waiting for promise to resolve after \d+ms/,
+        e.message);
+  });
+  return waitForIdle().then(function() {
+    assertTrue('Promise should not be cancelled', d.promise.isPending());
+  });
+}
+
+
+function testWait_unboundedWaitOnPromiseResolution() {
+  var messages = [];
+  var d = webdriver.promise.defer();
+  var waitResult = flow.wait(d.promise).then(function(value) {
+    messages.push('b');
+    assertEquals(1234, value);
+  });
+  setTimeout(function() {
+    messages.push('a');
+  }, 5);
+
+  webdriver.promise.delayed(10).then(function() {
+    assertArrayEquals(['a'], messages);
+    assertTrue(waitResult.isPending());
+    d.fulfill(1234);
+    return waitResult;
+  }).then(function(value) {
+    assertArrayEquals(['a', 'b'], messages);
+  });
+
+  return waitForIdle();
+}
+
 
 function testSubtasks() {
   schedule('a');
@@ -1333,6 +1379,7 @@ function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
           }
         });
   }).then(function() {
+    seen.sort();
     assertArrayEquals([once, twice], seen);
     assertFlowHistory('one');
     assertFalse('Did not cancel the second task', twoResult.isPending());

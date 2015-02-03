@@ -53,6 +53,8 @@
     `promise.ControlFlow#clearHistory`, and `promise.ControlFlow#annotateError`.
     These functions were all intended for internal use and are no longer
     necessary, so they have been made no-ops.
+* `WebDriver.wait()` may now be used to wait for a promise to resolve, with
+    an optional timeout. Refer to the API documentation for more information.
 * FIXED: 8380: `firefox.Driver` will delete its temporary profile on `quit`.
 * FIXED: 8306: Stack overflow in promise callbacks eliminated.
 * FIXED: 8221: Added support for defining custom command mappings. Includes
