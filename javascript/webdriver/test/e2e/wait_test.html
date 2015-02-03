@@ -18,6 +18,7 @@ limitations under the License.
 <script src="../test_bootstrap.js"></script>
 <script>
   goog.require('goog.dom');
+  goog.require('goog.userAgent');
   goog.require('webdriver.WebDriver');
   goog.require('webdriver.Session');
   goog.require('webdriver.browser');
@@ -46,6 +47,10 @@ limitations under the License.
 <button id="remove" onclick="removeFoo();">Remove foo!</button>
 <script>
   var driver = webdriver.browser.createDriver(window);
+
+  function shouldRunTests() {
+    return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+  }
 
   function testWaiting() {
     var addButton = driver.findElement(By.id("add"));

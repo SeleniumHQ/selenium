@@ -14,6 +14,7 @@
 
 goog.require('goog.testing.MockClock');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.promise');
 goog.require('webdriver.promise.Deferred');
 goog.require('webdriver.stacktrace');
@@ -30,6 +31,11 @@ var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     StubError = webdriver.test.testutil.StubError;
 
 var app, clock, uncaughtExceptions;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 
 function setUp() {
   webdriver.promise.LONG_STACK_TRACES = false;

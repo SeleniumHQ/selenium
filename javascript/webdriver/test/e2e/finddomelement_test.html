@@ -33,6 +33,10 @@ limitations under the License.
 <script>
   var bugsBunnyElement, driver, iframeElement, iframeDoc, daffyDuckElement;
 
+  function shouldRunTests() {
+    return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+  }
+
   function setUpPage() {
     bugsBunnyElement = document.createElement('div');
     bugsBunnyElement.innerHTML = 'bunny';

@@ -18,6 +18,7 @@ goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.mockmatchers');
 goog.require('goog.testing.jsunit');
 goog.require('goog.testing.recordFunction');
+goog.require('goog.userAgent');
 goog.require('webdriver.test.testutil');
 goog.require('webdriver.testing.TestCase');
 
@@ -31,6 +32,11 @@ var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument,
 
 var control = new goog.testing.MockControl();
 var mockTestCase, testStub, mockOnComplete, mockOnError, uncaughtExceptions;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 
 function setUp() {
   // Use one master mock so we can assert execution order.

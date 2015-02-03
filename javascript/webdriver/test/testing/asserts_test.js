@@ -13,12 +13,18 @@
 // limitations under the License.
 
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.test.testutil');
 goog.require('webdriver.testing.assert');
 goog.require('webdriver.testing.asserts');
 
 var assert = webdriver.testing.assert;
 var result;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 
 function setUp() {
   result = webdriver.test.testutil.callbackPair();

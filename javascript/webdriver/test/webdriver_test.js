@@ -57,6 +57,11 @@ var flow;
 var mockControl;
 var uncaughtExceptions;
 
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
+
 function setUp() {
   mockControl = new goog.testing.MockControl();
   flow = webdriver.promise.controlFlow();
