@@ -1100,8 +1100,16 @@ function testWaiting_timesOut_nonZeroTimeout() {
     });
   }, 60, 'counting to 3');
   return waitForAbort().then(function(e) {
-    assertFlowHistory('0: counting to 3', '1: counting to 3');
-    assertEquals(2, count);
+    switch (count) {
+      case 1:
+        assertFlowHistory('0: counting to 3');
+        break;
+      case 2:
+        assertFlowHistory('0: counting to 3', '1: counting to 3');
+        break;
+      default:
+        fail('unexpected polling count: ' + count);
+    }
     assertRegExp(/^counting to 3\nWait timed out after \d+ms$/, e.message);
   });
 }
