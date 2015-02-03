@@ -21,12 +21,18 @@ goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.By');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.WebElement');
 goog.require('webdriver.WebElementPromise');
 goog.require('webdriver.until');
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
+
 
 var By = webdriver.By;
 var until = webdriver.until;
