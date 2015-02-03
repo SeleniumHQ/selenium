@@ -70,6 +70,8 @@ major version release (i.e. 1.0.0).
 * Added support for copying files to a remote Selenium via `sendKeys` to test
     file uploads. Refer to the API documentation for more information. Sample
     usage included in `test/upload_test.js`
+* Expanded the interactions API to include touch actions.
+    See `WebDriver.touchActions()`.
 * FIXED: 8380: `firefox.Driver` will delete its temporary profile on `quit`.
 * FIXED: 8306: Stack overflow in promise callbacks eliminated.
 * FIXED: 8221: Added support for defining custom command mappings. Includes
