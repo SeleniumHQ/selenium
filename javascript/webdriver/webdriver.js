@@ -86,6 +86,9 @@ webdriver.WebDriver = function(session, executor, opt_flow) {
 
   /** @private {!webdriver.promise.ControlFlow} */
   this.flow_ = opt_flow || webdriver.promise.controlFlow();
+
+  /** @private {!webdriver.FileDetector} */
+  this.filedetector_ = webdriver.FileDetector.UselessFileDetector;
 };
 
 
@@ -317,6 +320,21 @@ webdriver.WebDriver.executeCommand_ = function(executor, command) {
  */
 webdriver.WebDriver.prototype.controlFlow = function() {
   return this.flow_;
+};
+
+/**
+* Set the FileDetector to be used with this driver
+* Standard detectors {!webdriver.FileDetector}
+*
+* FileDetector is a function that accept keys and return
+* object {isFile:true|false,keys:keys} of promise for it
+*
+* Default, called UselessFileDetector defines as:
+* function (keys) {return {isFile:false,keys:keys}}
+*
+*/
+webdriver.WebDriver.prototype.setFileDetector = function (filedetector) {
+  this.filedetector_ = filedetector;
 };
 
 
@@ -1927,19 +1945,50 @@ webdriver.WebElement.prototype.click = function() {
  *     when all keys have been typed.
  */
 webdriver.WebElement.prototype.sendKeys = function(var_args) {
+  var self = this;
   // Coerce every argument to a string. This protects us from users that
   // ignore the jsdoc and give us a number (which ends up causing problems on
   // the server, which requires strings).
   var keys = webdriver.promise.fullyResolved(goog.array.slice(arguments, 0)).
       then(function(args) {
         return goog.array.map(goog.array.slice(args, 0), function(key) {
-          return key + '';
+          // wrap keys into FileDetector promise
+          return self.driver_.filedetector_(key + '');
         });
       });
-  return this.schedule_(
+  var sendKeys = new webdriver.promise.Deferred();
+  // execute sendKeys promise in current flow
+  return this.driver_.flow_.execute(function () {
+  // run new frame because we'll might need more than one command to
+  // acomplish task
+  self.driver_.flow_.runInNewFrame_(function () {
+    webdriver.promise.fullyResolved(keys).then(function (args) {
+    // sort they keys to keys and files
+    var keys2=[];
+      args.forEach(function (arg) {
+      if (arg.isFile)
+        keys2.push(
+        self.schedule_(
+          new webdriver.Command(webdriver.CommandName.FILE).
+          setParameter('file', new webdriver.RemoteFile(arg.keys),
+          'WebDriver.uploadFile('+arg.keys+')')
+          )
+        )
+      else
+        keys2.push(arg.keys)
+      })
+    // send keys, file promises will pre upload file in this frame and
+    // correct path to remote ones
+    return self.schedule_(
       new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
-          setParameter('value', keys),
-      'WebElement.sendKeys(' + keys + ')');
+      setParameter('value', keys2),
+      'WebElement.sendKeys(' + keys2 + ')')
+    })
+  }, function(result) {
+    sendKeys.fulfill(result);
+  }, sendKeys.reject,true)
+    return sendKeys;
+  })
 };
 
 
@@ -2396,3 +2445,75 @@ webdriver.UnhandledAlertError.prototype.getAlertText = function() {
 webdriver.UnhandledAlertError.prototype.getAlert = function() {
   return this.alert_;
 };
+
+
+/**
+* Local file detector, resolves to {isFile:true, keys:keys} when
+* file detected
+* @param {!string} keys to check
+* @constructor
+* @extends {webdriver.promise.Deferred}
+*/
+webdriver.LocalFileDetector = function (keys) {
+  webdriver.promise.Deferred.call(this, null);
+
+  var fs = require('fs');
+  var self = this;
+  fs.stat(keys, function (err, stat) {
+    if (err)
+    self.fulfill({isFile:false,keys:keys})
+    else
+      self.fulfill({isFile:stat.isFile(),keys:keys});
+  })
+}
+goog.inherits(webdriver.LocalFileDetector, webdriver.promise.Deferred);
+
+/**
+* Represents a remote file that can be passed via api
+* @param {!string} local path to file
+* @constructor
+* @extends {webdriver.promise.Deferred}
+*/
+webdriver.RemoteFile = function(path) {
+  webdriver.promise.Deferred.call(this, null);
+  this._path = path;
+  this.fulfill(this);
+}
+goog.inherits(webdriver.RemoteFile, webdriver.promise.Deferred);
+
+/**
+ * Convert file to wire value. Actually zip it and convert to base64
+ * @extends {webdriver.promise.Deferred}
+ */
+
+webdriver.RemoteFile.prototype.toWireValue = function () {
+  var promise = new webdriver.promise.Deferred();
+  var path = require('path');
+    var zip = new (require('tinyzip').TinyZip)({rootpath:path.dirname(this._path)});
+    zip.addFile({file:this._path})
+    var archive = zip.getZipStream();
+
+  var dataList = [];
+
+  archive
+    .on('error', function(err) {
+      promise.reject(err);
+    })
+    .on('data', function(data) {
+    dataList.push(data);
+    })
+    .on('end', function() {
+      var file = Buffer.concat(dataList);
+      promise.fulfill(file.toString('base64'))
+    });
+
+  archive.resume();
+
+  return promise;
+}
+
+webdriver.FileDetector = {
+  'LocalFileDetector':function (keys) {return new webdriver.LocalFileDetector(keys)},
+  'UselessFileDetector':function (keys) {return {isFile:false,keys:keys}}
+}
+goog.exportSymbol('FileDetector', webdriver.FileDetector);
