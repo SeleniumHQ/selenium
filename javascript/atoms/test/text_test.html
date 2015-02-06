@@ -28,6 +28,18 @@ limitations under the License.
 
   <script type="text/javascript">
 
+    function testGetVisibleTextInCssShouldReturnVisibleCss() {
+      var text = getVisibleTextByElementId('CssContent');
+
+      assertEquals("Inside CSS Outside CSS", text);
+    }
+	
+    function testGetVisibleTextInCssMultiShouldReturnVisibleCss() {
+      var text = getVisibleTextByElementId('CssContentMulti');
+
+      assertEquals("Outside CSS Multi Inside CSS", text);
+    }
+	
     function testGetVisibleTextShouldReturnOneLineText() {
       var text = getVisibleTextByElementId('oneline');
 
@@ -290,10 +302,18 @@ limitations under the License.
       opacity: 0; /* non IE */
       filter:alpha(opacity=0); /* IE 6+ */
     }
+	.CssContent:before{
+		content: 'Inside CSS ';
+	}
   </style>
 
 </head>
 <body>
+  <p class='CssContent' id="CssContent">Outside CSS</p>
+  <p class='CssContentMulti' id="CssContentMulti">Outside CSS Multi 
+	<span class='CssContent'></span>
+  </p>
+  
   <p id="oneline">A single line of text</p>
 
   <div id="multiline">
