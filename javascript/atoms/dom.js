@@ -1140,6 +1140,24 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     if (shown) {
       whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
       textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+	  beforeContentCSS = window.getComputedStyle(elem, ":before").content;
+	  afterContentCSS = window.getComputedStyle(elem, ":after").content;
+	  if(beforeContentCSS.length > 0 && beforeContentCSS!="none"){
+	  //trim first and last characters because content puts quotes (single in some browsers and double in others) inside the string.
+		beforeContentCSS=beforeContentCSS.substr(1,beforeContentCSS.length-2);
+		if(lines.length==0)
+			lines.push(beforeContentCSS);
+		else
+			lines[lines.length-1]+=beforeContentCSS;
+	  }
+	  if(afterContentCSS.length > 0 && afterContentCSS!="none"){
+	  //trim first and last characters because content puts quotes (single in some browsers and double in others) inside the string.
+		afterContentCSS=afterContentCSS.substr(1,afterContentCSS.length-2);
+		if(lines.length==0)
+			lines.push(afterContentCSS);
+		else
+			lines[lines.length-1]=lines[lines.length-1]+afterContentCSS;
+	  }
     }
 
     goog.array.forEach(elem.childNodes, function(node) {
