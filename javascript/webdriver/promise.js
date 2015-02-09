@@ -519,7 +519,7 @@ promise.Promise.prototype.scheduleNotifications_ = function() {
     }
 
     if (this.callbacks_ && this.callbacks_.length) {
-      activeFrame = this.flow_.getActiveFrame_();
+      activeFrame = this.flow_.getSchedulingFrame_();
       var self = this;
       goog.array.forEach(this.callbacks_, function(callback) {
         if (!callback.frame_.getParent()) {
@@ -653,7 +653,7 @@ promise.Promise.prototype.addCallback_ = function(callback, errback, name, fn) {
   if (this.state_ !== promise.Promise.State_.PENDING &&
       this.state_ !== promise.Promise.State_.BLOCKED) {
     cb.frame_.pendingCallback = true;
-    this.flow_.getActiveFrame_().addChild(cb.frame_);
+    this.flow_.getSchedulingFrame_().addChild(cb.frame_);
     this.scheduleNotifications_();
   }
   return cb.promise;
@@ -1464,6 +1464,15 @@ promise.ControlFlow.prototype.getActiveFrame_ = function() {
 
 
 /**
+ * @return {!promise.Frame_} The frame that new items should be added to.
+ * @private
+ */
+promise.ControlFlow.prototype.getSchedulingFrame_ = function() {
+  return this.schedulingFrame_ || this.getActiveFrame_();
+};
+
+
+/**
  * Schedules a task for execution. If there is nothing currently in the
  * queue, the task will be executed in the next turn of the event loop. If
  * the task function is a generator, the task will be executed using
@@ -1493,9 +1502,7 @@ promise.ControlFlow.prototype.execute = function(fn, opt_description) {
   task.promise.stack_ = promise.captureStackTrace('Task', description,
       promise.ControlFlow.prototype.execute);
 
-  var scheduleIn = this.schedulingFrame_ || this.getActiveFrame_();
-  scheduleIn.addChild(task);
-
+  this.getSchedulingFrame_().addChild(task);
   this.emit(promise.ControlFlow.EventType.SCHEDULE_TASK, opt_description);
   this.scheduleEventLoopStart_();
   return task.promise;
@@ -2244,14 +2251,6 @@ promise.Frame_.prototype.addChild = function(node) {
   if (this.cancellationError_) {
     promise.Frame_.cancelChild_(this.cancellationError_, node);
     return;  // Child will never run, no point keeping a reference.
-  }
-
-  if (this.lastInsertedChild_ &&
-      this.lastInsertedChild_ instanceof promise.Frame_ &&
-      !this.lastInsertedChild_.pendingCallback &&
-      !this.lastInsertedChild_.isLocked_) {
-    this.lastInsertedChild_.addChild(node);
-    return;
   }
 
   node.setParent(this);
