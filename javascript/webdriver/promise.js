@@ -523,7 +523,6 @@ promise.Promise.prototype.scheduleNotifications_ = function() {
       var self = this;
       goog.array.forEach(this.callbacks_, function(callback) {
         if (!callback.frame_.getParent()) {
-          callback.frame_.pendingCallback = true;
           activeFrame.addChild(callback.frame_);
         }
       });
@@ -652,7 +651,6 @@ promise.Promise.prototype.addCallback_ = function(callback, errback, name, fn) {
 
   if (this.state_ !== promise.Promise.State_.PENDING &&
       this.state_ !== promise.Promise.State_.BLOCKED) {
-    cb.frame_.pendingCallback = true;
     this.flow_.getSchedulingFrame_().addChild(cb.frame_);
     this.scheduleNotifications_();
   }
@@ -1432,9 +1430,11 @@ promise.ControlFlow.prototype.getSchedule = function(opt_includeStackTraces) {
             /** @type {!promise.Task_} */(node.getPendingTask()),
             childIndent);
       }
-      goog.array.forEach(node.children_, function(child) {
-        ret += '\n' + toStringHelper(child, childIndent);
-      });
+      if (node.children_) {
+        goog.array.forEach(node.children_, function(child) {
+          ret += '\n' + toStringHelper(child, childIndent);
+        });
+      }
     } else if (opt_includeStackTraces) {
       var task = /** @type {!promise.Task_} */(node);
       if (task.promise.stack_) {
@@ -1456,7 +1456,7 @@ promise.ControlFlow.prototype.getActiveFrame_ = function() {
   this.cancelShutdown_();
   if (!this.activeFrame_) {
     this.activeFrame_ = new promise.Frame_(this);
-    this.activeFrame_.once('error', this.abortNow_, this);
+    this.activeFrame_.once(promise.Frame_.ERROR_EVENT, this.abortNow_, this);
     this.scheduleEventLoopStart_();
   }
   return this.activeFrame_;
@@ -1783,7 +1783,7 @@ promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
   if (frame.getParent()) {
     frame.getParent().removeChild(frame);
   }
-  frame.emit('close');
+  frame.emit(promise.Frame_.CLOSE_EVENT);
 
   if (!this.activeFrame_) {
     this.commenceShutdown_();
@@ -1899,10 +1899,10 @@ promise.ControlFlow.prototype.runInFrame_ = function(
       /** @type {!promise.Thenable} */(result).thenCatch(goog.nullFunction);
     }
 
-    newFrame.once('close', function() {
+    newFrame.once(promise.Frame_.CLOSE_EVENT, function() {
       shortCircuitTask && shortCircuitTask.cancel();
       callback(result);
-    }).once('error', function(reason) {
+    }).once(promise.Frame_.ERROR_EVENT, function(reason) {
       shortCircuitTask && shortCircuitTask.cancel();
       if (promise.Thenable.isImplementation(result) && result.isPending()) {
         result.cancel(reason);
@@ -1915,7 +1915,8 @@ promise.ControlFlow.prototype.runInFrame_ = function(
   }
 
   function isCloseable(frame) {
-    return !frame.children_.length && !frame.pendingRejection;
+    return (!frame.children_ || !frame.children_.length)
+        && !frame.pendingRejection;
   }
 
   /**
@@ -1927,7 +1928,7 @@ promise.ControlFlow.prototype.runInFrame_ = function(
       parent.removeChild(newFrame);
       goog.async.run(function() {
         if (isCloseable(parent) && parent !== self.activeFrame_) {
-          parent.emit('close');
+          parent.emit(promise.Frame_.CLOSE_EVENT);
         }
       });
       self.scheduleEventLoopStart_();
@@ -2052,358 +2053,340 @@ promise.MicroTask_ = goog.defineClass(null, {
 
 
 /**
- * An execution frame within a {@link promise.ControlFlow}.  Each
- * frame represents the execution context for either a
- * {@link promise.Task_} or a callback on a
- * {@link promise.Deferred}.
+ * An execution frame within a {@link promise.ControlFlow}.  Each frame
+ * represents the execution context for either a {@link promise.Task_} or a
+ * callback on a {@link promise.Promise}.
  *
  * <p>Each frame may contain sub-frames.  If child N is a sub-frame, then the
  * items queued within it are given priority over child N+1.
  *
- * @param {!promise.ControlFlow} flow The flow this instance belongs
- *     to.
- * @constructor
- * @extends {webdriver.EventEmitter}
- * @private
+ * @unrestricted
  * @final
- */
-promise.Frame_ = function(flow) {
-  webdriver.EventEmitter.call(this);
-
-  goog.getUid(this);
-
-  /** @private {!promise.ControlFlow} */
-  this.flow_ = flow;
-
-  /** @private {promise.Frame_} */
-  this.parent_ = null;
-
-  /**
-   * @private {!Array<!(promise.Frame_|promise.Task_)>}
-   */
-  this.children_ = [];
-
-
-  /** @private {(promise.Frame_|promise.Task_)} */
-  this.lastInsertedChild_ = null;
-
-  /**
-   * The task currently being executed within this frame.
-   * @private {promise.Task_}
-   */
-  this.pendingTask_ = null;
-
-  /**
-   * Whether this frame is currently locked. A locked frame represents an
-   * executed function that has scheduled all of its tasks.
-   *
-   * <p>Once a frame becomes locked, any new frames which are added as children
-   * represent interrupts (such as a {@link promise.Promise}
-   * callback) whose tasks must be given priority over those already scheduled
-   * within this frame. For example:
-   * <code><pre>
-   *   var flow = promise.controlFlow();
-   *   flow.execute('start here', goog.nullFunction).then(function() {
-   *     flow.execute('this should execute 2nd', goog.nullFunction);
-   *   });
-   *   flow.execute('this should execute last', goog.nullFunction);
-   * </pre></code>
-   *
-   * @private {boolean}
-   */
-  this.isLocked_ = false;
-
-  /**
-   * Whether this frame's completion is blocked on the resolution of a promise
-   * (and potentially sub-tasks within that promise's resolution chain).
-   * @private {boolean}
-   */
-  this.isBlocked_ = false;
-
-  /**
-   * Whether this frame represents a pending callback attached to a
-   * {@link promise.Promise}.
-   * @private {boolean}
-   */
-  this.pendingCallback = false;
-
-  /**
-   * Whether there are pending unhandled rejections detected within this frame.
-   * @private {boolean}
-   */
-  this.pendingRejection = false;
-
-  /** @private {promise.CancellationError} */
-  this.cancellationError_ = null;
-};
-goog.inherits(promise.Frame_, webdriver.EventEmitter);
-
-
-/** @return {promise.Frame_} This frame's parent, if any. */
-promise.Frame_.prototype.getParent = function() {
-  return this.parent_;
-};
-
-
-/**
- * @param {promise.Frame_} parent This frame's new parent.
- */
-promise.Frame_.prototype.setParent = function(parent) {
-  this.parent_ = parent;
-};
-
-
-/**
- * @return {!promise.Frame_} The root of this frame's tree.
- */
-promise.Frame_.prototype.getRoot = function() {
-  var root = this;
-  while (root.parent_) {
-    root = root.parent_;
-  }
-  return root;
-};
-
-
-/**
- * Aborts the execution of this frame, cancelling all outstanding tasks
- * scheduled within this frame.
- *
- * @param {*} error The error that triggered this abortion.
- */
-promise.Frame_.prototype.abort = function(error) {
-  this.cancellationError_ = promise.CancellationError.wrap(
-      error, 'Task discarded due to a previous task failure');
-  this.cancelRemainingTasks(this.cancellationError_);
-  if (!this.pendingCallback) {
-    this.emit('error', error);
-  }
-};
-
-
-/**
- * Marks all of the tasks that are descendants of this frame in the execution
- * tree as cancelled. This is necessary for callbacks scheduled asynchronous.
- * For example:
- *
- *     var someResult;
- *     promise.createFlow(function(flow) {
- *       someResult = flow.execute(function() {});
- *       throw Error();
- *     }).thenCatch(function(err) {
- *       console.log('flow failed: ' + err);
- *       someResult.then(function() {
- *         console.log('task succeeded!');
- *       }, function(err) {
- *         console.log('task failed! ' + err);
- *       });
- *     });
- *     // flow failed: Error: boom
- *     // task failed! CancelledTaskError: Task discarded due to a previous
- *     // task failure: Error: boom
- *
- * @param {!promise.CancellationError} reason The cancellation reason.
- */
-promise.Frame_.prototype.cancelRemainingTasks = function(reason) {
-  goog.array.forEach(this.children_, function(child) {
-    promise.Frame_.cancelChild_(reason, child);
-  });
-};
-
-
-/**
- * @param {!promise.CancellationError} error The cancellation error.
- * @param {!(promise.Frame_|promise.Task_)} child The child to cancel.
  * @private
  */
-promise.Frame_.cancelChild_ = function(error, child) {
-  if (child instanceof promise.Frame_) {
-    child.cancelRemainingTasks(error);
-  } else {
-    child.cancel(error);
-  }
-};
+promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
+  /**
+   * @param {!promise.ControlFlow} flow The flow this instance belongs to.
+   */
+  constructor: function(flow) {
+    webdriver.EventEmitter.call(this);
+    goog.getUid(this);
 
+    /** @private {!promise.ControlFlow} */
+    this.flow_ = flow;
 
-/**
- * @return {promise.Task_} The task currently executing
- *     within this frame, if any.
- */
-promise.Frame_.prototype.getPendingTask = function() {
-  return this.pendingTask_;
-};
+    /** @private {promise.Frame_} */
+    this.parent_ = null;
 
+    /** @private {Array<!(promise.Frame_|promise.Task_)>} */
+    this.children_ = null;
 
-/**
- * @param {promise.Task_} task The task currently
- *     executing within this frame, if any.
- */
-promise.Frame_.prototype.setPendingTask = function(task) {
-  this.pendingTask_ = task;
-};
+    /** @private {(promise.Frame_|promise.Task_)} */
+    this.lastInsertedChild_ = null;
 
+    /**
+     * The task currently being executed within this frame.
+     * @private {promise.Task_}
+     */
+    this.pendingTask_ = null;
 
-/**
- * Adds a new node to this frame.
- * @param {!(promise.Frame_|promise.Task_)} node The node to insert.
- */
-promise.Frame_.prototype.addChild = function(node) {
-  if (this.cancellationError_) {
-    promise.Frame_.cancelChild_(this.cancellationError_, node);
-    return;  // Child will never run, no point keeping a reference.
-  }
+    /**
+     * Whether this frame is currently locked. A locked frame represents an
+     * executed function that has scheduled all of its tasks.
+     *
+     * <p>Once a frame becomes locked, any new frames which are added as children
+     * represent interrupts (such as a {@link promise.Promise}
+     * callback) whose tasks must be given priority over those already scheduled
+     * within this frame. For example:
+     * <code><pre>
+     *   var flow = promise.controlFlow();
+     *   flow.execute('start here', goog.nullFunction).then(function() {
+     *     flow.execute('this should execute 2nd', goog.nullFunction);
+     *   });
+     *   flow.execute('this should execute last', goog.nullFunction);
+     * </pre></code>
+     *
+     * @private {boolean}
+     */
+    this.isLocked_ = false;
 
-  node.setParent(this);
-  if (this.isLocked_ && node instanceof promise.Frame_) {
-    var index = 0;
-    if (this.lastInsertedChild_ instanceof promise.Frame_) {
-      index = goog.array.indexOf(this.children_, this.lastInsertedChild_);
-      // If the last inserted child into a locked frame is a pending callback,
-      // it is an interrupt and the new interrupt must come after it. Otherwise,
-      // we have our first interrupt for this frame and it shoudl go before the
-      // last inserted child.
-      index += (this.lastInsertedChild_.pendingCallback) ? 1 : -1;
+    /**
+     * Whether this frame represents a pending callback attached to a
+     * {@link promise.Promise}.
+     * @private {boolean}
+     */
+    this.pendingCallback = false;
+
+    /**
+     * Whether there are pending unhandled rejections detected within this frame.
+     * @private {boolean}
+     */
+    this.pendingRejection = false;
+
+    /** @private {promise.CancellationError} */
+    this.cancellationError_ = null;
+  },
+
+  statics: {
+    /** @const */
+    CLOSE_EVENT: 'close',
+
+    /** @const */
+    ERROR_EVENT: 'error',
+
+    /**
+     * @param {!promise.CancellationError} error The cancellation error.
+     * @param {!(promise.Frame_|promise.Task_)} child The child to cancel.
+     * @private
+     */
+    cancelChild_: function(error, child) {
+      if (child instanceof promise.Frame_) {
+        child.cancelRemainingTasks(error);
+      } else {
+        child.cancel(error);
+      }
     }
-    goog.array.insertAt(this.children_, node, Math.max(index, 0));
+  },
+
+  /** @return {promise.Frame_} This frame's parent, if any. */
+  getParent: function() {
+    return this.parent_;
+  },
+
+  /** @param {promise.Frame_} parent This frame's new parent. */
+  setParent: function(parent) {
+    this.parent_ = parent;
+  },
+
+  /** @return {!promise.Frame_} The root of this frame's tree. */
+  getRoot: function() {
+    var root = this;
+    while (root.parent_) {
+      root = root.parent_;
+    }
+    return root;
+  },
+
+  /**
+   * Aborts the execution of this frame, cancelling all outstanding tasks
+   * scheduled within this frame.
+   *
+   * @param {*} error The error that triggered this abortion.
+   */
+  abort: function(error) {
+    this.cancellationError_ = promise.CancellationError.wrap(
+        error, 'Task discarded due to a previous task failure');
+    this.cancelRemainingTasks(this.cancellationError_);
+    if (!this.pendingCallback) {
+      this.emit(promise.Frame_.ERROR_EVENT, error);
+    }
+  },
+
+  /**
+   * Marks all of the tasks that are descendants of this frame in the execution
+   * tree as cancelled. This is necessary for callbacks scheduled asynchronous.
+   * For example:
+   *
+   *     var someResult;
+   *     promise.createFlow(function(flow) {
+   *       someResult = flow.execute(function() {});
+   *       throw Error();
+   *     }).thenCatch(function(err) {
+   *       console.log('flow failed: ' + err);
+   *       someResult.then(function() {
+   *         console.log('task succeeded!');
+   *       }, function(err) {
+   *         console.log('task failed! ' + err);
+   *       });
+   *     });
+   *     // flow failed: Error: boom
+   *     // task failed! CancelledTaskError: Task discarded due to a previous
+   *     // task failure: Error: boom
+   *
+   * @param {!promise.CancellationError} reason The cancellation reason.
+   */
+  cancelRemainingTasks: function(reason) {
+    if (this.children_) {
+      goog.array.forEach(this.children_, function(child) {
+        promise.Frame_.cancelChild_(reason, child);
+      });
+    }
+  },
+
+  /**
+   * @return {promise.Task_} The task currently executing
+   *     within this frame, if any.
+   */
+  getPendingTask: function() {
+    return this.pendingTask_;
+  },
+
+  /**
+   * @param {promise.Task_} task The task currently
+   *     executing within this frame, if any.
+   */
+  setPendingTask: function(task) {
+    this.pendingTask_ = task;
+  },
+
+  /**
+   * Adds a new node to this frame.
+   * @param {!(promise.Frame_|promise.Task_)} node The node to insert.
+   */
+  addChild: function(node) {
+    if (this.cancellationError_) {
+      promise.Frame_.cancelChild_(this.cancellationError_, node);
+      return;  // Child will never run, no point keeping a reference.
+    }
+
+    if (!this.children_) {
+      this.children_ = [];
+    }
+
+    node.setParent(this);
+    if (this.isLocked_ && node instanceof promise.Frame_) {
+      var index = 0;
+      if (this.lastInsertedChild_ instanceof promise.Frame_) {
+        index = goog.array.indexOf(this.children_, this.lastInsertedChild_);
+        // If the last inserted child into a locked frame is a pending callback,
+        // it is an interrupt and the new interrupt must come after it. Otherwise,
+        // we have our first interrupt for this frame and it shoudl go before the
+        // last inserted child.
+        index += (this.lastInsertedChild_.pendingCallback) ? 1 : -1;
+      }
+      goog.array.insertAt(this.children_, node, Math.max(index, 0));
+      this.lastInsertedChild_ = node;
+      return;
+    }
+
     this.lastInsertedChild_ = node;
-    return;
+    this.children_.push(node);
+  },
+
+  /**
+   * @return {(promise.Frame_|promise.Task_)} This frame's fist child.
+   */
+  getFirstChild: function() {
+    this.isLocked_ = true;
+    return this.children_ && this.children_[0];
+  },
+
+  /**
+   * Removes a child from this frame.
+   * @param {!(promise.Frame_|promise.Task_)} child The child to remove.
+   */
+  removeChild: function(child) {
+    goog.asserts.assert(child.parent_ === this, 'not a child of this frame');
+    goog.asserts.assert(this.children_ !== null, 'frame has no children!');
+    var index = goog.array.indexOf(this.children_, child);
+    child.setParent(null);
+    goog.array.removeAt(this.children_, index);
+    if (this.lastInsertedChild_ === child) {
+      this.lastInsertedChild_ = this.children_[index - 1] || null;
+    }
+    if (!this.children_.length) {
+      this.children_ = null;
+    }
+  },
+
+  /** @override */
+  toString: function() {
+    return 'Frame::' + goog.getUid(this);
   }
-
-  this.lastInsertedChild_ = node;
-  this.children_.push(node);
-};
-
-
-/**
- * @return {(promise.Frame_|promise.Task_)} This frame's
- *     fist child.
- */
-promise.Frame_.prototype.getFirstChild = function() {
-  this.isLocked_ = true;
-  return this.children_[0];
-};
-
-
-/**
- * Removes a child from this frame.
- * @param {!(promise.Frame_|promise.Task_)} child
- *     The child to remove.
- */
-promise.Frame_.prototype.removeChild = function(child) {
-  goog.asserts.assert(child.parent_ === this, 'not a child of this frame');
-  var index = goog.array.indexOf(this.children_, child);
-  child.setParent(null);
-  goog.array.removeAt(this.children_, index);
-  if (this.lastInsertedChild_ === child) {
-    this.lastInsertedChild_ = this.children_[index - 1] || null;
-  }
-};
-
-
-/** @override */
-promise.Frame_.prototype.toString = function() {
-  return 'Frame::' + goog.getUid(this);
-};
+});
 
 
 /**
  * A task to be executed by a {@link promise.ControlFlow}.
  *
- * @param {!promise.ControlFlow} flow The flow this instances belongs
- *     to.
- * @param {function(): (T|!promise.Promise<T>)} fn The function to
- *     call when the task executes. If it returns a
- *     {@link promise.Promise}, the flow will wait for it to be
- *     resolved before starting the next task.
- * @param {string} description A description of the task for debugging.
- * @constructor
- * @extends {promise.Deferred<T>}
- * @template T
+ * @unrestricted
+ * @final
  * @private
  */
-promise.Task_ = function(flow, fn, description) {
-  promise.Task_.base(this, 'constructor', flow);
-  goog.getUid(this);
+promise.Task_ = goog.defineClass(promise.Deferred, {
+  /**
+   * @param {!promise.ControlFlow} flow The flow this instances belongs
+   *     to.
+   * @param {function(): (T|!promise.Promise<T>)} fn The function to
+   *     call when the task executes. If it returns a
+   *     {@link promise.Promise}, the flow will wait for it to be
+   *     resolved before starting the next task.
+   * @param {string} description A description of the task for debugging.
+   * @constructor
+   * @extends {promise.Deferred<T>}
+   * @template T
+   */
+  constructor: function(flow, fn, description) {
+    promise.Task_.base(this, 'constructor', flow);
+    goog.getUid(this);
+
+    /**
+     * @type {function(): (T|!promise.Promise<T>)}
+     */
+    this.execute = fn;
+
+    /** @private {string} */
+    this.description_ = description;
+
+    /** @private {promise.Frame_} */
+    this.parent_ = null;
+  },
 
   /**
-   * @type {function(): (T|!promise.Promise<T>)}
+   * @param {promise.Frame_} frame The frame this task is scheduled in.
    */
-  this.execute = fn;
+  setParent: function(frame) {
+    goog.asserts.assert(goog.isNull(this.parent_) || goog.isNull(frame),
+        'parent already set');
+    this.parent_ = frame;
+  },
 
-  /** @private {string} */
-  this.description_ = description;
+  /** @return {string} This task's description. */
+  getDescription: function() {
+    return this.description_;
+  },
 
-  /** @private {promise.Frame_} */
-  this.parent_ = null;
-};
-goog.inherits(promise.Task_, promise.Deferred);
-
-
-/**
- * @param {promise.Frame_} frame The frame this task is scheduled in.
- */
-promise.Task_.prototype.setParent = function(frame) {
-  goog.asserts.assert(goog.isNull(this.parent_) || goog.isNull(frame),
-      'parent already set');
-  this.parent_ = frame;
-};
-
-
-/** @return {string} This task's description. */
-promise.Task_.prototype.getDescription = function() {
-  return this.description_;
-};
-
-
-/** @override */
-promise.Task_.prototype.toString = function() {
-  return 'Task::' + goog.getUid(this) + '<' + this.description_ + '>';
-};
+  /** @override */
+  toString: function() {
+    return 'Task::' + goog.getUid(this) + '<' + this.description_ + '>';
+  }
+});
 
 
 /**
  * Manages a callback attached to a {@link promise.Promise}. When the promise
  * is resolved, this callback will invoke the appropriate callback function
  * based on the promise's resolved value.
+ *
+ * @unrestricted
  * @final
  * @private
  */
-promise.Callback_ = goog.defineClass(null, {
+promise.Callback_ = goog.defineClass(promise.Deferred, {
   /**
-   * @param {!promise.Promise<T>} parent The promise this callback is attached
-   *     to.
-   * @param {(function(T): (R|IThenable<R>)|null|undefined)} callback The
-   *    fulfillment callback.
-   * @param {(function(*): (R|IThenable<R>)|null|undefined)} errback The
-   *    rejection callback.
+   * @param {!promise.Promise} parent The promise this callback is attached to.
+   * @param {(function(T): (IThenable<R>|R)|null|undefined)} callback
+   *     The fulfillment callback.
+   * @param {(function(*): (IThenable<R>|R)|null|undefined)} errback
+   *     The rejection callback.
    * @param {string} name The callback name.
    * @param {!Function} fn The function to use as the top of the stack when
    *     recording the callback's creation point.
+   * @extends {promise.Deferred<R>}
    * @template T, R
    */
   constructor: function(parent, callback, errback, name, fn) {
-    /** @private {(function(T): (R|IThenable<R>)|null|undefined)} */
+    promise.Callback_.base(this, 'constructor', parent.flow_);
+
+    /** @private {(function(T): (IThenable<R>|R)|null|undefined)} */
     this.callback_ = callback;
 
-    /** @private {(function(*): (R|IThenable<R>)|null|undefined)} */
+    /** @private {(function(*): (IThenable<R>|R)|null|undefined)} */
     this.errback_ = errback;
 
     /** @private {!promise.Frame_} */
     this.frame_ = new promise.Frame_(parent.flow_);
-
-    /** @private {function((R|IThenable<R>|Thenable)=)} */
-    this.fulfill_;
-
-    /** @private {function(*=)} */
-    this.reject_;
-
-    var self = this;
-
-    /** @private {!promise.Promise<R>} */
-    this.promise = new promise.Promise(function(fulfill, reject) {
-      self.fulfill_ = fulfill;
-      self.reject_ = reject;
-    }, parent.flow_);
+    this.frame_.pendingCallback = true;
 
     this.promise.parent_ = parent;
     if (promise.LONG_STACK_TRACES) {
@@ -2418,10 +2401,10 @@ promise.Callback_ = goog.defineClass(null, {
    */
   notify: function(state, value) {
     var callback = this.callback_;
-    var fallback = this.fulfill_;
+    var fallback = this.fulfill;
     if (state === promise.Promise.State_.REJECTED) {
       callback = this.errback_;
-      fallback = this.reject_;
+      fallback = this.reject;
     }
 
     this.frame_.pendingCallback = false;
@@ -2429,7 +2412,7 @@ promise.Callback_ = goog.defineClass(null, {
       this.frame_.flow_.runInFrame_(
           this.frame_,
           goog.bind(callback, undefined, value),
-          this.fulfill_, this.reject_);
+          this.fulfill, this.reject);
     } else {
       if (this.frame_.getParent()) {
         this.frame_.getParent().removeChild(this.frame_);
