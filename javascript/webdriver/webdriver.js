@@ -673,7 +673,7 @@ webdriver.WebDriver.prototype.wait = function(
     condition, opt_timeout, opt_message) {
   if (webdriver.promise.isPromise(condition)) {
     return this.flow_.wait(
-        /** @type {!webdriver.promise.Promise<T>} */(condition),
+        /** @type {!webdriver.promise.Promise} */(condition),
         opt_timeout, opt_message);
   }
 
