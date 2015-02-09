@@ -1136,13 +1136,13 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     // All text nodes that are children of this element need to know the
     // effective "white-space" and "text-transform" styles to properly
     // compute their contribution to visible text. Compute these values once.
-    var whitespace = null, textTransform = null;
+    var whitespace = null, textTransform = null, beforeContentCSS = null, afterContentCSS = null;
     if (shown) {
       whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
       textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
-	  beforeContentCSS = window.getComputedStyle(elem, ":before").content;
-	  afterContentCSS = window.getComputedStyle(elem, ":after").content;
-	  if(beforeContentCSS.length > 0 && beforeContentCSS!="none"){
+	  beforeContentCSS = goog.style.getComputedStyle(elem, ':before').content;
+	  afterContentCSS = goog.style.getComputedStyle(elem, ':after').content;
+	  if(!bot.userAgent.IE_DOC_PRE9 && beforeContentCSS.length > 0 && beforeContentCSS!='none'){
 	  //trim first and last characters because content puts quotes (single in some browsers and double in others) inside the string.
 		beforeContentCSS=beforeContentCSS.substr(1,beforeContentCSS.length-2);
 		if(lines.length==0)
@@ -1150,7 +1150,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 		else
 			lines[lines.length-1]+=beforeContentCSS;
 	  }
-	  if(afterContentCSS.length > 0 && afterContentCSS!="none"){
+	  if(afterContentCSS.length > 0 && afterContentCSS!='none'){
 	  //trim first and last characters because content puts quotes (single in some browsers and double in others) inside the string.
 		afterContentCSS=afterContentCSS.substr(1,afterContentCSS.length-2);
 		if(lines.length==0)
