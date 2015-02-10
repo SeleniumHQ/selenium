@@ -1411,36 +1411,53 @@ promise.ControlFlow.prototype.annotateError = function(e) {
  */
 promise.ControlFlow.prototype.getSchedule = function(opt_includeStackTraces) {
   var ret = 'ControlFlow::' + goog.getUid(this);
-  if (!this.activeFrame_) {
+  var activeFrame = this.activeFrame_;
+  if (!activeFrame) {
     return ret;
   }
   var childIndent = '| ';
-  return ret + '\n' + toStringHelper(this.activeFrame_.getRoot(), childIndent);
+  return ret + '\n' + toStringHelper(activeFrame.getRoot(), childIndent);
 
   /**
    * @param {!(promise.Frame_|promise.Task_)} node .
    * @param {string} indent .
+   * @param {boolean=} opt_isPending .
    * @return {string} .
    */
-  function toStringHelper(node, indent) {
+  function toStringHelper(node, indent, opt_isPending) {
     var ret = node.toString();
+    if (opt_isPending) {
+      ret = '(pending) ' + ret;
+    }
+    if (node === activeFrame) {
+      ret = '(active) ' + ret;
+    }
     if (node instanceof promise.Frame_) {
       if (node.getPendingTask()) {
         ret += '\n' + toStringHelper(
             /** @type {!promise.Task_} */(node.getPendingTask()),
-            childIndent);
+            childIndent,
+            true);
       }
       if (node.children_) {
         goog.array.forEach(node.children_, function(child) {
-          ret += '\n' + toStringHelper(child, childIndent);
+          if (!node.getPendingTask() ||
+              node.getPendingTask().getFrame() !== child) {
+            ret += '\n' + toStringHelper(child, childIndent);
+          }
         });
       }
-    } else if (opt_includeStackTraces) {
+    } else {
       var task = /** @type {!promise.Task_} */(node);
-      if (task.promise.stack_) {
+      if (opt_includeStackTraces && task.promise.stack_) {
         ret += '\n' + childIndent +
             (task.promise.stack_.stack || task.promise.stack_).
             replace(/\n/g, '\n' + childIndent);
+      }
+      if (task.getFrame()) {
+        ret += '\n' + toStringHelper(
+            /** @type {!promise.Frame_} */(task.getFrame()),
+            childIndent);
       }
     }
     return indent + ret.replace(/\n/g, '\n' + indent);
@@ -1725,18 +1742,21 @@ promise.ControlFlow.prototype.runEventLoop_ = function() {
 
   var onSuccess = function(value) {
     activeFrame.setPendingTask(null);
+    task.setFrame(null);
     task.fulfill(value);
     scheduleEventLoop();
   };
 
   var onFailure = function(reason) {
     activeFrame.setPendingTask(null);
+    task.setFrame(null);
     task.reject(reason);
     scheduleEventLoop();
   };
 
   activeFrame.setPendingTask(task);
   var frame = new promise.Frame_(this);
+  task.setFrame(frame);
   this.runInFrame_(frame, task.execute, function(result) {
     promise.asap(result, onSuccess, onFailure);
   }, onFailure, true);
@@ -1846,9 +1866,7 @@ promise.ControlFlow.prototype.runInFrame_ = function(
       oldFrame = this.activeFrame_;
 
   try {
-    if (!this.activeFrame_) {
-      this.activeFrame_ = newFrame;
-    } else if (this.activeFrame_ !== newFrame && !newFrame.getParent()) {
+    if (this.activeFrame_ !== newFrame && !newFrame.getParent()) {
       this.activeFrame_.addChild(newFrame);
     }
 
@@ -2230,6 +2248,14 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
   },
 
   /**
+   * @return {boolean} Whether this frame is empty (has no scheduled tasks or
+   *     pending callback frames).
+   */
+  isEmpty: function() {
+    return !this.children_ || !this.children_.length;
+  },
+
+  /**
    * Adds a new node to this frame.
    * @param {!(promise.Frame_|promise.Task_)} node The node to insert.
    */
@@ -2330,6 +2356,25 @@ promise.Task_ = goog.defineClass(promise.Deferred, {
 
     /** @private {promise.Frame_} */
     this.parent_ = null;
+
+    /** @private {promise.Frame_} */
+    this.frame_ = null;
+  },
+
+  /**
+   * @return {promise.Frame_} frame The frame used to run this task's
+   *     {@link #execute} method.
+   */
+  getFrame: function() {
+    return this.frame_;
+  },
+
+  /**
+   * @param {promise.Frame_} frame The frame used to run this task's
+   *     {@link #execute} method.
+   */
+  setFrame: function(frame) {
+    this.frame_ = frame;
   },
 
   /**
