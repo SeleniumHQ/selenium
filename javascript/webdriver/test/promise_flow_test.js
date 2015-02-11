@@ -338,6 +338,38 @@ function testFraming_lotsOfNesting() {
 }
 
 
+function testFrame_callbackReturnsPromiseThatDependsOnATask_1() {
+  schedule('a').then(function() {
+    schedule('b');
+    return webdriver.promise.delayed(5).then(function() {
+      return schedule('c');
+    });
+  });
+  schedule('d');
+
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c', 'd');
+  });
+}
+
+
+function testFrame_callbackReturnsPromiseThatDependsOnATask_2() {
+  schedule('a').then(function() {
+    schedule('b');
+    return webdriver.promise.delayed(5).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return schedule('c'); });
+  });
+  schedule('d');
+
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c', 'd');
+  });
+}
+
+
 function testFraming_eachCallbackWaitsForAllScheduledTasksToComplete() {
   schedule('a').
       then(function() {
@@ -1293,7 +1325,66 @@ function testSubtasks_taskReturnsPromiseThatDependsOnSubtask_2() {
 }
 
 
+function testSubtasks_taskReturnsPromiseThatDependsOnSubtask_3() {
+  scheduleAction('a', function() {
+    return webdriver.promise.delayed(10).then(function() {
+      return schedule('b');
+    });
+  });
+  schedule('c');
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c');
+  });
+}
 
+
+function testSubtasks_taskReturnsPromiseThatDependsOnSubtask_4() {
+  scheduleAction('a', function() {
+    return webdriver.promise.delayed(5).then(function() {
+      return webdriver.promise.delayed(5).then(function() {
+        return schedule('b');
+      });
+    });
+  });
+  schedule('c');
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c');
+  });
+}
+
+
+function testSubtasks_taskReturnsPromiseThatDependsOnSubtask_5() {
+  scheduleAction('a', function() {
+    return webdriver.promise.delayed(5).then(function() {
+      return webdriver.promise.delayed(5).then(function() {
+        return webdriver.promise.delayed(5).then(function() {
+          return webdriver.promise.delayed(5).then(function() {
+            return schedule('b');
+          });
+        });
+      });
+    });
+  });
+  schedule('c');
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c');
+  });
+}
+
+
+function testSubtasks_taskReturnsPromiseThatDependsOnSubtask_6() {
+  scheduleAction('a', function() {
+    return webdriver.promise.delayed(5).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return webdriver.promise.delayed(5) }).
+        then(function() { return schedule('b'); });
+  });
+  schedule('c');
+  return waitForIdle().then(function() {
+    assertFlowHistory('a', 'b', 'c');
+  });
+}
 
 function testSubtasks_subTaskFails_1() {
   schedule('a');

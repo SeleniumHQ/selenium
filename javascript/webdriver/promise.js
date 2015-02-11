@@ -1772,7 +1772,7 @@ promise.ControlFlow.prototype.getNextTask_ = function() {
   var frame = this.activeFrame_;
   var firstChild = frame.getFirstChild();
   if (!firstChild) {
-    if (!frame.pendingCallback) {
+    if (!frame.pendingCallback && !frame.isBlocked_) {
       this.resolveFrame_(frame);
     }
     return null;
@@ -1894,13 +1894,14 @@ promise.ControlFlow.prototype.runInFrame_ = function(
       return;
     }
 
-    // If the executed function was a task and the result is a promise, wait
-    // for the promise to resolve. If there is nothing scheduled, go ahead and
-    // discard the frame. Otherwise, we wait for the frame to be closed out
-    // by the event loop.
+    // If the executed function returned a promise, wait for it to resolve. If
+    // there is nothing scheduled in the frame, go ahead and discard it.
+    // Otherwise, we wait for the frame to be closed out by the event loop.
     var shortCircuitTask;
-    if (opt_isTask && promise.isPromise(result)) {
+    if (promise.isPromise(result)) {
+      newFrame.isBlocked_ = true;
       var onResolve = function() {
+        newFrame.isBlocked_ = false;
         shortCircuitTask = new promise.MicroTask_(function() {
           if (isCloseable(newFrame)) {
             removeNewFrame();
@@ -1919,6 +1920,9 @@ promise.ControlFlow.prototype.runInFrame_ = function(
 
     newFrame.once(promise.Frame_.CLOSE_EVENT, function() {
       shortCircuitTask && shortCircuitTask.cancel();
+      if (isCloseable(newFrame)) {
+        removeNewFrame();
+      }
       callback(result);
     }).once(promise.Frame_.ERROR_EVENT, function(reason) {
       shortCircuitTask && shortCircuitTask.cancel();
@@ -2127,6 +2131,13 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
      * @private {boolean}
      */
     this.isLocked_ = false;
+
+    /**
+     * Whether this frame's completion is blocked on the resolution of a promise
+     * returned by its main function.
+     * @private
+     */
+    this.isBlocked_ = false;
 
     /**
      * Whether this frame represents a pending callback attached to a
