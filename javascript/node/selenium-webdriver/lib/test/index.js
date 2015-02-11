@@ -184,7 +184,7 @@ function suite(fn, opt_options) {
 
         if (!!serverJar && !remoteUrl) {
           if (!(serverToUse = seleniumServer)) {
-            serverToUse = seleniumServer = new remote.SeleniumServer();
+            serverToUse = seleniumServer = new remote.SeleniumServer(serverJar);
           }
 
           testing.before(function() {

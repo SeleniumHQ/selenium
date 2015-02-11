@@ -502,6 +502,15 @@ var Driver = function(opt_config, opt_service, opt_flow) {
 util.inherits(Driver, webdriver.WebDriver);
 
 
+/**
+ * This function is a no-op as file detectors are not supported by this
+ * implementation.
+ * @override
+ */
+Driver.prototype.setFileDetector = function() {
+};
+
+
 // PUBLIC API
 
 

@@ -14,11 +14,15 @@
 
 'use strict';
 
-var path = require('path'),
+var AdmZip = require('adm-zip'),
+    fs = require('fs'),
+    path = require('path'),
     url = require('url'),
     util = require('util');
 
-var promise = require('../').promise,
+var _base = require('../_base'),
+    webdriver = require('../'),
+    promise = require('../').promise,
     httpUtil = require('../http/util'),
     exec = require('../io/exec'),
     net = require('../net'),
@@ -305,7 +309,40 @@ util.inherits(SeleniumServer, DriverService);
 SeleniumServer.Options;
 
 
+
+/**
+ * @constructor
+ * @extends {webdriver.FileDetector}
+ * @final
+ */
+var FileDetector = function() {};
+util.inherits(_base.require('webdriver.FileDetector'), FileDetector);
+
+
+/** @override */
+FileDetector.prototype.handleFile = function(driver, filePath) {
+  return promise.checkedNodeCall(fs.stat, filePath).then(function(stats) {
+    if (stats.isDirectory()) {
+      throw TypeError('Uploading directories is not supported: ' + filePath);
+    }
+
+    var zip = new AdmZip();
+    zip.addLocalFile(filePath);
+
+    var command = new webdriver.Command(webdriver.CommandName.UPLOAD_FILE)
+        .setParameter('file', zip.toBuffer().toString('base64'));
+    return driver.schedule(command,
+        'remote.FileDetector.handleFile(' + filePath + ')');
+  }, function(err) {
+    if (err.code === 'ENOENT') {
+      return filePath;  // Not a file; return original input.
+    }
+    throw err;
+  });
+};
+
 // PUBLIC API
 
 exports.DriverService = DriverService;
+exports.FileDetector = FileDetector;
 exports.SeleniumServer = SeleniumServer;

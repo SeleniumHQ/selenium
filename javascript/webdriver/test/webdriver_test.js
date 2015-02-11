@@ -24,6 +24,7 @@ goog.require('webdriver.Capabilities');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.FileDetector');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
@@ -1943,6 +1944,29 @@ function testSendKeysConvertsVarArgsIntoStrings_promisedArgs() {
       webdriver.promise.fulfilled('abc'), 123,
       webdriver.promise.fulfilled('def'));
   return waitForIdle();
+}
+
+
+function testSendKeysWithAFileDetector() {
+  var testHelper = new TestHelper().
+      expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+          andReturnSuccess({'ELEMENT':'one'}).
+      expect(CName.SEND_KEYS_TO_ELEMENT, {'id':{'ELEMENT':'one'},
+                                          'value':['modified/path']}).
+          andReturnSuccess().
+      replayAll();
+
+  var driver = testHelper.createDriver();
+
+  var mockDetector = mockControl.createStrictMock(webdriver.FileDetector);
+  mockDetector.handleFile(driver, 'original/path').
+      $returns(webdriver.promise.fulfilled('modified/path'));
+  mockDetector.$replay();
+
+  driver.setFileDetector(mockDetector);
+
+  var element = driver.findElement(By.id('foo'));
+  element.sendKeys('original/', 'path');
 }
 
 function testElementEquality_isReflexive() {

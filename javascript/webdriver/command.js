@@ -216,7 +216,10 @@ webdriver.CommandName = {
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
-  GET_SESSION_LOGS: 'getSessionLogs'
+  GET_SESSION_LOGS: 'getSessionLogs',
+
+  // Non-standard commands used by the standalone Selenium server.
+  UPLOAD_FILE: 'uploadFile'
 };
 
 

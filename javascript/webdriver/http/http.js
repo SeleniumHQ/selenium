@@ -318,6 +318,7 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
       put(webdriver.CommandName.GET_AVAILABLE_LOG_TYPES,
           get('/session/:sessionId/log/types')).
       put(webdriver.CommandName.GET_SESSION_LOGS, post('/logs')).
+      put(webdriver.CommandName.UPLOAD_FILE, post('/session/:sessionId/file')).
       build();
 
   /** @constructor */

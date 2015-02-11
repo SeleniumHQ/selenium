@@ -215,6 +215,15 @@ util.inherits(Driver, webdriver.WebDriver);
 
 
 /**
+ * This function is a no-op as file detectors are not supported by this
+ * implementation.
+ * @override
+ */
+Driver.prototype.setFileDetector = function() {
+};
+
+
+/**
  * Executes a PhantomJS fragment. This method is similar to
  * {@link #executeScript}, except it exposes the
  * <a href="http://phantomjs.org/api/">PhantomJS API</a> to the injected

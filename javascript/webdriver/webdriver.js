@@ -18,6 +18,7 @@
 
 goog.provide('webdriver.Alert');
 goog.provide('webdriver.AlertPromise');
+goog.provide('webdriver.FileDetector');
 goog.provide('webdriver.UnhandledAlertError');
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebElement');
@@ -86,6 +87,9 @@ webdriver.WebDriver = function(session, executor, opt_flow) {
 
   /** @private {!webdriver.promise.ControlFlow} */
   this.flow_ = opt_flow || webdriver.promise.controlFlow();
+
+  /** @private {webdriver.FileDetector} */
+  this.fileDetector_ = null;
 };
 
 
@@ -390,6 +394,16 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
                       'used.');
     }
   }
+};
+
+
+/**
+ * Sets the {@link webdriver.FileDetector file detector} that should be used
+ * with this instance.
+ * @param {webdriver.FileDetector} detector The detector to use or {@code null}.
+ */
+webdriver.WebDriver.prototype.setFileDetector = function(detector) {
+  this.fileDetector_ = detector;
 };
 
 
@@ -1889,8 +1903,8 @@ webdriver.WebElement.prototype.click = function() {
 /**
  * Schedules a command to type a sequence on the DOM element represented by this
  * instance.
- * <p/>
- * Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
+ *
+ * <p>Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
  * processed in the keysequence, that key state is toggled until one of the
  * following occurs:
  * <ul>
@@ -1915,31 +1929,64 @@ webdriver.WebElement.prototype.click = function() {
  * events).
  * </li>
  * </ul>
- * <strong>Note:</strong> On browsers where native keyboard events are not yet
+ *
+ * <p>If this element is a file input ({@code <input type="file">}), the
+ * specified key sequence should specify the path to the file to attach to
+ * the element. This is analgous to the user clicking "Browse..." and entering
+ * the path into the file select dialog.
+ * <pre><code>
+ *     var form = driver.findElement(By.css('form'));
+ *     var element = form.findElement(By.css('input[type=file]'));
+ *     element.sendKeys('/path/to/file.txt');
+ *     form.submit();
+ * </code></pre>
+ * 
+ * <p>For uploads to function correctly, the entered path must reference a file
+ * on the <em>browser's</em> machine, not the local machine running this script.
+ * When running against a remote Selenium server, a
+ * {@link webdriver.FileDetector} may be used to transparently copy files to
+ * the remote machine before attempting to upload them in the browser.
+ *
+ * <p><strong>Note:</strong> On browsers where native keyboard events are not
  * supported (e.g. Firefox on OS X), key events will be synthesized. Special
  * punctionation keys will be synthesized according to a standard QWERTY en-us
  * keyboard layout.
  *
- * @param {...string} var_args The sequence of keys to
- *     type. All arguments will be joined into a single sequence (var_args is
- *     permitted for convenience).
+ * @param {...(string|!webdriver.promise.Promise<string>)} var_args The sequence
+ *     of keys to type. All arguments will be joined into a single sequence.
  * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
  *     when all keys have been typed.
  */
-webdriver.WebElement.prototype.sendKeys = function(var_args) {
+webdriver.WebElement.prototype.sendKeys = function(var_args) {  
   // Coerce every argument to a string. This protects us from users that
   // ignore the jsdoc and give us a number (which ends up causing problems on
   // the server, which requires strings).
-  var keys = webdriver.promise.fullyResolved(goog.array.slice(arguments, 0)).
-      then(function(args) {
-        return goog.array.map(goog.array.slice(args, 0), function(key) {
-          return key + '';
-        });
+  var keys = webdriver.promise.all(goog.array.slice(arguments, 0)).
+      then(function(keys) {
+        return goog.array.map(keys, String);
       });
-  return this.schedule_(
-      new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
-          setParameter('value', keys),
-      'WebElement.sendKeys(' + keys + ')');
+  if (!this.driver_.fileDetector_) {
+    return this.schedule_(
+        new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
+            setParameter('value', keys),
+        'WebElement.sendKeys()');
+  }
+
+  // Suppress unhandled rejection errors until the flow executes the command.
+  keys.thenCatch(goog.nullFunction);
+
+  var element = this;
+  return this.driver_.flow_.execute(function() {
+    return keys.then(function(keys) {
+      return element.driver_.fileDetector_
+          .handleFile(element.driver_, keys.join(''));
+    }).then(function(keys) {
+      return element.schedule_(
+          new webdriver.Command(webdriver.CommandName.SEND_KEYS_TO_ELEMENT).
+              setParameter('value', [keys]),
+          'WebElement.sendKeys()');
+    });
+  }, 'WebElement.sendKeys()');
 };
 
 
@@ -2396,3 +2443,41 @@ webdriver.UnhandledAlertError.prototype.getAlertText = function() {
 webdriver.UnhandledAlertError.prototype.getAlert = function() {
   return this.alert_;
 };
+
+
+
+/**
+ * Used with {@link webdriver.WebElement#sendKeys} on file input elements 
+ * ({@code <input type="file">}) to detect when the entered key sequence
+ * defines the path to a file.
+ *
+ * <p>By default, {@link webdriver.WebElement WebElement's} will enter all key
+ * sequences exactly as entered. You may 
+ * {@link webdriver.WebDriver#setFileDetector set a file detector} on the parent
+ * WebDriver instance to define custom behavior for handling file elements. Of
+ * particular note is the {@link selenium-webdriver/remote.FileDetector}, which
+ * should be used when running against a remote
+ * <a href="http://docs.seleniumhq.org/download/">Selenium Server</a>.
+ */
+webdriver.FileDetector = goog.defineClass(null, {
+  constructor: function() {},
+
+  /**
+   * Handles the file specified by the given path, preparing it for use with
+   * the current browser. If the path does not refer to a valid file, it will
+   * be returned unchanged, otherwisee a path suitable for use with the current
+   * browser will be returned.
+   *
+   * <p>This default implementation is a no-op. Subtypes may override this
+   * function for custom tailored file handling.
+   *
+   * @param {!webdriver.WebDriver} driver The driver for the current browser.
+   * @param {string} path The path to process.
+   * @return {!webdriver.promise.Promise<string>} A promise for the processed
+   *     file path.
+   * @package
+   */
+  handleFile: function(driver, path) {
+    return webdriver.promise.fulfilled(path);
+  }
+});

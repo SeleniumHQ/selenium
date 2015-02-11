@@ -55,6 +55,9 @@
     necessary, so they have been made no-ops.
 * `WebDriver.wait()` may now be used to wait for a promise to resolve, with
     an optional timeout. Refer to the API documentation for more information.
+* Added support for copying files to a remote Selenium via `sendKeys` to test
+    file uploads. Refer to the API documentation for more information. Sample
+    usage included in `test/upload_test.js`
 * FIXED: 8380: `firefox.Driver` will delete its temporary profile on `quit`.
 * FIXED: 8306: Stack overflow in promise callbacks eliminated.
 * FIXED: 8221: Added support for defining custom command mappings. Includes
