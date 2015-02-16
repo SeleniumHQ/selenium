@@ -15,56 +15,53 @@
 
 /**
  * @fileoverview Provides wrappers around the following global functions from
- * <a href="http://visionmedia.github.io/mocha/">Mocha's BDD interface</a>:
- * <ul>
- *   <li>after
- *   <li>afterEach
- *   <li>before
- *   <li>beforeEach
- *   <li>it
- *   <li>it.only
- *   <li>it.skip
- *   <li>xit
- * </ul>
+ * [Mocha's BDD interface](http://visionmedia.github.io/mocha/):
  *
- * <p>The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
+ * - after
+ * - afterEach
+ * - before
+ * - beforeEach
+ * - it
+ * - it.only
+ * - it.skip
+ * - xit
+ *
+ * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
- * <pre><code>
- * var By = require('selenium-webdriver').By,
- *     until = require('selenium-webdriver').until,
- *     firefox = require('selenium-webdriver/firefox'),
- *     test = require('selenium-webdriver/testing');
  *
- * test.describe('Google Search', function() {
- *   var driver;
+ *     var By = require('selenium-webdriver').By,
+ *         until = require('selenium-webdriver').until,
+ *         firefox = require('selenium-webdriver/firefox'),
+ *         test = require('selenium-webdriver/testing');
  *
- *   test.before(function() {
- *     driver = new firefox.Driver();
- *   });
+ *     test.describe('Google Search', function() {
+ *       var driver;
  *
- *   test.after(function() {
- *     driver.quit();
- *   });
+ *       test.before(function() {
+ *         driver = new firefox.Driver();
+ *       });
  *
- *   test.it('should append query to title', function() {
- *     driver.get('http://www.google.com/ncr');
- *     driver.findElement(By.name('q')).sendKeys('webdriver');
- *     driver.findElement(By.name('btnG')).click();
- *     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
- *   });
- * });
- * </code></pre>
+ *       test.after(function() {
+ *         driver.quit();
+ *       });
  *
- * <p>You may conditionally suppress a test function using the exported
+ *       test.it('should append query to title', function() {
+ *         driver.get('http://www.google.com/ncr');
+ *         driver.findElement(By.name('q')).sendKeys('webdriver');
+ *         driver.findElement(By.name('btnG')).click();
+ *         driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+ *       });
+ *     });
+ *
+ * You may conditionally suppress a test function using the exported
  * "ignore" function. If the provided predicate returns true, the attached
  * test case will be skipped:
- * <pre><code>
- *   test.ignore(maybe()).it('is flaky', function() {
- *     if (Math.random() < 0.5) throw Error();
- *   });
  *
- *   function maybe() { return Math.random() < 0.5; }
- * </code></pre>
+ *     test.ignore(maybe()).it('is flaky', function() {
+ *       if (Math.random() < 0.5) throw Error();
+ *     });
+ *
+ *     function maybe() { return Math.random() < 0.5; }
  */
 
 var promise = require('..').promise;

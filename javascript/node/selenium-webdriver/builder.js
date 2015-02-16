@@ -47,44 +47,40 @@ function startSeleniumServer(jar) {
  * Creates new {@link webdriver.WebDriver WebDriver} instances. The environment
  * variables listed below may be used to override a builder's configuration,
  * allowing quick runtime changes.
- * <ul>
- * <li>{@code SELENIUM_BROWSER}: defines the target browser in the form
+ *
+ * - {@code SELENIUM_BROWSER}: defines the target browser in the form
  *   {@code browser[:version][:platform]}.
  *
- * <li>{@code SELENIUM_REMOTE_URL}: defines the remote URL for all builder
+ * - {@code SELENIUM_REMOTE_URL}: defines the remote URL for all builder
  *   instances. This environment variable should be set to a fully qualified
  *   URL for a WebDriver server (e.g. http://localhost:4444/wd/hub). This
  *   option always takes precedence over {@code SELENIUM_SERVER_JAR}.
  *
- * <li>{@code SELENIUM_SERVER_JAR}: defines the path to the
- * <a href="http://selenium-release.storage.googleapis.com/index.html">
- * standalone Selenium server</a> jar to use. The server will be started the
- * first time a WebDriver instance and be killed when the process exits.
- * </ul>
+ * - {@code SELENIUM_SERVER_JAR}: defines the path to the
+ *   <a href="http://selenium-release.storage.googleapis.com/index.html">
+ *   standalone Selenium server</a> jar to use. The server will be started the
+ *   first time a WebDriver instance and be killed when the process exits.
  *
- * <p>Suppose you had mytest.js that created WebDriver with
- * <pre><code>
- *   var driver = new webdriver.Builder()
- *       .forBrowser('chrome')
- *       .build();
- * </code></pre>
+ * Suppose you had mytest.js that created WebDriver with
+ *
+ *     var driver = new webdriver.Builder()
+ *         .forBrowser('chrome')
+ *         .build();
  *
  * This test could be made to use Firefox on the local machine by running with
- * {@code SELENIUM_BROWSER=firefox node mytest.js}. Rather than change the
- * code to target Google Chrome on a remote machine, you can simply set the
- * SELENIUM_BROWSER and SELENIUM_REMOTE_URL environment variables:
- * <pre><code>
- *   SELENIUM_BROWSER=chrome:36:LINUX \
- *   SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub \
- *   node mytest.js
- * </code></pre>
+ * `SELENIUM_BROWSER=firefox node mytest.js`. Rather than change the code to
+ * target Google Chrome on a remote machine, you can simply set the
+ * `SELENIUM_BROWSER` and `SELENIUM_REMOTE_URL` environment variables:
  *
- * <p>You could also use a local copy of the standalone Selenium server:
- * <pre><code>
- *   SELENIUM_BROWSER=chrome:36:LINUX \
- *   SELENIUM_SERVER_JAR=/path/to/selenium-server-standalone.jar \
- *   node mytest.js
- * </code></pre>
+ *     SELENIUM_BROWSER=chrome:36:LINUX \
+ *     SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub \
+ *     node mytest.js
+ *
+ * You could also use a local copy of the standalone Selenium server:
+ *
+ *     SELENIUM_BROWSER=chrome:36:LINUX \
+ *     SELENIUM_SERVER_JAR=/path/to/selenium-server-standalone.jar \
+ *     node mytest.js
  *
  * @constructor
  */
@@ -127,8 +123,8 @@ Builder.prototype.disableEnvironmentOverrides = function() {
  * specified, the builder direct all new clients to that server. If this method
  * is never called, the Builder will attempt to create all clients locally.
  *
- * <p>As an alternative to this method, you may also set the
- * {@code SELENIUM_REMOTE_URL} environment variable.
+ * As an alternative to this method, you may also set the `SELENIUM_REMOTE_URL`
+ * environment variable.
  *
  * @param {string} url The URL of a remote server to use.
  * @return {!Builder} A self reference.
@@ -176,9 +172,9 @@ Builder.prototype.getCapabilities = function() {
  * Any calls to {@link #withCapabilities} after this function will
  * overwrite these settings.
  *
- * <p>You may also define the target browser using the {@code SELENIUM_BROWSER}
+ * You may also define the target browser using the {@code SELENIUM_BROWSER}
  * environment variable. If set, this environment variable should be of the
- * form {@code browser[:[version][:platform]]}.
+ * form `browser[:[version][:platform]]`.
  *
  * @param {(string|webdriver.Browser)} name The name of the target browser;
  *     common defaults are available on the {@link webdriver.Browser} enum.

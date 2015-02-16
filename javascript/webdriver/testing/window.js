@@ -26,17 +26,16 @@ goog.require('webdriver.promise.Promise');
 /**
  * Class for managing a window.
  *
- * <p>This class is implemented as a promise so consumers may register
+ * This class is implemented as a promise so consumers may register
  * callbacks on it to handle situations where the window fails to open.
  *
  * For example:
- * <pre><code>
- *   var testWindow = webdriver.testing.Window.create(driver);
- *   // Throw a custom error when the window fails to open.
- *   testWindow.thenCatch(function(e) {
- *     throw Error('Failed to open test window: ' + e);
- *   });
- * </code></pre>
+ *
+ *     var testWindow = webdriver.testing.Window.create(driver);
+ *     // Throw a custom error when the window fails to open.
+ *     testWindow.thenCatch(function(e) {
+ *       throw Error('Failed to open test window: ' + e);
+ *     });
  *
  * @param {!webdriver.WebDriver} driver The driver to use.
  * @param {(string|!webdriver.promise.Promise)} handle Either the managed

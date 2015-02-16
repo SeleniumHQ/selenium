@@ -184,19 +184,18 @@ promise.Thenable.prototype.then = function(opt_callback, opt_errback) {};
 /**
  * Registers a listener for when this promise is rejected. This is synonymous
  * with the {@code catch} clause in a synchronous API:
- * <pre><code>
- *   // Synchronous API:
- *   try {
- *     doSynchronousWork();
- *   } catch (ex) {
- *     console.error(ex);
- *   }
  *
- *   // Asynchronous promise API:
- *   doAsynchronousWork().thenCatch(function(ex) {
- *     console.error(ex);
- *   });
- * </code></pre>
+ *     // Synchronous API:
+ *     try {
+ *       doSynchronousWork();
+ *     } catch (ex) {
+ *       console.error(ex);
+ *     }
+ *
+ *     // Asynchronous promise API:
+ *     doAsynchronousWork().thenCatch(function(ex) {
+ *       console.error(ex);
+ *     });
  *
  * @param {function(*): (R|IThenable<R>)} errback The
  *     function to call if this promise is rejected. The function should
@@ -212,34 +211,31 @@ promise.Thenable.prototype.thenCatch = function(errback) {};
  * Registers a listener to invoke when this promise is resolved, regardless
  * of whether the promise's value was successfully computed. This function
  * is synonymous with the {@code finally} clause in a synchronous API:
- * <pre><code>
- *   // Synchronous API:
- *   try {
- *     doSynchronousWork();
- *   } finally {
- *     cleanUp();
- *   }
  *
- *   // Asynchronous promise API:
- *   doAsynchronousWork().thenFinally(cleanUp);
- * </code></pre>
+ *     // Synchronous API:
+ *     try {
+ *       doSynchronousWork();
+ *     } finally {
+ *       cleanUp();
+ *     }
  *
- * <b>Note:</b> similar to the {@code finally} clause, if the registered
+ *     // Asynchronous promise API:
+ *     doAsynchronousWork().thenFinally(cleanUp);
+ *
+ * __Note:__ similar to the {@code finally} clause, if the registered
  * callback returns a rejected promise or throws an error, it will silently
  * replace the rejection error (if any) from this promise:
- * <pre><code>
- *   try {
- *     throw Error('one');
- *   } finally {
- *     throw Error('two');  // Hides Error: one
- *   }
  *
- *   promise.rejected(Error('one'))
- *       .thenFinally(function() {
- *         throw Error('two');  // Hides Error: one
- *       });
- * </code></pre>
+ *     try {
+ *       throw Error('one');
+ *     } finally {
+ *       throw Error('two');  // Hides Error: one
+ *     }
  *
+ *     promise.rejected(Error('one'))
+ *         .thenFinally(function() {
+ *           throw Error('two');  // Hides Error: one
+ *         });
  *
  * @param {function(): (R|IThenable<R>)} callback The function
  *     to call when this promise is resolved.
@@ -422,7 +418,7 @@ promise.Promise.prototype.resolve_ = function(newState, newValue) {
 
     try {
       // 2.3.3.1
-      var then = newValue['then'];  
+      var then = newValue['then'];
     } catch (e) {
       // 2.3.3.2
       this.state_ = promise.Promise.State_.REJECTED;
@@ -665,7 +661,7 @@ promise.Promise.prototype.addCallback_ = function(callback, errback, name, fn) {
  * registering callbacks, reserving the ability to resolve the deferred to the
  * producer.
  *
- * <p>If this Deferred is rejected and there are no listeners registered before
+ * If this Deferred is rejected and there are no listeners registered before
  * the next turn of the event loop, the rejection will be passed to the
  * {@link promise.ControlFlow} as an unhandled failure.
  *
@@ -972,10 +968,10 @@ promise.all = function(arr) {
  * new array, which is used as the fulfillment value of the promise returned
  * by this function.
  *
- * <p>If the return value of the mapping function is a promise, this function
+ * If the return value of the mapping function is a promise, this function
  * will wait for it to be fulfilled before inserting it into the new array.
  *
- * <p>If the mapping function throws or returns a rejected promise, the
+ * If the mapping function throws or returns a rejected promise, the
  * promise returned by this function will be rejected with the same reason.
  * Only the first failure will be reported; all subsequent errors will be
  * silently ignored.
@@ -1026,11 +1022,11 @@ promise.map = function(arr, fn, opt_self) {
  * Calls a function for each element in an array, and if the function returns
  * true adds the element to a new array.
  *
- * <p>If the return value of the filter function is a promise, this function
+ * If the return value of the filter function is a promise, this function
  * will wait for it to be fulfilled before determining whether to insert the
  * element into the new array.
  *
- * <p>If the filter function throws or returns a rejected promise, the promise
+ * If the filter function throws or returns a rejected promise, the promise
  * returned by this function will be rejected with the same reason. Only the
  * first failure will be reported; all subsequent errors will be silently
  * ignored.
@@ -1089,11 +1085,10 @@ promise.filter = function(arr, fn, opt_self) {
  *
  * Warning: This function makes no checks against objects that contain
  * cyclical references:
- * <pre><code>
- *   var value = {};
- *   value['self'] = value;
- *   promise.fullyResolved(value);  // Stack overflow.
- * </code></pre>
+ *
+ *     var value = {};
+ *     value['self'] = value;
+ *     promise.fullyResolved(value);  // Stack overflow.
  *
  * @param {*} value The value to fully resolve.
  * @return {!promise.Promise} A promise for a fully resolved version
@@ -1214,19 +1209,19 @@ promise.fullyResolveKeys_ = function(obj) {
  * the ordered scheduled, starting each task only once those before it have
  * completed.
  *
- * <p>Each task scheduled within this flow may return a
+ * Each task scheduled within this flow may return a
  * {@link promise.Promise} to indicate it is an asynchronous
  * operation. The ControlFlow will wait for such promises to be resolved before
  * marking the task as completed.
  *
- * <p>Tasks and each callback registered on a {@link promise.Promise} will be
+ * Tasks and each callback registered on a {@link promise.Promise} will be
  * run in their own ControlFlow frame.  Any tasks scheduled within a frame will
  * take priority over previously scheduled tasks. Furthermore, if any of the
  * tasks in the frame fail, the remainder of the tasks in that frame will be
  * discarded and the failure will be propagated to the user through the
  * callback/task's promised result.
  *
- * <p>Each time a ControlFlow empties its task queue, it will fire an
+ * Each time a ControlFlow empties its task queue, it will fire an
  * {@link promise.ControlFlow.EventType.IDLE} event. Conversely,
  * whenever the flow terminates due to an unhandled error, it will remove all
  * remaining tasks in its queue and fire an
@@ -1546,18 +1541,18 @@ promise.ControlFlow.prototype.timeout = function(ms, opt_description) {
  * Schedules a task that shall wait for a condition to hold. Each condition
  * function may return any value, but it will always be evaluated as a boolean.
  *
- * <p>Condition functions may schedule sub-tasks with this instance, however,
+ * Condition functions may schedule sub-tasks with this instance, however,
  * their execution time will be factored into whether a wait has timed out.
  *
- * <p>In the event a condition returns a Promise, the polling loop will wait for
+ * In the event a condition returns a Promise, the polling loop will wait for
  * it to be resolved before evaluating whether the condition has been satisfied.
  * The resolution time for a promise is factored into whether a wait has timed
  * out.
  *
- * <p>If the condition function throws, or returns a rejected promise, the
+ * If the condition function throws, or returns a rejected promise, the
  * wait task will fail.
  *
- * <p>If the condition is defined as a promise, the flow will block on that
+ * If the condition is defined as a promise, the flow will block on that
  * promise's resolution, up to {@code timeout} milliseconds. If
  * {@code timeout === 0}, the flow will block indefinitely on the promise's
  * resolution.
@@ -1716,8 +1711,8 @@ promise.ControlFlow.prototype.resume_ = function() {
  * the top of the stack.
  * @private
  */
-promise.ControlFlow.prototype.runEventLoop_ = function() { 
-  this.eventLoopTask_ = null; 
+promise.ControlFlow.prototype.runEventLoop_ = function() {
+  this.eventLoopTask_ = null;
 
   if (this.yieldCount_) {
     return;
@@ -2079,7 +2074,7 @@ promise.MicroTask_ = goog.defineClass(null, {
  * represents the execution context for either a {@link promise.Task_} or a
  * callback on a {@link promise.Promise}.
  *
- * <p>Each frame may contain sub-frames.  If child N is a sub-frame, then the
+ * Each frame may contain sub-frames.  If child N is a sub-frame, then the
  * items queued within it are given priority over child N+1.
  *
  * @unrestricted
@@ -2116,17 +2111,16 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
      * Whether this frame is currently locked. A locked frame represents an
      * executed function that has scheduled all of its tasks.
      *
-     * <p>Once a frame becomes locked, any new frames which are added as children
+     * Once a frame becomes locked, any new frames which are added as children
      * represent interrupts (such as a {@link promise.Promise}
      * callback) whose tasks must be given priority over those already scheduled
      * within this frame. For example:
-     * <code><pre>
-     *   var flow = promise.controlFlow();
-     *   flow.execute('start here', goog.nullFunction).then(function() {
-     *     flow.execute('this should execute 2nd', goog.nullFunction);
-     *   });
-     *   flow.execute('this should execute last', goog.nullFunction);
-     * </pre></code>
+     *
+     *     var flow = promise.controlFlow();
+     *     flow.execute('start here', goog.nullFunction).then(function() {
+     *       flow.execute('this should execute 2nd', goog.nullFunction);
+     *     });
+     *     flow.execute('this should execute last', goog.nullFunction);
      *
      * @private {boolean}
      */
@@ -2568,31 +2562,29 @@ promise.isGenerator = function(fn) {
  * fulfilled value back into {@code next}. Likewise, if a yielded promise is
  * rejected, the rejection error will be passed to {@code throw}.
  *
- * <p>Example 1: the Fibonacci Sequence.
- * <pre><code>
- * promise.consume(function* fibonacci() {
- *   var n1 = 1, n2 = 1;
- *   for (var i = 0; i < 4; ++i) {
- *     var tmp = yield n1 + n2;
- *     n1 = n2;
- *     n2 = tmp;
- *   }
- *   return n1 + n2;
- * }).then(function(result) {
- *   console.log(result);  // 13
- * });
- * </code></pre>
+ * __Example 1:__ the Fibonacci Sequence.
  *
- * <p>Example 2: a generator that throws.
- * <pre><code>
- * promise.consume(function* () {
- *   yield promise.delayed(250).then(function() {
- *     throw Error('boom');
- *   });
- * }).thenCatch(function(e) {
- *   console.log(e.toString());  // Error: boom
- * });
- * </code></pre>
+ *     promise.consume(function* fibonacci() {
+ *       var n1 = 1, n2 = 1;
+ *       for (var i = 0; i < 4; ++i) {
+ *         var tmp = yield n1 + n2;
+ *         n1 = n2;
+ *         n2 = tmp;
+ *       }
+ *       return n1 + n2;
+ *     }).then(function(result) {
+ *       console.log(result);  // 13
+ *     });
+ *
+ * __Example 2:__ a generator that throws.
+ *
+ *     promise.consume(function* () {
+ *       yield promise.delayed(250).then(function() {
+ *         throw Error('boom');
+ *       });
+ *     }).thenCatch(function(e) {
+ *       console.log(e.toString());  // Error: boom
+ *     });
  *
  * @param {!Function} generatorFn The generator function to execute.
  * @param {Object=} opt_self The object to use as "this" when invoking the

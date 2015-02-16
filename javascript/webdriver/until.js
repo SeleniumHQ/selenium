@@ -16,26 +16,24 @@
  * @fileoverview Defines common conditions for use with
  * {@link webdriver.WebDriver#wait WebDriver wait}.
  *
- * <p>Sample usage:
- * <code><pre>
- *   driver.get('http://www.google.com/ncr');
+ * Sample usage:
  *
- *   var query = driver.wait(until.elementLocated(By.name('q')));
- *   query.sendKeys('webdriver\n');
+ *     driver.get('http://www.google.com/ncr');
  *
- *   driver.wait(until.titleIs('webdriver - Google Search'));
- * </pre></code>
+ *     var query = driver.wait(until.elementLocated(By.name('q')));
+ *     query.sendKeys('webdriver\n');
  *
- * <p>To define a custom condition, simply call WebDriver.wait with a function
+ *     driver.wait(until.titleIs('webdriver - Google Search'));
+ *
+ * To define a custom condition, simply call WebDriver.wait with a function
  * that will eventually return a truthy-value (neither null, undefined, false,
  * 0, or the empty string):
- * <code><pre>
- *   driver.wait(function() {
- *     return driver.getTitle().then(function(title) {
- *       return title === 'webdriver - Google Search';
- *     });
- *   }, 1000);
- * </pre></code>
+ *
+ *     driver.wait(function() {
+ *       return driver.getTitle().then(function(title) {
+ *         return title === 'webdriver - Google Search';
+ *       });
+ *     }, 1000);
  */
 
 goog.provide('webdriver.until');
@@ -52,7 +50,7 @@ var until = webdriver.until;
 
 
 /**
- * Defines a condition to 
+ * Defines a condition to
  * @param {string} message A descriptive error message. Should complete the
  *     sentence "Waiting [...]"
  * @param {function(!webdriver.WebDriver): OUT} fn The condition function to
@@ -79,17 +77,17 @@ until.Condition.prototype.description = function() {
 
 /**
  * Creates a condition that will wait until the input driver is able to switch
- * to the designated frame. The target frame may be specified as:
- * <ol>
- *   <li>A numeric index into {@code window.frames} for the currently selected
- *       frame.
- *   <li>A {@link webdriver.WebElement}, which must reference a FRAME or IFRAME
- *       element on the current page.
- *   <li>A locator which may be used to first locate a FRAME or IFRAME on the
- *       current page before attempting to switch to it.
- * </ol>
+ * to the designated frame. The target frame may be specified as
  *
- * <p>Upon successful resolution of this condition, the driver will be left
+ * 1. a numeric index into
+ *     [window.frames](https://developer.mozilla.org/en-US/docs/Web/API/Window.frames)
+ *     for the currently selected frame.
+ * 2. a {@link webdriver.WebElement}, which must reference a FRAME or IFRAME
+ *     element on the current page.
+ * 3. a locator which may be used to first locate a FRAME or IFRAME on the
+ *     current page before attempting to switch to it.
+ *
+ * Upon successful resolution of this condition, the driver will be left
  * focused on the new frame.
  *
  * @param {!(number|webdriver.WebElement|

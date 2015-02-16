@@ -73,14 +73,13 @@ goog.exportSymbol('By', webdriver.By);
 /**
  * Short-hand expressions for the primary element locator strategies.
  * For example the following two statements are equivalent:
- * <code><pre>
- * var e1 = driver.findElement(webdriver.By.id('foo'));
- * var e2 = driver.findElement({id: 'foo'});
- * </pre></code>
  *
- * <p>Care should be taken when using JavaScript minifiers (such as the
+ *     var e1 = driver.findElement(webdriver.By.id('foo'));
+ *     var e2 = driver.findElement({id: 'foo'});
+ *
+ * Care should be taken when using JavaScript minifiers (such as the
  * Closure compiler), as locator hashes will always be parsed using
- * the un-obfuscated properties listed below.
+ * the un-obfuscated properties listed.
  *
  * @typedef {(
  *     {className: string}|
@@ -168,7 +167,7 @@ webdriver.By.name = webdriver.Locator.factory_('name');
 
 
 /**
- * Locates link elements whose {@link webdriver.WebElement#getText visible
+ * Locates link elements whose {@linkplain webdriver.WebElement#getText visible
  * text} contains the given substring.
  *
  * @param {string} text The substring to check for in a link's visible text.
@@ -180,7 +179,9 @@ webdriver.By.partialLinkText = webdriver.Locator.factory_(
 
 /**
  * Locates elements with a given tag name. The returned locator is
- * equivalent to using the {@code getElementsByTagName} DOM function.
+ * equivalent to using the
+ * [getElementsByTagName](https://developer.mozilla.org/en-US/docs/Web/API/Element.getElementsByTagName)
+ * DOM function.
  *
  * @param {string} text The substring to check for in a link's visible text.
  * @return {!webdriver.Locator} The new locator.

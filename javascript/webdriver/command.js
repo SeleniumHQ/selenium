@@ -225,7 +225,7 @@ webdriver.CommandName = {
 
 
 /**
- * Handles the execution of {@code webdriver.Command} objects.
+ * Handles the execution of WebDriver {@link webdriver.Command commands}.
  * @interface
  */
 webdriver.CommandExecutor = function() {};

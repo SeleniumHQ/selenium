@@ -58,16 +58,15 @@ goog.require('webdriver.promise.Thenable');
  * object to manipulate the command result or catch an expected error. Any
  * commands scheduled with a callback are considered sub-commands and will
  * execute before the next command in the current frame. For example:
- * <pre><code>
- *   var message = [];
- *   driver.call(message.push, message, 'a').then(function() {
- *     driver.call(message.push, message, 'b');
- *   });
- *   driver.call(message.push, message, 'c');
- *   driver.call(function() {
- *     alert('message is abc? ' + (message.join('') == 'abc'));
- *   });
- * </code></pre>
+ *
+ *     var message = [];
+ *     driver.call(message.push, message, 'a').then(function() {
+ *       driver.call(message.push, message, 'b');
+ *     });
+ *     driver.call(message.push, message, 'c');
+ *     driver.call(function() {
+ *       alert('message is abc? ' + (message.join('') == 'abc'));
+ *     });
  *
  * @param {!(webdriver.Session|webdriver.promise.Promise)} session Either a
  *     known session or a promise that will be resolved to a session.
@@ -120,7 +119,7 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId, opt_flow) {
  *     capabilities for the new session.
  * @param {webdriver.promise.ControlFlow=} opt_flow The control flow all driver
  *     commands should execute under, including the initial session creation.
- *     Defaults to the {@link webdriver.promise.controlFlow() currently active} 
+ *     Defaults to the {@link webdriver.promise.controlFlow() currently active}
  *     control flow.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
@@ -398,8 +397,8 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
 
 
 /**
- * Sets the {@link webdriver.FileDetector file detector} that should be used
- * with this instance.
+ * Sets the {@linkplain webdriver.FileDetector file detector} that should be
+ * used with this instance.
  * @param {webdriver.FileDetector} detector The detector to use or {@code null}.
  */
 webdriver.WebDriver.prototype.setFileDetector = function(detector) {
@@ -455,13 +454,13 @@ webdriver.WebDriver.prototype.quit = function() {
  * Creates a new action sequence using this driver. The sequence will not be
  * scheduled for execution until {@link webdriver.ActionSequence#perform} is
  * called. Example:
- * <pre><code>
- *   driver.actions().
- *       mouseDown(element1).
- *       mouseMove(element2).
- *       mouseUp().
- *       perform();
- * </code></pre>
+ *
+ *     driver.actions().
+ *         mouseDown(element1).
+ *         mouseMove(element2).
+ *         mouseUp().
+ *         perform();
+ *
  * @return {!webdriver.ActionSequence} A new action sequence for this instance.
  */
 webdriver.WebDriver.prototype.actions = function() {
@@ -491,15 +490,14 @@ webdriver.WebDriver.prototype.actions = function() {
  * If the script has a return value (i.e. if the script contains a return
  * statement), then the following steps will be taken for resolving this
  * functions return value:
- * <ul>
- * <li>For a HTML element, the value will resolve to a
- *     {@code webdriver.WebElement}</li>
- * <li>Null and undefined return values will resolve to null</li>
- * <li>Booleans, numbers, and strings will resolve as is</li>
- * <li>Functions will resolve to their string representation</li>
- * <li>For arrays and objects, each member item will be converted according to
- *     the rules above</li>
- * </ul>
+ *
+ * - For a HTML element, the value will resolve to a
+ *     {@link webdriver.WebElement}
+ * - Null and undefined return values will resolve to null</li>
+ * - Booleans, numbers, and strings will resolve as is</li>
+ * - Functions will resolve to their string representation</li>
+ * - For arrays and objects, each member item will be converted according to
+ *     the rules above
  *
  * @param {!(string|Function)} script The script to execute.
  * @param {...*} var_args The arguments to pass to the script.
@@ -533,66 +531,62 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  * Arrays and objects may also be used as script arguments as long as each item
  * adheres to the types previously mentioned.
  *
- * Unlike executing synchronous JavaScript with
- * {@code webdriver.WebDriver.prototype.executeScript}, scripts executed with
- * this function must explicitly signal they are finished by invoking the
- * provided callback. This callback will always be injected into the
- * executed function as the last argument, and thus may be referenced with
- * {@code arguments[arguments.length - 1]}. The following steps will be taken
- * for resolving this functions return value against the first argument to the
- * script's callback function:
- * <ul>
- * <li>For a HTML element, the value will resolve to a
- *     {@code webdriver.WebElement}</li>
- * <li>Null and undefined return values will resolve to null</li>
- * <li>Booleans, numbers, and strings will resolve as is</li>
- * <li>Functions will resolve to their string representation</li>
- * <li>For arrays and objects, each member item will be converted according to
- *     the rules above</li>
- * </ul>
+ * Unlike executing synchronous JavaScript with {@link #executeScript},
+ * scripts executed with this function must explicitly signal they are finished
+ * by invoking the provided callback. This callback will always be injected
+ * into the executed function as the last argument, and thus may be referenced
+ * with {@code arguments[arguments.length - 1]}. The following steps will be
+ * taken for resolving this functions return value against the first argument
+ * to the script's callback function:
  *
- * Example #1: Performing a sleep that is synchronized with the currently
+ * - For a HTML element, the value will resolve to a
+ *     {@link webdriver.WebElement}
+ * - Null and undefined return values will resolve to null
+ * - Booleans, numbers, and strings will resolve as is
+ * - Functions will resolve to their string representation
+ * - For arrays and objects, each member item will be converted according to
+ *     the rules above
+ *
+ * __Example #1:__ Performing a sleep that is synchronized with the currently
  * selected window:
- * <code><pre>
- * var start = new Date().getTime();
- * driver.executeAsyncScript(
- *     'window.setTimeout(arguments[arguments.length - 1], 500);').
- *     then(function() {
- *       console.log('Elapsed time: ' + (new Date().getTime() - start) + ' ms');
- *     });
- * </pre></code>
  *
- * Example #2: Synchronizing a test with an AJAX application:
- * <code><pre>
- * var button = driver.findElement(By.id('compose-button'));
- * button.click();
- * driver.executeAsyncScript(
- *     'var callback = arguments[arguments.length - 1];' +
- *     'mailClient.getComposeWindowWidget().onload(callback);');
- * driver.switchTo().frame('composeWidget');
- * driver.findElement(By.id('to')).sendKeys('dog@example.com');
- * </pre></code>
+ *     var start = new Date().getTime();
+ *     driver.executeAsyncScript(
+ *         'window.setTimeout(arguments[arguments.length - 1], 500);').
+ *         then(function() {
+ *           console.log(
+ *               'Elapsed time: ' + (new Date().getTime() - start) + ' ms');
+ *         });
  *
- * Example #3: Injecting a XMLHttpRequest and waiting for the result. In this
- * example, the inject script is specified with a function literal. When using
- * this format, the function is converted to a string for injection, so it
+ * __Example #2:__ Synchronizing a test with an AJAX application:
+ *
+ *     var button = driver.findElement(By.id('compose-button'));
+ *     button.click();
+ *     driver.executeAsyncScript(
+ *         'var callback = arguments[arguments.length - 1];' +
+ *         'mailClient.getComposeWindowWidget().onload(callback);');
+ *     driver.switchTo().frame('composeWidget');
+ *     driver.findElement(By.id('to')).sendKeys('dog@example.com');
+ *
+ * __Example #3:__ Injecting a XMLHttpRequest and waiting for the result. In
+ * this example, the inject script is specified with a function literal. When
+ * using this format, the function is converted to a string for injection, so it
  * should not reference any symbols not defined in the scope of the page under
  * test.
- * <code><pre>
- * driver.executeAsyncScript(function() {
- *   var callback = arguments[arguments.length - 1];
- *   var xhr = new XMLHttpRequest();
- *   xhr.open("GET", "/resource/data.json", true);
- *   xhr.onreadystatechange = function() {
- *     if (xhr.readyState == 4) {
- *       callback(xhr.responseText);
- *     }
- *   }
- *   xhr.send('');
- * }).then(function(str) {
- *   console.log(JSON.parse(str)['food']);
- * });
- * </pre></code>
+ *
+ *     driver.executeAsyncScript(function() {
+ *       var callback = arguments[arguments.length - 1];
+ *       var xhr = new XMLHttpRequest();
+ *       xhr.open("GET", "/resource/data.json", true);
+ *       xhr.onreadystatechange = function() {
+ *         if (xhr.readyState == 4) {
+ *           callback(xhr.responseText);
+ *         }
+ *       }
+ *       xhr.send('');
+ *     }).then(function(str) {
+ *       console.log(JSON.parse(str)['food']);
+ *     });
  *
  * @param {!(string|Function)} script The script to execute.
  * @param {...*} var_args The arguments to pass to the script.
@@ -811,33 +805,31 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * that the element is present on the page. To test whether an element is
  * present on the page, use {@link #isElementPresent} instead.
  *
- * <p>The search criteria for an element may be defined using one of the
+ * The search criteria for an element may be defined using one of the
  * factories in the {@link webdriver.By} namespace, or as a short-hand
  * {@link webdriver.By.Hash} object. For example, the following two statements
  * are equivalent:
- * <code><pre>
- * var e1 = driver.findElement(By.id('foo'));
- * var e2 = driver.findElement({id:'foo'});
- * </pre></code>
  *
- * <p>You may also provide a custom locator function, which takes as input
+ *     var e1 = driver.findElement(By.id('foo'));
+ *     var e2 = driver.findElement({id:'foo'});
+ *
+ * You may also provide a custom locator function, which takes as input
  * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
  * promise that will resolve to a WebElement. For example, to find the first
  * visible link on a page, you could write:
- * <code><pre>
- * var link = driver.findElement(firstVisibleLink);
  *
- * function firstVisibleLink(driver) {
- *   var links = driver.findElements(By.tagName('a'));
- *   return webdriver.promise.filter(links, function(link) {
- *     return links.isDisplayed();
- *   }).then(function(visibleLinks) {
- *     return visibleLinks[0];
- *   });
- * }
- * </pre></code>
+ *     var link = driver.findElement(firstVisibleLink);
  *
- * <p>When running in the browser, a WebDriver cannot manipulate DOM elements
+ *     function firstVisibleLink(driver) {
+ *       var links = driver.findElements(By.tagName('a'));
+ *       return webdriver.promise.filter(links, function(link) {
+ *         return links.isDisplayed();
+ *       }).then(function(visibleLinks) {
+ *         return visibleLinks[0];
+ *       });
+ *     }
+ *
+ * When running in the browser, a WebDriver cannot manipulate DOM elements
  * directly; it may do so only through a {@link webdriver.WebElement} reference.
  * This function may be used to generate a WebElement from a DOM element. A
  * reference to the DOM element will be stored in a known location and this
@@ -949,7 +941,7 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
 /**
  * Schedules a command to test if an element is present on the page.
  *
- * <p>If given a DOM element, this function will check if it belongs to the
+ * If given a DOM element, this function will check if it belongs to the
  * document the driver is currently focused on. Otherwise, the function will
  * test if at least one element can be found with the given search criteria.
  *
@@ -1318,16 +1310,16 @@ webdriver.WebDriver.Timeouts = function(driver) {
 /**
  * Specifies the amount of time the driver should wait when searching for an
  * element if it is not immediately present.
- * <p/>
+ *
  * When searching for a single element, the driver should poll the page
  * until the element has been found, or this timeout expires before failing
- * with a {@code bot.ErrorCode.NO_SUCH_ELEMENT} error. When searching
+ * with a {@link bot.ErrorCode.NO_SUCH_ELEMENT} error. When searching
  * for multiple elements, the driver should poll the page until at least one
  * element has been found or this timeout has expired.
- * <p/>
+ *
  * Setting the wait timeout to 0 (its default value), disables implicit
  * waiting.
- * <p/>
+ *
  * Increasing the implicit wait timeout should be used judiciously as it
  * will have an adverse effect on test run time, especially when used with
  * slower location strategies like XPath.
@@ -1483,11 +1475,10 @@ webdriver.WebDriver.Logs = function(driver) {
 /**
  * Fetches available log entries for the given type.
  *
- * <p/>Note that log buffers are reset after each call, meaning that
- * available log entries correspond to those entries not yet returned for a
- * given log type. In practice, this means that this call will return the
- * available log entries since the last call, or from the start of the
- * session.
+ * Note that log buffers are reset after each call, meaning that available
+ * log entries correspond to those entries not yet returned for a given log
+ * type. In practice, this means that this call will return the available log
+ * entries since the last call, or from the start of the session.
  *
  * @param {!webdriver.logging.Type} type The desired log type.
  * @return {!webdriver.promise.Promise.<!Array.<!webdriver.logging.Entry>>} A
@@ -1568,17 +1559,19 @@ webdriver.WebDriver.TargetLocator.prototype.defaultContent = function() {
 /**
  * Schedules a command to switch the focus of all future commands to another
  * frame on the page.
- * <p/>
+ *
  * If the frame is specified by a number, the command will switch to the frame
- * by its (zero-based) index into the {@code window.frames} collection.
- * <p/>
+ * by its (zero-based) index into
+ * [window.frames](https://developer.mozilla.org/en-US/docs/Web/API/Window.frames).
+ *
  * If the frame is specified by a string, the command will select the frame by
  * its name or ID. To select sub-frames, simply separate the frame names/IDs by
  * dots. As an example, "main.child" will select the frame with the name "main"
  * and then its child "child".
- * <p/>
+ *
  * If the specified frame can not be found, the deferred result will errback
- * with a {@code bot.ErrorCode.NO_SUCH_FRAME} error.
+ * with a {@link bot.ErrorCode.NO_SUCH_FRAME} error.
+ *
  * @param {string|number} nameOrIndex The frame locator.
  * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
  *     when the driver has changed focus to the specified frame.
@@ -1594,10 +1587,11 @@ webdriver.WebDriver.TargetLocator.prototype.frame = function(nameOrIndex) {
 /**
  * Schedules a command to switch the focus of all future commands to another
  * window. Windows may be specified by their {@code window.name} attribute or
- * by its handle (as returned by {@code webdriver.WebDriver#getWindowHandles}).
- * <p/>
+ * by its handle (as returned by {@link webdriver.WebDriver#getWindowHandles}).
+ *
  * If the specificed window can not be found, the deferred result will errback
- * with a {@code bot.ErrorCode.NO_SUCH_WINDOW} error.
+ * with a {@link bot.ErrorCode.NO_SUCH_WINDOW} error.
+ *
  * @param {string} nameOrHandle The name or window handle of the window to
  *     switch focus to.
  * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
@@ -1662,26 +1656,24 @@ webdriver.Key.chord = function(var_args) {
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
- * document root using a {@code webdriver.WebDriver} instance, or by searching
- * under another {@code webdriver.WebElement}:
- * <pre><code>
- *   driver.get('http://www.google.com');
- *   var searchForm = driver.findElement(By.tagName('form'));
- *   var searchBox = searchForm.findElement(By.name('q'));
- *   searchBox.sendKeys('webdriver');
- * </code></pre>
+ * document root using a {@link webdriver.WebDriver} instance, or by searching
+ * under another WebElement:
+ *
+ *     driver.get('http://www.google.com');
+ *     var searchForm = driver.findElement(By.tagName('form'));
+ *     var searchBox = searchForm.findElement(By.name('q'));
+ *     searchBox.sendKeys('webdriver');
  *
  * The WebElement is implemented as a promise for compatibility with the promise
  * API. It will always resolve itself when its internal state has been fully
  * resolved and commands may be issued against the element. This can be used to
  * catch errors when an element cannot be located on the page:
- * <pre><code>
- *   driver.findElement(By.id('not-there')).then(function(element) {
- *     alert('Found an element that was not expected to be there!');
- *   }, function(error) {
- *     alert('The element was not found, as expected');
- *   });
- * </code></pre>
+ *
+ *     driver.findElement(By.id('not-there')).then(function(element) {
+ *       alert('Found an element that was not expected to be there!');
+ *     }, function(error) {
+ *       alert('The element was not found, as expected');
+ *     });
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
@@ -1795,37 +1787,35 @@ webdriver.WebElement.prototype.schedule_ = function(command, description) {
 
 /**
  * Schedule a command to find a descendant of this element. If the element
- * cannot be found, a {@code bot.ErrorCode.NO_SUCH_ELEMENT} result will
+ * cannot be found, a {@link bot.ErrorCode.NO_SUCH_ELEMENT} result will
  * be returned by the driver. Unlike other commands, this error cannot be
  * suppressed. In other words, scheduling a command to find an element doubles
  * as an assert that the element is present on the page. To test whether an
- * element is present on the page, use {@code #isElementPresent} instead.
+ * element is present on the page, use {@link #isElementPresent} instead.
  *
- * <p>The search criteria for an element may be defined using one of the
+ * The search criteria for an element may be defined using one of the
  * factories in the {@link webdriver.By} namespace, or as a short-hand
  * {@link webdriver.By.Hash} object. For example, the following two statements
  * are equivalent:
- * <code><pre>
- * var e1 = element.findElement(By.id('foo'));
- * var e2 = element.findElement({id:'foo'});
- * </pre></code>
  *
- * <p>You may also provide a custom locator function, which takes as input
+ *     var e1 = element.findElement(By.id('foo'));
+ *     var e2 = element.findElement({id:'foo'});
+ *
+ * You may also provide a custom locator function, which takes as input
  * this WebDriver instance and returns a {@link webdriver.WebElement}, or a
  * promise that will resolve to a WebElement. For example, to find the first
  * visible link on a page, you could write:
- * <code><pre>
- * var link = element.findElement(firstVisibleLink);
  *
- * function firstVisibleLink(element) {
- *   var links = element.findElements(By.tagName('a'));
- *   return webdriver.promise.filter(links, function(link) {
- *     return links.isDisplayed();
- *   }).then(function(visibleLinks) {
- *     return visibleLinks[0];
- *   });
- * }
- * </pre></code>
+ *     var link = element.findElement(firstVisibleLink);
+ *
+ *     function firstVisibleLink(element) {
+ *       var links = element.findElements(By.tagName('a'));
+ *       return webdriver.promise.filter(links, function(link) {
+ *         return links.isDisplayed();
+ *       }).then(function(visibleLinks) {
+ *         return visibleLinks[0];
+ *       });
+ *     }
  *
  * @param {!(webdriver.Locator|webdriver.By.Hash|Function)} locator The
  *     locator strategy to use when searching for the element.
@@ -1904,51 +1894,47 @@ webdriver.WebElement.prototype.click = function() {
  * Schedules a command to type a sequence on the DOM element represented by this
  * instance.
  *
- * <p>Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
+ * Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
  * processed in the keysequence, that key state is toggled until one of the
  * following occurs:
- * <ul>
- * <li>The modifier key is encountered again in the sequence. At this point the
- * state of the key is toggled (along with the appropriate keyup/down events).
- * </li>
- * <li>The {@code webdriver.Key.NULL} key is encountered in the sequence. When
- * this key is encountered, all modifier keys current in the down state are
- * released (with accompanying keyup events). The NULL key can be used to
- * simulate common keyboard shortcuts:
- * <code><pre>
- *     element.sendKeys("text was",
- *                      webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
- *                      "now text is");
- *     // Alternatively:
- *     element.sendKeys("text was",
- *                      webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
- *                      "now text is");
- * </pre></code></li>
- * <li>The end of the keysequence is encountered. When there are no more keys
- * to type, all depressed modifier keys are released (with accompanying keyup
- * events).
- * </li>
- * </ul>
  *
- * <p>If this element is a file input ({@code <input type="file">}), the
+ * - The modifier key is encountered again in the sequence. At this point the
+ *   state of the key is toggled (along with the appropriate keyup/down events).
+ * - The {@link webdriver.Key.NULL} key is encountered in the sequence. When
+ *   this key is encountered, all modifier keys current in the down state are
+ *   released (with accompanying keyup events). The NULL key can be used to
+ *   simulate common keyboard shortcuts:
+ *
+ *         element.sendKeys("text was",
+ *                          webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
+ *                          "now text is");
+ *         // Alternatively:
+ *         element.sendKeys("text was",
+ *                          webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
+ *                          "now text is");
+ *
+ * - The end of the keysequence is encountered. When there are no more keys
+ *   to type, all depressed modifier keys are released (with accompanying keyup
+ *   events).
+ *
+ * If this element is a file input ({@code <input type="file">}), the
  * specified key sequence should specify the path to the file to attach to
  * the element. This is analgous to the user clicking "Browse..." and entering
  * the path into the file select dialog.
- * <pre><code>
+ *
  *     var form = driver.findElement(By.css('form'));
  *     var element = form.findElement(By.css('input[type=file]'));
  *     element.sendKeys('/path/to/file.txt');
  *     form.submit();
- * </code></pre>
- * 
- * <p>For uploads to function correctly, the entered path must reference a file
- * on the <em>browser's</em> machine, not the local machine running this script.
- * When running against a remote Selenium server, a
- * {@link webdriver.FileDetector} may be used to transparently copy files to
- * the remote machine before attempting to upload them in the browser.
  *
- * <p><strong>Note:</strong> On browsers where native keyboard events are not
- * supported (e.g. Firefox on OS X), key events will be synthesized. Special
+ * For uploads to function correctly, the entered path must reference a file
+ * on the _browser's_ machine, not the local machine running this script. When
+ * running against a remote Selenium server, a {@link webdriver.FileDetector}
+ * may be used to transparently copy files to the remote machine before
+ * attempting to upload them in the browser.
+ *
+ * __Note:__ On browsers where native keyboard events are not supported
+ * (e.g. Firefox on OS X), key events will be synthesized. Special
  * punctionation keys will be synthesized according to a standard QWERTY en-us
  * keyboard layout.
  *
@@ -1957,7 +1943,7 @@ webdriver.WebElement.prototype.click = function() {
  * @return {!webdriver.promise.Promise.<void>} A promise that will be resolved
  *     when all keys have been typed.
  */
-webdriver.WebElement.prototype.sendKeys = function(var_args) {  
+webdriver.WebElement.prototype.sendKeys = function(var_args) {
   // Coerce every argument to a string. This protects us from users that
   // ignore the jsdoc and give us a number (which ends up causing problems on
   // the server, which requires strings).
@@ -2008,8 +1994,8 @@ webdriver.WebElement.prototype.getTagName = function() {
  * its parent, the parent will be queried for its value.  Where possible, color
  * values will be converted to their hex representation (e.g. #00ff00 instead of
  * rgb(0, 255, 0)).
- * <p/>
- * <em>Warning:</em> the value returned will be as the browser interprets it, so
+ *
+ * _Warning:_ the value returned will be as the browser interprets it, so
  * it may be tricky to form a proper assertion.
  *
  * @param {string} cssStyleProperty The name of the CSS style property to look
@@ -2037,19 +2023,19 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
  * text representation with a trailing semi-colon. The following are deemed to
  * be "boolean" attributes and will return either "true" or null:
  *
- * <p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
+ * async, autofocus, autoplay, checked, compact, complete, controls, declare,
  * defaultchecked, defaultselected, defer, disabled, draggable, ended,
  * formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope,
  * loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open,
  * paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
  * selected, spellcheck, truespeed, willvalidate
  *
- * <p>Finally, the following commonly mis-capitalized attribute/property names
+ * Finally, the following commonly mis-capitalized attribute/property names
  * are evaluated as expected:
- * <ul>
- *   <li>"class"
- *   <li>"readonly"
- * </ul>
+ *
+ * - "class"
+ * - "readonly"
+ *
  * @param {string} attributeName The name of the attribute to query.
  * @return {!webdriver.promise.Promise.<?string>} A promise that will be
  *     resolved with the attribute's value. The returned value will always be
@@ -2204,12 +2190,11 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
  * scheduled without directly on this instance before the underlying
  * WebElement has been fulfilled. In other words, the following two statements
  * are equivalent:
- * <pre><code>
+ *
  *     driver.findElement({id: 'my-button'}).click();
  *     driver.findElement({id: 'my-button'}).then(function(el) {
  *       return el.click();
  *     });
- * </code></pre>
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
@@ -2328,12 +2313,11 @@ webdriver.Alert.prototype.sendKeys = function(text) {
  * serves as a forward proxy on an Alert, allowing calls to be scheduled
  * directly on this instance before the underlying Alert has been fulfilled. In
  * other words, the following two statements are equivalent:
- * <pre><code>
+ *
  *     driver.switchTo().alert().dismiss();
  *     driver.switchTo().alert().then(function(alert) {
  *       return alert.dismiss();
  *     });
- * </code></pre>
  *
  * @param {!webdriver.WebDriver} driver The driver controlling the browser this
  *     alert is attached to.
@@ -2447,19 +2431,20 @@ webdriver.UnhandledAlertError.prototype.getAlert = function() {
 
 
 /**
- * Used with {@link webdriver.WebElement#sendKeys} on file input elements 
- * ({@code <input type="file">}) to detect when the entered key sequence
- * defines the path to a file.
+ * Used with {@link webdriver.WebElement#sendKeys WebElement#sendKeys} on file
+ * input elements ({@code <input type="file">}) to detect when the entered key
+ * sequence defines the path to a file.
  *
- * <p>By default, {@link webdriver.WebElement WebElement's} will enter all key
- * sequences exactly as entered. You may 
- * {@link webdriver.WebDriver#setFileDetector set a file detector} on the parent
+ * By default, {@linkplain webdriver.WebElement WebElement's} will enter all
+ * key sequences exactly as entered. You may set a
+ * {@linkplain webdriver.WebDriver#setFileDetector file detector} on the parent
  * WebDriver instance to define custom behavior for handling file elements. Of
  * particular note is the {@link selenium-webdriver/remote.FileDetector}, which
  * should be used when running against a remote
- * <a href="http://docs.seleniumhq.org/download/">Selenium Server</a>.
+ * [Selenium Server](http://docs.seleniumhq.org/download/).
  */
 webdriver.FileDetector = goog.defineClass(null, {
+  /** @constructor */
   constructor: function() {},
 
   /**
@@ -2468,7 +2453,7 @@ webdriver.FileDetector = goog.defineClass(null, {
    * be returned unchanged, otherwisee a path suitable for use with the current
    * browser will be returned.
    *
-   * <p>This default implementation is a no-op. Subtypes may override this
+   * This default implementation is a no-op. Subtypes may override this
    * function for custom tailored file handling.
    *
    * @param {!webdriver.WebDriver} driver The driver for the current browser.

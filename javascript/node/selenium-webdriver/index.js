@@ -52,6 +52,10 @@ exports.Command = base.require('webdriver.Command');
 exports.EventEmitter = base.require('webdriver.EventEmitter');
 
 
+/** @type {function(new: webdriver.FileDetector)} */
+exports.FileDetector = base.require('webdriver.FileDetector');
+
+
 /** @type {function(new: webdriver.Serializable)} */
 exports.Serializable = base.require('webdriver.Serializable');
 

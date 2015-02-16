@@ -71,8 +71,7 @@ webdriver.Capability = {
   /**
    * Indicates whether a driver should accept all SSL certs by default. This
    * capability only applies when requesting a new session. To query whether
-   * a driver can handle insecure SSL certs, see
-   * {@link webdriver.Capability.SECURE_SSL}.
+   * a driver can handle insecure SSL certs, see {@link #SECURE_SSL}.
    */
   ACCEPT_SSL_CERTS: 'acceptSslCerts',
 
@@ -94,7 +93,7 @@ webdriver.Capability = {
   /**
    * Whether the driver is capable of handling modal alerts (e.g. alert,
    * confirm, prompt). To define how a driver <i>should</i> handle alerts,
-   * use {@link webdriver.Capability.UNEXPECTED_ALERT_BEHAVIOR}.
+   * use {@link #UNEXPECTED_ALERT_BEHAVIOR}.
    */
   HANDLES_ALERTS: 'handlesAlerts',
 
@@ -127,7 +126,7 @@ webdriver.Capability = {
   /**
    * Whether a driver is only capable of handling secure SSL certs. To request
    * that a driver accept insecure SSL certs by default, use
-   * {@link webdriver.Capability.ACCEPT_SSL_CERTS}.
+   * {@link #ACCEPT_SSL_CERTS}.
    */
   SECURE_SSL: 'secureSsl',
 

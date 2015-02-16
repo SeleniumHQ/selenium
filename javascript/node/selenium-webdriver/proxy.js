@@ -14,15 +14,14 @@
 
 /**
  * @fileoverview Defines functions for configuring a webdriver proxy:
- * <pre><code>
- * var webdriver = require('selenium-webdriver'),
- *     proxy = require('selenium-webdriver/proxy');
  *
- * var driver = new webdriver.Builder()
- *     .withCapabilities(webdriver.Capabilities.chrome())
- *     .setProxy(proxy.manual({http: 'host:1234'}))
- *     .build();
- * </code></pre>
+ *     var webdriver = require('selenium-webdriver'),
+ *         proxy = require('selenium-webdriver/proxy');
+ *
+ *     var driver = new webdriver.Builder()
+ *         .withCapabilities(webdriver.Capabilities.chrome())
+ *         .setProxy(proxy.manual({http: 'host:1234'}))
+ *         .build();
  */
 
 'use strict';
@@ -46,14 +45,13 @@ exports.direct = function() {
 /**
  * Manually configures the browser proxy.  The following options are
  * supported:
- * <ul>
- * <li>{@code ftp}: Proxy host to use for FTP requests
- * <li>{@code http}: Proxy host to use for HTTP requests
- * <li>{@code https}: Proxy host to use for HTTPS requests
- * <li>{@code bypass}: A list of hosts requests should directly connect to,
+ *
+ * - `ftp`: Proxy host to use for FTP requests
+ * - `http`: Proxy host to use for HTTP requests
+ * - `https`: Proxy host to use for HTTPS requests
+ * - `bypass`: A list of hosts requests should directly connect to,
  *     bypassing any other proxies for that request. May be specified as a
  *     comma separated string, or a list of strings.
- * </ul>
  *
  * Behavior is undefined for FTP, HTTP, and HTTPS requests if the
  * corresponding key is omitted from the configuration options.

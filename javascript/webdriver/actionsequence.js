@@ -27,15 +27,15 @@ goog.require('webdriver.Key');
  * Class for defining sequences of complex user interactions. Each sequence
  * will not be executed until {@link #perform} is called.
  *
- * <p>Example:<pre><code>
- *   new webdriver.ActionSequence(driver).
- *       keyDown(webdriver.Key.SHIFT).
- *       click(element1).
- *       click(element2).
- *       dragAndDrop(element3, element4).
- *       keyUp(webdriver.Key.SHIFT).
- *       perform();
- * </pre></code>
+ * Example:
+ *
+ *     new webdriver.ActionSequence(driver).
+ *         keyDown(webdriver.Key.SHIFT).
+ *         click(element1).
+ *         click(element2).
+ *         dragAndDrop(element3, element4).
+ *         keyUp(webdriver.Key.SHIFT).
+ *         perform();
  *
  * @param {!webdriver.WebDriver} driver The driver instance to use.
  * @constructor
@@ -167,12 +167,13 @@ webdriver.ActionSequence.prototype.scheduleMouseAction_ = function(
  * sequence or another. The behavior for out-of-order events (e.g. mouseDown,
  * click) is undefined.
  *
- * <p>If an element is provided, the mouse will first be moved to the center
+ * If an element is provided, the mouse will first be moved to the center
  * of that element. This is equivalent to:
- * <pre><code>sequence.mouseMove(element).mouseDown()</code></pre>
  *
- * <p>Warning: this method currently only supports the left mouse button. See
- * http://code.google.com/p/selenium/issues/detail?id=4047
+ *     sequence.mouseMove(element).mouseDown()
+ *
+ * Warning: this method currently only supports the left mouse button. See
+ * [issue 4047](http://code.google.com/p/selenium/issues/detail?id=4047).
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
@@ -194,12 +195,13 @@ webdriver.ActionSequence.prototype.mouseDown = function(opt_elementOrButton,
  * Releases a mouse button. Behavior is undefined for calling this function
  * without a previous call to {@link #mouseDown}.
  *
- * <p>If an element is provided, the mouse will first be moved to the center
+ * If an element is provided, the mouse will first be moved to the center
  * of that element. This is equivalent to:
- * <pre><code>sequence.mouseMove(element).mouseUp()</code></pre>
  *
- * <p>Warning: this method currently only supports the left mouse button. See
- * http://code.google.com/p/selenium/issues/detail?id=4047
+ *     sequence.mouseMove(element).mouseUp()
+ *
+ * Warning: this method currently only supports the left mouse button. See
+ * [issue 4047](http://code.google.com/p/selenium/issues/detail?id=4047).
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
@@ -234,9 +236,10 @@ webdriver.ActionSequence.prototype.dragAndDrop = function(element, location) {
 /**
  * Clicks a mouse button.
  *
- * <p>If an element is provided, the mouse will first be moved to the center
+ * If an element is provided, the mouse will first be moved to the center
  * of that element. This is equivalent to:
- * <pre><code>sequence.mouseMove(element).click()</code></pre>
+ *
+ *     sequence.mouseMove(element).click()
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
@@ -257,12 +260,13 @@ webdriver.ActionSequence.prototype.click = function(opt_elementOrButton,
 /**
  * Double-clicks a mouse button.
  *
- * <p>If an element is provided, the mouse will first be moved to the center of
+ * If an element is provided, the mouse will first be moved to the center of
  * that element. This is equivalent to:
- * <pre><code>sequence.mouseMove(element).doubleClick()</code></pre>
  *
- * <p>Warning: this method currently only supports the left mouse button. See
- * http://code.google.com/p/selenium/issues/detail?id=4047
+ *     sequence.mouseMove(element).doubleClick()
+ *
+ * Warning: this method currently only supports the left mouse button. See
+ * [issue 4047](http://code.google.com/p/selenium/issues/detail?id=4047).
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.

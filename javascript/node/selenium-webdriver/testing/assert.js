@@ -16,20 +16,17 @@
  * @fileoverview Defines a library that simplifies writing assertions against
  * promised values.
  *
- * <blockquote>
- * <hr>
- * <b>NOTE:</b> This module is considered experimental and is subject to
- * change, or removal, at any time!
- * <hr>
- * </blockquote>
+ * > <hr>
+ * > __NOTE:__ This module is considered experimental and is subject to
+ * > change, or removal, at any time!
+ * > <hr>
  *
  * Sample usage:
- * <pre><code>
- * var driver = new webdriver.Builder().build();
- * driver.get('http://www.google.com');
  *
- * assert(driver.getTitle()).equalTo('Google');
- * </code></pre>
+ *     var driver = new webdriver.Builder().build();
+ *     driver.get('http://www.google.com');
+ *
+ *     assert(driver.getTitle()).equalTo('Google');
  */
 
 var base = require('../_base'),

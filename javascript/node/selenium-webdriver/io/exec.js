@@ -22,15 +22,12 @@ var promise = require('..').promise;
 
 /**
  * A hash with configuration options for an executed command.
- * <ul>
- * <li>
- * <li>{@code args} - Command line arguments.
- * <li>{@code env} - Command environment; will inherit from the current process
- *     if missing.
- * <li>{@code stdio} - IO configuration for the spawned server process. For
- *     more information, refer to the documentation of
- *     {@code child_process.spawn}.
- * </ul>
+ *
+ * - `args` - Command line arguments.
+ * - `env` - Command environment; will inherit from the current process if
+ *     missing.
+ * - `stdio` - IO configuration for the spawned server process. For more
+ *     information, refer to the documentation of `child_process.spawn`.
  *
  * @typedef {{
  *   args: (!Array.<string>|undefined),
