@@ -19,7 +19,8 @@ var assert = require('assert'),
     http = require('http'),
     url = require('url');
 
-var portprober = require('../../net/portprober'),
+var net = require('../../net'),
+    portprober = require('../../net/portprober'),
     promise = require('../..').promise;
 
 
@@ -88,8 +89,8 @@ var Server = function(requestHandler) {
    * @throws {Error} If the server is not running.
    */
   this.host = function() {
-    var addr = this.address();
-    return addr.address + ':' + addr.port;
+    return net.getLoopbackAddress() + ':' +
+        this.address().port;
   };
 
   /**
@@ -103,7 +104,7 @@ var Server = function(requestHandler) {
     var pathname = opt_pathname || '';
     return url.format({
       protocol: 'http',
-      hostname: addr.address,
+      hostname: net.getLoopbackAddress(),
       port: addr.port,
       pathname: pathname
     });
