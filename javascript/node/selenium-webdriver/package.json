@@ -19,7 +19,7 @@
     "url": "https://code.google.com/p/selenium/"
   },
   "engines": {
-    "node": ">= 0.8.x"
+    "node": ">= 0.10.x"
   },
   "dependencies": {
     "adm-zip": "0.4.4",

@@ -1,5 +1,17 @@
 ## v2.45.0-dev
 
+### Important Policy Change
+
+Starting with the 2.45.0 release, selenium-webdriver will support the last
+two stable minor releases for Node. For 2.45.0, this means Selenium will
+support Node 0.10.x and 0.12.x. Support for the intermediate, un-stable release
+(0.11.x) is "best-effort". This policy will be re-evaluated once Node has a
+major version release (i.e. 1.0.0).
+
+### Change Summary
+
+* With the release of [Node 0.12.0](http://blog.nodejs.org/2015/02/06/node-v0-12-0-stable/)
+    (finally!), the minimum supported version of Node is now `0.10.x`.
 * The `promise` module is now [Promises/A+](https://promisesaplus.com/)
     compliant. The biggest compliance change is that promise callbacks are now
     invoked in a future turn of the JS event loop. For example:
@@ -36,7 +48,7 @@
           }, 2000, 'element not found');
         });
 
-    This code will fail an error like:        
+    This code will fail an error like:
 
         Error: element not found
         Wait timed out after 2002ms
@@ -87,7 +99,7 @@
     however, since it is a required field in WebDriver's wire protocol.
 * FIXED: 7994: The `stacktrace` module will not modify stack traces if the
     initial parse fails (e.g. the user defined `Error.prepareStackTrace`)
-* FIXED: 5855: Added a module (`until`) that defines several common conditions 
+* FIXED: 5855: Added a module (`until`) that defines several common conditions
     for use with explicit waits. See updated examples for usage.
 
 ## v2.43.5
