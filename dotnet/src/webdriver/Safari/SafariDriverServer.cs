@@ -192,10 +192,14 @@ namespace OpenQA.Selenium.Safari
         {
             if (this.safariProcess != null && !this.safariProcess.HasExited)
             {
-                this.safariProcess.Kill();
-                while (!this.safariProcess.HasExited)
+                try
                 {
-                    Thread.Sleep(250);
+                    this.safariProcess.Kill();
+                    this.safariProcess.WaitForExit();
+                }
+                catch (InvalidOperationException)
+                {
+                    // The process terminated before we could kill it or whilst waiting for it to exit
                 }
             }
         }
