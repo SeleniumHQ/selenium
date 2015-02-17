@@ -306,6 +306,22 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
       put(webdriver.CommandName.MOVE_TO, post('/session/:sessionId/moveto')).
       put(webdriver.CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT,
           post('/session/:sessionId/keys')).
+      put(webdriver.CommandName.TOUCH_SINGLE_TAP,
+          post('/session/:sessionId/touch/click')).
+      put(webdriver.CommandName.TOUCH_DOUBLE_TAP,
+          post('/session/:sessionId/touch/doubleclick')).
+      put(webdriver.CommandName.TOUCH_DOWN,
+          post('/session/:sessionId/touch/down')).
+      put(webdriver.CommandName.TOUCH_UP,
+          post('/session/:sessionId/touch/up')).
+      put(webdriver.CommandName.TOUCH_MOVE,
+          post('/session/:sessionId/touch/move')).
+      put(webdriver.CommandName.TOUCH_SCROLL,
+          post('/session/:sessionId/touch/scroll')).
+      put(webdriver.CommandName.TOUCH_LONG_PRESS,
+          post('/session/:sessionId/touch/longclick')).
+      put(webdriver.CommandName.TOUCH_FLICK,
+          post('/session/:sessionId/touch/flick')).
       put(webdriver.CommandName.ACCEPT_ALERT,
           post('/session/:sessionId/accept_alert')).
       put(webdriver.CommandName.DISMISS_ALERT,

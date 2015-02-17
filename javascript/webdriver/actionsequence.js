@@ -103,13 +103,7 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
   if (goog.isNumber(location.x)) {
     setOffset(/** @type {{x: number, y: number}} */(location));
   } else {
-    // The interactions API expect the element ID to be encoded as a simple
-    // string, not the usual JSON object.
-    var id = /** @type {!webdriver.WebElement} */ (location).getId().
-        then(function(value) {
-          return value['ELEMENT'];
-        });
-    command.setParameter('element', id);
+    command.setParameter('element', (location).getRawId());
     if (opt_offset) {
       setOffset(opt_offset);
     }
