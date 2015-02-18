@@ -214,9 +214,16 @@ function suite(fn, opt_options) {
 
 // GLOBAL TEST SETUP
 
+testing.before(function() {
+   // Do not pass register fileserver.start directly with testing.before,
+   // as start takes an optional port, which before assumes is an async
+   // callback.
+   return fileserver.start();
+});
 
-testing.before(fileserver.start);
-testing.after(fileserver.stop);
+testing.after(function() {
+   return fileserver.stop();
+});
 
 // PUBLIC API
 

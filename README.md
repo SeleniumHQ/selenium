@@ -52,7 +52,7 @@ To build Selenium, in the same directory as this file, do…
 
 The order of building modules is determined by the `go` system itself.
 If you want to build an individual module (assuming all dependent
-modules have previously been build) try something like:
+modules have previously been built) try something like:
 
 ```sh
 ./go //javascript/atoms:test:run
