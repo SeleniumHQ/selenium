@@ -46,8 +46,13 @@ describe('HttpClient', function() {
     }
   });
 
-  test.before(server.start.bind(server));
-  test.after(server.stop.bind(server));
+  test.before(function() {
+    return server.start();
+  });
+
+  test.after(function() {
+    return server.stop();
+  });
 
   test.it('can send a basic HTTP request', function() {
     var request = new HttpRequest('GET', '/echo');

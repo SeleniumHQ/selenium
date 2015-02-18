@@ -105,3 +105,76 @@ describe('Mocha Integration', function() {
     });
   });
 });
+
+describe('Mocha async "done" support', function() {
+   this.timeout(2*1000);
+
+   var waited = false;
+   var DELAY = 100; // ms enough to notice
+
+   // Each test asynchronously sets waited to true, so clear/check waited
+   // before/after:
+   beforeEach(function() {
+      waited = false;
+   });
+
+   afterEach(function() {
+      assert.strictEqual(waited, true);
+   });
+
+   // --- First, vanilla mocha "it" should support the "done" callback correctly.
+
+   // This 'it' should block until 'done' is invoked
+   it('vanilla delayed', function(done) {
+      setTimeout(function delayedVanillaTimeout() {
+         waited = true;
+         done();
+      }, DELAY);
+   });
+
+   // --- Now with the webdriver wrappers for 'it' should support the "done" callback:
+
+   test.it('delayed', function(done) {
+      assert(done);
+      assert.strictEqual(typeof done, 'function');
+      //console.log(done.name);
+      //console.log(done.toString());
+      setTimeout(function delayedTimeoutCallback() {
+         waited = true;
+         done();
+      }, DELAY);
+   });
+
+   // --- And test that the webdriver wrapper for 'it' works with a returned promise, too:
+
+   test.it('delayed by promise', function() {
+      var defer = promise.defer();
+      setTimeout(function delayedPromiseCallback() {
+         waited = true;
+         defer.fulfill('ignored');
+      });
+      return defer.promise;
+   });
+
+});
+
+describe('ControlFlow and "done" work together', function() {
+   var flow, order;
+   before(function() {
+      order = [];
+      flow = promise.controlFlow();
+      flow.execute(function() { order.push(1); });
+   });
+
+   test.it('control flow updates and async done', function(done) {
+      flow.execute(function() { order.push(2); });
+      flow.execute(function() { order.push(3); }).then(function() {
+         order.push(4);
+      });
+      done();
+   })
+
+   after(function() {
+      assert.deepEqual([1, 2, 3, 4], order);
+   })
+});
