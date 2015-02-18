@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Defines a the {@code webdriver.http.Client} for use with
+ * @fileoverview Defines the {@code webdriver.http.Client} for use with
  * NodeJS.
  */
 
