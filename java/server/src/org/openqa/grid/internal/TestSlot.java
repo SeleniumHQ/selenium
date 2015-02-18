@@ -18,12 +18,19 @@ package org.openqa.grid.internal;
 
 import com.google.common.base.Throwables;
 
+import com.sun.org.glassfish.gmbal.ManagedObject;
+
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.weakref.jmx.Flatten;
+import org.weakref.jmx.JmxException;
+import org.weakref.jmx.MBeanExporter;
+import org.weakref.jmx.Managed;
 
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -47,6 +54,7 @@ import java.util.logging.Logger;
  * own.
  * 
  */
+@ManagedObject
 public class TestSlot {
 
   private static final Logger log = Logger.getLogger(TestSlot.class.getName());
@@ -76,6 +84,18 @@ public class TestSlot {
     }
     matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
+
+    // TODO refactor all checks like this and registration
+    if(System.getProperty("com.sun.management.jmxremote") != null) {
+      MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+      try {
+        exporter.unexport("org.openqa.grid.selenium:path="+getPath());
+        exporter.export("org.openqa.grid.selenium:path="+getPath(), this);
+      } catch(JmxException ex) {
+        // do nothing
+      }
+    }
+
   }
 
   public Map<String, Object> getCapabilities() {
@@ -156,6 +176,7 @@ public class TestSlot {
    * 
    * @return the session. Null if the slot is not used at the moment.
    */
+  @Flatten
   public TestSession getSession() {
     return currentSession;
   }

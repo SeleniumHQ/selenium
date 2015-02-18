@@ -19,6 +19,8 @@ package org.openqa.grid.web;
 
 import com.google.common.collect.Maps;
 
+import com.sun.org.glassfish.gmbal.ManagedObject;
+
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
@@ -37,7 +39,11 @@ import org.seleniumhq.jetty7.server.Server;
 import org.seleniumhq.jetty7.server.bio.SocketConnector;
 import org.seleniumhq.jetty7.servlet.ServletContextHandler;
 import org.seleniumhq.jetty7.util.thread.QueuedThreadPool;
+import org.weakref.jmx.MBeanExporter;
+import org.weakref.jmx.Managed;
+import org.weakref.jmx.Nested;
 
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -49,6 +55,7 @@ import javax.servlet.Servlet;
  * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
  * should be a singleton.
  */
+@ManagedObject
 public class Hub {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
@@ -97,6 +104,12 @@ public class Hub {
         log.info("binding " + servletClass.getCanonicalName() + " to " + path);
         addServlet(path, servletClass);
       }
+    }
+
+    // TODO refactor all checks like this and registration
+    if(System.getProperty("com.sun.management.jmxremote") != null) {
+      MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+      exporter.export("org.openqa.grid.selenium:name=Hub", this);
     }
 
     initServer();
@@ -154,14 +167,17 @@ public class Hub {
     }
   }
 
+  @Managed
   public int getPort() {
     return port;
   }
 
+  @Managed
   public String getHost() {
     return host;
   }
 
+  @Managed
   public void start() throws Exception {
     initServer();
     if (maxThread>0){
@@ -172,10 +188,18 @@ public class Hub {
     server.start();
   }
 
+  @Managed
   public void stop() throws Exception {
     server.stop();
   }
 
+  @Managed
+  public void restart() throws Exception {
+    stop();
+    start();
+  }
+
+  @Managed
   public URL getUrl() {
     try {
       return new URL("http://" + getHost() + ":" + getPort());
@@ -184,6 +208,7 @@ public class Hub {
     }
   }
 
+  @Managed
   public URL getRegistrationURL() {
     String uri = "http://" + getHost() + ":" + getPort() + "/grid/register/";
     try {

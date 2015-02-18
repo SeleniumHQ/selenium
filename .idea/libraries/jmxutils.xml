@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="jmxutils">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/third_party/java/jmxutils" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/third_party/java/jmxutils" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/third_party/java/jmxutils" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/third_party/java/jmxutils" recursive="false" type="SOURCES" />
+  </library>
+</component>

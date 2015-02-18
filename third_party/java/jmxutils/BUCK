@@ -1,0 +1,5 @@
+prebuilt_jar(name = 'jmxutils',
+  binary_jar = 'jmxutils-1.18.jar',
+  source_jar = 'jmxutils-1.18-sources.jar',
+  visibility = ['PUBLIC'],
+)

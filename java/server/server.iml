@@ -26,6 +26,7 @@
     <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
+    <orderEntry type="library" name="jmxutils" level="project" />
   </component>
 </module>
 

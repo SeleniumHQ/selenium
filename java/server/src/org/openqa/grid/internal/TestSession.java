@@ -21,6 +21,8 @@ import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 
+import com.sun.org.glassfish.gmbal.ManagedObject;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -42,6 +44,8 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.io.IOUtils;
+import org.weakref.jmx.MBeanExporter;
+import org.weakref.jmx.Managed;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -50,6 +54,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -70,6 +75,7 @@ import javax.servlet.http.HttpServletResponse;
  * timed out)
  */
 @SuppressWarnings("JavaDoc")
+@ManagedObject
 public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
@@ -101,6 +107,12 @@ public class TestSession {
     this.requestedCapabilities = requestedCapabilities;
     this.timeSource = timeSource;
     lastActivity = this.timeSource.currentTimeInMillis();
+
+    // TODO refactor all checks like this and registration
+    if(System.getProperty("com.sun.management.jmxremote") != null) {
+      MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+      exporter.export("org.openqa.grid.internal:name=TestSession,path="+getSlot().getPath(), this);
+    }
   }
 
   /**
@@ -136,6 +148,7 @@ public class TestSession {
    * @return time in millis
    * @see TestSession#setIgnoreTimeout(boolean)
    */
+  @Managed
   public long getInactivityTime() {
     if (ignoreTimeout) {
       return 0;
@@ -145,6 +158,7 @@ public class TestSession {
 
   }
 
+  @Managed
   public boolean isOrphaned() {
     final long elapsedSinceCreation = timeSource.currentTimeInMillis() - sessionCreatedAt;
 

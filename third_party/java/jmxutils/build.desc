@@ -1,0 +1,3 @@
+
+java_library(name = "jmxutils",
+  deps = [ "jmxutils-1.18.jar" ])

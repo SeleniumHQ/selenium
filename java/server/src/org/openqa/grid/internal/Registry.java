@@ -19,6 +19,8 @@ package org.openqa.grid.internal;
 
 import com.google.common.base.Predicate;
 
+import com.sun.org.glassfish.gmbal.ManagedObject;
+
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
@@ -31,7 +33,13 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.weakref.jmx.MBeanExporter;
+import org.weakref.jmx.Managed;
+import org.weakref.jmx.Nested;
 
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,6 +53,7 @@ import java.util.logging.Logger;
  * Kernel of the grid. Keeps track of what's happening, what's free/used and assigned resources to
  * incoming requests.
  */
+@ManagedObject
 @ThreadSafe
 public class Registry {
 
@@ -90,6 +99,13 @@ public class Registry {
 
   public static Registry newInstance(Hub hub, GridHubConfiguration config) {
     Registry registry = new Registry(hub, config);
+
+    // TODO refactor all checks like this and registration
+    if(System.getProperty("com.sun.management.jmxremote") != null) {
+      MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+      exporter.export("org.openqa.grid.selenium:name=Registry", registry);
+    }
+
     registry.matcherThread.start();
 
     // freynaud : TODO
@@ -112,10 +128,12 @@ public class Registry {
    *
    * @return the new session wait timeout
    */
+  @Managed
   public int getNewSessionWaitTimeout() {
     return newSessionWaitTimeout;
   }
 
+  @Managed
   public void setNewSessionWaitTimeout(int newSessionWaitTimeout) {
     this.newSessionWaitTimeout = newSessionWaitTimeout;
   }
@@ -176,6 +194,12 @@ public class Registry {
       log.warning(String.format(
           "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
 
+      // TODO refactor all checks like this and registration
+      if(System.getProperty("com.sun.management.jmxremote") != null) {
+        MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+        exporter.unexport("org.openqa.grid.internal:name=RemoteProxy,id=" + proxy.getId().replace(':', '|'));
+      }
+        
       final RemoteProxy p = proxies.remove(proxy);
       for (TestSlot slot : p.getTestSlots()) {
         forceRelease(slot, SessionTerminationReason.PROXY_REREGISTRATION);
@@ -220,6 +244,7 @@ public class Registry {
 
   }
 
+  @Managed
   public void stop() {
     stop = true;
     matcherThread.interrupt();
@@ -366,6 +391,13 @@ public class Registry {
         if (proxy instanceof SelfHealingProxy) {
           ((SelfHealingProxy) proxy).startPolling();
         }
+
+        // TODO refactor all checks like this and registration
+        if(System.getProperty("com.sun.management.jmxremote") != null) {
+          MBeanExporter exporter = new MBeanExporter(ManagementFactory.getPlatformMBeanServer());
+          exporter.export("org.openqa.grid.internal:name=RemoteProxy,id="+proxy.getId().replace(':', '|'), proxy);
+        }
+
         proxies.add(proxy);
         fireMatcherStateChanged();
       }
