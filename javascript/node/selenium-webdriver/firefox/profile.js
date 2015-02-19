@@ -13,6 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Profile management module. This module is considered internal;
+ * users should use {@link selenium-webdriver/firefox}.
+ */
+
 'use strict';
 
 var AdmZip = require('adm-zip'),

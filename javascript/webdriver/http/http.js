@@ -42,9 +42,9 @@ webdriver.http.Client = function() {
 /**
  * Sends a request to the server. If an error occurs while sending the request,
  * such as a failure to connect to the server, the provided callback will be
- * invoked with a non-null {@code Error} describing the error. Otherwise, when
+ * invoked with a non-null {@link Error} describing the error. Otherwise, when
  * the server's response has been received, the callback will be invoked with a
- * null Error and non-null {@code webdriver.http.Response} object.
+ * null Error and non-null {@link webdriver.http.Response} object.
  *
  * @param {!webdriver.http.Request} request The request to send.
  * @param {function(Error, !webdriver.http.Response=)} callback the function to
@@ -377,7 +377,7 @@ webdriver.http.headersToString_ = function(headers) {
 /**
  * Describes a partial HTTP request. This class is a "partial" request and only
  * defines the path on the server to send a request to. It is each
- * {@code webdriver.http.Client}'s responsibility to build the full URL for the
+ * {@link webdriver.http.Client}'s responsibility to build the full URL for the
  * final request.
  * @param {string} method The HTTP method to use for the request.
  * @param {string} path Path on the server to send the request to.
@@ -458,8 +458,8 @@ webdriver.http.Response = function(status, headers, body) {
 
 
 /**
- * Builds a {@code webdriver.http.Response} from a {@code XMLHttpRequest} or
- * {@code XDomainRequest} response object.
+ * Builds a {@link webdriver.http.Response} from a {@link XMLHttpRequest} or
+ * {@link XDomainRequest} response object.
  * @param {!(XDomainRequest|XMLHttpRequest)} xhr The request to parse.
  * @return {!webdriver.http.Response} The parsed response.
  */

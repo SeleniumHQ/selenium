@@ -13,6 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Manages Firefox binaries. This module is considered internal;
+ * users should use {@link selenium-webdriver/firefox}.
+ */
+
 'use strict';
 
 var child = require('child_process'),

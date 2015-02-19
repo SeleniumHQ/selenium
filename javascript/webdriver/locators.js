@@ -110,7 +110,7 @@ webdriver.By.className = webdriver.Locator.factory_('class name');
 /**
  * Locates elements using a CSS selector. For browsers that do not support
  * CSS selectors, WebDriver implementations may return an
- * {@link bot.Error.State.INVALID_SELECTOR invalid selector} error. An
+ * {@linkplain bot.Error.State.INVALID_SELECTOR invalid selector} error. An
  * implementation may, however, emulate the CSS selector API.
  *
  * @param {string} selector The CSS selector to use.
@@ -130,7 +130,7 @@ webdriver.By.id = webdriver.Locator.factory_('id');
 
 
 /**
- * Locates link elements whose {@link webdriver.WebElement#getText visible
+ * Locates link elements whose {@linkplain webdriver.WebElement#getText visible
  * text} matches the given string.
  *
  * @param {string} text The link text to search for.
@@ -141,7 +141,7 @@ webdriver.By.linkText = webdriver.Locator.factory_('link text');
 
 /**
  * Locates an elements by evaluating a
- * {@link webdriver.WebDriver#executeScript JavaScript expression}.
+ * {@linkplain webdriver.WebDriver#executeScript JavaScript expression}.
  * The result of this expression must be an element or list of elements.
  *
  * @param {!(string|Function)} script The script to execute.

@@ -281,7 +281,7 @@ promise.Thenable.addImplementation = function(ctor) {
 
 /**
  * Checks if an object has been tagged for implementing the Thenable interface
- * as defined by {@link promise.Thenable.addImplementation}.
+ * as defined by {@link webdriver.promise.Thenable.addImplementation}.
  * @param {*} object The object to test.
  * @return {boolean} Whether the object is an implementation of the Thenable
  *     interface.
@@ -663,7 +663,7 @@ promise.Promise.prototype.addCallback_ = function(callback, errback, name, fn) {
  *
  * If this Deferred is rejected and there are no listeners registered before
  * the next turn of the event loop, the rejection will be passed to the
- * {@link promise.ControlFlow} as an unhandled failure.
+ * {@link webdriver.promise.ControlFlow} as an unhandled failure.
  *
  * @param {promise.ControlFlow=} opt_flow The control flow
  *     this instance was created under. This should only be provided during
@@ -900,7 +900,7 @@ promise.when = function(value, opt_callback, opt_errback) {
 /**
  * Invokes the appropriate callback function as soon as a promised
  * {@code value} is resolved. This function is similar to
- * {@link promise.when}, except it does not return a new promise.
+ * {@link webdriver.promise.when}, except it does not return a new promise.
  * @param {*} value The value to observe.
  * @param {Function} callback The function to call when the value is
  *     resolved successfully.
@@ -1210,24 +1210,24 @@ promise.fullyResolveKeys_ = function(obj) {
  * completed.
  *
  * Each task scheduled within this flow may return a
- * {@link promise.Promise} to indicate it is an asynchronous
+ * {@link webdriver.promise.Promise} to indicate it is an asynchronous
  * operation. The ControlFlow will wait for such promises to be resolved before
  * marking the task as completed.
  *
- * Tasks and each callback registered on a {@link promise.Promise} will be
- * run in their own ControlFlow frame.  Any tasks scheduled within a frame will
- * take priority over previously scheduled tasks. Furthermore, if any of the
- * tasks in the frame fail, the remainder of the tasks in that frame will be
- * discarded and the failure will be propagated to the user through the
+ * Tasks and each callback registered on a {@link webdriver.promise.Promise}
+ * will be run in their own ControlFlow frame.  Any tasks scheduled within a
+ * frame will take priority over previously scheduled tasks. Furthermore, if any
+ * of the tasks in the frame fail, the remainder of the tasks in that frame will
+ * be discarded and the failure will be propagated to the user through the
  * callback/task's promised result.
  *
  * Each time a ControlFlow empties its task queue, it will fire an
- * {@link promise.ControlFlow.EventType.IDLE} event. Conversely,
+ * {@link webdriver.promise.ControlFlow.EventType.IDLE IDLE} event. Conversely,
  * whenever the flow terminates due to an unhandled error, it will remove all
  * remaining tasks in its queue and fire an
- * {@link promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION} event. If
- * there are no listeners registered with the flow, the error will be
- * rethrown to the global error handler.
+ * {@link webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION
+ * UNCAUGHT_EXCEPTION} event. If there are no listeners registered with the
+ * flow, the error will be rethrown to the global error handler.
  *
  * @constructor
  * @extends {webdriver.EventEmitter}
@@ -1257,11 +1257,12 @@ promise.ControlFlow = function() {
 
   /**
    * Micro task that controls shutting down the control flow. Upon shut down,
-   * the flow will emit an {@link promise.ControlFlow.EventType.IDLE} event.
-   * Idle events always follow a brief timeout in order to catch latent errors
-   * from the last completed task. If this task had a callback registered, but
-   * no errback, and the task fails, the unhandled failure would not be
-   * reported by the promise system until the next turn of the event loop:
+   * the flow will emit an {@link webdriver.promise.ControlFlow.EventType.IDLE}
+   * event. Idle events always follow a brief timeout in order to catch latent
+   * errors from the last completed task. If this task had a callback
+   * registered, but no errback, and the task fails, the unhandled failure would
+   * not be reported by the promise system until the next turn of the event
+   * loop:
    *
    *   // Schedule 1 task that fails.
    *   var result = promise.controlFlow().schedule('example',
@@ -1301,8 +1302,8 @@ promise.ControlFlow = function() {
    * The number of holds placed on this flow. These represent points where the
    * flow must not execute any further actions so an asynchronous action may
    * run first. One such example are notifications fired by a
-   * {@link promise.Promise}: the Promise spec requires that callbacks are
-   * invoked in a turn of the event loop after they are scheduled. To ensure
+   * {@link webdriver.promise.Promise}: the Promise spec requires that callbacks
+   * are invoked in a turn of the event loop after they are scheduled. To ensure
    * tasks within a callback are scheduled in the correct frame, a promise will
    * make the parent flow yield before its notifications are fired.
    * @private {number}
@@ -1313,7 +1314,7 @@ goog.inherits(promise.ControlFlow, webdriver.EventEmitter);
 
 
 /**
- * Events that may be emitted by an {@link promise.ControlFlow}.
+ * Events that may be emitted by an {@link webdriver.promise.ControlFlow}.
  * @enum {string}
  */
 promise.ControlFlow.EventType = {
@@ -1488,11 +1489,11 @@ promise.ControlFlow.prototype.getSchedulingFrame_ = function() {
  * Schedules a task for execution. If there is nothing currently in the
  * queue, the task will be executed in the next turn of the event loop. If
  * the task function is a generator, the task will be executed using
- * {@link promise.consume}.
+ * {@link webdriver.promise.consume}.
  *
  * @param {function(): (T|promise.Promise<T>)} fn The function to
  *     call to start the task. If the function returns a
- *     {@link promise.Promise}, this instance will wait for it to be
+ *     {@link webdriver.promise.Promise}, this instance will wait for it to be
  *     resolved before starting the next task.
  * @param {string=} opt_description A description of the task.
  * @return {!promise.Promise<T>} A promise that will be resolved
@@ -1963,7 +1964,7 @@ promise.ControlFlow.prototype.runInFrame_ = function(
 /**
  * Commences the shutdown sequence for this instance. After one turn of the
  * event loop, this object will emit the
- * {@link promise.ControlFlow.EventType.IDLE} event to signal
+ * {@link webdriver.promise.ControlFlow.EventType.IDLE IDLE} event to signal
  * listeners that it has completed. During this wait, if another task is
  * scheduled, the shutdown will be aborted.
  * @private
@@ -2070,9 +2071,10 @@ promise.MicroTask_ = goog.defineClass(null, {
 
 
 /**
- * An execution frame within a {@link promise.ControlFlow}.  Each frame
- * represents the execution context for either a {@link promise.Task_} or a
- * callback on a {@link promise.Promise}.
+ * An execution frame within a {@link webdriver.promise.ControlFlow}.  Each
+ * frame represents the execution context for either a
+ * {@link webdriver.promise.Task_} or a callback on a
+ * {@link webdriver.promise.Promise}.
  *
  * Each frame may contain sub-frames.  If child N is a sub-frame, then the
  * items queued within it are given priority over child N+1.
@@ -2112,7 +2114,7 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
      * executed function that has scheduled all of its tasks.
      *
      * Once a frame becomes locked, any new frames which are added as children
-     * represent interrupts (such as a {@link promise.Promise}
+     * represent interrupts (such as a {@link webdriver.promise.Promise}
      * callback) whose tasks must be given priority over those already scheduled
      * within this frame. For example:
      *
@@ -2135,7 +2137,7 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
 
     /**
      * Whether this frame represents a pending callback attached to a
-     * {@link promise.Promise}.
+     * {@link webdriver.promise.Promise}.
      * @private {boolean}
      */
     this.pendingCallback = false;
@@ -2328,7 +2330,7 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
 
 
 /**
- * A task to be executed by a {@link promise.ControlFlow}.
+ * A task to be executed by a {@link webdriver.promise.ControlFlow}.
  *
  * @unrestricted
  * @final
@@ -2340,7 +2342,7 @@ promise.Task_ = goog.defineClass(promise.Deferred, {
    *     to.
    * @param {function(): (T|!promise.Promise<T>)} fn The function to
    *     call when the task executes. If it returns a
-   *     {@link promise.Promise}, the flow will wait for it to be
+   *     {@link webdriver.promise.Promise}, the flow will wait for it to be
    *     resolved before starting the next task.
    * @param {string} description A description of the task for debugging.
    * @constructor
@@ -2404,9 +2406,9 @@ promise.Task_ = goog.defineClass(promise.Deferred, {
 
 
 /**
- * Manages a callback attached to a {@link promise.Promise}. When the promise
- * is resolved, this callback will invoke the appropriate callback function
- * based on the promise's resolved value.
+ * Manages a callback attached to a {@link webdriver.promise.Promise}. When the
+ * promise is resolved, this callback will invoke the appropriate callback
+ * function based on the promise's resolved value.
  *
  * @unrestricted
  * @final

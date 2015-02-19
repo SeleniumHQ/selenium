@@ -13,6 +13,62 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Defines a {@linkplain Driver WebDriver} client for the
+ * [Chrome](https://sites.google.com/a/chromium.org/chromedriver/) web browser.
+ * Before using this module, you must download the latest
+ * [ChromeDriver release](http://chromedriver.storage.googleapis.com/index.html)
+ * and ensure it can be found on your system 
+ * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29).
+ *
+ * There are three primary classes exported by this module:
+ *
+ * 1. {@linkplain ServiceBuilder}: configures the
+ *     {@link selenium-webdriver/remote.DriverService remote.DriverService}
+ *     that manages the
+ *     [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
+ *     child process.
+ *
+ * 2. {@linkplain Options}: defines configuration options for each new Chrome
+ *     session, such as which {@linkplain Options#setProxy proxy} to use,
+ *     what {@linkplain Options#addExtensions extensions} to install, or
+ *     what {@linkplain Options#addArguments command-line switches} to use when
+ *     starting the browser.
+ *
+ * 3. {@linkplain Driver}: the WebDriver client; each new instance will control
+ *     a unique browser session with a clean user profile (unless otherwise
+ *     configured through the {@link Options} class).
+ *
+ *
+ * By default, every Chrome session will use a single driver service, which is
+ * started the first time a {@link Driver} instance is created and terminated
+ * when this process exits. The default service will inherit its environment
+ * from the current process and direct all output to /dev/null. You may obtain
+ * a handle to this default service using
+ * {@link #getDefaultService getDefaultService()} and change its configuration
+ * with {@link #setDefaultService setDefaultService()}.
+ *
+ * You may also create a {@link Driver} with its own driver service. This is
+ * useful if you need to capture the server's log output for a specific session:
+ *
+ *     var chrome = require('selenium-webdriver/chrome');
+ *
+ *     var service = new chrome.ServiceBuilder()
+ *         .loggingTo('/my/log/file.txt')
+ *         .enableVerboseLogging()
+ *         .build();
+ *
+ *     var options = new chrome.Options();
+ *     // configure browser options ...
+ *
+ *     var driver = new chrome.Driver(options, service);
+ *
+ * Users should only instantiate the {@link Driver} class directly when they
+ * need a custom driver service configuration (as shown above). For normal
+ * operation, users should start Chrome using the
+ * {@link selenium-webdriver.Builder}.
+ */
+
 'use strict';
 
 var fs = require('fs'),
@@ -35,8 +91,10 @@ var CHROMEDRIVER_EXE =
 
 
 /**
- * Creates {@link remote.DriverService} instances that manage a ChromeDriver
- * server.
+ * Creates {@link remote.DriverService} instances that manage a
+ * [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
+ * server in a child process.
+ *
  * @param {string=} opt_exe Path to the server executable to use. If omitted,
  *     the builder will attempt to locate the chromedriver on the current
  *     PATH.
