@@ -15,7 +15,7 @@
 
 /**
  * @fileoverview Provides wrappers around the following global functions from
- * [Mocha's BDD interface](http://visionmedia.github.io/mocha/):
+ * [Mocha's BDD interface](https://github.com/mochajs/mocha):
  *
  * - after
  * - afterEach
@@ -90,39 +90,71 @@ function seal(fn) {
 function wrapped(globalFn) {
   return function() {
     if (arguments.length === 1) {
-      return globalFn(asyncTestFn(arguments[0]));
+      return globalFn(makeAsyncTestFn(arguments[0]));
     }
     else if (arguments.length === 2) {
-      return globalFn(arguments[0], asyncTestFn(arguments[1]));
+      return globalFn(arguments[0], makeAsyncTestFn(arguments[1]));
     }
     else {
       throw Error('Invalid # arguments: ' + arguments.length);
     }
   };
+}
 
-  function asyncTestFn(fn) {
-    var ret = function(done) {
-      var mochaCallback = this.runnable().callback;
-      this.runnable().callback = function() {
-        flow.reset();
-        return mochaCallback.apply(this, arguments);
-      };
+/**
+ * Make a wrapper to invoke caller's test function, fn.  Run the test function
+ * within a ControlFlow.
+ *
+ * Should preserve the semantics of Mocha's Runnable.prototype.run (See
+ * https://github.com/mochajs/mocha/blob/master/lib/runnable.js#L192)
+ *
+ * @param {Function} fn
+ * @return {Function}
+ */
+function makeAsyncTestFn(fn) {
+  var async = fn.length > 0; // if test function expects a callback, its "async"
 
-      var testFn = fn.bind(this);
-      flow.execute(function() {
-        return new promise.Promise(function(fulfill, reject) {
-          var result = testFn(reject);
-          fulfill(result);
-        }, flow);
-      }).then(seal(done), done);
-    };
+  var ret = function(done) {
+    function cleanupBeforeCallback() {
+      flow.reset();
+      return cleanupBeforeCallback.mochaCallback.apply(this, arguments);
+    }
+    // We set this as an attribute of the callback function to allow us to
+    // test this properly.
+    cleanupBeforeCallback.mochaCallback = this.runnable().callback;
 
-    ret.toString = function() {
-      return fn.toString();
-    };
+    this.runnable().callback = cleanupBeforeCallback;
 
-    return ret;
-  }
+    var testFn = fn.bind(this);
+
+    flow.execute(function controlFlowExecute() {
+      var testFnDone = promise.defer();
+      if (async) {
+        // If testFn is async (it expects a done callback), resolve the promise of this
+        // test whenever that callback says to.  Any promises returned from testFn are
+        // ignored.
+        testFn(function testFnDoneCallback(err) {
+          if (err) {
+            testFnDone.reject(err);
+          } else {
+            testFnDone.fulfill();
+          }
+        });
+      }
+      else {
+        // Without a callback, testFn can return a promise or will assumed to have
+        // completed immediately
+        promise.asap(testFn(), testFnDone.fulfill, testFnDone.reject);
+      }
+      return testFnDone.promise;
+    }).then(seal(done), done);
+  };
+
+  ret.toString = function() {
+    return fn.toString();
+  };
+
+  return ret;
 }
 
 
