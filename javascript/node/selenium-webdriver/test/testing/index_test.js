@@ -105,3 +105,59 @@ describe('Mocha Integration', function() {
     });
   });
 });
+
+describe('Mocha async "done" support', function() {
+   this.timeout(2*1000);
+
+   var waited = false;
+   var DELAY = 100; // ms enough to notice
+
+   // --- First, vanilla mocha "it" should support the "done" callback correctly.
+
+   // This it blocks until 'done' is invoked
+   it('vanilla delayed', function it_vanillaDelayed(done) {
+      setTimeout(function delayed_vanillaTimeout() {
+         waited = true;
+         done();
+      }, DELAY);
+   });
+
+   it('vanilla must have waited', function it_vanillaMustHaveWaited() {
+      assert.strictEqual(waited, true);
+      waited = false;
+   });
+
+   // --- Now with the webdriver wrappers for 'it' should support the "done" callback:
+
+   test.it('delayed', function it_delayed(done) {
+      assert(done);
+      assert.strictEqual(typeof done, 'function');
+      //console.log(done.name);
+      //console.log(done.toString());
+      setTimeout(function delayed_timeoutCallback() {
+         waited = true;
+         done();
+      }, DELAY);
+   });
+
+   test.it('must have waited', function it_mustHaveWaited() {
+      assert.strictEqual(waited, true);
+      waited = false;
+   });
+
+   // --- And test that the webdriver wrapper for 'it' works with a returned promise, too:
+
+   test.it('delayed by promise', function it_delayedByAPromise() {
+      var defer = promise.defer();
+      setTimeout(function delayed_promiseCallback() {
+         waited = true;
+         defer.fulfill('ignored');
+      });
+      return defer.promise;
+   });
+
+   test.it('must have waited (again)', function it_mustHaveWaitedAgain() {
+      assert.strictEqual(waited, true);
+      waited = false;
+   });
+});
