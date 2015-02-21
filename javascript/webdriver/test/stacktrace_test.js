@@ -61,7 +61,9 @@ function assertStackFrame(message, frameOrFrameString, expectedFrame) {
 }
 
 function assertFrame(frame, file, line) {
-  assertContains('/' + file, frame.getUrl());
+  // Normalize path for when run through Node.js on Windows.
+  var url = frame.getUrl().replace(/\\/g, '/');
+  assertContains('/' + file, url);
   assertEquals(line, frame.getLine());
 }
 
@@ -72,7 +74,7 @@ function testGetStacktraceFromFile() {
 
   var stacktrace = webdriver.test.testutil.getStackTrace();
   assertFrame(stacktrace[0], 'testutil.js', 48);
-  assertFrame(stacktrace[1], 'stacktrace_test.js', 73);
+  assertFrame(stacktrace[1], 'stacktrace_test.js', 75);
 }
 
 function testGetStacktraceWithUrlOnLine() {
@@ -86,10 +88,10 @@ function testGetStacktraceWithUrlOnLine() {
   }
 
   var stacktrace = getStacktraceWithUrlArgument('http://www.google.com');
-  assertFrame(stacktrace[0], 'stacktrace_test.js', 85);
+  assertFrame(stacktrace[0], 'stacktrace_test.js', 87);
 
   stacktrace = getStacktraceWithUrlArgument('http://www.google.com/search');
-  assertFrame(stacktrace[0], 'stacktrace_test.js', 85);
+  assertFrame(stacktrace[0], 'stacktrace_test.js', 87);
 }
 
 function testParseStackFrameInV8() {

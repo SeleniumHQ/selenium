@@ -61,6 +61,7 @@ var Pages = (function() {
   addPage('documentWrite', 'document_write_in_onload.html');
   addPage('dynamicallyModifiedPage', 'dynamicallyModifiedPage.html');
   addPage('dynamicPage', 'dynamic.html');
+  addPage('echoPage', 'echo');
   addPage('errorsPage', 'errors.html');
   addPage('xhtmlFormPage', 'xhtmlFormPage.xhtml');
   addPage('formPage', 'formPage.html');
@@ -106,6 +107,7 @@ var Pages = (function() {
 
 var Path = {
   BASIC_AUTH: WEB_ROOT + '/basicAuth',
+  ECHO: WEB_ROOT + '/echo',
   GENERATED: WEB_ROOT + '/generated',
   MANIFEST: WEB_ROOT + '/manifest',
   REDIRECT: WEB_ROOT + '/redirect',
@@ -124,6 +126,7 @@ app.get('/', sendIndex)
 .use(JS_ROOT, serveIndex(jsDirectory), express.static(jsDirectory))
 .post(Path.UPLOAD, handleUpload)
 .use(WEB_ROOT, serveIndex(baseDirectory), express.static(baseDirectory))
+.get(Path.ECHO, sendEcho)
 .get(Path.PAGE, sendInifinitePage)
 .get(Path.PAGE + '/*', sendInifinitePage)
 .get(Path.REDIRECT, redirectToResultPage)
@@ -146,23 +149,21 @@ function redirectToResultPage(_, response) {
 
 
 function sendInifinitePage(request, response) {
-  setTimeout(function() {
-    var pathname = url.parse(request.url).pathname;
-    var lastIndex = pathname.lastIndexOf('/');
-    var pageNumber =
-        (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
-    var body = [
-      '<!DOCTYPE html>',
-      '<title>Page', pageNumber, '</title>',
-      'Page number <span id="pageNumber">', pageNumber, '</span>',
-      '<p><a href="../xhtmlTest.html" target="_top">top</a>'
-    ].join('');
-    response.writeHead(200, {
-      'Content-Length': Buffer.byteLength(body, 'utf8'),
-      'Content-Type': 'text/html; charset=utf-8'
-    });
-    response.end(body);
-  }, 500);
+  var pathname = url.parse(request.url).pathname;
+  var lastIndex = pathname.lastIndexOf('/');
+  var pageNumber =
+      (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
+  var body = [
+    '<!DOCTYPE html>',
+    '<title>Page', pageNumber, '</title>',
+    'Page number <span id="pageNumber">', pageNumber, '</span>',
+    '<p><a href="../xhtmlTest.html" target="_top">top</a>'
+  ].join('');
+  response.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body, 'utf8'),
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+  response.end(body);
 }
 
 
@@ -201,6 +202,27 @@ function handleUpload(request, response, next) {
       response.end('<script>window.top.window.onUploadDone();</script>');
     }
   })(request, response, function() {});
+}
+
+
+function sendEcho(request, response) {
+  var body = [
+    '<!DOCTYPE html>',
+    '<title>Echo</title>',
+    '<div class="request">',
+    request.method, ' ', request.url, ' ', 'HTTP/', request.httpVersion,
+    '</div>'
+  ];
+  for (var name in request.headers) {
+    body.push('<div class="header ', name , '">',
+        name, ': ', request.headers[name], '</div>');
+  }
+  body = body.join('');
+  response.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body, 'utf8'),
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+  response.end(body);
 }
 
 

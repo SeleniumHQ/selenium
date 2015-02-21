@@ -29,7 +29,7 @@ var seleniumServer;
 /**
  * Starts an instance of the Selenium server if not yet running.
  * @param {string} jar Path to the server jar to use.
- * @return {!webdriver.promise.Promise.<string>} A promise for the server's
+ * @return {!webdriver.promise.Promise<string>} A promise for the server's
  *     addrss once started.
  */
 function startSeleniumServer(jar) {
@@ -326,6 +326,10 @@ Builder.prototype.build = function() {
         ' did you forget to call forBrowser()?');
   }
 
+  if (browser === 'ie') {
+    browser = Browser.INTERNET_EXPLORER;
+  }
+
   // Apply browser specific overrides.
   if (browser === Browser.CHROME && this.chromeOptions_) {
     capabilities.merge(this.chromeOptions_.toCapabilities());
@@ -363,6 +367,12 @@ Builder.prototype.build = function() {
       // index -> builder -> firefox -> index
       var firefox = require('./firefox');
       return new firefox.Driver(capabilities, this.flow_);
+
+    case Browser.INTERNET_EXPLORER:
+      // Requiring 'ie' above would create a cycle:
+      // index -> builder -> ie -> index
+      var ie = require('./ie');
+      return new ie.Driver(capabilities, this.flow_);
 
     case Browser.PHANTOM_JS:
       // Requiring 'phantomjs' would create a cycle:

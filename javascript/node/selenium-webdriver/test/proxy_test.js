@@ -88,7 +88,8 @@ test.suite(function(env) {
   test.beforeEach(function() { driver = null; });
   test.afterEach(function() { driver && driver.quit(); });
 
-  test.ignore(env.browsers(Browser.SAFARI)).  // Proxy support not implemented.
+  // Proxy support not implemented.
+  test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
   describe('manual proxy settings', function() {
     // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
     // settings.
@@ -132,7 +133,7 @@ test.suite(function(env) {
 
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.IE, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('pac proxy settings', function() {
     test.it('can configure proxy through PAC file', function() {
       driver = env.builder().

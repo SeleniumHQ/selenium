@@ -26,7 +26,8 @@ test.suite(function(env) {
   //   - does not support adjusting log levels for type "browser".
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
-  test.ignore(env.browsers(Browser.PHANTOM_JS)).
+  // Logging API is not supported in IE.
+  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.IE)).
   describe('logging', function() {
     var driver;
 

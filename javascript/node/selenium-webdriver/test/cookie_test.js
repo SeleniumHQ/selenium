@@ -63,7 +63,7 @@ test.suite(function(env) {
       assertHasCookies(cookie1, cookie2);
     });
 
-    test.ignore(env.browsers(Browser.OPERA)).
+    test.ignore(env.browsers(Browser.IE, Browser.OPERA)).
     it('only returns cookies visible to the current page', function() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();

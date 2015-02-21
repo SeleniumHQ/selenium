@@ -18,6 +18,7 @@
 var path = require('path');
 
 var webdriver = require('..'),
+    Browser = webdriver.Browser,
     By = webdriver.By,
     assert = require('../testing/assert'),
     test = require('../lib/test');
@@ -35,11 +36,10 @@ test.suite(function(env) {
   });
 
   test.beforeEach(function() {
-    driver.get('data:text/html,<html><h1>' + path.basename(__filename) +
-        '</h1></html>');
+    driver.get(test.Pages.echoPage);
   });
 
-  describe('executeScript', function() {
+  describe('executeScript;', function() {
     var shouldHaveFailed = new Error('Should have failed');
 
     test.it('fails if script throws', function() {
@@ -47,7 +47,8 @@ test.suite(function(env) {
           .then(function() { throw shoudlHaveFailed; })
           .thenCatch(function(e) {
             // The java WebDriver server adds a bunch of crap to error messages.
-            assert(e.message).matches(/.*boom.*/);
+            // Error message will just be "JavaScript error" for IE.
+            assert(e.message).matches(/.*(JavaScript error|boom).*/);
           });
     });
 
@@ -59,7 +60,7 @@ test.suite(function(env) {
           });
     });
 
-    describe('scripts', function() {
+    describe('scripts;', function() {
       test.it('do not pollute the global scope', function() {
         execute('var x = 1;');
         assert(execute('return typeof x;')).equalTo('undefined');
@@ -77,7 +78,7 @@ test.suite(function(env) {
       });
     });
 
-    describe('return values', function() {
+    describe('return values;', function() {
 
       test.it('returns undefined as null', function() {
         assert(execute('var x; return x;')).isNull();
@@ -111,8 +112,12 @@ test.suite(function(env) {
             .then(verifyJson([[1, 2, [3]]]));
       });
 
-      test.it('can return object literals', function() {
+      test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
+      it('can return empty object literal', function() {
         execute('return {}').then(verifyJson({}));
+      });
+
+      test.it('can return object literals', function() {
         execute('return {a: 1, b: false, c: null}').then(function(result) {
           verifyJson(['a', 'b', 'c'])(Object.keys(result).sort());
           assert(result.a).equalTo(1);
@@ -126,43 +131,37 @@ test.suite(function(env) {
       });
 
       test.it('can return dom elements as web elements', function() {
-        execute('return document.getElementsByTagName("h1")[0]')
+        execute('return document.querySelector(".header.host")')
             .then(function(result) {
               assert(result).instanceOf(webdriver.WebElement);
-              assert(result.getText()).equalTo(path.basename(__filename));
+              assert(result.getText()).startsWith('host: ');
             });
       });
 
       test.it('can return array of dom elements', function() {
-        driver.get('data:text/html,<!DOCTYPE html>' +
-            '<h1>' + path.basename(__filename) + '</h1>' +
-            '<h1>Hello, world!</h1>');
-        execute('var nodes = document.getElementsByTagName("h1");' +
+        execute('var nodes = document.querySelectorAll(".request,.host");' +
                 'return [nodes[0], nodes[1]];')
             .then(function(result) {
               assert(result.length).equalTo(2);
 
               assert(result[0]).instanceOf(webdriver.WebElement);
-              assert(result[0].getText()).equalTo(path.basename(__filename));
+              assert(result[0].getText()).startsWith('GET ');
 
               assert(result[1]).instanceOf(webdriver.WebElement);
-              assert(result[1].getText()).equalTo('Hello, world!');
+              assert(result[1].getText()).startsWith('host: ');
             });
       });
 
       test.it('can return a NodeList as an array of web elements', function() {
-        driver.get('data:text/html,<!DOCTYPE html>' +
-            '<h1>' + path.basename(__filename) + '</h1>' +
-            '<h1>Hello, world!</h1>');
-        execute('return document.getElementsByTagName("h1");')
+        execute('return document.querySelectorAll(".request,.host");')
             .then(function(result) {
               assert(result.length).equalTo(2);
 
               assert(result[0]).instanceOf(webdriver.WebElement);
-              assert(result[0].getText()).equalTo(path.basename(__filename));
+              assert(result[0].getText()).startsWith('GET ');
 
               assert(result[1]).instanceOf(webdriver.WebElement);
-              assert(result[1].getText()).equalTo('Hello, world!');
+              assert(result[1].getText()).startsWith('host: ');
             });
       });
 
@@ -174,7 +173,7 @@ test.suite(function(env) {
       });
     });
 
-    describe('parameters', function() {
+    describe('parameters;', function() {
       test.it('can pass numeric arguments', function() {
         assert(execute('return arguments[0]', 12)).equalTo(12);
         assert(execute('return arguments[0]', 3.14)).equalTo(3.14);
@@ -224,9 +223,9 @@ test.suite(function(env) {
       });
 
       test.it('WebElement arguments are passed as DOM elements', function() {
-        var el = driver.findElement(By.tagName('h1'));
+        var el = driver.findElement(By.tagName('div'));
         assert(execute('return arguments[0].tagName.toLowerCase();', el))
-            .equalTo('h1');
+            .equalTo('div');
       });
 
       test.it('can pass array containing object literals', function() {

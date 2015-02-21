@@ -33,6 +33,7 @@ var build = require('./build'),
 var NATIVE_BROWSERS = [
   webdriver.Browser.CHROME,
   webdriver.Browser.FIREFOX,
+  webdriver.Browser.IE,
   webdriver.Browser.PHANTOM_JS
 ];
 
@@ -48,9 +49,18 @@ var browsersToTest = (function() {
   var permitUnknownBrowsers = !nativeRun;
   var browsers = process.env['SELENIUM_BROWSER'] || webdriver.Browser.FIREFOX;
 
-  browsers = browsers.split(',');
+  browsers = browsers.split(',').map(function(browser) {
+    var parts = browser.split(/:/);
+    if (parts[0] === 'ie') {
+      parts[0] = webdriver.Browser.IE;
+    }
+    return parts.join(':');
+  });
   browsers.forEach(function(browser) {
     var parts = browser.split(/:/, 3);
+    if (parts[0] === 'ie') {
+      parts[0] = webdriver.Browser.IE;
+    }
 
     if (NATIVE_BROWSERS.indexOf(parts[0]) == -1 && !permitRemoteBrowsers) {
       throw Error('Browser ' + parts[0] + ' requires a WebDriver server and ' +

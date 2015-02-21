@@ -34,6 +34,7 @@ webdriver.Browser = {
   ANDROID: 'android',
   CHROME: 'chrome',
   FIREFOX: 'firefox',
+  IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
   IPAD: 'iPad',
   IPHONE: 'iPhone',
