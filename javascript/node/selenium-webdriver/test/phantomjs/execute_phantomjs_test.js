@@ -42,7 +42,7 @@ test.suite(function(env) {
 
       test.it('can execute scripts using PhantomJS API', function() {
         return driver.executePhantomJS('return this.url;').then(function(url) {
-          assert.equal(testPageUrl, url);
+          assert.equal(testPageUrl, decodeURIComponent(url));
         });
       });
 

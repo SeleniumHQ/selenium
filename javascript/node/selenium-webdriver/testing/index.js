@@ -102,8 +102,9 @@ function wrapped(globalFn) {
 
   function asyncTestFn(fn) {
     var ret = function(done) {
+      var runnable = this.runnable();
       var mochaCallback = this.runnable().callback;
-      this.runnable().callback = function() {
+      runnable.callback = function() {
         flow.reset();
         return mochaCallback.apply(this, arguments);
       };
@@ -114,7 +115,7 @@ function wrapped(globalFn) {
           var result = testFn(reject);
           fulfill(result);
         }, flow);
-      }).then(seal(done), done);
+      }, runnable.fullTitle()).then(seal(done), done);
     };
 
     ret.toString = function() {

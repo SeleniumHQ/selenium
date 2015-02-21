@@ -110,7 +110,9 @@ test.suite(function(env) {
     driver.wait(until.titleIs('We Arrive Here'), 5000);
   });
 
-  test.it('should be able to refresh a page', function() {
+  // PhantomJS 2.0 does not properly reload pages on refresh.
+  test.ignore(browsers(Browser.PHANTOM_JS)).
+  it('should be able to refresh a page', function() {
     driver.get(Pages.xhtmlTestPage);
 
     driver.navigate().refresh();
