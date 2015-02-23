@@ -16,10 +16,11 @@
 /**
  * @fileoverview Defines a {@linkplain Driver WebDriver} client for Microsoft's
  * Internet Explorer. Before using the IEDriver, you must download the latest
- * [IEDriverServer](selenium-release.storage.googleapis.com/index.html) and
- * place it on your [PATH](http://en.wikipedia.org/wiki/PATH_(variable)).
- * You must also apply the system configuration outlined on the Selenium
- * project [wiki](http://goo.gl/Z0hCpR)
+ * [IEDriverServer](http://selenium-release.storage.googleapis.com/index.html)
+ * and place it on your
+ * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). You must also apply
+ * the system configuration outlined on the Selenium project
+ * [wiki](http://goo.gl/Z0hCpR)
  */
 
 'use strict';
@@ -298,7 +299,7 @@ Options.prototype.setLogFile = function(file) {
 
 
 /**
- * Sets the IEDriverServer's logging level.
+ * Sets the IEDriverServer's logging {@linkplain Level level}.
  * @param {Level} level The logging level.
  * @return {!Options} A self reference.
  */
