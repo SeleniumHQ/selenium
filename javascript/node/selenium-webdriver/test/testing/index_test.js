@@ -112,52 +112,48 @@ describe('Mocha async "done" support', function() {
    var waited = false;
    var DELAY = 100; // ms enough to notice
 
+   // Each test asynchronously sets waited to true, so clear/check waited
+   // before/after:
+   beforeEach(function() {
+      waited = false;
+   });
+
+   afterEach(function() {
+      assert.strictEqual(waited, true);
+   });
+
    // --- First, vanilla mocha "it" should support the "done" callback correctly.
 
-   // This it blocks until 'done' is invoked
-   it('vanilla delayed', function it_vanillaDelayed(done) {
-      setTimeout(function delayed_vanillaTimeout() {
+   // This 'it' should block until 'done' is invoked
+   it('vanilla delayed', function(done) {
+      setTimeout(function delayedVanillaTimeout() {
          waited = true;
          done();
       }, DELAY);
-   });
-
-   it('vanilla must have waited', function it_vanillaMustHaveWaited() {
-      assert.strictEqual(waited, true);
-      waited = false;
    });
 
    // --- Now with the webdriver wrappers for 'it' should support the "done" callback:
 
-   test.it('delayed', function it_delayed(done) {
+   test.it('delayed', function(done) {
       assert(done);
       assert.strictEqual(typeof done, 'function');
       //console.log(done.name);
       //console.log(done.toString());
-      setTimeout(function delayed_timeoutCallback() {
+      setTimeout(function delayedTimeoutCallback() {
          waited = true;
          done();
       }, DELAY);
    });
 
-   test.it('must have waited', function it_mustHaveWaited() {
-      assert.strictEqual(waited, true);
-      waited = false;
-   });
-
    // --- And test that the webdriver wrapper for 'it' works with a returned promise, too:
 
-   test.it('delayed by promise', function it_delayedByAPromise() {
+   test.it('delayed by promise', function() {
       var defer = promise.defer();
-      setTimeout(function delayed_promiseCallback() {
+      setTimeout(function delayedPromiseCallback() {
          waited = true;
          defer.fulfill('ignored');
       });
       return defer.promise;
    });
 
-   test.it('must have waited (again)', function it_mustHaveWaitedAgain() {
-      assert.strictEqual(waited, true);
-      waited = false;
-   });
 });

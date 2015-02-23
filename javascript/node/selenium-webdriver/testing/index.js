@@ -140,8 +140,7 @@ function makeAsyncTestFn(fn) {
             testFnDone.fulfill();
           }
         });
-      }
-      else {
+      } else {
         // Without a callback, testFn can return a promise or will assumed to have
         // completed immediately
         promise.asap(testFn(), testFnDone.fulfill, testFnDone.reject);
