@@ -25,6 +25,7 @@ import shutil
 import socket
 import sys
 from .firefox_binary import FirefoxBinary
+from .service import Service
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -36,8 +37,8 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
-    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
-                 capabilities=None, proxy=None):
+    def __init__(self, firefox_profile=None, firefox_binary='/Users/dburns/development/mozilla/mozilla-inbound/obj-ff-dbg/dist/Nightly.app/Contents/MacOS/firefox', timeout=30,
+                 capabilities=None, proxy=None, executable_path='wires'):
 
         self.binary = firefox_binary
         self.profile = firefox_profile
@@ -57,9 +58,11 @@ class WebDriver(RemoteWebDriver):
         if proxy is not None:
             proxy.add_to_capabilities(capabilities)
 
+        self.service = Service(executable_path, firefox_binary=self.binary)
+        self.service.start()
+
         RemoteWebDriver.__init__(self,
-            command_executor=ExtensionConnection("127.0.0.1", self.profile,
-            self.binary, timeout),
+            command_executor=self.service.service_url,
             desired_capabilities=capabilities,
             keep_alive=True)
         self._is_remote = False
@@ -72,13 +75,13 @@ class WebDriver(RemoteWebDriver):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
-        self.binary.kill()
-        try:
+        self.service.stop()
+        '''try:
             shutil.rmtree(self.profile.path)
             if self.profile.tempfolder is not None:
                 shutil.rmtree(self.profile.tempfolder)
         except Exception as e:
-            print(str(e))
+            print(str(e))'''
 
     @property
     def firefox_profile(self):
