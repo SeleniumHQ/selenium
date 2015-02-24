@@ -313,11 +313,11 @@ safaridriver.extension.Server.prototype.execute = function(
   var fn = goog.bind(this.executeCommand_, this, command, handler);
   var flow = webdriver.promise.controlFlow();
   var result = flow.execute(fn, description).
-      then(bot.response.createResponse, bot.response.createErrorResponse).
-      thenFinally(goog.bind(function(response) {
-        this.session_.setCurrentCommand(null);
-        return response;
-      }, this));
+      then(bot.response.createResponse, bot.response.createErrorResponse);
+
+  result.thenFinally(goog.bind(function() {
+    this.session_.setCurrentCommand(null);
+  }, this));
 
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.

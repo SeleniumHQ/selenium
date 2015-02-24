@@ -48,7 +48,7 @@ safaridriver.extension.commands.LOG_ = goog.log.getLogger(
  * provided capabilities (e.g. logging).
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!safaridriver.Command} command The command object.
- * @return {!Object.<*>} The session capabilities.
+ * @return {!Object<string, ?>} The JSON-serializable session capabilities.
  */
 safaridriver.extension.commands.newSession = function(session, command) {
   var caps = command.getParameter('desiredCapabilities');
@@ -61,7 +61,7 @@ safaridriver.extension.commands.newSession = function(session, command) {
     }
     safaridriver.extension.LogDb.getInstance().setPreferences(loggingPrefs);
   }
-  return session.getCapabilities();
+  return session.getCapabilities().serialize();
 };
 
 

@@ -37,6 +37,10 @@ safaridriver.client.init = function() {
 
   goog.log.info(log, 'Connecting to SafariDriver browser extension...');
   goog.log.info(log,
+      'This will fail if you have not installed the latest SafariDriver ' +
+      'extension from\n' +
+      'http://selenium-release.storage.googleapis.com/index.html');
+  goog.log.info(log,
       'Extension logs may be viewed by clicking the Selenium [\u2713] ' +
       'button on the Safari toolbar');
   var numAttempts = 0;
