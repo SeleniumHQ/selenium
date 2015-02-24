@@ -175,6 +175,32 @@ describe('io', function() {
     });
   });
 
+  describe('unlink', function() {
+    var dir;
+
+    before(function() {
+      return io.tmpDir().then(function(d) {
+        dir = d;
+      });
+    });
+
+    it('silently succeeds if the path does not exist', function() {
+      return io.unlink(path.join(dir, 'not-there'));
+    });
+
+    it('deletes files', function() {
+      var file = path.join(dir, 'foo');
+      fs.writeFileSync(file, '');
+      return io.exists(file).then(assert.ok).then(function() {
+        return io.unlink(file);
+      }).then(function() {
+        return io.exists(file);
+      }).then(function(exists) {
+        return assert.ok(!exists);
+      });
+    });
+  });
+
   describe('rmDir', function() {
     it('succeeds if the designated directory does not exist', function() {
       return io.tmpDir().then(function(d) {

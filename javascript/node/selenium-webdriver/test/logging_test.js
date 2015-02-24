@@ -27,7 +27,8 @@ test.suite(function(env) {
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
   // Logging API is not supported in IE.
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.IE)).
+  // Tests depend on opening data URLs, which is broken in Safari (issue 7586)
+  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI)).
   describe('logging', function() {
     var driver;
 

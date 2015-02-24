@@ -147,6 +147,27 @@ exports.exists = function(path) {
 
 
 /**
+ * Deletes a name from the filesystem and possibly the file it refers to. Has
+ * no effect if the file does not exist.
+ * @param {string} path The path to remove.
+ * @return {!promise.Promise} A promise for when the file has been removed.
+ */
+exports.unlink = function(path) {
+  return new promise.Promise(function(fulfill, reject) {
+    fs.exists(path, function(exists) {
+      if (exists) {
+        fs.unlink(path, function(err) {
+          err && reject(err) || fulfill();
+        });
+      } else {
+        fulfill();
+      }
+    });
+  });
+};
+
+
+/**
  * @return {!promise.Promise.<string>} A promise for the path to a temporary
  *     directory.
  * @see https://www.npmjs.org/package/tmp
@@ -157,12 +178,17 @@ exports.tmpDir = function() {
 
 
 /**
+ * @param {{postfix: string}=} opt_options Temporary file options.
  * @return {!promise.Promise.<string>} A promise for the path to a temporary
  *     file.
  * @see https://www.npmjs.org/package/tmp
  */
-exports.tmpFile = function() {
-  return promise.checkedNodeCall(tmp.file);
+exports.tmpFile = function(opt_options) {
+  // |tmp.file| checks arguments length to detect options rather than doing a
+  // truthy check, so we must only pass options if there are some to pass.
+  return opt_options ?
+      promise.checkedNodeCall(tmp.file, opt_options) :
+      promise.checkedNodeCall(tmp.file);
 };
 
 

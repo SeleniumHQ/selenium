@@ -104,6 +104,12 @@ var Builder = function() {
   /** @private {opera.Options} */
   this.operaOptions_ = null;
 
+  /** @private {ie.Options} */
+  this.ieOptions_ = null;
+
+  /** @private {safari.Options} */
+  this.safariOptions_ = null;
+
   /** @private {boolean} */
   this.ignoreEnv_ = false;
 };
@@ -258,10 +264,10 @@ Builder.prototype.setAlertBehavior = function(behavior) {
 
 
 /**
- * Sets Chrome-specific options for drivers created by this builder. Any
- * logging or proxy settings defined on the given options will take precedence
- * over those set through {@link #setLoggingPrefs} and {@link #setProxy},
- * respectively.
+ * Sets Chrome specific {@linkplain selenium-webdriver/chrome.Options options}
+ * for drivers created by this builder. Any logging or proxy settings defined
+ * on the given options will take precedence over those set through
+ * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
  *
  * @param {!chrome.Options} options The ChromeDriver options to use.
  * @return {!Builder} A self reference.
@@ -273,10 +279,10 @@ Builder.prototype.setChromeOptions = function(options) {
 
 
 /**
- * Sets Firefox-specific options for drivers created by this builder. Any
- * logging or proxy settings defined on the given options will take precedence
- * over those set through {@link #setLoggingPrefs} and {@link #setProxy},
- * respectively.
+ * Sets Firefox specific {@linkplain selenium-webdriver/firefox.Options options}
+ * for drivers created by this builder. Any logging or proxy settings defined
+ * on the given options will take precedence over those set through
+ * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
  *
  * @param {!firefox.Options} options The FirefoxDriver options to use.
  * @return {!Builder} A self reference.
@@ -288,16 +294,46 @@ Builder.prototype.setFirefoxOptions = function(options) {
 
 
 /**
- * Sets Opera-specific options for drivers created by this builder. Any
- * logging or proxy settings defined on the given options will take precedence
- * over those set through {@link #setLoggingPrefs} and {@link #setProxy},
- * respectively.
+ * Sets Opera specific {@linkplain selenium-webdriver/opera.Options options} for
+ * drivers created by this builder. Any logging or proxy settings defined on the
+ * given options will take precedence over those set through
+ * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
  *
  * @param {!opera.Options} options The OperaDriver options to use.
  * @return {!Builder} A self reference.
  */
 Builder.prototype.setOperaOptions = function(options) {
   this.operaOptions_ = options;
+  return this;
+};
+
+
+/**
+ * Sets Internet Explorer specific
+ * {@linkplain selenium-webdriver/ie.Options options} for drivers created by
+ * this builder. Any proxy settings defined on the given options will take
+ * precedence over those set through {@link #setProxy}.
+ *
+ * @param {!ie.Options} options The IEDriver options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setIeOptions = function(options) {
+  this.ieOptions_ = options;
+  return this;
+};
+
+
+/**
+ * Sets Safari specific {@linkplain selenium-webdriver/safari.Options options}
+ * for drivers created by this builder. Any logging settings defined on the
+ * given options will take precedence over those set through
+ * {@link #setLoggingPrefs}.
+ *
+ * @param {!safari.Options} options The Safari options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setSafariOptions = function(options) {
+  this.safariOptions_ = options;
   return this;
 };
 
@@ -355,9 +391,14 @@ Builder.prototype.build = function() {
   } else if (browser === Browser.FIREFOX && this.firefoxOptions_) {
     capabilities.merge(this.firefoxOptions_.toCapabilities());
 
+  } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
+    capabilities.merge(this.ieOptions_.toCapabilities());
+
   } else if (browser === Browser.OPERA && this.operaOptions_) {
     capabilities.merge(this.operaOptions_.toCapabilities());
 
+  } else if (browser === Browser.SAFARI && this.safariOptions_) {
+    capabilities.merge(this.safariOptions_.toCapabilities());
   }
 
   // Check for a remote browser.
@@ -406,6 +447,12 @@ Builder.prototype.build = function() {
       // index -> builder -> phantomjs -> index
       var phantomjs = require('./phantomjs');
       return new phantomjs.Driver(capabilities, this.flow_);
+
+    case Browser.SAFARI:
+      // Requiring 'safari' would create a cycle:
+      // index -> builder -> safari -> index
+      var safari = require('./safari');
+      return new safari.Driver(capabilities, this.flow_);
 
     default:
       throw new Error('Do not know how to build driver: ' + browser

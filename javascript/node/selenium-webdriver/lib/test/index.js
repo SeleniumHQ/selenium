@@ -35,7 +35,8 @@ var NATIVE_BROWSERS = [
   webdriver.Browser.FIREFOX,
   webdriver.Browser.IE,
   webdriver.Browser.OPERA,
-  webdriver.Browser.PHANTOM_JS
+  webdriver.Browser.PHANTOM_JS,
+  webdriver.Browser.SAFARI
 ];
 
 
@@ -187,12 +188,18 @@ function suite(fn, opt_options) {
     browsers.forEach(function(browser) {
       testing.describe('[' + browser + ']', function() {
 
-        if (_base.isDevMode() && nativeRun &&
-            browser === webdriver.Browser.FIREFOX) {
-          testing.before(function() {
-            return build.of('//javascript/firefox-driver:webdriver')
-                .onlyOnce().go();
-          });
+        if (_base.isDevMode() && nativeRun) {
+          if (browser === webdriver.Browser.FIREFOX) {
+            testing.before(function() {
+              return build.of('//javascript/firefox-driver:webdriver')
+                  .onlyOnce().go();
+            });
+          } else if (browser === webdriver.Browser.SAFARI) {
+            testing.before(function() {
+              return build.of('//javascript/safari-driver:client')
+                  .onlyOnce().go();
+            });
+          }
         }
 
         var serverToUse = null;

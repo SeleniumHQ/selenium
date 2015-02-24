@@ -44,7 +44,9 @@ test.suite(function(env) {
   });
 
   test.after(function() {
-    driver.quit();
+    if (driver) {
+      driver.quit();
+    }
   });
 
   test.ignore(env.browsers(
