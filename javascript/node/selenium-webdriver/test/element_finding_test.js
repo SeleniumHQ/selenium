@@ -150,8 +150,7 @@ test.suite(function(env) {
                 });
           });
 
-      test.ignore(browsers(Browser.OPERA)).
-      it('works on XHTML pages', function() {
+      test.it('works on XHTML pages', function() {
         driver.get(test.whereIs('actualXhtmlPage.xhtml'));
 
         var el = driver.findElement(By.linkText('Foo'));

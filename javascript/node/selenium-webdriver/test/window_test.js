@@ -103,7 +103,8 @@ test.suite(function(env) {
         return position.x === x &&
             // On OSX, the window height may be bumped down 22px for the top
             // status bar.
-           (position.y >= y && position.y <= (y + 22));
+            // On Linux, Opera's window position will be off by 28px.
+           (position.y >= y && position.y <= (y + 28));
       });
     };
   }

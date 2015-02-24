@@ -101,6 +101,9 @@ var Builder = function() {
   /** @private {firefox.Options} */
   this.firefoxOptions_ = null;
 
+  /** @private {opera.Options} */
+  this.operaOptions_ = null;
+
   /** @private {boolean} */
   this.ignoreEnv_ = false;
 };
@@ -285,6 +288,21 @@ Builder.prototype.setFirefoxOptions = function(options) {
 
 
 /**
+ * Sets Opera-specific options for drivers created by this builder. Any
+ * logging or proxy settings defined on the given options will take precedence
+ * over those set through {@link #setLoggingPrefs} and {@link #setProxy},
+ * respectively.
+ *
+ * @param {!opera.Options} options The OperaDriver options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setOperaOptions = function(options) {
+  this.operaOptions_ = options;
+  return this;
+};
+
+
+/**
  * Sets the control flow that created drivers should execute actions in. If
  * the flow is never set, or is set to {@code null}, it will use the active
  * flow at the time {@link #build()} is called.
@@ -333,10 +351,13 @@ Builder.prototype.build = function() {
   // Apply browser specific overrides.
   if (browser === Browser.CHROME && this.chromeOptions_) {
     capabilities.merge(this.chromeOptions_.toCapabilities());
-  }
 
-  if (browser === Browser.FIREFOX && this.firefoxOptions_) {
+  } else if (browser === Browser.FIREFOX && this.firefoxOptions_) {
     capabilities.merge(this.firefoxOptions_.toCapabilities());
+
+  } else if (browser === Browser.OPERA && this.operaOptions_) {
+    capabilities.merge(this.operaOptions_.toCapabilities());
+
   }
 
   // Check for a remote browser.
@@ -373,6 +394,12 @@ Builder.prototype.build = function() {
       // index -> builder -> ie -> index
       var ie = require('./ie');
       return new ie.Driver(capabilities, this.flow_);
+
+    case Browser.OPERA:
+      // Requiring 'opera' would create a cycle:
+      // index -> builder -> opera -> index
+      var opera = require('./opera');
+      return new opera.Driver(capabilities, this.flow_);
 
     case Browser.PHANTOM_JS:
       // Requiring 'phantomjs' would create a cycle:

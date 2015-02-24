@@ -63,7 +63,7 @@ test.suite(function(env) {
       assertHasCookies(cookie1, cookie2);
     });
 
-    test.ignore(env.browsers(Browser.IE, Browser.OPERA)).
+    test.ignore(env.browsers(Browser.IE)).
     it('only returns cookies visible to the current page', function() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
@@ -148,8 +148,7 @@ test.suite(function(env) {
       assertHasCookies();
     });
 
-    test.ignore(env.browsers(
-        Browser.ANDROID, Browser.FIREFOX, Browser.IE, Browser.OPERA)).
+    test.ignore(env.browsers(Browser.ANDROID, Browser.FIREFOX, Browser.IE)).
     it('should retain cookie expiry', function() {
       var cookie = createCookieSpec();
       var expirationDelay = 5 * 1000;

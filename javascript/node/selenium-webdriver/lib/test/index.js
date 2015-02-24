@@ -34,6 +34,7 @@ var NATIVE_BROWSERS = [
   webdriver.Browser.CHROME,
   webdriver.Browser.FIREFOX,
   webdriver.Browser.IE,
+  webdriver.Browser.OPERA,
   webdriver.Browser.PHANTOM_JS
 ];
 
