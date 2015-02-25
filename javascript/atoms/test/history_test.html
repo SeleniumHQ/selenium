@@ -26,29 +26,12 @@
   var popup = null;
   var resolver = null;
 
-  // We have been unable to make the async tests non-flaky on IE9 / Win7.
-  // TODO: Re-enable for IE9 if stability improves.
-  var SKIP_ASYNC = goog.userAgent.IE && goog.userAgent.isVersionOrHigher(9) &&
-      !goog.userAgent.isVersionOrHigher(10) &&
-      goog.userAgent.platform.isVersion(6.1);
-
   var initFrame = new goog.Promise(function(ready) {
-    if (SKIP_ASYNC) {
-      ready();
-      return;
-    }
-
     // On Android WebView, window.open will cause a dialog prompt and prevent
-    // the page from loading. On Opera, the driver incorrectly executes script
-    // on the popup window instead of the original (b/7684695). The IE10 VM image
-    // is too slow to test using popups without substantial flakiness. For these
+    // the page from loading. For these
     // browsers, we test history in an iframe instead of a popup, which limits
     // the history properties we can reliably check.
-    // TODO: Use popups on Opera once b/7684695 is fixed.
-    // TODO: Enable for IE 10 if image speed is improved.
-    if (goog.userAgent.product.ANDROID ||
-        goog.userAgent.OPERA ||
-        bot.userAgent.IE_DOC_10) {
+    if (goog.userAgent.product.ANDROID) {
       // A bug in prior versions of WebKit (persisting into Safari 5) causes the
       // initial page of an iframe to not enter the browser history, so we
       // initialize the iframe to a dummy page and the test cases here do not
@@ -135,24 +118,20 @@
   function testErrorThrowWhenNumPagesNotLessThanHistoryLength() {
     // If not testing with popups, cannot check this property reliably,
     // because we cannot guarantee the history stack starts fresh.
-    if (SKIP_ASYNC || !popup) {
+    if (!popup) {
       return;
     }
     return load('testdata/history_page1.html').then(function() {
       return load('testdata/history_page2.html');
     }).then(function() {
       assertThrows(goog.partial(bot.window.back, 3));
-      if (!goog.userAgent.OPERA &&
-          (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'))) {
+      if (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533')) {
         assertThrows(goog.partial(bot.window.forward, 3));
       }
     });
   }
 
   function testBackForwardOnePage() {
-    if (SKIP_ASYNC) {
-      return;
-    }
     return load('testdata/history_page1.html').
         then(goog.partial(load, 'testdata/history_page2.html')).
         then(goog.partial(back, 1)).
@@ -162,9 +141,6 @@
   }
 
   function testBackForwardMultiplePages() {
-    if (SKIP_ASYNC) {
-      return;
-    }
     return load('testdata/history_page1.html').
         then(goog.partial(load, 'testdata/history_page2.html')).
         then(goog.partial(load, 'testdata/history_page3.html')).
