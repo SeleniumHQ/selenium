@@ -53,7 +53,8 @@ WebDriverServer = function() {
 
   this.server_.registerGlobHandler('.*/hub/.*', { handle: function(request, response) {
     response.processAsync();
-    dispatcher_.dispatch(new Request(request), new Response(response));
+    dispatcher_.dispatch(
+        new fxdriver.Request(request), new fxdriver.Response(response));
   }});
 };
 

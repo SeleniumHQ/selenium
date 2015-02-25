@@ -18,12 +18,16 @@
 goog.provide('Dispatcher');
 goog.provide('Resource');
 
-goog.require('Request');
-goog.require('Response');
+goog.require('fxdriver.Request');
+goog.require('fxdriver.Response');
 goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.error');
 goog.require('goog.log');
+
+goog.scope(function() {
+var Request = fxdriver.Request;
+var Response = fxdriver.Response;
 
 
 /**
@@ -533,3 +537,4 @@ Resource.prototype.getAllowedMethods_ = function() {
 
   return allowed.join(',');
 };
+});  // goog.scope

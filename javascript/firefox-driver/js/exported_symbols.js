@@ -4,9 +4,7 @@ goog.require('Dispatcher');
 
 var EXPORTED_SYMBOLS = [
   'Dispatcher',
-  'Response',
   'Resource',
-  'Request',
   'Utils',
   'WebDriverError',
   'WebLoadingListener',

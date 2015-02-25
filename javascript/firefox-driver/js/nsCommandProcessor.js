@@ -23,6 +23,8 @@
  *     unpriviledged code.
  */
 
+goog.provide('fxdriver.CommandResponse');
+
 goog.require('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebElement');
@@ -47,7 +49,7 @@ goog.require('wdSessionStoreService');
  *     to.
  * @constructor
  */
-var Response = function(command, responseHandler) {
+fxdriver.CommandResponse = function(command, responseHandler) {
   this.statusBarLabel_ = null;
   this.responseHandler_ = responseHandler;
   this.json_ = {
@@ -63,7 +65,7 @@ var Response = function(command, responseHandler) {
   this.session = null;
 };
 
-Response.prototype = {
+fxdriver.CommandResponse.prototype = {
 
   /**
    * Updates the extension status label to indicate we are about to execute a
@@ -127,8 +129,8 @@ Response.prototype = {
  * @param {FirefoxDriver} driver The FirefoxDriver instance to execute the
  *     command with.
  * @param {Object} command JSON object describing the command to execute.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  * @param {Number} opt_sleepDelay The amount of time to wait before attempting
  *     the command again if the window is not ready.
  * @constructor
@@ -408,7 +410,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  response = new Response(command, responseHandler);
+  response = new fxdriver.CommandResponse(command, responseHandler);
 
   // These commands do not require a session.
   if (command.name == 'newSession' ||
@@ -529,8 +531,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
 /**
  * Changes the context of the caller to the specified window.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  * @param {{name: string}} parameters The command parameters.
  * @param {number} opt_searchAttempt Which attempt this is at finding the
  *     window to switch to.
@@ -590,8 +592,8 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
 
 /**
  * Retrieves a list of all known FirefoxDriver windows.
- * @param {Response} response The response object to send the command response
- *     in.
+ * @param {fxdriver.CommandResponse} response The response object to send the
+ *     command response in.
  */
 nsCommandProcessor.prototype.getWindowHandles = function(response) {
   var res = [];
@@ -610,7 +612,8 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
 /**
  * Retrieves the log for the given type.
  *
- * @param {!Response} response The response object to send the response in.
+ * @param {!fxdriver.CommandResponse} response The response object to send the
+ *     response in.
  * @param {!Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getLog = function(response, parameters) {
@@ -629,7 +632,8 @@ nsCommandProcessor.prototype.getLog = function(response, parameters) {
 /**
  * Retrieves available log types.
  *
- * @param {!Response} response The response object to send the response in.
+ * @param {!fxdriver.CommandResponse} response The response object to send the
+ *     response in.
  * @param {Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getAvailableLogTypes = function(response, 
@@ -664,7 +668,8 @@ nsCommandProcessor.prototype.searchWindows_ = function(search_criteria,
 
 /**
  * Responds with general status information about this process.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.getStatus = function(response) {
   var xulRuntime = Components.classes['@mozilla.org/xre/app-info;1'].
@@ -697,7 +702,8 @@ nsCommandProcessor.prototype.getStatus = function(response) {
 
 /**
  * Locates the most recently used FirefoxDriver window.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.newSession = function(response, parameters) {
   var win = this.wm.getMostRecentWindow('navigator:browser');
@@ -735,7 +741,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
 /**
  * Describes a session.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
@@ -775,7 +782,8 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
 
 /**
  * Forcefully shuts down the Firefox application.
- * @param {Response} response The object to send the command response in.
+ * @param {fxdriver.CommandResponse} response The object to send the command
+ *     response in.
  */
 nsCommandProcessor.prototype.quit = function(response) {
   // Go ahead and respond to the command request to acknowledge that we are
