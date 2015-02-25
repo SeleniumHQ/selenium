@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -30,6 +31,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
@@ -232,6 +235,9 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
+    assumeFalse(
+        "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",
+        isChrome(driver) && getEffectivePlatform(driver).is(ANDROID));
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
   }

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
@@ -33,6 +35,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +61,10 @@ public class UploadTest extends JUnit4TestBase {
           reason = "Opera/Opera Mobile: File input elements are not supported yet")
   @Test
   public void testFileUploading() throws Exception {
+    assumeFalse(
+        "This test as written assumes a file on local disk is accessible to the browser. "
+        + "That is not true for browsers on mobile platforms.",
+        TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).submit();

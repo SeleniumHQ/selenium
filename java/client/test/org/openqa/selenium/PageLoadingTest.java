@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -46,6 +47,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isLocal;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
@@ -256,6 +259,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
+    assumeFalse(
+        "chromedriver does not disable popup blocker on Android: "
+        + "https://code.google.com/p/chromedriver/issues/detail?id=1021",
+        isChrome(driver) && getEffectivePlatform(driver).is(ANDROID));
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
         "window.open('" + pages.formPage + "', 'newWindow')");
