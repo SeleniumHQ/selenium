@@ -81,6 +81,7 @@ namespace OpenQA.Selenium.Safari
         /// <summary>
         /// Gets or sets the path to the SafariDriver.safariextz file from which the extension will be installed.
         /// </summary>
+        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
         public string CustomExtensionPath
         {
             get { return this.customExtensionPath; }
@@ -94,6 +95,7 @@ namespace OpenQA.Selenium.Safari
         /// Set this property to <see langword="true"/> if the SafariDriver extension is already installed 
         /// in Safari, and you don't want to overwrite it with the version included with WebDriver.
         /// </remarks>
+        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
         public bool SkipExtensionInstallation
         {
             get { return this.skipExtensionInstallation; }

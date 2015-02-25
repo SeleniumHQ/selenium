@@ -45,7 +45,6 @@ namespace OpenQA.Selenium.Safari
         private string safariExecutableLocation;
         private Process safariProcess;
         private SafariDriverConnection connection;
-        private SafariDriverExtension extension;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverServer"/> class using the specified options.
@@ -72,8 +71,6 @@ namespace OpenQA.Selenium.Safari
             {
                 this.safariExecutableLocation = options.SafariLocation;
             }
-
-            this.extension = new SafariDriverExtension(options.CustomExtensionPath, options.SkipExtensionInstallation);
         }
         
         /// <summary>
@@ -82,7 +79,6 @@ namespace OpenQA.Selenium.Safari
         public void Start()
         {
             this.webSocketServer.Start();
-            this.extension.Install();
             string connectFileName = this.PrepareConnectFile();
             this.LaunchSafariProcess(connectFileName);
             this.connection = this.WaitForConnection(TimeSpan.FromSeconds(45));
@@ -148,7 +144,6 @@ namespace OpenQA.Selenium.Safari
                 if (this.safariProcess != null)
                 {
                     this.CloseSafariProcess();
-                    this.extension.Uninstall();
                     this.safariProcess.Dispose();
                 }
             }

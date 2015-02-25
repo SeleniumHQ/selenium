@@ -117,7 +117,6 @@
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
-    <Compile Include="Safari\SafariDriverExtension.cs" />
     <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
@@ -344,13 +343,6 @@ if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
 echo Copying Firefox preferences file from $(SolutionDir)javascript\firefox-driver\webdriver.json
 copy /y $(SolutionDir)javascript\firefox-driver\webdriver.json $(TargetDir) &gt; NUL
 
-if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz (
-  echo Copying Safari extension from $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz
-  copy /y $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz $(TargetDir) &gt; NUL
-) else (
-  echo Copying Safari extension from prebuilt location $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz
-  copy /y $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz $(TargetDir) &gt; NUL
-)
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

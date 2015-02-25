@@ -15,8 +15,7 @@ dotnet_library(name = "webdriver",
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//javascript/firefox-driver:webdriver_prefs" : "WebDriver.FirefoxPreferences"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
-	{"//javascript/safari-driver/prebuilt:SafariDriver" : "WebDriver.SafariExtension"}
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
   framework_ver = "net40",
   out = "WebDriver.dll"
@@ -39,8 +38,7 @@ dotnet_library(name = "webdriver35",
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//javascript/firefox-driver:webdriver_prefs" : "WebDriver.FirefoxPreferences"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
-	{"//javascript/safari-driver/prebuilt:SafariDriver" : "WebDriver.SafariExtension"}
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
   framework_ver = "net35",
   out = "WebDriver.dll"
@@ -63,8 +61,7 @@ dotnet_library(name = "strongnamed",
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//javascript/firefox-driver:webdriver_prefs" : "WebDriver.FirefoxPreferences"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
-	{"//javascript/safari-driver/prebuilt:SafariDriver" : "WebDriver.SafariExtension"}
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
   keyfile = "WebDriver.snk",
   framework_ver = "net40",
@@ -88,8 +85,7 @@ dotnet_library(name = "strongnamed35",
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//javascript/firefox-driver:webdriver_prefs" : "WebDriver.FirefoxPreferences"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
-	{"//javascript/safari-driver/prebuilt:SafariDriver" : "WebDriver.SafariExtension"}
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
   keyfile = "WebDriver.snk",
   framework_ver = "net35",
