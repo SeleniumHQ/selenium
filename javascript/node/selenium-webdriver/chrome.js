@@ -477,7 +477,7 @@ Options.prototype.toCapabilities = function(opt_capabilities) {
  * @return {{args: !Array.<string>,
  *           binary: (string|undefined),
  *           detach: boolean,
- *           extensions: !Array.<(string|!webdriver.promise.Promise.<string>))>,
+ *           extensions: !Array.<(string|!webdriver.promise.Promise.<string>)>,
  *           localState: (Object|undefined),
  *           logPath: (string|undefined),
  *           prefs: (Object|undefined)}} The JSON wire protocol representation
