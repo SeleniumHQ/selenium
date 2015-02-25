@@ -52,6 +52,8 @@ var Server = function(requestHandler) {
    *     with the server host when it has fully started.
    */
   this.start = function(opt_port) {
+    assert(typeof opt_port !== 'function',
+           "start invoked with function, not port (mocha callback)?");
     var port = opt_port || portprober.findFreePort('localhost');
     return promise.when(port, function(port) {
       return promise.checkedNodeCall(

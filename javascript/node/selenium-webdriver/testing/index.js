@@ -141,8 +141,8 @@ function makeAsyncTestFn(fn) {
           }
         });
       } else {
-        // Without a callback, testFn can return a promise or will assumed to have
-        // completed immediately
+        // Without a callback, testFn can return a promise, or it will be
+        // assumed to have completed synchronously
         promise.asap(testFn(), testFnDone.fulfill, testFnDone.reject);
       }
       return testFnDone.promise;
