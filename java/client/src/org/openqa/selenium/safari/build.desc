@@ -10,6 +10,7 @@ java_library(name = "safari",
     "//java/client/src/org/openqa/selenium/os",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/guava-libraries",
+    "//third_party/java/gson",
     "//third_party/java/netty",
   ],
   embedded = [

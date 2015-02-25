@@ -61,7 +61,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
   private static final Logger log = Logger.getLogger(SafariDriverCommandExecutor.class.getName());
 
-  private final SafariExtensions safariExtensions;
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
   private final SessionData sessionData;
@@ -74,7 +73,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
    * @param options The {@link SafariOptions} instance
    */
   SafariDriverCommandExecutor(SafariOptions options) {
-    this.safariExtensions = new SafariExtensions(options);
     this.server = new SafariDriverServer(options.getPort());
     this.browserLocator = new SafariLocator();
     this.sessionData = SessionData.forCurrentPlatform();
@@ -94,7 +92,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     server.start();
 
-    safariExtensions.install();
     if (cleanSession) {
       sessionData.clear();
     }
@@ -161,14 +158,6 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     log.info("Stopping server");
     server.stop();
-
-    try {
-      log.info("Uninstalling extensions");
-      safariExtensions.uninstall();
-    } catch (IOException e) {
-      throw new WebDriverException("Unable to uninstall extensions", e);
-    }
-
     log.info("Shutdown complete");
   }
 
