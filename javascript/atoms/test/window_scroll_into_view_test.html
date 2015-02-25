@@ -27,9 +27,7 @@
 
   function tearDownPage() {
     // So we can see the test results
-    window.setTimeout(function() {
-      window.scrollTo(0, 10000);
-    }, 0);
+    window.scrollTo(0, 0);
   }
 
   function testScrollToPositionAlreadyInViewDoesNotChangeScrollPosition() {
@@ -79,7 +77,7 @@
     }
   }
 </script>
-<div style="width:3000px;height:3000px"></div>
+<div style="width:8000px;height:8000px"></div>
 </body>
 </html>
 
