@@ -21,6 +21,7 @@
 
 goog.provide('bot.frame');
 
+goog.require('bot.Error');
 goog.require('bot.locators');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
