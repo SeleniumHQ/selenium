@@ -1,45 +1,11 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is the httpd.js server.
- *
- * The Initial Developer of the Original Code is
- * Mozilla Corporation.
- * Portions created by the Initial Developer are Copyright (C) 2006
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *   Jeff Walden <jwalden+code@mit.edu>          (original author)
- *   Robert Sayre <sayrer@gmail.com>
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "nsIPropertyBag.idl"
+#include "nsISupports.idl"
 
 interface nsIInputStream;
-interface nsILocalFile;
+interface nsIFile;
 interface nsIOutputStream;
 interface nsISimpleEnumerator;
 
@@ -53,7 +19,7 @@ interface nsIHttpServerIdentity;
 /**
  * An interface which represents an HTTP server.
  */
-[scriptable, uuid(71ecfba5-15cf-457f-9642-4b33f6e9baf4)]
+[scriptable, uuid(cea8812e-faa6-4013-9396-f9936cbb74ec)]
 interface nsIHttpServer : nsISupports
 {
   /**
@@ -100,7 +66,7 @@ interface nsIHttpServer : nsISupports
    *   the file to serve for the given path, or null to remove any mapping that
    *   might exist; this file must exist for the lifetime of the server
    */
-  void registerFile(in string path, in nsILocalFile file);
+  void registerFile(in string path, in nsIFile file);
 
   /**
    * Registers a custom path handler.
@@ -120,7 +86,23 @@ interface nsIHttpServer : nsISupports
    */
   void registerPathHandler(in string path, in nsIHttpRequestHandler handler);
 
-  void registerGlobHandler(in string path, in nsIHttpRequestHandler handler);
+  /**
+   * Registers a custom prefix handler.
+   *
+   * @param prefix
+   *   the path on the server (beginning and ending with "/") which is to be
+   *   handled by handler; this path must not include a query string or hash
+   *   component. All requests that start with this prefix will be directed to
+   *   the given handler.
+   * @param handler
+   *   an object which will handle any requests for the given path, or null to
+   *   remove any existing handler; if while the server is running the handler
+   *   throws an exception while responding to a request, an HTTP 500 response
+   *   will be returned
+   * @throws NS_ERROR_INVALID_ARG
+   *   if path does not begin with a "/" or does not end with a "/"
+   */
+  void registerPrefixHandler(in string prefix, in nsIHttpRequestHandler handler);
 
   /**
    * Registers a custom error page handler.
@@ -158,7 +140,7 @@ interface nsIHttpServer : nsISupports
    *   if dir is non-null and does not exist or is not a directory, or if path
    *   does not begin with and end with a forward slash
    */
-  void registerDirectory(in string path, in nsILocalFile dir);
+  void registerDirectory(in string path, in nsIFile dir);
 
   /**
    * Associates files with the given extension with the given Content-Type when
@@ -317,7 +299,7 @@ interface nsIHttpServerIdentity : nsISupports
    * @returns
    *   true if the given name was a name for this server, false otherwise
    */
-  PRBool remove(in string scheme, in string host, in long port);
+  boolean remove(in string scheme, in string host, in long port);
 
   /**
    * Returns true if the given name is in this, false otherwise.
@@ -326,7 +308,7 @@ interface nsIHttpServerIdentity : nsISupports
    *   if scheme or host do not match the scheme or host productions imported
    *   into RFC 2616 from RFC 2396, or if port is not a valid port number
    */
-  PRBool has(in string scheme, in string host, in long port);
+  boolean has(in string scheme, in string host, in long port);
 
   /**
    * Returns the scheme for the name with the given host and port, if one is
@@ -393,8 +375,8 @@ interface nsIHttpRequestHandler : nsISupports
 /**
  * A representation of the data included in an HTTP request.
  */
-[scriptable, uuid(80cbca71-dc51-4fa0-9010-1cec262dbd4a)]
-interface nsIHttpRequest : nsIPropertyBag
+[scriptable, uuid(978cf30e-ad73-42ee-8f22-fe0aaf1bf5d2)]
+interface nsIHttpRequest : nsISupports
 {
   /**
    * The request type for this request (see RFC 2616, section 5.1.1).
