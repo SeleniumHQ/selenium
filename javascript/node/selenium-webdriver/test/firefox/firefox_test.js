@@ -135,7 +135,8 @@ test.suite(function(env) {
         }
       });
 
-      test.it('deletes the temp profile on quit', function() {
+      test.ignore(env.isRemote).
+      it('deletes the temp profile on quit', function() {
         driver = env.builder().build();
 
         var profilePath = driver.call(function() {

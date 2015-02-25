@@ -119,6 +119,10 @@ function TestEnvironment(browserName, server) {
     return browserName;
   };
 
+  this.isRemote = function() {
+    return server || remoteUrl;
+  };
+
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
     return browsers(browserName, browsersToIgnore);
