@@ -380,11 +380,15 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
  *
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
+ * @param {boolean=} opt_force Whether the click should occur even if the
+ *     element is not interactable, such as when an element is hidden by a
+ *     mouseup handler.
  * @param {?number=} opt_pointerId The pointer id associated with the click.
  * @protected
  */
-bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
-  if (!bot.dom.isInteractable(this.element_)) {
+bot.Device.prototype.clickElement = function(coord, button, opt_force,
+                                             opt_pointerId) {
+  if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return;
   }
 
@@ -431,7 +435,8 @@ bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
   }
 
   var performDefault = this.fireMouseEvent(
-      bot.events.EventType.CLICK, coord, button, null, 0, false, opt_pointerId);
+      bot.events.EventType.CLICK, coord, button, null, 0, opt_force,
+      opt_pointerId);
   if (!performDefault) {
     return;
   }

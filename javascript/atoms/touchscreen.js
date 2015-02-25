@@ -227,12 +227,20 @@ bot.Touchscreen.prototype.fireTouchReleaseEvents_ = function() {
       this.focusOnElement();
     }
     this.maybeToggleOption();
+
+    // If a mouseup event is dispatched to an interactable event, and that
+    // mouseup would complete a click, then the click event must be dispatched
+    // even if the element becomes non-interactable after the mouseup.
+    var elementInteractableBeforeMouseup =
+        bot.dom.isInteractable(this.getElement());
     this.fireMouseEvent(bot.events.EventType.MOUSEUP, this.clientXY_, 0);
 
     // Special click logic to follow links and to perform form actions.
     if (!(bot.userAgent.WINDOWS_PHONE &&
         bot.dom.isElement(this.getElement(), goog.dom.TagName.OPTION))) {
-       this.clickElement(this.clientXY_, /* button value */ 0);
+       this.clickElement(this.clientXY_,
+                         /* button */ 0,
+                         /* opt_force */ elementInteractableBeforeMouseup);
     }
   }
 };
@@ -311,6 +319,12 @@ bot.Touchscreen.fireSingleReleasePointer_ = function(ts, element, coords, id,
   // Fire a MSPointerUp and mouseup events.
   ts.fireMSPointerEvent(bot.events.EventType.MSPOINTERUP, coords, 0, id,
       MSPointerEvent.MSPOINTER_TYPE_TOUCH, isPrimary);
+
+  // If a mouseup event is dispatched to an interactable event, and that mouseup
+  // would complete a click, then the click event must be dispatched even if the
+  // element becomes non-interactable after the mouseup.
+  var elementInteractableBeforeMouseup =
+      bot.dom.isInteractable(ts.getElement());
   ts.fireMouseEvent(bot.events.EventType.MOUSEUP, coords, 0, null, 0, false,
       id);
 
@@ -319,7 +333,10 @@ bot.Touchscreen.fireSingleReleasePointer_ = function(ts, element, coords, id,
     ts.maybeToggleOption();
     if (!(bot.userAgent.WINDOWS_PHONE &&
         bot.dom.isElement(element, goog.dom.TagName.OPTION))) {
-      ts.clickElement(ts.clientXY_, 0, id);
+      ts.clickElement(ts.clientXY_,
+                      /* button */ 0,
+                      /* opt_force */ elementInteractableBeforeMouseup,
+                      id);
     }
   }
 

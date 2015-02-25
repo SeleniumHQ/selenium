@@ -283,6 +283,12 @@ bot.Mouse.prototype.releaseButton = function() {
   }
 
   this.maybeToggleOption();
+
+  // If a mouseup event is dispatched to an interactable event, and that mouseup
+  // would complete a click, then the click event must be dispatched even if the
+  // element becomes non-interactable after the mouseup.
+  var elementInteractableBeforeMouseup =
+      bot.dom.isInteractable(this.getElement());
   this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
 
   // TODO: Middle button can also trigger click.
@@ -291,7 +297,8 @@ bot.Mouse.prototype.releaseButton = function() {
     if (!(bot.userAgent.WINDOWS_PHONE &&
         bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION))) {
       this.clickElement(this.clientXY_,
-          this.getButtonValue_(bot.events.EventType.CLICK));
+          this.getButtonValue_(bot.events.EventType.CLICK),
+          /* opt_force */ elementInteractableBeforeMouseup);
     }
     this.maybeDoubleClickElement_();
     if (bot.userAgent.IE_DOC_10 &&
