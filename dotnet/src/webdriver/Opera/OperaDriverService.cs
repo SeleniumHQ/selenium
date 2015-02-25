@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Opera
     /// </summary>
     public sealed class OperaDriverService : DriverService
     {
-        private const string OperaDriverServiceFileName = "operadriver-0.1.0-win32.exe";
+        private const string OperaDriverServiceFileName = "operadriver.exe";
         private static readonly Uri OperaDriverDownloadUrl = new Uri("https://github.com/operasoftware/operachromiumdriver/releases");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
