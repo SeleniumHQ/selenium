@@ -76,9 +76,18 @@ test.suite(function(env) {
     ].join(''), 'utf8', 'text/html; charset=UTF-8');
   });
 
-  test.before(proxyServer.start.bind(proxyServer));
-  test.before(helloServer.start.bind(helloServer));
-  test.before(goodbyeServer.start.bind(helloServer));
+  // Cannot pass start directly to mocha's before, as mocha will interpret the optional
+  // port parameter as an async callback parameter.
+  function mkStartFunc(server) {
+    return function() {
+      return server.start();
+    };
+  }
+
+
+  test.before(mkStartFunc(proxyServer));
+  test.before(mkStartFunc(helloServer));
+  test.before(mkStartFunc(goodbyeServer));
 
   test.after(proxyServer.stop.bind(proxyServer));
   test.after(helloServer.stop.bind(helloServer));
