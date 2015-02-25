@@ -443,7 +443,7 @@ public abstract class By {
 
     @Override
     public String toString() {
-      return "By.selector: " + selector;
+      return "By.cssSelector: " + selector;
     }
   }
 }
