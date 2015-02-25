@@ -143,7 +143,7 @@ public class ByTest {
     assertThat(new By.ByLinkText("a").toString(), equalTo("By.linkText: a"));
     assertThat(new By.ByName("a").toString(), equalTo("By.name: a"));
     assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
-    assertThat(new By.ByCssSelector("a").toString(), equalTo("By.selector: a"));
+    assertThat(new By.ByCssSelector("a").toString(), equalTo("By.cssSelector: a"));
     assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
   }
 
