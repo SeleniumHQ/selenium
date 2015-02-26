@@ -1,4 +1,4 @@
-## v2.45.0-dev
+## v2.45.0
 
 ### Important Policy Change
 
@@ -10,10 +10,7 @@ major version release (i.e. 1.0.0).
 
 ### Change Summary
 
-* Added native support for Internet Explorer - the Java Selenium server is no
-    longer required.
-* Added native support for Safari
-* Added native support for Opera 26+
+* Added native browser support for Internet Explorer, Opera 26+, and Safari
 * With the release of [Node 0.12.0](http://blog.nodejs.org/2015/02/06/node-v0-12-0-stable/)
     (finally!), the minimum supported version of Node is now `0.10.x`.
 * The `promise` module is now [Promises/A+](https://promisesaplus.com/)

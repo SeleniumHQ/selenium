@@ -342,8 +342,14 @@ function generateDocs(outputDir, callback) {
   ];
 
   var excludedFiles = [
+    path.join(libDir, 'safari/client.js'),
+    path.join(libDir, 'webdriver/builder.js'),
+    path.join(libDir, 'webdriver/firefoxdomexecutor.js'),
+    path.join(libDir, 'webdriver/http/corsclient.js'),
+    path.join(libDir, 'webdriver/http/xhrclient.js'),
     path.join(libDir, 'webdriver/testing/client.js'),
     path.join(libDir, 'webdriver/testing/jsunit.js'),
+    path.join(libDir, 'webdriver/testing/testcase.js'),
     path.join(libDir, 'webdriver/testing/window.js'),
   ];
 
@@ -375,7 +381,9 @@ function generateDocs(outputDir, callback) {
   var config = {
     'output': path.join(outputDir, 'docs'),
     'closureLibraryDir': path.join(outputDir, 'lib', 'goog'),
-    'license': path.join(outputDir, 'COPYING'),
+    'customPages': [
+      {'name': 'Changes', 'path': path.join(outputDir, 'CHANGES.md')}
+    ],
     'readme': path.join(outputDir, 'README.md'),
     'language': 'ES5',
     'sources': sourceFiles,
@@ -383,7 +391,8 @@ function generateDocs(outputDir, callback) {
     'excludes': [
       path.join(outputDir, 'docs'),
       path.join(outputDir, 'node_modules')
-    ]
+    ],
+    'typeFilters': ['goog']
   };
 
   var configFile = outputDir + '-docs.json';
@@ -391,7 +400,7 @@ function generateDocs(outputDir, callback) {
 
   var command = [
       'java -jar', path.join(
-          __dirname, '../../third_party/java/dossier/dossier-0.4.1.jar'),
+          __dirname, '../../third_party/java/dossier/dossier-0.6.1.jar'),
       '-c', configFile
   ].join(' ');
   child_process.exec(command, callback);
