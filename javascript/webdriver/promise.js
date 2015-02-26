@@ -153,7 +153,7 @@ promise.Thenable = function() {};
 
 /**
  * Cancels the computation of this promise's value, rejecting the promise in the
- * process. This method is a no-op if the promise has alreayd been resolved.
+ * process. This method is a no-op if the promise has already been resolved.
  *
  * @param {(string|promise.CancellationError)=} opt_reason The reason this
  *     promise is being cancelled.
