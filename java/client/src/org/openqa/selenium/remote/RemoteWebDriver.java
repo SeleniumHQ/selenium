@@ -598,6 +598,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
+      if (parameters != null && parameters.containsKey("using") && parameters.containsKey("value")) {
+        ex.addInfo("*** Element info", String.format("{Using=%s, value=%s}", parameters.get("using"), parameters.get("value")));
+      }
       ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
       if (getSessionId() != null) {
         ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
