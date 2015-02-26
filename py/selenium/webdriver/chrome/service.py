@@ -17,7 +17,7 @@
 import os
 import subprocess
 from subprocess import PIPE
-import time
+from time import sleep
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -71,7 +71,7 @@ class Service(object):
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
-            time.sleep(1)
+            sleep(1)
             if count == 30:
                 raise WebDriverException("Can not connect to the '" +
                                          os.path.basename(self.path) + "'")
@@ -103,7 +103,7 @@ class Service(object):
             if count == 30:
                break
             count += 1
-            time.sleep(1)
+            sleep(1)
 
         #Tell the Server to properly die in case
         try:

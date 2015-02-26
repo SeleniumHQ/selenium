@@ -1,8 +1,8 @@
 import calendar
-import time
 import unittest
 import random
 import pytest
+from time import gmtime
 from selenium.test.selenium.webdriver.common import utils
 
 
@@ -11,7 +11,7 @@ class CookieTest(unittest.TestCase):
     def setUp(self):
         self._loadPage("simpleTest")
         # Set the cookie to expire in 30 minutes
-        timestamp = calendar.timegm(time.gmtime()) + (30 * 60)
+        timestamp = calendar.timegm(gmtime()) + (30 * 60)
         self.COOKIE_A = {"name": "foo",
                          "value": "bar",
                          "path": "/",
@@ -30,7 +30,7 @@ class CookieTest(unittest.TestCase):
         if self.driver.name == 'internet explorer':
             pytest.skip("Issue needs investigating")
         cookie = self.COOKIE_A.copy()
-        cookie["expiry"] = calendar.timegm(time.gmtime()) - 1
+        cookie["expiry"] = calendar.timegm(gmtime()) - 1
         self.driver.add_cookie(cookie)
         cookies = self.driver.get_cookies()
         self.assertEquals(0, len(cookies))

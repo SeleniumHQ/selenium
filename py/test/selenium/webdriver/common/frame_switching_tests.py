@@ -17,8 +17,8 @@
 
 
 import pytest
-# import time
 import unittest
+# from time import sleep
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -169,17 +169,17 @@ class FrameSwitchingTest(unittest.TestCase):
     # Disabled till we use the Java WebServer
     #def testThatWeShouldUseTheFirstFrameOnAPage(self):
     #    self._loadPage("frameset")
-    #    time.sleep(1)
+    #    sleep(1)
     #    pageNumber = self.driver.find_element_by_xpath('//span[@id="pageNumber"]')
     #    self.assertEqual(pageNumber.text.strip(), "1")
 
     #Disabled till we use the Java WebServer
     #def testThatWeFocusOnTheReplacementWhenAFrameFollowsALinkToATopTargettedPage(self):
     #    self._loadPage("frameset")
-    #    time.sleep(1)
+    #    sleep(1)
     #    self.driver.switch_to.frame(0)
     #    self.driver.find_element_by_link_text("top").click()
-    #    time.sleep(1)
+    #    sleep(1)
     #    self.assertEqual("XHTML Test Page", self.driver.title)
     #    self.assertEqual("XHTML Test Page", 
     #    self.driver.find_element_by_xpath("/html/head/title").text)
@@ -209,7 +209,7 @@ class FrameSwitchingTest(unittest.TestCase):
     #    submitButton = self.driver.find_element_by_id("greeting")
     #    submitButton.click()
 
-    #    time.sleep(1)
+    #    sleep(1)
     #    hello = self.driver.find_element_by_id('greeting')
     #    self.assertEqual(hello.text, "Success!")
 
@@ -217,11 +217,11 @@ class FrameSwitchingTest(unittest.TestCase):
     #def testShouldBeAbleToClickInAFrame(self):
     #    self._loadPage("frameset")
     #    self.driver.switch_to.frame("third")
-    #    time.sleep(1)
+    #    sleep(1)
     #    submitButton = self.driver.find_element_by_id("greeting")
     #    submitButton.click()
 
-    #    time.sleep(0.5)
+    #    sleep(0.5)
     #    hello = self.driver.find_element_by_id('greeting')
     #    self.assertEqual(hello.text, "Success!")
     #    self.driver.switch_to.default_content()

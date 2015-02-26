@@ -19,7 +19,7 @@ import platform
 from subprocess import Popen, STDOUT
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
-import time
+from time import sleep
 
 
 class FirefoxBinary(object):
@@ -106,7 +106,7 @@ class FirefoxBinary(object):
                       "Dir: %s If you specified a log_file in the "
                       "FirefoxBinary constructor, check it for details.")
             count += 1
-            time.sleep(1)
+            sleep(1)
         return True
 
     def _find_exe_in_registry(self):

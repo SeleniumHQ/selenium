@@ -17,7 +17,6 @@
 
 
 import pytest
-import time
 import unittest
 
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException

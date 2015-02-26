@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import subprocess
-import time
+from time import sleep
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
@@ -50,11 +50,11 @@ class Service(object):
         except:
             raise WebDriverException(
                 "OperaDriver executable needs to be available in the path.")
-        time.sleep(10)
+        sleep(10)
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
-            time.sleep(1)
+            sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to the OperaDriver")
                 

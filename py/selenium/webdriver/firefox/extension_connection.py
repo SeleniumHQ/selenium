@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import logging
-import time
+from time import sleep
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common import utils 
@@ -53,7 +53,7 @@ class ExtensionConnection(RemoteConnection):
         self.execute(Command.QUIT, {'sessionId':sessionId})
         while self.is_connectable():
             LOGGER.info("waiting to quit")
-            time.sleep(1)
+            sleep(1)
 
     def connect(self):
         """Connects to the extension and retrieves the session id."""
