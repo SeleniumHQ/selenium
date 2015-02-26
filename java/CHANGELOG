@@ -1,3 +1,42 @@
+v2.45.0
+=======
+
+Important changes in this release:
+
+* Native events in Firefox relied on an API that Mozilla no longer
+  provides. As such, fall back to synthesized events on recent Firefox
+  versions.
+
+Other changes:
+
+* When Selenium is unable to interact with an element, such as the
+  case when an element is missing or disabled, this change will output
+  exactly how Selenium is attempting to locate the element, such as
+  the XPath or id of the element. This greatly speeds up
+  troubleshooting issues, as the exception message clearly states what
+  element is broken/missing for common problems like an
+  ElementNotFoundException.
+* improve ByCssSelector#toString
+* Remove automatic installation of the SafariDriver in Java.
+* Complete Selenium Java Server support for Blink based Opera
+* Upgrading PhantomJS driver
+* Pull HttpClient implementation details out of HttpCommandExecutor.
+* Fix issue 8254: Extensions were incorrectly transferred between
+  Windows client and Linux grid node, because ZipEntry had incorrect
+  name with '\' as separators.
+* Adding capabilities and browser type for Opera Blink, and
+  configuring tests to run in Opera Blink
+* Adding support for Blink-based Opera to Java binding
+* Adding Yosemite platform
+* Allowing to set an arbitrary platform capability even if it can't be
+  converted to Platform enum. Non-standard platform values can cause
+  matching issues on Grid, but they can be usable for third-party Grid
+  implementations
+* Taking XML namespaces into account when searching by XPath. Checked
+  to work in Firefox. Chrome supports namespaces out of the box. Need
+  to update IE and Safari drivers to use the updated atom and test
+  them carefully.
+
 v2.44.0
 =======
 
