@@ -40,7 +40,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * <p/>
  * To avoid unnecessarily restarting the ChromeDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link ChromeDriverService}, which is managed
- * separately. For example: <code><pre>
+ * separately. For example: <pre>{@code
  * 
  * import static org.junit.Assert.assertEquals;
  * 
@@ -91,7 +91,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *     assertEquals("webdriver - Google Search", driver.getTitle());
  *   }
  * }
- * </pre></code>
+ * }</pre>
  *
  * Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
  * role interfaces such as {@link LocationContext} and {@link WebStorage}.

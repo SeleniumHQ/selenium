@@ -29,22 +29,22 @@ import java.util.concurrent.TimeUnit;
 /**
  * The main interface to use for testing, which represents an idealised web browser. The methods in
  * this class fall into three categories:
- * <p/>
+ * <p>
  * <ul>
  * <li>Control of the browser itself</li>
  * <li>Selection of {@link WebElement}s</li>
  * <li>Debugging aids</li>
  * </ul>
- * <p/>
+ * <p>
  * Key methods are {@link WebDriver#get(String)}, which is used to load a new web page, and the
  * various methods similar to {@link WebDriver#findElement(By)}, which is used to find
  * {@link WebElement}s.
- * <p/>
+ * <p>
  * Currently, you will need to instantiate implementations of this class directly. It is hoped that
  * you write your tests against this interface so that you may "swap in" a more fully featured
  * browser when there is a requirement for one. Given this approach to testing, it is best to start
  * writing your tests using the {@link org.openqa.selenium.htmlunit.HtmlUnitDriver} implementation.
- * <p/>
+ * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
  * should there be an error thrown by the underlying XPath engine.
  * 
@@ -263,12 +263,12 @@ public interface WebDriver extends SearchContext {
     /**
      * Specifies the amount of time the driver should wait when searching for an element if it is
      * not immediately present.
-     * <p/>
+     * <p>
      * When searching for a single element, the driver should poll the page until the element has
      * been found, or this timeout expires before throwing a {@link NoSuchElementException}. When
      * searching for multiple elements, the driver should poll the page until at least one element
      * has been found or this timeout has expired.
-     * <p/>
+     * <p>
      * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
      * effect on test run time, especially when used with slower location strategies like XPath.
      * 

@@ -141,12 +141,10 @@ public class Windows {
   /**
    * Selects the only <code>_blank</code> window. A window open with <code>target='_blank'</code>
    * will have a <code>window.name = null</code>.
-   * <p/>
    * <p>
    * This method assumes that there will only be one single <code>_blank</code> window and selects
    * the first one with no name. Therefore if for any reasons there are multiple windows with
    * <code>window.name = null</code> the first found one will be selected.
-   * <p/>
    * <p>
    * If none of the windows have <code>window.name = null</code> the last selected one will be
    * re-selected and a {@link SeleniumException} will be thrown.

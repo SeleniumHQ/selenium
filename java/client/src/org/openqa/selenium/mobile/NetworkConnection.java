@@ -18,9 +18,7 @@ package org.openqa.selenium.mobile;
 
 
 /**
- * Control a device's network connection
- * <p>
- * Example usage:
+ * Control a device's network connection <p> Example usage:
  *
  * <pre>
  * NetworkConnection mobileDriver = (NetworkConnection) driver;
@@ -47,6 +45,7 @@ public interface NetworkConnection {
    * specific types of data (Edge / 2G, 3G, 4G, LTE, etc) if the device allows it.
    */
   public class ConnectionType {
+
     public static final ConnectionType WIFI = new ConnectionType(2);
     public static final ConnectionType DATA = new ConnectionType(4);
     public static final ConnectionType AIRPLANE_MODE = new ConnectionType(1);
@@ -96,7 +95,7 @@ public interface NetworkConnection {
 
     @Override
     public boolean equals(Object type) {
-      return type instanceof ConnectionType && this.mask == ((ConnectionType)type).mask;
+      return type instanceof ConnectionType && this.mask == ((ConnectionType) type).mask;
     }
 
     @Override
@@ -109,20 +108,18 @@ public interface NetworkConnection {
   /**
    * Query the driver for the Airplane Mode setting state
    *
-   * @return ConnectionType indicating if the device is in Airplane Mode
-   * @see org.openqa.selenium.mobile.NetworkConnection.ConnectionType
+   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} indicating if the
+   * device is in Airplane Mode
    */
   public ConnectionType getNetworkConnection();
 
   /**
-   * Set the Connection type
-   *   Not all connection type combinations are valid for an individual type of device
-   *   and the remote endpoint will make a best effort to set the type as requested
+   * Set the Connection type Not all connection type combinations are valid for an individual type
+   * of device and the remote endpoint will make a best effort to set the type as requested
    *
    * @param type ConnectionType of what the network connection should be
-   *
-   * @return @ConnectionType of what the device's network connection is
-   * @see org.openqa.selenium.mobile.NetworkConnection.ConnectionType
+   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} of what the
+   * device's network connection is
    */
   public ConnectionType setNetworkConnection(ConnectionType type);
 

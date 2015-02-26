@@ -22,14 +22,13 @@ package com.thoughtworks.selenium;
  * A utility class, designed to help the user automatically wait until a condition turns true.
  * 
  * Use it like this:
- * 
- * <p>
- * <code>new Wait("Couldn't find close button!") {<br/> 
- * &nbsp;&nbsp;&nbsp;&nbsp;boolean until() {<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return selenium.isElementPresent("button_Close");<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
- * };</code>
- * </p>
+ *
+ * <pre>{@code 
+ * new Wait("Couldn't find close button!") {
+ *     boolean until() {
+ *         return selenium.isElementPresent("button_Close");
+ *     }
+ * };}</pre>
  * 
  * 
  * @author Dan Fabulich

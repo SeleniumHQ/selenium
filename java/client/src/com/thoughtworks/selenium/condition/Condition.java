@@ -22,10 +22,8 @@ import java.lang.reflect.Method;
 /**
  * Simple predicate class, which also knows how to wait for the condition to be true. Used by
  * Selenium tests.
- * <p/>
  * <p>
  * Conditions have two basic properties:
- * <p/>
  * <ul>
  * <li>a message (purely used for displaying purposes)
  * <li>an implementation of

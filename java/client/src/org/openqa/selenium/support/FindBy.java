@@ -36,17 +36,17 @@ import java.lang.annotation.Target;
  * 
  * For example, these two annotations point to the same element:
  * 
- * <pre class="code">
+ * <pre>{@code
  * &#64;FindBy(id = "foobar") WebElement foobar;
  * &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
- * </pre>
+ * }</pre>
  * 
  * and these two annotations point to the same list of elements:
  * 
- * <pre class="code">
+ * <pre>{@code
  * &#64;FindBy(tagName = "a") List<WebElement> links;
  * &#64;FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
- * </pre>
+ * }</pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})

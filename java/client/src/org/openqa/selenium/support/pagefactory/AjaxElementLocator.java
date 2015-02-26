@@ -105,9 +105,9 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * order to change whether or not you consider the element loaded. For example, perhaps you need
    * the element to be displayed:
    * 
-   * <pre class="code>
+   * <pre>{@code
    *   return element.isDisplayed();
-   * </pre>
+   * }</pre>
    * 
    * @param element The element to use
    * @return Whether or not it meets your criteria for "found"

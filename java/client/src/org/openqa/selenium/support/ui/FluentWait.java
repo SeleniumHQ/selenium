@@ -44,7 +44,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * element on the page.
  *
  * <p>
- * Sample usage: <code><pre>
+ * Sample usage: <pre>{@code
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
  *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
@@ -57,7 +57,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *       return driver.findElement(By.id("foo"));
  *     }
  *   });
- * </pre></code>
+ * }</pre>
  *
  * <p>
  * <em>This class makes no thread safety guarantees.</em>

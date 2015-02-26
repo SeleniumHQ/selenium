@@ -72,7 +72,7 @@ public class SocketLock implements Lock {
   }
 
   /**
-   * @inheritDoc
+   *
    */
   public void lock(long timeoutInMillis) throws WebDriverException {
     synchronized (syncObject) {
@@ -102,7 +102,7 @@ public class SocketLock implements Lock {
   }
 
   /**
-   * @inheritDoc
+   *
    */
   public void unlock() {
     try {

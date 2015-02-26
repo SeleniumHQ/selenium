@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Represents an HTML element. Generally, all interesting operations to do with interacting with a
  * page will be performed through this interface.
- * <p/>
+ * <p>
  * All method calls will do a freshness check to ensure that the element reference is still valid.
  * This essentially determines whether or not the element is still attached to the DOM. If this test
  * fails, then an {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and all
@@ -36,7 +36,7 @@ public interface WebElement extends SearchContext {
    * you know the element and the page will still be present. If click() causes a new page to be 
    * loaded via an event or is done by sending a native event then the method will *not* wait for
    * it to be loaded and the caller should verify that a new page has been loaded.
-   * <p/>
+   * <p>
    * There are some preconditions for an element to be clicked.  The element must be visible and 
    * it must have a height and width greater then 0.
    *

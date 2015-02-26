@@ -33,10 +33,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- * Default decorator for use with PageFactory. Will decorate 1) all of the
- * WebElement fields and 2) List<WebElement> fields that have {@literal @FindBy}, {@literal @FindBys},
- * or {@literal @FindAll} annotation with a proxy that locates the elements using the passed
- * in ElementLocatorFactory.
+ * Default decorator for use with PageFactory. Will decorate 1) all of the WebElement fields and 2)
+ * List&lt;WebElement&gt; fields that have {@literal @FindBy}, {@literal @FindBys}, or
+ * {@literal @FindAll} annotation with a proxy that locates the elements using the passed in
+ * ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
 
@@ -98,7 +98,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     WebElement proxy;
     proxy = (WebElement) Proxy.newProxyInstance(
-        loader, new Class[] {WebElement.class, WrapsElement.class, Locatable.class}, handler);
+        loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
     return proxy;
   }
 
@@ -108,8 +108,8 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     List<WebElement> proxy;
     proxy = (List<WebElement>) Proxy.newProxyInstance(
-        loader, new Class[] {List.class}, handler);
+        loader, new Class[]{List.class}, handler);
     return proxy;
   }
-  
+
 }

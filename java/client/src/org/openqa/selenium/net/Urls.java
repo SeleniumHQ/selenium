@@ -31,8 +31,6 @@ public class Urls {
 
   /**
    * Strips the specified URL so it only includes a protocal, hostname and port
-   * 
-   * @throws java.net.MalformedURLException
    */
   public static String toProtocolHostAndPort(String url) {
     try {

@@ -40,7 +40,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * <p/>
  * To avoid unnecessarily restarting the OperaDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link OperaDriverService}, which is managed
- * separately. For example: <code><pre>
+ * separately. For example: <pre>{@code
  * 
  * import static org.junit.Assert.assertEquals;
  * 
@@ -91,7 +91,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *     assertEquals("webdriver - Google Search", driver.getTitle());
  *   }
  * }
- * </pre></code>
+ * }</pre>
  *
  * Note that unlike OperaDriver, RemoteWebDriver doesn't directly implement
  * role interfaces such as {@link LocationContext} and {@link WebStorage}.

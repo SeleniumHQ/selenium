@@ -22,6 +22,7 @@ org.openqa.selenium.logging
 org.openqa.selenium.logging.profiler
 org.openqa.selenium.mobile
 org.openqa.selenium.net
+org.openqa.selenium.opera
 org.openqa.selenium.os
 org.openqa.selenium.remote
 org.openqa.selenium.remote.html5

@@ -8,7 +8,7 @@ public class CommandInfo {
   private final HttpMethod method;
 
   /**
-   * @deprecated Use {@link org.openqa.selenium.remote.CommandInfo(String, HttpMethod)}.
+   * @deprecated replaced by {@link org.openqa.selenium.remote.CommandInfo(String, HttpMethod)}.
    */
   @Deprecated
   public CommandInfo(String url, HttpVerb verb) {

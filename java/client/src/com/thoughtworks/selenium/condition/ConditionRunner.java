@@ -29,7 +29,7 @@ public interface ConditionRunner {
   /**
    * This method will, every so often, evaluate the given {@code condition}'s
    * {@link Condition#isTrue(ConditionRunner.Context)} method, until:
-   * <p/>
+   * <p>
    * <ul>
    * <li>it becomes true, in which case it simply returns
    * <li>a certain amount of time is passed, in which case it fails by throwing an failure exception
@@ -38,7 +38,7 @@ public interface ConditionRunner {
    * <li>it throws an exception, in which case that is wrapped inside a {@link RuntimeException} and
    * rethrown
    * </ul>
-   * <p/>
+   * <p>
    * How often if "every so often" and how long is the "certain amount of time" is left to the
    * specific implementations of this interface.
    */
@@ -58,7 +58,6 @@ public interface ConditionRunner {
 
     /**
      * Returns the condition runner inside which this condition is being run.
-     * <p/>
      * <p>
      * This allows for a condition to chain to other conditions.
      */

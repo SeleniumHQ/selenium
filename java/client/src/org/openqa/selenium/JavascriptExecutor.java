@@ -91,16 +91,16 @@ public interface JavascriptExecutor {
    *
    * 
    * <p>
-   * Example #1: Performing a sleep in the browser under test. <code><pre>
+   * Example #1: Performing a sleep in the browser under test. <pre>{@code
    *   long start = System.currentTimeMillis();
    *   ((JavascriptExecutor) driver).executeAsyncScript(
    *       "window.setTimeout(arguments[arguments.length - 1], 500);");
    *   System.out.println(
    *       "Elapsed time: " + System.currentTimeMillis() - start);
-   * </pre></code>
+   * }</pre>
    * 
    * <p>
-   * Example #2: Synchronizing a test with an AJAX application: <code><pre>
+   * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
    *   WebElement composeButton = driver.findElement(By.id("compose-button"));
    *   composeButton.click();
    *   ((JavascriptExecutor) driver).executeAsyncScript(
@@ -108,10 +108,10 @@ public interface JavascriptExecutor {
    *       "mailClient.getComposeWindowWidget().onload(callback);");
    *   driver.switchTo().frame("composeWidget");
    *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
-   * </pre></code>
+   * }</pre>
    * 
    * <p>
-   * Example #3: Injecting a XMLHttpRequest and waiting for the result: <code><pre>
+   * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
    *   Object response = ((JavascriptExecutor) driver).executeAsyncScript(
    *       "var callback = arguments[arguments.length - 1];" +
    *       "var xhr = new XMLHttpRequest();" +
@@ -124,7 +124,7 @@ public interface JavascriptExecutor {
    *       "xhr.send();");
    *   JsonObject json = new JsonParser().parse((String) response);
    *   assertEquals("cheese", json.get("food").getAsString());
-   * </pre></code>
+   * }</pre>
    *
    * <p>
    * Script arguments must be a number, a boolean, a String, WebElement, or a List of any

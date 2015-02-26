@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
  * <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
  * <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
  * </ul>
- * <p/>
+ * <p>
  * When the driver starts, it will make a copy of the profile it is using, rather than using that
  * profile directly. This allows multiple instances of firefox to be started.
  */

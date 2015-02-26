@@ -68,7 +68,6 @@ public class FirefoxProfile {
 
   /**
    * Constructs a firefox profile from an existing profile directory.
-   * <p/>
    * <p>
    * Users who need this functionality should consider using a named profile.
    * 
@@ -348,9 +347,9 @@ public class FirefoxProfile {
    * from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
    * to find out if the certificate has expired or does not match the host it was served for, but
    * hard to find out if the issuer of the certificate is untrusted.
-   * <p/>
+   * <p>
    * By default, it is assumed that the certificates were not be issued from a trusted CA.
-   * <p/>
+   * <p>
    * If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
    * issued by valid issuer, but has expired or is being served served for a different host (e.g.
    * production certificate served in a testing environment) set this to false.
