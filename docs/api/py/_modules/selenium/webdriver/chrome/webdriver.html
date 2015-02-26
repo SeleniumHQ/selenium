@@ -96,7 +96,7 @@
         <span class="k">if</span> <span class="n">chrome_options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># desired_capabilities stays as passed in</span>
             <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+                <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_options</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">chrome_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
@@ -128,7 +128,10 @@
             <span class="c"># We don&#39;t care about the message because something probably has gone wrong</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WebDriver.create_options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.create_options">[docs]</a>    <span class="k">def</span> <span class="nf">create_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

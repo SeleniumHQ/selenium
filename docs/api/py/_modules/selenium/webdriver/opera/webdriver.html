@@ -63,8 +63,6 @@
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
 
-<span class="kn">import</span> <span class="nn">base64</span>
-
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">http_client</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -72,14 +70,54 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">ChromiumDriver</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 
-<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OperaDriver"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.OperaDriver">[docs]</a><span class="k">class</span> <span class="nc">OperaDriver</span><span class="p">(</span><span class="n">ChromiumDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Controls the OperaDriver and allows you to drive the browser.</span>
-<span class="sd">    </span>
+<span class="sd">    Controls the new OperaDriver and allows you</span>
+<span class="sd">    to drive the Opera browser based on Chromium.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">opera_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new instance of the operadriver.</span>
+
+<span class="sd">        Starts the service and then creates new instance of operadriver.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - executable_path - path to the executable. If the default is used</span>
+<span class="sd">                             it assumes the executable is in the $PATH</span>
+<span class="sd">         - port - port you would like the service to run, if left as 0,</span>
+<span class="sd">                  a free port will be found.</span>
+<span class="sd">         - desired_capabilities: Dictionary object with non-browser specific</span>
+<span class="sd">           capabilities only, such as &quot;proxy&quot; or &quot;loggingPref&quot;.</span>
+<span class="sd">         - chrome_options: this takes an instance of ChromeOptions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">executable_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">executable_path</span> <span class="k">if</span> <span class="n">executable_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+                           <span class="k">else</span> <span class="s">&quot;operadriver&quot;</span><span class="p">)</span>
+        <span class="n">ChromiumDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
+                                <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+                                <span class="n">chrome_options</span><span class="o">=</span><span class="n">opera_options</span><span class="p">,</span>
+                                <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
+                                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
+                                <span class="n">service_log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OperaDriver.create_options"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.OperaDriver.create_options">[docs]</a>    <span class="k">def</span> <span class="nf">create_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="PrestoDriver"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.PrestoDriver">[docs]</a><span class="k">class</span> <span class="nc">PrestoDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Controls the OperaDriver and allows you to drive the Opera browser</span>
+<span class="sd">    based on Presto.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -90,26 +128,29 @@
 <span class="sd">        Starts the service and then creates new instance of Opera Driver.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - executable_path - path to the executable. If the default is used it assumes the executable is in the</span>
-<span class="sd">           Environment Variable SELENIUM_SERVER_JAR</span>
-<span class="sd">         - port - port you would like the service to run, if left as 0, a free port will be found.</span>
-<span class="sd">         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Opera switches).</span>
+<span class="sd">         - executable_path - path to the executable. If the default is used</span>
+<span class="sd">                             it assumes the executable is in the</span>
+<span class="sd">                             Environment Variable SELENIUM_SERVER_JAR</span>
+<span class="sd">         - port - port you would like the service to run, if left as 0,</span>
+<span class="sd">                  a free port will be found.</span>
+<span class="sd">         - desired_capabilities: Dictionary object with desired capabilities -</span>
+<span class="sd">                                 may be used to provide various Opera switches.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">executable_path</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">executable_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;SELENIUM_SERVER_JAR&quot;</span><span class="p">]</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No executable path given, please add one to Environment Variable </span><span class="se">\</span>
-<span class="s">                &#39;SELENIUM_SERVER_JAR&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No executable path given, please add one </span><span class="se">\</span>
+<span class="s">                      to Environment Variable &#39;SELENIUM_SERVER_JAR&#39;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">command_executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
-            <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">)</span>
+                                 <span class="n">command_executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
+                                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
 
-<div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PrestoDriver.quit"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.PrestoDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Closes the browser and shuts down the OperaDriver executable</span>
 <span class="sd">        that is started when starting the OperaDriver</span>
@@ -119,7 +160,46 @@
         <span class="k">except</span> <span class="n">http_client</span><span class="o">.</span><span class="n">BadStatusLine</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">PrestoDriver</span><span class="p">,</span> <span class="n">OperaDriver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WebDriver.ServiceType"><a class="viewcode-back" href="../../../../webdriver_opera/selenium.webdriver.opera.webdriver.html#selenium.webdriver.opera.webdriver.WebDriver.ServiceType">[docs]</a>    <span class="k">class</span> <span class="nc">ServiceType</span><span class="p">:</span>
+        <span class="n">PRESTO</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CHROMIUM</span> <span class="o">=</span> <span class="mi">2</span>
+</div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">executable_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">opera_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="p">(</span><span class="n">desired_capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;engine&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                  <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">engine</span> <span class="o">==</span> <span class="n">WebDriver</span><span class="o">.</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">CHROMIUM</span> <span class="ow">or</span>
+                <span class="n">opera_options</span> <span class="ow">and</span> <span class="n">opera_options</span><span class="o">.</span><span class="n">android_package_name</span><span class="p">):</span>
+            <span class="n">OperaDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
+                                 <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">opera_options</span><span class="o">=</span><span class="n">opera_options</span><span class="p">,</span>
+                                 <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
+                                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
+                                 <span class="n">service_log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service_log_path</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Warning! service_log_path shouldn&#39;t be used &quot;</span> <span class="o">+</span>
+                      <span class="s">&quot;with Presto based Opera&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">service_args</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Warning! service_args shouldn&#39;t be used with &quot;</span> <span class="o">+</span>
+                      <span class="s">&quot;Presto based Opera&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">opera_options</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;Warning! opera_options shouldn&#39;t be used with &quot;</span> <span class="o">+</span>
+                      <span class="s">&quot;Presto based Opera&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">desired_capabilities</span><span class="p">:</span>
+                <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">OPERA</span>
+            <span class="n">PrestoDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
+                                  <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+                                  <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

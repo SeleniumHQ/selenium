@@ -71,6 +71,7 @@
 <span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="kn">import</span> <span class="n">ErrorHandler</span>
 <span class="kn">from</span> <span class="nn">.switch_to</span> <span class="kn">import</span> <span class="n">SwitchTo</span>
 <span class="kn">from</span> <span class="nn">.mobile</span> <span class="kn">import</span> <span class="n">Mobile</span>
+<span class="kn">from</span> <span class="nn">.file_detector</span> <span class="kn">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
@@ -122,6 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span> <span class="o">=</span> <span class="n">SwitchTo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mobile</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_detector</span> <span class="o">=</span> <span class="n">LocalFileDetector</span><span class="p">()</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.mobile"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.mobile">[docs]</a>    <span class="k">def</span> <span class="nf">mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -820,6 +822,29 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">,</span>
             <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_detector</span>
+
+    <span class="nd">@file_detector.setter</span>
+<div class="viewcode-block" id="WebDriver.file_detector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.file_detector">[docs]</a>    <span class="k">def</span> <span class="nf">file_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the file detector to be used when sending keyboard input.</span>
+<span class="sd">        By default, this is set to a file detector that does nothing.</span>
+
+<span class="sd">        see FileDetector</span>
+<span class="sd">        see LocalFileDetector</span>
+<span class="sd">        see UselessFileDetector</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - detector: The detector to use. Must not be None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">detector</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;You may not set a file detector that is null&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">FileDetector</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Detector has to be instance of FileDetector&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_detector</span> <span class="o">=</span> <span class="n">detector</span><span class="p">;</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -86,6 +86,8 @@
 <span class="sd">                      By default, it will be redirected to /dev/null.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="n">firefox_path</span>
+        <span class="c"># We used to default to subprocess.PIPE instead of /dev/null, but after</span>
+        <span class="c"># a while the pipe would fill up and Firefox would freeze.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="n">log_file</span> <span class="ow">or</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -138,9 +140,6 @@
             <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_firefox_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
     <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Blocks until the extension is connectable in the firefox.&quot;&quot;&quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -148,13 +147,13 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="c"># Browser has exited</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited &quot;</span>
-                      <span class="s">&quot;before we could connect. The output was: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_output</span><span class="p">())</span>
+                      <span class="s">&quot;before we could connect. If you specified a log_file in &quot;</span>
+                      <span class="s">&quot;the FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile &quot;</span>
-                      <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> Firefox output: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_output</span><span class="p">()))</span>
+                      <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> If you specified a log_file in the &quot;</span>
+                      <span class="s">&quot;FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span>

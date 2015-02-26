@@ -112,15 +112,18 @@
               <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
-                <span class="s">&quot;ChromeDriver executable needs to be available in the path. </span><span class="se">\</span>
-<span class="s">                Please download from http://chromedriver.storage.googleapis.com/index.html</span><span class="se">\</span>
-<span class="s">                and read up at http://code.google.com/p/selenium/wiki/ChromeDriver&quot;</span><span class="p">)</span>
+                <span class="s">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;&#39; executable needs to be </span><span class="se">\</span>
+<span class="s">                available in the path. Please look at </span><span class="se">\</span>
+<span class="s">                http://docs.seleniumhq.org/download/#thirdPartyDrivers </span><span class="se">\</span>
+<span class="s">                and read up at </span><span class="se">\</span>
+<span class="s">                http://code.google.com/p/selenium/wiki/ChromeDriver&quot;</span><span class="p">)</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
-                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can not connect to the ChromeDriver&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can not connect to the &#39;&quot;</span> <span class="o">+</span>
+                                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;&#39;&quot;</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Service.service_url"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.service.html#selenium.webdriver.chrome.service.Service.service_url">[docs]</a>    <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

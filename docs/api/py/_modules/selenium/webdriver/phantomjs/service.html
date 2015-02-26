@@ -97,6 +97,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">[:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;--webdriver=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">log_path</span><span class="p">:</span>
             <span class="n">log_path</span> <span class="o">=</span> <span class="s">&quot;ghostdriver.log&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>

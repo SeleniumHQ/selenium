@@ -47,30 +47,107 @@
   <div class="section" id="module-selenium.webdriver.opera.webdriver">
 <span id="selenium-webdriver-opera-webdriver"></span><h1>selenium.webdriver.opera.webdriver<a class="headerlink" href="#module-selenium.webdriver.opera.webdriver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="selenium.webdriver.opera.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.opera.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>executable_path=None</em>, <em>port=0</em>, <em>desired_capabilities={'platform': 'ANY'</em>, <em>'browserName': 'opera'</em>, <em>'version': ''</em>, <em>'javascriptEnabled': True}</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls the OperaDriver and allows you to drive the browser.</p>
-<p>Creates a new instance of the Opera driver.</p>
-<p>Starts the service and then creates new instance of Opera Driver.</p>
+<dt id="selenium.webdriver.opera.webdriver.OperaDriver">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.opera.webdriver.</tt><tt class="descname">OperaDriver</tt><big>(</big><em>executable_path=None</em>, <em>port=0</em>, <em>opera_options=None</em>, <em>service_args=None</em>, <em>desired_capabilities=None</em>, <em>service_log_path=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#OperaDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.OperaDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the new OperaDriver and allows you
+to drive the Opera browser based on Chromium.</p>
+<p>Creates a new instance of the operadriver.</p>
+<p>Starts the service and then creates new instance of operadriver.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>executable_path - path to the executable. If the default is used it assumes the executable is in the
-Environment Variable SELENIUM_SERVER_JAR</li>
-<li>port - port you would like the service to run, if left as 0, a free port will be found.</li>
-<li>desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Opera switches).</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last">
+<li><dl class="first docutils">
+<dt>executable_path - path to the executable. If the default is used</dt>
+<dd><p class="first last">it assumes the executable is in the $PATH</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>port - port you would like the service to run, if left as 0,</dt>
+<dd><p class="first last">a free port will be found.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">desired_capabilities: Dictionary object with non-browser specific
+capabilities only, such as &#8220;proxy&#8221; or &#8220;loggingPref&#8221;.</p>
+</li>
+<li><p class="first">chrome_options: this takes an instance of ChromeOptions</p>
+</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="selenium.webdriver.opera.webdriver.WebDriver.quit">
-<tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dt id="selenium.webdriver.opera.webdriver.OperaDriver.create_options">
+<tt class="descname">create_options</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#OperaDriver.create_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.OperaDriver.create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.opera.webdriver.PrestoDriver">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.opera.webdriver.</tt><tt class="descname">PrestoDriver</tt><big>(</big><em>executable_path=None</em>, <em>port=0</em>, <em>desired_capabilities={'platform': 'ANY'</em>, <em>'browserName': 'opera'</em>, <em>'version': ''</em>, <em>'javascriptEnabled': True}</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#PrestoDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.PrestoDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the OperaDriver and allows you to drive the Opera browser
+based on Presto.</p>
+<p>Creates a new instance of the Opera driver.</p>
+<p>Starts the service and then creates new instance of Opera Driver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last">
+<li><dl class="first docutils">
+<dt>executable_path - path to the executable. If the default is used</dt>
+<dd><p class="first last">it assumes the executable is in the
+Environment Variable SELENIUM_SERVER_JAR</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>port - port you would like the service to run, if left as 0,</dt>
+<dd><p class="first last">a free port will be found.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>desired_capabilities: Dictionary object with desired capabilities -</dt>
+<dd><p class="first last">may be used to provide various Opera switches.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="selenium.webdriver.opera.webdriver.PrestoDriver.quit">
+<tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#PrestoDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.PrestoDriver.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the browser and shuts down the OperaDriver executable
 that is started when starting the OperaDriver</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.opera.webdriver.WebDriver">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.opera.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>desired_capabilities=None</em>, <em>executable_path=None</em>, <em>port=0</em>, <em>service_log_path=None</em>, <em>service_args=None</em>, <em>opera_options=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="class">
+<dt id="selenium.webdriver.opera.webdriver.WebDriver.ServiceType">
+<em class="property">class </em><tt class="descname">ServiceType</tt><a class="reference internal" href="../_modules/selenium/webdriver/opera/webdriver.html#WebDriver.ServiceType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver.ServiceType" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="selenium.webdriver.opera.webdriver.WebDriver.ServiceType.CHROMIUM">
+<tt class="descname">CHROMIUM</tt><em class="property"> = 2</em><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver.ServiceType.CHROMIUM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.opera.webdriver.WebDriver.ServiceType.PRESTO">
+<tt class="descname">PRESTO</tt><em class="property"> = 1</em><a class="headerlink" href="#selenium.webdriver.opera.webdriver.WebDriver.ServiceType.PRESTO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </dd></dl>
