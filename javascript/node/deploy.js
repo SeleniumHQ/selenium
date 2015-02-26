@@ -400,7 +400,7 @@ function generateDocs(outputDir, callback) {
 
   var command = [
       'java -jar', path.join(
-          __dirname, '../../third_party/java/dossier/dossier-0.6.1.jar'),
+          __dirname, '../../third_party/java/dossier/dossier-0.6.2.jar'),
       '-c', configFile
   ].join(' ');
   child_process.exec(command, callback);
