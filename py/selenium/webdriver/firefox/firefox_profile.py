@@ -173,7 +173,7 @@ class FirefoxProfile(object):
                 filename = os.path.join(base, fyle)
                 zipped.write(filename, filename[path_root:])
         zipped.close()
-        return base64.encodestring(fp.getvalue())
+        return base64.b64encode(fp.getvalue()).decode('UTF-8')
 
     def set_proxy(self, proxy):
         import warnings
