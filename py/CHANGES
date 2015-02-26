@@ -1,3 +1,17 @@
+Selenium 2.45.0
+* Firefox support up to 35, support for native events up to 34.
+* Make Opera driver support also the new Blink based Opera
+* README: Fix the Yahoo example
+* WebElement docstring fixes
+* Add debugger_address option to the ChromeDriver options list to optionally instruct ChromeDriver to wait for the target devtools instance to be started at a given host:ip
+* Set default value for PhantomJS process reference
+* Allow setting of FileDetector for send_keys
+* Pass info to TimeoutException in WebDriverWait
+* Issues Fixed: 8065, 8310, 8539
+
+Selenium 2.44.0
+* (previous release person forgot to add release notes! DAVID!)
+
 Selenium 2.43.0
 * Expand WebElement.get_attribute API docs
 * firefox may be installed without admininstrator privileges
