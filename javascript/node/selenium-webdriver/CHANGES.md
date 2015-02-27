@@ -1,3 +1,9 @@
+## v2.45.1-dev
+
+* FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
+    options (e.g. mobile emulation and performance logging) documented on the
+    ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).
+
 ## v2.45.0
 
 ### Important Policy Change

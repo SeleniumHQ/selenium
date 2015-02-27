@@ -14,20 +14,15 @@
 // limitations under the License.
 
 /**
- * @fileoverview Defines a {@linkplain Driver WebDriver} client for the
- * [Chrome](https://sites.google.com/a/chromium.org/chromedriver/) web browser.
- * Before using this module, you must download the latest
- * [ChromeDriver release](http://chromedriver.storage.googleapis.com/index.html)
- * and ensure it can be found on your system 
- * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29).
+ * @fileoverview Defines a {@linkplain Driver WebDriver} client for the Chrome
+ * web browser. Before using this module, you must download the latest
+ * [ChromeDriver release] and ensure it can be found on your system [PATH].
  *
  * There are three primary classes exported by this module:
  *
  * 1. {@linkplain ServiceBuilder}: configures the
  *     {@link selenium-webdriver/remote.DriverService remote.DriverService}
- *     that manages the
- *     [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
- *     child process.
+ *     that manages the [ChromeDriver] child process.
  *
  * 2. {@linkplain Options}: defines configuration options for each new Chrome
  *     session, such as which {@linkplain Options#setProxy proxy} to use,
@@ -39,6 +34,7 @@
  *     a unique browser session with a clean user profile (unless otherwise
  *     configured through the {@link Options} class).
  *
+ * __Customizing the ChromeDriver Server__ <a id="custom-server"></a>
  *
  * By default, every Chrome session will use a single driver service, which is
  * started the first time a {@link Driver} instance is created and terminated
@@ -67,6 +63,51 @@
  * need a custom driver service configuration (as shown above). For normal
  * operation, users should start Chrome using the
  * {@link selenium-webdriver.Builder}.
+ *
+ * __Working with Android__ <a id="android"></a>
+ *
+ * The [ChromeDriver][android] supports running tests on the Chrome browser as
+ * well as [WebView apps][webview] starting in Android 4.4 (KitKat). In order to
+ * work with Android, you must first start the adb
+ *
+ *     adb start-server
+ *
+ * By default, adb will start on port 5037. You may change this port, but this
+ * will require configuring a [custom server](#custom-server) that will connect
+ * to adb on the {@linkplain ServiceBuilder#setAdbPort correct port}:
+ *
+ *     var service = new chrome.ServiceBuilder()
+ *         .setAdbPort(1234)
+ *         build();
+ *     // etc.
+ *
+ * The ChromeDriver may be configured to launch Chrome on Android using
+ * {@link Options#androidChrome()}:
+ *
+ *     var driver = new Builder()
+ *         .forBrowser('chrome')
+ *         .setChromeOptions(new chrome.Options().androidChrome())
+ *         .build();
+ *
+ * Alternatively, you can configure the ChromeDriver to launch an app with a
+ * Chrome-WebView by setting the {@linkplain Options#androidActivity
+ * androidActivity} option:
+ *
+ *     var driver = new Builder()
+ *         .forBrowser('chrome')
+ *         .setChromeOptions(new chrome.Options()
+ *             .androidPackage('com.example')
+ *             .androidActivity('com.example.Activity'))
+ *         .build();
+ *
+ * Refer to the ChromeDriver site] for more information on using the
+ * [ChromeDriver with Android][android].
+ *
+ * [ChromeDriver]: https://sites.google.com/a/chromium.org/chromedriver/
+ * [ChromeDriver release]: http://chromedriver.storage.googleapis.com/index.html
+ * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
+ * [android]: https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android
+ * [webview]: https://developer.chrome.com/multidevice/webview/overview
  */
 
 'use strict';
@@ -91,8 +132,8 @@ var CHROMEDRIVER_EXE =
 
 
 /**
- * Creates {@link remote.DriverService} instances that manage a
- * [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
+ * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
  * server in a child process.
  *
  * @param {string=} opt_exe Path to the server executable to use. If omitted,
@@ -146,6 +187,20 @@ ServiceBuilder.prototype.usingPort = function(port) {
     throw Error('port must be >= 0: ' + port);
   }
   this.port_ = port;
+  return this;
+};
+
+
+/**
+ * Sets which port adb is listening to. _The ChromeDriver will connect to adb
+ * if an {@linkplain Options#androidPackage Android session} is requested, but
+ * adb **must** be started beforehand._
+ *
+ * @param {number} port Which port adb is running on.
+ * @return {!ServiceBuilder} A self reference.
+ */
+ServiceBuilder.prototype.setAdbPort = function(port) {
+  this.args_.push('--adb-port=' + port);
   return this;
 };
 
@@ -292,11 +347,17 @@ var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 var Options = function() {
   webdriver.Serializable.call(this);
 
-  /** @private {!Array.<string>} */
-  this.args_ = [];
+  /** @private {!Object} */
+  this.options_ = {};
 
   /** @private {!Array.<(string|!Buffer)>} */
   this.extensions_ = [];
+
+  /** @private {?webdriver.logging.Preferences} */
+  this.logPrefs_ = null;
+
+  /** @private {?webdriver.ProxyConfig} */
+  this.proxy_ = null;
 };
 util.inherits(Options, webdriver.Serializable);
 
@@ -317,11 +378,15 @@ Options.fromCapabilities = function(capabilities) {
     options.
         addArguments(o.args || []).
         addExtensions(o.extensions || []).
-        detachDriver(!!o.detach).
+        detachDriver(o.detach).
+        excludeSwitches(o.excludeSwitches || []).
         setChromeBinaryPath(o.binary).
         setChromeLogFile(o.logPath).
+        setChromeMinidumpPath(o.minidumpPath).
         setLocalState(o.localState).
-        setUserPreferences(o.prefs);
+        setMobileEmulation(o.mobileEmulation).
+        setUserPreferences(o.prefs).
+        setPerfLoggingPrefs(o.perfLoggingPrefs);
   }
 
   if (capabilities.has(webdriver.Capability.PROXY)) {
@@ -346,7 +411,22 @@ Options.fromCapabilities = function(capabilities) {
  * @return {!Options} A self reference.
  */
 Options.prototype.addArguments = function(var_args) {
-  this.args_ = this.args_.concat.apply(this.args_, arguments);
+  this.options_.args = (this.options_.args || [])
+      .concat.apply(this.args_, arguments);
+  return this;
+};
+
+
+/**
+ * List of Chrome command line switches to exclude that ChromeDriver by default
+ * passes when starting Chrome.  Do not prefix switches with "--".
+ *
+ * @param {...(string|!Array<string>)} var_args The switches to exclude.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.excludeSwitches = function(var_args) {
+  this.options_.excludeSwitches = (this.options_.excludeSwitches || [])
+      .concat.apply(this.args_, arguments);
   return this;
 };
 
@@ -360,8 +440,7 @@ Options.prototype.addArguments = function(var_args) {
  * @return {!Options} A self reference.
  */
 Options.prototype.addExtensions = function(var_args) {
-  this.extensions_ = this.extensions_.concat.apply(
-      this.extensions_, arguments);
+  this.extensions_ = this.extensions_.concat.apply(this.extensions_, arguments);
   return this;
 };
 
@@ -378,7 +457,7 @@ Options.prototype.addExtensions = function(var_args) {
  * @return {!Options} A self reference.
  */
 Options.prototype.setChromeBinaryPath = function(path) {
-  this.binary_ = path;
+  this.options_.binary = path;
   return this;
 };
 
@@ -392,7 +471,7 @@ Options.prototype.setChromeBinaryPath = function(path) {
  * @return {!Options} A self reference.
  */
 Options.prototype.detachDriver = function(detach) {
-  this.detach_ = detach;
+  this.options_.detach = detach;
   return this;
 };
 
@@ -404,7 +483,7 @@ Options.prototype.detachDriver = function(detach) {
  * @return {!Options} A self reference.
  */
 Options.prototype.setUserPreferences = function(prefs) {
-  this.prefs_ = prefs;
+  this.options_.prefs = prefs;
   return this;
 };
 
@@ -421,13 +500,123 @@ Options.prototype.setLoggingPrefs = function(prefs) {
 
 
 /**
+ * Sets the performance logging preferences. Options include:
+ *
+ * - `enableNetwork`: Whether or not to collect events from Network domain.
+ * - `enablePage`: Whether or not to collect events from Page domain.
+ * - `enableTimeline`: Whether or not to collect events from Timeline domain.
+ *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
+ *     unless `enableTimeline` is explicitly set to true.
+ * - `tracingCategories`: A comma-separated string of Chrome tracing categories
+ *     for which trace events should be collected. An unspecified or empty
+ *     string disables tracing.
+ * - `bufferUsageReportingInterval`: The requested number of milliseconds
+ *     between DevTools trace buffer usage events. For example, if 1000, then
+ *     once per second, DevTools will report how full the trace buffer is. If a
+ *     report indicates the buffer usage is 100%, a warning will be issued.
+ *
+ * @param {{enableNetwork: boolean,
+ *          enablePage: boolean,
+ *          enableTimeline: boolean,
+ *          tracingCategories: string,
+ *          bufferUsageReportingInterval: number}} prefs The performance
+ *     logging preferences.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.setPerfLoggingPrefs = function(prefs) {
+  this.options_.perfLoggingPrefs = prefs;
+  return this;
+};
+
+
+/**
  * Sets preferences for the "Local State" file in Chrome's user data
  * directory.
  * @param {!Object} state Dictionary of local state preferences.
  * @return {!Options} A self reference.
  */
 Options.prototype.setLocalState = function(state) {
-  this.localState_ = state;
+  this.options_.localState = state;
+  return this;
+};
+
+
+/**
+ * Sets the name of the activity hosting a Chrome-based Android WebView. This
+ * option must be set to connect to an [Android WebView](
+ * https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android)
+ *
+ * @param {string} name The activity name.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidActivity = function(name) {
+  this.options_.androidActivity = name;
+  return this;
+};
+
+
+/**
+ * Sets the device serial number to connect to via ADB. If not specified, the
+ * ChromeDriver will select an unused device at random. An error will be
+ * returned if all devices already have active sessions.
+ *
+ * @param {string} serial The device serial number to connect to.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidDeviceSerial = function(serial) {
+  this.options_.androidDeviceSerial = serial;
+  return this;
+};
+
+
+/**
+ * Configures the ChromeDriver to launch Chrome on Android via adb. This
+ * function is shorthand for 
+ * {@link #androidPackage options.androidPackage('com.android.chrome')}.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidChrome = function() {
+  return this.androidPackage('com.android.chrome');
+};
+
+
+/**
+ * Sets the package name of the Chrome or WebView app.
+ *
+ * @param {?string} pkg The package to connect to, or `null` to disable Android
+ *     and switch back to using desktop Chrome.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidPackage = function(pkg) {
+  this.options_.androidPackage = pkg;
+  return this;
+};
+
+
+/**
+ * Sets the process name of the Activity hosting the WebView (as given by `ps`).
+ * If not specified, the process name is assumed to be the same as
+ * {@link #androidPackage}.
+ *
+ * @param {string} processName The main activity name.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidProcess = function(processName) {
+  this.options_.androidProcess = pkg;
+  return this;
+};
+
+
+/**
+ * Sets whether to connect to an already-running instead of the specified
+ * {@linkplain #androidProcess app} instead of launching the app with a clean
+ * data directory.
+ *
+ * @param {boolean} useRunning Whether to connect to a running instance.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.androidUseRunningApp = function(useRunning) {
+  this.options_.androidUseRunningApp = useRunning;
   return this;
 };
 
@@ -439,7 +628,61 @@ Options.prototype.setLocalState = function(state) {
  * @return {!Options} A self reference.
  */
 Options.prototype.setChromeLogFile = function(path) {
-  this.logFile_ = path;
+  this.options_.logPath = path;
+  return this;
+};
+
+
+/**
+ * Sets the directory to store Chrome minidumps in. This option is only
+ * supported when ChromeDriver is running on Linux.
+ * @param {string} path The directory path.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.setChromeMinidumpPath = function(path) {
+  this.options_.minidumpPath = path;
+  return this;
+};
+
+
+/**
+ * Configures Chrome to emulate a mobile device. For more information, refer to
+ * the ChromeDriver project page on [mobile emulation][em]. Configuration
+ * options include:
+ *
+ * - `deviceName`: The name of a pre-configured [emulated device][devem]
+ * - `width`: screen width, in pixels
+ * - `height`: screen height, in pixels
+ * - `pixelRatio`: screen pixel ratio
+ *
+ * __Example 1: Using a Pre-configured Device__
+ *
+ *     var options = new chrome.Options().setMobileEmulation(
+ *         {deviceName: 'Google Nexus 5'});
+ *
+ *     var driver = new chrome.Driver(options);
+ *
+ * __Example 2: Using Custom Screen Configuration__
+ *
+ *     var options = new chrome.Options().setMobileEmulation({
+ *         width: 360,
+ *         height: 640,
+ *         pixelRatio: 3.0
+ *     });
+ *
+ *     var driver = new chrome.Driver(options);
+ *
+ *
+ * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
+ * [devem]: https://developer.chrome.com/devtools/docs/device-mode
+ *
+ * @param {?({deviceName: string}|
+ *           {width: number, height: number, pixelRatio: number})} config The
+ *     mobile emulation configuration, or `null` to disable emulation.
+ * @return {!Options} A self reference.
+ */
+Options.prototype.setMobileEmulation = function(config) {
+  this.options_.mobileEmulation = config;
   return this;
 };
 
@@ -485,33 +728,21 @@ Options.prototype.toCapabilities = function(opt_capabilities) {
  * @override
  */
 Options.prototype.serialize = function() {
-  var json = {
-    args: this.args_,
-    detach: !!this.detach_,
-    extensions: this.extensions_.map(function(extension) {
+  var json = {};
+  for (var key in this.options_) {
+    if (this.options_[key] != null) {
+      json[key] = this.options_[key];
+    }
+  }
+  if (this.extensions_.length) {
+    json.extensions = this.extensions_.map(function(extension) {
       if (Buffer.isBuffer(extension)) {
         return extension.toString('base64');
       }
       return webdriver.promise.checkedNodeCall(
           fs.readFile, extension, 'base64');
-    })
-  };
-
-  // ChromeDriver barfs on null keys, so we must ensure these are not included
-  // if unset (really?)
-  if (this.binary_) {
-    json.binary = this.binary_;
+    });
   }
-  if (this.localState_) {
-    json.localState = this.localState_;
-  }
-  if (this.logFile_) {
-    json.logPath = this.logFile_;
-  }
-  if (this.prefs_) {
-    json.prefs = this.prefs_;
-  }
-
   return json;
 };
 
@@ -520,7 +751,7 @@ Options.prototype.serialize = function() {
  * Creates a new ChromeDriver session.
  * @param {(webdriver.Capabilities|Options)=} opt_options The session options.
  * @param {remote.DriverService=} opt_service The session to use; will use
- *     the {@link getDefaultService default service} by default.
+ *     the {@linkplain #getDefaultService default service} by default.
  * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
  *     {@code null} to use the currently active flow.
  * @return {!webdriver.WebDriver} A new WebDriver instance.
@@ -537,7 +768,7 @@ function createDriver(opt_options, opt_service, opt_flow) {
  * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
  *     options.
  * @param {remote.DriverService=} opt_service The session to use; will use
- *     the {@link getDefaultService default service} by default.
+ *     the {@linkplain #getDefaultService default service} by default.
  * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
  *     {@code null} to use the currently active flow.
  * @constructor

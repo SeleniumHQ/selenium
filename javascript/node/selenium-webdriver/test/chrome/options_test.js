@@ -78,13 +78,17 @@ describe('chrome.Options', function() {
           var options = chrome.Options.fromCapabilities(caps);
           var json = options.serialize();
 
-          assert(json.args.length).equalTo(0);
+          assert(json.args).isUndefined();
           assert(json.binary).isUndefined();
-          assert(json.detach).isFalse();
-          assert(json.extensions.length).equalTo(0);
+          assert(json.detach).isUndefined();
+          assert(json.excludeSwitches).isUndefined();
+          assert(json.extensions).isUndefined();
           assert(json.localState).isUndefined();
           assert(json.logPath).equalTo('logFilePath');
           assert(json.prefs).isUndefined();
+          assert(json.minidumpPath).isUndefined();
+          assert(json.mobileEmulation).isUndefined();
+          assert(json.perfLoggingPrefs).isUndefined();
         });
 
     it('should extract supported WebDriver capabilities', function() {
