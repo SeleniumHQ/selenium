@@ -677,7 +677,17 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
@@ -692,6 +702,18 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
+
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
 
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
