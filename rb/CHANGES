@@ -1,5 +1,14 @@
-2.45.0.dev (???)
-============
+2.45.0 (2014-02-28)
+===================
+
+Firefox:
+  * Native events in Firefox relied on an API that Mozilla no longer
+    provides. As such, fall back to synthesized events on recent Firefox
+    versions.
+
+Ruby changes:
+  * Allow switching windows when current window is closed (thanks Titus Fortner).
+  * Add :javascript_enabled to Android capabilities.
 
 2.44.0 (2014-10-05)
 ===================
