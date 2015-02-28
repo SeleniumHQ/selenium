@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2012 Selenium committers
-Portions copyright 2011-2012 Software Freedom Conservancy
+Portions copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,8 +31,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -160,7 +158,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({IE, HTMLUNIT, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -177,7 +175,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({HTMLUNIT, PHANTOMJS})
   @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
@@ -246,7 +244,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     // Browser window cannot be resized on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -292,7 +290,7 @@ public class VisibilityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({IE, HTMLUNIT, MARIONETTE})
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);

@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -86,8 +84,8 @@ public class ProxySettingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {OPERA_MOBILE, PHANTOMJS, SAFARI},
-          reason = "PhantomJS - not tested, Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canConfigureManualHttpProxy() {
@@ -102,8 +100,8 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {OPERA_MOBILE, PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyThroughPACFile() {
@@ -128,8 +126,8 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {OPERA_MOBILE, PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Opera mobile/Safari - not implemented")
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+          reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
@@ -163,7 +161,7 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, REMOTE, SAFARI})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, REMOTE, SAFARI})
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyWithRequiredCapability() {
@@ -178,7 +176,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, REMOTE, SAFARI})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, REMOTE, SAFARI})
   @NeedsLocalEnvironment
   @Test
   public void requiredProxyCapabilityShouldHavePriority() {

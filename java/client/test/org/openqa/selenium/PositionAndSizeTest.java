@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +32,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -44,7 +42,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
-@Ignore(value = {HTMLUNIT, OPERA_MOBILE, MARIONETTE},
+@Ignore(value = {HTMLUNIT, MARIONETTE},
         reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
 public class PositionAndSizeTest extends JUnit4TestBase {
 
@@ -84,7 +82,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
   }
 
-  @Ignore(value = {OPERA, SAFARI}, reason = "Opera: window().getSize() is not implemented")
+  @Ignore(value = {SAFARI})
   @Test
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
@@ -109,7 +107,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({OPERA, SAFARI})
+  @Ignore({SAFARI})
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
@@ -118,7 +116,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({OPERA, SAFARI})
+  @Ignore({SAFARI})
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
@@ -156,7 +154,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
+  @Ignore({IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE})
   // Reason for Chrome: WebKit bug 28804
   @Test
   public void testShouldHandleNonIntegerPositionAndSize() {

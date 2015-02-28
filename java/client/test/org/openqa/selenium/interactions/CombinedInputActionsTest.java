@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +29,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -93,7 +92,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE})
+  @Ignore({CHROME, IE})
   public void testShiftClickingOnMultiSelectionList() {
     assumeTrue("Only works with native events on Linux",
                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
@@ -122,7 +121,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS})
   public void testControlClickingOnMultiSelectionList() {
     assumeTrue("Only works with native events on Linux",
                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
@@ -149,7 +148,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, REMOTE, OPERA, PHANTOMJS})
+  @Ignore({IE, REMOTE, PHANTOMJS})
   @Test
   public void testControlClickingOnCustomMultiSelectionList() {
     assumeFalse("Does not works with native events on Windows",
@@ -194,7 +193,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {OPERA, PHANTOMJS, SAFARI}, reason = "Not tested")
+  @Ignore(value = {PHANTOMJS, SAFARI}, reason = "Not tested")
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
@@ -291,7 +290,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT})
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
@@ -334,7 +333,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
-  @Ignore({HTMLUNIT, OPERA, IE})
+  @Ignore({HTMLUNIT, IE})
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
     assumeFalse("Does not works with native events on Windows",
@@ -357,7 +356,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IE})
+  @Ignore({HTMLUNIT, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     assumeFalse("Does not works with native events on Windows",
@@ -376,7 +375,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {OPERA, OPERA_MOBILE, SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
 

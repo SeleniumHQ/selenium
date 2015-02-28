@@ -67,18 +67,6 @@ java_test(name = "ie-emulation-test",
     "//cpp/iedriverserver:win32",
   ])
 
-java_test(name = "opera-emulation-test",
-  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
-  deps = [
-    ":rc-tests",
-  ],
-  sysproperties = [
-    { "selenium.browser" : "opera" },
-  ],
-  deps = [
-    ":rc-tests",
-  ])
-
 java_test(name = "chrome-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [

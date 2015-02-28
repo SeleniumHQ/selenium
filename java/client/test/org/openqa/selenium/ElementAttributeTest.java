@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,8 +37,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -81,7 +79,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({OPERA, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -322,7 +320,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello@example.com", element.getAttribute("value"));
   }
 
-  @Ignore({OPERA_MOBILE})
   @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
@@ -332,7 +329,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({OPERA, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -357,7 +354,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element5.getAttribute("nowrap"));
   }
 
-  @Ignore({OPERA, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);

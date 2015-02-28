@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -60,7 +59,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());

@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,8 +43,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
@@ -80,7 +78,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 
-  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -98,7 +96,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -120,7 +118,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {FIREFOX, CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -141,7 +139,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {FIREFOX, CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
@@ -216,7 +214,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS})
+  @Ignore(value = {IE, SAFARI, MARIONETTE, PHANTOMJS})
   @Test(expected = WebDriverException.class)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
@@ -317,7 +315,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS},
+  @Ignore(value = {IE, SAFARI, PHANTOMJS},
           reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
@@ -327,7 +325,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
@@ -361,7 +359,7 @@ public class PageLoadingTest extends JUnit4TestBase {
    *      driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {IE, SAFARI, MARIONETTE},
           reason = "Safari: issue 4062; Others: Untested user-agents",
           issues = {4062})
   @NoDriverAfterTest
@@ -376,7 +374,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(elementTextToContain(body, "world"));
   }
 
-  @Ignore(value = {OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -414,7 +412,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -454,7 +452,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
@@ -494,7 +492,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {CHROME, HTMLUNIT, SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment

@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2012 Selenium committers
-Copyright 2007-2012 Software Freedom Conservancy
+Copyright 2007-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -43,7 +41,7 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, FIREFOX, CHROME, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE},
+  @Ignore(value = {IE, FIREFOX, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
       reason = "IE, Firefox: adds HTML tags.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
@@ -65,8 +63,8 @@ public class TextPagesTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, IE, OPERA, SAFARI, OPERA_MOBILE, PHANTOMJS}, reason =
-      "Opera, Safari, IE, Firefox: creates DOM for displaying text pages")
+  @Ignore(value = {CHROME, IE, SAFARI, PHANTOMJS},
+      reason = "Safari, IE, Firefox: creates DOM for displaying text pages")
   @Test
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);

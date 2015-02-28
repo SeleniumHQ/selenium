@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +33,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -194,7 +193,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({OPERA})
   @Test
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
@@ -258,7 +256,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, FIREFOX, OPERA, HTMLUNIT, OPERA_MOBILE})
+  @Ignore({CHROME, IE, FIREFOX, HTMLUNIT})
   @Test
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
@@ -276,7 +274,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {IE, HTMLUNIT, REMOTE, OPERA},
+  @Ignore(value = {IE, HTMLUNIT, REMOTE},
           reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
@@ -355,8 +353,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, CHROME, OPERA, OPERA_MOBILE},
-          reason = "Not implemented yet.")
+  @Ignore(value = {IE, HTMLUNIT, CHROME}, reason = "Not implemented yet.")
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
     assumeTrue(!isFirefox(driver) || isNativeEventsEnabled(driver));
@@ -386,7 +383,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(resultArea, expectedEvents));
   }
 
-  @Ignore({OPERA, OPERA_MOBILE})
   @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
@@ -404,7 +400,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+      value = {HTMLUNIT, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers.",
       issues = {4136})
   @Test
@@ -425,7 +421,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+      value = {HTMLUNIT, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -460,7 +456,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, OPERA, FIREFOX, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
+      value = {HTMLUNIT, FIREFOX, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
       reason = "This is an IE only tests")
   @NoDriverAfterTest
   @NeedsLocalEnvironment
@@ -507,7 +503,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @Test
@@ -562,7 +558,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @Test
@@ -582,7 +578,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @NoDriverAfterTest

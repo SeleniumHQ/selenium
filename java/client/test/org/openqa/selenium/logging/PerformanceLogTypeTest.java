@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Software Freedom Conservancy
+Copyright 2013-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
@@ -45,7 +43,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 
-@Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

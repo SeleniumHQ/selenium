@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +27,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -88,11 +88,9 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {MARIONETTE, CHROME, OPERA},
-      reason = "MAIONETTE: not checked, "
-               + "CHROME: ChromeDriver only supports characters in the BMP"
-               + "OPERA: doesn't work - see issue 5069"
-  )
+      value = {MARIONETTE, CHROME},
+      reason = "MARIONETTE: not checked, "
+               + "CHROME: ChromeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -131,7 +129,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX, OPERA},
+  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   @Test
@@ -181,7 +179,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, HTMLUNIT, OPERA},
+  @Ignore(value = {IE, CHROME, HTMLUNIT},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   @Test

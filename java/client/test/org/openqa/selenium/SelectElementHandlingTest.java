@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +24,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 import static org.hamcrest.Matchers.is;
 
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
-  @Ignore({OPERA, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
@@ -50,7 +50,7 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({OPERA, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);

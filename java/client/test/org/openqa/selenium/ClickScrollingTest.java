@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.greaterThan;
@@ -29,7 +28,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -110,7 +108,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({OPERA})
   @Test
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
@@ -152,8 +149,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "others: not tested")
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
@@ -167,8 +163,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
   
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
@@ -195,8 +190,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
   
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
@@ -210,8 +204,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
   
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
@@ -226,8 +219,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
   
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Opera: fails, others: not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
@@ -255,8 +247,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {OPERA, SAFARI, MARIONETTE},
-          reason = "Not tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Not tested")
   public void testShouldBeAbleToClickElementInATallFrame() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));

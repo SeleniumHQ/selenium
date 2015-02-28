@@ -1,5 +1,0 @@
-java_library(name = "ini4j",
-  deps = [
-    "ini4j-0.5.2.jar"
-  ]
-)

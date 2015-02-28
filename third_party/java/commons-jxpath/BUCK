@@ -1,8 +1,0 @@
-
-prebuilt_jar(name = 'commons-jxpath',
-  binary_jar = 'commons-jxpath-1.3.jar',
-  visibility = [
-    '//third_party/java/opera-driver:opera-driver',
-  ],
-)
-

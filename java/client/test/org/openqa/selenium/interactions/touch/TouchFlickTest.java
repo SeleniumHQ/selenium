@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,15 +26,11 @@ import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.testing.Ignore;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 /**
  * Tests the basic flick operations on touch enabled devices.
  */
-@Ignore({OPERA, OPERA_MOBILE})
 public class TouchFlickTest extends TouchTestBase {
-
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
@@ -193,5 +189,4 @@ public class TouchFlickTest extends TouchTestBase {
     // After flicking, the element should now be visible on the screen.
     assertTrue("Got: " + y, y < 4000);
   }
-
 }

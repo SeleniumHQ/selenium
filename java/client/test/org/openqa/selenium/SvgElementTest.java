@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2012 Selenium committers
-Portions copyright 2011-2012 Software Freedom Conservancy
+Portions copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,14 +28,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE},
-        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
+@Ignore(value = {HTMLUNIT},
+    reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends JUnit4TestBase {
 
   @Test

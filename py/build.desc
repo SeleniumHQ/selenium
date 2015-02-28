@@ -31,12 +31,6 @@ py_test(
   browsers = [ "chrome" ])
 
 py_test(
-  name = "opera_test",
-  opera_specific_tests = [ "test/selenium/webdriver/opera/*_tests.py" ],
-  deps = [ ":test_opera" ],
-  browsers = [ "opera" ])
-
-py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   browsers = [ "ie" ])
@@ -72,7 +66,6 @@ py_test(
     "ie",
     "phantomjs",
     "remote_firefox",
-    "opera",
     "safari",
   ])
 

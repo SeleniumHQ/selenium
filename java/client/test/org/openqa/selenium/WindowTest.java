@@ -1,6 +1,6 @@
 /*
 Copyright 2011-2012 Selenium committers
-Copyright 2011-2012 Software Freedom Conservancy.
+Copyright 2011-2015 Software Freedom Conservancy.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -38,8 +36,7 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.logging.Logger;
 
-@Ignore(value = {OPERA, OPERA_MOBILE, MARIONETTE},
-        reason = "Not yet implemented.")
+@Ignore(value = {MARIONETTE}, reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 
   private static Logger log = Logger.getLogger(WindowTest.class.getName());

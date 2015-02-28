@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -86,7 +86,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));
     suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
     suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new OperaPrestoDriverSupplier(desiredCaps));
     suppliers.add(new PhantomJSDriverSupplier(desiredCaps));
     suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
     suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps, requiredCaps));

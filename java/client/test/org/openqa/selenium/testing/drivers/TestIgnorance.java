@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -199,17 +197,10 @@ public class TestIgnorance {
         break;
 
       case opera:
-      case operapresto:
-        comparator.addDriver(OPERA);
         break;
 
       case operablink:
         comparator.addDriver(CHROME);
-        break;
-
-      case opera_mobile:
-        comparator.addDriver(OPERA_MOBILE);
-        comparator.addDriver(REMOTE);
         break;
 
       case phantomjs:

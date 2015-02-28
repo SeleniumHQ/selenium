@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +26,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -167,7 +166,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("An inline element"));
   }
 
-  @Ignore({OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
@@ -179,7 +177,6 @@ public class TextHandlingTest extends JUnit4TestBase {
         "         "));
   }
 
-  @Ignore({OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
@@ -192,9 +189,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {IE, OPERA, OPERA_MOBILE}, reason =
-      "iPhone: sendKeys is broken;"
-      + " Opera,IE: inserts \r\n instead of \n.")
+  @Ignore(value = {IE}, reason = "IE: inserts \r\n instead of \n")
   @Test
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
@@ -211,7 +206,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {OPERA, MARIONETTE})
+  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);

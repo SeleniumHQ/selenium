@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class MiscTest extends JUnit4TestBase {
@@ -77,10 +75,9 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
-          reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
-                   + "Opera: includes XML doctype"
-                   + "Others: untested")
+  @Ignore(value = {CHROME, IE, SAFARI},
+          reason = "Chrome, Safari: returns XML content formatted for display as HTML document" +
+                   "Others: untested")
   @Test
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);

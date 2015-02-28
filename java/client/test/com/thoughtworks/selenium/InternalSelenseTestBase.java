@@ -1,6 +1,6 @@
 /*
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -236,15 +236,8 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
         return;
       }
 
-      try {
-        selenium.selectWindow("");
-        selenium.windowFocus();
-      } catch (SeleniumException e) {
-        // TODO(simon): Window switching in Opera is picky.
-        if (Browser.detect() != Browser.opera) {
-          throw e;
-        }
-      }
+      selenium.selectWindow("");
+      selenium.windowFocus();
     }
   };
 

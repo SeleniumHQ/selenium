@@ -33,10 +33,8 @@ public enum Browser {
   htmlunit_js,
   ie,
   none, // For those cases where you don't actually want a browser
-  @Deprecated opera,
+  opera,
   operablink,
-  operapresto,
-  opera_mobile,
   phantomjs,
   safari;
 

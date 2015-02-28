@@ -18,12 +18,10 @@
     <orderEntry type="library" name="commons-fileupload" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
-    <orderEntry type="library" name="commons-jxpath" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="cssparser" level="project" />
     <orderEntry type="library" exported="" name="guava-libraries" level="project" />
-    <orderEntry type="library" name="google-protobuffers" level="project" />
     <orderEntry type="library" exported="" name="gson" level="project" />
     <orderEntry type="library" name="hamcrest" level="project" />
     <orderEntry type="library" name="htmlunit" level="project" />

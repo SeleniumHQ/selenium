@@ -28,8 +28,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -51,7 +49,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Ignore(
-    value = {HTMLUNIT, SAFARI, OPERA_MOBILE, MARIONETTE},
+    value = {HTMLUNIT, MARIONETTE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
              "Safari: not implemented (issue 4136)",
     issues = {4136})
@@ -78,7 +76,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
   @Test
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -89,7 +86,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
   @Test
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
@@ -104,7 +100,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA}, reason = "OPERA: ?")
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
@@ -121,7 +116,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA, IE}, reason = "OPERA: ?")
+  @Ignore(value = {IE})
   @Test
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
@@ -150,7 +145,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, OPERA, PHANTOMJS})
+  @Ignore({CHROME, IE, PHANTOMJS})
   @Test
   public void testDragTooFar() {
     assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
@@ -199,7 +194,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
   @Test
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
@@ -236,7 +230,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({IE, OPERA, PHANTOMJS, SAFARI})
+  @Ignore({IE, PHANTOMJS, SAFARI})
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

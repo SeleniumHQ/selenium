@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class PhantomJSDriverSupplier implements Supplier<WebDriver> {
-
   private final Capabilities capabilities;
 
   public PhantomJSDriverSupplier(Capabilities capabilities) {
@@ -42,8 +41,6 @@ public class PhantomJSDriverSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    // It's okay to avoid reflection here because the OperaDriver is a third party dependency
     return new PhantomJSDriver(capabilities);
   }
-
 }

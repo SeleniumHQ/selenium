@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservatory.
+Copyright 2012-2015 Software Freedom Conservatory.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 
 import org.junit.After;
@@ -45,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
+@Ignore({HTMLUNIT, IE, PHANTOMJS, MARIONETTE})
 public class GetLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

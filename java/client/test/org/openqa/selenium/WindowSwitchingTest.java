@@ -1,5 +1,5 @@
 /*
-Copyright 2012-2013 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2007-2013 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,6 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreater
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 import com.google.common.collect.Sets;
@@ -47,8 +45,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 import java.util.Set;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
-
-  @Ignore({OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -92,7 +89,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -116,7 +113,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -149,7 +146,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -298,7 +295,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {OPERA_MOBILE})
   @Test
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
@@ -321,7 +317,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {OPERA_MOBILE})
   @Test
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);

@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +23,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 public class ClearTest extends JUnit4TestBase {
 
@@ -49,7 +48,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({OPERA, OPERA_MOBILE})
   public void testTextInputShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -82,7 +80,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({OPERA, OPERA_MOBILE})
   public void testTextAreaShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -94,7 +91,6 @@ public class ClearTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA_MOBILE})
   @Test
   public void testContentEditableAreaShouldClear() {
     driver.get(pages.readOnlyPage);
@@ -102,5 +98,4 @@ public class ClearTest extends JUnit4TestBase {
     element.clear();
     assertEquals("", element.getText());
   }
-
 }

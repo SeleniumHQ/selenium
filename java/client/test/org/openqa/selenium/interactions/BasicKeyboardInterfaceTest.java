@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +24,6 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import static org.hamcrest.Matchers.is;
@@ -69,7 +68,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE})
   @Test
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
@@ -91,7 +90,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, OPERA, OPERA_MOBILE})
+  @Ignore({IE})
   @Test
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
@@ -116,7 +115,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, IE})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -174,7 +173,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, SAFARI, HTMLUNIT}, reason = "untested")
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
@@ -202,7 +201,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT})
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 
@@ -223,7 +222,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, IE})
   public void testSelectionSelectByWord() {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",
@@ -252,7 +251,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, IE})
   public void testSelectionSelectAll() {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",

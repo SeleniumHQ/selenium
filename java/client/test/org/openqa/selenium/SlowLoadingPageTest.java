@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,16 +22,12 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
-@Ignore(OPERA_MOBILE)
 public class SlowLoadingPageTest extends JUnit4TestBase {
-
   private static final long LOAD_TIME_IN_SECONDS = 3;
 
   @Test
-  public void testShouldBlockUntilPageLoads() throws Exception {
+  public void testShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     long now = System.currentTimeMillis();
@@ -46,7 +42,6 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
     assertElapsed(3000, now - start);
   }
 
-  @Ignore(value = {OPERA}, reason = "untested")
   @Test
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

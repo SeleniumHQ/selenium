@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,14 +26,12 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @RunWith(SeleniumTestRunner.class)
-@Ignore(value = {OPERA_MOBILE, REMOTE}, reason = "Not tested")
+@Ignore(value = {REMOTE}, reason = "Not tested")
 public class SessionHandlingTest {
 
   @Test
@@ -66,9 +64,7 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {OPERA, SAFARI}, reason =
-      "Opera: throws Opera-specific exception,"
-      + "Safari: throws UnreachableBrowserException")
+  @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.quit();
@@ -76,9 +72,8 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, OPERA, PHANTOMJS, SAFARI, MARIONETTE}, reason =
+  @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
       "Firefox: can perform an operation after closing the last window,"
-      + "Opera: throws Opera-specific exception,"
       + "PhantomJS: throws NoSuchWindowException,"
       + "Safari: throws NullPointerException")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {

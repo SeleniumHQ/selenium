@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.testing.drivers;
-
-import com.opera.core.systems.OperaProduct;
-import com.opera.core.systems.OperaProfile;
-import com.opera.core.systems.OperaSettings;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
@@ -55,23 +50,6 @@ public class BrowserToCapabilities {
 
       case ie:
         caps = DesiredCapabilities.internetExplorer();
-        break;
-
-      case opera:
-      case operapresto:
-        OperaProfile profile = new OperaProfile();
-        profile.preferences().set("Geolocation", "Enable geolocation", true);
-        // This pref allows all sites to access geolocation without prompting.
-        // A 0 value would deny all sites and -1 would prompt for all sites.
-        profile.preferences().set("User Prefs", "Geolocation site state", 1);
-
-        caps = DesiredCapabilities.operaPresto();
-        caps.setCapability("opera.profile", profile);
-        break;
-
-      case opera_mobile:
-        caps = DesiredCapabilities.operaPresto();
-        caps.setCapability(OperaSettings.Capability.PRODUCT.getCapability(), OperaProduct.MOBILE);
         break;
 
       case operablink:

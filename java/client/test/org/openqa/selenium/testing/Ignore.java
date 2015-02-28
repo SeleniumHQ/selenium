@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,8 +35,6 @@ public @interface Ignore {
     FIREFOX,
     IE,
     MARIONETTE,
-    OPERA,
-    OPERA_MOBILE,
     PHANTOMJS,
     REMOTE,
     SAFARI,
