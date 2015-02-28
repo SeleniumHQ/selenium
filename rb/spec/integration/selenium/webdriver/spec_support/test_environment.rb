@@ -105,8 +105,6 @@ module Selenium
           instance = case driver
                      when :remote
                        create_remote_driver
-                     when :opera
-                       create_opera_driver
                      when :firefox
                        create_firefox_driver
                      when :chrome
@@ -158,22 +156,6 @@ module Selenium
             :url                  => ENV['WD_REMOTE_URL'] || remote_server.webdriver_url,
             :http_client          => keep_alive_client || http_client
           )
-        end
-
-        def create_opera_driver
-          ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
-          WebDriver::Driver.for :opera, :logging_level => ENV['log'] ? :config : :severe
-        end
-
-        def create_firefox_driver
-          if native_events?
-            profile = WebDriver::Firefox::Profile.new
-            profile.native_events = true
-
-            WebDriver::Driver.for :firefox, :profile => profile
-          else
-            WebDriver::Driver.for :firefox
-          end
         end
 
         def create_chrome_driver

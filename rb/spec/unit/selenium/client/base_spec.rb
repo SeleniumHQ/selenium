@@ -204,11 +204,6 @@ describe Selenium::Client::Base do
       client.chrome_backend?.should be false
     end
 
-    it "returns false when the browser string is *opera" do
-      client = BaseClient.new :host, 24, "*opera", :url
-      client.chrome_backend?.should be false
-    end
-
     it "returns true when the browser string is *chrome" do
       client = BaseClient.new :host, 24, "*chrome", :url
       client.chrome_backend?.should be true

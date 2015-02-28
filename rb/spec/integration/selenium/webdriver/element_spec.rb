@@ -27,7 +27,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :android, :iphone, :safari] do
+  not_compliant_on :browser => [:android, :iphone, :safari] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 

@@ -181,7 +181,7 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
   describe "alerts" do
-    not_compliant_on :browser => [:opera, :iphone, :safari, :phantomjs] do
+    not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -193,7 +193,6 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
 
     not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromedriver/issues/detail?id=26
-                     {:browser => :opera},
                      {:browser => :iphone},
                      {:browser => :safari},
                      {:browser => :phantomjs}) do
@@ -208,7 +207,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:opera, :iphone, :safari, :phantomjs] do
+    not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
       it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
@@ -244,7 +243,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
     end
 
-    not_compliant_on :browser => [:ie, :opera, :iphone, :safari, :phantomjs] do
+    not_compliant_on :browser => [:ie, :iphone, :safari, :phantomjs] do
       it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
           Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)

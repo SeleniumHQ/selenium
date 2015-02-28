@@ -8,7 +8,6 @@ rubygem(
     "//rb:firefox",
     "//rb:ie",
     "//rb:iphone",
-    "//rb:opera",
     "//rb:phantomjs",
     "//rb:remote",
     "//rb:rc-client",
@@ -154,29 +153,6 @@ ruby_test(name = "iphone",
   deps = [ ":iphone" ]
 )
 
-ruby_library(name = "opera",
-  srcs = [
-    "lib/selenium/webdriver/opera/**/*.rb",
-    "lib/selenium/webdriver/opera.rb"
-  ],
-  deps = [
-    ":common",
-    ":remote"
-  ]
-)
-
-ruby_test(name = "opera",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/opera/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    ":opera"
-  ]
-)
-
 ruby_library(name = "phantomjs",
   srcs = [
     "lib/selenium/webdriver/phantomjs/**/*.rb",
@@ -272,7 +248,6 @@ ruby_test(name = "unit",
     ":firefox",
     ":ie",
     ":iphone",
-    ":opera",
     ":remote",
     ":safari",
     ":phantomjs",

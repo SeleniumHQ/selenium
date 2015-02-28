@@ -22,7 +22,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :iphone, :safari] do
+  not_compliant_on :browser => [ :iphone, :safari] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
@@ -160,7 +160,7 @@ describe "Driver" do
       element.text.should == "Foo"
     end
 
-    not_compliant_on :browser => [:opera, :android] do
+    not_compliant_on :browser => [:android] do
       it "should unwrap elements in deep objects" do
         driver.navigate.to url_for("xhtmlTest.html")
         result = driver.execute_script(<<-SCRIPT)
@@ -236,7 +236,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :iphone, :android, :phantomjs] do
+  not_compliant_on :browser => [:iphone, :android, :phantomjs] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0

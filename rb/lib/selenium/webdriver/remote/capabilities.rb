@@ -108,15 +108,6 @@ module Selenium
             }.merge(opts))
           end
 
-          def opera(opts = {})
-            new({
-              :browser_name          => "opera",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
-            }.merge(opts))
-          end
-
           def phantomjs(opts = {})
             new({
               :browser_name          => "phantomjs",

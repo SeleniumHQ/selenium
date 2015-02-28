@@ -41,12 +41,6 @@ module Selenium
           caps.browser_name.should == "iPad"
         end
 
-        it "has default capabilities for Opera" do
-          caps = Capabilities.opera
-          caps.browser_name.should == "opera"
-        end
-
-
         it "should default to no proxy" do
           Capabilities.new.proxy.should be_nil
         end

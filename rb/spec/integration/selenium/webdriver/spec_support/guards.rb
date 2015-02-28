@@ -65,8 +65,8 @@ module Selenium
           # not_compliant_on :browser => [:firefox, :chrome]
           #   - guard this spec for both firefox and chrome
           #
-          # not_compliant_on {:browser => :chrome, :platform => :macosx}, {:browser => :opera}
-          #   - guard this spec for Chrome on OSX and Opera on any OS
+          # not_compliant_on {:browser => :chrome, :platform => :macosx}, {:browser => :firefox}
+          #   - guard this spec for Chrome on OSX and Firefox on any OS
 
           def env_matches?(opts)
             res = opts.any? { |env|
