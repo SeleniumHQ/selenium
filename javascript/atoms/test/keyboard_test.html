@@ -23,8 +23,6 @@
       browser = 'GECKO';
     } else if (goog.userAgent.IE) {
       browser = 'IE';
-    } else if (goog.userAgent.OPERA) {
-      browser = 'OPERA';
     } else if (goog.userAgent.WEBKIT) {
       browser = 'WEBKIT';
     } else {
@@ -97,7 +95,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.G, false, {
       GECKO:  {downUp: {key: 71, char: 0}, press: {key:   0, char: 103}},
       IE:     {downUp: {key: 71, char: U}, press: {key: 103, char:   U}},
-      OPERA:  {downUp: {key: 71, char: U}, press: {key: 103, char:   U}},
       WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 103, char: 103}}
     });
   }
@@ -106,7 +103,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.G, true, {
       GECKO:  {downUp: {key: 71, char: 0}, press: {key:  0, char: 71}},
       IE:     {downUp: {key: 71, char: U}, press: {key: 71, char:  U}},
-      OPERA:  {downUp: {key: 71, char: U}, press: {key: 71, char:  U}},
       WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 71, char: 71}}
     });
   }
@@ -115,7 +111,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.SPACE, false, {
       GECKO:  {downUp: {key: 32, char: 0}, press: {key:  0, char: 32}},
       IE:     {downUp: {key: 32, char: U}, press: {key: 32, char:  U}},
-      OPERA:  {downUp: {key: 32, char: U}, press: {key: 32, char:  U}},
       WEBKIT: {downUp: {key: 32, char: 0}, press: {key: 32, char: 32}}
     });
   }
@@ -124,7 +119,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, false, {
       GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 59}},
       IE:     {downUp: {key: 186, char: U}, press: {key: 59, char:  U}},
-      OPERA:  {downUp: {key:  59, char: U}, press: {key: 59, char:  U}},
       WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 59, char: 59}}
     });
   }
@@ -133,7 +127,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, true, {
       GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 58}},
       IE:     {downUp: {key: 186, char: U}, press: {key: 58, char:  U}},
-      OPERA:  {downUp: {key:  59, char: U}, press: {key: 58, char:  U}},
       WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 58, char: 58}}
     });
   }
@@ -142,7 +135,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.ENTER, false, {
       GECKO:  {downUp: {key: 13, char: 0}, press: {key: 13, char:  0}},
       IE:     {downUp: {key: 13, char: U}, press: {key: 13, char:  U}},
-      OPERA:  {downUp: {key: 13, char: U}, press: {key: 13, char:  U}},
       WEBKIT: {downUp: {key: 13, char: 0}, press: {key: 13, char: 13}}
     });
   }
@@ -151,7 +143,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.DOWN, false, {
       GECKO:  {downUp: {key: 40, char: 0}, press: {key: 40, char: 0}},
       IE:     {downUp: {key: 40, char: U}, press: U},
-      OPERA:  {downUp: {key: 40, char: U}, press: {key: 40, char: U}},
       WEBKIT: {downUp: {key: 40, char: 0}, press: U}
     });
   }
@@ -160,7 +151,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.ESC, false, {
       GECKO:  {downUp: {key: 27, char: 0}, press: {key: 27, char: 0}},
       IE:     {downUp: {key: 27, char: U}, press: {key: 27, char: U}},
-      OPERA:  {downUp: {key: 27, char: U}, press: {key: 27, char: U}},
       WEBKIT: {downUp: {key: 27, char: 0}, press: U}
     });
   }
@@ -168,8 +158,7 @@
   function testControl() {
     return assertKeyEvents(bot.Keyboard.Keys.CONTROL, false, {
       GECKO:  {downUp: {key: 17, char: 0}, press: U},
-      IE:     {downUp: {key: 17, char: U}, press: U},
-      OPERA:  {downUp: {key: 17, char: U}, press: U},
+      IE:     {downUp: {key: 17, char: U}, press: U}
       WEBKIT: {downUp: {key: 17, char: 0}, press: U}
     });
   }
@@ -181,7 +170,6 @@
     return assertKeyEvents(unknownKey, false, {
       GECKO:  {downUp: {key: cc, char: 0}, press: {key:  0, char: cc}},
       IE:     {downUp: {key: cc, char: U}, press: {key: cc, char:  U}},
-      OPERA:  {downUp: {key: cc, char: U}, press: {key: cc, char:  U}},
       WEBKIT: {downUp: {key: cc, char: 0}, press: {key: cc, char: cc}}
     });
   }
@@ -196,7 +184,6 @@
     return assertKeyEvents(bot.Keyboard.Keys.E, false, {
       GECKO:  {downUp: {key: 69, char: 0}, press: {key: 0, char: 101}},
       IE:     {downUp: {key: 69, char: U}, press: U},
-      OPERA:  {downUp: {key: 69, char: U}, press: U},
       WEBKIT: {downUp: {key: 69, char: 0}, press: U}
     }).thenAlways(function() {
       goog.events.unlistenByKey(cancelKeydownId);

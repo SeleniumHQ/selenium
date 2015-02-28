@@ -17,13 +17,6 @@
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
-    // In Opera 11.5, synthetic keypresses currently exhibit flaky failures:
-    // http://code.google.com/p/selenium/issues/detail?id=3068
-    // Most typing test methods below are skipped for these versions.
-    var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
-        bot.userAgent.isEngineVersion(11.5) &&
-        !bot.userAgent.isEngineVersion(12);
-
     var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
 
     // Keys that impact the cursor's position and require the selection API.
@@ -108,9 +101,6 @@
      */
     function runTypingTest(input, opt_finalValue, opt_inputCount,
                            opt_textInputCount, opt_inputIds, opt_initValue) {
-      if (BROKEN_KEYPRESS) {
-        return;
-      }
       var inputIds = opt_inputIds ? opt_inputIds : INPUT_IDS;
       var inputCountBox = document.getElementById('inputCount');
       var textInputCountBox = document.getElementById('textInputCount');
@@ -383,10 +373,7 @@
     }
 
     function testEnterTextArea() {
-      var newline =
-          (bot.userAgent.IE_DOC_PRE9 ||
-           (goog.userAgent.OPERA &&
-            !goog.userAgent.isVersionOrHigher(12))) ? '\r\n' : '\n';
+      var newline = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }

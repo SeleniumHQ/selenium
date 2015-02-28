@@ -46,8 +46,7 @@ goog.require('goog.userAgent.product');
  * @type {boolean}
  */
 bot.events.SUPPORTS_TOUCH_EVENTS = !(goog.userAgent.IE &&
-                                     !bot.userAgent.isEngineVersion(10)) &&
-                                   !goog.userAgent.OPERA;
+                                     !bot.userAgent.isEngineVersion(10));
 
 
 /**
@@ -334,13 +333,13 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
     // All browser but Firefox provide the wheelDelta value in the event.
     // Firefox provides the scroll amount in the detail field, where it has the
     // opposite polarity of the wheelDelta (upward scroll is negative) and is a
-    // factor of 40 less than the wheelDelta value. Opera provides both values.
+    // factor of 40 less than the wheelDelta value.
     // The wheelDelta value is normally some multiple of 40.
     if (this == bot.events.EventType.MOUSEWHEEL) {
       if (!goog.userAgent.GECKO) {
         event.wheelDelta = args.wheelDelta;
       }
-      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+      if (goog.userAgent.GECKO) {
         detail = args.wheelDelta / -40;
       }
     }
@@ -424,7 +423,7 @@ bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
   } else {
     if (bot.userAgent.IE_DOC_PRE9) {
       event = doc.createEventObject();
-    } else {  // WebKit, Opera, and IE 9+ in Standards mode.
+    } else {  // WebKit and IE 9+ in Standards mode.
       event = doc.createEvent('Events');
       event.initEvent(this.type_, this.bubbles_, this.cancelable_);
     }

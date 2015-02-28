@@ -91,7 +91,7 @@ bot.Keyboard.CHAR_TO_KEY_ = {};
  * of the new keyword, also helps reduce the size of the compiled Js fragment.
  *
  * @param {null|number|
- *         {gecko: (?number), ieWebkit: (?number), opera: (?number)}} code
+ *         {gecko: (?number), ieWebkit: (?number)}} code
  *     Either a single keycode or a record of per-browser keycodes.
  * @param {string=} opt_char Character when shift is not pressed.
  * @param {string=} opt_shiftChar Character when shift is pressed.
@@ -102,8 +102,6 @@ bot.Keyboard.newKey_ = function(code, opt_char, opt_shiftChar) {
   if (goog.isObject(code)) {
     if (goog.userAgent.GECKO) {
       code = code.gecko;
-    } else if (goog.userAgent.OPERA) {
-      code = code.opera;
     } else {  // IE and Webkit
       code = code.ieWebkit;
     }
@@ -219,41 +217,40 @@ bot.Keyboard.Keys = {
 
   // Branded keys
   META: bot.Keyboard.newKey_(
-      goog.userAgent.WINDOWS ? {gecko: 91, ieWebkit: 91, opera: 219} :
-          (goog.userAgent.MAC ? {gecko: 224, ieWebkit: 91, opera: 17} :
-              {gecko: 0, ieWebkit: 91, opera: null})),  // Linux
+      goog.userAgent.WINDOWS ? {gecko: 91, ieWebkit: 91} :
+          (goog.userAgent.MAC ? {gecko: 224, ieWebkit: 91} :
+              {gecko: 0, ieWebkit: 91})),  // Linux
   META_RIGHT: bot.Keyboard.newKey_(
-      goog.userAgent.WINDOWS ? {gecko: 92, ieWebkit: 92, opera: 220} :
-          (goog.userAgent.MAC ? {gecko: 224, ieWebkit: 93, opera: 17} :
-              {gecko: 0, ieWebkit: 92, opera: null})),  // Linux
+      goog.userAgent.WINDOWS ? {gecko: 92, ieWebkit: 92} :
+          (goog.userAgent.MAC ? {gecko: 224, ieWebkit: 93} :
+              {gecko: 0, ieWebkit: 92})),  // Linux
   CONTEXT_MENU: bot.Keyboard.newKey_(
-      goog.userAgent.WINDOWS ? {gecko: 93, ieWebkit: 93, opera: 0} :
-          (goog.userAgent.MAC ? {gecko: 0, ieWebkit: 0, opera: 16} :
-              {gecko: 93, ieWebkit: null, opera: 0})),  // Linux
+      goog.userAgent.WINDOWS ? {gecko: 93, ieWebkit: 93} :
+          (goog.userAgent.MAC ? {gecko: 0, ieWebkit: 0} :
+              {gecko: 93, ieWebkit: null})),  // Linux
 
   // Numpad keys
-  NUM_ZERO: bot.Keyboard.newKey_({gecko: 96, ieWebkit: 96, opera: 48}, '0'),
-  NUM_ONE: bot.Keyboard.newKey_({gecko: 97, ieWebkit: 97, opera: 49}, '1'),
-  NUM_TWO: bot.Keyboard.newKey_({gecko: 98, ieWebkit: 98, opera: 50}, '2'),
-  NUM_THREE: bot.Keyboard.newKey_({gecko: 99, ieWebkit: 99, opera: 51}, '3'),
-  NUM_FOUR: bot.Keyboard.newKey_({gecko: 100, ieWebkit: 100, opera: 52}, '4'),
-  NUM_FIVE: bot.Keyboard.newKey_({gecko: 101, ieWebkit: 101, opera: 53}, '5'),
-  NUM_SIX: bot.Keyboard.newKey_({gecko: 102, ieWebkit: 102, opera: 54}, '6'),
-  NUM_SEVEN: bot.Keyboard.newKey_({gecko: 103, ieWebkit: 103, opera: 55}, '7'),
-  NUM_EIGHT: bot.Keyboard.newKey_({gecko: 104, ieWebkit: 104, opera: 56}, '8'),
-  NUM_NINE: bot.Keyboard.newKey_({gecko: 105, ieWebkit: 105, opera: 57}, '9'),
+  NUM_ZERO: bot.Keyboard.newKey_({gecko: 96, ieWebkit: 96}, '0'),
+  NUM_ONE: bot.Keyboard.newKey_({gecko: 97, ieWebkit: 97}, '1'),
+  NUM_TWO: bot.Keyboard.newKey_({gecko: 98, ieWebkit: 98}, '2'),
+  NUM_THREE: bot.Keyboard.newKey_({gecko: 99, ieWebkit: 99}, '3'),
+  NUM_FOUR: bot.Keyboard.newKey_({gecko: 100, ieWebkit: 100}, '4'),
+  NUM_FIVE: bot.Keyboard.newKey_({gecko: 101, ieWebkit: 101}, '5'),
+  NUM_SIX: bot.Keyboard.newKey_({gecko: 102, ieWebkit: 102}, '6'),
+  NUM_SEVEN: bot.Keyboard.newKey_({gecko: 103, ieWebkit: 103}, '7'),
+  NUM_EIGHT: bot.Keyboard.newKey_({gecko: 104, ieWebkit: 104}, '8'),
+  NUM_NINE: bot.Keyboard.newKey_({gecko: 105, ieWebkit: 105}, '9'),
   NUM_MULTIPLY: bot.Keyboard.newKey_(
-      {gecko: 106, ieWebkit: 106, opera: goog.userAgent.LINUX ? 56 : 42}, '*'),
+      {gecko: 106, ieWebkit: 106}, '*'),
   NUM_PLUS: bot.Keyboard.newKey_(
-      {gecko: 107, ieWebkit: 107, opera: goog.userAgent.LINUX ? 61 : 43}, '+'),
+      {gecko: 107, ieWebkit: 107}, '+'),
   NUM_MINUS: bot.Keyboard.newKey_(
-      {gecko: 109, ieWebkit: 109, opera: goog.userAgent.LINUX ? 109 : 45}, '-'),
+      {gecko: 109, ieWebkit: 109}, '-'),
   NUM_PERIOD: bot.Keyboard.newKey_(
-      {gecko: 110, ieWebkit: 110, opera: goog.userAgent.LINUX ? 190 : 78}, '.'),
+      {gecko: 110, ieWebkit: 110}, '.'),
   NUM_DIVISION: bot.Keyboard.newKey_(
-      {gecko: 111, ieWebkit: 111, opera: goog.userAgent.LINUX ? 191 : 47}, '/'),
-  NUM_LOCK: bot.Keyboard.newKey_(
-      (goog.userAgent.LINUX && goog.userAgent.OPERA) ? null : 144),
+      {gecko: 111, ieWebkit: 111}, '/'),
+  NUM_LOCK: bot.Keyboard.newKey_(144),
 
   // Function keys
   F1: bot.Keyboard.newKey_(112),
@@ -271,10 +268,10 @@ bot.Keyboard.Keys = {
 
   // Punctuation keys
   EQUALS: bot.Keyboard.newKey_(
-      {gecko: 107, ieWebkit: 187, opera: 61}, '=', '+'),
+      {gecko: 107, ieWebkit: 187}, '=', '+'),
   SEPARATOR: bot.Keyboard.newKey_(108, ','),
   HYPHEN: bot.Keyboard.newKey_(
-      {gecko: 109, ieWebkit: 189, opera: 109}, '-', '_'),
+      {gecko: 109, ieWebkit: 189}, '-', '_'),
   COMMA: bot.Keyboard.newKey_(188, ',', '<'),
   PERIOD: bot.Keyboard.newKey_(190, '.', '>'),
   SLASH: bot.Keyboard.newKey_(191, '/', '?'),
@@ -283,7 +280,7 @@ bot.Keyboard.Keys = {
   BACKSLASH: bot.Keyboard.newKey_(220, '\\', '|'),
   CLOSE_BRACKET: bot.Keyboard.newKey_(221, ']', '}'),
   SEMICOLON: bot.Keyboard.newKey_(
-      {gecko: 59, ieWebkit: 186, opera: 59}, ';', ':'),
+      {gecko: 59, ieWebkit: 186}, ';', ':'),
   APOSTROPHE: bot.Keyboard.newKey_(222, '\'', '"')
 };
 
@@ -392,13 +389,12 @@ bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
 
 /**
  * The value used for newlines in the current browser/OS combination. Although
- * the line endings look platform dependent, they are browser dependent. In
- * particular, Opera uses \r\n on all platforms.
+ * the line endings look platform dependent, they are browser dependent.
+ *
  * @private {string}
  * @const
  */
-bot.Keyboard.NEW_LINE_ =
-    goog.userAgent.IE || goog.userAgent.OPERA ? '\r\n' : '\n';
+bot.Keyboard.NEW_LINE_ = goog.userAgent.IE ? '\r\n' : '\n';
 
 
 /**
@@ -465,7 +461,7 @@ bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
     return false;
   } else if (goog.userAgent.IE) {
     return key == bot.Keyboard.Keys.ESC;
-  } else { // Gecko and Opera
+  } else { // Gecko
     switch (key) {
       case bot.Keyboard.Keys.SHIFT:
       case bot.Keyboard.Keys.CONTROL:

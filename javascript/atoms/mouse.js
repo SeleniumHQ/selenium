@@ -142,7 +142,7 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  *               dblclick  mousedown  mouseover
  * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
- * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
+ * GECKO         0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
  * </pre>
  * @private {!Object.<bot.events.EventType, !Array.<?number>>}
  * @const

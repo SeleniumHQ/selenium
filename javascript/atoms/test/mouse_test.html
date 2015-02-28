@@ -89,12 +89,12 @@ position: relative; top:25px;">Red</div>
   /**
    * Returns the button value in the object depending on the current useragent.
    * Returns the 'wk' property for WebKit and IE9 in standards mode, the 'ie'
-   * property for IE, and the 'ff' property for Firefox and Opera.
+   * property for IE, and the 'ff' property for Firefox.
    */
   function b(button) {
     return bot.userAgent.IE_DOC_9 || goog.userAgent.WEBKIT ? button['wk'] :
         (goog.userAgent.IE ? button['ie'] :
-            button['ff']);  // Firefox or Opera
+            button['ff']);  // Firefox
   }
 
   function assertEvents(var_args) {

@@ -366,7 +366,7 @@
       action(elem);
 
       // Chrome < 39 and WebKit select a radio button even when the handler
-      // prevents the default; IE and Opera do not.
+      // prevents the default; IE does not.
       if ((goog.userAgent.product.CHROME &&
            !bot.userAgent.isProductVersion(39)) ||
           (goog.userAgent.WEBKIT && !goog.userAgent.product.CHROME)) {

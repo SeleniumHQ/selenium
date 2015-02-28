@@ -15,12 +15,6 @@
 </script>
 <body>
 <script type="text/javascript">
-  // In Opera 11.5+, synthetic keypresses currently exhibit flaky failures:
-  // http://code.google.com/p/selenium/issues/detail?id=3068
-  // Test methods below are skipped for these versions.
-  var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
-    bot.userAgent.isEngineVersion(11.5);
-
   var submitFired;
   var wasSubmitted;
   var waitForSubmit;
@@ -53,9 +47,6 @@
   }
 
   function testTwoTextboxesAndOneSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form1');
     return waitForSubmit.then(function() {
       assertTrue(submitFired);
@@ -63,9 +54,6 @@
   }
 
   function testOneTextboxesAndOneSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form2');
     return waitForSubmit.then(function() {
       assertTrue(submitFired);
@@ -73,9 +61,6 @@
   }
 
   function testOneTextboxesAndNoSubmitIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form4');
     return waitForSubmit.then(function() {
       assertTrue(submitFired);
@@ -83,9 +68,6 @@
   }
 
   function testTwoTextboxesAndTwoSubmitsIsSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form5');
     return waitForSubmit.then(function() {
       assertTrue(submitFired);
@@ -93,27 +75,18 @@
   }
 
   function testKeyDownCancelNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form6');
     assertFalse(submitFired);
     assertFalse(wasSubmitted);
   }
 
   function testKeyPressCancelNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form7');
     assertFalse(submitFired);
     assertFalse(wasSubmitted);
   }
 
   function testKeyUpCancelSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form8');
     return waitForSubmit.then(function() {
       assertTrue(submitFired);
@@ -121,9 +94,6 @@
   }
 
   function testCancelSubmitFiredNotSubmitted() {
-    if (BROKEN_KEYPRESS) {
-      return;
-    }
     submitForm('form9', true);
     assertTrue(submitFired);
   }

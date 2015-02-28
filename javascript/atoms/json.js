@@ -47,10 +47,10 @@ bot.json.NATIVE_JSON = true;
  * @private {boolean}
  */
 bot.json.SUPPORTS_NATIVE_JSON_ =
-    // List WebKit and Opera first since every supported version of these
-    // browsers supports native JSON (and we can compile away large chunks of
-    // code for individual fragments by setting the appropriate compiler flags).
-    goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
+    // List WebKit first since every supported version supports
+    // native JSON (and we can compile away large chunks of code for
+    // individual fragments by setting the appropriate compiler flags).
+    goog.userAgent.WEBKIT ||
         (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(3.5)) ||
         (goog.userAgent.IE && bot.userAgent.isEngineVersion(8));
 

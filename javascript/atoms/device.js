@@ -346,17 +346,6 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
     }
   }
 
-  // Opera only skips mouseovers and contextmenus on single selects.
-  if (goog.userAgent.OPERA) {
-    switch (type) {
-      case bot.events.EventType.CONTEXTMENU:
-      case bot.events.EventType.MOUSEOVER:
-        return this.select_.multiple ? this.element_ : null;
-      default:
-        return this.element_;
-    }
-  }
-
   // WebKit always fires on the option element of multi-selects.
   // On single-selects, it either fires on the parent or not at all.
   if (goog.userAgent.WEBKIT) {
@@ -394,9 +383,9 @@ bot.Device.prototype.clickElement = function(coord, button, opt_force,
 
   // bot.events.fire(element, 'click') can trigger all onclick events, but may
   // not follow links (FORM.action or A.href).
-  //     TAG      IE   GECKO  WebKit Opera
-  // A(href)      No    No     Yes    Yes
-  // FORM(action) No    Yes    Yes    Yes
+  //     TAG      IE   GECKO  WebKit
+  // A(href)      No    No     Yes
+  // FORM(action) No    Yes    Yes
   var targetLink = null;
   var targetButton = null;
   if (!bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_) {
@@ -498,15 +487,7 @@ bot.Device.prototype.focusOnElement = function() {
   // Try to focus on the element.
   if (goog.isFunction(elementToFocus.focus) ||
       goog.userAgent.IE && goog.isObject(elementToFocus.focus)) {
-    // Opera fires focus events on hidden elements (e.g. that are hidden after
-    // mousedown in a click sequence), but as of Opera 11 the focus() command
-    // does not, so we fire a focus event on the hidden element explicitly.
-    if (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11) &&
-        !bot.dom.isShown(elementToFocus)) {
-      bot.events.fire(elementToFocus, bot.events.EventType.FOCUS);
-    } else {
-      elementToFocus.focus();
-    }
+    elementToFocus.focus();
     return true;
   }
 
@@ -521,7 +502,7 @@ bot.Device.prototype.focusOnElement = function() {
  * @const
  */
 bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ =
-    goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
+    goog.userAgent.WEBKIT ||
     (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
 
 
@@ -661,10 +642,6 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasChecked) {
     return;
   }
   this.element_.checked = !wasChecked;
-  // Only Opera versions < 11 do not fire the change event themselves.
-  if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
-    bot.events.fire(this.element_, bot.events.EventType.CHANGE);
-  }
 };
 
 

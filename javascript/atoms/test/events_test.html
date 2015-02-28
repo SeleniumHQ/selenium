@@ -220,13 +220,12 @@ limitations under the License.
     function fireMouseWheelAndTestWheelDeltaAndDetail(wheelDelta, detail) {
       fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
         var nativeEvent = event.getBrowserEvent();
-        if ((goog.userAgent.IE && Object.defineProperty) ||
-             goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
+        if ((goog.userAgent.IE && Object.defineProperty) || goog.userAgent.WEBKIT) {
           assertEquals(wheelDelta, nativeEvent.wheelDelta);
         } else if (goog.userAgent.IE && !Object.defineProperty) {
           assertEquals(wheelDelta, nativeEvent.detail);
         }
-        if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+        if (goog.userAgent.GECKO) {
           assertEquals(detail, nativeEvent.detail);
         }
       });

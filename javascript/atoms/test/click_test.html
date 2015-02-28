@@ -270,11 +270,6 @@
           expectedEvents = goog.array.slice(clickEvents, 0, i + 1);
         }
 
-        // Opera fires a focus event when the element is hidden on mousedown.
-        if (goog.userAgent.OPERA && hideOn == goog.events.EventType.MOUSEDOWN) {
-          expectedEvents.push(goog.events.EventType.FOCUS);
-        }
-
         // If we expect a focus event, only test if the window is focused.
         if (!goog.array.contains(expectedEvents, goog.events.EventType.FOCUS) ||
              bot.test.isWindowFocused()) {
@@ -369,7 +364,7 @@
           shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.tap);
 
     function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
-      if (!checkActionCompatibility(action) || goog.userAgent.IE || goog.userAgent.OPERA ||
+      if (!checkActionCompatibility(action) || goog.userAgent.IE ||
           (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
         return;
       }

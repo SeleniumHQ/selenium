@@ -94,7 +94,7 @@ bot.dom.isInteractable = function(element) {
  * @private
  */
 bot.dom.hasPointerEventsDisabled_ = function(element) {
-  if (goog.userAgent.IE || goog.userAgent.OPERA ||
+  if (goog.userAgent.IE ||
       (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
     // Don't support pointer events
     return false;
@@ -216,7 +216,6 @@ bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
  * Standardize a style attribute value, which includes:
  *  (1) converting all property names lowercase
  *  (2) ensuring it ends in a trailing semi-colon
- *  (3) removing empty style values (which only appear on Opera).
  * @param {string} value The style attribute value.
  * @return {string} The identical value, with the formatting rules described
  *     above applied.
@@ -237,7 +236,7 @@ bot.dom.standardizeStyleAttribute_ = function(value) {
   });
   css = css.join('');
   css = css.charAt(css.length - 1) == ';' ? css : css + ';';
-  return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
+  return css;
 };
 
 
@@ -882,16 +881,6 @@ bot.dom.getClientRect = function(elem) {
       var doc = goog.dom.getOwnerDocument(elem);
       rect.left -= doc.documentElement.clientLeft + doc.body.clientLeft;
       rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
-    }
-
-    // Opera sometimes falsely report zero size bounding rects.
-    if (goog.userAgent.OPERA) {
-      if (rect.width == 0 && elem.offsetWidth > 0) {
-        rect.width = elem.offsetWidth;
-      }
-      if (rect.height == 0 && elem.offsetHeight > 0) {
-        rect.height = elem.offsetHeight;
-      }
     }
 
     // On Gecko < 12, getBoundingClientRect does not account for CSS transforms.

@@ -41,8 +41,7 @@ goog.require('goog.userAgent.product');
  * @private {boolean}
  * @const
  */
-bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
-    !goog.userAgent.OPERA;
+bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE;
 
 
 /**
@@ -53,8 +52,8 @@ bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
  * @private {boolean}
  * @const
  */
-bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ = !goog.userAgent.OPERA &&
-    (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'));
+bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ =
+    !goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533');
 
 
 /**

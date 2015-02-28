@@ -191,9 +191,7 @@ bot.locators.xpath.single = function(target, root) {
 
     if (result) {
       var node = result.singleNodeValue;
-      // On Opera, a singleNodeValue of undefined indicates a type error, while
-      // other browsers may use it to indicate something has not been found.
-      return goog.userAgent.OPERA ? node : (node || null);
+      return node || null;
     } else if (root.selectSingleNode) {
       var doc = goog.dom.getOwnerDocument(root);
       if (doc.setProperty) {
@@ -226,11 +224,6 @@ bot.locators.xpath.many = function(target, root) {
         bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
     if (result) {
       var count = result.snapshotLength;
-      // On Opera, if the XPath evaluates to a non-Node value, snapshotLength
-      // will be undefined and the result empty, so fail immediately.
-      if (goog.userAgent.OPERA && !goog.isDef(count)) {
-        bot.locators.xpath.checkElement_(null, target);
-      }
       var results = [];
       for (var i = 0; i < count; ++i) {
         results.push(result.snapshotItem(i));
