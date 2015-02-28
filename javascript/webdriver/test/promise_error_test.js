@@ -464,7 +464,7 @@ function testFailsParentTaskIfAsyncScheduledTaskFails() {
     }, 10);
     return d.promise;
   }).then(fail, assertIsStubError);
- 
+
   return waitForIdle().then(function() {
     return d.promise;
   }).then(fail, function(e) {
@@ -570,4 +570,100 @@ function testLongStackTraces_includesPromiseChainWhenEnabled() {
     ], messages);
   });
   return waitForIdle();
+}
+
+
+function testFrameCancelsRemainingTasks_onUnhandledTaskFailure() {
+  var run = false;
+  return flow.execute(function() {
+    flow.execute(throwStubError);
+    flow.execute(function() { run = true; });
+  }).then(fail, function(e) {
+    assertIsStubError(e);
+    assertFalse(run);
+  });
+}
+
+
+function testFrameCancelsRemainingTasks_onUnhandledPromiseRejection() {
+  var run = false;
+  return flow.execute(function() {
+    webdriver.promise.rejected(new StubError);
+    flow.execute(function() { run = true; });
+  }).then(fail, function(e) {
+    assertIsStubError(e);
+    assertFalse(run);
+  });
+}
+
+
+function testRegisteredTaskCallbacksAreDroppedWhenTaskIsCancelled_return() {
+  var seen = [];
+  return flow.execute(function() {
+    flow.execute(throwStubError);
+
+    flow.execute(function() {
+      seen.push(1);
+    }).then(function() {
+      seen.push(2);
+    }, function() {
+      seen.push(3);
+    });
+  }).then(fail, function(e) {
+    assertIsStubError(e);
+    assertArrayEquals([], seen);
+  });
+}
+
+
+function testRegisteredTaskCallbacksAreDroppedWhenTaskIsCancelled_withReturn() {
+  var seen = [];
+  return flow.execute(function() {
+    flow.execute(throwStubError);
+
+    return flow.execute(function() {
+      seen.push(1);
+    }).then(function() {
+      seen.push(2);
+    }, function() {
+      seen.push(3);
+    });
+  }).then(fail, function(e) {
+    assertIsStubError(e);
+    assertArrayEquals([], seen);
+  });
+}
+
+
+function testTaskIsCancelledAfterWaitTimeout() {
+  var seen = [];
+  return flow.execute(function() {
+    flow.wait(function() {
+      webdriver.promies.delayed(100).then(goog.nullFunction);
+    }, 5);
+
+    return flow.execute(function() {
+      seen.push(1);
+    }).then(function() {
+      seen.push(2);
+    }, function() {
+      seen.push(3);
+    });
+  }).then(fail, function(e) {
+    assertArrayEquals([], seen);
+  });
+}
+
+
+function testTaskCallbacksGetCancellationErrorIfRegisteredAfterTaskIsCancelled() {
+  var task;
+  flow.execute(function() {
+    flow.execute(throwStubError);
+    task = flow.execute(goog.nullFunction);
+  }).then(fail, assertIsStubError);
+  return waitForIdle().then(function() {
+    return task.then(fail, function(e) {
+      assertTrue(e instanceof webdriver.promise.CancellationError);
+    });
+  });
 }

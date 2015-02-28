@@ -1,5 +1,7 @@
 ## v2.45.1-dev
 
+* FIXED: 8548: Task callbacks are once again dropped if the task was cancelled
+    due to a previously uncaught error within the frame.
 * FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
     options (e.g. mobile emulation and performance logging) documented on the
     ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).

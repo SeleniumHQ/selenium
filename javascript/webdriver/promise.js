@@ -2167,6 +2167,7 @@ promise.Frame_ = goog.defineClass(webdriver.EventEmitter, {
       if (child instanceof promise.Frame_) {
         child.cancelRemainingTasks(error);
       } else {
+        child.promise.callbacks_ = null;
         child.cancel(error);
       }
     }
