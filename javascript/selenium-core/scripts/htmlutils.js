@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservancy
+ * Copyright 2011-2015 Software Freedom Conservancy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -97,10 +97,6 @@ function elementGetStyle(element, style) {
         value = element.currentStyle[style];
       }
     }
-
-    /** DGF necessary? 
-    if (window.opera && ['left', 'top', 'right', 'bottom'].include(style))
-      if (Element.getStyle(element, 'position') == 'static') value = 'auto'; */
 
     return value == 'auto' ? null : value;
   }
@@ -3306,7 +3302,6 @@ jQuery.extend({
 		ua = ua.toLowerCase();
 
 		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
 			/(msie) ([\w.]+)/.exec( ua ) ||
 			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
 		  	[];

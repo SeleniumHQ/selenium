@@ -34,7 +34,7 @@ function changeHandler() {
 }
 
 function addChangeListener(element) {
-    if (window.addEventListener && !window.opera)
+    if (window.addEventListener)
         element.addEventListener("click", changeHandler, true);
     else if (window.attachEvent)
         element.attachEvent("onclick", changeHandler);

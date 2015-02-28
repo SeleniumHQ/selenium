@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservancy
+ * Copyright 2011-2015 Software Freedom Conservancy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,12 +30,6 @@ var BrowserVersion = function() {
 
     if (navigator.userAgent.indexOf('Windows NT 6') != -1) {
         this.isVista = true;
-    }
-
-    if (window.opera != null) {
-        this.browser = BrowserVersion.OPERA;
-        this.isOpera = true;
-        return;
     }
     
     var _getQueryParameter = function(searchKey) {
@@ -154,7 +148,6 @@ var BrowserVersion = function() {
     this.browser = BrowserVersion.UNKNOWN;
 };
 
-BrowserVersion.OPERA = "Opera";
 BrowserVersion.IE = "IE";
 BrowserVersion.KONQUEROR = "Konqueror";
 BrowserVersion.SAFARI = "Safari";
