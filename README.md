@@ -162,7 +162,6 @@ want to build a single driver, then you can run one of these targets:
 ./go firefox
 ./go htmlunit
 ./go ie
-./go opera
 ```
 
 As the build progresses, you'll see it report where the build outputs
