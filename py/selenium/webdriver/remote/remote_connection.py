@@ -327,6 +327,12 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/log'),
             Command.GET_AVAILABLE_LOG_TYPES:
                 ('GET', '/session/$sessionId/log/types'),
+            Command.CURRENT_CONTEXT_HANDLE:
+                ('GET', '/session/$sessionId/context'),
+            Command.CONTEXT_HANDLES:
+                ('GET', '/session/$sessionId/contexts'),
+            Command.SWITCH_TO_CONTEXT:
+                ('POST', '/session/$sessionId/context'),
         }
 
     def execute(self, command, params):

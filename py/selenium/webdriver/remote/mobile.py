@@ -52,3 +52,23 @@ class Mobile(object):
         return self.ConnectionType(self._driver.execute(Command.SET_NETWORK_CONNECTION,
                                                         {'name':'network_connection',
                                                          'parameters':{'type': mode}})['value'])
+    @property
+    def context(self):
+        """
+        returns the current context (Native or WebView).
+        """
+        return self._driver.execute(Command.CURRENT_CONTEXT_HANDLE)
+
+    @property
+    def contexts(self):
+        """
+        returns a list of available contexts
+        """
+        return self._driver.execute(Command.CONTEXT_HANDLES)
+
+    @context.setter
+    def context(self, new_context):
+        """
+        sets the current context
+        """
+        self._driver.execute(Command.SWITCH_TO_CONTEXT, {"name": new_context})

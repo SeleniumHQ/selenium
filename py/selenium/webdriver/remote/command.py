@@ -125,9 +125,6 @@ class Command(object):
     GET_APP_CACHE_STATUS = "getAppCacheStatus"
     CLEAR_APP_CACHE = "clearAppCache"
 
-    GET_NETWORK_CONNECTION = "getNetworkConnection"
-    SET_NETWORK_CONNECTION = "setNetworkConnection"
-
     GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem"
     REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem"
     GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys"
@@ -141,3 +138,10 @@ class Command(object):
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
     CLEAR_SESSION_STORAGE = "clearSessionStorage"
     GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"
+    
+    # Mobile
+    GET_NETWORK_CONNECTION = "getNetworkConnection"
+    SET_NETWORK_CONNECTION = "setNetworkConnection"
+    CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle"
+    CONTEXT_HANDLES = "getContextHandles"
+    SWITCH_TO_CONTEXT = "switchToContext"
