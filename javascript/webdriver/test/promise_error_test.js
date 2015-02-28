@@ -635,6 +635,29 @@ function testRegisteredTaskCallbacksAreDroppedWhenTaskIsCancelled_withReturn() {
 }
 
 
+function testTasksWithinQueuedCallbackInAFrameAreDroppedIfFrameAborts() {
+  var seen = [];
+  return flow.execute(function() {
+    flow.execute(throwStubError);
+    webdriver.promise.fulfilled().then(function() {
+      seen.push(1);
+
+      return flow.execute(function() {
+        seen.push(2);
+      });
+
+    // This callback depends on the result of a cancelled task, so it will never
+    // be invoked.
+    }).thenFinally(function() {
+      seen.push(3);
+    });
+  }).then(fail, function(e) {
+    assertIsStubError(e);
+    assertArrayEquals([1], seen);
+  });
+}
+
+
 function testTaskIsCancelledAfterWaitTimeout() {
   var seen = [];
   return flow.execute(function() {
