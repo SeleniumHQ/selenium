@@ -227,7 +227,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                    " SAFARI: takes only visible viewport." +
                    " CHROME: takes only visible viewport." +
                    " PHANTOMJS: takes empty data of byte[], no errors. ")
-  )
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_too_long.html"));
 
