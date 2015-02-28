@@ -151,8 +151,7 @@ core.text.getElementText = function(element) {
   var isRecentFirefox =
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
 
-  if (isRecentFirefox ||
-      goog.userAgent.WEBKIT || goog.userAgent.OPERA || goog.userAgent.IE) {
+  if (isRecentFirefox || goog.userAgent.WEBKIT || goog.userAgent.IE) {
     text = core.text.getTextContent_(element, false);
   } else {
     if (element.textContent) {

@@ -16,10 +16,8 @@
         var fired;
 
         // These should work, they just don't.
-        var CLICKING_WITH_COORDINATES_BROKEN = goog.userAgent.product.SAFARI ||
-            goog.userAgent.product.ANDROID ||
-            (goog.userAgent.product.OPERA &&
-             bot.userAgent.isEngineVersion(12));
+        var CLICKING_WITH_COORDINATES_BROKEN =
+            goog.userAgent.product.SAFARI || goog.userAgent.product.ANDROID;
 
         // Some browsers support subpixel element locations but not (yet) subpixel events:
         // Chrome: http://crbug.com/396380
