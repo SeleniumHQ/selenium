@@ -156,7 +156,7 @@ limitations under the License.
         <hbox>
           <textbox id="webDriverBrowserString" multiline="false" flex="1"/>
         </hbox>
-        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad, opera</description>
+        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad</description>
         <label class="text-link" href="http://blog.reallysimplethoughts.com/?p=561" value="How to use WebDriver playback?" />
       </tabpanel>
     </tabpanels>
