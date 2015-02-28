@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2010 WebDriver committers
 # Copyright 2008-2010 Google Inc.
 #
@@ -235,7 +236,6 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertEqual("hello world", element.get_attribute("value"))
     
     @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_opera
     def testShouldReturnNullForNonPresentBooleanAttributes(self):
         self._loadPage("booleanAttributes")
         element1 = self.driver.find_element_by_id("working")

@@ -1,3 +1,4 @@
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -20,9 +21,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class WindowTests(unittest.TestCase):
-
     @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_opera
     @pytest.mark.ignore_ie
     def testShouldMaximizeTheWindow(self):
         resize_timeout = 5

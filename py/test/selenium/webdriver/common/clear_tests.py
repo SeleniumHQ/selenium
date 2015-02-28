@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2010 WebDriver committers
 # Copyright 2008-2010 Google Inc.
 #
@@ -41,7 +42,6 @@ class ClearTests(unittest.TestCase):
         except InvalidElementStateException:
             pass
 
-    @pytest.mark.ignore_opera
     def testTextInputShouldNotClearWhenReadOnly(self):
         self._loadPage("readOnlyPage")
         element = self.driver.find_element_by_id("readOnlyTextInput")

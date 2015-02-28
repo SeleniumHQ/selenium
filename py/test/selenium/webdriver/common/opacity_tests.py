@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2012 WebDriver committers
 # Copyright 2008-2012 Google Inc.
 #
@@ -25,7 +26,6 @@ from selenium.webdriver.common.by import By
 class OpacityTests(unittest.TestCase):
 
     @pytest.mark.ignore_ie
-    @pytest.mark.ignore_opera
     def testShouldBeAbleToClickOnElementsWithOpacityZero(self):
         self._loadPage("click_jacker")
         element = self.driver.find_element(By.ID, "clickJacker")

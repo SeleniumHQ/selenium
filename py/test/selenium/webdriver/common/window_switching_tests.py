@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -56,7 +57,6 @@ class WindowSwitchingTests(unittest.TestCase):
         self.driver.switch_to.window(current)
 
     @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_opera
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
         self._loadPage("xhtmlTest")
         current = self.driver.current_window_handle
@@ -74,7 +74,6 @@ class WindowSwitchingTests(unittest.TestCase):
             self.driver.switch_to.window(current)
 
     @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_opera
     @pytest.mark.ignore_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
@@ -100,7 +99,6 @@ class WindowSwitchingTests(unittest.TestCase):
             self.driver.switch_to.window(current)
     
     @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_opera
     @pytest.mark.ignore_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
         self._loadPage("xhtmlTest")
