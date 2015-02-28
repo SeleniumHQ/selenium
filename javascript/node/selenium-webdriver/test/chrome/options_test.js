@@ -44,9 +44,10 @@ describe('chrome.Options', function() {
     });
 
     it('should rebuild options from wire representation', function() {
+      var expectedExtension = fs.readFileSync(__filename, 'base64');
       var caps = webdriver.Capabilities.chrome().set('chromeOptions', {
         args: ['a', 'b'],
-        extensions: [1, 2],
+        extensions: [__filename],
         binary: 'binaryPath',
         logPath: 'logFilePath',
         detach: true,
@@ -55,18 +56,18 @@ describe('chrome.Options', function() {
       });
 
       var options = chrome.Options.fromCapabilities(caps);
+      var json = options.serialize();
 
-      assert(options.args_.length).equalTo(2);
-      assert(options.args_[0]).equalTo('a');
-      assert(options.args_[1]).equalTo('b');
-      assert(options.extensions_.length).equalTo(2);
-      assert(options.extensions_[0]).equalTo(1);
-      assert(options.extensions_[1]).equalTo(2);
-      assert(options.binary_).equalTo('binaryPath');
-      assert(options.logFile_).equalTo('logFilePath');
-      assert(options.detach_).equalTo(true);
-      assert(options.localState_).equalTo('localStateValue');
-      assert(options.prefs_).equalTo('prefsValue');
+      assert(json.args.length).equalTo(2);
+      assert(json.args[0]).equalTo('a');
+      assert(json.args[1]).equalTo('b');
+      assert(json.extensions.length).equalTo(1);
+      assert(json.extensions[0]).equalTo(expectedExtension);
+      assert(json.binary).equalTo('binaryPath');
+      assert(json.logPath).equalTo('logFilePath');
+      assert(json.detach).equalTo(true);
+      assert(json.localState).equalTo('localStateValue');
+      assert(json.prefs).equalTo('prefsValue');
     });
 
     it('should rebuild options from incomplete wire representation',
@@ -77,7 +78,6 @@ describe('chrome.Options', function() {
 
           var options = chrome.Options.fromCapabilities(caps);
           var json = options.serialize();
-
           assert(json.args).isUndefined();
           assert(json.binary).isUndefined();
           assert(json.detach).isUndefined();
@@ -107,26 +107,28 @@ describe('chrome.Options', function() {
   describe('addArguments', function() {
     it('takes var_args', function() {
       var options = new chrome.Options();
-      assert(options.args_.length).equalTo(0);
+      assert(options.serialize().args).isUndefined();
 
       options.addArguments('a', 'b');
-      assert(options.args_.length).equalTo(2);
-      assert(options.args_[0]).equalTo('a');
-      assert(options.args_[1]).equalTo('b');
+      var json = options.serialize();
+      assert(json.args.length).equalTo(2);
+      assert(json.args[0]).equalTo('a');
+      assert(json.args[1]).equalTo('b');
     });
 
     it('flattens input arrays', function() {
       var options = new chrome.Options();
-      assert(options.args_.length).equalTo(0);
+      assert(options.serialize().args).isUndefined();
 
       options.addArguments(['a', 'b'], 'c', [1, 2], 3);
-      assert(options.args_.length).equalTo(6);
-      assert(options.args_[0]).equalTo('a');
-      assert(options.args_[1]).equalTo('b');
-      assert(options.args_[2]).equalTo('c');
-      assert(options.args_[3]).equalTo(1);
-      assert(options.args_[4]).equalTo(2);
-      assert(options.args_[5]).equalTo(3);
+      var json = options.serialize();
+      assert(json.args.length).equalTo(6);
+      assert(json.args[0]).equalTo('a');
+      assert(json.args[1]).equalTo('b');
+      assert(json.args[2]).equalTo('c');
+      assert(json.args[3]).equalTo(1);
+      assert(json.args[4]).equalTo(2);
+      assert(json.args[5]).equalTo(3);
     });
   });
 

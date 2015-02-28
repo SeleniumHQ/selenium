@@ -411,8 +411,11 @@ Options.fromCapabilities = function(capabilities) {
  * @return {!Options} A self reference.
  */
 Options.prototype.addArguments = function(var_args) {
-  this.options_.args = (this.options_.args || [])
-      .concat.apply(this.args_, arguments);
+  var args = this.options_.args || [];
+  args = args.concat.apply(args, arguments);
+  if (args.length) {
+    this.options_.args = args;
+  }
   return this;
 };
 
@@ -425,8 +428,11 @@ Options.prototype.addArguments = function(var_args) {
  * @return {!Options} A self reference.
  */
 Options.prototype.excludeSwitches = function(var_args) {
-  this.options_.excludeSwitches = (this.options_.excludeSwitches || [])
-      .concat.apply(this.args_, arguments);
+  var switches = this.options_.excludeSwitches || [];
+  switches = switches.concat.apply(switches, arguments);
+  if (switches.length) {
+    this.options_.excludeSwitches = switches;
+  }
   return this;
 };
 
@@ -571,7 +577,7 @@ Options.prototype.androidDeviceSerial = function(serial) {
 
 /**
  * Configures the ChromeDriver to launch Chrome on Android via adb. This
- * function is shorthand for 
+ * function is shorthand for
  * {@link #androidPackage options.androidPackage('com.android.chrome')}.
  * @return {!Options} A self reference.
  */
