@@ -38,6 +38,7 @@ webdriver.Browser = {
   INTERNET_EXPLORER: 'internet explorer',
   IPAD: 'iPad',
   IPHONE: 'iPhone',
+  OPERA: 'opera',
   PHANTOM_JS: 'phantomjs',
   SAFARI: 'safari',
   HTMLUNIT: 'htmlunit'
@@ -235,6 +236,14 @@ webdriver.Capabilities.iphone = function() {
       set(webdriver.Capability.PLATFORM, 'MAC');
 };
 
+
+/**
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Opera.
+ */
+webdriver.Capabilities.opera = function() {
+  return new webdriver.Capabilities().
+      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.OPERA);
+};
 
 /**
  * @return {!webdriver.Capabilities} A basic set of capabilities for
