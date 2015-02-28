@@ -48,10 +48,10 @@ goog.require('webdriver.http.Response');
  *     This limitation appears to be intentional and is documented in WebKit's
  *     Layout tests:
  *     //LayoutTests/http/tests/xmlhttprequest/access-control-and-redirects.html
- *   <li>If the server does not return a 2xx response, IE and Opera's
- *     implementations will fire the XDomainRequest/XMLHttpRequest object's
+ *   <li>If the server does not return a 2xx response, IE
+ *     implementation will fire the XDomainRequest/XMLHttpRequest object's
  *     onerror handler, but without the corresponding response text returned by
- *     the server. This renders IE and Opera incapable of handling command
+ *     the server. This renders IE incapable of handling command
  *     failures in the standard JSON protocol.
  * </ul>
  *

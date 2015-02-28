@@ -36,7 +36,7 @@ goog.require('webdriver.Key');
  */
 webdriver.atoms.element.isSelected = function(element) {
   // Although this method looks unloved, its compiled form is used by
-  // the Chrome and OperaDrivers.
+  // Chrome.
   if (!bot.dom.isSelectable(element)) {
     return false;
   }

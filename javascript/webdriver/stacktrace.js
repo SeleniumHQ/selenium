@@ -60,8 +60,7 @@ webdriver.stacktrace.Snapshot = function(opt_slice) {
   }
 
   /**
-   * The error's stacktrace.  This must be accessed immediately to ensure Opera
-   * computes the context correctly.
+   * The error's stacktrace.
    * @private {string}
    */
   this.stack_ = webdriver.stacktrace.getStack(error);
@@ -393,40 +392,6 @@ webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 
 /**
- * RegExp pattern for an anonymous function call in an Opera stack frame.
- * Creates 2 (optional) submatches: the context object and function name.
- * @private {string}
- * @const
- */
-webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
-    '<anonymous function(?:\\: ' +
-    webdriver.stacktrace.QUALIFIED_NAME_PATTERN_ + ')?>';
-
-
-/**
- * RegExp pattern for a function call in an Opera stack frame.
- * Creates 3 (optional) submatches: the function name (if not anonymous),
- * the aliased context object and the function name (if anonymous).
- * @private {string}
- * @const
- */
-webdriver.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ =
-    '(?:(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')|' +
-    webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ +
-    ')(?:\\(.*\\)))?@';
-
-
-/**
- * Regular expression for parsing on stack frame in Opera 11.68+
- * @private {!RegExp}
- * @const
- */
-webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
-    webdriver.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ +
-    webdriver.stacktrace.URL_PATTERN_ + '?$');
-
-
-/**
  * RegExp pattern for function call in a Chakra (IE) stack trace. This
  * expression creates 2 submatches on the (optional) context and function name,
  * matching identifiers like 'foo.Bar.prototype.baz', 'Anonymous function',
@@ -514,11 +479,6 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
   m = frameStr.match(webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_);
   if (m) {
     return new webdriver.stacktrace.Frame('', m[1], '', m[2]);
-  }
-
-  m = frameStr.match(webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_);
-  if (m) {
-    return new webdriver.stacktrace.Frame(m[2], m[1] || m[3], '', m[4]);
   }
 
   m = frameStr.match(webdriver.stacktrace.CHAKRA_STACK_FRAME_REGEXP_);
@@ -641,12 +601,7 @@ webdriver.stacktrace.parse_ = function(stack) {
     // The first two frames will be:
     //   webdriver.stacktrace.Snapshot()
     //   webdriver.stacktrace.get()
-    // In the case of Opera, sometimes an extra frame is injected in the next
-    // frame with a reported line number of zero. The next line detects that
-    // case and skips that frame.
-    if (!(goog.userAgent.OPERA && i == 2 && frame.getLine() == 0)) {
-      frames.push(frame || webdriver.stacktrace.ANONYMOUS_FRAME_);
-    }
+    frames.push(frame || webdriver.stacktrace.ANONYMOUS_FRAME_);
   }
   return frames;
 };

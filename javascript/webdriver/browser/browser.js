@@ -30,7 +30,6 @@ webdriver.browser.BROWSER_NAME_ = (function() {
   map[goog.userAgent.IE] = webdriver.Browser.INTERNET_EXPLORER;
   map[goog.userAgent.product.IPAD] = webdriver.Browser.IPAD;
   map[goog.userAgent.product.IPHONE] = webdriver.Browser.IPHONE;
-  map[goog.userAgent.OPERA] = webdriver.Browser.OPERA;
   map[goog.userAgent.product.SAFARI] = webdriver.Browser.SAFARI;
   return map[true] || '';
 })();

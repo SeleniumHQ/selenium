@@ -174,53 +174,6 @@ function testParseStackFrameInV8() {
           '/local/dir/path'));
 }
 
-function testParseStackFrameInOpera() {
-  assertStackFrame('empty frame', '@', webdriver.stacktrace.ANONYMOUS_FRAME_);
-
-  assertStackFrame('javascript path only',
-      '@javascript:console.log(Error().stack):1',
-      new webdriver.stacktrace.Frame('', '', '',
-          'javascript:console.log(Error().stack):1'));
-
-  assertStackFrame('path only',
-      '@file:///foo:42',
-      new webdriver.stacktrace.Frame('', '', '', 'file:///foo:42'));
-
-  // (function go() { throw Error() })()
-  // var c = go; c()
-  assertStackFrame('name and empty path',
-      'go([arguments not available])@',
-      new webdriver.stacktrace.Frame('', 'go', '', ''));
-
-  assertStackFrame('name and path',
-      'go([arguments not available])@file:///foo:42',
-      new webdriver.stacktrace.Frame('', 'go', '', 'file:///foo:42'));
-
-  // (function() { throw Error() })()
-  assertStackFrame('anonymous function',
-      '<anonymous function>([arguments not available])@file:///foo:42',
-      new webdriver.stacktrace.Frame('', '', '', 'file:///foo:42'));
-
-  // var b = {foo: function() { throw Error() }}
-  assertStackFrame('object literal function',
-      '<anonymous function: foo>()@file:///foo:42',
-      new webdriver.stacktrace.Frame('', 'foo', '', 'file:///foo:42'));
-
-  // var c = {}; c.foo = function() { throw Error() }
-  assertStackFrame('named object literal function',
-      '<anonymous function: c.foo>()@file:///foo:42',
-      new webdriver.stacktrace.Frame('c', 'foo', '', 'file:///foo:42'));
-
-  assertStackFrame('prototype function',
-      '<anonymous function: Foo.prototype.bar>()@',
-      new webdriver.stacktrace.Frame('Foo.prototype', 'bar', '', ''));
-
-  assertStackFrame('namespaced prototype function',
-      '<anonymous function: goog.Foo.prototype.bar>()@',
-      new webdriver.stacktrace.Frame(
-          'goog.Foo.prototype', 'bar', '', ''));
-}
-
 function testParseClosureCanonicalStackFrame() {
   assertStackFrame('unknown frame', '> (unknown)',
       webdriver.stacktrace.ANONYMOUS_FRAME_);
