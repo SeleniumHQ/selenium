@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
@@ -55,7 +53,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-@Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, SAFARI})
+@Ignore({CHROME, HTMLUNIT, IE, SAFARI})
 public class SessionLogsTest extends JUnit4TestBase {
 
   private static OutOfProcessSeleniumServer server;
