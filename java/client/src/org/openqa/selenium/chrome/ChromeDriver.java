@@ -1,6 +1,6 @@
 /*
 Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+Copyright 2012-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,27 +36,26 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
  * This class is provided as a convenience for easily testing the Chrome browser. The control server
  * which each instance communicates with will live and die with the instance.
- * 
- * <p/>
+ *
  * To avoid unnecessarily restarting the ChromeDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link ChromeDriverService}, which is managed
  * separately. For example: <pre>{@code
- * 
+ *
  * import static org.junit.Assert.assertEquals;
- * 
+ *
  * import org.junit.*;
  * import org.junit.runner.RunWith;
  * import org.junit.runners.JUnit4;
  * import org.openqa.selenium.chrome.ChromeDriverService;
  * import org.openqa.selenium.remote.DesiredCapabilities;
  * import org.openqa.selenium.remote.RemoteWebDriver;
- * 
+ *
  * {@literal @RunWith(JUnit4.class)}
  * public class ChromeTest extends TestCase {
- * 
+ *
  *   private static ChromeDriverService service;
  *   private WebDriver driver;
- * 
+ *
  *   {@literal @BeforeClass}
  *   public static void createAndStartService() {
  *     service = new ChromeDriverService.Builder()
@@ -65,23 +64,23 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *         .build();
  *     service.start();
  *   }
- * 
+ *
  *   {@literal @AfterClass}
  *   public static void createAndStopService() {
  *     service.stop();
  *   }
- * 
+ *
  *   {@literal @Before}
  *   public void createDriver() {
  *     driver = new RemoteWebDriver(service.getUrl(),
  *         DesiredCapabilities.chrome());
  *   }
- * 
+ *
  *   {@literal @After}
  *   public void quitDriver() {
  *     driver.quit();
  *   }
- * 
+ *
  *   {@literal @Test}
  *   public void testGoogleSearch() {
  *     driver.get("http://www.google.com");

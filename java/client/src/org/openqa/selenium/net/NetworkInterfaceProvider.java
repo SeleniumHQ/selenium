@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +20,7 @@ package org.openqa.selenium.net;
 
 /**
  * Provides information about the local network interfaces.
- * <p/>
+ *
  * Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
  * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */

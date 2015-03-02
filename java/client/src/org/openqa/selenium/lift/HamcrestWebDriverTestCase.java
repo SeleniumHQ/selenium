@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,9 +97,8 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase type(String, Finder<WebElement,
-   * WebDriver>)}, e.g. type("cheese", into(textbox())); The into() method simply returns its
-   * argument.
+   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase},
+   * e.g. type("cheese", into(textbox())); The into() method simply returns its argument.
    */
   protected Finder<WebElement, WebDriver> into(Finder<WebElement, WebDriver> input) {
     return input;

@@ -1,6 +1,6 @@
 /*
 Copyright 2014 Selenium committers
-Copyright 2014 Software Freedom Conservancy
+Copyright 2014-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 
 package org.openqa.selenium.opera;
 
@@ -36,27 +35,26 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * A {@link WebDriver} implementation that controls a Blink-based Opera browser running on the local
  * machine. This class is provided as a convenience for easily testing the Chrome browser. The
  * control server which each instance communicates with will live and die with the instance.
- * 
- * <p/>
+ *
  * To avoid unnecessarily restarting the OperaDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired {@link OperaDriverService}, which is managed
  * separately. For example: <pre>{@code
- * 
+ *
  * import static org.junit.Assert.assertEquals;
- * 
+ *
  * import org.junit.*;
  * import org.junit.runner.RunWith;
  * import org.junit.runners.JUnit4;
  * import org.openqa.selenium.opera.OperaDriverService;
  * import org.openqa.selenium.remote.DesiredCapabilities;
  * import org.openqa.selenium.remote.RemoteWebDriver;
- * 
+ *
  * {@literal @RunWith(JUnit4.class)}
  * public class OperaTest extends TestCase {
- * 
+ *
  *   private static OperaDriverService service;
  *   private WebDriver driver;
- * 
+ *
  *   {@literal @BeforeClass}
  *   public static void createAndStartService() {
  *     service = new OperaDriverService.Builder()
@@ -65,23 +63,23 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *         .build();
  *     service.start();
  *   }
- * 
+ *
  *   {@literal @AfterClass}
  *   public static void createAndStopService() {
  *     service.stop();
  *   }
- * 
+ *
  *   {@literal @Before}
  *   public void createDriver() {
  *     driver = new RemoteWebDriver(service.getUrl(),
  *         DesiredCapabilities.opera());
  *   }
- * 
+ *
  *   {@literal @After}
  *   public void quitDriver() {
  *     driver.quit();
  *   }
- * 
+ *
  *   {@literal @Test}
  *   public void testGoogleSearch() {
  *     driver.get("http://www.google.com");
