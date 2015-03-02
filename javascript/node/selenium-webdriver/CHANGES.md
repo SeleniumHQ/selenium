@@ -1,4 +1,4 @@
-## v2.45.1-dev
+## v2.45.1
 
 * FIXED: 8548: Task callbacks are once again dropped if the task was cancelled
     due to a previously uncaught error within the frame.
