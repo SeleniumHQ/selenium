@@ -490,7 +490,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {IE, MARIONETTE},
-          reason = "untested user agents, "IE: F4 triggers address bar")
+          reason = "untested user agents, IE: F4 triggers address bar")
   @Test
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
