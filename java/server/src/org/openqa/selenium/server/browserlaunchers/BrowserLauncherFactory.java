@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservancy.
+ * Copyright 2011-2015 Software Freedom Conservancy
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put(BrowserType.SAFARI_PROXY, SafariCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.IE_HTA, HTABrowserLauncher.class);
     supportedBrowsers.put(BrowserType.IEXPLORE, InternetExplorerLauncher.class);
-    supportedBrowsers.put(BrowserType.OPERA, OperaCustomProfileLauncher.class);
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);

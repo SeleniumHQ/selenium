@@ -58,9 +58,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
   private static final String locationChrome27 = "/home/chrome27";
   private static final String locationChrome29 = "c:\\program files\\Chrome29.exe";
 
-  private static final String locationOpera12 = "/home/opera12";
-  private static final String locationOpera11 = "c:\\program files\\Opera11.exe";
-
   private static Hub hub;
   private static Registry registry;
   private static SelfRegisteringRemote remote;
@@ -107,22 +104,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     caps.setVersion("30");
     remote.addBrowser(caps, 1);
 
-    // opera
-
-    caps = DesiredCapabilities.opera();
-    caps.setCapability("opera_binary", locationOpera12);
-    caps.setVersion("12");
-    remote.addBrowser(caps, 1);
-    caps = DesiredCapabilities.opera();
-    caps.setCapability("opera_binary", locationOpera11);
-    caps.setVersion("11");
-    remote.addBrowser(caps, 1);
-    caps = DesiredCapabilities.opera();
-    caps.setCapability("opera_binary", "should be overwritten");
-    caps.setVersion("10");
-    remote.addBrowser(caps, 1);
-
-
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);
@@ -162,33 +143,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     assertEquals("custom",
                  newSessionRequest.getSession().getRequestedCapabilities()
                      .get(FirefoxDriver.BINARY));
-
-    // opera
-
-    req_caps = new HashMap<String, Object>();
-    req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.OPERA);
-    req_caps.put(CapabilityType.VERSION, "11");
-    newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
-    newSessionRequest.process();
-    assertEquals(locationOpera11,
-                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
-
-    req_caps = new HashMap<String, Object>();
-    req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.OPERA);
-    req_caps.put(CapabilityType.VERSION, "12");
-    newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
-    newSessionRequest.process();
-    assertEquals(locationOpera12,
-                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
-
-    req_caps = new HashMap<String, Object>();
-    req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.OPERA);
-    req_caps.put(CapabilityType.VERSION, "10");
-    req_caps.put("opera.binary", "custom");
-    newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
-    newSessionRequest.process();
-    assertEquals("custom",
-                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
 
     // chrome
 
