@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,22 +33,17 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class RemoteProxyInheritanceTest {
-
   private Registry registry = Registry.newInstance();
 
   @Test
   public void defaultToRemoteProxy() {
-
-
     RegistrationRequest req = RegistrationRequest.localWebdriverNoCapabilities();
 
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(ID, "abc");
-
 
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
@@ -57,7 +52,6 @@ public class RemoteProxyInheritanceTest {
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
     assertEquals(BaseRemoteProxy.class, p.getClass());
   }
-
 
   @Test
   public void existing() {
@@ -82,7 +76,6 @@ public class RemoteProxyInheritanceTest {
     assertEquals("B", myRemoteProxy.getCustom2());
     assertEquals("A", myRemoteProxy.getConfig().get("Custom1"));
     assertEquals("B", myRemoteProxy.getConfig().get("Custom2"));
-
   }
 
   @Test(expected = InvalidParameterException.class)
@@ -105,7 +98,6 @@ public class RemoteProxyInheritanceTest {
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "java.lang.String");
-
 
     RegistrationRequest req = new RegistrationRequest();
     req.addDesiredCapability(app1);
@@ -130,10 +122,8 @@ public class RemoteProxyInheritanceTest {
     BaseRemoteProxy.getNewInstance(req, registry);
   }
 
-
   @After
-  public void tearDown(){
+  public void tearDown() {
     registry.stop();
   }
-  
 }

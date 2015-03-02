@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 - 2012 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -408,8 +408,8 @@ public class BaseRemoteProxy implements RemoteProxy {
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
-                                                         Registry registry) {
+  public static <T extends RemoteProxy> T getNewInstance(
+      RegistrationRequest request, Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -428,13 +428,9 @@ public class BaseRemoteProxy implements RemoteProxy {
       } else {
         throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
-
     } catch (InvocationTargetException e) {
-      log.log(Level.SEVERE, e.getTargetException().getMessage(), e.getTargetException());
       throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
-
     } catch (Exception e) {
-      log.log(Level.SEVERE, e.getMessage(), e);
       throw new InvalidParameterException("Error: " + e.getMessage());
     }
   }
