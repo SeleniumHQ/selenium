@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -243,15 +243,6 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
           cap.put(ChromeOptions.CAPABILITY, options);
         }
       }
-
-      if (BrowserType.OPERA.equals(cap.get(CapabilityType.BROWSER_NAME))) {
-        if (session.getSlot().getCapabilities().get("opera_binary") != null
-            && cap.get("opera.binary") == null) {
-          session.getRequestedCapabilities().put("opera.binary",
-                                                 session.getSlot().getCapabilities().get("opera_binary"));
-        }
-      }
-
     }
   }
 
