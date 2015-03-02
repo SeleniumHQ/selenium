@@ -50,7 +50,8 @@ import java.net.ProxySelector;
 public class HttpClientFactory {
 
   private final CloseableHttpClient httpClient;
-  private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis(60 * 60 * 3);
+  private final int socketTimeout = (int) SECONDS.toMillis(
+      Integer.parseInt(System.getProperty("webdriver.remote.http.socket.timeout", "10800")));
   private final HttpClientConnectionManager gridClientConnectionManager =
       getClientConnectionManager();
 
@@ -58,7 +59,7 @@ public class HttpClientFactory {
     httpClient = createHttpClient(null);
   }
 
-  private static HttpClientConnectionManager getClientConnectionManager() {
+  private HttpClientConnectionManager getClientConnectionManager() {
     Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
         .<ConnectionSocketFactory>create()
         .register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -69,6 +70,7 @@ public class HttpClientFactory {
         socketFactoryRegistry);
     cm.setMaxTotal(2000);
     cm.setDefaultMaxPerRoute(2000);
+    cm.setDefaultSocketConfig(createSocketConfig());
     return cm;
   }
 
@@ -79,7 +81,6 @@ public class HttpClientFactory {
   public CloseableHttpClient createHttpClient(Credentials credentials) {
     HttpClientBuilder builder = HttpClientBuilder.create()
         .setConnectionManager(getClientConnectionManager())
-        .setDefaultSocketConfig(createSocketConfig())
         .setDefaultSocketConfig(createSocketConfig())
         .setRoutePlanner(createRoutePlanner())
         .setDefaultRequestConfig(createRequestConfig());
@@ -97,12 +98,12 @@ public class HttpClientFactory {
     gridClientConnectionManager.closeIdleConnections(100, MILLISECONDS);
 
     SocketConfig socketConfig = SocketConfig.copy(createSocketConfig())
-        .setSoTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
+        .setSoTimeout(socket_timeout > 0 ? socket_timeout : socketTimeout)
         .build();
 
     RequestConfig requestConfig = RequestConfig.copy(createRequestConfig())
         .setConnectTimeout(connection_timeout > 0 ? connection_timeout : 120 * 1000)
-        .setSocketTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
+        .setSocketTimeout(socket_timeout > 0 ? socket_timeout : socketTimeout)
         .build();
 
     return HttpClientBuilder.create()
@@ -117,7 +118,7 @@ public class HttpClientFactory {
   private SocketConfig createSocketConfig() {
     return SocketConfig.custom()
         .setSoReuseAddress(true)
-        .setSoTimeout(TIMEOUT_THREE_HOURS)
+        .setSoTimeout(socketTimeout)
         .build();
   }
 
@@ -125,7 +126,7 @@ public class HttpClientFactory {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
         .setConnectTimeout(120 * 1000)
-        .setSocketTimeout(TIMEOUT_THREE_HOURS)
+        .setSocketTimeout(socketTimeout)
         .build();
   }
 
