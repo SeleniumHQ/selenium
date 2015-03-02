@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -231,15 +232,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   /**
-   * @deprecated Use #operaBlink or #operaPresto
+   * @deprecated Use #operaBlink
    */
   @Deprecated
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
-  }
-
-  public static DesiredCapabilities operaPresto() {
-    return new DesiredCapabilities(BrowserType.OPERA_PRESTO, "", Platform.ANY);
   }
 
   public static DesiredCapabilities operaBlink() {

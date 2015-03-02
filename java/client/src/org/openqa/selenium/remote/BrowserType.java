@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,12 +27,11 @@ public interface BrowserType {
   String GOOGLECHROME = "googlechrome";
   String SAFARI = "safari";
   /**
-   * @deprecated Use OPERA_BLINK or OPERA_PRESTO
+   * @deprecated Use OPERA_BLINK
    */
   @Deprecated
   String OPERA = "opera";
   String OPERA_BLINK = "operablink";
-  String OPERA_PRESTO = "operapresto";
   String IEXPLORE= "iexplore";
   String IEXPLORE_PROXY= "iexploreproxy";
   String SAFARI_PROXY = "safariproxy";
