@@ -462,7 +462,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
 
     if (element) {
       var id = Utils.addToKnownElements(element);
-      respond.value = {'ELEMENT': id};
+      respond.value = {'ELEMENT': id, 'element-6066-11e4-a52e-4f735466cecf': id};
       return respond.send();
     }
 
@@ -550,7 +550,7 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
     for (var j = 0; j < elements.length; j++) {
       var element = elements[j];
       var elementId = Utils.addToKnownElements(element);
-      elementIds.push({'ELEMENT': elementId});
+      elementIds.push({'ELEMENT': elementId, 'element-6066-11e4-a52e-4f735466cecf': elementId});
     }
 
     var wait = respond.session.getImplicitWait();
@@ -628,12 +628,13 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     goog.log.info(FirefoxDriver.LOG_,
         'Switching to frame by index: ' + parameters.id);
     newWindow = bot.frame.findFrameByIndex(parameters.id, currentWindow);
-  } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
+  } else if (goog.isObject(parameters.id) &&
+              ('ELEMENT' in parameters.id) || 'element-6066-11e4-a52e-4f735466cecf' in parameters.id) {
+    var elId = parameters.id['element-6066-11e4-a52e-4f735466cecf'] ? parameters.id['element-6066-11e4-a52e-4f735466cecf'] : parameters.id['ELEMENT']
     goog.log.info(FirefoxDriver.LOG_,
-        'Switching to frame by element: ' + parameters.id['ELEMENT']);
+        'Switching to frame by element: ' + elId);
 
-    var element = Utils.getElementAt(parameters.id['ELEMENT'],
-        currentWindow.document);
+    var element = Utils.getElementAt(elId, currentWindow.document);
 
     element = fxdriver.moz.unwrapFor4(element);
 
@@ -680,7 +681,7 @@ FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
   var id = Utils.addToKnownElements(element);
 
-  respond.value = {'ELEMENT': id};
+  respond.value = {'ELEMENT': id, 'element-6066-11e4-a52e-4f735466cecf': id};
   respond.send();
 };
 
