@@ -133,7 +133,7 @@ module Selenium
       #
       # Note that the events fired by this event may not be as you'd expect.  In particular, we don't
       # fire any keyboard or mouse events.  If you want to ensure keyboard events are
-      # fired, consider using #send_keys with the backspace key. To ensure you get a change event, 
+      # fired, consider using #send_keys with the backspace key. To ensure you get a change event,
       # consider following with a call to #send_keys with the tab key.
       #
 
@@ -272,7 +272,10 @@ module Selenium
       #
 
       def as_json(opts = nil)
-        { :ELEMENT => @id }
+        {
+          :ELEMENT => @id,
+          "element-6066-11e4-a52e-4f735466cecf" => @id
+        }
       end
 
       private
