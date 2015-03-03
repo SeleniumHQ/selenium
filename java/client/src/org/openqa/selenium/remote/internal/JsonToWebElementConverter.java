@@ -52,6 +52,11 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
         element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
         element.setFileDetector(driver.getFileDetector());
         return element;
+      } else if (resultAsMap.containsKey("element-6066-11e4-a52e-4f735466cecf")) {
+        RemoteWebElement element = newRemoteWebElement();
+        element.setId(String.valueOf(resultAsMap.get("element-6066-11e4-a52e-4f735466cecf")));
+        element.setFileDetector(driver.getFileDetector());
+        return element;
       } else {
         return Maps.transformValues(resultAsMap, this);
       }

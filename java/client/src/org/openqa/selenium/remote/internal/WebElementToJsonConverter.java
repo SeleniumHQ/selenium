@@ -49,7 +49,8 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     if (arg instanceof RemoteWebElement) {
-      return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId());
+      return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId(),
+                             "element-6066-11e4-a52e-4f735466cecf", ((RemoteWebElement) arg).getId());
     }
 
     if (arg.getClass().isArray()) {
