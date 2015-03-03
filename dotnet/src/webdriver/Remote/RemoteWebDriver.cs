@@ -800,13 +800,13 @@ namespace OpenQA.Selenium.Remote
                 // TODO: Remove this "if" logic once the spec is properly updated
                 // and remote-end implementations comply.
                 string id = string.Empty;
-                if (elementDictionary.ContainsKey("ELEMENT"))
+                if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                {
+                    id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                }
+                else if (elementDictionary.ContainsKey("ELEMENT"))
                 {
                     id = (string)elementDictionary["ELEMENT"];
-                }
-                else if (elementDictionary.ContainsKey("id"))
-                {
-                    id = (string)elementDictionary["id"];
                 }
 
                 element = this.CreateElement(id);
@@ -832,13 +832,13 @@ namespace OpenQA.Selenium.Remote
                     // TODO: Remove this "if" logic once the spec is properly updated
                     // and remote-end implementations comply.
                     string id = string.Empty;
-                    if (elementDictionary.ContainsKey("ELEMENT"))
+                    if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                    {
+                        id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                    }
+                    else if (elementDictionary.ContainsKey("ELEMENT"))
                     {
                         id = (string)elementDictionary["ELEMENT"];
-                    }
-                    else if (elementDictionary.ContainsKey("id"))
-                    {
-                        id = (string)elementDictionary["id"];
                     }
 
                     RemoteWebElement element = this.CreateElement(id);
@@ -1036,7 +1036,7 @@ namespace OpenQA.Selenium.Remote
                 // TODO: Remove addition of 'id' key when spec is changed.
                 Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
                 elementDictionary.Add("ELEMENT", argAsElement.InternalElementId);
-                elementDictionary.Add("id", argAsElement.InternalElementId);
+                elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", argAsElement.InternalElementId);
                 converted = elementDictionary;
             }
             else if (argAsDictionary != null)
@@ -1183,16 +1183,15 @@ namespace OpenQA.Selenium.Remote
 
             if (resultAsDictionary != null)
             {
-                if (resultAsDictionary.ContainsKey("ELEMENT"))
+                if (resultAsDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
                 {
-                    string id = (string)resultAsDictionary["ELEMENT"];
+                    string id = (string)resultAsDictionary["element-6066-11e4-a52e-4f735466cecf"];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }
-                else if (resultAsDictionary.ContainsKey("id"))
+                else if (resultAsDictionary.ContainsKey("ELEMENT"))
                 {
-                    // TODO: Remove addition of 'id' key when spec is changed.
-                    string id = (string)resultAsDictionary["id"];
+                    string id = (string)resultAsDictionary["ELEMENT"];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }

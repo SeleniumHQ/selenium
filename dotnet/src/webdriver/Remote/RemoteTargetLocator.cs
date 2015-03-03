@@ -90,6 +90,7 @@ namespace OpenQA.Selenium.Remote
 
             Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
             elementDictionary.Add("ELEMENT", convertedElement.InternalElementId);
+            elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", convertedElement.InternalElementId);
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", elementDictionary);
