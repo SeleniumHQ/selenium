@@ -278,7 +278,8 @@ class FirefoxProfile(object):
                 os.makedirs(extensions_path)
             shutil.copy(xpifile, addon_path + '.xpi')
         else:
-            shutil.copytree(addon, addon_path, symlinks=True)
+            if not os.path.exists(addon_path):
+                shutil.copytree(addon, addon_path, symlinks=True)
 
         # remove the temporary directory, if any
         if tmpdir:
