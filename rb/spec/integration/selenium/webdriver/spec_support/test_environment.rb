@@ -158,6 +158,17 @@ module Selenium
           )
         end
 
+        def create_firefox_driver
+          if native_events?
+            profile = WebDriver::Firefox::Profile.new
+            profile.native_events = true
+
+            WebDriver::Driver.for :firefox, :profile => profile
+          else
+            WebDriver::Driver.for :firefox
+          end
+        end
+
         def create_chrome_driver
           binary = ENV['chrome_binary']
           if binary
