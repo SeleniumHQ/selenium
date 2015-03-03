@@ -50,7 +50,13 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
     if (frame_id.isNull()) {
       status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
     } else if (frame_id.isObject()) {
-      Json::Value element_id = frame_id.get("ELEMENT", Json::Value::null);
+      // TODO: Remove the check for "ELEMENT" once all target bindings 
+      // have been updated to use spec-compliant protocol.
+      Json::Value element_id = frame_id.get("element-6066-11e4-a52e-4f735466cecf", Json::Value::null);
+      if (element_id.isNull()) {
+        element_id = frame_id.get("ELEMENT", Json::Value::null);
+      }
+
       if (element_id.isNull()) {
         status_code = ENOSUCHFRAME;
       } else {

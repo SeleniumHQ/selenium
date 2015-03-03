@@ -72,6 +72,9 @@ Json::Value Element::ConvertToJson() {
   LOG(TRACE) << "Entering Element::ConvertToJson";
 
   Json::Value json_wrapper;
+  // TODO: Remove the "ELEMENT" property once all target bindings 
+  // have been updated to use spec-compliant protocol.
+  json_wrapper["element-6066-11e4-a52e-4f735466cecf"] = this->element_id_;
   json_wrapper["ELEMENT"] = this->element_id_;
 
   return json_wrapper;
