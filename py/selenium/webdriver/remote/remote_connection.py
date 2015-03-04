@@ -132,6 +132,9 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
+
+    timeout = object()
+
     def __init__(self, remote_server_addr, keep_alive=False):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
@@ -156,7 +159,9 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
+            self._conn = httplib.HTTPConnection(
+                str(addr), str(parsed_url.port), timeout=self.timeout)
+
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -420,7 +425,7 @@ class RemoteConnection(object):
             else:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                                   HttpErrorHandler())
-            resp = opener.open(request)
+            resp = opener.open(request, timeout=self.timeout)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
                 if hasattr(resp.headers, 'getheader'):
