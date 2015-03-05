@@ -1,3 +1,39 @@
+v2.45.0
+=======
+ * Supports native events for Firefox versions 31 (current ESR), and
+   24 (immediately previous ESR). Native event support has been discontinued
+   for versions of Firefox later than 33.
+ * Removed automatic installation of SafariDriver extention for .NET.
+   From this point forward, users are expected to manually install the
+   SafariDriver extension into their Safari installation in order to drive
+   the browser. This is due to Apple's changes in architecture for Safari
+   extensions.
+ * Added initial implementation of .NET bindings OperaDriver. The .NET
+   bindings will now support the Chromium-based Opera driver without
+   requiring the use of the Java remote WebDriver server. This driver will
+   work with Opera 26 and above, and requires the download of the Opera
+   driver executable. Code cleanup and refactoring will take place under a
+   separate commit. Note that there is still no support in the .NET bindings
+   for the Presto-based Opera without using the remote server, nor is there
+   likely to be.
+ * Added option to not delete anonymous Firefox profile in .NET. This change
+   adds an option to the .NET FirefoxProfile class so that the driver will
+   not delete the anonymous profile created by the driver. Since the driver
+   cannot and should not use an existing profile in situ because of the
+   multiple instance automation case, this change means that modifications
+   applied to the anonymous profile can be retained and used in future
+   anonymous profiles. The implication is that the user can now make
+   modifications to a profile, and retain those profile modifications (e.g.,
+   cookies) into other future profiles, simulating persistent changes over
+   multiple browser launches. Fixes issue #7374.
+ * Introduced type safe option in InternetExplorerOptions to set the
+   capability to disable check of mime type of the doucment when setting
+   cookies. When setting cookies, there is a check in the IE driver to
+   validate that the page in the browser is, in fact, an HTML page. Despite
+   the fact that omitting this check can cause unrecoverable crashes in the
+   driver, there is demand for a mechanism to disable this check for older,
+   legacy versions of Internet Explorer. Fixes issue #1227.
+
 v2.44.0
 =======
  * Supports native events for Firefox versions 33 (current), 32 (immediately
