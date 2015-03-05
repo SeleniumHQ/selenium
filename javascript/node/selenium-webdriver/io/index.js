@@ -38,13 +38,15 @@ var PATH_SEPARATOR = process.platform === 'win32' ? ';' : ':';
 exports.rmDir = function(path) {
   return new promise.Promise(function(fulfill, reject) {
     var numAttempts = 0;
+    var maxAttempts = 5;
+    var attemptTimeout = 250;
     attemptRm();
     function attemptRm() {
       numAttempts += 1;
       rimraf(path, function(err) {
         if (err) {
-          if (err.code === 'ENOTEMPTY' && numAttempts < 2) {
-            attemptRm();
+          if (err.code === 'ENOTEMPTY' && numAttempts <= maxAttempts) {
+            setTimeout(attemptRm, attemptTimeout);
             return;
           }
           reject(err);
