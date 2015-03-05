@@ -68,7 +68,7 @@ module Selenium
             b = hue_to_rgb.call(luminocity1, luminocity2, h - 1.0 / 3.0)
           end
 
-          new r * 256, g * 256, b * 256, a
+          new (r * 255).round, (g * 255).round, (b * 255).round, a
         end
 
 
