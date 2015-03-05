@@ -86,8 +86,8 @@ class visibility_of(object):
     def __call__(self, ignored):
         return _element_if_visible(self.element)
 
-def _element_if_visible(element):
-    return element if element.is_displayed() else False
+def _element_if_visible(element, visibility=True):
+    return element if element.is_displayed() == visibility else False
 
 class presence_of_all_elements_located(object):
     """ An expectation for checking that there is at least one element present
@@ -167,7 +167,7 @@ class invisibility_of_element_located(object):
 
     def __call__(self, driver):
         try:
-            return not _find_element(driver, self.locator).is_displayed()
+            return _element_if_visible(_find_element(driver, self.locator), False)
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present

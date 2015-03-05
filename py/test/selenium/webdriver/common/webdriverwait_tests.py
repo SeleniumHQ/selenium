@@ -225,8 +225,8 @@ class WebDriverWaitTest(unittest.TestCase):
         except TimeoutException as e:
             pass
         self.driver.execute_script("delayedShowHide(200, false)")
-        WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
-        self.assertFalse(self.driver.find_element_by_id('clickToHide').is_displayed())
+        element = WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
+        self.assertFalse(element.is_displayed())
 
     
     def testExpectedConditionElementToBeClickable(self):

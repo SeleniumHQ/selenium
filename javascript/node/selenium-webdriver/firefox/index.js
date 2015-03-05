@@ -237,6 +237,9 @@ var Driver = function(opt_config, opt_flow) {
   /** @private {?string} */
   this.profilePath_ = null;
 
+  /** @private {!Binary} */
+  this.binary_ = binary;
+
   var self = this;
   var serverUrl = portprober.findFreePort().then(function(port) {
     var prepareProfile;
@@ -289,11 +292,15 @@ Driver.prototype.setFileDetector = function() {
 Driver.prototype.quit = function() {
   return this.call(function() {
     var self = this;
-    return Driver.super_.prototype.quit.call(this).thenFinally(function() {
-      if (self.profilePath_) {
-        return io.rmDir(self.profilePath_);
-      }
-    });
+    return Driver.super_.prototype.quit.call(this)
+        .thenFinally(function() {
+          return self.binary_.kill();
+        })
+        .thenFinally(function() {
+          if (self.profilePath_) {
+            return io.rmDir(self.profilePath_);
+          }
+        });
   }, this);
 };
 
