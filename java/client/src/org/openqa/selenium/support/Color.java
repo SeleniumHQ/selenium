@@ -260,9 +260,9 @@ public class Color {
         b = hueToRgb(luminocity1, luminocity2, h - 1.0 / 3.0);
       }
 
-      return new Color((short) (r * 256),
-          (short) (g * 256),
-          (short) (b * 256),
+      return new Color((short) Math.round(r * 255),
+          (short) Math.round(g * 255),
+          (short) Math.round(b * 255),
           a);
     }
 

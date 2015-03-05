@@ -106,6 +106,18 @@ public class ColorTest {
     hsl = "hsl(100, 0%, 50%)";
     rgba = "rgba(128, 128, 128, 1)";
     assertEquals(rgba, Color.fromString(hsl).asRgba());
+    hsl = "hsl(0, 100%, 50%)"; // red
+    rgba = "rgba(255, 0, 0, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
+    hsl = "hsl(120, 100%, 50%)"; // green
+    rgba = "rgba(0, 255, 0, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
+    hsl = "hsl(240, 100%, 50%)"; // blue
+    rgba = "rgba(0, 0, 255, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
+    hsl = "hsl(0, 0%, 100%)"; // white
+    rgba = "rgba(255, 255, 255, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
   }
 
   @Test
