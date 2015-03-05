@@ -113,7 +113,7 @@ class Color(object):
             g = hue_to_rgb(luminocity1, luminocity2, h)
             b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
 
-        return Color(r * 256, g * 256, b * 256, a)
+        return Color(round(r * 255), round(g * 255), round(b * 255), a)
 
     def __init__(self, red, green, blue, alpha=1):
         self.red = int(red)
