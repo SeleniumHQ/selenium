@@ -1,0 +1,74 @@
+java_library(name = 'sessions',
+  srcs = [
+    'DriverSessions.java',
+    'KnownElements.java',
+    'Session.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/remote:api',
+    '//third_party/java/commons-logging:commons-logging',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/selenium/server:server',
+  ],
+)
+
+java_library(name = 'server',
+  srcs = [
+    'CapabilitiesComparator.java',
+    'DefaultDriverFactory.java',
+    'DefaultDriverProvider.java',
+    'DefaultDriverSessions.java',
+    'DefaultSession.java',
+    'DriverFactory.java',
+    'DriverProvider.java',
+    'DriverServlet.java',
+    'JsonHttpCommandHandler.java',
+    'JsonParametersAware.java',
+    'SessionCleaner.java',
+    'SnapshotScreenListener.java',
+  ] + glob([
+    'handler/**/*.java',
+    'rest/*.java',
+    'xdrpc/*.java',
+  ]),
+  resources = [
+    ':client',
+    ':hub',
+    ':style',
+  ],
+  deps = [
+    ':sessions',
+    '//java/client/src/org/openqa/selenium:codecs',
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/support/events:events',
+    '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/servlet-api:servlet-api',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/selenium/server:server',
+  ],
+)
+
+export_file(name = 'client',
+  src = '//javascript/remote:client',
+  out = 'client.js',
+)
+
+export_file(name = 'hub',
+  src = '//javascript/remote:hub',
+  out = 'hub.html',
+)
+
+export_file(name = 'style',
+  src = '//javascript/remote:style',
+  out = 'style.css',
+)
