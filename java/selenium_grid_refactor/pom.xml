@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <name>Selenium Grid Refactor Parent Pom</name>
-<!--
+
     <modules>
         <module>selenium_grid_remote_server</module>
         <module>selenium_grid_server</module>
@@ -30,7 +30,7 @@
         <module>selenium_grid_node</module>
         <module>selenium_grid_hub</module>
      </modules>
--->
+
     <build>
         <pluginManagement>
             <plugins>
