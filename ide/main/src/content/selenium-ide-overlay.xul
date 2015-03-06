@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/toolbar.css"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE overlay SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
+
+<overlay id="selenium-ide-overlay" 
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-overlay.js"/>
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="selenium-ide-strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
+  </stringbundleset>
+
+  <commandset id="mainCommandSet">
+    <command id="openRecorder" oncommand="SeleniumIDE.Loader.openRecorder()"/>
+    <command id="openSidebarRecorder" oncommand="toggleSidebar('viewSeleniumIDESidebar')"/>
+  </commandset>
+
+  <keyset id="mainKeyset">
+    <key id="key_toggleIDE" modifiers="control alt" key="S"
+         command="openRecorder"/>
+    <key id="key_toggleSidebarIDE" modifiers="control shift" key="S"
+         command="openSidebarRecorder"/>
+  </keyset>
+
+  <menupopup id="viewSidebarMenu">
+    <menuitem observes="viewSeleniumIDESidebar"/>
+  </menupopup>
+
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="menuToolsSeleniumIDE"
+              label="Selenium IDE"
+              key="key_toggleIDE"
+              command="openRecorder"
+              insertbefore="sanitizeSeparator,prefSep"
+              accesskey="N"
+              class="menuitem-iconic"
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
+  </menupopup>
+
+  <!-- Enh: Add Selenium IDE toolbar button -->
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="selenium-ide-button" label="Selenium IDE" class="toolbarbutton-1" tooltiptext="Selenium IDE" oncommand="SeleniumIDE.Loader.openRecorder();"/>
+  </toolbarpalette>
+
+  <!-- Samit: Enh: Add to the App menu Web developer popup in Firefox 4 -->
+  <menupopup id="menuWebDeveloperPopup">
+    <menuitem id="menuAppmenuSeleniumIDE"
+              label="Selenium IDE"
+              key="key_toggleIDE"
+              command="openRecorder"
+              class="menuitem-iconic"
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
+  </menupopup>
+
+  <menupopup id="appmenu_webDeveloper_popup">
+    <menuitem id="menuAppmenuSeleniumIDE"
+              label="Selenium IDE"
+              key="key_toggleIDE"
+              command="openRecorder"
+              class="menuitem-iconic"
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
+  </menupopup>
+
+  <popup id="contentAreaContextMenu">
+  </popup>
+
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewSeleniumIDESidebar"
+         label="&firefox.sidebar.view-menu.label;"
+         autoCheck="false"
+         type="checkbox"
+         group="sidebar"
+         key="key_toggleSidebarIDE"
+         sidebarurl="chrome://selenium-ide/content/selenium-ide-sidebar.xul"
+         sidebartitle="&selenium-ide.sidebar.title;"
+         command="openSidebarRecorder" />
+  </broadcasterset>
+
+  <!--
+  <keyset id="mainKeyset">
+    <key id="key_viewSeleniumIDESidebar" command="viewSeleniumIDESidebar" 
+     key="S" modifiers="alt,accel"/>
+  </keyset>
+  -->
+</overlay>

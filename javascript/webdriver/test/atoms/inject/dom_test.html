@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>dom_test.html</title>
+  <script src="../../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.style');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.atoms.element');
+    goog.require('webdriver.atoms.inject.dom');
+    goog.require('webdriver.atoms.inject.frame');
+    goog.require('webdriver.atoms.inject.locators');
+  </script>
+
+  <script type="text/javascript">
+    function testGetText() {
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
+      var actual = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getText(getValueFromJSONObject(e)));
+      assertEquals("Para", actual);
+    }
+
+    function testGetIsSelected() {
+      var apples = webdriver.atoms.inject.locators.findElement('id', 'apples');
+      var oranges = webdriver.atoms.inject.locators.findElement('id', 'oranges');
+
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
+              getValueFromJSONObject(oranges))));
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
+              getValueFromJSONObject(apples))));
+    }
+
+    function testGetTopLeftCoordinates() {
+      var elementX = goog.dom.$('x');
+      var expectedX = webdriver.atoms.element.getLocationInView(elementX).x;
+
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
+      var coords = webdriver.atoms.inject.dom.getTopLeftCoordinates(
+              getValueFromJSONObject(e));
+      assertEquals(expectedX, getValueFromJSONObject(coords).x);
+    }
+
+    function testGetAttributeValue() {
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
+      assertEquals("para", getValueFromJSONObject(
+          webdriver.atoms.inject.dom.getAttributeValue(
+              getValueFromJSONObject(e), "name")));
+    }
+
+    function testGetSize() {
+      var elementX = goog.dom.$('x');
+      var expectedHeight = goog.style.getSize(elementX).height;
+
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
+      var size = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getSize(getValueFromJSONObject(e)));
+
+      assertEquals(expectedHeight, size.height);
+    }
+
+    function testGetValueOfCssProperty() {
+      var e = webdriver.atoms.inject.locators.findElement('id', 'after');
+      var prop = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getValueOfCssProperty(
+                      getValueFromJSONObject(e), "background-color"));
+
+      assertEquals('rgba(0, 128, 0, 1)', prop);
+    }
+
+    function testIsEnabled() {
+      var working = webdriver.atoms.inject.locators.findElement("id", "working");
+      var notWorking = webdriver.atoms.inject.locators.findElement("id",
+                                                             "notWorking");
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+              getValueFromJSONObject(working))));
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+              getValueFromJSONObject(notWorking))));
+
+    }
+
+    function testIsDisplayed() {
+      var working = webdriver.atoms.inject.locators.findElement("id", "working");
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+              getValueFromJSONObject(working))));
+      var hidden = webdriver.atoms.inject.locators.findElement("id", "hidden");
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+              getValueFromJSONObject(hidden))));
+    }
+
+    function testGetAttributeWithProperty() {
+      var working = webdriver.atoms.inject.locators.findElement("id", "after");
+      assertEquals("DIV",
+          getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
+              getValueFromJSONObject(working), "tagName")))
+    }
+
+    function testGetAttributeInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertEquals('Submit', 
+          getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
+              getValueFromJSONObject(element), "value", frameWindow)));
+    }
+
+    function testIsEnabledInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+          getValueFromJSONObject(element), frameWindow)));
+    }
+
+    function testIsDisplayedInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+          getValueFromJSONObject(element), frameWindow)));
+    }
+
+    function testGetTextInFrame() {
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'iframeClickTarget', null, frameWindow);
+      var actual = getValueFromJSONObject(webdriver.atoms.inject.dom.getText(
+          getValueFromJSONObject(element), frameWindow));
+      assertEquals("An anchor in an iframe", actual);
+    }
+
+    function testGetSizeInFrame() {
+      var elementRef = window.frames[0].document.getElementById("submitForm");
+      var expectedHeight = goog.style.getSize(elementRef).height;
+      var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = getValueFromJSONObject(frame);
+      var element = webdriver.atoms.inject.locators.findElement(
+          'id', 'submitForm', null, frameWindow);
+      var size = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getSize(
+                  getValueFromJSONObject(element), frameWindow));
+
+      assertEquals(expectedHeight, size.height);
+    }
+
+    function getValueFromJSONObject(arg) {
+      return goog.json.parse(arg)["value"];
+    }
+  </script>
+</head>
+<body>
+  <p id="x" name="para">Para</p>
+
+  <div name="right" id="after" style="background-color: green;" class="dogs">yup</div>
+
+   <div>
+      <label for="multiSelect">Multi-select</label>
+      <select id="multiSelect" multiple>
+        <option id="apples" value="apples" selected>apples</option>
+        <option id="oranges" value="oranges">oranges</option>
+        <option value="cherries">cherries</option>
+      </select>
+    </div>
+
+    <input type="text" id="working" >
+    <input type="text" id="notWorking" disabled=true >
+    <input type="hidden" id="hidden"></input>
+    <iframe id="frame" src="click_iframe.html"></iframe>
+  </body>
+</html>

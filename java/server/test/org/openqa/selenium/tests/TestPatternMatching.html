@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Pattern Matching</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Pattern Matching<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verifications.html</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>check glob (wildcard) matching</p>
+<table>
+  <tbody>
+    
+
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>*text*</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>* hidden value</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>* span</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>second *</td>
+    </tr>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>first*,second*,third*</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>theText@class</td>
+      <td>?oo</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theTextarea</td>
+      <td>Line 1*</td>
+    </tr>
+  </tbody>
+</table>
+<p>check regexp (wildcard) matching</p>
+<table>
+  <tbody>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>regexp:^[a-z ]+$</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>regexp:dd</td>
+    </tr>
+    <tr>
+      <td>verifyNotValue</td>
+      <td>theHidden</td>
+      <td>regexp:DD</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>regexpi:DD</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>regexp:span$</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>regexp:second .*</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>theText@class</td>
+      <td>regexp:^f</td>
+    </tr>
+
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>regex:^[a-z ]+$</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>regex:dd</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>regex:span$</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>regex:second .*</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>theText@class</td>
+      <td>regex:^f</td>
+    </tr>
+  </tbody>
+</table>
+<p>check exact matching</p>
+<table>
+  <tbody>
+
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>exact:the text value</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>exact:second option</td>
+    </tr>
+  </tbody>
+</table>
+<p>check a mixture of strategies</p>
+<table>
+  <tbody>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>regexp:^first.*?,second option,third*</td>
+    </tr>
+
+  </tbody>
+</table>
+</body>
+
+
+</html>

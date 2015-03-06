@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>click_submit_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog.Promise');
+    goog.require('goog.Uri');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    var findElement = bot.locators.findElement;
+
+    function checkActionCompatibility(action) {
+      if (action == bot.action.tap) {
+        return bot.events.SUPPORTS_TOUCH_EVENTS;
+      }
+      return true;
+    }
+
+    function setUp() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
+        iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
+      });
+    }
+
+   function doesNotSubmitFormWhenEventDefaultPrevented(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+      var previousLocation = iframeWindow.location.href;
+      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+        e.preventDefault();
+      });
+
+      action(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
+
+    var testClickDoesNotSubmitFormWhenEventDefaultPrevented =
+        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
+                     bot.action.click);
+
+    var testTapDoesNotSubmitFormWhenEventDefaultPrevented =
+        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
+                     bot.action.tap);
+
+    function doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget =
+          findElement({'id': 'submitFormWithInlineHandler'}, iframeDoc);
+
+      var previousLocation = iframeWindow.location.href;
+      action(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
+
+    var testClickDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.click);
+
+    var testTapDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.tap);
+
+    function submitExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      return new goog.Promise(function(done) {
+        // As the iframe loads asyncronously we need to wait to check out
+        // if the url matches the expected one.
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickSubmitExecutesDefaultHandler =
+        goog.partial(submitExecutesDefaultHandler, bot.action.click);
+
+    var testTapSubmitExecutesDefaultHandler =
+        goog.partial(submitExecutesDefaultHandler, bot.action.tap);
+
+    function submitButtonTag(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickSubmitButtonTag =
+        goog.partial(submitButtonTag, bot.action.click);
+
+    var testTapSubmitButtonTag =
+        goog.partial(submitButtonTag, bot.action.tap);
+
+    function formWithCorrectSubmitButton(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+      return new goog.Promise(function(done) {
+        // As the iframe loads asyncronously we need to wait to check out
+        // if the url matches the expected one.
+        goog.events.listenOnce(iframe, 'load', done);
+        action(clickTarget);
+      }).then(function() {
+        assertContains('submitButton=Submit', iframeWindow.location.href);
+      });
+    }
+
+    var testClickFormWithCorrectSubmitButton =
+        goog.partial(formWithCorrectSubmitButton, bot.action.click);
+
+    var testTapFormWithCorrectSubmitButton =
+        goog.partial(formWithCorrectSubmitButton, bot.action.tap);
+
+    function buildAbsoluteUrl(url) {
+      var loc = location.href;
+      return loc.substring(0, loc.lastIndexOf('/')) + url;
+    }
+  </script>
+</head>
+<body>
+  <iframe id="iframe" src="testdata/click_iframe.html">
+  </iframe>
+</body>
+</html>

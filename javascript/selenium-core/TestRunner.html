@@ -1,0 +1,166 @@
+<html>
+
+<head>
+    <HTA:APPLICATION ID="SeleniumHTARunner" APPLICATIONNAME="Selenium">
+        <!-- the previous line is only relevant if you rename this
+     file to "TestRunner.hta" -->
+
+        <!-- The copyright notice and other comments have been moved to after the HTA declaration,
+to work-around a bug in IE on Win2K whereby the HTA application doesn't function correctly -->
+        <!--
+        Copyright 2011 Software Freedom Conservancy
+
+         Licensed under the Apache License, Version 2.0 (the "License");
+         you may not use this file except in compliance with the License.
+         You may obtain a copy of the License at
+
+             http://www.apache.org/licenses/LICENSE-2.0
+
+         Unless required by applicable law or agreed to in writing, software
+         distributed under the License is distributed on an "AS IS" BASIS,
+         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         See the License for the specific language governing permissions and
+         limitations under the License.
+        -->
+        <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"/>
+
+        <title>Selenium Functional Test Runner</title>
+        <link rel="stylesheet" type="text/css" href="selenium.css"/>
+        <script type="text/javascript" src="scripts/xmlextras.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/prototype.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/sizzle.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/snapsie.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/atoms.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/htmlutils.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/ui-element.js"></script>
+        <script language="JavaScript" type="text/javascript" src="lib/scriptaculous/scriptaculous.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserdetect.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-browserbot.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/find_matching_child.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-api.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-commandhandlers.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-executionloop.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-testrunner.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-logging.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/selenium-version.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/util.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/xmltoken.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/dom.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/xpath.js"></script>
+        <script language="JavaScript" type="text/javascript" src="xpath/javascript-xpath-0.1.12.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
+</head>
+
+<body onLoad="onSeleniumLoad();">
+<table class="layout">
+<form action="" name="controlPanel">
+
+<!-- Suite, Test, Control Panel -->
+
+<tr class="selenium">
+<td width="25%" height="30%">
+    <iframe name="testSuiteFrame" id="testSuiteFrame" src="./TestPrompt.html" application="yes"></iframe>
+</td>
+<td width="50%" height="30%">
+    <iframe name="testFrame" id="testFrame" application="yes" src="Blank.html"></iframe>
+</td>
+
+<td width="25%">
+    <table class="layout">
+        <tr class="selenium">
+            <th width="25%" height="1" class="header">
+                <h1><a href="http://seleniumhq.org" title="The Selenium Project">Selenium</a> TestRunner
+                </h1>
+            </th>
+        </tr>
+        <tr>
+            <td width="25%" height="30%" id="controlPanel">
+                <fieldset>
+                    <legend>Execute Tests</legend>
+
+                    <div id="imageButtonPanel">
+                        <button type="button" id="runSuite" onClick="htmlTestRunner.startTestSuite();"
+                                title="Run All tests [a]" accesskey="a">
+                        </button>
+                        <button type="button" id="runSeleniumTest" onClick="htmlTestRunner.runSingleTest();"
+                                title="Run the Selected test [r]" accesskey="r">
+                        </button>
+                        <button type="button" id="pauseTest" disabled="disabled"
+                                title="Pause/Continue [p]" accesskey="p" class="cssPauseTest">
+                        </button>
+                        <button type="button" id="stepTest" disabled="disabled"
+                                title="Step [s]" accesskey="s">
+                        </button>
+                    </div>
+
+                    <div style="float:left">Fast</div>
+                    <div style="float:right">Slow</div>
+                    <br/>
+                    <div id="speedSlider">
+                        <div id="speedTrack">&nbsp;</div>
+                        <div id="speedHandle">&nbsp;</div>
+                    </div>
+
+                    <div class="executionOptions">
+                        <input id="highlightOption" type="checkbox" name="highlightOption" value="0"/>
+                        <label for="highlightOption">Highlight elements</label>
+                    </div>
+
+                </fieldset>
+
+                <table id="stats" align="center">
+                    <tr>
+                        <td colspan="2" align="right">Elapsed:</td>
+                        <td id="elapsedTime" colspan="2">00.00</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Tests</th>
+                        <th colspan="2">Commands</th>
+                    </tr>
+                    <tr>
+                        <td class="count" id="testRuns">0</td>
+                        <td>run</td>
+                        <td class="count" id="commandPasses">0</td>
+                        <td>passed</td>
+                    </tr>
+                    <tr>
+                        <td class="count" id="testFailures">0</td>
+                        <td>failed</td>
+                        <td class="count" id="commandFailures">0</td>
+                        <td>failed</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="count" id="commandErrors">0</td>
+                        <td>incomplete</td>
+                    </tr>
+                </table>
+
+                <fieldset>
+                    <legend>Tools</legend>
+
+                    <button type="button" onClick="LOG.show();">
+                        Show Log
+                    </button>
+
+                </fieldset>
+
+            </td>
+        </tr>
+    </table>
+</td>
+</tr>
+
+<!-- AUT -->
+
+<tr>
+    <td colspan="3" height="70%">
+        <iframe name="selenium_myiframe" id="selenium_myiframe" src="TestRunner-splash.html"></iframe>
+    </td>
+</tr>
+
+    </form>
+    </table>
+
+</body>
+</html>

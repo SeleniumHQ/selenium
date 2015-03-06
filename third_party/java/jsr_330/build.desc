@@ -1,0 +1,4 @@
+
+java_library(name = "jsr_330",
+  deps = [ "javax.inject-1.jar" ])
+  

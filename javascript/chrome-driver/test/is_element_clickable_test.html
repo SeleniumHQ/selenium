@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>is_element_clickable_test.html</title>
+  <script type="text/javascript" src="test_bootstrap.js">
+  </script>
+  <script type="text/javascript">
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.chrome');
+  </script>
+
+  <script type="text/javascript">
+    function isClickable(elem, coord) {
+      var result = webdriver.chrome.isElementClickable(elem, coord);
+      console.log(result.message);
+      return result.clickable;
+    }
+
+    function getMidClientRect(elem) {
+      var rect = elem.getClientRects()[0];
+      var x = rect.left + (rect.right - rect.left) / 2;
+      var y = rect.top + (rect.bottom - rect.top) / 2;
+      return new goog.math.Coordinate(x, y);
+    }
+
+    function testElementIsClickable() {
+      var elem = document.getElementById('1');
+      assertTrue(isClickable(elem, getMidClientRect(elem)));
+    }
+
+    function testNotClickableAtPoint() {
+      var elem = document.getElementById('2');
+      var otherElem = document.getElementById('2b');
+      assertFalse(isClickable(elem, getMidClientRect(otherElem)));
+    }
+
+    function testElementIsClickableByDescendant() {
+      var elem = document.getElementById('3');
+      var child = document.getElementById('4');
+      assertTrue(isClickable(elem, getMidClientRect(child)));
+    }
+
+    function testInvalidCoordinateIsNotClickable() {
+      var elem = document.getElementById('1');
+      assertFalse(isClickable(elem, new goog.math.Coordinate(-1, -1)));
+    }
+
+  </script>
+</head>
+<body>
+  <div id='1' style='background-color:black'>1</div>
+  <div id='2' style='background-color:orange'>2</div>
+  <div id='2b' style='background-color:purple'>2b</div>
+  <div id='3' style='background-color:green'>
+    <div>3</div>
+    <div id='4' style='background-color:blue; position:relative; top:50px'>
+      div
+    </div>
+  </div>
+</body>
+</html>

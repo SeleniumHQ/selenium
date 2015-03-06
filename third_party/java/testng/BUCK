@@ -1,0 +1,11 @@
+prebuilt_jar(name = 'testng',
+  binary_jar = 'testng-6.8.5.jar',
+  deps = [ 
+    '//third_party/java/beanshell:beanshell',
+    '//third_party/java/jcommander:jcommander',
+  ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+  ],
+)
+

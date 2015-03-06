@@ -1,0 +1,7 @@
+
+prebuilt_jar(name = 'jcommander',
+  binary_jar = 'jcommander-1.29.jar',
+  visibility = [
+    '//third_party/java/testng:testng',
+  ],
+)

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserdetect.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/atoms.js"/></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/htmlutils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/ui-element.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-logging.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/locatorBuilders.js"></script>
+		<script type="text/javascript">
+function setUp() {
+	this.builders = new LocatorBuilders(window);
+}
+
+function testAttributeValue() {
+	assertEquals("'abc'", this.builders.attributeValue('abc'));
+	assertEquals("'ab\"c'", this.builders.attributeValue('ab"c'));
+	assertEquals("\"ab'c\"", this.builders.attributeValue("ab'c"));
+	assertEquals('concat(\'He said, "Don\',"\'t do that.",\'".\')', this.builders.attributeValue('He said, "Don\'t do that.".'));
+}
+
+function testAttributesXPathLocator() {
+	var elements = document.getElementById("test1").getElementsByTagName("input");
+	assertEquals("//input[@name='foo']", builders.buildWith('xpath:attributes', elements[0]));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=\"alert(\'test\')\"]", builders.buildWith('xpath:attributes', elements[1]));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=\'alert(\"test2\")\']", builders.buildWith('xpath:attributes', elements[2]));
+	assertEquals("//input[@name='foo' and @value='bar' and @type='button' and @onclick=concat(\"alert('test3'\, \",'\"test4\")')]", builders.buildWith('xpath:attributes', elements[3]));
+	assertNull(builders.buildWith('xpath:attributes', elements[4]));
+
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertNull(builders.buildWith('xpath:attributes', yahoo));
+}
+
+function testDomFormElementNameLocator() {
+	var elements = document.getElementById("test3").getElementsByTagName("input");
+	assertLocator("document.forms[1].foo1", builders.buildWith('dom:name', elements[0]), elements[0]);
+	assertLocator("document.forms[1].elements['a[0]']", builders.buildWith('dom:name', elements[1]), elements[1]);
+	assertLocator("document.namedForm.foo3", builders.buildWith('dom:name', elements[2]), elements[2]);
+	assertLocator("document.namedForm.foo4[0]", builders.buildWith('dom:name', elements[3]), elements[3]);
+	assertLocator("document.namedForm.foo4[1]", builders.buildWith('dom:name', elements[4]), elements[4]);
+}
+
+function testDomFormElementIndexLocator() {
+	var elements = document.getElementById("test3").getElementsByTagName("input");
+	assertLocator("document.forms[1].elements[0]", builders.buildWith('dom:index', elements[0]), elements[0]);
+	assertLocator("document.namedForm.elements[2]", builders.buildWith('dom:index', elements[4]), elements[4]);
+}
+
+
+function testHrefXPathLocator() {
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertLocator("//a[@href='http://www.yahoo.com/']", builders.buildWith('xpath:href', yahoo), yahoo);
+	var pathToTest = document.getElementById("test2").getElementsByTagName("a")[3];
+	assertLocator("//a[contains(@href, '/path/to/test.html')]", builders.buildWith('xpath:href', pathToTest), pathToTest);
+}
+
+function testPositionXPathLocator() {
+	var elements = document.getElementById("test1").getElementsByTagName("input");
+	assertEquals('//input[1]', builders.buildWith('xpath:position', elements[0]));
+	assertEquals('//input[2]', builders.buildWith('xpath:position', elements[1]));
+	assertEquals('//input[3]', builders.buildWith('xpath:position', elements[2]));
+	
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertNotNull(yahoo);
+	assertEquals('//div[2]/a', builders.buildWith('xpath:position', yahoo));
+}
+
+function testLinkXPathLocator() {
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertLocator("//a[contains(text(),'Yahoo')]", builders.buildWith('xpath:link', yahoo), yahoo);
+}
+
+function testImgXPathLocator() {
+	var yahoo2 = document.getElementById("test2").getElementsByTagName("img")[0];
+	assertLocator("//img[@alt='test']", builders.buildWith('xpath:img', yahoo2), yahoo2);
+}
+
+function testLinkLocator() {
+	var google = document.getElementById("test2").getElementsByTagName("a")[0];
+	assertLocator("link=exact:Google:Google", builders.buildWith('link', google), google);
+	var yahoo = document.getElementById("test2").getElementsByTagName("a")[1];
+	assertLocator("link=Yahoo", builders.buildWith('link', yahoo), yahoo);
+	var yahooJP = document.getElementById("test2").getElementsByTagName("a")[4];
+	assertLocator("link=Yahoo Japan", builders.buildWith('link', yahooJP), yahooJP);
+}
+
+function testIdLocator() {
+	var input = document.getElementById("test4-input");
+	assertLocator("test4-input", builders.buildWith("id", input), input);
+}
+
+function testXpathIdRelativeLocator() {
+	var elements = document.getElementById("test1").getElementsByTagName("input");
+	assertEquals("//div[@id='test1']/form/input[1]", builders.buildWith('xpath:idRelative', elements[0]));
+}
+
+function assertLocator(expected, locator, element) {
+	assertEquals(expected, locator);
+	assertEquals(element, builders.pageBot().findElement(locator));
+}
+
+</script>
+  </head>
+
+  <body>
+		<div id="test1">
+			<form>
+			<input type="button" name="foo" value="bar">
+			<input type="button" name="foo" value="bar" onclick="alert('test')">
+			<input type="button" name="foo" value="bar" onclick="alert(&quot;test2&quot;)">
+			<input type="button" name="foo" value="bar" onclick="alert('test3', &quot;test4&quot;)">
+			<input type="button" name="foo" value="bar">
+			</form>
+		</div>
+		<div id="test2">
+			<div>
+				<a href="http://www.google.com/">Google:Google</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					Yahoo
+				</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.com/">
+					<img src="test.png" alt="test">
+				</a>
+			</div>
+			<div>
+				<a href="/path/to/test.html">
+					<img src="test.png" alt="test">
+				</a>
+			</div>
+			<div>
+				<a href="http://www.yahoo.co.jp/">
+					Yahoo&nbsp;Japan
+				</a>
+			</div>
+		</div>
+		<div id="test3">
+			<form>
+				<input type="button" name="foo1" value="bar">
+				<input type="button" name="a[0]" value="bar" onclick="alert('test')">
+			</form>
+			<form name="namedForm">
+				<input type="button" name="foo3" value="bar" onclick="alert(&quot;test2&quot;)">
+				<input type="radio" name="foo4" value="1">
+				<input type="radio" name="foo4" value="2">
+			</form>
+		</div>
+		<div id="test4">
+			<form>
+				<input type="text" id="test4-input" value="bar">
+			</form>
+		</div>
+  </body>
+</html>

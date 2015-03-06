@@ -1,0 +1,3 @@
+
+java_library(name = "netty",
+  deps = [ "netty-3.5.7.Final.jar" ])

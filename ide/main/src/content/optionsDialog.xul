@@ -1,0 +1,164 @@
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/optionsDialog.css" type="text/css"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE window [
+    <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+    %browserDTD;
+    <!ENTITY % optionsDTD SYSTEM "chrome://selenium-ide/locale/options.dtd">
+    %optionsDTD;
+    ]>
+<dialog buttons="accept,cancel,extra2"
+        buttonlabelextra2="&options.resetOptions;"
+        id="selenium-ide-options"
+        ondialogaccept="return saveOptions();"
+        ondialogextra2="loadDefaultOptions()"
+        onload="loadOptions()"
+        title="&options.title;"
+        width="520"
+        height="600"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/xhtml-entities.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/dndReorderedListbox.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/optionsDialog.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testCase.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/format.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/plugin.js"/>
+  <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties"/>
+
+  <tabbox id="optionsTabbox" flex="1">
+    <tabs id="optionsTabs" orient="horizontal">
+      <tab label="&options.general.label;"/>
+      <tab label="&options.formats.label;"/>
+      <tab label="Plugins"/>
+      <tab label="Locator Builders"/>
+      <tab label="WebDriver"/>
+    </tabs>
+    <tabpanels id="general" flex="1">
+      <tabpanel id="generalTab" orient="vertical">
+        <description>&options.encoding.description;</description>
+        <hbox align="center">
+          <textbox id="encoding" multiline="false" oninput="validate()"/>
+          <label id="encodingError" value="" class="error"/>
+        </hbox>
+
+        <separator class="thin"/>
+        <description>&options.timeout.description;</description>
+        <hbox align="center">
+          <textbox id="timeout" multiline="false" oninput="validate()"/>
+          <label id="timeoutError" value="" class="error"/>
+        </hbox>
+
+        <separator class="thin"/>
+        <description>&options.userExtensionsPaths.description;</description>
+        <hbox align="center">
+          <textbox id="userExtensionsURL" multiline="false" flex="1"/>
+          <button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
+          <button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;"
+                  oncommand="reloadUserExtFile()" disabled="true"/>
+        </hbox>
+
+        <separator class="thin"/>
+        <description>&options.ideExtensionsPaths.description;</description>
+        <hbox align="center">
+          <textbox id="ideExtensionsPaths" multiline="false" flex="1"/>
+          <button label="&options.browse;" oncommand="chooseFile('ideExtensionsPaths')"/>
+        </hbox>
+        <description class="tip">&options.extensions.tip;</description>
+
+        <separator class="thin"/>
+        <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
+        <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
+        <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
+        <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" oncommand="updateReloadButton(this.checked)"/>
+        <checkbox id="visualEye" label="Visual assist (restart of Selenium IDE is required)"/>
+        <checkbox id="enableExperimentalFeatures" label="&options.enableExperimentalFeatures.label;"/>
+        <checkbox id="disableFormatChangeMsg" label="&options.disableFormatChangeMsg.label;"/>
+        <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
+      </tabpanel>
+      <tabpanel id="formats" orient="vertical">
+        <hbox flex="1">
+          <listbox id="format-list" onselect="updateFormatSelection()" width="100"/>
+          <vbox flex="1" width="300">
+            <label id="format-name"/>
+            <box id="format-config"/>
+          </vbox>
+        </hbox>
+        <hbox>
+          <button label="&options.formats.add-button.label;" oncommand="createNewFormat()"/>
+          <button id="rename-button" label="&options.formats.rename-button.label;" oncommand="renameFormat()"/>
+          <button id="delete-button" label="&options.formats.delete-button.label;" oncommand="deleteFormat()"/>
+          <button label="&options.formats.source-button.label;" oncommand="openFormatSource()"/>
+        </hbox>
+      </tabpanel>
+      <tabpanel orient="vertical" id="pluginsPanel">
+        <hbox>
+          <vbox>
+            <checkbox id="disableBadPluginCode" label="&options.disableBadPluginCode.label;"/>
+            <checkbox id="disableBadPluginAddon" label="&options.disableBadPluginAddon.label;"/>
+          </vbox>
+        </hbox>
+        <hbox flex="1">
+          <hbox flex="1">
+            <listbox id="plugin-list" onselect="updatePluginSelection()" flex="1" width="170"/>
+          </hbox>
+          <splitter id="pluginsPanelSplitter" collapse="after">
+            <grippy/>
+          </splitter>
+          <vbox flex="1" width="230">
+            <label id="plugin-name"/>
+            <vbox id="plugin-info"/>
+            <box id="plugin-config"/>
+          </vbox>
+        </hbox>
+      </tabpanel>
+      <tabpanel orient="vertical" id="locatorBuildersPanel">
+        <vbox flex="1">
+          <description>Drag and drop the locator builders on the left to change their order</description>
+          <hbox flex="1">
+            <vbox flex="1">
+              <listbox id="locatorBuilder-list" flex="1" width="170"/>
+            </vbox>
+            <splitter id="locatorBuildersPanelSplitter" collapse="after">
+              <grippy/>
+            </splitter>
+            <vbox flex="1" width="230">
+              <label id="locatorBuilder-name"/>
+              <box id="locatorBuilder-info"/>
+              <box id="locatorBuilder-config"/>
+              <box id="locatorBuilder-help"/>
+            </vbox>
+          </hbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel orient="vertical" id="webDriverPanel">
+        <description class="tip"></description>
+        <checkbox id="executeUsingWebDriver" label="Enable WebDriver Playback"/>
+        <description class="tip">Changes to this option will be applied after an Selenium IDE restart</description>
+        <description class="tip">WebDriver playback is still an experimental feature and may not be very stable. Please use it for testing Selenium IDE to provide us feedback.</description>
+        <hbox>
+          <textbox id="webDriverBrowserString" multiline="false" flex="1"/>
+        </hbox>
+        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad</description>
+        <label class="text-link" href="http://blog.reallysimplethoughts.com/?p=561" value="How to use WebDriver playback?" />
+      </tabpanel>
+    </tabpanels>
+  </tabbox>
+</dialog>

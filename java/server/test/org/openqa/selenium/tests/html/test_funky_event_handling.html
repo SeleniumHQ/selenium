@@ -1,0 +1,33 @@
+<html>
+<head>
+   <script type="text/javascript">
+       function onLoadFunc() {
+           var parent = document.getElementById("clickMeParent");
+           var handler = function(evt) {
+               if (evt.preventDefault) {
+                   evt.preventDefault();
+                   evt.stopPropagation();
+                } else {
+                    evt.returnValue = false;
+                    evt.cancelBubble = true;
+                }
+           };
+           
+           if (window.addEventListener) {
+                parent.addEventListener("click", handler, false);
+            } else if (window.attachEvent) {
+                parent.attachEvent("onclick", handler);
+            }
+
+       }
+   </script>
+</head>
+
+<body onload="onLoadFunc()">
+
+<div id="clickMeParent">
+    <a id="clickMe" href="test_funk_event_handling_shouldnt_go_here.html">Click Me</a>
+</div>
+
+</body>
+</html>

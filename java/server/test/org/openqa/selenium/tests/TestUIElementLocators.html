@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Test UI-Element Locators</title>
+
+<script type="text/javascript">
+// introduce some UIMap data to the TestRunner
+function setUp() {
+    var scriptContent = document.getElementById('uimap-content').innerHTML;
+    var container = document.getElementById('script-content-container');
+    
+    container.appendChild(document.createTextNode(scriptContent));
+}
+</script>
+
+</head>
+
+<body onload="setUp();">
+
+<!--
+<input id="testJs" type="text" size="70"></input>
+<input type="button" value="Evaluate!" onclick="eval(document.getElementById('testJs').value);"></input>
+-->
+
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+        <tr>
+            <td rowspan="1" colspan="3">Test UI-Element Locators<br>
+            </td>
+        </tr>
+
+        <tr>
+            <td>addScript</td>
+            <td id="script-content-container"></td>
+            <td>uimap</td>
+        </tr>
+        
+        <tr>
+            <td>open</td>
+            <td>../tests/html/test_locators.html</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::linksWithId()</td>
+            <td>this is the first element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::linksWithId(index=1)</td>
+            <td>this is the first element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::linksWithId(index=2)</td>
+            <td>this is the*second*element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::linksWithId(index=3)</td>
+            <td>this is the third element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::fourthLink()</td>
+            <td>this is the fourth element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::fifthLink()</td>
+            <td>this is the fifth element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset1::linksWithId()->//span</td>
+            <td>exact:element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset2::cell(text=theHeaderText)</td>
+            <td>exact:theHeaderText</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>ui=pageset2::cell(text=theCellText)</td>
+            <td>exact:theCellText</td>
+        </tr>
+        <tr>
+            <td>verifyEval</td>
+            <td>map.getUISpecifierString(selenium.browserbot.findElement('id=firstChild'), selenium.browserbot.getDocument())</td>
+            <td>ui=pageset3::anyDiv()->/child::span</td>
+        </tr>
+        <tr>
+            <td>removeScript</td>
+            <td>uimap</td>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+<pre id="uimap-content">
+var map = new UIMap();
+
+map.addPageset({
+    name: 'pageset1'
+    , description: 'pageset1Desc'
+    , paths: [ 'pageset1Path' ]
+});
+
+map.addElement('pageset1', {
+    name: 'linksWithId'
+    , description: 'link with an id attribute starting with "id"'
+    , args: [
+        {
+            name: 'index'
+            , description: 'index of the link, starting at 1'
+            , defaultValues: []
+        }
+    ]
+    , getLocator: function(args) {
+        var indexPred = args.index ? '[' + args.index + ']' : "";
+        return "//a[starts-with(@id, 'id')]" + indexPred;
+    }
+});
+
+map.addElement('pageset1', {
+    name: 'fourthLink'
+    , description: 'the fourth link'
+    , locator: 'id=foo:bar'
+});
+
+map.addElement('pageset1', {
+    name: 'fifthLink'
+    , description: 'the fifth link'
+    , xpath: '//a[5]'
+});
+
+map.addPageset({
+    name: 'pageset2'
+    , description: 'pageset2Desc'
+    , paths: [ 'pageset2Path' ]
+});
+
+map.addElement('pageset2', {
+    name: 'cell'
+    , description: 'a cell in the style table'
+    , args: [
+        {
+            name: 'text'
+            , description: 'the text content of the node'
+            , defaultValues: []
+        }
+    ]
+    , getLocator: function(args) {
+        return "//table[@class='stylee']/descendant::"
+            + this._contentMap[args.text];
+    }
+    , _contentMap: {
+        'theHeaderText': 'th'
+        , 'theCellText': 'td'
+    }
+});
+
+map.addPageset({
+    name: 'pageset3'
+    , description: 'pageset3Desc'
+    , pathRegexp: '.*'
+});
+
+map.addElement('pageset3', {
+    name: 'anyDiv'
+    , description: 'any div element'
+    , locator: '//div'
+    , getOffsetLocator: function(locatedElement, pageElement) {
+        if (pageElement.parentNode == locatedElement) {
+            return '/child::' + pageElement.nodeName.toLowerCase();
+        }
+        return null;
+    }
+});
+</pre>
+
+</body>
+</html>

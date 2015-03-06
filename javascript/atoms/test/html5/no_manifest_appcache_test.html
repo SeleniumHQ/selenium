@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>HTML5 application cache without html manifest attribute</title>
+  <script type="text/javascript" src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.appcache');
+    goog.require('bot.html5');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <script type="text/javascript">
+    function testGetStatusWithoutHtmlManifest() {
+      if (!bot.html5.isSupported(bot.html5.API.APPCACHE)) {
+        return;
+      }
+
+      var win = bot.getWindow();
+      assertEquals(win.applicationCache.UNCACHED, bot.appcache.getStatus());
+    }
+  </script>
+</head>
+<body>
+Test
+<img id="red" src="testdata/ps_logo2.png">
+</body>
+</html>
+
+

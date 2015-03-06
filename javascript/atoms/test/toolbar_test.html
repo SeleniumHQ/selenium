@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>bot.action + editor test</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog.dom');
+    goog.require('goog.color');
+    goog.require('goog.events');
+    goog.require('goog.ui.Component.EventType');
+    goog.require('goog.ui.editor.DefaultToolbar');
+    goog.require('goog.testing.jsunit');
+
+    function addStyleSheet(path) {
+      document.write(
+          '<link rel="stylesheet" href="' + goog.basePath + path + '"/>');
+    }
+    addStyleSheet('demos/css/demo.css');
+    addStyleSheet('css/toolbar.css');
+    addStyleSheet('css/colormenubutton.css');
+    addStyleSheet('css/palette.css');
+    addStyleSheet('css/colorpalette.css');
+    addStyleSheet('css/editortoolbar.css');
+  </script>
+</head>
+<body>
+<div id='toolbar' style='width:602px'></div>
+
+  <script type="text/javascript">
+  var toolbar = goog.ui.editor.DefaultToolbar.makeToolbar([
+    goog.editor.Command.BACKGROUND_COLOR,
+  ], goog.dom.getElement('toolbar'));
+  var bgColorMenu = toolbar.getChildAt(0);
+
+  function testCanInteractWithColorbuttonMenu_toolbarIsFocusable() {
+    toolbar.setFocusable(true);
+    runColorButtonMenuInteractionTest();
+  }
+
+  function testCanInteractWithColorbuttonMenu_toolbarNotIsFocusable() {
+    toolbar.setFocusable(false);
+    runColorButtonMenuInteractionTest();
+  }
+
+  function runColorButtonMenuInteractionTest() {
+    bgColorMenu.setValue('#FFF');
+
+    bot.action.click(bgColorMenu.getElement());
+    assertTrue('Menu not opened', bgColorMenu.isOpen());
+
+    var actionFired = false;
+    goog.events.listenOnce(toolbar, goog.ui.Component.EventType.ACTION,
+        function(e) {
+      actionFired = true;
+    });
+
+    bot.action.click(getRedSwatch());
+
+    assertTrue('Action event not fired!', actionFired);
+  }
+
+  function getRedSwatch() {
+    var colorMenu = bgColorMenu.getMenu();
+    var solidPalette = colorMenu.getChildAt(1);
+
+    var redSwatch = bot.locators.findElement(
+        {className: 'goog-palette-colorswatch'},
+        solidPalette.getElement());
+    assertNotNull(redSwatch);
+
+    var color = bot.dom.getEffectiveStyle(redSwatch, 'background-color');
+    assertEquals('rgba(255, 0, 0, 1)', color);
+    return redSwatch;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<html>
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<style type="text/css">
+.suppressed {
+    display: none;
+}
+</style>
+</head>
+<body>
+    
+    
+    
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+
+<p id="visibleParagraph">A visible paragraph</p>
+
+<p><i>Note: much of this page is hidden, in one way or another</i></p>
+
+<p id="hiddenParagraph" style="visibility: hidden">A paragraph hidden using CSS visibility=hidden</p>
+
+<p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+<p style="visibility: hidden">A <b id="hiddenSubElement">sub-element</b> hidden using CSS visibility=hidden</p>
+
+<p style="visibility: hidden">A <b id="visibleSubElement" style="visibility: visible">sub-element that is explicitly visible</b> using CSS visibility=visible</p>
+
+<p style="display: none">A <b id="suppressedSubElement">sub-element</b> suppressed using CSS display=none</p>
+
+<p id="jsHiddenParagraph">A paragraph hidden using CSS visibility=hidden, applied by JavaScript</p>
+
+<p id="classSuppressedParagraph" class="suppressed">A paragraph suppressed via CSS class</p>
+
+<p id="jsClassSuppressedParagraph">A paragraph suppressed via CSS class, applied by JavaScript</p>
+
+<script type="text/javascript">
+document.getElementById('jsHiddenParagraph').style.visibility = "hidden";
+document.getElementById('jsClassSuppressedParagraph').className = "suppressed";
+</script>
+
+<input id="hiddenInput" type="hidden"></input>
+
+</body>
+</html>

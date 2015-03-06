@@ -1,0 +1,106 @@
+
+js_library(name = 'base',
+  srcs = [
+    'command.js',
+    'events.js',
+    'promise.js',
+    'stacktrace.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/remote:client',
+    '//javascript/safari-driver/...',
+  ],
+)
+
+js_library(name = 'capabilities',
+  srcs = [
+    'capabilities.js',
+  ],
+  deps = [
+    ':logging',
+    ':serializable',
+  ],
+)
+
+js_library(name = 'events',
+  srcs = [
+    'events.js',
+  ],
+)
+
+js_library(name = 'http',
+  srcs = glob(['http/*.js']),
+  deps = [
+    ':base',
+    ':promise',
+    '//javascript/atoms:errors',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/remote:client',
+  ],
+)
+
+js_library(name = 'key',
+  srcs = [
+    'key.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+js_library(name = 'logging',
+  srcs = [
+    'logging.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+js_library(name = 'promise',
+  srcs = [
+    'promise.js',
+  ],
+  deps = [
+    ':events',
+    ':stacktrace',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'serializable',
+  srcs = [
+    'serializable.js',
+  ],
+  deps = [
+  ],
+)
+
+js_library(name = 'session',
+  srcs = [
+    'session.js',
+  ],
+  deps = [
+    ':capabilities',
+  ],
+  visibility = [
+    '//javascript/remote:client',
+  ],
+)
+
+js_library(name = 'stacktrace',
+  srcs = [
+    'stacktrace.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)

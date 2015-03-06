@@ -1,0 +1,22 @@
+mozilla_xpt(name = "ide-auto-complete",
+    srcs  = [ "src/idl/SeleniumIDEGenericAutoCompleteSearch.idl" ])
+
+# In the ideal world, we'd use "core" directly, but we need
+# to also change the name to "selenium". The nasty hack works
+# around this
+mozilla_extension(name = "selenium-ide",
+  components = [
+    "src/components/SeleniumIDEGenericAutoCompleteSearch.js",
+    ":ide-auto-complete"
+  ],
+  resources = [
+    { "src/content" : "chrome"},
+    { "src/skin" : "chrome" },
+    { "src/locale" : "chrome" },
+    { "../../javascript/selenium-core" : "chrome/content"},
+    { "src/chrome/icons" : "chrome" },
+    { "//javascript/selenium-atoms" : "chrome/content/selenium-core/scripts/atoms.js"},
+    { "//third_party/js/sizzle" : "chrome/content/selenium-core/lib/sizzle.js" }
+  ],
+  chrome = "src/chrome.manifest.production",
+  install = "src/install.rdf")

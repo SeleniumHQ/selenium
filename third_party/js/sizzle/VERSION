@@ -1,0 +1,8 @@
+Name: Sizzle
+URL: https://nodeload.github.com/jquery/sizzle/zipball/jquery-sizzle-1.5.1-30-g423f35a
+Revision: 423f35af8bf43f3f07bb17284e21608f08372c22
+Date: 2012-01-04
+License: MIT, BSD or GPL (using MIT)
+
+Local changes:
+Minified via http://refresh-sf.com/yui/. Header removed from minified version

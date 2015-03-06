@@ -1,0 +1,766 @@
+v2.45.0
+=======
+ * Supports native events for Firefox versions 31 (current ESR), and
+   24 (immediately previous ESR). Native event support has been discontinued
+   for versions of Firefox later than 33.
+ * Removed automatic installation of SafariDriver extention for .NET.
+   From this point forward, users are expected to manually install the
+   SafariDriver extension into their Safari installation in order to drive
+   the browser. This is due to Apple's changes in architecture for Safari
+   extensions.
+ * Added initial implementation of .NET bindings OperaDriver. The .NET
+   bindings will now support the Chromium-based Opera driver without
+   requiring the use of the Java remote WebDriver server. This driver will
+   work with Opera 26 and above, and requires the download of the Opera
+   driver executable. Code cleanup and refactoring will take place under a
+   separate commit. Note that there is still no support in the .NET bindings
+   for the Presto-based Opera without using the remote server, nor is there
+   likely to be.
+ * Added option to not delete anonymous Firefox profile in .NET. This change
+   adds an option to the .NET FirefoxProfile class so that the driver will
+   not delete the anonymous profile created by the driver. Since the driver
+   cannot and should not use an existing profile in situ because of the
+   multiple instance automation case, this change means that modifications
+   applied to the anonymous profile can be retained and used in future
+   anonymous profiles. The implication is that the user can now make
+   modifications to a profile, and retain those profile modifications (e.g.,
+   cookies) into other future profiles, simulating persistent changes over
+   multiple browser launches. Fixes issue #7374.
+ * Introduced type safe option in InternetExplorerOptions to set the
+   capability to disable check of mime type of the doucment when setting
+   cookies. When setting cookies, there is a check in the IE driver to
+   validate that the page in the browser is, in fact, an HTML page. Despite
+   the fact that omitting this check can cause unrecoverable crashes in the
+   driver, there is demand for a mechanism to disable this check for older,
+   legacy versions of Internet Explorer. Fixes issue #1227.
+
+v2.44.0
+=======
+ * Supports native events for Firefox versions 33 (current), 32 (immediately
+   previous release), 31 (current ESR), and 24 (immediately previous ESR).
+ * Rolled back improper spec compliance for finding elements.
+ * Fixed WebDriverBackedSelenium compatibility with IE5. Fixes issue #7938.
+
+v2.43.1
+=======
+ * Point-release to correct version resources in .NET bindings assemblies. No
+   functional changes.
+
+v2.43.0
+=======
+ * Supports native events for Firefox versions 32 (current), 31 (immediately
+   previous release and current ESR), and 24 (immediately previous ESR).
+ * Integrated the Microsoft Internet Explorer driver implementation into the
+   .NET bindings. By setting the Implementation property of the .NET bindings'
+   InternetExplorerDriverService class, the user can now force the driver to
+   use the Microsoft implementation. Note that the default is to use the
+   existing open-source implementation based on the Automation Atoms.
+   Over time as the Microsoft implementation matures, this will be switched to
+   use the Microsoft implementation, first by default, then exclusively.
+
+   To use the Microsoft implementation, the user must have the August 2014
+   updates to Internet Explorer installed through Windows Update, and must
+   install the IE Web Driver Tool for Internet Explorer 11 download from
+   Microsoft (http://www.microsoft.com/en-us/download/details.aspx?id=44069).
+ * Added safe check for window.localStorage in .NET WebDriverBackedSelenium
+   implementation. Patch provided by Timofey Vasenin.
+ * Implemented pluggable element locator factories for .NET PageFactory. This
+   change allows the user to specify a custom IElementLocatorFactory for
+   locating elements when used with the PageFactory. This gives much more
+   control over the algorithm used to locate elements, and allows the
+   incorporation of things like retries or handling of specific exceptions.
+ * Issue #7367: Set Json.NET to ignore dates when parsing response values.
+ * Issue #7419: Added support for SwitchTo().ParentFrame() in .NET bindings.
+   This brings the .NET bindings into parity with other languages.
+ * Belatedly removed long-obsolete .NET tests for AndroidDriver.
+
+v2.42.0
+=======
+ * Supports native events for Firefox versions 29 (current), 28 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Updated Json.NET dependency to version 6.0.2.
+ * Refactored JSON serialization of cookies.
+
+v2.41.0
+=======
+ * Supports native events for Firefox versions 28 (current), 27 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Removed deprecated AndroidDriver
+ * Added excludeSwitches to the list of known Chrome options
+ * Implemented ITakesScreenshot in RemoteWebDriver base class instead of
+   in browser-specific subclasses.
+ * Refactored usage of command executors. We now use the same algorithm for
+   creating and using a "command executor" for all current driver
+   implementations. This removes some of the differences between Firefox and
+   other implementations. It also prepares the way for unifying the
+   construction of drivers using a common base Options class.
+
+v2.40.0
+=======
+ * Supports native events for Firefox versions 27 (current), 26 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Issue #1175: Implemented ByIdOrName in .NET support package.
+ * Issue #3283: Escaping backslashes when writing Firefox preferences to
+   profile in .NET
+ * Issue #3719: No longer redirecting console output for Firefox. This
+   information was largely unused by anyone, and the implementation had a
+   chance to produce deadlocks when reading from the console output stream for
+   stdout and stderr.
+ * Issue #4248: Added exception handling in .NET WebDriverBackedSelenium.
+ * Issue #5692: Fixed when cookie expiration date received by .NET exceeds
+   maximum DateTime value. When receiving a cookie via the JSON wire protocol,
+   the expiration date is represented as the number of seconds after
+   12:00:00 AM January 1, 1970 GMT. When a number greater than or equal
+   253402300800, this is larger than the maximum value of .NET's DateTime
+   value. This change catches the ArgumentOutOfRangeException and forcibly sets
+   the expiration to DateTime.MaxValue (12:59:59 PM December 31, 9999 GMT).
+ * Issue #5755: Exposing property on .NET PhantomJSDriverService to specify IP
+   address on which to listen for connections. When specifying a port on which
+   PhantomJS should listen for WebDriver commands, the user has the option to
+   also specify an IP address to which to bind to listen. This commit exposes
+   that ability. It also exposes the ability to specify a Selenium Grid hub
+   with which this instance of PhantomJS should register as a node.
+ * Issue #6343: (on behalf of Ulrich Buchgraber) Make .NET DefaultWait stop
+   swallowing original exception stack trace.
+ * Issue #6699: Exposing process ID of service executable in .NET DriverService
+   class. This allows the user to attempt to add the process to a Windows job
+   object if they so desire, which will automatically kill child processes when
+   the parent process is exited. Note that job objects are subject to security
+   restrictions when used on Windows Vista or later.
+ * Issue #6860: Updating .NET SafariDriver browser launch code. The initial
+   start page from the temp directory that launches the WebSocket is loaded in
+   Safari via a command line parameter. If the path contains a space, the load
+   will fail. This is fixed by surrounding the temp file name with quotes.
+ * Issue #6870: Updated FirefoxDriver constructor for ICapabilities. This
+   allows the user to pass an ICapabilities object to the Firefox driver
+   constructor and have specific capabilities used in driver instantiation.
+ * Issue #6935: Changing .NET random temp file generation to be truly random. 
+   The .NET bindings now use GUIDs as part of the file names for files and
+   directories created in the temp directory. This is to work around potential
+   collisions in random number generation encountered when using the .NET
+   Random class, particularly in different processes. GUIDs are used as their
+   generation in the .NET Framework is optimized for performance.
+ * Issue #6966: Changed .NET WebDriverBackedSelenium OpenWindow to mimic Java.
+   The JavaScript evaluated by the .NET WebDriverBackedSelenium OpenWindow
+   command handler should return a null value from the eval() of the
+   JavaScript to open the window. This is what the Java implementation does,
+   and this commit brings the .NET implementation into line with that.
+ * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
+   context. This allows the user to execute PhantomJS-specific commands using
+   the PhantomJS JavaScript API.
+ * Updated .NET bindings to use webdriver.json for default Firefox profile.    
+   Other language bindings have been using a common JSON file containing the
+   default profile setting for the anonymous Firefox profile used by the
+   Firefox driver. The .NET bindings now do the same.
+ * Now provide an option to hide command prompt window for driver service
+   executables (IEDriverServer.exe, chromedriver.exe, etc.) in .NET bindings.
+ * Modified to allow user to specify name of driver service executable in .NET.
+   We now give an overload to CreateDefaultService for ChromeDriverService,
+   PhantomJSDriverService, and InternetExplorerDriverService to allow the
+   user to specify the name of the service exectuable. This is particularly
+   useful for non-Windows platforms where the executable does not end with
+   '.exe'. It also allows the user to rename the executable to a name of
+   their choosing and still be able to use it from the .NET bindings.
+ * Added a type safe option for IE to use ForceUseShellWindowsApi.
+ * Updated .NET ChromeOptions to include latest options for Chrome. Also fixed
+   the AddAdditionalCapability method to correctly add additional options to
+   the chromeOptions object passed to chromedriver.exe, instead of to the top-
+   level of the capabilities object. Adding new top-level capabilities is
+   handled by a new overload of AddAdditionalCapability that contains a boolean
+   argument to indicate that the capability should be added to the root of the
+   capabilities object. This handles the 80% case where new "experimental"
+   options are added by the chromedriver team.
+ * Implemented FindsBySequence attribute for .NET PageFactory. This new
+   attribute allows the user to mark a field or property in a page object such
+   that any FindsBy attributes set on the member are used in sequence, as
+   specified by the Priority property. Note that when not specifying a Priority
+   value, or specifying multiple FindsBy attributes with the same Priority
+   value, the behavior is undefined.
+ * Fixed cleaning up leftover temp directory when using SafariDriver.
+
+v2.39.0
+=======
+ * Supports native events for Firefox versions 26 (current), 25 (immediately
+   previous), 24 (current ESR), and 17 (immediately previous ESR)
+ * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
+   is to use a third-party implementation for Android, such as Selendroid
+   (http://selendroid.io/) or Appium (http://appium.io/).
+ * Added experimental IWebDriver extension methods to .NET support classes.
+   This commit adds extension methods to IWebDriver, which can be used to
+   reduce the amount of type casting that must be done to access
+   functionality not provided by the base IWebDriver interface. The following
+   methods were added:
+    
+    * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
+      support for working directly with instances of RemoteWebDriver.
+    * ExecuteJavaScript<T>() - does not require a cast to
+      IJavaScriptExecutor, and will automatically cast the result to the type
+      specified by the generic type parameter (T).
+    
+   These extension methods should be considered experimental. To use them
+   requires a reference to WebDriver.Support.dll, and adding a using clause
+   for OpenQA.Selenium.Support.Extensions.
+
+v2.38.0
+=======
+ * Supports native events for Firefox versions 25 (current), 24 (immediately
+   previous and current ESR), and 17 (immediately previous ESR)
+ * Issue #6383: Adding method GetCSSCount to ISelenium.
+ * Issue #6418: Updated .NET path manipulation when launching Firefox process.
+ * Issue #6453: Adding type-safe properties for new command-line arguments of
+   chromedriver.exe
+ * Issue #6457: Disabled keep-alive header on .NET driver service startup/
+   shutdown requests.
+
+v2.37.0
+=======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
+ * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved
+   waiting for the driver service process to end to immediately after sending
+   the shutdown HTTP request. Waiting to catch the exception for a failed HTTP
+   request due to a closed socket is very expensive. This cuts shutdown time
+   for a driver service executable to about 33% of what it used to be for the
+   IE driver, with larger savings for Chrome and PhantomJS.
+
+v2.36.0
+=======
+ * Supports native events for Firefox versions 24 (current and current ESR),
+   23 (immediately previous), and 17 (immediately previous ESR)
+ * Added ability to set additional ChromeOptions in the .NET bindings. This
+   allows the ability to set user profile preferences and local state
+   preferences using the ChromeOptions class. The new AddUserProfilePreference
+   and AddLocalStatePreference methods correspond to the "prefs" and
+   "localState" capabilities documented in the chromedriver documentation. Note
+   that the values passed in to these methods must be JSON-serializable, and no
+   validation is done on these values at present. We now also allow setting the
+   "detach" capability, which allows the user to specify that Chrome remain
+   running after chromedriver.exe has quit.
+ * Removed support for the obsolete chrome.binary and chrome.switches
+   capabilities.
+ * Changed the command line arguments to chromedriver.exe to include two
+   hyphens, instead of one (e.g., "--silent" instead of "-silent").
+ * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
+ * Added ability to set Chrome extensions by using base64 encoded strings. 
+   Previously, you could only install extensions by using a path to a .crx
+   file. Now you can embed the extension as a base64-encoded string, without
+   having it persisted to the disk at all.
+
+v2.35.0
+=======
+ * Supports native events for Firefox versions 23 (current), 22 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
+ * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
+   in .NET to prevent double slashes in URL. This change is in the .NET
+   WebDriverBackedSelenium API.
+ * Removed unnecessary ProxyJsonConverter class.
+ * Updating InternetExplorerOptions documentation for UsePerProcessProxy
+   property.
+
+v2.34.0
+=======
+ * Supports native events for Firefox versions 22 (current), 21 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
+ * Added support for ie.ensureCleanSession capability to .NET bindings. The
+   .NET bindings do this by means of the EnsureCleanSession property on the
+   InternetExplorerOptions object. When set to true, this property instructs
+   the IE driver to clear the system cache for all instances of Internet
+   Explorer, even those already running when the driven instance is launched,
+   so care should be used when setting this property. The property defaults to
+   false.
+ * Added type-safe Proxy property to .NET InternetExplorerOptions class. Also
+   added support for the ie.usePerProcessProxy capability via the
+   UsePerProcessProxy propery.
+ * Issue #5999: Rearranged command line generated for PhantomJS. This
+   rearranges the order of arguments so that PhantomJS command line arguments
+   appear before the GhostScript main.js file (if any).
+ * Added JSON serialization info for .NET Proxy class. Also added Proxy
+   property to ChromeOptions class for type-safe adding of proxy to Chrome
+   capabilities.
+ * Added ability to set external GhostDriver implementation in .NET bindings.
+   Previously, it was not possible to set the path to the GhostDriver
+   JavaScript implementation in the .NET bindings; the user was forced to use
+   the implementation embedded in the PhantomJS executable. This change now
+   mimics the Java language bindings in functionality.
+ * Moved .NET IE driver command-line args into capabilities. This is to sync up
+   the .NET bindings with 2.33.0.7 of IEDriverServer.exe.
+ * Allow using global capability types for .NET InternetExplorerOptions.
+
+v2.33.0
+=======
+ * Supports native events for Firefox versions 21 (current), 20 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
+ * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
+   Profile preferences Dictionary. Was previously using the .Add() method of
+   the Dictionary, which would throw an exception if the key already existed.
+ * Updated InternetExplorerDriverService to allow using new command line
+   options for IEDriverServer.exe
+
+v2.32.1
+=======
+ * Removed strong-naming from released assemblies. No functional changes.
+
+v2.32.0
+=======
+ * Supports native events for Firefox versions 20 (current), 19 (immediately
+   previous), 17 (current ESR), and 10 (immediately previous ESR)
+ * Issue #4629: Modified .NET Firefox driver to only look to connect to IPv4
+   addresses. The ConnectToBrowser() method always created IPv4 addresses to
+   initially addresses for connection, this would throw an exception.
+ * Issue #5306: Fixing .NET PageFactory WebElementProxy to call wrapped
+   element's FindElements method.
+ * Changed FirefoxBinary timeout property to use TimeSpan. Using TimeSpan
+   allows more flexibility for the user to set, and does not hard-code
+   milliseconds as the unit of measure. This commit introduced overloads of the
+   appropriate exposed properties and methods, marking those taking a long as
+   obsolete. The obsolete members will be removed in a future version.
+ * Do not send chrome.binary capability if the property is null. This will
+   properly allow the bindings to start the default Chrome installation when
+   using chromedrive2.
+ * (on behalf of GeoffMcElhanon) Added support to pass arguments to PhantomJS.
+   The PhantomJSDriverService now has type-safe properties for all of the
+   command-line switches supported by PhantomJS. These can be passed directly
+   on the command line, or can be serialized into a JSON file for passing with
+   the --config command line switch to PhantomJS.
+ * Removed arbitrary limit on argument types for executing JavaScript.
+
+v2.31.2
+=======
+ * Issue #5221: Entirely removed the dependency on Castle.Core.dll for .NET
+   support library. Using the Castle DynamicProxy has been nothing but a thorn
+   in the side of users of WebDriver.Support.dll. This change implements
+   hard-coded "proxy" objects the .NET PageFactory implementation. Hopefully,
+   this will resolve the issues the PageFactory for everyone. Nevertheless,
+   there is every possibility that will entirely break the PageFactory in some
+   unforseen way for some subset of users, despite the fact that all of the
+   tests (both unit and browser-based tests) pass. If that is the case, feel
+   free to file issues, if the issues include code samples that reproduce the
+   problem.
+ * Fixed .NET WebDriverBackedSelenium NuGet packaging. Package was lacking
+   dependencies on other Selenium NuGet packages.
+
+v2.31.1
+=======
+ * Issue #5257: Fixed assemblies merged with ILMerge on .NET 4.0 when built on
+   a machine with .NET 4.5 installed.
+
+v2.31.0
+=======
+ * Issue #1320: Refactoring .NET Firefox driver's Executable class. The class
+   will now better handle custom paths to the Firefox executable.
+ * Issue #5160: Fixed .NET WebDriverBackedSelenium wait functions. Wait
+   functions in the .NET WebDriverBackedSelenium now will wait until the
+   timeout.
+ * Issue #5211: Allow extraction of IEDriverServer components to custom
+   directory in .NET. The .NET bindings were passing an incorrect command-line
+   switch to IEDriverServer.exe for the location to extract embedded library
+   files.
+ * Introduced new IE attachBrowserTimeout capability to .NET bindings.
+ * Blocked ability to set FileDetector for browser-specific drivers in .NET.
+   Most of the server-components (chromedriver.exe, IEDriverServer.exe,
+   WebDriver Firefox extension) do not understand how to handle the
+   FileDetector property. They simply approach all file upload as uploading
+   from the local machine. If you need to upload remotely, use an instance of
+   the RemoteWebDriver class.
+
+v2.30.0
+=======
+ * Issue #5032: Fixed .NET FileUtilities.FindFile() to expand environment
+   variables and search for invalid characters in PATH directories.
+ * Issue #5089: Made connection to Firefox extension locked by socket lock in
+   .NET.
+ * Issue #5141: Corrected reversed logic in port assignment for .NET
+   SafariDriver's WebSocket server.
+ * Issue #5177: Now using ILMerge for WebDriver.Support.dll. The support
+   library will no longer require an explicit dependency on Castle.Core in its
+   NuGet package.
+ * Updated .NET dependencies. Json.NET to 4.5r11; Castle.Core to 3.2.0.
+ * Added more diagnostics for failed HTTP requests in .NET bindings. This is an
+   attempt to help diagnose the root cause of issue #3719. Please note that it
+   makes no effort whatsoever to "fix" the issue. This is simply hoping to 
+   provide more information for those who have run into that issue, and see if
+   all occurrances have the same root cause.
+ * Only adding environment variables for Firefox process if they do not already
+   exist.
+ * Properly passing requireWindowFocus capability when set in .NET bindings.
+   Previously, this capability could be set in InternetExplorerOptions, but
+   it was not being passed through to the driver session.
+ * Deprecated Alert property of UnhandledAlertException in favor of AlertText
+   property.
+ * Updated .NET bindings to use embedded Safari extension. Separate extension
+   build and installation no longer required.
+ * Updated registry search for Firefox executable in the .NET bindings.
+
+v2.29.1
+=======
+ * Rebuilt to get embedded Firefox extension with correct version. The
+   extension in 2.29.0 had a version of "2.28" instead of "2.29". This has now
+   been corrected.
+
+v2.29.0
+=======
+ * Implemented use with lists for the FindsByAttribute in the .NET bindings.
+   Note that fields and properties decorated with the FindsBy attribute must be
+   either IWebElement or IList<IWebElement>.
+ * Exposed RequireWindowFocus option for Internet Explorer driver in .NET
+   bindings. This is still an experimental feature, and should be used with
+   extreme care.
+ * Added guard for EnablePersistentHoverCapability in .NET
+   InternetExplorerOptions.AddAdditionalCapability().
+ * Added type safe ability via InternetExplorerOptions to enable/disable the
+   persistent hover capability in the .NET bindings for the IE driver.
+
+v2.28.0
+=======
+ * Introduced the CustomFinderType property to the .NET FindsByAttribute. This
+   allows use of custom By subclasses in the PageFactory. The custom finder
+   must be a subclass of By, and it must expose a public constructor that takes
+   a string argument. To use a custom finder with the FindsByAttribute, use the
+   following syntax:
+
+       [FindsBy(How = How.Custom, 
+                Using = "customCriteria", 
+                CustomFinderType = typeof(MyCustomBySubclass))]
+
+   Using How.Custom without specifying a CustomFinderType, or using a
+   CustomFinderType that either does not descend from By or does not have a 
+   proper constructor will throw an exception.
+
+v2.27.1
+=======
+ * Corrected FileUtilities.FindFile() to correctly return the current directory
+   if the specified file is located there. This fixes an issue where driver
+   service executables (IEDriverServer.exe and chromedriver.exe) would not be
+   found if placed in the same directory as the WebDriver.dll assembly,
+   breaking previous behavior.
+   
+v2.27.0
+=======
+ * Issues #3508 and #2103: Modified to no longer hang on alerts triggered by
+   onchange of <select> elements or by onsubmit of <form> elements.
+ * Issue #4865: Changed DesiredCapabilities.Safari() to return
+   DesiredCapabilities instead of ICapabilities.
+ * Implemented rudimentary path searching for executable-based drivers (such
+   as IE, Chrome, and PhantomJS).
+ * Finally made the .NET PhantomJSDriver public. It still requires a PhantomJS
+   built from the trunk of that project, at least until PhantomJS 1.8 is
+   released in late December.
+ * Implemented touch screen actions for the .NET bindings.
+ * Added ability to add experimental or additional capabilities for which there
+   are not yet type safe options to the .NET InternetExplorerOptions and
+   ChromeOptions classes.
+ * Removed necessity for path to GhostDriver's main.js for the .NET
+   PhantomJSDriverService in favor of a command line switch (GhostDriver is now
+   internal to PhantomJS).
+ * Turned off use of the Expect-100 header for the HttpWebRequests.
+ * Added various StyleCop changes.
+ * Added support for file uploads to a remote WebDriver server.
+ * Added a missing method to the Actions API.
+
+v2.26.0
+=======
+ * Issue #4526: Bumping .NET HttpWebRequest service point connection limit to
+   2000.
+ * Prevent firefox from updating, checking and warning for extension and plugin
+   updates
+ * Handled the case where a JSON Wire Protocol error response contains a null
+   value for the message property. Also guarded against null values in other 
+   members of the error response.
+ * Added .NET implementation of PhantomJSDriver, as a headless option for .NET
+   users. This driver requires PhantomJS and GhostDriver. Since the GhostDriver
+   project isn't ready to be used just yet, these classes are marked with 
+   "internal" visibility. When the GhostDriver project is ready, these classes
+   will be made public. Also including test enhancements for use with 
+   PhantomJS.
+ * Made keep-alive configurable on .NET HttpCommandExecutor and
+   DriverServiceCommandExecutor.
+ * Shortcut trying to convert element to ILocatable if an Action in the .NET
+   bindings is called specifically with a null value for element.
+ * Added the LibraryExtractionPath propery to InternetExplorerDriverService to
+   be able to set the location to which the support library of the
+   IEDriverServer.exe is extracted. 
+ * Implementing SuppressInitialDiagnosticInformation property on DriverService
+   to allow users of standalone driver servers to suppress the display of the
+   initial information from the console via the -silent switch.
+ * Updated .NET Actions class to accept IWebDriver objects that implement
+   IWrapsDriver as well as IHasInputDevices. Similarly, actions now can take
+   IWebElement objects that implement IWrapsElement as well as ILocatable. This
+   allows the use of EventFiringWebDriver objects directly without casting in
+   end-user code.
+ * Changing the disposal semantics of the .NET bindings to more closely match
+   the .NET Framework disposal semantics. This means that calling Dispose() on
+   a driver is equivalent to calling Quit(), which enables usage of the using()
+   construct.
+ * Replaced throwing of System.TimeoutException with throwing
+   WebDriverTimeoutException, which now descends from WebDriverException.
+ * Added .NET InternetExplorerOptions.UnexpectedAlertBehavior property to
+   specify how unexpected alerts are handled by the IE driver.
+ * Updated the .NET deployment build to use ILMerge, which merges the dependent
+   assemblies into the main WebDriver.dll assembly. This also removes
+   dependencies on NuGet packages for the core WebDriver.dll assembly.
+ * Updated .NET UnhandledAlertException to include a reference to the Alert not
+   handled.
+ * Expose setting the port for DriverService-based drivers.
+ * Removed visibility of Finder property for FindsByAttribute. This will never
+   work because of .NET's rules around attribute parameter types.
+ * Made .NET 4.0 the default of the .NET bindings for development and
+   debugging.
+ * Updated constructor to .NET Actions class to check that driver parameter
+   implements IHasInputDevices.
+
+v2.25.1
+=======
+ * Updated InternetExplorerOptions to allow users to set the IgnoreZoomLevel
+   setting.
+ * Exposed constructors in ChromeDriver and InternetExplorerDriver that allow
+   passing a DriverService object. This gives the user more control over the
+   properties of the DriverService.
+ * Updated exception thrown by .NET SafariDriver when a connection to the 
+   driver is not created within 45 seconds.
+ * Cleaned up documentation comment warning on build of the .NET implementation
+   of WebDriverBackedSelenium.
+
+v2.25.0
+=======
+ * Updated Json.NET version to 4.5r7. Also changing NuGet packaging to no
+   longer rely on specific package version of dependencies.
+ * Updated FxCop/StyleCop global warning suppressions file.
+ * Updated InternetExplorerDriverService to be able to manipulate the command
+   line switches using strongly-typed properties of the object.
+ * Added elementScrollBehavior capability to allow users to specify how
+   elements scroll into the viewport for interaction. Default behavior is
+   unchanged (the capability is set to 0), but can be set to scroll to align 
+   to the bottom of the viewport by setting the capability to 1. This commit
+   includes an addition to the InternetExplorerOptions of the .NET bindings.
+ * Fixed element finding and table handling in .NET WebDriverBackedSelenium.
+
+v2.24.0
+=======
+ * Issue #4070: Updated OpenQA.Selenium.Support.PageObjects.FindsByAttribute so
+   that overridden operators correctly handle the null case.
+
+v2.23.0
+=======
+ * Removed the embedded IE server from the .NET bindings. From now on, you 
+   *must* use the IE standalone server with .NET.
+ * Removed unneeded polling for parent.lock file on anonymous Firefox profile
+   in temp directory.
+
+v2.22.1
+=======
+ * Issue #4015: Not all browser driver implementations understand the generic
+   set timeouts HTTP endpoint of the JSON wire protocol, instead responding to
+   the deprecated specific endpoints for each timeout.
+
+v2.22.0
+=======
+ * Issue #3242: Added Android to Platform enumeration.
+ * Issue #3870 (code supplied by KellySummerlin): Added ByChained support to
+   the WebDriver.Support assembly. Also created  additions to the .NET
+   PageFactory to allow decorating members with multiple instances of
+   FindsByAttribute, including ordering of the attributes.
+ * The .NET IE driver implementation now looks for the IE standalone server. 
+   Please note that if you do not set the option in InternetExplorerOptions
+   to use the legacy server, the constructor *will* throw an exception. There 
+   is no automatic fallback to using the embedded .dll, because there's no 
+   standard way in the .NET framework to alert the user to a condition that 
+   needs attention at runtime, and guarantee it will be seen.
+ * Implemented ability to set page load timeout in the .NET bindings.
+ * Added tests to .NET bindings to align more closely with Java.
+ * Updated .NET bindings InternetExplorerOptions to allow the user to disable
+   native events for IE. Note that actually doing this is not recommended as of
+   this release.
+ * Added .NET version of LoadableComponent and SlowLoadableComponent to the
+   WebDriver.Support assembly (code supplied by KellySummerlin).
+ * Trivially refactored the constructors of "service-based" drivers for .NET
+   bindings.
+ * Made .NET unit tests more friendly to non-Windows operating systems (using
+   Mono).
+ * Updated .NET Safari driver to conform to the new message format in r16716.
+ * Implemented an InitialBrowserUrl property in InternetExplorerOptions to
+   allow the user to customize the page loaded when IE launches. This can be 
+   used in conjunction with IntroduceInstabilityByIgnoringProtectedModeSettings
+   property to set the initial Protected Mode zone of the browser. However,
+   this is still by far a second-best choice, and the first choice should 
+   *always* be to actually set the Protected Mode settings of each zone. If a 
+   user is using this property, only a "best effort" at support will be given.
+ * Allow user-defined installation path for Safari in the SafariDriver.
+ * Changed .NET DesiredCapabilities.Android() to correctly assign a platform 
+   value of Android.
+
+v2.21.0
+=======
+ * Issue #3329: Fixed .NET EventFiring WebDriver to switch to a frame using the
+   wrapped element.
+ * Updated NoSuchFrameException, NoSuchWindowException, and
+   NoAlertPresentException to properly descend from NotFoundException
+   in the .NET bindings.
+ * Modifying .NET PageFactory so that elements marked with the FindBy 
+   attribute can be used with the interactions API.
+ * Updated Json.NET dependency to 4.5r1 and NuGet.exe to 1.7.
+ * Changed the name of the standalone IE driver server from 
+   InternetExplorerDriver.exe to IEDriverServer.exe
+ * Removed recently added restore window command from .NET bindings.
+ * Extracted FindFreePort method in .NET to a common utility class.
+ * Landed the .NET SafariDriver. Woot!
+ * Added a WebSocket server implementation.
+ * Implemented window maximize and restore WebDriver commands for the .NET
+   bindings.
+ * Fixed .NET FirefoxExtension to allow for parallel installation of extensions
+   into profiles being run by parallel tests.
+ * Fixed .NET RemoteWebDriver to translate a single null deliberately passed in
+   as a script arg into an arg array containing the null.
+ * Upped service point connection limit for Selenium RC command processor
+ * Removed deprecated constructors on .NET bindings InternetExplorerDriver
+
+v2.20.0
+=======
+ * No changes specific to the .NET bindings.
+
+v2.19.0
+=======
+ * No changes specific to the .NET bindings.
+
+v2.18.1
+=======
+ * NuGet dependency release. No functional changes to the project.
+
+v2.18.0
+=======
+ * Updated .NET WebDriver.Support assembly to depend on Castle Windsor 3.0
+ * Updated to JSON.NET to 4.0r6
+ * Refactored ChromeDriverService to be a subclass of a base DriverService 
+   class, designed to allow any JSON Wire Protocol-compliant standalone server
+   executable to be used as a service. This adds all required work for the 
+   .NET bindings to begin using the standalone IE remote server.
+ * Enable CODE_ANALYSIS flag for Debug builds so that standalone FxCop can
+   take advantage of GlobalSuppressions.cs.
+ * Added help text to the exception message for WebDriverBackedSelenium, in
+   the case that the Start() method has not been called on the instance.
+
+v2.17.0
+=======
+ * Issue #3172: Updated the .NET PageFactory to traverse the inheritance tree
+   to find custom attributes.
+ * Reverted the .NET remote Command object to return an empty string
+   instead of an empty JSON object ("{}") when the command has no parameters.
+ * Introduced ChromeOptions class for use with the ChromeDriver. This makes
+   obsolete calling constructors on ChromeDriver that take an ICapabilities
+   object.
+ * Added toolkit.telemetry.enabled and toolkit.telemetry.rejected to the
+   default profile used by the FirefoxDriver.
+
+v2.16.0
+=======
+ * Made By, Cookie and Screenshot .NET classes serializable.
+ * Slightly modifying build output to be more informative when building
+   .NET bindings from within the Visual Studio IDE.
+ * Explicitly setting socket.ExclusiveAddressUse = true when attempting to 
+   find a free port for the .NET bindings' FirefoxDriver.
+ * Updating the .NET remote Command object to return an empty JSON object 
+   ("{}") instead of an empty string when the command has no parameters.
+ * Implementing the /sessions and /status commands for the IE driver and the
+   .NET bindings.
+ * Check elements' internal IDs for equality before making RPC call to 
+   determine IWebElement equality in .NET.
+ * Removed unused JSON wire protocol command values from the .NET bindings.
+
+v2.15.0
+=======
+ * Added support for window positioning and sizing API to IE.
+ * Introduced DefaultWait class to WebDriver.Support assembly, to allow fully
+   configurable waits.
+ * Added IRotatable interface for driving client browsers supporting rotation.
+ * Introduced experimental ExpectedConditions class to WebDriver.Support
+   assembly, providing methods to use to wait for commonly-experienced
+   conditions.
+
+v2.14.0
+=======
+ * Implemented iPad desired capability.
+ * Updated Json.NET version to 4.0r4
+
+v2.13.0
+=======
+ * Do not use "which" to find Firefox on Windows in the .NET bindings.
+ * Pass '-foreground' to the firefox binary. Ensures focus by default on OS X.
+
+v2.12.0
+=======
+ * Added experimental IWindow interface for controling size and position of
+   browser windows.
+
+v2.11.0
+=======
+ * Updated to be consistent with other language bindings. Change to java
+   server to allow use of safariproxy driver type. No functional changes.
+
+v2.10.0
+=======
+ * Added "extensions.autoDisableScopes" to default Firefox profile
+ * Removes the deprecated SendModifierKey command, replacing it with
+   SendKeysToActiveElement
+ * Added IntroduceInstabilityByIgnoringProtectedModeSettings to
+   InternetExplorerDriver to make setting capabilities easier when
+   bypassing the Protected Mode settings check of the IE driver
+
+v2.9.0
+======
+  * Look up private parent fields when using the support classes PageFactory.
+  * Preparing RemoteWebDriver to understand upcoming URI changes to JSON wire
+  * protocol.
+
+v2.8.0
+======
+  * Added interactions methods for .Release(), ClickAndHold(), and 
+    DoubleClick() which take no arguments
+  * Added ClickAt() implementation in WebDriverBackedSelenium
+
+v2.7.0
+======
+  * No functional changes
+
+v2.6.0
+======
+  * Issue 2349: Fixed memory leak in PageFactory
+  * Issue 2356: Fixed P/Invoke signatures for native .NET 4.0 projects
+  * Issue 2385: Added protected AddAction method on Actions class to allow
+    subclasses to insert IAction implementations into action chain.
+  * Disabled Firefox profile setting "browser.safebrowsing.malware.enabled" by
+    default
+
+v2.5.1
+======
+  * No functional changes, providing .NET 4.0 binaries and updates to NuGet
+    packaging only.
+
+v2.5.0
+======
+  * Bringing .NET SelectElement support class in line with Java Select class
+  * WebDriver.SwitchTo().Alert() now throws an exception when no alert present.
+  * InvalidSelectorException now thrown when XPath selector syntax is
+    incorrect.
+
+v2.4.1
+======
+  * No functional changes, updates to NuGet packaging only.
+
+v2.4.0
+======
+  * Adding InvalidSelector error code.
+  * Default to field/property name if no Using is specified in PageFactory.
+  * Replaced reference to Ionic.Zip.Reduced.dll with Ionic.Zip.dll to match up
+    NuGet packages.
+
+v2.3.0
+======
+  * Added protected constructors and properties to make it easier to subclass
+    By for custom element finders.
+
+v2.2.0
+======
+  * Adding first pass at .NET implementation of proxy management.
+  * Modifying .NET build process to sign assemblies. Building the .NET bindings
+    through the IDE or through the command line will now produce signed
+	assemblies.
+  * Updating .NET bindings JSON.NET from 3.5 to 4.0.

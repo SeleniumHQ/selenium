@@ -1,0 +1,180 @@
+body {
+  font-size: 11pt;
+  font-family: Helvetica, Arial, Verdana, sans-serif;
+  cursor: default;
+}
+
+/* The following rules are required to make IE6-8 render the page
+ * (semi-)consistently with the other browsers.
+ */
+body { margin: 8px; }
+fieldset { padding: 5px 10px 11px; }
+
+.goog-inline-block {
+  position: relative;
+  display: inline-block;
+}
+
+fieldset,
+.goog-tab,
+.goog-tab-content {
+  border: 1px solid #aaa;
+}
+
+.goog-tab,
+.empty-view {
+  color: #333;
+  padding:  4px 8px;
+}
+
+.goog-tab-bar-start .goog-tab,
+.control-block {
+  margin:  0 0 4px 1px;
+}
+
+.goog-tab-content { height: 100px; }
+.empty-view { font-style: italic; }
+
+.goog-tab-bar {
+  list-style: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  position: relative;
+}
+
+.goog-tab-bar-clear {
+  clear: both;
+  height: 0;
+  overflow: hidden;
+}
+
+.goog-tab-bar-start { float: left; }
+.goog-tab {
+  position: relative;
+  background: #ddd;
+}
+
+.goog-tab-hover { background: #eee; }
+.goog-tab-selected,
+.empty-view {
+  background: #fff !important;
+}
+
+.goog-tab-bar-start .goog-tab { border-right: 0; }
+
+.goog-tab-disabled {
+  text-align: center;
+  min-width: 55px;
+}
+
+.goog-tab-bar-start .goog-tab-selected {
+  left: 1px;
+  margin-left: 0;
+  padding-right: 9px;
+}
+
+.goog-tab-bar {
+  list-style: none;
+}
+
+.goog-tab-content {
+  overflow:  auto;
+  padding: 10px;
+}
+
+.goog-tooltip {
+  background:  #fff;
+  color: #000;
+  border: 1px solid black;
+  padding: 5px;
+  width: 50%;
+}
+
+.session-capabilities:hover { text-decoration: underline; }
+
+.goog-modalpopup-bg,
+.modal-dialog-bg {
+  background: #555;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.modal-dialog {
+  background:  #ccc;
+  color: black;
+  padding: 4px;
+  position: absolute;
+  max-width: 500px;
+  z-index: 1001;
+}
+
+.modal-dialog,
+.modal-dialog-content img {
+  border:  1px solid #333;
+}
+
+.modal-dialog-content img { max-width: 100% }
+
+.modal-dialog-title {
+  background: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 8px 32px 8px 8px;
+  position: relative;
+}
+
+.modal-dialog-content,
+.modal-dialog-buttons {
+  background: #fff;
+  padding: 8px;
+}
+
+.url-input { width: 90%; }
+.label-input-label { color: #aaa; }
+
+.banner {
+  background: #faa;
+  border: 1px solid #f88;
+  border-top:  0;
+  padding:  5px 10px;
+  white-space: nowrap;
+
+  -moz-border-bottom-left-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+
+  -khtml-border-bottom-left-radius: 5px;
+  -khtml-border-bottom-right-radius: 5px;
+
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.banner:hover {
+  background: #fcc;
+  border-color: #faa;
+}
+
+.server-info {
+  font-size: .8em;
+  color: #999;
+  padding:  0;
+  margin: 2px 10px 0 0;
+  text-align:right;
+}
+
+.todo {
+  color: #999;
+  font-weight: bolder;
+  font-size: .8em;
+  padding: 2px 0 0 10px;
+  border: 1px solid #aaa;
+  border-bottom: 0;
+  border-right: 0;
+}

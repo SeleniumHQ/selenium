@@ -1,0 +1,2 @@
+require 'selenium/client'
+

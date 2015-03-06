@@ -1,0 +1,10 @@
+
+
+java_library(name = "net",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+  ])

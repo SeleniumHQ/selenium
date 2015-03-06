@@ -1,0 +1,9 @@
+Source control: git
+URL: https://github.com/krosenvold/selenium-jetty-repack.git
+Version: ff8f1ef0c1f83e16618ad142cf7e0328f6f2999a
+
+Local Modifications:
+Applied patch "pom.xml.patch" before building the packed jetty.
+
+Once the artifact is built, unpacked and commented out all listeners in the
+webdefault.xml

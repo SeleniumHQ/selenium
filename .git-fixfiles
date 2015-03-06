@@ -1,0 +1,4 @@
+#!/bin/sh
+git update-index --assume-unchanged cpp/prebuilt/**/*.so
+git update-index --assume-unchanged cpp/iedriver/Generated/atoms.h
+exit 0

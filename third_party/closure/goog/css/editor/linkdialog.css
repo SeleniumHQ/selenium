@@ -1,0 +1,36 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/**
+ * Styles for the Editor's Edit Link dialog.
+ *
+ * @author marcosalmeida@google.com (Marcos Almeida)
+ */
+
+
+.tr-link-dialog-explanation-text {
+  font-size: 83%;
+  margin-top: 15px;
+}
+
+.tr-link-dialog-target-input {
+  width: 98%; /* 98% prevents scroll bars in standards mode. */
+  /* Input boxes for URLs and email address should always be LTR. */
+  direction: ltr;
+}
+
+.tr-link-dialog-email-warning {
+  text-align: center;
+  color: #c00;
+  font-weight: bold;
+}
+
+.tr_pseudo-link {
+ color: #00c;
+ text-decoration: underline;
+ cursor: pointer;
+}

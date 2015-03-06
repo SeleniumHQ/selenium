@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>window_scroll_test</title>
+  <script src="test_bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.Promise');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    function verifyScroll(expectedScroll) {
+      var actualScroll = bot.window.getScroll();
+      assertEquals(expectedScroll.x, actualScroll.x);
+      assertEquals(expectedScroll.y, actualScroll.y);
+    }
+
+    function testScrolling() {
+      // Initial page scroll should be (0, 0).
+      var pos = bot.window.getScroll();
+      verifyScroll(new goog.math.Coordinate(0, 0));
+
+      pos = new goog.math.Coordinate(25, 50);
+      bot.window.setScroll(pos);
+
+      // Yield to ensure all browsers apply the scrolling change.
+      // Relying on the implicit tick in a promise resolution is enough.
+      return goog.Promise.resolve().then(function() {
+        // For some reason Android stock browser and webview do not apply
+        // the full scroll.
+        if (goog.userAgent.product.ANDROID) {
+          pos = new goog.math.Coordinate(24, 48);
+        }
+        verifyScroll(pos);
+      });
+    }
+
+    function testSetScrollUsingGetScroll() {
+      var pos = bot.window.getScroll();
+      bot.window.setScroll(pos);
+      verifyScroll(pos);
+    }
+  </script>
+</head>
+<body style="width: 8000px; height: 8000px; padding: 0px;margin: 0px;">
+  Hello
+</body>
+</html>

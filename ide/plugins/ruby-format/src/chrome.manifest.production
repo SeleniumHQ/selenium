@@ -1,0 +1,4 @@
+# chrome.manifest for production
+content ruby-formatters  chrome/content/
+
+overlay chrome://selenium-ide/content/selenium-ide-overlay.xul chrome://ruby-formatters/content/formats/format-loader.xul

@@ -1,0 +1,39 @@
+<html>
+<!--
+Copyright 2009 Google, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head><title>Click javascript:href that contain #, void(0)</title></head>
+<body>
+
+  <p><a name="spot">javascript:href that contain #, void(0)</a>.</p>
+  <p><a href="javascript:void(0)" id="linkWithJavascriptVoidHref"> Click javascript:void(0)</a></p>
+  <p><a href="javascript:window.location.hash%3D%27%23changeHref%27;void%200" id="changeHref">onclick method changes its href.</a>
+  <p id="pToRemoveFrom">
+    <span id="spanToRemove">
+      <a href="javascript:window.location.hash%3D%27%23deleteElement%27;void%200" id="deleteElement">onclick method deletes this element.</a>
+    </span>
+
+  <p><a id="e" href="javascript:window.location.hash%3D%27%23deleteElementRaiseAlert%27;void%200">onclick method deletes this element and raises an alert</a><br>
+  <script>
+    document.getElementById('linkWithJavascriptVoidHref').addEventListener("click", function (evt) { evt.preventDefault(); alert("onclick:voidHref");}, false);
+    document.getElementById('changeHref').onclick = function () { this.href='#spot3'; alert('changeHref');};
+    document.getElementById('deleteElement').onclick = function () {
+      document.getElementById('pToRemoveFrom').removeChild(document.getElementById('spanToRemove'));
+    };
+    document.getElementById('e').onclick = function () { var e = document.getElementById('e'); e.parentNode.removeChild(e); alert('e'); };
+  </script>
+
+</body>
+</html>

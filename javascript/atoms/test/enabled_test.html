@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unit tests for bot.dom.isEnabled</title>
+    <script src="test_bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('bot.dom');
+      goog.require('bot.userAgent');
+      goog.require('goog.dom');
+      goog.require('goog.testing.jsunit');
+      goog.require('goog.userAgent');
+      goog.require('goog.userAgent.product');
+    </script>
+    <script type="text/javascript">
+function testElementsThatDoNotSupportTheDisabledAttributeAreAlwaysEnabled() {
+  assertTrue('Body should be enabled', bot.dom.isEnabled(document.body));
+  assertTrue('Form should be enabled', bot.dom.isEnabled(document.forms[0]));
+}
+
+function assertDisabled(id) {
+  var element = goog.dom.$(id);
+  assertNotNullNorUndefined('no such element: ' + id, element);
+  assertFalse(id + ' should be disabled', bot.dom.isEnabled(element));
+}
+
+function assertEnabled(id) {
+  var element = goog.dom.$(id);
+  assertNotNullNorUndefined('no such element: ' + id, element);
+  assertTrue(id + ' should be enabled', bot.dom.isEnabled(element));
+}
+
+function testShouldBeEnabledIfDoesNotHaveDisabledAttribute() {
+  assertEnabled('enabled-button-a');
+}
+
+function testShouldBeDisabledIfItHasTheDisabledAttribute() {
+  assertDisabled('disabled-button-b');
+  assertDisabled('disabled-button-c');
+  assertDisabled('disabled-button-d');
+  assertDisabled('disabled-button-e');
+}
+
+function testDisabledShouldBeAnInheritedAttribute() {
+  assertEnabled('enabled-select');
+  assertEnabled('enabled-option');
+  assertDisabled('disabled-optgroup');
+  assertDisabled('inherits-disabled');
+
+  assertDisabled('disabled-select');
+  assertDisabled('inherits-disabled-2');
+}
+
+function testDisabledShouldInheritFromFieldsetUnlessInLegend() {
+  assertEnabled('enabled-legend-button');
+  // Some older browsers do not support the semantics of disabling fieldsets.
+  if ((goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(2)) ||
+      (goog.userAgent.WEBKIT && !bot.userAgent.isEngineVersion(535)) ||
+      (goog.userAgent.product.ANDROID && !bot.userAgent.isProductVersion(5))) {
+    assertEnabled('disabled-legend-button');
+    assertEnabled('disabled-fieldset-button');
+  } else {
+    assertDisabled('disabled-legend-button');
+    assertDisabled('disabled-fieldset-button');
+  }
+}
+
+function testEnabledShouldRespondToDisabledProperty() {
+  var element = goog.dom.$('enabled-button-a');
+  element.disabled = true;
+  assertDisabled('enabled-button-a');
+  element.disabled = false;
+  assertEnabled('enabled-button-a');
+}
+    </script>
+  </head>
+  <body>
+    <form>
+      <button id="enabled-button-a" value="Enabled A"></button>
+      <button id="disabled-button-b" value="Enabled B" disabled></button>
+      <button id="disabled-button-c" value="Enabled C" disabled="disabled">
+      </button>
+      <button id="disabled-button-d" value="Enabled D" disabled="true">
+      </button>
+      <button id="disabled-button-e" value="Enabled E" disabled="false">
+      </button>
+
+      <select id="enabled-select">
+        <option id="enabled-option">foo</option>
+        <optgroup id="disabled-optgroup" disabled>
+          <option id="inherits-disabled">bar</option>
+        </optgroup>
+      </select>
+
+      <select id="disabled-select" disabled>
+        <optgroup>
+          <option id="inherits-disabled-2">baz</option>
+        </optgroup>
+      </select>
+
+      <fieldset id="disabled-fieldset" disabled="disabled">
+        <legend>
+          <button id="enabled-legend-button">Enabled Legend Button</button>
+        </legend>
+        <legend>
+          <button id="disabled-legend-button">Disabled Legend Button</button>
+        </legend>
+        <button id="disabled-fieldset-button">Disabled Fieldset Button</button>
+      </fieldset>
+    </form>
+  </body>
+</html>

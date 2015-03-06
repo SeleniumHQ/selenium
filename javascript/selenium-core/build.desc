@@ -1,0 +1,36 @@
+
+java_library(name = "selenium-core",
+  deps = [ "*.html" ],
+  resources = [
+    { "icons" : "core/" },
+    { "lib" : "core/" },
+    { "scripts" : "core/" },
+    { "xpath" : "core/" },
+    { "*.html": "core/" },
+    { "*.css" : "core/" },
+    {
+      ":test_runner_html" : "core/TestRunner.hta",
+      ":remote_runner_html" : "core/RemoteRunner.hta",
+      "//javascript/selenium-atoms" : "core/scripts/atoms.js",
+      "//third_party/js/sizzle" : "core/lib/sizzle.js",
+      "selenium-logo.png" : "core/selenium-logo.png"
+    },
+  ])
+
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  deps = [
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
+rake_file(
+  name = "test_runner_html",
+  src = "TestRunner.html")
+
+rake_file(
+  name = "remote_runner_html",
+  src = "RemoteRunner.html")
+

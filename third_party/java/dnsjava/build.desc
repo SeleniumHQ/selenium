@@ -1,0 +1,3 @@
+
+java_library(name = "dnsjava",
+  deps = [ "dnsjava-2.1.3.jar" ])

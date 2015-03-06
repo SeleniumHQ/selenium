@@ -1,0 +1,164 @@
+/*
+Copyright 2011 Selenium committers
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
+package org.openqa.selenium.interactions.touch;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.internal.Locatable;
+
+/**
+ * Implements actions for touch enabled devices, reusing the available composite and builder design
+ * patterns from Actions.
+ */
+public class TouchActions extends Actions {
+
+  protected TouchScreen touchScreen;
+
+  public TouchActions(WebDriver driver) {
+    this(((HasInputDevices) driver).getKeyboard(),
+        ((HasTouchScreen) driver).getTouch());
+  }
+
+  public TouchActions(Keyboard keyboard, TouchScreen touchScreen) {
+    super(keyboard);
+    this.touchScreen = touchScreen;
+  }
+
+ /**
+   * Allows the execution of single tap on the screen, analogous to click using a Mouse.
+   * 
+   * @param onElement the {@link WebElement} on the screen. 
+   */
+
+  public TouchActions singleTap(WebElement onElement) {
+    action.addAction(new SingleTapAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
+
+/**
+   * Allows the execution of the gesture 'down' on the screen. It is typically the first of a
+   * sequence of touch gestures.
+   * 
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+
+  public TouchActions down(int x, int y) {
+    action.addAction(new DownAction(touchScreen, x, y));
+    return this;
+  }
+
+/**
+   * Allows the execution of the gesture 'up' on the screen. It is typically the last of a sequence
+   * of touch gestures.
+   * 
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+
+  public TouchActions up(int x, int y) {
+    action.addAction(new UpAction(touchScreen, x, y));
+    return this;
+  }
+
+ /**
+   * Allows the execution of the gesture 'move' on the screen.
+   * 
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+
+  public TouchActions move(int x, int y) {
+    action.addAction(new MoveAction(touchScreen, x, y));
+    return this;
+  }
+ /**
+   * Creates a scroll gesture that starts on a particular screen location.
+   * 
+   * @param onElement the {@link WebElement} where the scroll starts.
+   * @param xOffset The x offset to scroll
+   * @param yOffset The y offset to scroll
+   */
+  public TouchActions scroll(WebElement onElement, int xOffset, int yOffset) {
+    action.addAction(new ScrollAction(touchScreen, (Locatable) onElement, xOffset, yOffset));
+    return this;
+  }
+
+ /**
+   * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
+   * 
+   * @param onElement The {@link WebElement} to double tap
+   */
+
+  public TouchActions doubleTap(WebElement onElement) {
+    action.addAction(new DoubleTapAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
+
+ /**
+   * Allows the execution of long press gestures.
+   * 
+   * @param  onElement The {@link WebElement} to long press
+   */
+
+  public TouchActions longPress(WebElement onElement) {
+    action.addAction(new LongPressAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
+
+  /**
+   * Allows the view to be scrolled by an x and y offset.
+   * 
+   * @param xOffset The horizontal offset relative to the viewport
+   * @param yOffset The vertical offset relative to the viewport
+   */
+
+  public TouchActions scroll(int xOffset, int yOffset) {
+    action.addAction(new ScrollAction(touchScreen, xOffset, yOffset));
+    return this;
+  }
+
+ /**
+   * Sends a flick gesture to the current view.
+   * 
+   * @param xSpeed The horizontal speed in pixels/second
+   * @param ySpeed The vertical speed in pixels/second
+   */
+
+  public TouchActions flick(int xSpeed, int ySpeed) {
+    action.addAction(new FlickAction(touchScreen, xSpeed, ySpeed));
+    return this;
+  }
+
+ /**
+   * Allows the execution of flick gestures starting in a location's element.
+   * 
+   * @param onElement The {@link WebElement} to flick on
+   * @param xOffset The x offset relative to the viewport
+   * @param yOffset The y offset relative to the viewport
+   */
+
+  public TouchActions flick(WebElement onElement, int xOffset, int yOffset, int speed) {
+    action.addAction(new FlickAction(touchScreen, (Locatable) onElement, xOffset, yOffset, speed));
+    return this;
+  }
+}

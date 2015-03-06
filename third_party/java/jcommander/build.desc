@@ -1,0 +1,3 @@
+
+java_library(name = "jcommander",
+  deps = [ "jcommander-1.29.jar" ])

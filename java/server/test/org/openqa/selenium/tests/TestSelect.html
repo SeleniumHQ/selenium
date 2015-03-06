@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Select</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Select<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_select.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertSomethingSelected</td>
+      <td>theSelect</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertSelected</td>
+      <td>theSelect</td>
+      <td>Second Option</td>
+    </tr>
+</tbody>
+</table>
+
+Index
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>index=4</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fifth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>index=4</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fifth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabels</td>
+      <td>theSelect</td>
+      <td>Fifth Option</td>
+    </tr>
+</tbody>
+</table>
+Label
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>    
+
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>Third Option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>Third Option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>label=Third Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Third Option</td>
+    </tr>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>label=Fourth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+</tbody>
+</table>
+Value
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>value=option6</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Sixth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedValue</td>
+      <td>theSelect</td>
+      <td>option6</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>value=option6</td>
+    </tr>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>value=</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Empty Value Option</td>
+    </tr>
+</tbody>
+</table>
+
+IDs
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>id=o4</td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+    <tr>
+      <td>verifySelectedId</td>
+      <td>theSelect</td>
+      <td>o4</td>
+    </tr>
+</tbody>
+</table>
+
+No text = Empty label
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabel</td>
+      <td>theSelect</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifySelectedLabels</td>
+      <td>theSelect</td>
+      <td></td>
+    </tr>
+</tbody>
+</table>
+Select an option that doesn't exist
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>Option with label 'Not an option' not found</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>Not an option</td>
+    </tr>
+</tbody>
+</table>
+Multi-select commands will not work
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>Not a multi-select</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>addSelection</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+    <tr>
+      <td>assertErrorOnNext</td>
+      <td>Not a multi-select</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>removeSelection</td>
+      <td>theSelect</td>
+      <td>Fourth Option</td>
+    </tr>
+</tbody>
+</table>
+assertSelectOptions
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>First Option,Second Option,Third Option,Fourth Option,Fifth Option,Sixth Option,Empty Value Option,</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

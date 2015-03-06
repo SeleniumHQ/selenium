@@ -1,0 +1,47 @@
+<html>
+<head>
+ <title>Test JavaScript If-Then-Else</title>
+ <link rel="stylesheet" type="text/css" href="../core/selenium_table.css" />
+
+ <script type="text/javascript" src="../mochikit/MochiKit/MochiKit.js"></script>
+ <script type="text/javascript" src="../core/scripts/narcissus-defs.js"></script>
+ <script type="text/javascript" src="../core/scripts/narcissus-parse.js"></script>
+ <script type="text/javascript" src="../core/scripts/narcissus-exec.js"></script>
+ <script type="text/javascript" src="../core/scripts/js2html.js"></script>
+
+ <script id="setup" type="text/javascript">
+    // put any setup or utility functions here..
+
+ </script>
+
+</head>
+<body onload="jsparse(document);">
+
+<script id="sejs" type="text/se+js" onload="jsparse(document);">
+var _url = "../tests/html/show_message.html?msg="
+
+puts = function(message) {
+    se.doOpen(_url+message)
+};
+
+if (1) {
+    if (1) {
+        // a nested function call inside two 'if' blocks...
+        puts ('hello')
+        puts ('world')
+    }
+}
+
+if (1) {
+    if (0) {
+        // a nested function call inside two 'if' blocks...
+        puts ("this_won't_get_called")
+    } else {
+        puts ("no_goto_here!")
+    }
+}
+
+</script>
+
+</body>
+</html>

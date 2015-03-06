@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>property_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <script type="text/javascript">
+    function testShouldIndicateWhetherAPropertyIsAvailableOnAnElement() {
+      var chips = bot.locators.findElement({id: 'chips'});
+
+      assertTrue('Chips has the "selected" property, but not the attribute',
+                 goog.isDef(bot.dom.getProperty(chips, 'selected')));
+    }
+
+    function testSelectedShouldBeFalseIfNotSet() {
+      var chips = bot.locators.findElement({id: 'chips'});
+
+      var result = bot.dom.getProperty(chips, 'selected');
+      assertTrue(goog.isBoolean(result));
+      assertFalse(result);
+    }
+
+    function testSelectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute() {
+      var e = bot.locators.findElement({id: 'peas'});
+
+      var result = bot.dom.getProperty(e, 'selected');
+      assertTrue(goog.isBoolean(result));
+      assertTrue(result);
+    }
+
+    function testShouldReturnDisabledProperty() {
+      var disabled = bot.locators.findElement({id: 'is_disabled'});
+      assertTrue(bot.dom.getProperty(disabled, 'disabled'));
+    }
+
+    function testGetsTextInsideOptionTagWhenValuePropertyIsNotDefined() {
+      var e = bot.locators.findElement({id: 'novalue'});
+      assertEquals('One', bot.dom.getProperty(e, 'value'));
+    }
+
+    function testCanGetBlankValueFromOptionViaPropertyWhenPropertyDoesntExist() {
+      var e = bot.locators.findElement({id: 'novalue-blank'});
+      assertEquals('', bot.dom.getProperty(e, 'value'));
+    }
+
+    function testCanGetValueFromOptionViaPropertyWhenPropertyIsEmptyString() {
+      var e = bot.locators.findElement({id: 'value-empty'});
+      assertEquals('', bot.dom.getProperty(e, 'value'));
+    }
+
+    function testCanGetValueFromOptionViaProperty() {
+      var e = bot.locators.findElement({id: 'chips'});
+      assertEquals('chips', bot.dom.getProperty(e, 'value'));
+      e = bot.locators.findElement({id: 'peas'});
+      assertEquals('peas', bot.dom.getProperty(e, 'value'));
+    }
+
+  </script>
+</head>
+<body>
+  <div name="cheese1" id="cheddar" unknown="lovely">Cheddar</div>
+  <div name="cheese2" id="brie" class="tasty">Brie</div>
+  <div name="cheese3" id="gouda" empty="">Gouda</div>
+
+  <form action="#" method="get" name="myform">
+    <select name="fish_supper">
+      <option value="fish">Fish</option>
+      <option id="chips" value="chips">Chips</option>
+      <option id="peas"  value="peas" selected>Mushy Peas</option>
+      <option value="gravy">Gravy</option>
+    </select>
+
+    <select>
+      <option id="novalue">One</option>
+      <option id="novalue-blank"></option>
+      <option id="value-empty" value="">nothing</option>
+    </select>
+
+    <input id="is_disabled" name="foo" disabled />
+  </form>
+</body>
+</html>

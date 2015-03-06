@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+    <title>frame_test.html</title>
+  <script src="../../test_bootstrap.js"></script>
+    <script type="text/javascript">
+        goog.require('goog.json');
+        goog.require('goog.testing.jsunit');
+        goog.require('goog.userAgent');
+        goog.require('bot.inject.cache');
+        goog.require('webdriver.atoms.inject.frame');
+    </script>
+
+    <script type="text/javascript">
+        function testInjectFindFrameByIdOrName() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var res = webdriver.atoms.inject.frame.findFrameByIdOrName("first");
+          assertEquals(window.frames[0], getWindowFromCache(res));
+        }
+
+        function testInjectFindFrameByIdOrNameWithWindowRoot() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var wrappedWindow =
+              {"WINDOW": bot.inject.cache.addElement(window.frames[1])};
+          var res2 = webdriver.atoms.inject.frame.findFrameByIdOrName("iframe1", wrappedWindow);
+          assertEquals(window.frames[1].frames[0], getWindowFromCache(res2));
+        }
+
+        function testInjectFindFrameByIndex() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var win = webdriver.atoms.inject.frame.findFrameByIndex(1);
+          assertEquals(window.frames[1], getWindowFromCache(win));
+        }
+
+        function testInjectFindFrameByIndexWithWindowRoot() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])};
+          var win = webdriver.atoms.inject.frame.findFrameByIndex(0, wrappedWindow);
+          assertEquals(window.frames[1].frames[0], getWindowFromCache(win));
+        }
+
+        function testInjectDefaultContent() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var win = webdriver.atoms.inject.frame.defaultContent();
+          assertEquals(window, getWindowFromCache(win));
+        }
+
+        function testInjectGetFrameWindow() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var wrappedElement = {"ELEMENT": bot.inject.cache.addElement(
+              window.document.getElementById("first"))};
+          var win = webdriver.atoms.inject.frame.getFrameWindow(wrappedElement);
+          assertEquals(window.frames[0], getWindowFromCache(win));
+        }
+
+        function getWindowFromCache(rawResult) {
+          var id = goog.json.parse(rawResult).value.WINDOW;
+          return bot.inject.cache.getElement(id);
+        }
+    </script>
+</head>
+<body>
+<iframe src="nested_frames.html" id="first"></iframe>
+<iframe src="nested_iframes.html" id="second"></iframe>
+</body>
+</html>

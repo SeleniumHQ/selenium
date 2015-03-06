@@ -1,0 +1,5081 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Selenium Reference</title>
+</head>
+<body>
+<h1>Selenium Reference</h1>
+<ol>
+<li>
+<a href="#name">Concepts</a>
+</li>
+<ol>
+<li>
+<a href="#locators">Element Locators</a>
+</li>
+<li>
+<a href="#element-filters">Element Filters</a>
+</li>
+<li>
+<a href="#patterns">String-match Patterns</a>
+</li>
+</ol>
+<li>
+<a href="#actions">Selenium Actions</a>
+</li>
+<li>
+<a href="#accessors">Selenium Accessors</a>
+</li>
+<li>
+<a href="#parameter-construction-and-variables">Parameter Construction and Variables</a>
+</li>
+<li>
+<a href="#whitespace">Whitespace Rules</a>
+</li>
+<li>
+<a href="#extending-selenium">Extending Selenium</a>
+</li>
+</ol>
+<h2>Concepts</h2>
+<a name="concepts"></a>
+<p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in three 'flavors': <strong>Actions</strong>, <strong>Accessors</strong> and <strong>Assertions</strong>.
+	Each command call is one line in the test table of the form:</p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="39%">
+<col width="33%">
+<col width="28%">
+</colgroup>
+<tbody valign="top">
+<tr>
+<td>command</td><td>target</td><td>value</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+<strong>Actions</strong> are commands that generally manipulate the state of the application. They do things like "click this link" and "select that option". If an Action fails, or has an error, the execution of the current test is stopped.</p>
+<p>Many Actions can be called with the "AndWait" suffix, e.g. "clickAndWait".
+	This suffix tells Selenium that the action will cause the browser to make a call to the server,
+	and that Selenium should wait for a new page to load.</p>
+<p>
+<strong>Accessors</strong> examine the state of the application and store the results in variables, e.g. "storeTitle".  They are also used to automatically generate Assertions.</p>
+<p>
+<strong>Assertions</strong> are like Accessors, but they verify that the state of the application conforms to what is expected. Examples include "make sure the page title is X" and "verify that this checkbox is checked".</p>
+<p>All Selenium Assertions can be used in 3 modes: "assert", "verify", and "waitFor". For example, you can "assertText", "verifyText" and "waitForText".  When an "assert" fails, the test is aborted. When a "verify" fails, the test will continue execution, logging the failure.  This allows a single "assert" to ensure that the application is on the correct page, followed by a bunch of "verify" assertions to test form field values, labels, etc.</p>
+<p>"waitFor" commands wait for some condition to become true (which can be useful for testing Ajax applications).
+	They will succeed immediately if the condition is already true.
+	However, they will fail and halt the test if the condition does not become true within the current timeout setting
+	(see the <strong>setTimeout</strong> action below).
+	</p>
+<p>
+<strong>Element Locators</strong> tell Selenium which HTML element a command refers to. Many commands require an Element Locator as the "target" attribute. Examples of Element Locators include "elementId" and "document.forms[0].element". These are described more clearly in the next section.</p>
+<p>
+<strong>Patterns</strong> are used for various reasons, e.g. to specify the expected value of an input field, or identify a select option.  Selenium supports various types of pattern, including regular-expressions, all of which are described in more detail below.</p>Defines an object that runs Selenium commands.
+
+<h3>
+<a name="locators"></a>Element Locators</h3>
+<p>
+Element Locators tell Selenium which HTML element a command refers to.
+The format of a locator is:</p>
+<blockquote>
+<em>locatorType</em><strong>=</strong><em>argument</em>
+</blockquote>
+<p>
+We support the following strategies for locating elements:
+</p>
+<ul>
+<li>
+<strong>identifier</strong>=<em>id</em>: 
+Select the element with the specified @id attribute. If no match is
+found, select the first element whose @name attribute is <em>id</em>.
+(This is normally the default; see below.)</li>
+<li>
+<strong>id</strong>=<em>id</em>:
+Select the element with the specified @id attribute.</li>
+<li>
+<strong>name</strong>=<em>name</em>:
+Select the first element with the specified @name attribute.
+<ul class="first last simple">
+<li>username</li>
+<li>name=username</li>
+</ul>
+<p>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</p>
+<ul class="first last simple">
+<li>name=flavour value=chocolate</li>
+</ul>
+</li>
+<li>
+<strong>dom</strong>=<em>javascriptExpression</em>: 
+
+Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
+<ul class="first last simple">
+<li>dom=document.forms['myForm'].myDropdown</li>
+<li>dom=document.images[56]</li>
+<li>dom=function foo() { return document.links[1]; }; foo();</li>
+</ul>
+</li>
+<li>
+<strong>xpath</strong>=<em>xpathExpression</em>: 
+Locate an element using an XPath expression.
+<ul class="first last simple">
+<li>xpath=//img[@alt='The image alt text']</li>
+<li>xpath=//table[@id='table1']//tr[4]/td[2]</li>
+<li>xpath=//a[contains(@href,'#id1')]</li>
+<li>xpath=//a[contains(@href,'#id1')]/@class</li>
+<li>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</li>
+<li>xpath=//input[@name='name2' and @value='yes']</li>
+<li>xpath=//*[text()="right"]</li>
+</ul>
+</li>
+<li>
+<strong>link</strong>=<em>textPattern</em>:
+Select the link (anchor) element which contains text matching the
+specified <em>pattern</em>.
+<ul class="first last simple">
+<li>link=The link text</li>
+</ul>
+</li>
+<li>
+<strong>css</strong>=<em>cssSelectorSyntax</em>:
+Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+<ul class="first last simple">
+<li>css=a[href="#id3"]</li>
+<li>css=span#firstChild + span</li>
+</ul>
+<p>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </p>
+</li>
+<li>
+<strong>ui</strong>=<em>uiSpecifierString</em>:
+Locate an element by resolving the UI specifier string to another locator, and evaluating it. See the <a href="http://svn.openqa.org/fisheye/browse/~raw,r=trunk/selenium/trunk/src/main/resources/core/scripts/ui-doc.html">Selenium UI-Element Reference</a> for more details.
+<ul class="first last simple">
+<li>ui=loginPages::loginButton()</li>
+<li>ui=settingsPages::toggle(label=Hide Email)</li>
+<li>ui=forumPages::postBody(index=2)//a[2]</li>
+</ul>
+</li>
+</ul>
+<p>
+Without an explicit locator prefix, Selenium uses the following default
+strategies:
+</p>
+<ul class="simple">
+<li>
+<strong>dom</strong>, for locators starting with "document."</li>
+<li>
+<strong>xpath</strong>, for locators starting with "//"</li>
+<li>
+<strong>identifier</strong>, otherwise</li>
+</ul>
+<h3>
+<a name="element-filters">Element Filters</a>
+</h3>
+<blockquote>
+<p>Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.</p>
+<p>Filters look much like locators, ie.</p>
+<blockquote>
+<em>filterType</em><strong>=</strong><em>argument</em>
+</blockquote>
+<p>Supported element-filters are:</p>
+<p>
+<strong>value=</strong><em>valuePattern</em>
+</p>
+<blockquote>
+Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
+<p>
+<strong>index=</strong><em>index</em>
+</p>
+<blockquote>
+Selects a single element based on its position in the list (offset from zero).</blockquote>
+</blockquote>
+<h3>
+<a name="patterns"></a>String-match Patterns</h3>
+<p>
+Various Pattern syntaxes are available for matching string values:
+</p>
+<ul>
+<li>
+<strong>glob:</strong><em>pattern</em>:
+Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
+kind of limited regular-expression syntax typically used in command-line
+shells. In a glob pattern, "*" represents any sequence of characters, and "?"
+represents any single character. Glob patterns match against the entire
+string.</li>
+<li>
+<strong>regexp:</strong><em>regexp</em>:
+Match a string using a regular-expression. The full power of JavaScript
+regular-expressions is available.</li>
+<li>
+<strong>regexpi:</strong><em>regexpi</em>:
+Match a string using a case-insensitive regular-expression.</li>
+<li>
+<strong>exact:</strong><em>string</em>:
+
+Match a string exactly, verbatim, without any of that fancy wildcard
+stuff.</li>
+</ul>
+<p>
+If no pattern prefix is specified, Selenium assumes that it's a "glob"
+pattern.
+</p>
+<p>
+For commands that return multiple values (such as verifySelectOptions),
+the string being matched is a comma-separated list of the return values,
+where both commas and backslashes in the values are backslash-escaped.
+When providing a pattern, the optional matching syntax (i.e. glob,
+regexp, etc.) is specified once, as usual, at the beginning of the
+pattern.
+</p>
+<a name="actions"></a>
+<h2>Selenium Actions</h2>
+<dl>
+<dt>
+<strong><a name="addLocationStrategy"></a>addLocationStrategy
+		(
+			strategyName,functionDefinition
+		)
+	</strong>
+</dt>
+<dd>Defines a new function for Selenium to locate elements on the page.
+For example,
+if you define the strategy "foo", and someone runs click("foo=blah"), we'll
+run your function, passing you the string "blah", and click on the element 
+that your function
+returns, or throw an "Element not found" error if your function returns null.
+
+We'll pass three arguments to your function:
+<ul>
+<li>locator: the string the user passed in</li>
+<li>inWindow: the currently selected window</li>
+<li>inDocument: the currently selected document</li>
+</ul>
+The function must return null if the element can't be found.<p>Arguments:</p>
+<ul>
+<li>strategyName - the name of the strategy to define; this should use only   letters [a-zA-Z] with no spaces or other punctuation.</li>
+<li>functionDefinition - a string defining the body of a function in JavaScript.   For example: <code>return inDocument.getElementById(locator);</code>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="addScript"></a>addScript
+		(
+			scriptContent,scriptTagId
+		)
+	</strong>
+</dt>
+<dd>Loads script content into a new script tag in the Selenium document. This
+differs from the runScript command in that runScript adds the script tag
+to the document of the AUT, not the Selenium document. The following
+entities in the script content are replaced by the characters they
+represent:
+
+    &lt;
+    &gt;
+    &amp;
+
+The corresponding remove command is removeScript.<p>Arguments:</p>
+<ul>
+<li>scriptContent - the Javascript content of the script to add</li>
+<li>scriptTagId - (optional) the id of the new script tag. If                       specified, and an element with this id already                       exists, this operation will fail.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="addSelection"></a>addSelection
+		(
+			locator,optionLocator
+		)
+	</strong>
+</dt>
+<dd>Add a selection to the set of selected options in a multi-select element using an option locator.
+
+@see #doSelect for details of option locators<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> identifying a multi-select box</li>
+<li>optionLocator - an option locator (a label by default)</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="allowNativeXpath"></a>allowNativeXpath
+		(
+			allow
+		)
+	</strong>
+</dt>
+<dd>Specifies whether Selenium should use the native in-browser implementation
+of XPath (if any native version is available); if you pass "false" to
+this function, we will always use our pure-JavaScript xpath library.
+Using the pure-JS xpath library can improve the consistency of xpath
+element locators between different browser vendors, but the pure-JS
+version is much slower than the native implementations.<p>Arguments:</p>
+<ul>
+<li>allow - boolean, true means we'll prefer to use native XPath; false means we'll only use JS XPath</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="altKeyDown"></a>altKeyDown
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Press the alt key and hold it down until doAltUp() is called or a new page is loaded.</dd>
+<br>
+<dt>
+<strong><a name="altKeyUp"></a>altKeyUp
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Release the alt key.</dd>
+<br>
+<dt>
+<strong><a name="answerOnNextPrompt"></a>answerOnNextPrompt
+		(
+			answer
+		)
+	</strong>
+</dt>
+<dd>Instructs Selenium to return the specified answer string in response to
+the next JavaScript prompt [window.prompt()].<p>Arguments:</p>
+<ul>
+<li>answer - the answer to give in response to the prompt pop-up</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="assignId"></a>assignId
+		(
+			locator,identifier
+		)
+	</strong>
+</dt>
+<dd>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
+using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
+reloaded.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element</li>
+<li>identifier - a string to be used as the ID of the specified element</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="break"></a>break
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Halt the currently running test, and wait for the user to press the Continue button.
+This command is useful for debugging, but be careful when using it, because it will
+force automated tests to hang until a user intervenes manually.</dd>
+<br>
+<dt>
+<strong><a name="captureEntirePageScreenshot"></a>captureEntirePageScreenshot
+		(
+			filename,kwargs
+		)
+	</strong>
+</dt>
+<dd>Saves the entire contents of the current window canvas to a PNG file.
+Contrast this with the captureScreenshot command, which captures the
+contents of the OS viewport (i.e. whatever is currently being displayed
+on the monitor), and is implemented in the RC only. Currently this only
+works in Firefox when running in chrome mode, and in IE non-HTA using
+the EXPERIMENTAL "Snapsie" utility. The Firefox implementation is mostly
+borrowed from the Screengrab! Firefox extension. Please see
+http://www.screengrab.org and http://snapsie.sourceforge.net/ for
+details.<p>Arguments:</p>
+<ul>
+<li>filename - the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.</li>
+<li>kwargs - a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  <dl>
+<dt>background</dt>
+<dd>the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="check"></a>check
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Check a toggle-button (checkbox/radio)<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="chooseCancelOnNextConfirmation"></a>chooseCancelOnNextConfirmation
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>
+<p>
+By default, Selenium's overridden window.confirm() function will
+return true, as if the user had manually clicked OK; after running
+this command, the next call to confirm() will return false, as if
+the user had clicked Cancel.  Selenium will then resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call this command for each
+confirmation.
+</p>
+<p>
+Take note - every time a confirmation comes up, you must
+consume it with a corresponding getConfirmation, or else
+the next selenium operation will fail.
+</p>
+</dd>
+<br>
+<dt>
+<strong><a name="chooseOkOnNextConfirmation"></a>chooseOkOnNextConfirmation
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>
+<p>
+Undo the effect of calling chooseCancelOnNextConfirmation.  Note
+that Selenium's overridden window.confirm() function will normally automatically
+return true, as if the user had manually clicked OK, so you shouldn't
+need to use this command unless for some reason you need to change
+your mind prior to the next confirmation.  After any confirmation, Selenium will resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
+confirmation.
+</p>
+<p>
+Take note - every time a confirmation comes up, you must
+consume it with a corresponding getConfirmation, or else
+the next selenium operation will fail.
+</p>
+</dd>
+<br>
+<dt>
+<strong><a name="click"></a>click
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="clickAt"></a>clickAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="close"></a>close
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Simulates the user clicking the "close" button in the titlebar of a popup
+window or tab.</dd>
+<br>
+<dt>
+<strong><a name="contextMenu"></a>contextMenu
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="contextMenuAt"></a>contextMenuAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="controlKeyDown"></a>controlKeyDown
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Press the control key and hold it down until doControlUp() is called or a new page is loaded.</dd>
+<br>
+<dt>
+<strong><a name="controlKeyUp"></a>controlKeyUp
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Release the control key.</dd>
+<br>
+<dt>
+<strong><a name="createCookie"></a>createCookie
+		(
+			nameValuePair,optionsString
+		)
+	</strong>
+</dt>
+<dd>Create a new cookie whose path and domain are same with those of current page
+under test, unless you specified a path for this cookie explicitly.<p>Arguments:</p>
+<ul>
+<li>nameValuePair - name and value of the cookie in a format "name=value"</li>
+<li>optionsString - options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.      the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="deleteAllVisibleCookies"></a>deleteAllVisibleCookies
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Calls deleteCookie with recurse=true on all cookies visible to the current page.
+As noted on the documentation for deleteCookie, recurse=true can be much slower
+than simply deleting the cookies using a known domain/path.</dd>
+<br>
+<dt>
+<strong><a name="deleteCookie"></a>deleteCookie
+		(
+			name,optionsString
+		)
+	</strong>
+</dt>
+<dd>Delete a named cookie with specified path and domain.  Be careful; to delete a cookie, you
+need to delete it using the exact same path and domain that were used to create the cookie.
+If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
+note that specifying a domain that isn't a subset of the current domain will usually fail.
+
+Since there's no way to discover at runtime the original path and domain of a given cookie,
+we've added an option called 'recurse' to try all sub-domains of the current domain with
+all paths that are a subset of the current path.  Beware; this option can be slow.  In
+big-O notation, it operates in O(n*m) time, where n is the number of dots in the domain
+name and m is the number of slashes in the path.<p>Arguments:</p>
+<ul>
+<li>name - the name of the cookie to be deleted</li>
+<li>optionsString - options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="deselectPopUp"></a>deselectPopUp
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Selects the main window. Functionally equivalent to using
+<code>selectWindow()</code> and specifying no value for
+<code>windowID</code>.</dd>
+<br>
+<dt>
+<strong><a name="doubleClick"></a>doubleClick
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Double clicks on a link, button, checkbox or radio button. If the double click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="doubleClickAt"></a>doubleClickAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Doubleclicks on a link, button, checkbox or radio button. If the action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="dragAndDrop"></a>dragAndDrop
+		(
+			locator,movementsString
+		)
+	</strong>
+</dt>
+<dd>Drags an element a certain distance and then drops it<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+<li>movementsString - offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="dragAndDropToObject"></a>dragAndDropToObject
+		(
+			locatorOfObjectToBeDragged,locatorOfDragDestinationObject
+		)
+	</strong>
+</dt>
+<dd>Drags an element and drops it on another element<p>Arguments:</p>
+<ul>
+<li>locatorOfObjectToBeDragged - an element to be dragged</li>
+<li>locatorOfDragDestinationObject - an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="dragdrop"></a>dragdrop
+		(
+			locator,movementsString
+		)
+	</strong>
+</dt>
+<dd>deprecated - use dragAndDrop instead<p>Arguments:</p>
+<ul>
+<li>locator - an element locator</li>
+<li>movementsString - offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="echo"></a>echo
+		(
+			message
+		)
+	</strong>
+</dt>
+<dd>Prints the specified message into the third table cell in your Selenese tables.
+Useful for debugging.<p>Arguments:</p>
+<ul>
+<li>message - the message to print</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="fireEvent"></a>fireEvent
+		(
+			locator,eventName
+		)
+	</strong>
+</dt>
+<dd>Explicitly simulate an event, to trigger the corresponding "on<em>event</em>"
+handler.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>eventName - the event name, e.g. "focus" or "blur"</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="focus"></a>focus
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Move the focus to the specified element; for example, if the element is an input field, move the cursor to that field.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="goBack"></a>goBack
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Simulates the user clicking the "back" button on their browser.</dd>
+<br>
+<dt>
+<strong><a name="highlight"></a>highlight
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Briefly changes the backgroundColor of the specified element yellow.  Useful for debugging.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="ignoreAttributesWithoutValue"></a>ignoreAttributesWithoutValue
+		(
+			ignore
+		)
+	</strong>
+</dt>
+<dd>Specifies whether Selenium will ignore xpath attributes that have no
+value, i.e. are the empty string, when using the non-native xpath
+evaluation engine. You'd want to do this for performance reasons in IE.
+However, this could break certain xpaths, for example an xpath that looks
+for an attribute whose value is NOT the empty string.
+
+The hope is that such xpaths are relatively rare, but the user should
+have the option of using them. Note that this only influences xpath
+evaluation when using the ajaxslt engine (i.e. not "javascript-xpath").<p>Arguments:</p>
+<ul>
+<li>ignore - boolean, true means we'll ignore attributes without value                        at the expense of xpath "correctness"; false means                        we'll sacrifice speed for correctness.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="keyDown"></a>keyDown
+		(
+			locator,keySequence
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing a key (without releasing it yet).<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>keySequence - Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="keyPress"></a>keyPress
+		(
+			locator,keySequence
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing and releasing a key.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>keySequence - Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="keyUp"></a>keyUp
+		(
+			locator,keySequence
+		)
+	</strong>
+</dt>
+<dd>Simulates a user releasing a key.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>keySequence - Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="metaKeyDown"></a>metaKeyDown
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.</dd>
+<br>
+<dt>
+<strong><a name="metaKeyUp"></a>metaKeyUp
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Release the meta key.</dd>
+<br>
+<dt>
+<strong><a name="mouseDown"></a>mouseDown
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the left mouse button (without releasing it yet) on
+the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseDownAt"></a>mouseDownAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the left mouse button (without releasing it yet) at
+the specified location.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseDownRight"></a>mouseDownRight
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the right mouse button (without releasing it yet) on
+the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseDownRightAt"></a>mouseDownRightAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the right mouse button (without releasing it yet) at
+the specified location.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseMove"></a>mouseMove
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseMoveAt"></a>mouseMoveAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseOut"></a>mouseOut
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates a user moving the mouse pointer away from the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseOver"></a>mouseOver
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates a user hovering a mouse over the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseUp"></a>mouseUp
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) on the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseUpAt"></a>mouseUpAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) at the specified location.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseUpRight"></a>mouseUpRight
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+holding the button down) on the specified element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="mouseUpRightAt"></a>mouseUpRightAt
+		(
+			locator,coordString
+		)
+	</strong>
+</dt>
+<dd>Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+holding the button down) at the specified location.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>coordString - specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="open"></a>open
+		(
+			url
+		)
+	</strong>
+</dt>
+<dd>Opens an URL in the test frame. This accepts both relative and absolute
+URLs.
+
+The "open" command waits for the page to load before proceeding,
+ie. the "AndWait" suffix is implicit.
+
+<em>Note</em>: The URL must be on the same domain as the runner HTML
+due to security restrictions in the browser (Same Origin Policy). If you
+need to open an URL on another domain, use the Selenium Server to start a
+new browser session on that domain.<p>Arguments:</p>
+<ul>
+<li>url - the URL to open; may be relative or absolute</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="openWindow"></a>openWindow
+		(
+			url,windowID
+		)
+	</strong>
+</dt>
+<dd>Opens a popup window (if a window with that ID isn't already open).
+After opening the window, you'll need to select it using the selectWindow
+command.
+
+<p>This command can also be a useful workaround for bug SEL-339.  In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
+<p>Arguments:</p>
+<ul>
+<li>url - the URL to open, which can be blank</li>
+<li>windowID - the JavaScript window ID of the window to select</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="pause"></a>pause
+		(
+			waitTime
+		)
+	</strong>
+</dt>
+<dd>Wait for the specified amount of time (in milliseconds)<p>Arguments:</p>
+<ul>
+<li>waitTime - the amount of time to sleep (in milliseconds)</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="refresh"></a>refresh
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Simulates the user clicking the "Refresh" button on their browser.</dd>
+<br>
+<dt>
+<strong><a name="removeAllSelections"></a>removeAllSelections
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Unselects all of the selected options in a multi-select element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> identifying a multi-select box</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="removeScript"></a>removeScript
+		(
+			scriptTagId
+		)
+	</strong>
+</dt>
+<dd>Removes a script tag from the Selenium document identified by the given
+id. Does nothing if the referenced tag doesn't exist.<p>Arguments:</p>
+<ul>
+<li>scriptTagId - the id of the script element to remove.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="removeSelection"></a>removeSelection
+		(
+			locator,optionLocator
+		)
+	</strong>
+</dt>
+<dd>Remove a selection from the set of selected options in a multi-select element using an option locator.
+
+@see #doSelect for details of option locators<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> identifying a multi-select box</li>
+<li>optionLocator - an option locator (a label by default)</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="rollup"></a>rollup
+		(
+			rollupName,kwargs
+		)
+	</strong>
+</dt>
+<dd>Executes a command rollup, which is a series of commands with a unique
+name, and optionally arguments that control the generation of the set of
+commands. If any one of the rolled-up commands fails, the rollup is
+considered to have failed. Rollups may also contain nested rollups.<p>Arguments:</p>
+<ul>
+<li>rollupName - the name of the rollup command</li>
+<li>kwargs - keyword arguments string that influences how the                    rollup expands into commands</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="runScript"></a>runScript
+		(
+			script
+		)
+	</strong>
+</dt>
+<dd>Creates a new "script" tag in the body of the current test window, and 
+adds the specified text into the body of the command.  Scripts run in
+this way can often be debugged more easily than scripts executed using
+Selenium's "getEval" command.  Beware that JS exceptions thrown in these script
+tags aren't managed by Selenium, so you should probably wrap your script
+in try/catch blocks if there is any chance that the script will throw
+an exception.<p>Arguments:</p>
+<ul>
+<li>script - the JavaScript snippet to run</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="select"></a>select
+		(
+			selectLocator,optionLocator
+		)
+	</strong>
+</dt>
+<dd>Select an option from a drop-down using an option locator.
+
+<p>
+Option locators provide different ways of specifying options of an HTML
+Select element (e.g. for selecting a specific option, or for asserting
+that the selected option satisfies a specification). There are several
+forms of Select Option Locator.
+</p>
+<ul>
+<li>
+<strong>label</strong>=<em>labelPattern</em>:
+matches options based on their labels, i.e. the visible text. (This
+is the default.)
+<ul class="first last simple">
+<li>label=regexp:^[Oo]ther</li>
+</ul>
+</li>
+<li>
+<strong>value</strong>=<em>valuePattern</em>:
+matches options based on their values.
+<ul class="first last simple">
+<li>value=other</li>
+</ul>
+</li>
+<li>
+<strong>id</strong>=<em>id</em>:
+
+matches options based on their ids.
+<ul class="first last simple">
+<li>id=option1</li>
+</ul>
+</li>
+<li>
+<strong>index</strong>=<em>index</em>:
+matches an option based on its index (offset from zero).
+<ul class="first last simple">
+<li>index=2</li>
+</ul>
+</li>
+</ul>
+<p>
+If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
+</p>
+<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>optionLocator - an option locator (a label by default)</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="selectFrame"></a>selectFrame
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Selects a frame within the current window.  (You may invoke this command
+multiple times to select nested frames.)  To select the parent frame, use
+"relative=parent" as a locator; to select the top frame, use "relative=top".
+You can also select a frame by its 0-based index number; select the first frame with
+"index=0", or the third frame with "index=2".
+
+<p>You may also use a DOM expression to identify the frame you want directly,
+like this: <code>dom=frames["main"].frames["subframe"]</code>
+</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> identifying a frame or iframe</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="selectPopUp"></a>selectPopUp
+		(
+			windowID
+		)
+	</strong>
+</dt>
+<dd>Simplifies the process of selecting a popup window (and does not offer
+functionality beyond what <code>selectWindow()</code> already provides).
+<ul>
+<li>If <code>windowID</code> is either not specified, or specified as
+"null", the first non-top window is selected. The top window is the one
+that would be selected by <code>selectWindow()</code> without providing a
+<code>windowID</code> . This should not be used when more than one popup
+window is in play.</li>
+<li>Otherwise, the window will be looked up considering
+<code>windowID</code> as the following in order: 1) the "name" of the
+window, as specified to <code>window.open()</code>; 2) a javascript
+variable which is a reference to a window; and 3) the title of the
+window. This is the same ordered lookup performed by
+<code>selectWindow</code> .</li>
+</ul>
+<p>Arguments:</p>
+<ul>
+<li>windowID - an identifier for the popup window, which can take on a                  number of different meanings</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="selectWindow"></a>selectWindow
+		(
+			windowID
+		)
+	</strong>
+</dt>
+<dd>Selects a popup window using a window locator; once a popup window has been selected, all
+commands go to that window. To select the main window again, use null
+as the target.
+
+<p>
+
+Window locators provide different ways of specifying the window object:
+by title, by internal JavaScript "name," or by JavaScript variable.
+</p>
+<ul>
+<li>
+<strong>title</strong>=<em>My Special Window</em>:
+Finds the window using the text that appears in the title bar.  Be careful;
+two windows can share the same title.  If that happens, this locator will
+just pick one.
+</li>
+<li>
+<strong>name</strong>=<em>myWindow</em>:
+Finds the window using its internal JavaScript "name" property.  This is the second 
+parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
+(which Selenium intercepts).
+</li>
+<li>
+<strong>var</strong>=<em>variableName</em>:
+Some pop-up windows are unnamed (anonymous), but are associated with a JavaScript variable name in the current
+application window, e.g. "window.foo = window.open(url);".  In those cases, you can open the window using
+"var=foo".
+</li>
+</ul>
+<p>
+If no window locator prefix is provided, we'll try to guess what you mean like this:</p>
+<p>1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).</p>
+<p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
+that this variable contains the return value from a call to the JavaScript window.open() method.</p>
+<p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".</p>
+<p>4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
+Since "title" is not necessarily unique, this may have unexpected behavior.</p>
+<p>If you're having trouble figuring out the name of a window that you want to manipulate, look at the Selenium log messages
+which identify the names of windows created via window.open (and therefore intercepted by Selenium).  You will see messages
+like the following for each window as it is opened:</p>
+<p>
+<code>debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</code>
+</p>
+<p>In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+(This is bug SEL-339.)  In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p>
+<p>Arguments:</p>
+<ul>
+<li>windowID - the JavaScript window ID of the window to select</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="setBrowserLogLevel"></a>setBrowserLogLevel
+		(
+			logLevel
+		)
+	</strong>
+</dt>
+<dd>Sets the threshold for browser-side logging messages; log messages beneath this threshold will be discarded.
+Valid logLevel strings are: "debug", "info", "warn", "error" or "off".
+To see the browser logs, you need to
+either show the log window in GUI mode, or enable browser-side logging in Selenium RC.<p>Arguments:</p>
+<ul>
+<li>logLevel - one of the following: "debug", "info", "warn", "error" or "off"</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="setCursorPosition"></a>setCursorPosition
+		(
+			locator,position
+		)
+	</strong>
+</dt>
+<dd>Moves the text cursor to the specified position in the given input element or textarea.
+This method will fail if the specified element isn't an input element or textarea.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an input element or textarea</li>
+<li>position - the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="setMouseSpeed"></a>setMouseSpeed
+		(
+			pixels
+		)
+	</strong>
+</dt>
+<dd>Configure the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
+<p>Setting this value to 0 means that we'll send a "mousemove" event to every single pixel
+in between the start location and the end location; that can be very slow, and may
+cause some browsers to force the JavaScript to timeout.</p>
+<p>If the mouse speed is greater than the distance between the two dragged objects, we'll
+just send one "mousemove" at the start location and then one final one at the end location.</p>
+<p>Arguments:</p>
+<ul>
+<li>pixels - the number of pixels between "mousemove" events</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="setSpeed"></a>setSpeed
+		(
+			value
+		)
+	</strong>
+</dt>
+<dd>Set execution speed (i.e., set the millisecond length of a delay which will follow each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.<p>Arguments:</p>
+<ul>
+<li>value - the number of milliseconds to pause after operation</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="setTimeout"></a>setTimeout
+		(
+			timeout
+		)
+	</strong>
+</dt>
+<dd>Specifies the amount of time that Selenium will wait for actions to complete.
+
+<p>Actions that require waiting include "open" and the "waitFor*" actions.</p>
+The default timeout is 30 seconds.<p>Arguments:</p>
+<ul>
+<li>timeout - a timeout in milliseconds, after which the action will return with an error</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="shiftKeyDown"></a>shiftKeyDown
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.</dd>
+<br>
+<dt>
+<strong><a name="shiftKeyUp"></a>shiftKeyUp
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Release the shift key.</dd>
+<br>
+<dt>
+<strong><a name="store"></a>store
+		(
+			expression,variableName
+		)
+	</strong>
+</dt>
+<dd>This command is a synonym for storeExpression.<p>Arguments:</p>
+<ul>
+<li>expression - the value to store</li>
+<li>variableName - the name of a <a href="#storedVars">variable</a> in which the result is to be stored.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="submit"></a>submit
+		(
+			formLocator
+		)
+	</strong>
+</dt>
+<dd>Submit the specified form. This is particularly useful for forms without
+submit buttons, e.g. single-input "Search" forms.<p>Arguments:</p>
+<ul>
+<li>formLocator - an <a href="#locators">element locator</a> for the form you want to submit</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="type"></a>type
+		(
+			locator,value
+		)
+	</strong>
+</dt>
+<dd>Sets the value of an input field, as though you typed it in.
+
+<p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
+value should be the value of the option selected, not the visible text.</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>value - the value to type</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="typeKeys"></a>typeKeys
+		(
+			locator,value
+		)
+	</strong>
+</dt>
+<dd>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+
+<p>This is a convenience method for calling keyDown, keyUp, keyPress for every character in the specified string;
+this is useful for dynamic UI widgets (like auto-completing combo boxes) that require explicit key events.</p>
+<p>Unlike the simple "type" command, which forces the specified value into the page directly, this command
+may or may not have any visible effect, even in cases where typing keys would normally have a visible effect.
+For example, if you use "typeKeys" on a form element, you may or may not see the results of what you typed in
+the field.</p>
+<p>In some cases, you may need to use the simple "type" command to set the value of the field and then the "typeKeys" command to
+send the keystroke events corresponding to what you just typed.</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>value - the value to type</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="uncheck"></a>uncheck
+		(
+			locator
+		)
+	</strong>
+</dt>
+<dd>Uncheck a toggle-button (checkbox/radio)<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="sendKeys"></a>sendKeys
+		(
+			locator,value
+		)
+	</strong>
+</dt>
+<dd>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+<p>This simulates a real user typing every character in the specified string; it is also bound by the limitations of a 
+real user, like not being able to type into a invisible or read only elements. This is useful for dynamic UI widgets 
+(like auto-completing combo boxes) that require explicit key events.</p>
+<p>Unlike the simple "type" command, which forces the specified value into the page directly, this command will not 
+replace the existing content. If you want to replace the existing contents, you need to use the simple "type" command to set the value of the 
+field to empty string to clear the field and then the "sendKeys" command to send the keystroke for what you want
+to type.</p>
+<p>For those who are interested in the details, unlike the typeKeys command, which tries to 
+fire the keyDown, the keyUp and the keyPress events, this command is backed by the atoms from Selenium 2 and provides a 
+much more robust implementation that will be maintained in the future.</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>value - the value to type</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="useXpathLibrary"></a>useXpathLibrary
+		(
+			libraryName
+		)
+	</strong>
+</dt>
+<dd>Allows choice of one of the available libraries.<p>Arguments:</p>
+<ul>
+<li>libraryName - name of the desired library Only the following three can be chosen: <ul>
+<li>"ajaxslt" - Google's library</li>
+<li>"javascript-xpath" - Cybozu Labs' faster library</li>
+<li>"default" - The default library.  Currently the default library is "ajaxslt" .</li>
+</ul> If libraryName isn't one of these three, then  no change will be made.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="waitForCondition"></a>waitForCondition
+		(
+			script,timeout
+		)
+	</strong>
+</dt>
+<dd>Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
+The snippet may have multiple lines, but only the result of the last line
+will be considered.
+
+<p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+of your application.  To get the window of your application, you can use
+the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
+run your JavaScript in there</p>
+<p>Arguments:</p>
+<ul>
+<li>script - the JavaScript snippet to run</li>
+<li>timeout - a timeout in milliseconds, after which this command will return with an error</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="waitForFrameToLoad"></a>waitForFrameToLoad
+		(
+			frameAddress,timeout
+		)
+	</strong>
+</dt>
+<dd>Waits for a new frame to load.
+
+<p>Selenium constantly keeps track of new pages and frames loading, 
+and sets a "newPageLoaded" flag when it first notices a page load.</p>
+
+See waitForPageToLoad for more information.<p>Arguments:</p>
+<ul>
+<li>frameAddress - FrameAddress from the server side</li>
+<li>timeout - a timeout in milliseconds, after which this command will return with an error</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="waitForPageToLoad"></a>waitForPageToLoad
+		(
+			timeout
+		)
+	</strong>
+</dt>
+<dd>Waits for a new page to load.
+
+<p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
+(which are only available in the JS API).</p>
+<p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
+flag when it first notices a page load.  Running any other Selenium command after
+turns the flag to false.  Hence, if you want to wait for a page to load, you must
+wait immediately after a Selenium command that caused a page-load.</p>
+<p>Arguments:</p>
+<ul>
+<li>timeout - a timeout in milliseconds, after which this command will return with an error</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="waitForPopUp"></a>waitForPopUp
+		(
+			windowID,timeout
+		)
+	</strong>
+</dt>
+<dd>Waits for a popup window to appear and load up.<p>Arguments:</p>
+<ul>
+<li>windowID - the JavaScript window "name" of the window that will appear (not the text of the title bar)                 If unspecified, or specified as "null", this command will                 wait for the first non-top window to appear (don't rely                 on this if you are working with multiple popups                 simultaneously).</li>
+<li>timeout - a timeout in milliseconds, after which the action will return with an error.                If this value is not specified, the default Selenium                timeout will be used. See the setTimeout() command.</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="windowFocus"></a>windowFocus
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Gives focus to the currently selected window</dd>
+<br>
+<dt>
+<strong><a name="windowMaximize"></a>windowMaximize
+		(
+			
+		)
+	</strong>
+</dt>
+<dd>Resize currently selected window to take up the entire screen</dd>
+<br>
+</dl>
+<a name="accessors"></a>
+<h2>Selenium Accessors</h2>
+<dl>
+<dt>
+<strong><a name="assertErrorOnNext"></a>assertErrorOnNext
+		(
+			message
+		)
+	</strong>
+</dt>
+<dd>Tell Selenium to expect an error on the next command execution.<p>Arguments:</p>
+<ul>
+<li>message - The error message we should expect.  This command will fail if the wrong error message appears.</li>
+</ul>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertNotErrorOnNext
+				(
+					message
+				)
+			</li>
+<li>verifyErrorOnNext
+				(
+					message
+				)
+			</li>
+<li>verifyNotErrorOnNext
+				(
+					message
+				)
+			</li>
+<li>waitForErrorOnNext
+				(
+					message
+				)
+			</li>
+<li>waitForNotErrorOnNext
+				(
+					message
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="assertFailureOnNext"></a>assertFailureOnNext
+		(
+			message
+		)
+	</strong>
+</dt>
+<dd>Tell Selenium to expect a failure on the next command execution.<p>Arguments:</p>
+<ul>
+<li>message - The failure message we should expect.  This command will fail if the wrong failure message appears.</li>
+</ul>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertNotFailureOnNext
+				(
+					message
+				)
+			</li>
+<li>verifyFailureOnNext
+				(
+					message
+				)
+			</li>
+<li>verifyNotFailureOnNext
+				(
+					message
+				)
+			</li>
+<li>waitForFailureOnNext
+				(
+					message
+				)
+			</li>
+<li>waitForNotFailureOnNext
+				(
+					message
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="assertSelected"></a>assertSelected
+		(
+			selectLocator,optionLocator
+		)
+	</strong>
+</dt>
+<dd>Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
+<p>See the select command for more information about option locators.</p>
+<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>optionLocator - an option locator, typically just an option label (e.g. "John Smith")</li>
+</ul>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertNotSelected
+				(
+					selectLocator, optionLocator
+				)
+			</li>
+<li>verifySelected
+				(
+					selectLocator, optionLocator
+				)
+			</li>
+<li>verifyNotSelected
+				(
+					selectLocator, optionLocator
+				)
+			</li>
+<li>waitForSelected
+				(
+					selectLocator, optionLocator
+				)
+			</li>
+<li>waitForNotSelected
+				(
+					selectLocator, optionLocator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAlert"></a>storeAlert
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
+
+<p>Getting an alert has the same effect as manually clicking OK. If an
+alert is generated but you do not consume it with getAlert, the next Selenium action
+will fail.</p>
+<p>Under Selenium, JavaScript alerts will NOT pop up a visible alert
+dialog.</p>
+<p>Selenium does NOT support JavaScript alerts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>The message of the most recent JavaScript alert</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAlert
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllButtons"></a>storeAllButtons
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the IDs of all buttons on the page.
+
+<p>If a given button has no ID, it will appear as "" in this array.</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the IDs of all buttons on the page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllButtons
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllFields"></a>storeAllFields
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the IDs of all input fields on the page.
+
+<p>If a given field has no ID, it will appear as "" in this array.</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the IDs of all field on the page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllFields
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllLinks"></a>storeAllLinks
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the IDs of all links on the page.
+
+<p>If a given link has no ID, it will appear as "" in this array.</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the IDs of all links on the page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllLinks
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllWindowIds"></a>storeAllWindowIds
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the IDs of all windows that the browser knows about in an array.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>Array of identifiers of all windows that the browser knows about.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllWindowIds
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllWindowNames"></a>storeAllWindowNames
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the names of all windows that the browser knows about in an array.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>Array of names of all windows that the browser knows about.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllWindowNames
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAllWindowTitles"></a>storeAllWindowTitles
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the titles of all windows that the browser knows about in an array.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>Array of titles of all windows that the browser knows about.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAllWindowTitles
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAttribute"></a>storeAttribute
+		
+		(
+			attributeLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the value of an element attribute. The value of the attribute may
+differ across browsers (this is the case for the "style" attribute, for
+example).<p>Arguments:</p>
+<ul>
+<li>attributeLocator - an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the value of the specified attribute</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAttribute
+				(
+					attributeLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAttributeFromAllWindows"></a>storeAttributeFromAllWindows
+		
+		(
+			attributeName,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns an array of JavaScript property values from all known windows having one.<p>Arguments:</p>
+<ul>
+<li>attributeName - name of an attribute on the windows</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the set of values of this attribute from all known windows.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotAttributeFromAllWindows
+				(
+					attributeName, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeBodyText"></a>storeBodyText
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the entire text of the page.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the entire text of the page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotBodyText
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeConfirmation"></a>storeConfirmation
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the message of a JavaScript confirmation dialog generated during
+the previous action.
+
+<p>
+By default, the confirm function will return true, having the same effect
+as manually clicking OK. This can be changed by prior execution of the
+chooseCancelOnNextConfirmation command. 
+</p>
+<p>
+If an confirmation is generated but you do not consume it with getConfirmation,
+the next Selenium action will fail.
+</p>
+<p>
+NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
+dialog.
+</p>
+<p>
+NOTE: Selenium does NOT support JavaScript confirmations that are
+generated in a page's onload() event handler. In this case a visible
+dialog WILL be generated and Selenium will hang until you manually click
+OK.
+</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the message of the most recent JavaScript confirmation dialog</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotConfirmation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeCookie"></a>storeCookie
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Return all cookies of the current page under test.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>all cookies of the current page under test</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotCookie
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeCookieByName"></a>storeCookieByName
+		
+		(
+			name,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the value of the cookie with the specified name, or throws an error if the cookie is not present.<p>Arguments:</p>
+<ul>
+<li>name - the name of the cookie</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the value of the cookie</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotCookieByName
+				(
+					name, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeCursorPosition"></a>storeCursorPosition
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
+
+<p>Specifically, if the cursor/selection has been cleared by JavaScript, this command will tend to
+return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as <a href="http://jira.openqa.org/browse/SEL-243">SEL-243</a>.</p>
+This method will fail if the specified element isn't an input element or textarea, or there is no cursor in the element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an input element or textarea</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the numerical position of the cursor in the field</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotCursorPosition
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementHeight"></a>storeElementHeight
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the height of an element<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>height of an element in pixels</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotElementHeight
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementIndex"></a>storeElementIndex
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Get the relative index of an element to its parent (starting from 0). The comment node and empty text node
+will be ignored.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>of relative index of the element to its parent (starting from 0)</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotElementIndex
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementPositionLeft"></a>storeElementPositionLeft
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the horizontal position of an element<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element OR an element itself</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>of pixels from the edge of the frame.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotElementPositionLeft
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementPositionTop"></a>storeElementPositionTop
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the vertical position of an element<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element OR an element itself</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>of pixels from the edge of the frame.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotElementPositionTop
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementWidth"></a>storeElementWidth
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the width of an element<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to an element</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>width of an element in pixels</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotElementWidth
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeEval"></a>storeEval
+		
+		(
+			script,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the result of evaluating the specified JavaScript snippet.  The snippet may
+have multiple lines, but only the result of the last line will be returned.
+
+<p>Note that, by default, the snippet will run in the context of the "selenium"
+object itself, so <code>this</code> will refer to the Selenium object.  Use <code>window</code> to
+refer to the window of your application, e.g. <code>window.document.getElementById('foo')</code>
+</p>
+<p>If you need to use
+a locator to refer to a single element in your application page, you can
+use <code>this.browserbot.findElement("id=foo")</code> where "id=foo" is your locator.</p>
+<p>Arguments:</p>
+<ul>
+<li>script - the JavaScript snippet to run</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the results of evaluating the snippet</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotEval
+				(
+					script, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeExpression"></a>storeExpression
+		
+		(
+			expression,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the specified expression.
+
+<p>This is useful because of JavaScript preprocessing.
+It is used to generate commands like assertExpression and waitForExpression.</p>
+<p>Arguments:</p>
+<ul>
+<li>expression - the value to return</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the value passed in</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotExpression
+				(
+					expression, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeHtmlSource"></a>storeHtmlSource
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the entire HTML source between the opening and
+closing "html" tags.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the entire HTML source</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotHtmlSource
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeLocation"></a>storeLocation
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the absolute URL of the current page.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the absolute URL of the current page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotLocation
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeMouseSpeed"></a>storeMouseSpeed
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the number of pixels between "mousemove" events during dragAndDrop commands (default=10).<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the number of pixels between "mousemove" events during dragAndDrop commands (default=10)</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotMouseSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storePrompt"></a>storePrompt
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Retrieves the message of a JavaScript question prompt dialog generated during
+the previous action.
+
+<p>Successful handling of the prompt requires prior execution of the
+answerOnNextPrompt command. If a prompt is generated but you
+do not get/verify it, the next Selenium action will fail.</p>
+<p>NOTE: under Selenium, JavaScript prompts will NOT pop up a visible
+dialog.</p>
+<p>NOTE: Selenium does NOT support JavaScript prompts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the message of the most recent JavaScript question prompt</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotPrompt
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedId"></a>storeSelectedId
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets option element ID for selected option in the specified select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the selected option ID in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedId
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedIds"></a>storeSelectedIds
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets all option element IDs for selected options in the specified select or multi-select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>an array of all selected option IDs in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedIds
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedIndex"></a>storeSelectedIndex
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets option index (option number, starting at 0) for selected option in the specified select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the selected option index in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedIndex
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedIndexes"></a>storeSelectedIndexes
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets all option indexes (option number, starting at 0) for selected options in the specified select or multi-select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>an array of all selected option indexes in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedIndexes
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedLabel"></a>storeSelectedLabel
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets option label (visible text) for selected option in the specified select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the selected option label in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedLabel
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedLabels"></a>storeSelectedLabels
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets all option labels (visible text) for selected options in the specified select or multi-select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>an array of all selected option labels in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedLabels
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedValue"></a>storeSelectedValue
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets option value (value attribute) for selected option in the specified select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the selected option value in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedValue
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectedValues"></a>storeSelectedValues
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets all option values (value attributes) for selected options in the specified select or multi-select element.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>an array of all selected option values in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectedValues
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSelectOptions"></a>storeSelectOptions
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets all option labels in the specified select drop-down.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>an array of all option labels in the specified select drop-down</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSelectOptions
+				(
+					selectLocator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSpeed"></a>storeSpeed
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.
+
+See also setSpeed.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the execution speed in milliseconds.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifySpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotSpeed
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeTable"></a>storeTable
+		
+		(
+			tableCellAddress,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the text from a cell of a table. The cellAddress syntax
+tableLocator.row.column, where row and column start at 0.<p>Arguments:</p>
+<ul>
+<li>tableCellAddress - a cell address, e.g. "foo.1.4"</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the text from the specified cell</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotTable
+				(
+					tableCellAddress, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeText"></a>storeText
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the text of an element. This works for any element that contains
+text. This command uses either the textContent (Mozilla-like browsers) or
+the innerText (IE-like browsers) of the element, which is the rendered
+text shown to the user.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the text of the element</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotText
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeTitle"></a>storeTitle
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the title of the current page.<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the title of the current page</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotTitle
+				(
+					<a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeValue"></a>storeValue
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
+For checkbox/radio elements, the value will be "on" or "off" depending on
+whether the element is checked or not.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the element value, or "on/off" for checkbox/radio elements</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotValue
+				(
+					locator, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeWhetherThisFrameMatchFrameExpression"></a>storeWhetherThisFrameMatchFrameExpression
+		
+		(
+			currentFrameString,
+target,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Determine whether current/locator identify the frame containing this running code.
+
+<p>This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" frame.  In this case, when the test calls selectFrame, this
+routine is called for each frame to figure out which one has been selected.
+The selected frame will return true, while all others will return false.</p>
+<p>Arguments:</p>
+<ul>
+<li>currentFrameString - starting frame</li>
+<li>target - new frame (which might be relative to the current one)</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the new frame is this code's window</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+<li>assertNotWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+<li>verifyWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+<li>verifyNotWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+<li>waitForWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+<li>waitForNotWhetherThisFrameMatchFrameExpression
+				(
+					currentFrameString, target
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeWhetherThisWindowMatchWindowExpression"></a>storeWhetherThisWindowMatchWindowExpression
+		
+		(
+			currentWindowString,
+target,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Determine whether currentWindowString plus target identify the window containing this running code.
+
+<p>This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" window.  In this case, when the test calls selectWindow, this
+routine is called for each window to figure out which one has been selected.
+The selected window will return true, while all others will return false.</p>
+<p>Arguments:</p>
+<ul>
+<li>currentWindowString - starting window</li>
+<li>target - new window (which might be relative to the current one, e.g., "_parent")</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the new window is this code's window</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+<li>assertNotWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+<li>verifyWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+<li>verifyNotWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+<li>waitForWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+<li>waitForNotWhetherThisWindowMatchWindowExpression
+				(
+					currentWindowString, target
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeXpathCount"></a>storeXpathCount
+		
+		(
+			xpath,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns the number of nodes that match the specified xpath, eg. "//table" would give
+the number of tables.<p>Arguments:</p>
+<ul>
+<li>xpath - the xpath expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>the number of nodes that match the specified xpath</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>assertNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>verifyNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+<li>waitForNotXpathCount
+				(
+					xpath, <a href="#patterns">pattern</a>
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeAlertPresent"></a>storeAlertPresent
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Has an alert occurred?
+
+<p>
+This function never throws an exception
+</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if there is an alert</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertAlertPresent
+				(
+					
+				)
+			</li>
+<li>assertAlertNotPresent
+				(
+					
+				)
+			</li>
+<li>verifyAlertPresent
+				(
+					
+				)
+			</li>
+<li>verifyAlertNotPresent
+				(
+					
+				)
+			</li>
+<li>waitForAlertPresent
+				(
+					
+				)
+			</li>
+<li>waitForAlertNotPresent
+				(
+					
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeChecked"></a>storeChecked
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a> pointing to a checkbox or radio button</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the checkbox is checked, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertChecked
+				(
+					locator
+				)
+			</li>
+<li>assertNotChecked
+				(
+					locator
+				)
+			</li>
+<li>verifyChecked
+				(
+					locator
+				)
+			</li>
+<li>verifyNotChecked
+				(
+					locator
+				)
+			</li>
+<li>waitForChecked
+				(
+					locator
+				)
+			</li>
+<li>waitForNotChecked
+				(
+					locator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeConfirmationPresent"></a>storeConfirmationPresent
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Has confirm() been called?
+
+<p>
+This function never throws an exception
+</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if there is a pending confirmation</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertConfirmationPresent
+				(
+					
+				)
+			</li>
+<li>assertConfirmationNotPresent
+				(
+					
+				)
+			</li>
+<li>verifyConfirmationPresent
+				(
+					
+				)
+			</li>
+<li>verifyConfirmationNotPresent
+				(
+					
+				)
+			</li>
+<li>waitForConfirmationPresent
+				(
+					
+				)
+			</li>
+<li>waitForConfirmationNotPresent
+				(
+					
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeCookiePresent"></a>storeCookiePresent
+		
+		(
+			name,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Returns true if a cookie with the specified name is present, or false otherwise.<p>Arguments:</p>
+<ul>
+<li>name - the name of the cookie</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if a cookie with the specified name is present, or false otherwise.</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertCookiePresent
+				(
+					name
+				)
+			</li>
+<li>assertCookieNotPresent
+				(
+					name
+				)
+			</li>
+<li>verifyCookiePresent
+				(
+					name
+				)
+			</li>
+<li>verifyCookieNotPresent
+				(
+					name
+				)
+			</li>
+<li>waitForCookiePresent
+				(
+					name
+				)
+			</li>
+<li>waitForCookieNotPresent
+				(
+					name
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeEditable"></a>storeEditable
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Determines whether the specified input element is editable, ie hasn't been disabled.
+This method will fail if the specified element isn't an input element.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the input element is editable, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertEditable
+				(
+					locator
+				)
+			</li>
+<li>assertNotEditable
+				(
+					locator
+				)
+			</li>
+<li>verifyEditable
+				(
+					locator
+				)
+			</li>
+<li>verifyNotEditable
+				(
+					locator
+				)
+			</li>
+<li>waitForEditable
+				(
+					locator
+				)
+			</li>
+<li>waitForNotEditable
+				(
+					locator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeElementPresent"></a>storeElementPresent
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Verifies that the specified element is somewhere on the page.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the element is present, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertElementPresent
+				(
+					locator
+				)
+			</li>
+<li>assertElementNotPresent
+				(
+					locator
+				)
+			</li>
+<li>verifyElementPresent
+				(
+					locator
+				)
+			</li>
+<li>verifyElementNotPresent
+				(
+					locator
+				)
+			</li>
+<li>waitForElementPresent
+				(
+					locator
+				)
+			</li>
+<li>waitForElementNotPresent
+				(
+					locator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeOrdered"></a>storeOrdered
+		
+		(
+			locator1,
+locator2,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Check if these two elements have same parent and are ordered siblings in the DOM. Two same elements will
+not be considered ordered.<p>Arguments:</p>
+<ul>
+<li>locator1 - an <a href="#locators">element locator</a> pointing to the first element</li>
+<li>locator2 - an <a href="#locators">element locator</a> pointing to the second element</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if element1 is the previous sibling of element2, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+<li>assertNotOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+<li>verifyOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+<li>verifyNotOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+<li>waitForOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+<li>waitForNotOrdered
+				(
+					locator1, locator2
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storePromptPresent"></a>storePromptPresent
+		
+		(
+			
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Has a prompt occurred?
+
+<p>
+This function never throws an exception
+</p>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if there is a pending prompt</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertPromptPresent
+				(
+					
+				)
+			</li>
+<li>assertPromptNotPresent
+				(
+					
+				)
+			</li>
+<li>verifyPromptPresent
+				(
+					
+				)
+			</li>
+<li>verifyPromptNotPresent
+				(
+					
+				)
+			</li>
+<li>waitForPromptPresent
+				(
+					
+				)
+			</li>
+<li>waitForPromptNotPresent
+				(
+					
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeSomethingSelected"></a>storeSomethingSelected
+		
+		(
+			selectLocator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Determines whether some option in a drop-down menu is selected.<p>Arguments:</p>
+<ul>
+<li>selectLocator - an <a href="#locators">element locator</a> identifying a drop-down menu</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if some option has been selected, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertSomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+<li>assertNotSomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+<li>verifySomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+<li>verifyNotSomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+<li>waitForSomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+<li>waitForNotSomethingSelected
+				(
+					selectLocator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeTextPresent"></a>storeTextPresent
+		
+		(
+			pattern,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.<p>Arguments:</p>
+<ul>
+<li>pattern - a <a href="#patterns">pattern</a> to match with the text of the page</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the pattern matches the text, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertTextPresent
+				(
+					pattern
+				)
+			</li>
+<li>assertTextNotPresent
+				(
+					pattern
+				)
+			</li>
+<li>verifyTextPresent
+				(
+					pattern
+				)
+			</li>
+<li>verifyTextNotPresent
+				(
+					pattern
+				)
+			</li>
+<li>waitForTextPresent
+				(
+					pattern
+				)
+			</li>
+<li>waitForTextNotPresent
+				(
+					pattern
+				)
+			</li>
+</ul>
+</dd>
+<br>
+<dt>
+<strong><a name="storeVisible"></a>storeVisible
+		
+		(
+			locator,
+
+			variableName
+		)
+		
+	</strong>
+</dt>
+<dd>Determines if the specified element is visible. An
+element can be rendered invisible by setting the CSS "visibility"
+property to "hidden", or the "display" property to "none", either for the
+element itself or one if its ancestors.  This method will fail if
+the element is not present.<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>variableName -
+                    the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+                </li>
+</ul>
+<p>
+<dl>
+<dt>Returns: </dt>
+<dd>true if the specified element is visible, false otherwise</dd>
+</dl>
+</p>
+<p>Related Assertions, automatically generated:</p>
+<ul>
+<li>assertVisible
+				(
+					locator
+				)
+			</li>
+<li>assertNotVisible
+				(
+					locator
+				)
+			</li>
+<li>verifyVisible
+				(
+					locator
+				)
+			</li>
+<li>verifyNotVisible
+				(
+					locator
+				)
+			</li>
+<li>waitForVisible
+				(
+					locator
+				)
+			</li>
+<li>waitForNotVisible
+				(
+					locator
+				)
+			</li>
+</ul>
+</dd>
+<br>
+</dl>
+<h2>
+<a name="parameter-construction-and-variables">Parameter construction and Variables</a>
+</h2>
+<blockquote>
+<p>All Selenium command parameters can be constructed using both simple
+	variable substitution as well as full javascript. Both of these
+	mechanisms can access previously stored variables, but do so using
+	different syntax.</p>
+<p>
+<a name="storedVars"></a><strong>Stored Variables</strong>
+</p>
+<p>The commands <em>store</em>, <em>storeValue</em> and <em>storeText</em> can be used to store a variable
+	value for later access. Internally, these variables are stored in a map called "storedVars",
+	with values keyed by the variable name. These commands are documented in the command reference.</p>
+<p>
+<strong>Variable substitution</strong>
+</p>
+<p>Variable substitution provides a simple way to include a previously stored variable in a
+	command parameter. This is a simple mechanism, by which the variable to substitute is indicated
+	by ${variableName}. Multiple variables can be substituted, and intermixed with static text.</p>
+<p>Example:</p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="18%">
+<col width="36%">
+<col width="45%">
+</colgroup>
+<tbody valign="top">
+<tr>
+<td>store</td><td>Mr</td><td>title</td>
+</tr>
+<tr>
+<td>storeValue</td><td>nameField</td><td>surname</td>
+</tr>
+<tr>
+<td>store</td><td>${title} ${surname}</td><td>fullname</td>
+</tr>
+<tr>
+<td>type</td><td>textElement</td><td>Full name is: ${fullname}</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+<strong>Javascript evaluation</strong>
+</p>
+<p>Javascript evaluation provides the full power of javascript in constructing a command parameter.
+	To use this mechanism, the <em>entire</em> parameter value must be prefixed by
+	'javascript{' with a trailing '}'. The text inside the braces is evaluated as a javascript expression,
+	and can access previously stored variables using the <em>storedVars</em> map detailed above.
+	Note that variable substitution cannot be combined with javascript evaluation.</p>
+<p>Example:</p>
+<blockquote>
+<table border="1" class="table">
+<colgroup>
+<col width="9%">
+<col width="44%">
+<col width="46%">
+</colgroup>
+<tbody valign="top">
+<tr>
+<td>store</td><td>javascript{'merchant' + (new Date()).getTime()}</td><td>merchantId</td>
+</tr>
+<tr>
+<td>type</td><td>textElement</td><td>javascript{storedVars['merchantId'].toUpperCase()}</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<div class="section" id="whitespace">
+<h2>
+<a name="whitespace">Whitespace Rules</a>
+</h2>
+<blockquote>
+<p>HTML automatically normalizes whitespace within elements, ignoring leading/trailing spaces and converting extra spaces, tabs and newlines into a single space.  When Selenium reads text out of the page, it attempts to duplicate this behavior, so you can ignore all the tabs and newlines in your HTML and do assertions based on how the text looks in the browser when rendered.  We do this by replacing all non-visible whitespace (including the non-breaking space "&amp;nbsp;") with a single space.  All visible newlines (&lt;br&gt;, &lt;p&gt;, and &lt;pre&gt;formatted newlines) should be preserved.</p>
+<p>We use the same normalization logic on the text of HTML Selenese test case tables.  This has a number of advantages.  First, you don't need to look at the HTML source of the page to figure out what your assertions should be; "&amp;nbsp;" symbols are invisible to the end user, and so you shouldn't have to worry about them when writing Selenese tests.  (You don't need to put "&amp;nbsp;" markers in your test case to assertText on a field that contains "&amp;nbsp;".)  You may also put extra newlines and spaces in your Selenese &lt;td&gt; tags; since we use the same normalization logic on the test case as we do on the text, we can ensure that assertions and the extracted text will match exactly.</p>
+<p>This creates a bit of a problem on those rare occasions when you really want/need to insert extra whitespace in your test case.  For example, you may need to type text in a field like this: "foo&nbsp;&nbsp;&nbsp;".  But if you simply write &lt;td&gt;foo&nbsp;&nbsp;&nbsp;&lt;/td&gt; in your Selenese test case, we'll replace your extra spaces with just one space.</p>
+<p>This problem has a simple workaround.  We've defined a variable in Selenese, ${space}, whose value is a single space.  You can use ${space} to insert a space that won't be automatically trimmed, like this: &lt;td&gt;foo${space}${space}${space}&lt;/td&gt;.  We've also included a variable ${nbsp}, that you can use to insert a non-breaking space.</p>
+<p>Note that XPaths do <i>not</i> normalize whitespace the way we do.  If you need to write an XPath like //div[text()="hello world"] but the HTML of the link is really "hello&amp;nbsp;world", you'll need to insert a real "&amp;nbsp;" into your Selenese test case to get it to match, like this: //div[text()="hello${nbsp}world"].</p>
+</blockquote>
+</div>
+<div class="section" id="extending-selenium">
+<h2>
+<a name="extending-selenium">Extending Selenium</a>
+</h2>
+<blockquote>
+<p>It can be quite simple to extend Selenium, adding your own actions, assertions and locator-strategies.
+	This is done with javascript by adding methods to the Selenium object prototype, and the PageBot
+	object prototype. On startup, Selenium will automatically look through methods on these prototypes,
+	using name patterns to recognise which ones are actions, assertions and locators.</p>
+<p>The following examples try to give an indication of how Selenium can be extended with javascript.</p>
+</blockquote>
+<p>
+<strong>Actions</strong>
+</p>
+<blockquote>
+<p>All <em>doFoo</em> methods on the Selenium prototype are added as actions. For each action <em>foo</em> there
+	is also an action <em>fooAndWait</em> registered. An action method can take up to 2 parameters, which
+	will be passed the second and third column values in the test.</p>
+<p>Example: Add a "typeRepeated" action to Selenium, which types the text twice into a text box.</p>
+<pre class="literal-block">
+	Selenium.prototype.doTypeRepeated = function(locator, text) {
+	    // All locator-strategies are automatically handled by "findElement"
+	    var element = this.page().findElement(locator);
+	
+	    // Create the text to type
+	    var valueToType = text + text;
+	
+	    // Replace the element text with the new text
+	    this.page().replaceText(element, valueToType);
+	};
+	</pre>
+</blockquote>
+<p>
+<strong>Accessors/Assertions</strong>
+</p>
+<blockquote>
+<p>All <em>getFoo</em> and <em>isFoo</em> methods on the Selenium prototype are added as accessors (storeFoo). For each accessor there
+	is an <em>assertFoo</em>, <em>verifyFoo</em> and <em>waitForFoo</em> registered. An assert method can take up to 2 parameters, which
+	will be passed the second and third column values in the test.  You can also define your own assertions literally
+	as simple "assert" methods, which will also auto-generate "verify" and "waitFor" commands.</p>
+<p>Example: Add a <em>valueRepeated</em> assertion, that makes sure that the element value
+	consists of the supplied text repeated. The 2 commands that would be available in tests would be
+	<em>assertValueRepeated</em> and <em>verifyValueRepeated</em>.</p>
+<pre class="literal-block">
+	Selenium.prototype.assertValueRepeated = function(locator, text) {
+	    // All locator-strategies are automatically handled by "findElement"
+	    var element = this.page().findElement(locator);
+	
+	    // Create the text to verify
+	    var expectedValue = text + text;
+	
+	    // Get the actual element value
+	    var actualValue = element.value;
+	
+	    // Make sure the actual value matches the expected
+	    Assert.matches(expectedValue, actualValue);
+	};
+	</pre>
+</blockquote>
+<p>
+<strong>Automatic availability of storeFoo, assertFoo, assertNotFoo, waitForFoo and waitForNotFoo for every getFoo</strong>
+</p>
+<blockquote>
+<p>All <em>getFoo</em> and <em>isFoo</em> methods on the Selenium prototype automatically result in the availability
+	of storeFoo, assertFoo, assertNotFoo, verifyFoo, verifyNotFoo, waitForFoo, and waitForNotFoo commands.</p>
+<p>Example, if you add a getTextLength() method, the following commands will automatically be available:
+	storeTextLength, assertTextLength, assertNotTextLength, verifyTextLength, verifyNotTextLength, waitForTextLength, and waitForNotTextLength commands.</p>
+<pre class="literal-block">
+	Selenium.prototype.getTextLength = function(locator, text) {
+	    return this.getText(locator).length;
+	};
+	</pre>
+<p>Also note that the <em>assertValueRepeated</em> method described above could have been implemented using
+	isValueRepeated, with the added benefit of also automatically getting assertNotValueRepeated, storeValueRepeated,
+	waitForValueRepeated and waitForNotValueRepeated.</p>
+</blockquote>
+<p>
+<strong>Locator Strategies</strong>
+</p>
+<blockquote>
+<p>All <em>locateElementByFoo</em> methods on the PageBot prototype are added as locator-strategies. A locator strategy takes 2 parameters, the first being the locator string (minus the prefix), and the second being the document in which to search.</p>
+<p>Example: Add a "valuerepeated=" locator, that finds the first element a value attribute equal to the the supplied value repeated.</p>
+<pre class="literal-block">
+	// The "inDocument" is a the document you are searching.
+	PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
+	    // Create the text to search for
+	    var expectedValue = text + text;
+	
+	    // Loop through all elements, looking for ones that have 
+	    // a value === our expected value
+	    var allElements = inDocument.getElementsByTagName("*");
+	    for (var i = 0; i &lt; allElements.length; i++) {
+	        var testElement = allElements[i];
+	        if (testElement.value &amp;&amp; testElement.value === expectedValue) {
+	            return testElement;
+	        }
+	    }
+	    return null;
+	};
+	</pre>
+</blockquote>
+<p>
+<strong>user-extensions.js</strong>
+</p>
+<blockquote>
+<p>By default, Selenium looks for a file called "user-extensions.js", and loads the javascript code found in that file. This file provides a convenient location for adding features to Selenium, without needing to modify the core Selenium sources.</p>
+<p>In the standard distibution, this file does not exist. Users can create this file and place their extension code in this common location, removing the need to modify the Selenium sources, and hopefully assisting with the upgrade process.</p>
+</blockquote>
+</div>
+</body>
+</html>

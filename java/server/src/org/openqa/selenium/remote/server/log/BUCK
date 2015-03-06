@@ -1,0 +1,12 @@
+java_library(name = 'log',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/remote:api',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+  visibility = [
+    '//java/server/src/...',
+  ],
+)
