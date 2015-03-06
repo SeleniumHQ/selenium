@@ -21,7 +21,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByTagName {
-  WebElement findElementByTagName(String using);
+  <T extends WebElement> T findElementByTagName(String using);
 
-  List<WebElement> findElementsByTagName(String using);
+  <T extends List<? extends WebElement>> T findElementsByTagName(String using);
 }

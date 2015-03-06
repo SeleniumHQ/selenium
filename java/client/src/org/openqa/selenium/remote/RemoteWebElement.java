@@ -159,12 +159,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return (String) response.getValue();
   }
 
-  public List<WebElement> findElements(By by) {
-    return by.findElements(this);
+  public <T extends List<? extends WebElement>> T findElements(By by) {
+    return (T) by.findElements(this);
   }
 
-  public WebElement findElement(By by) {
-    return by.findElement(this);
+  public <T extends WebElement> T findElement(By by) {
+    return (T) by.findElement(this);
   }
 
   protected WebElement findElement(String using, String value) {
@@ -200,68 +200,68 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return allElements;
   }
 
-  public WebElement findElementById(String using) {
-    return findElement("id", using);
+  public <T extends WebElement> T findElementById(String using) {
+    return (T) findElement("id", using);
   }
 
-  public List<WebElement> findElementsById(String using) {
-    return findElements("id", using);
+  public <T extends List<? extends WebElement>> T findElementsById(String using) {
+    return (T) findElements("id", using);
   }
 
-  public WebElement findElementByLinkText(String using) {
-    return findElement("link text", using);
+  public <T extends WebElement> T findElementByLinkText(String using) {
+    return (T) findElement("link text", using);
   }
 
-  public List<WebElement> findElementsByLinkText(String using) {
-    return findElements("link text", using);
+  public <T extends List<? extends WebElement>> T findElementsByLinkText(String using) {
+    return (T) findElements("link text", using);
   }
 
-  public WebElement findElementByName(String using) {
-    return findElement("name", using);
+  public <T extends WebElement> T findElementByName(String using) {
+    return (T) findElement("name", using);
   }
 
-  public List<WebElement> findElementsByName(String using) {
-    return findElements("name", using);
+  public <T extends List<? extends WebElement>> T findElementsByName(String using) {
+    return (T) findElements("name", using);
   }
 
-  public WebElement findElementByClassName(String using) {
-    return findElement("class name", using);
+  public <T extends WebElement> T findElementByClassName(String using) {
+    return (T) findElement("class name", using);
   }
 
-  public List<WebElement> findElementsByClassName(String using) {
-    return findElements("class name", using);
+  public <T extends List<? extends WebElement>> T findElementsByClassName(String using) {
+    return (T) findElements("class name", using);
   }
 
-  public WebElement findElementByCssSelector(String using) {
-    return findElement("css selector", using);
+  public <T extends WebElement> T findElementByCssSelector(String using) {
+    return (T) findElement("css selector", using);
   }
 
-  public List<WebElement> findElementsByCssSelector(String using) {
-    return findElements("css selector", using);
+  public <T extends List<? extends WebElement>> T findElementsByCssSelector(String using) {
+    return (T) findElements("css selector", using);
   }
 
-  public WebElement findElementByXPath(String using) {
-    return findElement("xpath", using);
+  public <T extends WebElement> T findElementByXPath(String using) {
+    return (T) findElement("xpath", using);
   }
 
-  public List<WebElement> findElementsByXPath(String using) {
-    return findElements("xpath", using);
+  public <T extends List<? extends WebElement>> T findElementsByXPath(String using) {
+    return (T) findElements("xpath", using);
   }
 
-  public WebElement findElementByPartialLinkText(String using) {
-    return findElement("partial link text", using);
+  public <T extends WebElement> T findElementByPartialLinkText(String using) {
+    return (T) findElement("partial link text", using);
   }
 
-  public List<WebElement> findElementsByPartialLinkText(String using) {
-    return findElements("partial link text", using);
+  public <T extends List<? extends WebElement>> T findElementsByPartialLinkText(String using) {
+    return (T) findElements("partial link text", using);
   }
 
-  public WebElement findElementByTagName(String using) {
-    return findElement("tag name", using);
+  public <T extends WebElement> T findElementByTagName(String using) {
+    return (T) findElement("tag name", using);
   }
 
-  public List<WebElement> findElementsByTagName(String using) {
-    return findElements("tag name", using);
+  public <T extends List<? extends WebElement>> T findElementsByTagName(String using) {
+    return (T) findElements("tag name", using);
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {
