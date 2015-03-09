@@ -111,4 +111,14 @@ public class DesiredCapabilitiesTest {
     assertEquals(caps.getCapability(CapabilityType.PLATFORM), "FreeBSD");
   }
 
+  @Test
+  public void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
+    Map<String, Object> capabilitiesMap = new HashMap<String, Object>() {{
+      put(CapabilityType.PLATFORM, "FreeBSD");
+    }};
+
+    DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
+    assertEquals(caps.getCapability(CapabilityType.PLATFORM), "FreeBSD");
+  }
+
 }

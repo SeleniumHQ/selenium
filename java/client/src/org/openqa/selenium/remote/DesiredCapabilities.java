@@ -65,7 +65,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     capabilities.putAll(rawMap);
     Object value = capabilities.get(PLATFORM);
     if (value instanceof String) {
-      capabilities.put(PLATFORM, Platform.valueOf((String) value));
+      try {
+        capabilities.put(PLATFORM, Platform.fromString((String) value));
+      } catch (WebDriverException ex) {
+        // unrecognized platform, fallback to string
+      }
     }
   }
 
