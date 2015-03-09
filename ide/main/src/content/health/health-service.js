@@ -230,8 +230,8 @@ HealthService.prototype.getData = function() {
 /**
  * Return the collected data
  */
-HealthService.prototype.getJSON = function() {
-  return JSON.stringify(this.getData());
+HealthService.prototype.getJSON = function(pretty) {
+  return JSON.stringify(this.getData(), null, 2);
 };
 
 /**
