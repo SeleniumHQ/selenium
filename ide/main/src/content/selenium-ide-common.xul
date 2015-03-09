@@ -74,7 +74,10 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuiteProgress.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/plugin.js"/>
-  
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/scheduler/schedule.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/utils/dispatcher.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/scheduler/scheduler-selenium.js"/>
+
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
 
   <commandset id="seleniumIDECommands">
@@ -97,6 +100,7 @@ limitations under the License.
     <command id="cmd_selenium_testcase_clear" oncommand="goDoCommand('cmd_selenium_testcase_clear')"/>
     <command id="cmd_selenium_rollup" oncommand="goDoCommand('cmd_selenium_rollup')"/>
     <command id="cmd_selenium_reload" oncommand="goDoCommand('cmd_selenium_reload')"/>
+    <command id="cmd_selenium_schedule" oncommand="goDoCommand('cmd_selenium_schedule')"/>
     <command id="cmd_selenium_record" oncommand="goDoCommand('cmd_selenium_record')"/>
     <command id="cmd_selenium_speed_fastest" oncommand="goDoCommand('cmd_selenium_speed_fastest')"/>
     <command id="cmd_selenium_speed_faster" oncommand="goDoCommand('cmd_selenium_speed_faster')"/>
@@ -201,6 +205,7 @@ limitations under the License.
       <menuseparator/>
       <menuitem label="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite" accesskey="P"/>
       <menuitem label="&playButton.tooltip;" command="cmd_selenium_play"/>
+      <menuitem id="menu_schedule" label="Play test suites periodically" type="checkbox" checked="false" command="cmd_selenium_schedule"/>
       <menuseparator/>
       <menuitem label="&contextMenu.breakpoint.label;" oncommand="window.editor.treeView.setBreakpoint()" accesskey="B"/>
       <menuitem label="&contextMenu.startpoint.label;" oncommand="window.editor.treeView.setStartPoint()" accesskey="S"/>
@@ -232,6 +237,7 @@ limitations under the License.
           <menuitem label="Clear recent test suites history" command="cmd_selenium_clear_test_suites_history"/>
         </menupopup>
       </menu>
+      <menuitem label="Schedule tests to run periodically" oncommand="window.editor.openSeleniumIDEScheduler();" />
       <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
   </menu>
@@ -270,7 +276,13 @@ limitations under the License.
       </stack>
     </vbox>
   </stack>
-  
+  <toolbarbutton id="schedule-button" type="menu-button" label="Scheduler" class="toolbar2 toolbarbutton-1" tooltiptext="Turn test scheduler on/off" command="cmd_selenium_schedule">
+    <menupopup id="schedulerPopup">
+      <menuitem label="Play test suites periodically" oncommand="window.editor.openSeleniumIDEScheduler(event);" />
+      <menuitem label="Toggle Scheduler" command="cmd_selenium_schedule" />
+    </menupopup>
+  </toolbarbutton>
+
   <vbox id="suitePane">
     <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80"
           context="suiteContextMenu">

@@ -156,6 +156,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   executeUsingWebDriver: "false",
   webDriverBrowserString: "firefox",
 
+  //Scheduler related options
+  jobResultsServer: 'http://localhost:3000/api/result',
+
   //Other options
   // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
   userExtensionsURL: "",

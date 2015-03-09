@@ -57,7 +57,7 @@ limitations under the License.
     <toolbar class="sidebarToolbar" id="sidebarToolbar_URL">
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
     </toolbar>
-    <toolbar class="sidebarToolbar" id="sidebarToolbar_controls">
+    <toolbar class="sidebarToolbar" id="sidebarToolbar_controls" iconsize="small" mode="icons">
       <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite"/>
       <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
@@ -66,6 +66,7 @@ limitations under the License.
       <toolbarbutton id="rollup-button" label="Rollup" class="icon" tooltiptext="&rollupButton.tooltip;" command="cmd_selenium_rollup"/>
       <toolbarbutton id="reload-button" label="Reload" class="icon" tooltiptext="&reloadExtButton.tooltip;" command="cmd_selenium_reload" hidden="true"/>
       <toolbarseparator />
+      <toolbarbutton id="schedule-button"/>
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" command="cmd_selenium_record"/>
     </toolbar>
     <toolbar class="sidebarToolbar" id="sidebarToolbar_speed">

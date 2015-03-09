@@ -153,6 +153,8 @@ function Editor(window) {
   this.document = document;
   this.recordButton = document.getElementById("record-button");
   this.recordMenuItem = document.getElementById("menu_record");
+  this.scheduleButton = document.getElementById("schedule-button");
+  this.scheduleMenuItem = document.getElementById("menu_schedule");
   this.speedMaxInterval = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
   this.initMenus();
   this.app.initOptions();
@@ -222,6 +224,9 @@ function Editor(window) {
     openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
+
+  this.seleniumScheduler = new SeleniumScheduler(this);
+  this.scheduler = this.seleniumScheduler.scheduler;
   this.log.info("Ready");
   this.app.notify('initComplete');
   this.health.addEvent('editor', 'initialized');
@@ -278,6 +283,7 @@ Editor.controller = {
       case "cmd_selenium_rollup":
       case "cmd_selenium_reload":
       case "cmd_selenium_record":
+      case "cmd_selenium_schedule":
       case "cmd_selenium_speed_fastest":
       case "cmd_selenium_speed_faster":
       case "cmd_selenium_speed_slower":
@@ -323,7 +329,9 @@ Editor.controller = {
         return editor.app.isPlayable() && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
       case "cmd_selenium_step":
         return editor.app.isPlayable() && editor.selDebugger.state == Debugger.PAUSED;
-      case "cmd_selenium_record":
+      case "cmd_selenium_record":   //TODO base it on scheduler?
+        return true;
+      case "cmd_selenium_schedule":
         return true;
       case "cmd_selenium_speed_fastest":
         return editor.getInterval() > 0;
@@ -411,6 +419,35 @@ Editor.controller = {
         break;
       case "cmd_selenium_record":
         editor.toggleRecordingEnabled();
+        break;
+      case "cmd_selenium_schedule":
+        editor.scheduleButton.checked = !editor.scheduleButton.checked;
+        if (editor.scheduleButton.checked) {
+          //TODO hasJobs() is not enough as there may be jobs that are not valid, need hasValidJobs()
+          if (editor.scheduler.hasJobs()) {
+            editor.toggleRecordingEnabled(false);
+            if (editor.scheduler.pendingJobCount() > 0) {
+              var answer = PromptService.yesNoCancel(Editor.getString('scheduler.runNow.message'), Editor.getString('scheduler.runNow.title'));
+              if (answer.yes) {
+                editor.scheduler.start();
+              } else if (answer.no) {
+                editor.scheduler.resetNextRun();
+                editor.scheduler.start();
+              } else {
+                //Canceled
+                editor.scheduleButton.checked = !editor.scheduleButton.checked;
+              }
+            } else {
+              editor.scheduler.start();
+            }
+          } else {
+            if (PromptService.yesNo(Editor.getString('scheduler.setupJobs.message'), Editor.getString('scheduler.setupJobs.title')).yes) {
+              editor.openSeleniumIDEScheduler();
+            }
+          }
+        } else {
+          editor.scheduler.stop();
+        }
         break;
       case "cmd_selenium_speed_fastest":
         editor.updateInterval(-1000);
@@ -689,7 +726,7 @@ Editor.prototype.resetWindow = function () {
 Editor.prototype.submitDiagInfo = function(){
   this.health.runDiagnostics();
   var data = {
-    data: this.health.getJSON()
+    data: this.health.getJSON(true)
   };
   window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
   if (data.data.length > 0) {
@@ -739,7 +776,7 @@ Editor.prototype.updateDeveloperTools = function (show) {
 
 //Samit: Enh: Provide a bit of visual assistance
 Editor.prototype.updateVisualEye = function (show) {
-  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar") ;
+  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar");
   show ? container.classList.add("visualeye") : container.classList.remove("visualeye");
 };
 
@@ -857,6 +894,14 @@ Editor.prototype.appendWaitForPageToLoad = function (window) {
 
 Editor.prototype.openSeleniumIDEPreferences = function () {
   window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
+};
+
+Editor.prototype.openSeleniumIDEScheduler = function (event) {
+  if (event) {
+    event.stopPropagation();
+  }
+  window.openDialog("chrome://selenium-ide/content/scheduler/schedulerui.xul", "scheduler", "chrome,modal,resizable", this);
+  this.scheduleButton.checked = this.scheduler.isActive();
 };
 
 Editor.prototype.showInBrowser = function (url, newWindow) {
