@@ -94,16 +94,17 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Tries the add an additional command to the list of known commands.
+        /// Tries to add a command to the list of known commands.
         /// </summary>
         /// <param name="commandName">Name of the command.</param>
         /// <param name="commandInfo">The command information.</param>
         /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
         /// <remarks>
         /// This method is used by WebDriver implementations to add additional custom driver-specific commands.
-        /// This method will not overwrite existing commands for a specific name.
+        /// This method will not overwrite existing commands for a specific name, and will return <see langword="false"/>
+        /// in that case.
         /// </remarks>
-        internal bool TryAddAdditionalCommand(string commandName, CommandInfo commandInfo)
+        public bool TryAddCommand(string commandName, CommandInfo commandInfo)
         {
             if (string.IsNullOrEmpty(commandName))
             {
