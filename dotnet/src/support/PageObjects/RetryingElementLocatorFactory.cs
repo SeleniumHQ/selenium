@@ -140,7 +140,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                     collection.AddRange(list);
                 }
 
-                timeoutReached = collection.Count == 0 && DateTime.Now > endTime;
+                timeoutReached = collection.Count != 0 || DateTime.Now > endTime;
                 if (!timeoutReached)
                 {
                     Thread.Sleep(this.pollingInterval);
