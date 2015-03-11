@@ -125,11 +125,11 @@ public class CommandLine {
   }
   
   public void waitFor(long timeout) {
-	try {
-		process.waitFor(timeout);
-	} catch (InterruptedException e) {
-		throw new WebDriverException(e);
-	}
+    try {
+      process.waitFor(timeout);
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   public boolean isSuccessful() {
