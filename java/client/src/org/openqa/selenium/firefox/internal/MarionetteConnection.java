@@ -115,7 +115,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       }
 
       process.startProfile(profile, profileDir, "-foreground", "-marionette");
-      Thread.sleep(5000);
 
       // Just for the record; the critical section is all along while firefox is starting with the
       // profile.
