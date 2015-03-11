@@ -27,6 +27,11 @@ import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.os.WindowsUtils.killPID;
+import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinNT;
 
 public class ProcessUtils {
   static Logger log = Logger.getLogger(ProcessUtils.class.getName());
@@ -70,6 +75,14 @@ public class ProcessUtils {
    * @return The exit value of the process.
    */
   public static int killProcess(Process process) {
+    if (thisIsWindows()) {
+      return killWinProcess(process);
+    } else {
+      return killUnixProcess(process);
+    }
+  }
+
+  private static int killUnixProcess(Process process) {
     int exitValue;
 
     // first, wait a second to see if the process will die on it's own (we will likely have asked
@@ -104,6 +117,31 @@ public class ProcessUtils {
             "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
             ex);
       }
+    }
+    return exitValue;
+  }
+
+  private static int killWinProcess(Process process) {
+    int exitValue;
+
+    try {
+      Field f = process.getClass().getDeclaredField("handle");
+      f.setAccessible(true);
+      long hndl = f.getLong(process);
+
+      Kernel32 kernel = Kernel32.INSTANCE;
+      WinNT.HANDLE handle = new WinNT.HANDLE();
+      handle.setPointer(Pointer.createConstant(hndl));
+      int pid = kernel.GetProcessId(handle);
+
+      killPID("" + pid);
+      exitValue = waitForProcessDeath(process, 10000);
+    } catch (Throwable ex) {
+      log.warning("Process refused to die after 10 seconds, and couldn't killall it");
+      ex.printStackTrace();
+      throw new RuntimeException(
+          "Process refused to die after 10 seconds, and couldn't killall it: " + ex.getMessage(),
+          ex);
     }
     return exitValue;
   }

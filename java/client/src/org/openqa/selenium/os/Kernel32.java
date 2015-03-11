@@ -39,6 +39,7 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
   boolean AssignProcessToJobObject(HANDLE hJob, HANDLE hProcess);
   boolean TerminateJobObject(HANDLE hJob, long uExitCode);
   int ResumeThread(HANDLE hThread);
+  int GetProcessId(HANDLE Process);
 
   // 0x00000800
   int JOB_OBJECT_LIMIT_BREAKAWAY_OK = 2048;

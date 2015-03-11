@@ -168,7 +168,7 @@ public class WindowsUtils {
   /**
    * Kills the specified process ID
    */
-  private static void killPID(String processID) {
+  public static void killPID(String processID) {
     executeCommand("taskkill", "/f", "/t", "/pid", processID);
   }
 

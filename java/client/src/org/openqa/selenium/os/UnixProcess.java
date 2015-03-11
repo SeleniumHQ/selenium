@@ -20,6 +20,7 @@ package org.openqa.selenium.os;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
@@ -111,10 +112,13 @@ class UnixProcess implements OsProcess {
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
     watchdog.waitForProcessStarted();
-    watchdog.destroyProcess();
-    watchdog.waitForTerminationAfterDestroy(2, SECONDS);
-    if (!isRunning()) {
-      return getExitCode();
+
+    if (!thisIsWindows()) {
+      watchdog.destroyProcess();
+      watchdog.waitForTerminationAfterDestroy(2, SECONDS);
+      if (!isRunning()) {
+        return getExitCode();
+      }
     }
 
     watchdog.destroyHarder();
@@ -124,7 +128,7 @@ class UnixProcess implements OsProcess {
     }
 
     log.severe(String.format("Unable to kill process with PID %s",
-        watchdog.getPID()));
+                             watchdog.getPID()));
     int exitCode = -1;
     executor.setExitValue(exitCode);
     return exitCode;
