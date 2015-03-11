@@ -74,6 +74,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @NeedsLocalEnvironment(reason = "it hangs at IE9 and event Test.timeout doesn't help")
+  @Ignore(MARIONETTE)
   public void testShouldOpenPageWithBrokenFrameset() {
     driver.get(appServer.whereIs("framesetPage3.html"));
 
@@ -139,6 +140,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAnIframeByItsID() {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1");
@@ -146,14 +148,15 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
-  @Test
   @Ignore({MARIONETTE})
+  @Test
   public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth.iframe1");
     assertThat(driver.findElement(By.tagName("body")).getText(), containsString("Page number 3"));
   }
 
+  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
@@ -163,6 +166,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
@@ -380,6 +384,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
+  @Ignore({MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
@@ -408,6 +413,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToFindElementsInIframesByXPath() {
     driver.get(pages.iframePage);
@@ -438,7 +444,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
 
-  @Ignore(value = {PHANTOMJS})
+  @Ignore(value = {PHANTOMJS, MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
@@ -491,9 +497,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals("Unique title", driver.getTitle());
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
@@ -503,6 +509,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertTrue((Boolean) executor.executeScript("return window != window.top"));
   }
 
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");

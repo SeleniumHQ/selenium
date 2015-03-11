@@ -505,6 +505,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
 

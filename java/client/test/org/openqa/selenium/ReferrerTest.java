@@ -25,6 +25,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.InProject.locate;
@@ -233,6 +234,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser is configured to use a proxy that
    * redirects the second domain to another host.
    */
+  @Ignore(MARIONETTE)
   @Test
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
@@ -273,6 +275,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests to a specific host (www.example.com) - all other requests are permitted
    * to connect directly to the target server.
    */
+  @Ignore(MARIONETTE)
   @Test
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
@@ -311,7 +314,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests for page 2.
    */
   @Ignore(
-      value = IE,
+      value = {IE, MARIONETTE},
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
       issues = 6629)
   @Test

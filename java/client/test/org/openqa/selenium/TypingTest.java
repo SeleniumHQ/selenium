@@ -725,7 +725,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "Untested browsers;" +
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE}, reason = "Untested browsers;" +
       " Safari: cannot type on contentEditable with synthetic events",
       issues = {3127})
   @Test
@@ -751,7 +751,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
+  @Ignore(value = {HTMLUNIT, IE, SAFARI, MARIONETTE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})

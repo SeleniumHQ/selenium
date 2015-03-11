@@ -250,7 +250,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {SAFARI, HTMLUNIT}, issues = {3771},
+  @Ignore(value = {SAFARI, HTMLUNIT, MARIONETTE}, issues = {3771},
           reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @JavascriptEnabled
   @NeedsFreshDriver
@@ -315,7 +315,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, SAFARI, PHANTOMJS},
+  @Ignore(value = {IE, SAFARI, PHANTOMJS, MARIONETTE},
           reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {

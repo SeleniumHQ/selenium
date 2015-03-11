@@ -49,7 +49,7 @@ import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @Ignore(value = {CHROME}, reason = "Webkit bug 22261")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Webkit bug 22261")
   @JavascriptEnabled
   @Test
   public void testShouldFireFocusEventWhenClicking() {
@@ -125,7 +125,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME}, reason = "Webkit bug 22261")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Webkit bug 22261")
   @JavascriptEnabled
   @Test
   public void testShouldFireEventsInTheRightOrder() {
@@ -277,6 +277,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("Cleared"));
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
@@ -290,6 +291,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("blur");
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
@@ -301,6 +303,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("focus");
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {

@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
@@ -56,6 +57,7 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
     }
   }
 
+  @Ignore(MARIONETTE)
   @Test
   public void performanceLogShouldBeDisabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
