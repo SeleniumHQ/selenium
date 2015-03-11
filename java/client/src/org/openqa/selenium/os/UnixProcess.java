@@ -25,7 +25,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
 import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -48,7 +48,7 @@ class UnixProcess implements OsProcess {
   private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
   private volatile String allInput;
   private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
-  private final Executor executor = new DefaultExecutor();
+  private final Executor executor = new DaemonExecutor();
 
   private volatile OutputStream drainTo;
   private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(
