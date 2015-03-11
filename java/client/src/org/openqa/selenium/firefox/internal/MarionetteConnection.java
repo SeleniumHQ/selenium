@@ -245,21 +245,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             response.setValue(wrappedElement);
           }
         }
-
-        if (DriverCommand.FIND_ELEMENTS.equals(command.getName())
-            || DriverCommand.FIND_CHILD_ELEMENTS.equals(command.getName()))
-        {
-          if (response.getStatus() == ErrorCodes.SUCCESS) {
-            List<Object> wrapped = Lists.newArrayList();
-            List<Object> elementIds = (List<Object>) response.getValue();
-            for (Object elementId: elementIds) {
-              Map<String, Object> wrappedElement = Maps.newHashMap();
-              wrappedElement.put("ELEMENT", elementId.toString());
-              wrapped.add(wrappedElement);
-            }
-            response.setValue(wrapped);
-          }
-        }
       }
     }
 
