@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
