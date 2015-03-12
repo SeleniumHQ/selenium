@@ -326,17 +326,27 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     char[] buf = new char[1024];
     int len = reader.read(buf);
     response.append(buf, 0, len);
-    while (len >= 1024) {
+
+    String[] parts = response.toString().split(":", 2);
+    int contentLength = Integer.parseInt(parts[0]);
+
+    while (response.length() < contentLength + ":".length() + parts[0].length()) {
       buf = new char[1024];
       len = reader.read(buf);
-      response.append(buf, 0, len);
+      if (len > 0) {
+        response.append(buf, 0, len);
+      } else {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
+      }
     }
 
     System.out.println("<- |" + response.toString() + "|");
 
-    String[] parts = response.toString().split(":", 2);
-    int length = Integer.parseInt(parts[0]);
-    return parts[1].substring(0, length);
+    parts = response.toString().split(":", 2);
+    return parts[1].substring(0, contentLength);
   }
 
   public void quit() {
