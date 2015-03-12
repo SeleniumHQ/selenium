@@ -394,7 +394,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), containsString("hello world"));
   }
 
-  @Ignore({HTMLUNIT, MARIONETTE, SAFARI})
+  @Ignore({HTMLUNIT, IE, MARIONETTE, SAFARI})
   @Test
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
