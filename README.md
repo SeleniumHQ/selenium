@@ -9,13 +9,12 @@ that lets you write interchangable code for all major web browsers.
 The project is made possible by volunteer contributors who have put in
 thousands of hours of their own time, and made the source code freely
 available under the [Apache 2.0
-license](https://code.google.com/p/selenium/source/browse/COPYING).
+license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
 ## Repositories
 
 The authorative master repository of selenium is at
-https://code.google.com/p/selenium/.  It also mirrored on GitHub,
-which may be found at https://github.com/SeleniumHQ/selenium.
+https://github.com/SeleniumHQ/selenium
 
 ## Pull requests
 
@@ -36,7 +35,7 @@ it more difficult to read our change lists.
 ## Building
 
 Selenium uses a custom build system called
-[crazyfun](http://code.google.com/p/selenium/wiki/CrazyFunBuild)
+[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild)
 available on all fine platforms (Linux, Mac, Windows).  We are in the
 process of replacing this with
 [buck](http://facebook.github.io/buck/), so don't be alarmed if you
@@ -127,7 +126,7 @@ Note that all Selenium Java artefacts are **built with Java 6
 ### Internet Explorer Driver
 
 If you plan to compile the
-[IE driver](http://code.google.com/p/selenium/wiki/InternetExplorerDriver)
+[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver)
 you also need:
 
 * [Visual Studio 2008](http://www.microsoft.com/visualstudio/en-gb/products/2008-editions)
@@ -176,7 +175,7 @@ really be able to run the tests too.  Try:
 ```
 
 Note that the `test_chrome` target requires that you have the separate
-[Chrome Driver](http://code.google.com/p/selenium/wiki/ChromeDriver)
+[Chrome Driver](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
 binary available on your `PATH`.
 
 If you are interested in a single language binding, try one of:
@@ -308,5 +307,5 @@ the name.
 ## Useful Resources
 
 Refer to the [Building Web
-Driver](http://code.google.com/p/selenium/wiki/BuildingWebDriver) wiki
+Driver](https://github.com/SeleniumHQ/selenium/wiki/BuildingWebDriver) wiki
 page for the last word on building the bits and pieces of Selenium.
