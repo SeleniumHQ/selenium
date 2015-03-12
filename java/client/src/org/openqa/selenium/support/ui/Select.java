@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,7 +112,7 @@ public class Select {
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
     List<WebElement> options =
-        element.findElements(By.xpath(".//option[normalize-space(.) = " + escapeQuotes(text) + "]"));
+        element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -132,7 +133,7 @@ public class Select {
         // get candidates via XPATH ...
         candidates =
             element.findElements(By.xpath(".//option[contains(., " +
-                escapeQuotes(subStringWithoutSpace) + ")]"));
+                Quotes.escape(subStringWithoutSpace) + ")]"));
       }
       for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
@@ -163,7 +164,7 @@ public class Select {
   }
 
   /**
-   * Select the option at the given index. This is done by examing the "index" attribute of an
+   * Select the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be selected
@@ -197,10 +198,8 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void selectByValue(String value) {
-    StringBuilder builder = new StringBuilder(".//option[@value = ");
-    builder.append(escapeQuotes(value));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[@value = " + Quotes.escape(value) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -244,10 +243,9 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByValue(String value) {
-    StringBuilder builder = new StringBuilder(".//option[@value = ");
-    builder.append(escapeQuotes(value));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[@value = " + Quotes.escape(value) + "]"));
+
     for (WebElement option : options) {
       if (option.isSelected()) {
         option.click();
@@ -256,7 +254,7 @@ public class Select {
   }
 
   /**
-   * Deselect the option at the given index. This is done by examing the "index" attribute of an
+   * Deselect the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be deselected
@@ -282,42 +280,14 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByVisibleText(String text) {
-    StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
-    builder.append(escapeQuotes(text));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+
     for (WebElement option : options) {
       if (option.isSelected()) {
         option.click();
       }
     }
-  }
-
-  protected String escapeQuotes(String toEscape) {
-    // Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
-    if (toEscape.indexOf("\"") > -1 && toEscape.indexOf("'") > -1) {
-      boolean quoteIsLast = false;
-      if (toEscape.lastIndexOf("\"") == toEscape.length() - 1) {
-        quoteIsLast = true;
-      }
-      String[] substrings = toEscape.split("\"");
-
-      StringBuilder quoted = new StringBuilder("concat(");
-      for (int i = 0; i < substrings.length; i++) {
-        quoted.append("\"").append(substrings[i]).append("\"");
-        quoted
-            .append(((i == substrings.length - 1) ? (quoteIsLast ? ", '\"')" : ")") : ", '\"', "));
-      }
-      return quoted.toString();
-    }
-
-    // Escape string with just a quote into being single quoted: f"oo -> 'f"oo'
-    if (toEscape.indexOf("\"") > -1) {
-      return String.format("'%s'", toEscape);
-    }
-
-    // Otherwise return the quoted string
-    return String.format("\"%s\"", toEscape);
   }
 
   private void setSelected(WebElement option) {

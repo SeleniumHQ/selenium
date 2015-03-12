@@ -26,6 +26,7 @@ import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandl
 import org.openqa.selenium.support.ui.ExpectedConditionsTest;
 import org.openqa.selenium.support.ui.FluentWaitTest;
 import org.openqa.selenium.support.ui.LoadableComponentTest;
+import org.openqa.selenium.support.ui.QuotesTest;
 import org.openqa.selenium.support.ui.SelectTest;
 import org.openqa.selenium.support.ui.SlowLoadableComponentTest;
 import org.openqa.selenium.support.ui.WebDriverWaitTest;
@@ -49,6 +50,7 @@ import org.junit.runners.Suite;
     LocatingElementListHandlerTest.class,
     PageFactoryTest.class,
     SelectTest.class,
+    QuotesTest.class,
     SlowLoadableComponentTest.class,
     ThreadGuardTest.class,
     WebDriverWaitTest.class
