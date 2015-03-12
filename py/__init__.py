@@ -1,3 +1,4 @@
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2010 WebDriver committers
 # Copyright 2010 Google Inc.
 #
