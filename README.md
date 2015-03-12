@@ -11,21 +11,17 @@ thousands of hours of their own time, and made the source code freely
 available under the [Apache 2.0
 license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
-## Pull requests
+## Pull Requests
 
-We accept pull requests from GitHub.  When making the pull request,
-please indicate that you have filled in the
+When making a pull request, please indicate that you have filled in the
 [CLA](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0),
 otherwise it will take longer for us to land your patch.
 
-Merging pull requests cannot be done with the GitHub GUI.  The email
-sent from GitHub can be used on your local repository or you can use
-the ["power git
-checkout"](http://maven.apache.org/developers/conventions/git.html#power-git_checkout).
-We also like to keep a linear history on the master branch, and we
-will normally squash and rebase your patch.  This means merges are
-disallowed, as they make reverting reverts a pain and generally make
-it more difficult to read our change lists.
+We like to keep a linear history on the master branch,
+and we will normally squash and rebase your PR to achieve this.
+This means merge commits are disallowed,
+as they make reverting reverts a pain
+and generally make it more difficult to read our changelists.
 
 ## Building
 
