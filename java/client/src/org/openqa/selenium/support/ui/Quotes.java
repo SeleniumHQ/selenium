@@ -3,7 +3,9 @@ package org.openqa.selenium.support.ui;
 public class Quotes {
 
   /**
-   * Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
+   * Convert strings with both quotes and ticks into a valid xpath component "concat(...)"
+   * 
+   * For example, foo'"bar will be converted to concat("foo'", '"', "bar")
    * 
    * @param toEscape a text to escape quotes in, e.g. "f'oo"
    * @return the same text with escaped quoted, e.g. "\"f'oo\""
