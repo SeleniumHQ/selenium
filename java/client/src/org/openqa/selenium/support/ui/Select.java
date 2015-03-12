@@ -163,7 +163,7 @@ public class Select {
   }
 
   /**
-   * Select the option at the given index. This is done by examing the "index" attribute of an
+   * Select the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be selected
@@ -197,10 +197,8 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void selectByValue(String value) {
-    StringBuilder builder = new StringBuilder(".//option[@value = ");
-    builder.append(Quotes.escape(value));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[@value = " + Quotes.escape(value) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -244,10 +242,9 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByValue(String value) {
-    StringBuilder builder = new StringBuilder(".//option[@value = ");
-    builder.append(Quotes.escape(value));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[@value = " + Quotes.escape(value) + "]"));
+
     for (WebElement option : options) {
       if (option.isSelected()) {
         option.click();
@@ -256,7 +253,7 @@ public class Select {
   }
 
   /**
-   * Deselect the option at the given index. This is done by examing the "index" attribute of an
+   * Deselect the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
    * 
    * @param index The option at this index will be deselected
@@ -282,10 +279,9 @@ public class Select {
    * @throws NoSuchElementException If no matching option elements are found
    */
   public void deselectByVisibleText(String text) {
-    StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
-    builder.append(Quotes.escape(text));
-    builder.append("]");
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+
     for (WebElement option : options) {
       if (option.isSelected()) {
         option.click();
