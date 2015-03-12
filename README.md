@@ -25,37 +25,40 @@ and generally make it more difficult to read our changelists.
 
 ## Building
 
-Selenium uses a custom build system called
+Selenium uses a custom build system aptly named
 [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild)
 available on all fine platforms (Linux, Mac, Windows).  We are in the
 process of replacing this with
 [buck](http://facebook.github.io/buck/), so don't be alarmed if you
 see some directories carrying multiple build directive files.
-crazyfun's build files are called *build.desc*, while buck's are named
-simply *BUCK*.
+crazyfun's build files are named *build.desc*,
+while buck's are named simply *BUCK*.
 
-To build Selenium, in the same directory as this file, do…
+To build Selenium, in the same directory as this file:
 
 ```sh
 ./go
 ```
 
-The order of building modules is determined by the `go` system itself.
-If you want to build an individual module (assuming all dependent
-modules have previously been built) try something like:
+The order of building modules is determined by the build system.
+If you want to build an individual module
+(assuming all dependent modules have previously been built)
+try something like:
 
 ```sh
 ./go //javascript/atoms:test:run
 ```
 
-In this case, `javascript/atoms` is the module directory, and `test` is a target
-in that directory's `build.desc` file.
+In this case, `javascript/atoms` is the module directory,
+`test` is a target in that directory's `build.desc` file,
+and `run` is the action to run on that target.
 
-As you see *build targets* scroll past in the log, you may want to run
-them individually.  `go` can run them individually, by target name as
-long as `:run` is appended (see above).
+As you see *build targets* scroll past in the log,
+you may want to run them individually. 
+crazyfun can run them individually,
+by target name as long as `:run` is appended (see above).
 
-To list all available targets, you can append `-T` as an option:
+To list all available targets, you can append the `-T` flag:
 
 ```sh
 ./go -T
@@ -67,15 +70,15 @@ Although the plan is to return to a vanilla build of Buck as soon as
 possible, we currently use a fork, hosted at
 https://github.com/shs96c/buck To build using Buck, first clone that
 repo and build using ant. Then add Buck's "bin" directory to your
-PATH. Once that's done...
+PATH.
 
-Obtain a list of all available targets
+To obtain a list of all available targets:
 
 ```sh
 buck targets
 ```
 
-Build a particular file:
+And build a particular file:
 
 ```sh
 buck build //java/client/src/org/openqa/selenium:webdriver-api
