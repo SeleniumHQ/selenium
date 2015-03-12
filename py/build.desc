@@ -5,7 +5,8 @@
 # Also, if only one browser, B, is listed in browsers:
 #   :name:run is created as a synonym for :name_B:run
 #
-# Currently, pulling in other tests through deps is limited to deps declared in the same build.desc file
+# Currently, pulling in other tests through deps
+# is limited to deps declared in the same build.desc file
 
 py_test(
   name = "firefox_test",
