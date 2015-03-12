@@ -242,35 +242,6 @@ public class SelectTest{
   }
 
   @Test
-  public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    assertEquals("\"foo\"", escapeQuotes("foo"));
-  }
-
-  @Test
-  public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    assertEquals("\"f'oo\"", escapeQuotes("f'oo"));
-  }
-
-  @Test
-  public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    assertEquals("'f\"oo'", escapeQuotes("f\"oo"));
-  }
-
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    assertEquals("concat(\"f\", '\"', \"o'o\")", escapeQuotes("f\"o'o"));
-  }
-
-  /**
-   * Tests that escapeQuotes returns concatenated strings when the given
-   * string contains a tick and and ends with a quote.
-   */
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", escapeQuotes("Bar \"Rock'n'Roll\""));
-  }
-
-  @Test
   public void shouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
     final WebElement firstOption = mock(WebElement.class, "first");
     final By xpath1 = By.xpath(".//option[normalize-space(.) = \"foo bar\"]");
@@ -321,11 +292,5 @@ public class SelectTest{
       fail("Was not meant to pass");
     } catch (NoSuchElementException ignored) {
     }
-  }
-
-  private String escapeQuotes(String text) {
-    final WebElement element = mockSelectWebElement("multiple");
-
-    return new Select(element).escapeQuotes(text);
   }
 }
