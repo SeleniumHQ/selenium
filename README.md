@@ -11,11 +11,6 @@ thousands of hours of their own time, and made the source code freely
 available under the [Apache 2.0
 license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
-## Repositories
-
-The authorative master repository of selenium is at
-https://github.com/SeleniumHQ/selenium
-
 ## Pull requests
 
 We accept pull requests from GitHub.  When making the pull request,
