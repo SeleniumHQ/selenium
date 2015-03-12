@@ -19,12 +19,22 @@ package org.openqa.selenium.support.ui;
 public class Quotes {
 
   /**
-   * Convert strings with both quotes and ticks into a valid xpath component "concat(...)"
+   * Convert strings with both quotes and ticks into a valid xpath component
    * 
-   * For example, foo'"bar will be converted to concat("foo'", '"', "bar")
+   * For example,
    * 
-   * @param toEscape a text to escape quotes in, e.g. "f'oo"
-   * @return the same text with escaped quoted, e.g. "\"f'oo\""
+   * <p>
+   *   {@code foo} will be converted to {@code "foo"},
+   * </p>
+   * <p>
+   *   {@code f"oo} will be converted to {@code 'f"oo'},
+   * </p>
+   * <p>
+   *   {@code foo'"bar} will be converted to {@code concat("foo'", '"', "bar")}
+   * </p>
+   * 
+   * @param toEscape a text to escape quotes in, e.g. {@code "f'oo"}
+   * @return the same text with escaped quoted, e.g. {@code "\"f'oo\""}
    */
   public static String escape(String toEscape) {
     if (toEscape.contains("\"") && toEscape.contains("'")) {
