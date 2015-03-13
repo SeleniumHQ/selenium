@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using NMock2;
 using NUnit.Framework;
-using OpenQA.Selenium.Internal;
 using Is = NUnit.Framework.Is;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -214,17 +213,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             Assert.That(new ByChained(By.Id("cheese"), By.Name("photo")),
                 Is.EqualTo(new ByChained(By.Id("cheese"), By.Name("photo"))));
-        }
-
-        public interface IAllDriver :
-            IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext, IWebDriver
-        {
-            // Place holder
-        }
-
-        public interface IAllElement : IWebElement
-        {
-            // Place holder
         }
     }
 }

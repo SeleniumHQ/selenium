@@ -77,6 +77,7 @@
     <Compile Include="Events\WebElementEventArgs.cs" />
     <Compile Include="Extensions\WebDriverExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="PageObjects\ByAll.cs" />
     <Compile Include="PageObjects\ByChained.cs" />
     <Compile Include="PageObjects\ByFactory.cs" />
     <Compile Include="PageObjects\CacheLookupAttribute.cs" />
