@@ -164,7 +164,7 @@ limitations under the License.
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
-[issues]: https://code.google.com/p/selenium/issues/list
+[issues]: https://github.com/SeleniumHQ/selenium/issues
 [opera]: https://github.com/operasoftware/operachromiumdriver/releases
 [phantomjs]: http://phantomjs.org/
 [reduction]: http://www.webkit.org/quality/reduction.html

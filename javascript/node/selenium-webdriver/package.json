@@ -9,14 +9,14 @@
     "webdriver",
     "webdriverjs"
   ],
-  "homepage": "https://code.google.com/p/selenium/",
+  "homepage": "https://github.com/SeleniumHQ/selenium",
   "bugs": {
-    "url": "https://code.google.com/p/selenium/issues/list"
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
   },
   "main": "./index",
   "repository": {
     "type": "git",
-    "url": "https://code.google.com/p/selenium/"
+    "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
     "node": ">= 0.10.x"
