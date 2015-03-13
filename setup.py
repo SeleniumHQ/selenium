@@ -34,7 +34,7 @@ setup_args = {
     'version': "2.45.0",
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "py", "README")).read(),
-    'url': 'http://code.google.com/p/selenium/',
+    'url': 'https://github.com/SeleniumHQ/selenium/',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                    'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
