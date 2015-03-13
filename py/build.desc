@@ -73,7 +73,7 @@ py_test(
 py_docs(
   name = "docs",
   source_folder = "py/docs/source",
-  target_folder = "docs/api/py",
+  target_folder = "build/docs/api/py",
   deps = [ "//py:test_env_docs" ]
 )
 
