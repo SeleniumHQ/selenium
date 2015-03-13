@@ -1,4 +1,4 @@
-# Copyright 2008-2014 Software freedom conservancy
+# Copyright 2008-2015 Software Freedom Conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,11 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-The WebDriver implementation.
-"""
+
+"""The WebDriver implementation."""
+
 import base64
 import warnings
+
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
@@ -33,11 +34,13 @@ try:
 except NameError:
     pass
 
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
-    This server is expected to be running the WebDriver wire protocol as defined
-    here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
+    This server is expected to be running the WebDriver wire protocol
+    as defined at
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
 
     :Attributes:
      - command_executor - The command.CommandExecutor object used to execute commands.

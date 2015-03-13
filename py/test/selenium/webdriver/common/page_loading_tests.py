@@ -109,7 +109,6 @@ class PageLoadingTests(unittest.TestCase):
 
     @pytest.mark.ignore_ie
     def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(self):
-        ''' See http://code.google.com/p/selenium/issues/detail?id=208 '''
         self._loadPage("document_write_in_onload")
         self.driver.find_element(By.XPATH, "//body")
 

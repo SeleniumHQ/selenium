@@ -1,3 +1,4 @@
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2010 WebDriver committers
 # Copyright 2010 Google Inc.
 #
@@ -21,7 +22,8 @@ class Command(object):
     used to marshal commands through a service that implements WebDriver's
     remote wire protocol:
 
-        http://code.google.com/p/selenium/wiki/JsonWireProtocol
+        https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+
     """
 
     # Keep in sync with org.openqa.selenium.remote.DriverCommand

@@ -67,7 +67,7 @@ class Service(object):
                 available in the path. Please look at \
                 http://docs.seleniumhq.org/download/#thirdPartyDrivers \
                 and read up at \
-                http://code.google.com/p/selenium/wiki/ChromeDriver")
+                https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver")
         count = 0
         while not utils.is_connectable(self.port):
             count += 1

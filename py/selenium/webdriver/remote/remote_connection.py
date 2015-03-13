@@ -1,4 +1,4 @@
-# Copyright 2008-2013 Software Freedom Conservancy
+# Copyright 2008-2015 Software Freedom Conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -126,12 +126,10 @@ class HttpErrorHandler(url_request.HTTPDefaultErrorHandler):
 
 
 class RemoteConnection(object):
-    """
-    A connection with the Remote WebDriver server.
+    """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
-    http://code.google.com/p/selenium/wiki/JsonWireProtocol
-    """
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
     def __init__(self, remote_server_addr, keep_alive=False):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive

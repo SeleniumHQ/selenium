@@ -1,3 +1,4 @@
+# Copyright 2015 Software Freedom Conservancy
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -21,9 +22,7 @@ class ExampleTest2(unittest.TestCase):
     """This example shows how to use the page object pattern.
     
     For more information about this pattern, see:
-    http://code.google.com/p/webdriver/wiki/PageObjects
-    """
-    
+    https://github.com/SeleniumHQ/selenium/wiki/PageObjects"""
     def setUp(self):
         self._driver = WebDriver()
 
