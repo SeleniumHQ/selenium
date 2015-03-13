@@ -13,7 +13,7 @@ JRuby and Rubinius.
 * http://rubygems.org/gems/selenium-webdriver
 * http://selenium.googlecode.com/git/docs/api/rb/index.html
 * https://github.com/SeleniumHQ/selenium/wiki/RubyBindings
-* https.//github.com/SeleniumHQ/selenium/issues
+* https://github.com/SeleniumHQ/selenium/issues
 
 ## License
 
