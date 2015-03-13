@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
-import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
 
 import com.google.common.collect.Maps;
 
@@ -49,7 +48,6 @@ public abstract class BaseAugmenter {
 
   public BaseAugmenter() {
     addDriverAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
-    addDriverAugmentation(TAKES_SCREENSHOT, new AddTakesScreenshot());
     addDriverAugmentation(SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
     addDriverAugmentation(SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
     addDriverAugmentation(SUPPORTS_NETWORK_CONNECTION, new AddNetworkConnection());
@@ -63,12 +61,12 @@ public abstract class BaseAugmenter {
   /**
    * Add a mapping between a capability name and the implementation of the interface that name
    * represents for instances of {@link org.openqa.selenium.WebDriver}. For example (@link
-   * CapabilityType#TAKES_SCREENSHOT} is represents the interface
-   * {@link org.openqa.selenium.TakesScreenshot}, which is implemented via the
-   * {@link org.openqa.selenium.remote.AddTakesScreenshot} provider.
-   * 
+   * CapabilityType#SUPPORTS_FINDING_BY_CSS} represents the interface
+   * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
+   * {@link org.openqa.selenium.remote.AddFindsByCss} provider.
+   *
    * Note: This method is still experimental. Use at your own risk.
-   * 
+   *
    * @param capabilityName The name of the capability to model
    * @param handlerClass The provider of the interface and implementation
    */
@@ -79,7 +77,7 @@ public abstract class BaseAugmenter {
   /**
    * Add a mapping between a capability name and the implementation of the interface that name
    * represents for instances of {@link org.openqa.selenium.WebElement}. For example (@link
-   * CapabilityType#TAKES_SCREENSHOT} is represents the interface
+   * CapabilityType#SUPPORTS_FINDING_BY_CSS} represents the interface
    * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
    * {@link AddFindsByCss} provider.
    * 
