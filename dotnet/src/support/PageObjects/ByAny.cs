@@ -36,12 +36,15 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         public override IWebElement FindElement(ISearchContext context)
         {
-            var elements = FindElements(context);
-            if (elements.Count == 0)
+            foreach (var @by in _bys)
             {
-                throw new NoSuchElementException("Cannot locate an element using " + ToString());
+                var elems = @by.FindElements(context);
+                if (elems.Any())
+                {
+                    return elems[0];
+                }
             }
-            return elements[0];
+            throw new NoSuchElementException("Cannot locate an element using " + ToString());
         }
 
         public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)

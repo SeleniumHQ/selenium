@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             var elem1 = mock.NewMock<IAllElement>();
             var elem2 = mock.NewMock<IAllElement>();
             var elems12 = new List<IWebElement> { elem1, elem2 }.AsReadOnly();
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
             var by = new ByAny(By.Name("cheese"));
 
             // findElement
@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             var driver = mock.NewMock<IAllDriver>();
             var empty = new List<IWebElement>().AsReadOnly();
 
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(empty));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(empty));
 
             var by = new ByAny(By.Name("cheese"));
 
@@ -70,8 +70,8 @@ namespace OpenQA.Selenium.Support.PageObjects
             var elems23 = new List<IWebElement> { elem2, elem3 }.AsReadOnly();
             var expected = new List<IWebElement> { elem1, elem2, elem3 }.AsReadOnly();
 
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("photo").Will(Return.Value(elems23));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("photo").Will(Return.Value(elems23));
 
             var by = new ByAny(By.Name("cheese"), By.Name("photo"));
 
@@ -99,8 +99,8 @@ namespace OpenQA.Selenium.Support.PageObjects
             var elems34 = new List<IWebElement> { elem3, elem4 }.AsReadOnly();
             var expected = new List<IWebElement> {elem1, elem2, elem3, elem4}.AsReadOnly();
 
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
-            Expect.Exactly(2).On(driver).Method("FindElementsByName").With("photo").Will(Return.Value(elems34));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("cheese").Will(Return.Value(elems12));
+            Expect.AtLeastOnce.On(driver).Method("FindElementsByName").With("photo").Will(Return.Value(elems34));
 
             var by = new ByAny(By.Name("cheese"), By.Name("photo"));
             
