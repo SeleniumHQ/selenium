@@ -1,3 +1,10 @@
+## v2.46.0-dev
+
+* FIXED: 8564: `firefox.Driver#quit()` will wait for the Firefox process to
+    terminate before deleting the temporary webdriver profile. This eliminates a
+    race condition where Firefox would write profile data during shutdown,
+    causing the `rm -rf` operation on the profile directory to fail.
+
 ## v2.45.1
 
 * FIXED: 8548: Task callbacks are once again dropped if the task was cancelled
