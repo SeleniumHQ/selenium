@@ -1,6 +1,6 @@
 /*
 Copyright 2011-2012 Selenium committers
-Copyright 2011-2012 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,13 +43,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * Manages the life and death of a native executable driver server.
  * 
  * It is expected that the driver server implements the
- * <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
+ * <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
  * In particular, it should implement /status command that is used to check if the server is alive.
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
 public class DriverService {
-
   /**
    * The base URL for the managed server.
    */
@@ -301,8 +300,6 @@ public class DriverService {
     protected abstract ImmutableList<String> createArgs();
 
     protected abstract DS createDriverService(File exe, int port, ImmutableList<String> args,
-                                              ImmutableMap<String, String> environment);
-
+        ImmutableMap<String, String> environment);
   }
-
 }

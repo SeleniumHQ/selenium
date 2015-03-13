@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class Issue1586 {
     try {
       driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
-        driver.get("http://code.google.com/p/selenium/");
+        driver.get("https://github.com/SeleniumHQ/selenium");
         WebElement keywordInput = driver.findElement(By.name("q"));
         keywordInput.clear();
         keywordInput.sendKeys("test");

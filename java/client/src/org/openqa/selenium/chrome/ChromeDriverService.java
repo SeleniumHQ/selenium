@@ -1,6 +1,6 @@
 /*
 Copyright 2011-2012 Selenium committers
-Copyright 2011-2012 Software Freedom Conservancy
+Copyright 2011-2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -116,8 +116,8 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected File findDefaultExecutable() {
       return findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-                            "http://code.google.com/p/selenium/wiki/ChromeDriver",
-                            "http://chromedriver.storage.googleapis.com/index.html");
+          "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
+          "http://chromedriver.storage.googleapis.com/index.html");
     }
 
     @Override

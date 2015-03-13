@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2009 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,10 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Factory class to make using Page Objects simpler and easier.
  *
- * @see <a href="http://code.google.com/p/webdriver/wiki/PageObjects">Page Objects Wiki</a>
+ * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/PageObjects">Page Objects Wiki</a>
  */
 public class PageFactory {
-
   /**
    * Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
    * List&lt;WebElement&gt; fields that have been declared, assuming that the field

@@ -1,6 +1,6 @@
 /*
 Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2015 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DisplayHelpServlet extends HttpServlet {
-
   private static final long serialVersionUID = 8484071790930378855L;
   private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
   private static String coreVersion;
@@ -73,7 +72,7 @@ public class DisplayHelpServlet extends HttpServlet {
     builder.append("<body>");
     builder.append("You are using grid ").append(coreVersion).append(coreRevision);
     builder
-        .append("<br>Find help on the official selenium wiki : <a href='http://code.google.com/p/selenium/wiki/Grid2' >more help here</a>");
+        .append("<br>Find help on the official selenium wiki : <a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2' >more help here</a>");
     builder.append("<br>default monitoring page : <a href='/grid/console' >console</a>");
     
     builder.append("</body>");

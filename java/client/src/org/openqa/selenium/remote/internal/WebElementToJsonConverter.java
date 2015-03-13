@@ -1,4 +1,5 @@
 /*
+Copyright 2015 Software Freedom Conservancy
 Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +35,7 @@ import java.util.Map;
  * the WebDriver wire protocol. This class will recursively convert Lists and
  * Maps to catch nested references.
  *
- * @see <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#WebElement_JSON_Object">
+ * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#webelement-json-object">
  *     WebDriver JSON Wire Protocol</a>
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
@@ -76,7 +77,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
       return converted;
     }
 
-    throw new IllegalArgumentException("Argument is of an illegal type: "
-        + arg.getClass().getName());
+    throw new IllegalArgumentException("Argument is of an illegal type: " +
+        arg.getClass().getName());
   }
 }

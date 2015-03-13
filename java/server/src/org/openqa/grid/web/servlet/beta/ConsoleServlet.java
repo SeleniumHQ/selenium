@@ -201,7 +201,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<h2>Grid Console v.");
     builder.append(coreVersion).append(coreRevision);
     builder.append("</h2>");
-    builder.append("<div><a id='helplink' target='_blank' href='http://code.google.com/p/selenium/wiki/Grid2'>Help</a></div>");
+    builder.append("<div><a id='helplink' target='_blank' href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>Help</a></div>");
     builder.append("</div>");
     builder.append("");
     return builder.toString();
