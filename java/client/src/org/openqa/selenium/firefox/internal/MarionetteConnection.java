@@ -62,6 +62,10 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
   private static Map<String, String> seleniumToMarionetteCommandMap = ImmutableMap.<String, String>builder()
       .put(DriverCommand.GET, "get")
+      .put(DriverCommand.GET_ALERT_TEXT, "getTextFromDialog")
+      .put(DriverCommand.ACCEPT_ALERT, "acceptDialog")
+      .put(DriverCommand.DISMISS_ALERT, "dismissDialog")
+      .put(DriverCommand.SET_ALERT_VALUE, "sendKeysToDialog")
       .put(DriverCommand.GET_CURRENT_WINDOW_HANDLE, "getWindow")
       .put(DriverCommand.GET_WINDOW_HANDLES, "getWindows")
       .put(DriverCommand.CLOSE, "closeWindow")
@@ -289,6 +293,9 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       List<Object> actions = Lists.newArrayList();
       actions.add(action);
       params.put("chain", actions);
+
+    } else if (DriverCommand.SET_ALERT_VALUE.equals(commandName)) {
+      renameParameter(params, "text", "value");
     }
 
     if (seleniumToMarionetteCommandMap.containsKey(commandName)) {

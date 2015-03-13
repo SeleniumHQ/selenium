@@ -51,7 +51,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-@Ignore({HTMLUNIT, PHANTOMJS, SAFARI, MARIONETTE})
+@Ignore({HTMLUNIT, PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
   private WebDriverWait wait;
@@ -94,7 +94,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(CHROME)
+  @Ignore({CHROME, MARIONETTE})
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
@@ -149,6 +149,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
@@ -216,6 +217,7 @@ public class AlertsTest extends JUnit4TestBase {
     fail("Expected NoAlertPresentException");
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
@@ -230,6 +232,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
@@ -255,6 +258,7 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
@@ -305,6 +309,7 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "null"));
   }
 
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testHandlesTwoAlertsFromOneInteraction() {
@@ -350,7 +355,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, IE}, reason = "IE: fails in versions 6 and 7")
+  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE}, reason = "IE: fails in versions 6 and 7")
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
@@ -458,7 +463,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT})
+  @Ignore(value = {CHROME, HTMLUNIT, MARIONETTE})
   @Test
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
