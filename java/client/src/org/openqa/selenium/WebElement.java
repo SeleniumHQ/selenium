@@ -150,7 +150,7 @@ public interface WebElement extends SearchContext {
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  List<WebElement> findElements(By by);
+  <T extends List<? extends WebElement>> T findElements(By by);
 
   /**
    * Find the first {@link WebElement} using the given method. See the note in
@@ -168,7 +168,7 @@ public interface WebElement extends SearchContext {
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  WebElement findElement(By by);
+  <T extends WebElement> T findElement(By by);
 
   /**
    * Is this element displayed or not? This method avoids the problem of having to parse an

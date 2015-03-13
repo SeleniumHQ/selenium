@@ -21,7 +21,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByXPath {
-  WebElement findElementByXPath(String using);
+  <T extends WebElement> T findElementByXPath(String using);
 
-  List<WebElement> findElementsByXPath(String using);
+  <T extends List<? extends WebElement>> T findElementsByXPath(String using);
 }

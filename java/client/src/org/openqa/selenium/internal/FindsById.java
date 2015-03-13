@@ -21,7 +21,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsById {
-  WebElement findElementById(String using);
+  <T extends WebElement> T findElementById(String using);
 
-  List<WebElement> findElementsById(String using);
+  <T extends List<? extends WebElement>> T findElementsById(String using);
 }
