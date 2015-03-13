@@ -2,7 +2,7 @@
 class Selenium::WebDriver::Remote::Bridge
 
   #
-  # http://code.google.com/p/selenium/wiki/JsonWireProtocol#Command_Reference
+  # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
   #
 
   command :newSession,                             :post,    "session"

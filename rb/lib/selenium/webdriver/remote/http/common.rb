@@ -33,7 +33,7 @@ module Selenium
                 puts "     > #{headers.inspect}"
               end
             elsif verb == :post
-              payload = "{}" # work around http://code.google.com/p/selenium/issues/detail?id=1396
+              payload = "{}"
               headers["Content-Length"] = "2"
             end
 
