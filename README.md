@@ -278,7 +278,7 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven, it is
-built with [Crazy-Fun](http://code.google.com/p/crazy-fun/) though
+built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild) though
 that is invoked with *go* as outlined above so you do not really have
 to learn too much about that.
 
