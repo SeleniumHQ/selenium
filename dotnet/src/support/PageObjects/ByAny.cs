@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     {
         private readonly By[] _bys;
 
-        public ByAny(By[] bys)
+        public ByAny(params By[] bys)
         {
             _bys = bys;
         }
