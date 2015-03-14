@@ -13,15 +13,7 @@ license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
 ## Pull Requests
 
-When making a pull request, please indicate that you have filled in the
-[CLA](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0),
-otherwise it will take longer for us to land your patch.
-
-We like to keep a linear history on the master branch,
-and we will normally squash and rebase your PR to achieve this.
-This means merge commits are disallowed,
-as they make reverting reverts a pain
-and generally make it more difficult to read our changelists.
+See [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md).
 
 ## Building
 
