@@ -499,7 +499,7 @@ task :release => [
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
     mkdir_p deep
-    cp 'java/CHANGELOG', deep
+    cp 'CHANGES', deep
 
     sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
     renames.each do |from, to|
