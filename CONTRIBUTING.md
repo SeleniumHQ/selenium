@@ -140,13 +140,13 @@ any).  Follow these guidelines when writing one:
    short description of the change.
 2. Keep the second line blank.
 3. Wrap all other lines at 72 columns.
-4. Include `Fixes #_N_`, where _N_ is the issue number the commit
+4. Include `Fixes #N`, where _N_ is the issue number the commit
    fixes, if any.
 
 A good commit message can look like this:
 
 ```text
-subsystem: explaining the commit in one line
+explain commit normatively in one line
 
 Body of commit message is a few lines of text, explaining things
 in more detail, possibly giving some background about the issue
