@@ -705,6 +705,10 @@ public class ExpectedConditions {
 
   /**
    * An expectation with the logical opposite condition of the given condition.
+   *
+   * Note that if the Condition your are inverting throws an exception that is
+   * caught by the Ignored Exceptions, the inversion will not take place and lead
+   * to confusing results.
    */
   public static ExpectedCondition<Boolean> not(final ExpectedCondition<?> condition) {
     return new ExpectedCondition<Boolean>() {
