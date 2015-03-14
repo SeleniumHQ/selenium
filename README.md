@@ -11,6 +11,21 @@ thousands of hours of their own time, and made the source code freely
 available under the [Apache 2.0
 license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
+## Documentation
+
+Narrative documentation:
+
+* [User Manual](http://docs.seleniumhq.org/docs/)
+* [New Handbook](https://seleniumhq.github.io/docs/) (work in progress)
+
+API documentation:
+
+* [C#](http://seleniumhq.github.io/selenium/docs/api/dotnet/)
+* [JavaScript](http://seleniumhq.github.io/selenium/docs/api/javascript/)
+* [Java](http://seleniumhq.github.io/selenium/docs/api/java/index.html)
+* [Python](http://seleniumhq.github.io/selenium/docs/api/py/)
+* [Ruby](http://seleniumhq.github.io/selenium/docs/api/rb/)
+
 ## Pull Requests
 
 See [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md).
