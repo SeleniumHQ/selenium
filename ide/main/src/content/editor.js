@@ -221,7 +221,7 @@ function Editor(window) {
   //Samit: Enh: display a webpage on the first start (and also on locale change if the version string is localised)
   var versionString = Editor.getString('selenium-ide.version');
   if (!this.app.options.currentVersion || this.app.options.currentVersion != versionString) {
-    openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
+    openTabOrWindow('https://github.com/SeleniumHQ/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
 
@@ -731,7 +731,7 @@ Editor.prototype.submitDiagInfo = function(){
   window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
   if (data.data.length > 0) {
     GitHub.createGist("Selenium IDE diagnostic information", data).done(function(url){
-      alert("Gist created with diagnostic information.\nPlease update the issue on https://code.google.com/p/selenium/issues/ with this url.\nURL: " + url);
+      alert("Gist created with diagnostic information.\nPlease update the issue on https://github.com/SeleniumHQ/selenium/issues with this url.\nURL: " + url);
     }, function(response, success, status){
       alert("Gist creation failed with status " + status + "\nResponse:-\n" + (response || ''));
     });
