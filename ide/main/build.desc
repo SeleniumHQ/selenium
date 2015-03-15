@@ -16,7 +16,7 @@ mozilla_extension(name = "selenium-ide",
     { "../../javascript/selenium-core" : "chrome/content"},
     { "src/chrome/icons" : "chrome" },
     { "//javascript/selenium-atoms" : "chrome/content/selenium-core/scripts/atoms.js"},
-    { "//third_party/js/sizzle" : "chrome/content/selenium-core/lib/sizzle.js" }
+    { "//third_party/js/sizzle:js" : "chrome/content/selenium-core/lib/sizzle.js" }
   ],
   chrome = "src/chrome.manifest.production",
   install = "src/install.rdf")
