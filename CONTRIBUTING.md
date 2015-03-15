@@ -51,7 +51,7 @@ on Github.
 
 This document will guide you through the contribution process.
 
-### Step 1: Forking
+### Step 1: Fork
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
 and check out your copy locally.
@@ -105,7 +105,7 @@ The copyright attributions can be reviewed in the
 [NOTICE](https://github.com/SeleniumHQ/selenium/blob/master/NOTICE)
 file found in the top-level directory.
 
-### Step 2: Branching
+### Step 2: Branch
 
 Create a feature branch and start hacking:
 
@@ -116,7 +116,7 @@ Create a feature branch and start hacking:
 We practice HEAD-based development, which means all changes are aplied
 directly on top of master.
 
-### Step 3: Committing
+### Step 3: Commit
 
 FIrst make sure git knows your name and email address:
 
@@ -156,7 +156,7 @@ Fixes #141
 The first line must be meaningful as it's what people see when they
 run `git shortlog` or `git log --online`.
 
-### Step 4: Rebasing
+### Step 4: Rebase
 
 Use `git rebase` (not `git merge`) to sync your work from time to time.
 
@@ -165,7 +165,7 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 % git rebase upstream/master
 ```
 
-### Step 5: Testing
+### Step 5: Test
 
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
@@ -187,7 +187,7 @@ When you open your pull request we ask that you indicate that you've
 signed the CLA. This will reduce the time it takes for us to integrate
 it.
 
-### Step 7: Pushing
+### Step 7: Push
 
 ```text
 % git push origin my-feature-branch
