@@ -1,9 +1,7 @@
 # Contributing to Selenium
 
-The Selenium project welcomes contributions! It is maintained,
-developed, and made by individuals just like yourself.
-
-There are a number of ways in which you can help:
+The Selenium project welcomes contributions from everyone. There are a
+number of ways you can help:
 
 ## Issue Contributions
 
