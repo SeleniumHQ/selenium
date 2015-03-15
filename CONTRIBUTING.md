@@ -123,7 +123,7 @@ FIrst make sure git knows your name and email address:
 % git config --global user.email 'santa@example.com'
 ```
 
-**Writing good committ messages is important.** A commit message
+**Writing good commit messages is important.** A commit message
 should describe what changed, why, and reference issues fixed (if
 any).  Follow these guidelines when writing one:
 
