@@ -32,7 +32,7 @@ string = function(value) {
 		value = value.replace(/\n/g, '\\n');
 		return "'" + value + "'";
 	} else {
-		return "'";
+		return "''";
 	}
 }
 
