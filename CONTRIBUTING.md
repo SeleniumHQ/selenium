@@ -242,3 +242,9 @@ Issues are labelled to make them easier to categorise and find by
 * which **driver** is affected
 * their presumed **difficulty** (easy, less easy, hard)
 * what **type** of issue they are (defect, race condition, cleanup)
+
+## Communication
+
+Selenium contributors frequent the [`#selenium` channel on
+`[irc.freenode.org](https://webchat.freenode.net/)`. You can also join
+the `selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
