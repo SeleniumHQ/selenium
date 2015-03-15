@@ -216,17 +216,11 @@ towards integration, it will be assigned different Github labels. The
 labels serve for the committers to more easily keep track of work
 that's pending or awaiting action.
 
-### Component Labels
-
 Component labels are yellow and carry the **C** prefix. They highlight
 the subsystem or component your PR makes changes in.
 
-### Driver Labels
-
 The driver labels (**D**) indicate if the changes are related to a
 WebDriver implementation or the Selenium atoms.
-
-### Review Labels
 
 The review labels (**R**) are:
 
@@ -238,9 +232,7 @@ The review labels (**R**) are:
 * **needs rebase**: the branch isn't in sync with master and needs to
    be rebased
 
-### Issue Labels
-
-Issues are labelled to make them easier to categorise and find by
+Issues are labelled to make them easier to categorise and find by:
 
 * which **component** they relate to (java, cpp, dotnet, py, rb)
 * which **driver** is affected
