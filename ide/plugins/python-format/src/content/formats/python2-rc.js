@@ -39,7 +39,7 @@ function assertFalse(expression) {
 
 function verify(statement) {
 	return "try: " + statement + "\n" +
-		"except AssertionError, e: self.verificationErrors.append(str(e))";
+		"except AssertionError as e: self.verificationErrors.append(str(e))";
 }
 
 function verifyTrue(expression) {

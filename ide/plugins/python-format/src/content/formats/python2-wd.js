@@ -315,12 +315,12 @@ this.options = {
       '    \n' +
           '    def is_element_present(self, how, what):\n' +
           '        try: self.driver.find_element(by=how, value=what)\n' +
-          '        except NoSuchElementException, e: return False\n' +
+          '        except NoSuchElementException as e: return False\n' +
           '        return True\n' +
           '    \n' +
           '    def is_alert_present(self):\n' +
           '        try: self.driver.switch_to_alert()\n' +
-          '        except NoAlertPresentException, e: return False\n' +
+          '        except NoAlertPresentException as e: return False\n' +
           '        return True\n' +
           '    \n' +
           '    def close_alert_and_get_its_text(self):\n' +
