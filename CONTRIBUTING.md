@@ -19,15 +19,6 @@ move to the [selenium-developers@ mailing
 list](https://groups.google.com/forum/#!forum/selenium-developers)
 instead.
 
-### Issue Labels
-
-Issues are labelled to make them easier to categorise and find by
-
-* which **component** they relate to (java, cpp, dotnet, py, rb)
-* which **driver** is affected
-* their presumed **difficulty** (easy, less easy, hard)
-* what **type** of issue they are (defect, race condition, cleanup)
-
 ## Documentation Contributions
 
 Selenium is a big software project and documentation is key to
@@ -209,24 +200,31 @@ comments to address, apply your changes in new commits (preferably
 [fixups](http://git-scm.com/docs/git-commit)) and push to the same
 branch.
 
-#### Explanation of a PR's Different Stages
+### Step 8: Integration
 
-From your create your pull request, through code review and towards
-integration, it will be assigned different Github labels. The labels
-serve for the committers to more easily keep track of work that's
-pending or awaiting action.
+When code review is complete, a committer will take your PR and
+integrate it on Selenium's master branch. Because we like to keep a
+linear history on th master branch, we will normally squash and rebase
+your branch history.
 
-##### Component Labels
+## Stages of an Issue or PR
+
+From your create your issue or pull request, through code review and
+towards integration, it will be assigned different Github labels. The
+labels serve for the committers to more easily keep track of work
+that's pending or awaiting action.
+
+### Component Labels
 
 Component labels are yellow and carry the **C** prefix. They highlight
 the subsystem or component your PR makes changes in.
 
-##### Driver Labels
+### Driver Labels
 
 The driver labels (**D**) indicate if the changes are related to a
 WebDriver implementation or the Selenium atoms.
 
-##### Review Labels
+### Review Labels
 
 The review labels (**R**) are:
 
@@ -238,9 +236,11 @@ The review labels (**R**) are:
 * **needs rebase**: the branch isn't in sync with master and needs to
    be rebased
 
-### Step 8: Integration
+### Issue Labels
 
-When code review is complete, a committer will take your PR and
-integrate it on Selenium's master branch. Because we like to keep a
-linear history on th master branch, we will normally squash and rebase
-your branch history.
+Issues are labelled to make them easier to categorise and find by
+
+* which **component** they relate to (java, cpp, dotnet, py, rb)
+* which **driver** is affected
+* their presumed **difficulty** (easy, less easy, hard)
+* what **type** of issue they are (defect, race condition, cleanup)
