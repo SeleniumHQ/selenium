@@ -45,6 +45,10 @@ The Selenium project welcomes new contributors. Individuals making
 significant and valuable contributions over time are made _Committers_
 and given commit-access to the project.
 
+If you're looking for easy bugs, have a look at
+[issues labelled E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy)
+on Github.
+
 This document will guide you through the contribution process.
 
 ### Step 1: Forking
