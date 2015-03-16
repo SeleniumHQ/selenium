@@ -9,13 +9,18 @@ When opening new issues or commenting on existing issues on this
 repository please make sure discussions are related to concrete
 technical issues with the Selenium software.
 
-It's imperative that issue reports outline the steps to reproduce the
-defect. If the issue can't be reproduced it will be closed.
+It's imperative that issue reports outline the steps to reproduce
+the defect. If the issue can't be reproduced it will be closed.
+Please provide [concise reproducible test cases](http://sscce.org/)
+and describe what results you are seeing and what results you expect.
 
 Discussion of high level project ideas or non-technical topics should
 move to the [selenium-developers@ mailing
 list](https://groups.google.com/forum/#!forum/selenium-developers)
 instead.
+
+Issues shouldn't be used for support. Please address questions to the
+(`selenium-users@` mailing list)[https://groups.google.com/forum/#!forum/selenium-users].
 
 ## Documentation Contributions
 
@@ -23,8 +28,8 @@ Selenium is a big software project and documentation is key to
 understanding how things work and learning effective ways to exploit
 its potential.
 
-The official documentation of Selenium is still served from our Google
-Code [**site** repository](https://code.google.com/p/selenium/source/list?repo=site).
+The official documentation of Selenium is still served from our
+[**www.seleniumhq.org** repository](https://github.com/SeleniumHQ/www.seleniumhq.org).
 We are however phasing out this documentation which focuses too much
 on Selenium RC and other antiquated pieces, in favour of a rewrite.
 
