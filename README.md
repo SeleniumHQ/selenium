@@ -33,7 +33,7 @@ See [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIB
 ## Building
 
 Selenium uses a custom build system aptly named
-[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build)
+[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild)
 available on all fine platforms (Linux, Mac, Windows).  We are in the
 process of replacing this with
 [buck](http://facebook.github.io/buck/), so don't be alarmed if you
@@ -285,7 +285,7 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven, it is
-built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) though
+built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild) though
 that is invoked with *go* as outlined above so you do not really have
 to learn too much about that.
 
@@ -309,5 +309,5 @@ the name.
 ## Useful Resources
 
 Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver) wiki
+Driver](https://github.com/SeleniumHQ/selenium/wiki/BuildingWebDriver) wiki
 page for the last word on building the bits and pieces of Selenium.
