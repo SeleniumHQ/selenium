@@ -88,6 +88,11 @@ bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
 bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
 
+  if (!doc.documentElement) {
+    // document is not loaded yet
+    return null;
+  }
+
   // Let the wgxpath library be compiled away unless we are on IE or Android.
   // TODO: Restrict this to just IE when we drop support for Froyo.
   if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
