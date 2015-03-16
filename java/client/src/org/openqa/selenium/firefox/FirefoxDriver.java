@@ -278,8 +278,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
     } catch (Exception e) {
       throw new WebDriverException(e);
-    } finally {
-      lock.unlock();
     }
   }
 
