@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Reflection.Emit;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 
@@ -58,7 +59,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// </exception>
         public static T InitElements<T>(IWebDriver driver)
         {
-            return InitElements<T>(driver, new DefaultElementLocatorFactory());
+            return InitElements<T>(new DefaultElementLocator(driver));
         }
 
         /// <summary>
@@ -81,7 +82,37 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
         /// <see cref="IWebElement"/> or IList{IWebElement}.
         /// </exception>
+        [Obsolete("Users should use classes that implement IElementLocator instead of IElementLocatorFactory. This overload will be removed in a future release.")]
         public static T InitElements<T>(IWebDriver driver, IElementLocatorFactory locatorFactory)
+        {
+            if (locatorFactory == null)
+            {
+                throw new ArgumentNullException("locatorFactory", "locatorFactory cannot be null");
+            }
+
+            return InitElements<T>(locatorFactory.CreateLocator(driver));
+        }
+
+        /// <summary>
+        /// Initializes the elements in the Page Object with the given type.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the Page Object class.</typeparam>
+        /// <param name="locator">The <see cref="IElementLocator"/> implementation that
+        /// determines how elements are located.</param>
+        /// <returns>An instance of the Page Object class with the elements initialized.</returns>
+        /// <remarks>
+        /// The class used in the <typeparamref name="T"/> argument must have a public constructor
+        /// that takes a single argument of type <see cref="IWebDriver"/>. This helps to enforce
+        /// best practices of the Page Object pattern, and encapsulates the driver into the Page
+        /// Object so that it can have no external WebDriver dependencies.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        /// thrown if no constructor to the class can be found with a single IWebDriver argument
+        /// <para>-or-</para>
+        /// if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        public static T InitElements<T>(IElementLocator locator)
         {
             T page = default(T);
             Type pageClassType = typeof(T);
@@ -91,9 +122,42 @@ namespace OpenQA.Selenium.Support.PageObjects
                 throw new ArgumentException("No constructor for the specified class containing a single argument of type IWebDriver can be found");
             }
 
-            page = (T)ctor.Invoke(new object[] { driver });
-            InitElements(driver, page, locatorFactory);
+            if (locator == null)
+            {
+                throw new ArgumentNullException("locator", "locator cannot be null");
+            }
+
+            IWebDriver driver = locator.SearchContext as IWebDriver;
+            if (driver == null)
+            {
+                throw new ArgumentException("The search context of the element locator must implement IWebDriver", "locator");
+            }
+
+            page = (T)ctor.Invoke(new object[] { locator.SearchContext as IWebDriver });
+            InitElements(page, locator);
             return page;
+        }
+
+        /// <summary>
+        /// Initializes the elements in the Page Object.
+        /// </summary>
+        /// <param name="driver">The driver used to find elements on the page.</param>
+        /// <param name="page">The Page Object to be populated with elements.</param>
+        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// determines how elements are located.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        [Obsolete("Users should use classes that implement IElementLocator instead of IElementLocatorFactory. This overload will be removed in a future release.")]
+        public static void InitElements(ISearchContext driver, object page, IElementLocatorFactory locatorFactory)
+        {
+            if (locatorFactory == null)
+            {
+                throw new ArgumentNullException("locatorFactory", "locatorFactory cannot be null");
+            }
+
+            InitElements(page, locatorFactory.CreateLocator(driver));
         }
 
         /// <summary>
@@ -107,150 +171,111 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// </exception>
         public static void InitElements(ISearchContext driver, object page)
         {
-            InitElements(driver, page, new DefaultElementLocatorFactory());
+            InitElements(page, new DefaultElementLocator(driver));
         }
-        
+
         /// <summary>
         /// Initializes the elements in the Page Object.
         /// </summary>
         /// <param name="driver">The driver used to find elements on the page.</param>
         /// <param name="page">The Page Object to be populated with elements.</param>
-        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// <param name="decorator">The <see cref="IPageObjectMemberDecorator"/> implementation that
+        /// determines how Page Object members representing elements are discovered and populated.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        public static void InitElements(ISearchContext driver, object page, IPageObjectMemberDecorator decorator)
+        {
+            InitElements(page, new DefaultElementLocator(driver), decorator);
+        }
+
+        /// <summary>
+        /// Initializes the elements in the Page Object.
+        /// </summary>
+        /// <param name="page">The Page Object to be populated with elements.</param>
+        /// <param name="locator">The <see cref="IElementLocator"/> implementation that
         /// determines how elements are located.</param>
         /// <exception cref="ArgumentException">
         /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
         /// <see cref="IWebElement"/> or IList{IWebElement}.
         /// </exception>
-        public static void InitElements(ISearchContext driver, object page, IElementLocatorFactory locatorFactory)
+        public static void InitElements(object page, IElementLocator locator)
+        {
+            InitElements(page, locator, new DefaultPageObjectMemberDecorator());
+        }
+        
+        /// <summary>
+        /// Initializes the elements in the Page Object.
+        /// </summary>
+        /// <param name="page">The Page Object to be populated with elements.</param>
+        /// <param name="locator">The <see cref="IElementLocator"/> implementation that
+        /// determines how elements are located.</param>
+        /// <param name="decorator">The <see cref="IPageObjectMemberDecorator"/> implementation that
+        /// determines how Page Object members representing elements are discovered and populated.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        public static void InitElements(object page, IElementLocator locator, IPageObjectMemberDecorator decorator)
         {
             if (page == null)
             {
                 throw new ArgumentNullException("page", "page cannot be null");
             }
 
-            if (locatorFactory == null)
+            if (locator == null)
             {
-                throw new ArgumentNullException("locatorFactory", "locatorFactory cannot be null");
+                throw new ArgumentNullException("locator", "locator cannot be null");
             }
+
+            if (decorator == null)
+            {
+                throw new ArgumentNullException("locator", "decorator cannot be null");
+            }
+
+            if (locator.SearchContext == null)
+            {
+                throw new ArgumentException("The SearchContext of the locator object cannot be null", "locator");
+            }
+
+            const BindingFlags PublicBindingOptions = BindingFlags.Instance | BindingFlags.Public;
+            const BindingFlags NonPublicBindingOptions = BindingFlags.Instance | BindingFlags.NonPublic;
 
             // Get a list of all of the fields and properties (public and non-public [private, protected, etc.])
             // in the passed-in page object. Note that we walk the inheritance tree to get superclass members.
             var type = page.GetType();
             var members = new List<MemberInfo>();
-            const BindingFlags PublicBindingOptions = BindingFlags.Instance | BindingFlags.Public;
             members.AddRange(type.GetFields(PublicBindingOptions));
             members.AddRange(type.GetProperties(PublicBindingOptions));
             while (type != null)
             {
-                const BindingFlags NonPublicBindingOptions = BindingFlags.Instance | BindingFlags.NonPublic;
                 members.AddRange(type.GetFields(NonPublicBindingOptions));
                 members.AddRange(type.GetProperties(NonPublicBindingOptions));
                 type = type.BaseType;
             }
 
-            // Examine each member, and if it is both marked with an appropriate attribute, and of
-            // the proper type, set the member's value to the appropriate type of proxy object.
             foreach (var member in members)
             {
-                List<By> bys = CreateLocatorList(member);
-                if (bys.Count > 0)
+                // Examine each member, and if the decorator returns a non-null object,
+                // set the value of that member to the decorated object.
+                object decoratedValue = decorator.Decorate(member, locator);
+                if (decoratedValue == null)
                 {
-                    bool cache = ShouldCacheLookup(member);
-                    
-                    object proxyObject = null;
-                    var field = member as FieldInfo;
-                    var property = member as PropertyInfo;
-                    if (field != null)
-                    {
-                        proxyObject = CreateProxyObject(field.FieldType, driver, bys, cache, locatorFactory);
-                        if (proxyObject == null)
-                        {
-                            throw new ArgumentException("Type of field '" + field.Name + "' is not IWebElement or IList<IWebElement>");
-                        }
-
-                        field.SetValue(page, proxyObject);
-                    }
-                    else if (property != null)
-                    {
-                        proxyObject = CreateProxyObject(property.PropertyType, driver, bys, cache, locatorFactory);
-                        if (proxyObject == null)
-                        {
-                            throw new ArgumentException("Type of property '" + property.Name + "' is not IWebElement or IList<IWebElement>");
-                        }
-
-                        property.SetValue(page, proxyObject, null);
-                    }
-                }
-            }
-        }
-
-        private static List<By> CreateLocatorList(MemberInfo member)
-        {
-            var useSequenceAttributes = Attribute.GetCustomAttributes(member, typeof(FindsBySequenceAttribute), true);
-            bool useSequence = useSequenceAttributes.Length > 0;
-
-            var useAllAttributes = Attribute.GetCustomAttributes(member, typeof(FindsByAllAttribute), true);
-            bool useAll = useAllAttributes.Length > 0;
-
-            if (useSequence && useAll)
-            {
-                throw new ArgumentException("Cannot specify FindsBySequence and FindsByAll on the same member");
-            }
-
-            List<By> bys = new List<By>();
-            var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
-            if (attributes.Length > 0)
-            {
-                Array.Sort(attributes);
-                foreach (var attribute in attributes)
-                {
-                    var castedAttribute = (FindsByAttribute)attribute;
-                    if (castedAttribute.Using == null)
-                    {
-                        castedAttribute.Using = member.Name;
-                    }
-
-                    bys.Add(castedAttribute.Finder);
+                    continue;
                 }
 
-                if (useSequence)
+                var field = member as FieldInfo;
+                var property = member as PropertyInfo;
+                if (field != null)
                 {
-                    ByChained chained = new ByChained(bys.ToArray());
-                    bys.Clear();
-                    bys.Add(chained);
+                    field.SetValue(page, decoratedValue);
                 }
-
-                if (useAll)
+                else if (property != null)
                 {
-                    ByAll all = new ByAll(bys.ToArray());
-                    bys.Clear();
-                    bys.Add(all);
+                    property.SetValue(page, decoratedValue, null);
                 }
             }
-
-            return bys;
-        }
-
-        private static bool ShouldCacheLookup(MemberInfo member)
-        {
-            var cacheAttributeType = typeof(CacheLookupAttribute);
-            bool cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
-            return cache;
-        }
-
-        private static object CreateProxyObject(Type memberType, ISearchContext driver, List<By> bys, bool cache, IElementLocatorFactory locatorFactory)
-        {
-            object proxyObject = null;
-            if (memberType == typeof(IList<IWebElement>))
-            {
-                proxyObject = new WebElementListProxy(driver, bys, cache, locatorFactory);
-            }
-            else if (memberType == typeof(IWebElement))
-            {
-                proxyObject = new WebElementProxy(driver, bys, cache, locatorFactory);
-            }
-
-            return proxyObject;
         }
     }
 }

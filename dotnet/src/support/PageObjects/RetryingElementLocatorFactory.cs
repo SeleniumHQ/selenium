@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// A locator for elements for use with the <see cref="PageFactory"/> that retries locating
     /// the element up to a timeout if the element is not found.
     /// </summary>
+    [Obsolete("IElementLocatorFactory implementations are replaced by IElementLocator implementations. This class will be removed in a future release. Please use RetryingElementLocator instead.")]
     public class RetryingElementLocatorFactory : IElementLocatorFactory
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
@@ -67,6 +68,22 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
+        /// Creates an <see cref="IElementLocator"/> object used to locate elements.
+        /// </summary>
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// locator uses for locating elements.</param>
+        /// <returns>The <see cref="IElementLocator"/> used to locate elements.</returns>
+        public IElementLocator CreateLocator(ISearchContext searchContext)
+        {
+            if (searchContext == null)
+            {
+                throw new ArgumentNullException("searchContext", "searchContext may not be null");
+            }
+
+            return new RetryingElementLocator(searchContext, this.timeout, this.pollingInterval);
+        }
+
+        /// <summary>
         /// Locates an element using the given <see cref="ISearchContext"/> and list of <see cref="By"/> criteria.
         /// </summary>
         /// <param name="searchContext">The <see cref="ISearchContext"/> object within which to search for an element.</param>
@@ -74,41 +91,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns>An <see cref="IWebElement"/> which is the first match under the desired criteria.</returns>
         public IWebElement LocateElement(ISearchContext searchContext, IEnumerable<By> bys)
         {
-            if (searchContext == null)
-            {
-                throw new ArgumentNullException("searchContext", "searchContext may not be null");
-            }
-
-            if (bys == null)
-            {
-                throw new ArgumentNullException("bys", "List of criteria may not be null");
-            }
-
-            string errorString = null;
-            DateTime endTime = DateTime.Now.Add(this.timeout);
-            bool timeoutReached = DateTime.Now > endTime;
-            while (!timeoutReached)
-            {
-                foreach (var by in bys)
-                {
-                    try
-                    {
-                        return searchContext.FindElement(by);
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        errorString = (errorString == null ? "Could not find element by: " : errorString + ", or: ") + by;
-                    }
-                }
-
-                timeoutReached = DateTime.Now > endTime;
-                if (!timeoutReached)
-                {
-                    Thread.Sleep(this.pollingInterval);
-                }
-            }
-
-            throw new NoSuchElementException(errorString);
+            return this.CreateLocator(searchContext).LocateElement(bys);
         }
 
         /// <summary>
@@ -119,35 +102,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns>An list of all elements which match the desired criteria.</returns>
         public ReadOnlyCollection<IWebElement> LocateElements(ISearchContext searchContext, IEnumerable<By> bys)
         {
-            if (searchContext == null)
-            {
-                throw new ArgumentNullException("searchContext", "searchContext may not be null");
-            }
-
-            if (bys == null)
-            {
-                throw new ArgumentNullException("bys", "List of criteria may not be null");
-            }
-
-            List<IWebElement> collection = new List<IWebElement>();
-            DateTime endTime = DateTime.Now.Add(this.timeout);
-            bool timeoutReached = DateTime.Now > endTime;
-            while (!timeoutReached)
-            {
-                foreach (var by in bys)
-                {
-                    ReadOnlyCollection<IWebElement> list = searchContext.FindElements(by);
-                    collection.AddRange(list);
-                }
-
-                timeoutReached = collection.Count != 0 || DateTime.Now > endTime;
-                if (!timeoutReached)
-                {
-                    Thread.Sleep(this.pollingInterval);
-                }
-            }
-
-            return collection.AsReadOnly();
+            return this.CreateLocator(searchContext).LocateElements(bys);
         }
     }
 }
