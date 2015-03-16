@@ -499,7 +499,7 @@ task :release => [
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
     mkdir_p deep
-    cp "CHANGES", deep
+    cp "java/CHANGELOG", deep
     cp "NOTICE", deep
     cp "LICENSE", deep
 
