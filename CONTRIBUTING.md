@@ -16,7 +16,6 @@ and describe what results you are seeing and what results you expect.
 
 Issues shouldn't be used for support. Please address questions to the
 [`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
-
 Discussion of high level project ideas or non-technical topics should
 move to the
 [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
