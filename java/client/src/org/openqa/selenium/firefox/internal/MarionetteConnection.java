@@ -23,6 +23,7 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -295,6 +296,13 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
     } else if (DriverCommand.SET_ALERT_VALUE.equals(commandName)) {
       renameParameter(params, "text", "value");
+
+    } else if (DriverCommand.SWITCH_TO_FRAME.equals(commandName)) {
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1143908
+      if (params.get("id") instanceof Map) {
+        params.put("element", ((Map<String, Object>) params.get("id")).get("ELEMENT"));
+        params.remove("id");
+      }
     }
 
     if (seleniumToMarionetteCommandMap.containsKey(commandName)) {
@@ -305,7 +313,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     map.put("to", marionetteId != null ? marionetteId : "root");
     map.put("name", commandName);
     if (command.getSessionId() != null) {
-      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
       map.put("sessionId", command.getSessionId().toString());
     }
     map.put("parameters", params);

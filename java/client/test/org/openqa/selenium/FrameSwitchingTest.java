@@ -74,7 +74,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @NeedsLocalEnvironment(reason = "it hangs at IE9 and event Test.timeout doesn't help")
-  @Ignore(MARIONETTE)
   public void testShouldOpenPageWithBrokenFrameset() {
     driver.get(appServer.whereIs("framesetPage3.html"));
 
@@ -156,7 +155,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.tagName("body")).getText(), containsString("Page number 3"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
@@ -166,7 +164,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
@@ -311,7 +308,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   //
   // ----------------------------------------------------------------------------------------------
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(pages.framesetPage);
