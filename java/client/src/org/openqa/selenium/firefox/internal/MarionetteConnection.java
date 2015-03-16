@@ -192,9 +192,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawResponse);
     Response response;
     if (DriverCommand.NEW_SESSION.equals(command.getName())) {
-      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
-      response = new Response(new SessionId(new BeanToJsonConverter().convert(map.get("value"))));
-      response.setValue(Maps.newHashMap());
+      response = new Response(new SessionId(map.get("sessionId").toString()));
+      response.setValue(map.get("value"));
 
     } else {
       if (map.containsKey("error")) {
@@ -307,7 +306,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     map.put("name", commandName);
     if (command.getSessionId() != null) {
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
-      map.put("sessionId", new JsonToBeanConverter().convert(Map.class, command.getSessionId().toString()));
+      map.put("sessionId", command.getSessionId().toString());
     }
     map.put("parameters", params);
 
