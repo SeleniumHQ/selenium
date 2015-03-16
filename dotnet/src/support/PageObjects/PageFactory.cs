@@ -175,5 +175,176 @@ namespace OpenQA.Selenium.Support.PageObjects
                 }
             }
         }
+
+        #region ObsolateAPI
+        /// <summary>
+        /// Initializes the elements in the Page Object with the given type.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the Page Object class.</typeparam>
+        /// <param name="driver">The <see cref="IWebDriver"/> instance used to populate the page.</param>
+        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// determines how elements are located.</param>
+        /// <returns>An instance of the Page Object class with the elements initialized.</returns>
+        /// <remarks>
+        /// The class used in the <typeparamref name="T"/> argument must have a public constructor
+        /// that takes a single argument of type <see cref="IWebDriver"/>. This helps to enforce
+        /// best practices of the Page Object pattern, and encapsulates the driver into the Page
+        /// Object so that it can have no external WebDriver dependencies.
+        /// </remarks>
+        /// <exception cref="ArgumentException">
+        /// thrown if no constructor to the class can be found with a single IWebDriver argument
+        /// <para>-or-</para>
+        /// if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        [Obsolete("It is supposed to be removed. It is better to use InitElements(object page, ILocatorFactory locatorFactory)")]
+        public static T InitElements<T>(IWebDriver driver, IElementLocatorFactory locatorFactory)
+        {
+            T page = default(T);
+            Type pageClassType = typeof(T);
+            ConstructorInfo ctor = pageClassType.GetConstructor(new Type[] { typeof(IWebDriver) });
+            if (ctor == null)
+            {
+                throw new ArgumentException("No constructor for the specified class containing a single argument of type IWebDriver can be found");
+            }
+
+            page = (T)ctor.Invoke(new object[] { driver });
+            InitElements(driver, page, locatorFactory);
+            return page;
+        }
+
+        /// <summary>
+        /// Initializes the elements in the Page Object.
+        /// </summary>
+        /// <param name="driver">The driver used to find elements on the page.</param>
+        /// <param name="page">The Page Object to be populated with elements.</param>
+        /// <param name="locatorFactory">The <see cref="IElementLocatorFactory"/> implementation that
+        /// determines how elements are located.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
+        /// <see cref="IWebElement"/> or IList{IWebElement}.
+        /// </exception>
+        [Obsolete("It is supposed to be removed.")]
+        public static void InitElements(ISearchContext driver, object page, IElementLocatorFactory locatorFactory)
+        {
+            if (page == null)
+            {
+                throw new ArgumentNullException("page", "page cannot be null");
+            }
+
+            if (locatorFactory == null)
+            {
+                throw new ArgumentNullException("locatorFactory", "locatorFactory cannot be null");
+            }
+
+            // Get a list of all of the fields and properties (public and non-public [private, protected, etc.])
+            // in the passed-in page object. Note that we walk the inheritance tree to get superclass members.
+            var type = page.GetType();
+            var members = new List<MemberInfo>();
+            const BindingFlags PublicBindingOptions = BindingFlags.Instance | BindingFlags.Public;
+            members.AddRange(type.GetFields(PublicBindingOptions));
+            members.AddRange(type.GetProperties(PublicBindingOptions));
+            while (type != null)
+            {
+                const BindingFlags NonPublicBindingOptions = BindingFlags.Instance | BindingFlags.NonPublic;
+                members.AddRange(type.GetFields(NonPublicBindingOptions));
+                members.AddRange(type.GetProperties(NonPublicBindingOptions));
+                type = type.BaseType;
+            }
+
+            // Examine each member, and if it is both marked with an appropriate attribute, and of
+            // the proper type, set the member's value to the appropriate type of proxy object.
+            foreach (var member in members)
+            {
+                List<By> bys = CreateLocatorList(member);
+                if (bys.Count > 0)
+                {
+                    bool cache = ShouldCacheLookup(member);
+
+                    object proxyObject = null;
+                    var field = member as FieldInfo;
+                    var property = member as PropertyInfo;
+                    if (field != null)
+                    {
+                        proxyObject = CreateProxyObject(field.FieldType, driver, bys, cache, locatorFactory);
+                        if (proxyObject == null)
+                        {
+                            throw new ArgumentException("Type of field '" + field.Name + "' is not IWebElement or IList<IWebElement>");
+                        }
+
+                        field.SetValue(page, proxyObject);
+                    }
+                    else if (property != null)
+                    {
+                        proxyObject = CreateProxyObject(property.PropertyType, driver, bys, cache, locatorFactory);
+                        if (proxyObject == null)
+                        {
+                            throw new ArgumentException("Type of property '" + property.Name + "' is not IWebElement or IList<IWebElement>");
+                        }
+
+                        property.SetValue(page, proxyObject, null);
+                    }
+                }
+            }
+        }
+
+        [Obsolete("It is supposed to be removed.")]
+        private static List<By> CreateLocatorList(MemberInfo member)
+        {
+            var useSequenceAttributes = Attribute.GetCustomAttributes(member, typeof(FindsBySequenceAttribute), true);
+            bool useSequence = useSequenceAttributes.Length > 0;
+
+            List<By> bys = new List<By>();
+            var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
+            if (attributes.Length > 0)
+            {
+                Array.Sort(attributes);
+                foreach (var attribute in attributes)
+                {
+                    var castedAttribute = (FindsByAttribute)attribute;
+                    if (castedAttribute.Using == null)
+                    {
+                        castedAttribute.Using = member.Name;
+                    }
+
+                    bys.Add(castedAttribute.Finder);
+                }
+
+                if (useSequence)
+                {
+                    ByChained chained = new ByChained(bys.ToArray());
+                    bys.Clear();
+                    bys.Add(chained);
+                }
+            }
+
+            return bys;
+        }
+
+        [Obsolete("It is supposed to be removed.")]
+        private static bool ShouldCacheLookup(MemberInfo member)
+        {
+            var cacheAttributeType = typeof(CacheLookupAttribute);
+            bool cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+            return cache;
+        }
+
+        [Obsolete("It is supposed to be removed.")]
+        private static object CreateProxyObject(Type memberType, ISearchContext driver, List<By> bys, bool cache, IElementLocatorFactory locatorFactory)
+        {
+            object proxyObject = null;
+            if (memberType == typeof(IList<IWebElement>))
+            {
+                proxyObject = new WebElementListProxy(driver, bys, cache, locatorFactory);
+            }
+            else if (memberType == typeof(IWebElement))
+            {
+                proxyObject = new WebElementProxy(driver, bys, cache, locatorFactory);
+            }
+
+            return proxyObject;
+        }
+
+        #endregion ObsolateAPI
     }
 }
