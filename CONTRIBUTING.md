@@ -20,7 +20,7 @@ list](https://groups.google.com/forum/#!forum/selenium-developers)
 instead.
 
 Issues shouldn't be used for support. Please address questions to the
-(`selenium-users@` mailing list)[https://groups.google.com/forum/#!forum/selenium-users].
+[`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
 
 ## Documentation Contributions
 
