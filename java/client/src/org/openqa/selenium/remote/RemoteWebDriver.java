@@ -31,6 +31,8 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -871,8 +873,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public WebDriver frame(String frameName) {
-      execute(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of("id", frameName));
-      return RemoteWebDriver.this;
+      String name = frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
+      List<WebElement> frameElements = RemoteWebDriver.this.findElements(
+          By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+      if (frameElements.size() == 0) {
+        frameElements = RemoteWebDriver.this.findElements(
+            By.cssSelector("frame#" + name + ",iframe#" + name));
+      }
+      if (frameElements.size() == 0) {
+        throw new NoSuchFrameException("No frame element found by name or id " + frameName);
+      }
+      return frame(frameElements.get(0));
     }
 
     public WebDriver frame(WebElement frameElement) {

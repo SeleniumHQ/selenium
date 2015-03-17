@@ -424,7 +424,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({MARIONETTE})
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
 

@@ -113,7 +113,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAFrameByItsName() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
@@ -122,7 +121,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAnIframeByItsName() {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
@@ -131,7 +129,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAFrameByItsID() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fifth");
@@ -139,7 +136,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToAnIframeByItsID() {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1");
@@ -147,7 +143,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
@@ -187,7 +182,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
     driver.get(pages.framesetPage);
@@ -217,7 +211,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
@@ -226,7 +219,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
     driver.get(pages.framesetPage);
@@ -365,7 +357,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     return wait.until(presenceOfElementLocated(By.id("greeting"))).getText();
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
@@ -380,7 +371,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  @Ignore({MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
@@ -391,7 +381,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(titleIs("Target page for issue 5237"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
@@ -409,7 +398,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToFindElementsInIframesByXPath() {
     driver.get(pages.iframePage);
@@ -440,7 +428,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
 
-  @Ignore(value = {PHANTOMJS, MARIONETTE})
+  @Ignore(value = {PHANTOMJS})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
@@ -486,14 +474,12 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
     assertEquals("Unique title", driver.getTitle());
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {

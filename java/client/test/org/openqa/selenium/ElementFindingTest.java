@@ -739,7 +739,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonExistantButton"));
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -755,7 +754,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);

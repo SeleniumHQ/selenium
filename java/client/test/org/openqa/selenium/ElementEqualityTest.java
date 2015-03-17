@@ -71,7 +71,6 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
     driver.get(pages.missedJsReferencePage);

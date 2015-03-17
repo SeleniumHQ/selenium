@@ -85,7 +85,6 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
@@ -97,7 +96,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
@@ -112,7 +110,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
