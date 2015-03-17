@@ -25,7 +25,7 @@ goog.require('goog.ui.Component');
  * as returned by the /status command handler.
  * @constructor
  * @extends {goog.ui.Component}
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#/status
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#status
  */
 remote.ui.ServerInfo = function() {
   goog.base(this);

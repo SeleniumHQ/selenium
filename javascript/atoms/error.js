@@ -15,7 +15,7 @@
 
 /**
  * @fileoverview Utilities for working with errors as defined by WebDriver's
- * wire protocol: http://code.google.com/p/selenium/wiki/JsonWireProtocol.
+ * wire protocol: https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 
 goog.provide('bot.Error');
@@ -24,7 +24,7 @@ goog.provide('bot.ErrorCode');
 
 /**
  * Error codes from the WebDriver wire protocol:
- * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
  * @enum {number}
  */
@@ -71,7 +71,7 @@ bot.ErrorCode = {
 /**
  * Error extension that includes error status codes from the WebDriver wire
  * protocol:
- * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
  * @param {!bot.ErrorCode} code The error's status code.
  * @param {string=} opt_message Optional error message.

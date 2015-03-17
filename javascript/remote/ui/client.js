@@ -100,7 +100,7 @@ goog.inherits(remote.ui.Client, goog.Disposable);
  *
  * @type {!Array.<string>}
  * @const
- * @see http://code.google.com/p/selenium/wiki/DesiredCapabilities
+ * @see https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
  */
 remote.ui.Client.SUPPORTED_BROWSERS = [
   'android',

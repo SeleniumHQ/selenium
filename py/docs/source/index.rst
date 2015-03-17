@@ -14,7 +14,7 @@ The `selenium` package is used automate web browser interaction from Python.
 +-----------+-----------------------------------------------------------------------------------+
 | **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
 +-----------+-----------------------------------------------------------------------------------+
-| **Dev**:  | https://code.google.com/p/selenium/                                               |
+| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                            |
 +-----------+-----------------------------------------------------------------------------------+
 | **PyPI**: | https://pypi.python.org/pypi/selenium                                             |
 +-----------+-----------------------------------------------------------------------------------+
@@ -121,7 +121,5 @@ Use The Source Luke!
 View source code online:
 
 +-----------+-------------------------------------------------------+
-| official: | https://code.google.com/p/selenium/source/browse/py   |
-+-----------+-------------------------------------------------------+
-| mirror:   | https://github.com/SeleniumHQ/selenium/tree/master/py |
+| official: | https://github.com/SeleniumHQ/selenium/tree/master/py |
 +-----------+-------------------------------------------------------+

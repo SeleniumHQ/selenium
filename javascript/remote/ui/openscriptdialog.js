@@ -56,7 +56,7 @@ remote.ui.OpenScriptDialog.prototype.disposeInternal = function() {
 /** @override */
 remote.ui.OpenScriptDialog.prototype.createContentDom = function() {
   var link = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': 'http://code.google.com/p/selenium/wiki/WebDriverJs',
+    'href': 'https://github.com/SeleniumHQ/selenium/wiki/WebDriverJs',
     'target': '_blank'
   }, 'WebDriverJS');
 

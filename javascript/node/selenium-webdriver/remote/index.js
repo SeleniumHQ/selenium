@@ -62,7 +62,7 @@ var ServiceOptions;
  * Manages the life and death of a native executable WebDriver server.
  *
  * It is expected that the driver server implements the
- * [WebDriver wire protocol](http://code.google.com/p/selenium/wiki/JsonWireProtocol).
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
  * Furthermore, the managed server should support multiple concurrent sessions,
  * so that this class may be reused for multiple clients.
  *
