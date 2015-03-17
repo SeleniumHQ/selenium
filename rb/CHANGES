@@ -320,7 +320,7 @@ IE:
 
 * Add Selenium::WebDriver::Window#maximize (#3489)
 * Safari:
-  * New driver! See http://code.google.com/p/selenium/wiki/SafariDriver.
+  * New driver! See https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
 * Firefox:
   * Significant stability improvements.
   * Native events support for Firefox 11
@@ -666,7 +666,7 @@ IE:
 0.2.0 (2011-04-22)
 ==================
 
-* Update Ruby bindings to use the rewritten Chrome driver (see http://code.google.com/p/selenium/wiki/ChromeDriver).
+* Update Ruby bindings to use the rewritten Chrome driver (see https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver).
 * Add deprecation warning for WebDriver::Element#value (use Element#attribute("value") instead).
 * Change the default timeout for Wait instances to 5 seconds.
 * Fix bug where locators would fail if Object.prototype had been modified.

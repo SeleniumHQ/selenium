@@ -60,7 +60,7 @@ var Level = {
 
 /**
  * Option keys:
- * https://code.google.com/p/selenium/wiki/DesiredCapabilities#IE_specific
+ * https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#ie-specific
  * @enum {string}
  */
 var Key = {
