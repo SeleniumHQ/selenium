@@ -22,6 +22,14 @@ continuation_indent_size = 2
 indent_style = space
 indent_size = 4
 
+[*.rb]
+indent_style = space
+indent_size = 2
+
+[*.js]
+indent_style = space
+indent_size = 2
+
 [*.html]
 indent_style = space
 indent_size = 2
