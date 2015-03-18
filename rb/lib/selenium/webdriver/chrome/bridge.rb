@@ -11,7 +11,8 @@ module Selenium
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service(*extract_service_args(opts))
+            port     = opts.delete(:port) { PortProber.above(DEFAULT_PORT) }
+            @service = Service.default_service(port, *extract_service_args(opts))
             @service.start
 
             url = @service.uri
