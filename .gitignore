@@ -66,4 +66,4 @@ GSYMS
 GTAGS
 Gemfile.lock
 /rb/.bundle
-/rb/.idea
+rb/.idea
