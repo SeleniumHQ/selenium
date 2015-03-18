@@ -15,7 +15,7 @@ trim_trailing_whitespace = false
 
 [*.java]
 indent_style = space
-indent_size = 4
+indent_size = 2
 continuation_indent_size = 2
 
 [*.py]
