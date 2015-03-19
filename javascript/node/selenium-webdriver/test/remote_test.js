@@ -19,31 +19,52 @@ var promise = require('../').promise;
 var remote = require('../remote');
 
 describe('DriverService', function() {
+  describe('start()', function() {
+    var service;
 
-  describe('start() fails if child-process dies', function() {
-    var service = new remote.DriverService(process.execPath, {
-      port: 1234,
-      args: ['-e', 'process.exit(1)']
-    })
+    beforeEach(function() {
+      service = new remote.DriverService(process.execPath, {
+        port: 1234,
+        args: ['-e', 'process.exit(1)']
+      });
+    });
 
-    after(function(done) {
+    afterEach(function(done) {
       service.kill().thenFinally(function() {
         done();
       });
     });
 
-    it('', function(done) {
+    it('fails if child-process dies', function(done) {
       this.timeout(1000);
-      service.start(500).then(function() {
-        done(Error('expected to fail'));
-      }, function(e) {
-        try {
-          assert.equal('Server terminated early with status 1', e.message);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
+      service.start(500)
+      .then(expectFailure.bind(null, done), verifyFailure.bind(null, done));
     });
+
+    it('failures propagate through control flow if child-process dies',
+      function(done) {
+        this.timeout(1000);
+
+        promise.controlFlow().execute(function() {
+          promise.controlFlow().execute(function() {
+            return service.start(500);
+          });
+        })
+        .then(expectFailure.bind(null, done), verifyFailure.bind(null, done));
+      });
+
+    function verifyFailure(done, e) {
+      try {
+        assert.ok(!(e instanceof promise.CancellationError));
+        assert.equal('Server terminated early with status 1', e.message);
+        done();
+      } catch (ex) {
+        done(ex);
+      }
+    }
+
+    function expectFailure(done) {
+      done(Error('expected to fail'));
+    }
   });
 });

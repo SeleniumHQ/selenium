@@ -193,15 +193,16 @@ DriverService.prototype.start = function(opt_timeoutMs) {
         pathname: self.path_
       });
 
-      var ready = httpUtil.waitForServer(serverUrl, timeout).then(function() {
+      return new promise.Promise(function(fulfill, reject) {
+        var ready = httpUtil.waitForServer(serverUrl, timeout)
+            .then(fulfill, reject);
+        earlyTermination.thenCatch(function(e) {
+          ready.cancel(e);
+          reject(Error(e.message));
+        });
+      }).then(function() {
         return serverUrl;
       });
-
-      earlyTermination.thenCatch(function(e) {
-        ready.cancel(e.message);
-      });
-
-      return ready;
     });
   }));
 
