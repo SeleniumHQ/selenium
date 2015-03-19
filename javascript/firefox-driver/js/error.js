@@ -53,7 +53,7 @@ fxdriver.error.toJSON = function(ex) {
         lineNumber = Number(match[2]);
       }
 
-      match = frame.match(/^([a-zA-Z_$][\w./<$]*)?(?:\(.*\))?@(.+)?$/);
+      match = frame.match(/^([\w./<$]+)?(?:\(.*\))?@(.+)?$/);
       stackFrames.push({
           'methodName': match[1],
           'fileName': match[2],
