@@ -175,12 +175,14 @@ DriverService.prototype.start = function(opt_timeoutMs) {
 
       self.command_.fulfill(command);
 
-      command.result().then(function(result) {
-        self.address_.reject(result.code == null ?
+      var earlyTermination = command.result().then(function(result) {
+        var error = result.code == null ?
             Error('Server was killed with ' + result.signal) :
-            Error('Server exited with ' + result.code));
+            Error('Server terminated early with status ' + result.code);
+        self.address_.reject(error);
         self.address_ = null;
         self.command_ = null;
+        throw error;
       });
 
       var serverUrl = url.format({
@@ -191,9 +193,15 @@ DriverService.prototype.start = function(opt_timeoutMs) {
         pathname: self.path_
       });
 
-      return httpUtil.waitForServer(serverUrl, timeout).then(function() {
+      var ready = httpUtil.waitForServer(serverUrl, timeout).then(function() {
         return serverUrl;
       });
+
+      earlyTermination.thenCatch(function(e) {
+        ready.cancel(e.message);
+      });
+
+      return ready;
     });
   }));
 

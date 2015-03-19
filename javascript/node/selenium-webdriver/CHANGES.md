@@ -1,5 +1,8 @@
 ## v2.46.0-dev
 
+* FIXED: `remote.DriverService#start()` will now fail if the child process dies
+    while waiting for the server to start accepting requests. Previously, start
+    would continue to poll the server address until the timeout expired.
 * FIXED: 8564: `firefox.Driver#quit()` will wait for the Firefox process to
     terminate before deleting the temporary webdriver profile. This eliminates a
     race condition where Firefox would write profile data during shutdown,
