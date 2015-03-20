@@ -63,7 +63,7 @@ public class BeanToJsonConverter {
 
     try {
       JsonElement json = convertObject(object);
-      return new GsonBuilder().serializeNulls().create().toJson(json);
+      return new GsonBuilder().disableHtmlEscaping().serializeNulls().create().toJson(json);
     } catch (Exception e) {
       throw new WebDriverException("Unable to convert: " + object, e);
     }
