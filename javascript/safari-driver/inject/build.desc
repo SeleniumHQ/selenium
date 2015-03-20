@@ -38,6 +38,7 @@ js_module(
     srcs = [
         "inject.js",
         "tab.js",
+        "html2canvas.js",
         "commands/module.js",
         "commands/topcommands.js",
         "commands/util.js",

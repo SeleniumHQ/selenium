@@ -97,6 +97,20 @@ safaridriver.inject.commands.getTitle = function() {
 };
 
 
+/**  @param {function(string)} fn The function to call when the data is ready. */
+safaridriver.inject.commands.getCanvasUrl = function(callback) {
+
+    var canvasDataURL = "";
+    window.html2canvas(document.body, {
+        onrendered: function (canvas) {
+            canvasDataURL = canvas.toDataURL();
+            callback(canvasDataURL);
+        }
+    });
+
+};
+
+
 /** @return {string} A string representation of the current page source. */
 safaridriver.inject.commands.getPageSource = function() {
   return new XMLSerializer().serializeToString(document);
@@ -503,6 +517,7 @@ safaridriver.inject.CommandRegistry.getInstance()
         CommandName.SET_WINDOW_SIZE, commands.setWindowSize,
         CommandName.SUBMIT_ELEMENT, commands.submitElement,
         CommandName.SWITCH_TO_FRAME, commands.switchToFrame,
+        CommandName.GET_CANVAS_URL,commands.getCanvasUrl,
         // The extension handles window switches. It sends the command to this
         // injected script only as a means of retrieving the window name.
         CommandName.SWITCH_TO_WINDOW, commands.getWindowName));

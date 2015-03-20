@@ -88,6 +88,7 @@ safaridriver.inject.commands.module.init = function() {
         webdriver.CommandName.SET_WINDOW_SIZE,
         webdriver.CommandName.SUBMIT_ELEMENT,
         webdriver.CommandName.SWITCH_TO_FRAME,
-        webdriver.CommandName.SWITCH_TO_WINDOW
+        webdriver.CommandName.SWITCH_TO_WINDOW,
+        webdriver.CommandName.GET_CANVAS_URL
       ]);
 };
