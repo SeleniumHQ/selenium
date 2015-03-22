@@ -137,10 +137,10 @@ public class ProcessUtils {
       killPID("" + pid);
       exitValue = waitForProcessDeath(process, 10000);
     } catch (Throwable ex) {
-      log.warning("Process refused to die after 10 seconds, and couldn't killall it");
+      log.warning("Process refused to die after 10 seconds, and couldn't taskkill it");
       ex.printStackTrace();
       throw new RuntimeException(
-          "Process refused to die after 10 seconds, and couldn't killall it: " + ex.getMessage(),
+          "Process refused to die after 10 seconds, and couldn't taskkill it: " + ex.getMessage(),
           ex);
     }
     return exitValue;

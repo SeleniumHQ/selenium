@@ -169,7 +169,14 @@ public class WindowsUtils {
    * Kills the specified process ID
    */
   public static void killPID(String processID) {
-    executeCommand("taskkill", "/f", "/t", "/pid", processID);
+    CommandLine cmd = new CommandLine("taskkill", "/f", "/t", "/pid", processID);
+    cmd.execute();
+
+    String output = cmd.getStdOut();
+    if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128) {
+      return;
+    }
+    throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);
   }
 
   /**
