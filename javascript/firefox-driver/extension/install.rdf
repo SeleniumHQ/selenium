@@ -23,6 +23,7 @@
         <em:targetPlatform>Darwin</em:targetPlatform>
         <em:targetPlatform>SunOS</em:targetPlatform>
         <em:targetPlatform>FreeBSD</em:targetPlatform>
+        <em:targetPlatform>OpenBSD</em:targetPlatform>
 
         <!-- Platforms where we are -->
         <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
