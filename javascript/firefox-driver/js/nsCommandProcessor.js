@@ -600,8 +600,6 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
   this.searchWindows_('navigator:browser', function(win) {
     if (win.top && win.top.fxdriver) {
       res.push(win.top.fxdriver.id);
-    } else if (win.content) {
-      res.push(win.content.name);
     }
   });
   response.value = res;
