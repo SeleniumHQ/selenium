@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -261,6 +262,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     // Depending on the Android emulator platform this can take a while.
     wait.until(windowToBeSwitchedToWithName("close_me"));
 
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("close")));
     driver.findElement(By.id("close")).click();
 
     driver.switchTo().window(handle);
