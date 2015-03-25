@@ -1,3 +1,8 @@
+# Contributing to Selenium
+
+The Selenium project welcomes contributions from everyone. There are a
+number of ways you can help:
+
 ## Table of Contents
 - [Contributing to Selenium](#contributing-to-selenium)
   - [Issue Contributions](#issue-contributions)
@@ -15,11 +20,6 @@
     - [Step 8: Integration](#step-8-integration)
   - [Stages of an Issue or PR](#stages-of-an-issue-or-pr)
   - [Communication](#communication)
-
-# Contributing to Selenium
-
-The Selenium project welcomes contributions from everyone. There are a
-number of ways you can help:
 
 ## Issue Contributions
 

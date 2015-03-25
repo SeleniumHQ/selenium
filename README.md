@@ -1,3 +1,16 @@
+# Selenium
+
+Selenium is an umbrella project for various tools and libraries that
+enable automation of web browsers.  Amongst other things it provides
+the support infrastructure for the [W3C WebDriver
+specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html),
+that lets you write interchangable code for all major web browsers.
+
+The project is made possible by volunteer contributors who have put in
+thousands of hours of their own time, and made the source code freely
+available under the [Apache 2.0
+license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
+
 ## Table of Contents
 - [Documentation](#documentation)
 - [Pull Requests](#pull-requests)
@@ -13,19 +26,6 @@
 - [Help with *go*](#help-with-go)
   - [Maven _per se_](#maven-_per-se_)
   - [Useful Resources](#useful-resources)
-
-# Selenium
-
-Selenium is an umbrella project for various tools and libraries that
-enable automation of web browsers.  Amongst other things it provides
-the support infrastructure for the [W3C WebDriver
-specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html),
-that lets you write interchangable code for all major web browsers.
-
-The project is made possible by volunteer contributors who have put in
-thousands of hours of their own time, and made the source code freely
-available under the [Apache 2.0
-license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
 
 ## Documentation
 
