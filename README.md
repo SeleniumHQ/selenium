@@ -1,3 +1,19 @@
+## Table of Contents
+- [Documentation](#documentation)
+- [Pull Requests](#pull-requests)
+- [Building](#building)
+  - [Buck](#buck)
+- [Requirements](#requirements)
+  - [Optional Requirements](#optional-requirements)
+  - [Internet Explorer Driver](#internet-explorer-driver)
+- [Common Tasks](#common-tasks)
+- [Tour](#tour)
+- [Maven POM files](#maven-pom-files)
+- [Build Output](#build-output)
+- [Help with *go*](#help-with-go)
+  - [Maven _per se_](#maven-_per-se_)
+  - [Useful Resources](#useful-resources)
+
 # Selenium
 
 Selenium is an umbrella project for various tools and libraries that
@@ -61,7 +77,7 @@ In this case, `javascript/atoms` is the module directory,
 and `run` is the action to run on that target.
 
 As you see *build targets* scroll past in the log,
-you may want to run them individually. 
+you may want to run them individually.
 crazyfun can run them individually,
 by target name as long as `:run` is appended (see above).
 
