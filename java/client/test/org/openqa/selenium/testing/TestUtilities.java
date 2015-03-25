@@ -160,21 +160,28 @@ public class TestUtilities {
    * @return The found version, or 0 if no version could be found.
    */
   public static int getIEVersion(WebDriver driver) {
+    String userAgent = getUserAgent(driver);
     // extract browser string
     Pattern browserPattern = Pattern.compile("MSIE\\s+\\d+\\.");
-    Matcher browserMatcher = browserPattern.matcher(getUserAgent(driver));
-    if (!browserMatcher.find()) {
+    Matcher browserMatcher = browserPattern.matcher(userAgent);
+    // IE dropped the "MSIE" token from its user agent string starting with IE11.
+    Pattern tridentPattern = Pattern.compile("Trident/\\d+\\.");
+    Matcher tridentMatcher = tridentPattern.matcher(userAgent);
+
+    Matcher versionMatcher;
+    if (browserMatcher.find()) {
+      versionMatcher = Pattern.compile("(\\d+)").matcher(browserMatcher.group());
+    } else if (tridentMatcher.find()) {
+      versionMatcher = Pattern.compile("rv:(\\d+)").matcher(userAgent);
+    } else {
       return 0;
     }
-    String browserStr = browserMatcher.group();
 
     // extract version string
-    Pattern versionPattern = Pattern.compile("\\d+");
-    Matcher versionMatcher = versionPattern.matcher(browserStr);
     if (!versionMatcher.find()) {
       return 0;
     }
-    return Integer.parseInt(versionMatcher.group());
+    return Integer.parseInt(versionMatcher.group(1));
   }
 
 
