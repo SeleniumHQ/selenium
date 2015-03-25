@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
@@ -199,6 +200,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
+      throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -214,6 +216,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.switchTo().window("result");
 
+    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
+      Thread.sleep(1000);
+    }
     try {
       wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close")));
       driver.findElement(By.id("close")).click();
@@ -233,7 +239,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -251,6 +257,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     int allWindowHandles = driver.getWindowHandles().size();
 
+    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
+      Thread.sleep(1000);
+    }
     try {
       wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
