@@ -42,19 +42,6 @@ import java.util.List;
 public class ByChainedTest {
 
   @Test
-  public void findElementZeroBy() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    ByChained by = new ByChained();
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
-  }
-
-  @Test
   public void findElementsZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 

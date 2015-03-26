@@ -18,11 +18,9 @@
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,23 +35,12 @@ import java.util.List;
  * will find all elements that match <var>by1</var> and then all elements that match <var>by2</var>.
  * This means that the list of elements returned may not be in document order.
  */
-public class ByAll extends By implements Serializable {
+public class ByAll extends ByComposite {
 
   private static final long serialVersionUID = 4573668832699497306L;
 
-  private By[] bys;
-
   public ByAll(By... bys) {
-    this.bys = bys;
-  }
-
-  @Override
-  public WebElement findElement(SearchContext context) {
-    List<WebElement> elements = findElements(context);
-    if (elements.isEmpty()) {
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
-    }
-    return elements.get(0);
+    super(bys);
   }
 
   @Override
@@ -62,22 +49,12 @@ public class ByAll extends By implements Serializable {
     for (By by : bys) {
       elems.addAll(by.findElements(context));
     }
-
     return elems;
   }
 
   @Override
-  public String toString() {
-    StringBuilder stringBuilder = new StringBuilder("By.all(");
-    stringBuilder.append("{");
-
-    boolean first = true;
-    for (By by : bys) {
-      stringBuilder.append((first ? "" : ",")).append(by);
-      first = false;
-    }
-    stringBuilder.append("})");
-    return stringBuilder.toString();
+  public String getOperation() {
+    return "all";
   }
 
 }

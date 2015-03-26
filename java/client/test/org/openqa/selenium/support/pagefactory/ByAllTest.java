@@ -42,19 +42,6 @@ import java.util.List;
 public class ByAllTest {
 
   @Test
-  public void findElementZeroBy() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    ByAll by = new ByAll();
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
-  }
-
-  @Test
   public void findElementsZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 

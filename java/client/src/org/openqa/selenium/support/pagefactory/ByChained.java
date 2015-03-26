@@ -18,11 +18,9 @@
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,27 +35,17 @@ import java.util.List;
  * will find all elements that match <var>by2</var> and appear under an element that matches
  * <var>by1</var>.
  */
-public class ByChained extends By implements Serializable {
+public class ByChained extends ByComposite {
 
   private static final long serialVersionUID = 1563769051170172451L;
 
-  private By[] bys;
-
   public ByChained(By... bys) {
-    this.bys = bys;
-  }
-
-  @Override
-  public WebElement findElement(SearchContext context) {
-    List<WebElement> elements = findElements(context);
-    if (elements.isEmpty())
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
-    return elements.get(0);
+    super(bys);
   }
 
   @Override
   public List<WebElement> findElements(SearchContext context) {
-    if (bys.length == 0) {
+    if (hasNoComponents()) {
       return new ArrayList<WebElement>();
     }
 
@@ -79,17 +67,8 @@ public class ByChained extends By implements Serializable {
   }
 
   @Override
-  public String toString() {
-    StringBuilder stringBuilder = new StringBuilder("By.chained(");
-    stringBuilder.append("{");
-
-    boolean first = true;
-    for (By by : bys) {
-      stringBuilder.append((first ? "" : ",")).append(by);
-      first = false;
-    }
-    stringBuilder.append("})");
-    return stringBuilder.toString();
+  public String getOperation() {
+    return "chained";
   }
 
 }
