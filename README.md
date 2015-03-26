@@ -318,7 +318,7 @@ cd maven
 mvn clean install
 ```
 
-This sequence will push some seven or so jars into you local Maven
+This sequence will push some seven or so jars into your local Maven
 repository with something like 'selenium-server-2.0-SNAPSHOT.jar' as
 the name.
 
