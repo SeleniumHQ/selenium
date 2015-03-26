@@ -24,11 +24,13 @@ using System.Text;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 
+
 namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
     /// Represents a proxy class for an element to be used with the PageFactory.
     /// </summary>
+    [Obsolete("It is supposed to be removed")]
     internal class WebElementProxy : IWebElement, ILocatable, IWrapsElement
     {
         private readonly IElementLocatorFactory locatorFactory;

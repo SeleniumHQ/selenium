@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// <summary>
     /// Represents a proxy class for a list of elements to be used with the PageFactory.
     /// </summary>
+    [Obsolete("It is supposed to be removed")]
     internal class WebElementListProxy : IList<IWebElement>
     {
         private readonly IElementLocatorFactory locatorFactory;

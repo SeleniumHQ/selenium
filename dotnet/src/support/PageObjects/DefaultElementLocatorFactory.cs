@@ -26,6 +26,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// A default locator for elements for use with the <see cref="PageFactory"/>. This locator
     /// implements no retry logic for elements not being found, nor for elements being stale.
     /// </summary>
+    [Obsolete("It is supposed to be removed. It is better to use OpenQA.Selenium.Support.PageObjects.DefaultLocatorFactory")]
     public class DefaultElementLocatorFactory : IElementLocatorFactory
     {
         /// <summary>

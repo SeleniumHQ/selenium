@@ -25,6 +25,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// <summary>
     /// Interface describing how elements are to be located by a <see cref="PageFactory"/>
     /// </summary>
+    [Obsolete("It is supposed to be removed", true)]
     public interface IElementLocatorFactory
     {
         /// <summary>

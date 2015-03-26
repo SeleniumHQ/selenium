@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// A locator for elements for use with the <see cref="PageFactory"/> that retries locating
     /// the element up to a timeout if the element is not found.
     /// </summary>
+    [Obsolete("It is supposed to be removed. It is better to use OpenQA.Selenium.Support.PageObjects.DefaultLocatorFactory")]
     public class RetryingElementLocatorFactory : IElementLocatorFactory
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
