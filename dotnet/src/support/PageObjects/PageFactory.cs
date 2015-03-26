@@ -189,6 +189,14 @@ namespace OpenQA.Selenium.Support.PageObjects
             var useSequenceAttributes = Attribute.GetCustomAttributes(member, typeof(FindsBySequenceAttribute), true);
             bool useSequence = useSequenceAttributes.Length > 0;
 
+            var useAllAttributes = Attribute.GetCustomAttributes(member, typeof(FindsByAllAttribute), true);
+            bool useAll = useAllAttributes.Length > 0;
+
+            if (useSequence && useAll)
+            {
+                throw new ArgumentException("Cannot specify FindsBySequence and FindsByAll on the same member");
+            }
+
             List<By> bys = new List<By>();
             var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
             if (attributes.Length > 0)
@@ -210,6 +218,13 @@ namespace OpenQA.Selenium.Support.PageObjects
                     ByChained chained = new ByChained(bys.ToArray());
                     bys.Clear();
                     bys.Add(chained);
+                }
+
+                if (useAll)
+                {
+                    ByAll all = new ByAll(bys.ToArray());
+                    bys.Clear();
+                    bys.Add(all);
                 }
             }
 

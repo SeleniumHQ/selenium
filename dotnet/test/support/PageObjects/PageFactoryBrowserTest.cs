@@ -99,6 +99,24 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.AreEqual("I'm a child", page.NestedElement.Text.Trim());
         }
 
+        [Test]
+        public void ShouldFindElementUsingAllFindBys()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new PageFactoryBrowserTest.Page();
+            PageFactory.InitElements(driver, page);
+            Assert.True(page.ByAllElement.Displayed);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Cannot specify FindsBySequence and FindsByAll on the same member", MatchType = MessageMatch.Contains)]
+        public void MixingFindBySequenceAndFindByAllShouldThrow()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new PageFactoryBrowserTest.InvalidAttributeCombinationPage();
+            PageFactory.InitElements(driver, page);
+        }
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -111,6 +129,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             [FindsBy(How = How.Id, Using = "parent", Priority = 0)]
             [FindsBy(How = How.Id, Using = "child", Priority = 1)]
             public IWebElement NestedElement;
+
+            [FindsByAll]
+            [FindsBy(How = How.TagName, Using = "form", Priority = 0)]
+            [FindsBy(How = How.Name, Using = "someForm", Priority = 1)]
+            public IWebElement ByAllElement;
         }
 
         private class HoverPage
@@ -123,6 +146,15 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How=How.TagName, Using="a")]
             public IList<IWebElement> AllLinks;
+        }
+
+        private class InvalidAttributeCombinationPage
+        {
+            [FindsByAll]
+            [FindsBySequence]
+            [FindsBy(How = How.Id, Using = "parent", Priority = 0)]
+            [FindsBy(How = How.Id, Using = "child", Priority = 1)]
+            public IWebElement NotFound;
         }
 
         #pragma warning restore 649
