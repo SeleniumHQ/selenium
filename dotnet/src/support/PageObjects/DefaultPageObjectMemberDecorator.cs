@@ -32,6 +32,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     public class DefaultPageObjectMemberDecorator : IPageObjectMemberDecorator
     {
         private static List<Type> interfacesToBeProxied;
+        private static Type interfaceProxyType;
 
         private static List<Type> InterfacesToBeProxied
         {
@@ -46,6 +47,19 @@ namespace OpenQA.Selenium.Support.PageObjects
                 }
 
                 return interfacesToBeProxied;
+            }
+        }
+
+        private static Type InterfaceProxyType
+        {
+            get
+            {
+                if (interfaceProxyType == null)
+                {
+                    interfaceProxyType = CreateTypeForASingleElement();
+                }
+
+                return interfaceProxyType;
             }
         }
 
@@ -184,7 +198,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
             else if (memberType == typeof(IWebElement))
             {
-                proxyObject = WebElementProxy.CreateProxy(CreateTypeForASingleElement(), locator, bys, cache);
+                proxyObject = WebElementProxy.CreateProxy(InterfaceProxyType, locator, bys, cache);
             }
             else
             {
