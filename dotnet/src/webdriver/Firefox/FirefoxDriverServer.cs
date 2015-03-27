@@ -64,6 +64,8 @@ namespace OpenQA.Selenium.Firefox
             {
                 this.process = binary;
             }
+
+            this.process.Timeout = this.profile.Timeout;
         }
 
         /// <summary>

@@ -56,6 +56,7 @@ namespace OpenQA.Selenium.Firefox
         private bool assumeUntrustedIssuer;
         private bool deleteSource;
         private bool deleteOnClean = true;
+        private TimeSpan timeout = TimeSpan.FromSeconds(45);
         private Preferences profilePreferences;
         private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
         #endregion
@@ -180,6 +181,15 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.assumeUntrustedIssuer; }
             set { this.assumeUntrustedIssuer = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the timeout to wait for Firefox to be available for command execution.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get { return this.timeout; }
+            set { this.timeout = value; }
         }
         #endregion
 
