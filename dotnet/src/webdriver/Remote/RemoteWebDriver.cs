@@ -298,13 +298,16 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.executor; }
         }
+        #endregion
 
+        #region Properties
         /// <summary>
-        /// Gets the <see cref="SessionId"/> for the current session of this driver.
+        /// Gets or sets the <see cref="SessionId"/> for the current session of this driver.
         /// </summary>
-        protected SessionId SessionId
+        public SessionId SessionId
         {
             get { return this.sessionId; }
+            protected set { this.sessionId = new SessionId(value); }
         }
         #endregion
 
