@@ -51,6 +51,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
+    capabilities.putAll(rawMap);
+
     if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
@@ -59,10 +61,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
         prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
       capabilities.put(LOGGING_PREFS, prefs);
-      // So it does not get added twice
-      rawMap.remove(LOGGING_PREFS);
     }
-    capabilities.putAll(rawMap);
+
     Object value = capabilities.get(PLATFORM);
     if (value instanceof String) {
       try {
