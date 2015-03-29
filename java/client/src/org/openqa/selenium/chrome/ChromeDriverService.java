@@ -58,6 +58,12 @@ public class ChromeDriverService extends DriverService {
       "webdriver.chrome.silentOutput";
 
   /**
+   * System property that defines comma-separated list of remote IPv4 addresses which are
+   * allowed to connect to ChromeDriver.
+   */
+  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
+
+  /**
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
@@ -90,6 +96,7 @@ public class ChromeDriverService extends DriverService {
 
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
+    private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
 
     /**
      * Configures the driver server verbosity.
@@ -110,6 +117,18 @@ public class ChromeDriverService extends DriverService {
     */
     public Builder withSilent(boolean silent) {
       this.silent = silent;
+      return this;
+    }
+
+    /**
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
+     * to the driver server.
+     *
+     * @param whitelistedIps comma-separated list of remote IPv4 addresses
+     * @return A self reference.
+     */
+    public Builder withWhitelistedIps(String whitelistedIps) {
+      this.whitelistedIps = whitelistedIps;
       return this;
     }
 
@@ -139,6 +158,9 @@ public class ChromeDriverService extends DriverService {
       }
       if (silent) {
         argsBuilder.add("--silent");
+      }
+      if (whitelistedIps != null) {
+        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
       }
 
       return argsBuilder.build();
