@@ -108,6 +108,8 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
+                self.process.stdout.close()
+                self.process.stderr.close()
                 self.process.kill()
                 self.process.wait()
         except OSError:

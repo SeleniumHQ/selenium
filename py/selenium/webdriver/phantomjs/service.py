@@ -101,6 +101,7 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
+                self.process.stdin.close()
                 self.process.send_signal(signal.SIGTERM)
                 self.process.wait()
         except OSError:

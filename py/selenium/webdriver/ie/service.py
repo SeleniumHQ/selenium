@@ -28,7 +28,7 @@ class Service(object):
     def __init__(self, executable_path, port=0, host=None, log_level=None, log_file=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to the IEDriver
          - port : Port the service is running on
@@ -48,8 +48,8 @@ class Service(object):
 
     def start(self):
         """
-        Starts the IEDriver Service. 
-        
+        Starts the IEDriver Service.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
@@ -77,9 +77,9 @@ class Service(object):
             time.sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to the IEDriver")
-                
+
     def stop(self):
-        """ 
+        """
         Tells the IEDriver to stop and cleans up the process
         """
         #If its dead dont worry
@@ -96,13 +96,15 @@ class Service(object):
         count = 0
         while utils.is_connectable(self.port):
             if count == 30:
-               break 
+               break
             count += 1
             time.sleep(1)
-        
+
         #Tell the Server to properly die in case
         try:
             if self.process:
+                self.process.stdout.close()
+                self.process.stderr.close()
                 self.process.kill()
                 self.process.wait()
         except WindowsError:
