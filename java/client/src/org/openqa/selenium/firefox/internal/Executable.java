@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
@@ -167,10 +168,18 @@ public class Executable {
       return binary;
     }
 
+    if (current.is(UNIX)) {
+      String systemFirefox = CommandLine.find("firefox-bin");
+      if (systemFirefox != null) {
+        return new File(systemFirefox);
+      }
+    }
+
     String systemFirefox = CommandLine.find("firefox");
     if (systemFirefox != null) {
       return new File(systemFirefox);
     }
+
     return null;
   }
 
