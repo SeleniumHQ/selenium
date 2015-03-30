@@ -38,6 +38,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -208,14 +209,14 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
    * The client shouldn't have to care where firefox is installed as long as the correct version is
    * launched, however with webdriver the binary location is specified in the desiredCapability,
    * making it the responsibility of the person running the test.
-   * 
+   *
    * With this implementation of beforeSession, that problem disappears . If the webdriver slot is
    * registered with a firefox using a custom binary location, the hub will handle it.
-   * 
+   *
    * <p>
    * For instance if a node registers:
    * {"browserName":"firefox","version":"7.0","firefox_binary":"/home/ff7"}
-   * 
+   *
    * and later on a client requests {"browserName":"firefox","version":"7.0"} , the hub will
    * automatically append the correct binary path to the desiredCapability before it's forwarded to
    * the server. That way the version / install location mapping is done only once at the node
@@ -235,11 +236,11 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
 
       if (BrowserType.CHROME.equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
-          JsonObject options = (JsonObject) cap.get(ChromeOptions.CAPABILITY);
+          Map<String, Object> options = (Map<String, Object>) cap.get(ChromeOptions.CAPABILITY);
           if (options == null) {
-            options = new JsonObject();
+            options = new HashMap<String, Object>();
           }
-          options.addProperty("binary", (String) session.getSlot().getCapabilities().get("chrome_binary"));
+          options.put("binary", (String) session.getSlot().getCapabilities().get("chrome_binary"));
           cap.put(ChromeOptions.CAPABILITY, options);
         }
       }
