@@ -66,7 +66,7 @@ public class OperaOptions {
    * Key used to store a set of OperaOptions in a {@link DesiredCapabilities}
    * object.
    */
-  public static final String CAPABILITY = "chromeOptions";
+  public static final String CAPABILITY = "operaOptions";
 
   private String binary;
   private List<String> args = Lists.newArrayList();
