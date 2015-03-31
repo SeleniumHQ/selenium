@@ -50,8 +50,8 @@ class WebDriver(object):
      - error_handler - errorhandler.ErrorHandler object used to handle errors.
     """
 
-    def __init__(self, desired_capabilities=None, command_executor='http://127.0.0.1:4444/wd/hub',
-                 proxy=None, browser_profile=None, keep_alive=False):
+    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
+        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
         """
         Create a new driver that will issue commands using the wire protocol.
 
