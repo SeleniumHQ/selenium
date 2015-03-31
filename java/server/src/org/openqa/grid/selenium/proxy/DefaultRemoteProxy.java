@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import com.google.gson.JsonObject;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
@@ -240,7 +238,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
           if (options == null) {
             options = new HashMap<String, Object>();
           }
-          options.put("binary", (String) session.getSlot().getCapabilities().get("chrome_binary"));
+          options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
           cap.put(ChromeOptions.CAPABILITY, options);
         }
       }
