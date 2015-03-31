@@ -56,15 +56,15 @@ class WebDriver(object):
         Create a new driver that will issue commands using the wire protocol.
 
         :Args:
-         - desired_capabilities - A dictionary of capabilities to request when
-             starting the browser session. Required parameter.
          - command_executor - Either a string representing URL of the remote server or a custom
              remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
-         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
-             be started with given proxy settings, if possible. Optional.
+         - desired_capabilities - A dictionary of capabilities to request when
+             starting the browser session. Required parameter.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.
              Only used if Firefox is requested. Optional.
-         - keep_alive - Whether configure remote_connection.RemoteConnection to use
+         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
+             be started with given proxy settings, if possible. Optional.
+         - keep_alive - Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive. Defaults to False.
         """
         if desired_capabilities is None:
