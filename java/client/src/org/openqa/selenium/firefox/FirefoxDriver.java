@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import com.sun.javafx.runtime.SystemProperties;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
@@ -71,6 +73,26 @@ import java.util.concurrent.TimeUnit;
  * profile directly. This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
+
+  public interface SystemProperty {
+    String BROWSER_BINARY = "webdriver.firefox.bin";
+    String BROWSER_LOGFILE = "webdriver.firefox.logfile";
+    String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
+    String BROWSER_PROFILE = "webdriver.firefox.profile";
+
+    /**
+     * System property that defines the location of the webdriver.xpi browser extension to install
+     * in the browser. If not set, the prebuilt extension bundled with this class will be used
+     * instead.
+     */
+    String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
+
+    /**
+     * Boolean system property that instructs FirefoxDriver to use Marionette backend.
+     */
+    String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
+  }
+
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
@@ -79,7 +101,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   // For now, only enable native events on Windows
   public static final boolean USE_MARIONETTE = Boolean.parseBoolean(
-      System.getProperty("webdriver.firefox.marionette"));
+      System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE));
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -100,18 +122,18 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null), 
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null),
         desiredCapabilities);
   }
-  
+
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities), 
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities),
         desiredCapabilities, requiredCapabilities);
   }
 
-  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities, 
+  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    
+
     FirefoxProfile profile = null;
     Object raw = null;
     if (desiredCapabilities != null && desiredCapabilities.getCapability(PROFILE) != null) {
@@ -132,10 +154,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
     }
     profile = getProfile(profile);
-    
+
     populateProfile(profile, desiredCapabilities);
     populateProfile(profile, requiredCapabilities);
-    
+
     return profile;
   }
 
@@ -152,10 +174,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       profile.setAcceptUntrustedCertificates(acceptCerts);
     }
     if (capabilities.getCapability(LOGGING_PREFS) != null) {
-      LoggingPreferences logsPrefs = 
+      LoggingPreferences logsPrefs =
           (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype, 
+        profile.setPreference("webdriver.log." + logtype,
             logsPrefs.getLevel(logtype).intValue());
       }
     }
@@ -185,8 +207,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
     this(binary, profile, capabilities, null);
   }
-  
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, 
+
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     super(new LazyCommandExecutor(binary, profile),
           dropCapabilities(desiredCapabilities, BINARY, PROFILE),
@@ -251,12 +273,13 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   private static FirefoxProfile getProfile(FirefoxProfile profile) {
     FirefoxProfile profileToUse = profile;
-    String suggestedProfile = System.getProperty("webdriver.firefox.profile");
+    String suggestedProfile = System.getProperty(SystemProperty.BROWSER_PROFILE);
     if (profileToUse == null && suggestedProfile != null) {
       profileToUse = new ProfilesIni().getProfile(suggestedProfile);
       if (profileToUse == null) {
-        throw new WebDriverException("Firefox profile '" + suggestedProfile
-            + "' named in system property 'webdriver.firefox.profile' not found");
+        throw new WebDriverException(String.format(
+            "Firefox profile '%s' named in system property '%s' not found",
+            suggestedProfile, SystemProperty.BROWSER_PROFILE));
       }
     } else if (profileToUse == null) {
       profileToUse = new FirefoxProfile();
@@ -292,7 +315,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   /**
    * Drops capabilities that we shouldn't send over the wire.
-   * 
+   *
    * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
    * launcher.
    */

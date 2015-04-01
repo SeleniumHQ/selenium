@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
@@ -108,7 +109,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
       process.clean(profile, profileDir);
 
-      String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+      String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
 
       if (firefoxLogFile !=  null) {
         if ("/dev/stdout".equals(firefoxLogFile)) {

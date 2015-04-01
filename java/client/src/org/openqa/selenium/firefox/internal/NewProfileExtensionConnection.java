@@ -22,6 +22,7 @@ import com.google.common.base.Optional;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
@@ -49,8 +50,11 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
    * System property that defines the location of the webdriver.xpi browser extension to install
    * in the browser. If not set, the prebuilt extension bundled with this class will be used
    * instead.
+   *
+   * @deprecated Use FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY instead
    */
-  public static final String FIREFOX_DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
+  @Deprecated
+  public static final String FIREFOX_DRIVER_XPI_PROPERTY = FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY;
 
   private final static int BUFFER_SIZE = 4096;
 
@@ -92,7 +96,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       delegate.setLocalLogs(logs);
-      String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+      String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
 
       if (firefoxLogFile !=  null) {
         if ("/dev/stdout".equals(firefoxLogFile)) {
@@ -149,8 +153,9 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   }
 
   private static Optional<Extension> loadCustomExtension() {
-    if (System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY) != null) {
-      File xpi = new File(System.getProperty(FIREFOX_DRIVER_XPI_PROPERTY));
+    String xpiProperty = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY);
+    if (xpiProperty != null) {
+      File xpi = new File(xpiProperty);
       return Optional.of((Extension) new FileExtension(xpi));
     }
     return Optional.absent();
@@ -205,7 +210,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   /**
    * Builds the URL for the Firefox extension running on the given host and port. If the host is
    * {@code localhost}, an attempt will be made to find the correct loopback address.
-   * 
+   *
    * @param host The hostname the extension is running on.
    * @param port The port the extension is listening on.
    * @return The URL of the Firefox extension.

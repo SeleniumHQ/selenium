@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
@@ -101,7 +102,7 @@ public class Executable {
     // Last, add the contents of the specified system property, defaulting to the binary's path.
 
     // On Snow Leopard, beware of problems the sqlite library
-    String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path",
+    String firefoxLibraryPath = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
         binary.getAbsoluteFile().getParentFile().getAbsolutePath());
     if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
       libraryPath.append(libraryPath).append(File.pathSeparator);
@@ -118,7 +119,7 @@ public class Executable {
    * be found.
    */
   private static File locateFirefoxBinaryFromSystemProperty() {
-    String binaryName = System.getProperty("webdriver.firefox.bin");
+    String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
     if (binaryName == null)
       return null;
 
@@ -142,11 +143,8 @@ public class Executable {
       return binary;
 
     throw new WebDriverException(
-        String
-            .format(
-                "\"webdriver.firefox.bin\" property set, but unable to locate the requested binary: %s",
-                binaryName
-            ));
+        String.format("'%s' property set, but unable to locate the requested binary: %s",
+                      FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
   }
 
   /**
@@ -209,7 +207,7 @@ public class Executable {
   }
 
   public OutputStream getDefaultOutputStream() {
-    String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
     if ("/dev/stdout".equals(firefoxLogFile)) {
       return System.out;
     }
