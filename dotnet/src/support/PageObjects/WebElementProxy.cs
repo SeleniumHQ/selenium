@@ -1,6 +1,5 @@
 ﻿// <copyright file="WebElementProxy.cs" company="WebDriver Committers">
-// Copyright 2007-2013 WebDriver committers
-// Portions copyright 2013 Software Freedom Conservancy
+// Copyright 2015 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
