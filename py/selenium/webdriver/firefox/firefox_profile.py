@@ -30,11 +30,6 @@ try:
 except ImportError:
     from io import BytesIO
 
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
-
 from xml.dom import minidom
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.common.exceptions import WebDriverException
