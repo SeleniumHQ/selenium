@@ -102,7 +102,7 @@ class Service(object):
         try:
             if self.process:
                 self.process.stdin.close()
-                self.process.send_signal(signal.SIGTERM)
+                self.process.kill()
                 self.process.wait()
         except OSError:
             # kill may not be available under windows environment
