@@ -11,9 +11,7 @@ module Selenium
           http_client = opts.delete(:http_client)
           proxy       = opts.delete(:proxy)
 
-          caps = opts.delete(:desired_capabilities) do
-            Remote::Capabilities.firefox(:native_events => DEFAULT_ENABLE_NATIVE_EVENTS)
-          end
+          caps = opts.delete(:desired_capabilities) || {}
 
           @launcher = create_launcher(port, profile)
 
