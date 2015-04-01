@@ -16,7 +16,6 @@ goog.require('goog.testing.MockClock');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
 goog.require('webdriver.promise');
-goog.require('webdriver.promise.Deferred');
 goog.require('webdriver.stacktrace');
 goog.require('webdriver.test.testutil');
 

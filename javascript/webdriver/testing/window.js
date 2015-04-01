@@ -19,7 +19,7 @@
 goog.provide('webdriver.testing.Window');
 
 goog.require('goog.string');
-goog.require('webdriver.promise.Promise');
+goog.require('webdriver.promise');
 
 
 

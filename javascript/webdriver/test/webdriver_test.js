@@ -30,9 +30,6 @@ goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
-goog.require('webdriver.promise.ControlFlow');
-goog.require('webdriver.promise.Deferred');
-goog.require('webdriver.promise.Promise');
 goog.require('webdriver.test.testutil');
 
 var SESSION_ID = 'test_session_id';

@@ -27,7 +27,7 @@ goog.require('goog.array');
 goog.require('goog.json');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.promise.Deferred');
+goog.require('webdriver.promise');
 
 
 

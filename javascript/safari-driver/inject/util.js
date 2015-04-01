@@ -21,7 +21,7 @@ goog.provide('safaridriver.inject.util');
 
 goog.require('bot.response');
 goog.require('safaridriver.message.LoadModule');
-goog.require('webdriver.promise.Promise');
+goog.require('webdriver.promise');
 
 
 /**

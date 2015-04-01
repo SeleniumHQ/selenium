@@ -16,7 +16,7 @@ goog.require('goog.array');
 goog.require('goog.string');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
-goog.require('webdriver.promise.ControlFlow');
+goog.require('webdriver.promise');
 goog.require('webdriver.stacktrace.Snapshot');
 goog.require('webdriver.stacktrace');
 goog.require('webdriver.test.testutil');

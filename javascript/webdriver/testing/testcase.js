@@ -28,7 +28,7 @@
 goog.provide('webdriver.testing.TestCase');
 
 goog.require('goog.testing.TestCase');
-goog.require('webdriver.promise.ControlFlow');
+goog.require('webdriver.promise');
 /** @suppress {extraRequire} Imported for user convenience. */
 goog.require('webdriver.testing.asserts');
 
