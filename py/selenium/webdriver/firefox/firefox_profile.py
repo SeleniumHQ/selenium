@@ -356,6 +356,8 @@ class FirefoxProfile(object):
             rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
             description = doc.getElementsByTagName(rdf + 'Description').item(0)
+            if description is None:
+                description = doc.getElementsByTagName('Description').item(0)
             for node in description.childNodes:
                 # Remove the namespace prefix from the tag for comparison
                 entry = node.nodeName.replace(em, "")
