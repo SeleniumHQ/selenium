@@ -99,9 +99,25 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 # build can also be done here. For example, here we set the default task
 task :default => [:test]
 
-
-task :all => [:'selenium-java']
+task :all => [
+  :"selenium-java",
+  "//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber"
+]
 task :all_zip => [:'selenium-java_zip']
+task :tests => [
+  "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
+  "//java/client/test/org/openqa/selenium/htmlunit:test_js",
+  "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
+  "//java/client/test/org/openqa/selenium/firefox:test_native",
+  "//java/client/test/org/openqa/selenium/ie:test",
+  "//java/client/test/org/openqa/selenium/chrome:test",
+  "//java/client/test/org/openqa/selenium/opera:test_blink",
+  "//java/client/test/org/openqa/selenium/lift:test",
+  "//java/client/test/org/openqa/selenium/support:SmallTests",
+  "//java/client/test/org/openqa/selenium/support:LargeTests",
+  "//java/client/test/org/openqa/selenium/remote:common-tests",
+  "//java/client/test/org/openqa/selenium/remote:client-tests"
+]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
@@ -212,7 +228,6 @@ if (opera?)
   task :test_java_webdriver => [:test_opera]
 end
 
-
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
   "//java/client/test/org/openqa/selenium:SmallTests:run",
@@ -248,8 +263,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-
-task :build => [:all, :remote, :selenium]
+task :build => [:all, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
