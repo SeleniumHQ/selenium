@@ -238,7 +238,9 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
           if (options == null) {
             options = new HashMap<String, Object>();
           }
-          options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
+          if (!options.containsKey("binary")) {
+            options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
+          }
           cap.put(ChromeOptions.CAPABILITY, options);
         }
       }

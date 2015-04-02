@@ -20,8 +20,6 @@ package org.openqa.grid.e2e.node;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import com.google.gson.JsonObject;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -152,8 +150,8 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
 
-    JsonObject json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome27, json.get("binary").getAsString());
+    Map<String, Object> json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome27, json.get("binary"));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -161,36 +159,35 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
 
-    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome29, json.get("binary").getAsString());
+    json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome29, json.get("binary"));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
     req_caps.put(CapabilityType.VERSION, "29");
-    JsonObject options = new JsonObject();
-    options.addProperty("test1", "test2");
+    Map<String, Object> options = new HashMap<String, Object>();
+    options.put("test1", "test2");
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
 
-    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome29, json.get("binary").getAsString());
-    assertEquals("test2", json.get("test1").getAsString());
+    json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals(locationChrome29, json.get("binary"));
+    assertEquals("test2", json.get("test1"));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
     req_caps.put(CapabilityType.VERSION, "30");
-    options = new JsonObject();
-    options.addProperty("test11", "test22");
-    options.addProperty("binary", "custom");
+    options = new HashMap<String, Object>();
+    options.put("test11", "test22");
+    options.put("binary", "custom");
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
 
-    json = (JsonObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    // Ignored due it fails
-    //Assert.assertEquals("custom", json.get("binary").getAsString());
-    assertEquals("test22", json.get("test11").getAsString());
+    json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
+    assertEquals("custom", json.get("binary"));
+    assertEquals("test22", json.get("test11"));
   }
 
   @AfterClass
@@ -198,7 +195,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     remote.stopRemoteServer();
     hub.stop();
   }
-  
+
   private SeleniumBasedRequest getNewRequest(Map<String, Object> desiredCapability) {
     HttpServletRequest httpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(httpreq, registry, RequestType.START_SESSION, desiredCapability) {
@@ -206,7 +203,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
       public String getNewSessionRequestedCapability(TestSession session) {
         return null;
       }
-     
+
       public ExternalSessionKey extractSession() {
         return null;
       }
