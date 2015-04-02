@@ -41,7 +41,7 @@ fxdriver.modals.isModalPresent = function(callback, timeout) {
     fxdriver.modaltimer.runWhenTrue(
     function() {
       var modal = fxdriver.modals.find_();
-      return modal && modal.document;
+      return modal && modal.document && modal.document.getElementsByTagName('dialog')[0];
     },
     function() { callback(true) },
     timeout,
