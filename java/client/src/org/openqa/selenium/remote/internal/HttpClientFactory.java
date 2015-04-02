@@ -82,10 +82,17 @@ public class HttpClientFactory {
   }
 
   public CloseableHttpClient createHttpClient(Credentials credentials) {
-    return createHttpClient(credentials, 0, 0);
+      return createHttpClient(credentials, TIMEOUT_TWO_MINUTES, TIMEOUT_THREE_HOURS);
   }
 
   public CloseableHttpClient createHttpClient(Credentials credentials, int connectionTimeout, int socketTimeout) {
+    if (connectionTimeout <= 0) {
+        throw new IllegalArgumentException("connection timeout must be > 0");
+    }
+    if (socketTimeout <= 0) {
+        throw new IllegalArgumentException("socket timeout must be > 0");
+    }
+
     SocketConfig socketConfig = createSocketConfig(socketTimeout);
     RequestConfig requestConfig = createRequestConfig(connectionTimeout, socketTimeout);
 
