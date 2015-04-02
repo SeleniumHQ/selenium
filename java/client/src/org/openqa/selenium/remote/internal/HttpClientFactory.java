@@ -129,15 +129,15 @@ public class HttpClientFactory {
   private SocketConfig createSocketConfig(int socketTimeout) {
     return SocketConfig.custom()
         .setSoReuseAddress(true)
-        .setSoTimeout(socketTimeout > 0 ? socketTimeout : TIMEOUT_THREE_HOURS)
+        .setSoTimeout(socketTimeout)
         .build();
   }
 
   private RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
-        .setConnectTimeout(connectionTimeout > 0 ? connectionTimeout : TIMEOUT_TWO_MINUTES)
-        .setSocketTimeout(socketTimeout > 0 ? socketTimeout : TIMEOUT_THREE_HOURS)
+        .setConnectTimeout(connectionTimeout)
+        .setSocketTimeout(socketTimeout)
         .build();
   }
 
