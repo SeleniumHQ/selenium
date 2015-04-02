@@ -60,35 +60,44 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
- * firefox extension, which gets installed automatically if necessary. Important system variables
- * are:
- * <ul>
- * <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
- * <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
- * </ul>
- * <p>
- * When the driver starts, it will make a copy of the profile it is using, rather than using that
- * profile directly. This allows multiple instances of firefox to be started.
+ * firefox extension, which gets installed automatically if necessary.
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
-  public interface SystemProperty {
-    String BROWSER_BINARY = "webdriver.firefox.bin";
-    String BROWSER_LOGFILE = "webdriver.firefox.logfile";
-    String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
-    String BROWSER_PROFILE = "webdriver.firefox.profile";
+  public static final class SystemProperty {
+
+    /**
+     * System property that defines the location of the Firefox executable file.
+     */
+    public static final String BROWSER_BINARY = "webdriver.firefox.bin";
+
+    /**
+     * System property that defines the location of the file where Firefox log should be stored.
+     */
+    public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
+
+    /**
+     * System property that defines the additional library path (Linux only).
+     */
+    public static final String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
+
+    /**
+     * System property that defines the profile that should be used as a template.
+     * When the driver starts, it will make a copy of the profile it is using,
+     * rather than using that profile directly.
+     */
+    public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
 
     /**
      * System property that defines the location of the webdriver.xpi browser extension to install
-     * in the browser. If not set, the prebuilt extension bundled with this class will be used
-     * instead.
+     * in the browser. If not set, the prebuilt extension bundled with this class will be used.
      */
-    String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
+    public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
 
     /**
      * Boolean system property that instructs FirefoxDriver to use Marionette backend.
      */
-    String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
+    public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
   public static final String BINARY = "firefox_binary";
