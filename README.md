@@ -1,5 +1,7 @@
 # Selenium
 
+[![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg?branch=master)](https://travis-ci.org/SeleniumHQ/selenium)
+
 Selenium is an umbrella project for various tools and libraries that
 enable automation of web browsers.  Amongst other things it provides
 the support infrastructure for the [W3C WebDriver
