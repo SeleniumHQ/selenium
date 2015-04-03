@@ -1,5 +1,7 @@
 ## v2.46.0-dev
 
+* FIXED: `promise.ControlFlow#wait()` now has consistent semantics for an
+    omitted or 0-timeout: it will wait indefinitely.
 * FIXED: `remote.DriverService#start()` will now fail if the child process dies
     while waiting for the server to start accepting requests. Previously, start
     would continue to poll the server address until the timeout expired.

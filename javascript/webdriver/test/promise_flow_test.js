@@ -1114,12 +1114,43 @@ function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
 }
 
 
-function testWaiting_timesOut_zeroTimeout() {
-  scheduleWait(function() { return false; }, 0, 'always false');
-  return waitForAbort().then(function(e) {
-    assertRegExp(/^always false\nWait timed out after \d+ms$/, e.message);
+function testWaiting_waitsForeverOnAZeroTimeout() {
+  var done = false;
+  setTimeout(function() {
+    done = true;
+  }, 500);
+  var waitResult = scheduleWait(function() {
+    return done;
+  }, 0);
+
+  return timeout(250).then(function() {
+    assertFalse(done);
+    return timeout(300);
+  }).then(function() {
+    assertTrue(done);
+    return waitResult;
   });
 }
+
+
+function testWaiting_waitsForeverIfTimeoutOmitted() {
+  var done = false;
+  setTimeout(function() {
+    done = true;
+  }, 500);
+  var waitResult = scheduleWait(function() {
+    return done;
+  });
+
+  return timeout(250).then(function() {
+    assertFalse(done);
+    return timeout(300);
+  }).then(function() {
+    assertTrue(done);
+    return waitResult;
+  });
+}
+
 
 function testWaiting_timesOut_nonZeroTimeout() {
   var count = 0;

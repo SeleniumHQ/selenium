@@ -1544,15 +1544,18 @@ promise.ControlFlow.prototype.timeout = function(ms, opt_description) {
  * If the condition function throws, or returns a rejected promise, the
  * wait task will fail.
  *
- * If the condition is defined as a promise, the flow will block on that
- * promise's resolution, up to {@code timeout} milliseconds. If
- * {@code timeout === 0}, the flow will block indefinitely on the promise's
- * resolution.
+ * If the condition is defined as a promise, the flow will wait for it to
+ * settle. If the timeout expires before the promise settles, the promise
+ * returned by this function will be rejected.
+ *
+ * If this function is invoked with `timeout === 0`, or the timeout is omitted,
+ * the flow will wait indefinitely for the condition to be satisfied.
  *
  * @param {(!promise.Promise<T>|function())} condition The condition to poll,
  *     or a promise to wait on.
  * @param {number=} opt_timeout How long to wait, in milliseconds, for the
- *     condition to hold before timing out; defaults to 0.
+ *     condition to hold before timing out. If omitted, the flow will wait
+ *     indefinitely.
  * @param {string=} opt_message An optional error message to include if the
  *     wait times out; defaults to the empty string.
  * @return {!promise.Promise<T>} A promise that will be fulfilled
@@ -1618,7 +1621,7 @@ promise.ControlFlow.prototype.wait = function(
           var elapsed = goog.now() - startTime;
           if (!!value) {
             fulfill(value);
-          } else if (elapsed >= timeout) {
+          } else if (timeout && elapsed >= timeout) {
             reject(new Error((opt_message ? opt_message + '\n' : '') +
                 'Wait timed out after ' + elapsed + 'ms'));
           } else {
