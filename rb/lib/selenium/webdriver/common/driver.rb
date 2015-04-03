@@ -199,7 +199,7 @@ module Selenium
       # executed function as the last argument.
       #
       # @param [String] script
-      #   JavaSCript source to execute
+      #   JavaScript source to execute
       # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
       #   Arguments to the script. May be empty.
       #
