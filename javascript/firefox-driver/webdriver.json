@@ -12,6 +12,7 @@
     "browser.safebrowsing.enabled": false,
     "browser.safebrowsing.malware.enabled": false,
     "browser.search.update": false,
+    "browser.selfsupport.url" : "",
     "browser.sessionstore.resume_from_crash": false,
     "browser.shell.checkDefaultBrowser": false,
     "browser.tabs.warnOnClose": false,
