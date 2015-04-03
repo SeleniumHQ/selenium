@@ -1,5 +1,8 @@
 ## v2.46.0-dev
 
+* Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
+    `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
+    `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.
 * FIXED: `promise.ControlFlow#wait()` now has consistent semantics for an
     omitted or 0-timeout: it will wait indefinitely.
 * FIXED: `remote.DriverService#start()` will now fail if the child process dies
@@ -172,7 +175,7 @@ major version release (i.e. 1.0.0).
 * FIXED: 7641: Deprecated `ErrorCode.NO_MODAL_DIALOG_OPEN` and
     `ErrorCode.MODAL_DIALOG_OPENED` in favor of the new
     `ErrorCode.NO_SUCH_ALERT` and `ErrorCode.UNEXPECTED_ALERT_OPEN`,
-    respecitvely.
+    respectively.
 * FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
     timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
 * FIXED: 7470: Make it easier to create WebDriver instances in custom flows for

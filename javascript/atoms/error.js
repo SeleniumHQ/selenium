@@ -46,12 +46,8 @@ bot.ErrorCode = {
   NO_SUCH_WINDOW: 23,
   INVALID_COOKIE_DOMAIN: 24,
   UNABLE_TO_SET_COOKIE: 25,
-  /** @deprecated */
-  MODAL_DIALOG_OPENED: 26,
   UNEXPECTED_ALERT_OPEN: 26,
   NO_SUCH_ALERT: 27,
-  /** @deprecated */
-  NO_MODAL_DIALOG_OPEN: 27,
   SCRIPT_TIMEOUT: 28,
   INVALID_ELEMENT_COORDINATES: 29,
   IME_NOT_AVAILABLE: 30,
@@ -176,7 +172,6 @@ goog.scope(function() {
   map[code.JAVASCRIPT_ERROR] = state.JAVASCRIPT_ERROR;
   map[code.METHOD_NOT_ALLOWED] = state.UNSUPPORTED_OPERATION;
   map[code.MOVE_TARGET_OUT_OF_BOUNDS] = state.MOVE_TARGET_OUT_OF_BOUNDS;
-  map[code.NO_MODAL_DIALOG_OPEN] = state.NO_SUCH_ALERT;
   map[code.NO_SUCH_ALERT] = state.NO_SUCH_ALERT;
   map[code.NO_SUCH_ELEMENT] = state.NO_SUCH_ELEMENT;
   map[code.NO_SUCH_FRAME] = state.NO_SUCH_FRAME;
@@ -187,7 +182,6 @@ goog.scope(function() {
   map[code.SUCCESS] = state.SUCCESS;
   map[code.TIMEOUT] = state.TIMEOUT;
   map[code.UNABLE_TO_SET_COOKIE] = state.UNABLE_TO_SET_COOKIE;
-  map[code.MODAL_DIALOG_OPENED] = state.UNEXPECTED_ALERT_OPEN;
   map[code.UNEXPECTED_ALERT_OPEN] = state.UNEXPECTED_ALERT_OPEN
   map[code.UNKNOWN_ERROR] = state.UNKNOWN_ERROR;
   map[code.UNSUPPORTED_OPERATION] = state.UNKNOWN_COMMAND;
