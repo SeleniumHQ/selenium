@@ -1,3 +1,9 @@
+unreleased
+===================
+
+Ruby changes:
+  * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
+
 2.45.0 (2015-02-28)
 ===================
 
