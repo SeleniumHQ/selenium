@@ -54,12 +54,21 @@ fxdriver.error.toJSON = function(ex) {
       }
 
       match = frame.match(/^([\w./<$]+)?(?:\(.*\))?@(.+)?$/);
-      stackFrames.push({
+      if (match) {
+        stackFrames.push({
           'methodName': match[1],
           'fileName': match[2],
           'lineNumber': lineNumber,
           'columnNumber': columnNumber
         });
+      } else {
+        stackFrames.push({
+          'methodName': frame,
+          'fileName': "?",
+          'lineNumber': "?",
+          'columnNumber': "?"
+        });
+      }
     }
   }
 
