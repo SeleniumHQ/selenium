@@ -26,4 +26,5 @@ public enum How {
   PARTIAL_LINK_TEXT,
   TAG_NAME,
   XPATH,
+  UNSET
 }

@@ -28,21 +28,21 @@ import java.lang.annotation.Target;
  * this allows users to quickly and easily create PageObjects.
  *
  * It can be used on a types as well, but will not be processed by default.
- * 
+ *
  * <p>
  * You can either use this annotation by specifying both "how" and "using" or by specifying one of
  * the location strategies (eg: "id") with an appropriate value to use. Both options will delegate
  * down to the matching {@link org.openqa.selenium.By} methods in By class.
- * 
+ *
  * For example, these two annotations point to the same element:
- * 
+ *
  * <pre>{@code
  * &#64;FindBy(id = "foobar") WebElement foobar;
  * &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
  * }</pre>
- * 
+ *
  * and these two annotations point to the same list of elements:
- * 
+ *
  * <pre>{@code
  * &#64;FindBy(tagName = "a") List<WebElement> links;
  * &#64;FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
@@ -51,7 +51,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
 public @interface FindBy {
-  How how() default How.ID;
+  How how() default How.UNSET;
 
   String using() default "";
 

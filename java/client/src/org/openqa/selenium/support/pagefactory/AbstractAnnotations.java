@@ -93,6 +93,7 @@ public abstract class AbstractAnnotations {
         return By.cssSelector(using);
 
       case ID:
+      case UNSET:
         return By.id(using);
 
       case ID_OR_NAME:

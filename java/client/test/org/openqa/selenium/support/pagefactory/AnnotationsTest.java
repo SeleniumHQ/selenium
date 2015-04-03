@@ -90,6 +90,9 @@ public class AnnotationsTest {
             @FindBy(id = "crackers")})
   public WebElement findAllMultipleHows_field;
 
+  @FindBy(using = "cheese")
+  public WebElement findByUnsetHow_field;
+
   @Test
   public void testDefault() throws Exception {
     assertThat(new Annotations(getClass().getField("default_field")).buildBy(),
@@ -209,6 +212,12 @@ public class AnnotationsTest {
     } catch (IllegalArgumentException e) {
       // Expected exception
     }
+  }
+
+  @Test
+  public void findByUnsetHowIsEquivalentToFindById() throws Exception {
+    assertThat(new Annotations(getClass().getField("findByUnsetHow_field")).buildBy(),
+               equalTo(By.id("cheese")));
   }
 
 }
