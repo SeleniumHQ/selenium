@@ -12,6 +12,7 @@
 * Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
     `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
     `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.
+* FIXED: Correct serialize target elements used in an action sequence.
 * FIXED: `promise.ControlFlow#wait()` now has consistent semantics for an
     omitted or 0-timeout: it will wait indefinitely.
 * FIXED: `remote.DriverService#start()` will now fail if the child process dies

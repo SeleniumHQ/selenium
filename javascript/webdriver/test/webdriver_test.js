@@ -2270,6 +2270,80 @@ function testActionSequenceFailsIfInitialDriverCreationFailed() {
 }
 
 
+function testActionSequence_mouseMove_noElement() {
+  var testHelper = new TestHelper()
+      .expect(CName.MOVE_TO, {'xoffset': 0, 'yoffset': 125})
+      .andReturnSuccess()
+      .replayAll();
+
+  return testHelper.createDriver().
+      actions().
+      mouseMove({x: 0, y: 125}).
+      perform();
+}
+
+
+function testActionSequence_mouseMove_element() {
+  var testHelper = new TestHelper()
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'})
+          .andReturnSuccess({'ELEMENT': 'abc123'})
+      .expect(
+          CName.MOVE_TO, {'element': 'abc123', 'xoffset': 0, 'yoffset': 125})
+          .andReturnSuccess()
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var element = driver.findElement(By.id('foo'));
+  return driver.actions()
+      .mouseMove(element, {x: 0, y: 125})
+      .perform();
+}
+
+
+function testActionSequence_mouseDown() {
+  var testHelper = new TestHelper()
+      .expect(CName.MOUSE_DOWN, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .replayAll();
+
+  return testHelper.createDriver().
+      actions().
+      mouseDown().
+      perform();
+}
+
+
+function testActionSequence() {
+  var testHelper = new TestHelper()
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'a'})
+          .andReturnSuccess({'ELEMENT': 'id1'})
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'b'})
+          .andReturnSuccess({'ELEMENT': 'id2'})
+      .expect(CName.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          {'value': [webdriver.Key.SHIFT]})
+          .andReturnSuccess()
+      .expect(CName.MOVE_TO, {'element': 'id1'})
+          .andReturnSuccess()
+      .expect(CName.CLICK, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .expect(CName.MOVE_TO, {'element': 'id2'})
+          .andReturnSuccess()
+      .expect(CName.CLICK, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var element1 = driver.findElement(By.id('a'));
+  var element2 = driver.findElement(By.id('b'));
+
+  return driver.actions()
+      .keyDown(webdriver.Key.SHIFT)
+      .click(element1)
+      .click(element2)
+      .perform();
+}
+
+
 function testAlertCommandsFailIfAlertNotPresent() {
   var testHelper = new TestHelper()
       .expect(CName.GET_ALERT_TEXT)

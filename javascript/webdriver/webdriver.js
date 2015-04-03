@@ -1785,7 +1785,7 @@ webdriver.WebElement.prototype.getId = function() {
  * @package
  */
 webdriver.WebElement.prototype.getRawId = function() {
-  return this.id_.then(function(value) {
+  return this.getId().then(function(value) {
     return value['ELEMENT'];
   });
 };
