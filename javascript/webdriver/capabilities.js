@@ -285,16 +285,6 @@ webdriver.Capabilities.htmlunitwithjs = function() {
 
 
 /**
- * @return {!Object} The JSON representation of this instance.
- * @deprecated Use {@link #serialize} since a component capability may be a
- *     promised value.
- */
-webdriver.Capabilities.prototype.toJSON = function() {
-  return this.caps_;
-};
-
-
-/**
  * @return {!Object.<string, ?>} The JSON representation of this instance. Note,
  *    the returned object may contain nested promises that are promised values.
  * @override

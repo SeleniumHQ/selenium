@@ -2449,16 +2449,6 @@ webdriver.UnhandledAlertError.prototype.getAlertText = function() {
 };
 
 
-/**
- * @return {!webdriver.Alert} The open alert.
- * @deprecated Use {@link #getAlertText}. This method will be removed in
- *     2.45.0.
- */
-webdriver.UnhandledAlertError.prototype.getAlert = function() {
-  return this.alert_;
-};
-
-
 
 /**
  * Used with {@link webdriver.WebElement#sendKeys WebElement#sendKeys} on file

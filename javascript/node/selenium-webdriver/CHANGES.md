@@ -1,5 +1,14 @@
 ## v2.46.0-dev
 
+* Removed deprecated functions:
+    * Capabilities#toJSON()
+    * UnhandledAlertError#getAlert()
+    * chrome.createDriver()
+    * phantomjs.createDriver()
+    * promise.ControlFlow#annotateError()
+    * promise.ControlFlow#await()
+    * promise.ControlFlow#clearHistory()
+    * promise.ControlFlow#getHistory()
 * Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
     `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
     `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.

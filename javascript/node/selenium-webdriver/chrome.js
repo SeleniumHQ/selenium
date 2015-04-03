@@ -754,21 +754,6 @@ Options.prototype.serialize = function() {
 
 
 /**
- * Creates a new ChromeDriver session.
- * @param {(webdriver.Capabilities|Options)=} opt_options The session options.
- * @param {remote.DriverService=} opt_service The session to use; will use
- *     the {@linkplain #getDefaultService default service} by default.
- * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
- *     {@code null} to use the currently active flow.
- * @return {!webdriver.WebDriver} A new WebDriver instance.
- * @deprecated Use {@link Driver new Driver()}.
- */
-function createDriver(opt_options, opt_service, opt_flow) {
-  return new Driver(opt_options, opt_service, opt_flow);
-}
-
-
-/**
  * Creates a new WebDriver client for Chrome.
  *
  * @param {(webdriver.Capabilities|Options)=} opt_config The configuration
@@ -812,6 +797,5 @@ Driver.prototype.setFileDetector = function() {
 exports.Driver = Driver;
 exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
-exports.createDriver = createDriver;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;

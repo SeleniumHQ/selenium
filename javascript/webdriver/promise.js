@@ -1354,40 +1354,6 @@ promise.ControlFlow.prototype.reset = function() {
 
 
 /**
- * Returns a summary of the recent task activity for this instance. This
- * includes the most recently completed task, as well as any parent tasks. In
- * the returned summary, the task at index N is considered a sub-task of the
- * task at index N+1.
- * @return {!Array<string>} A summary of this instance's recent task
- *     activity.
- * @deprecated Now a no-op; will be removed in 2.46.0.
- */
-promise.ControlFlow.prototype.getHistory = function() {
-  return [];
-};
-
-
-/**
- * Clears this instance's task history.
- * @deprecated Now a no-op; will be removed in 2.46.0.
- */
-promise.ControlFlow.prototype.clearHistory = function() {};
-
-
-/**
- * Appends a summary of this instance's recent task history to the given
- * error's stack trace. This function will also ensure the error's stack trace
- * is in canonical form.
- * @param {!(Error|goog.testing.JsUnitException)} e The error to annotate.
- * @return {!(Error|goog.testing.JsUnitException)} The annotated error.
- * @deprecated Now a no-op; will be removed in 2.46.0.
- */
-promise.ControlFlow.prototype.annotateError = function(e) {
-  return e;
-};
-
-
-/**
  * Generates an annotated string describing the internal state of this control
  * flow, including the currently executing as well as pending tasks. If
  * {@code opt_includeStackTraces === true}, the string will include the
@@ -1635,21 +1601,6 @@ promise.ControlFlow.prototype.wait = function(
       }
     });
   }, opt_message || '<anonymous wait>');
-};
-
-
-/**
- * Schedules a task that will wait for another promise to resolve.  The resolved
- * promise's value will be returned as the task result.
- * @param {!promise.Promise} promise The promise to wait on.
- * @return {!promise.Promise} A promise that will resolve when the
- *     task has completed.
- * @deprecated Use {@link #wait() wait(promise)} instead.
- */
-promise.ControlFlow.prototype.await = function(promise) {
-  return this.execute(function() {
-    return promise;
-  });
 };
 
 

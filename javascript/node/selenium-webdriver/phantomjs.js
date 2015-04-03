@@ -109,19 +109,6 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 
 
 /**
- * Creates a new PhantomJS WebDriver client.
- * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
- * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
- *     {@code null} to use the currently active flow.
- * @return {!webdriver.WebDriver} A new WebDriver instance.
- * @deprecated Use {@link Driver}.
- */
-function createDriver(opt_capabilities, opt_flow) {
-  return new Driver(opt_capabilities, opt_flow);
-}
-
-
-/**
  * Creates a command executor with support for PhantomJS' custom commands.
  * @param {!webdriver.promise.Promise<string>} url The server's URL.
  * @return {!webdriver.CommandExecutor} The new command executor.
@@ -274,4 +261,3 @@ Driver.prototype.executePhantomJS = function(script, args) {
 // PUBLIC API
 
 exports.Driver = Driver;
-exports.createDriver = createDriver;

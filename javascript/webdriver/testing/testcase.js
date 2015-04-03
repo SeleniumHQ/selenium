@@ -150,7 +150,6 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
  */
 webdriver.testing.TestCase.prototype.runSingleTest_ = function(test, onError) {
   var flow = webdriver.promise.controlFlow();
-  flow.clearHistory();
 
   return execute(test.name + '.setUp()', this.setUp)().
       then(execute(test.name + '()', test.ref)).

@@ -2079,9 +2079,7 @@ function testInterceptsAndTransformsUnhandledAlertErrors() {
   var driver = testHelper.createDriver();
   return driver.findElement(By.id('foo')).then(fail, function(e) {
     assertTrue(e instanceof webdriver.UnhandledAlertError);
-    return e.getAlert().getText();
-  }).then(function(text) {
-    assertEquals('hello', text);
+    assertEquals('hello', e.getAlertText());
   });
 }
 
@@ -2095,9 +2093,7 @@ testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse() {
   var driver = testHelper.createDriver();
   return driver.findElement(By.id('foo')).then(fail, function(e) {
     assertTrue(e instanceof webdriver.UnhandledAlertError);
-    return e.getAlert().getText();
-  }).then(function(text) {
-    assertEquals('', text);
+    assertEquals('', e.getAlertText());
   });
 }
 
