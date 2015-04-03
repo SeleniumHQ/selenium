@@ -116,7 +116,9 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/support:SmallTests",
   "//java/client/test/org/openqa/selenium/support:LargeTests",
   "//java/client/test/org/openqa/selenium/remote:common-tests",
-  "//java/client/test/org/openqa/selenium/remote:client-tests"
+  "//java/client/test/org/openqa/selenium/remote:client-tests",
+  "//java/server/test/org/openqa/selenium/remote/server/log:test",
+  "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
