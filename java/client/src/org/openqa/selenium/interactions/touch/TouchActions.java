@@ -18,18 +18,18 @@ package org.openqa.selenium.interactions.touch;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.internal.ActionsSelfType;
 import org.openqa.selenium.internal.Locatable;
 
 /**
  * Implements actions for touch enabled devices, reusing the available composite and builder design
  * patterns from Actions.
  */
-public class TouchActions extends Actions {
+public class TouchActions extends ActionsSelfType<TouchActions> {
 
   protected TouchScreen touchScreen;
 
@@ -161,4 +161,10 @@ public class TouchActions extends Actions {
     action.addAction(new FlickAction(touchScreen, (Locatable) onElement, xOffset, yOffset, speed));
     return this;
   }
+
+  @Override
+  protected TouchActions self() {
+    return this;
+  }
+
 }
