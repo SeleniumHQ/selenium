@@ -49,7 +49,12 @@ var IGNORE_PATHS = [
   path.join(BASE_PATH, 'firefox-driver/extension/components/httpd.js'),
   path.join(BASE_PATH, 'firefox-driver/js/json2.js'),
   path.join(BASE_PATH, 'jsunit'),
-  path.join(BASE_PATH, 'selenium-core')
+  path.join(BASE_PATH, 'selenium-core/lib'),
+  path.join(BASE_PATH, 'selenium-core/scripts/ui-element.js'),
+  path.join(BASE_PATH, 'selenium-core/scripts/ui-map-sample.js'),
+  path.join(BASE_PATH, 'selenium-core/scripts/user-extensions.js'),
+  path.join(BASE_PATH, 'selenium-core/scripts/xmlextras.js'),
+  path.join(BASE_PATH, 'selenium-core/xpath')
 ];
 
 updateDir(BASE_PATH);

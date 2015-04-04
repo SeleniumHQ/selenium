@@ -1,19 +1,19 @@
-/*
-* Copyright 2011 Software Freedom Conservancy
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 passColor = "#cfffcf";
 failColor = "#ffcfcf";
@@ -238,7 +238,7 @@ objectExtend(RemoteRunner.prototype, {
             cmd1 = cmdText;
         }
         lastCmd = cmdText;
-        
+
         if (! proxyInjectionMode) {
             var commandList = document.commands.commandList;
             commandList.value = cmd8 + cmd7 + cmd6 + cmd5 + cmd4 + cmd3 + cmd2 + cmd1;
@@ -302,7 +302,7 @@ objectExtend(RemoteRunner.prototype, {
                     this.continueTestAtCurrentCommand();
                 }
             }
-            // Not OK 
+            // Not OK
             else {
                 var s = 'xmlHttp returned: ' + this.xmlHttpForCommandsAndResults.status + ": " + this.xmlHttpForCommandsAndResults.statusText;
                 LOG.error(s);
@@ -398,7 +398,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     }
     url = addUrlParams(url);
     url += "&sequenceNumber=" + seleniumSequenceNumber++;
-    
+
     var postedData = "postedData=" + encodeURIComponent(dataToBePosted);
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -417,7 +417,7 @@ function addUrlParams(url) {
 
 function sendToRCAndForget(dataToBePosted, urlParams) {
     var url;
-    if (!(browserVersion.isChrome || browserVersion.isHTA)) { 
+    if (!(browserVersion.isChrome || browserVersion.isHTA)) {
         // DGF we're behind a proxy, so we can send our logging message to literally any host, to avoid 2-connection limit
         var protocol = "http:";
         if (window.location.protocol == "https:") {
@@ -432,7 +432,7 @@ function sendToRCAndForget(dataToBePosted, urlParams) {
         url = buildDriverUrl() + "?" + urlParams;
     }
     url = addUrlParams(url);
-    
+
     var method = "GET";
     if (method == "POST") {
         // DGF submit a request using an iframe; we can't see the response, but we don't need to
@@ -589,15 +589,15 @@ Selenium.prototype.doAttachFile = function(fieldLocator,fileLocator) {
    *
    *  @param fieldLocator an <a href="#locators">element locator</a>
    *  @param fileLocator a URL pointing to the specified file. Before the file
-   *  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file  
+   *  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file
    *  to the local machine before attaching the file in a web page form. This is common in selenium
    *  grid configurations where the RC server driving the browser is not the same
    *  machine that started the test.
    *
    *  Supported Browsers: Firefox ("*chrome") only.
-   *   
+   *
    */
-   // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us! 
+   // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
 Selenium.prototype.doCaptureScreenshot = function(filename) {
@@ -611,8 +611,8 @@ Selenium.prototype.doCaptureScreenshot = function(filename) {
 
 Selenium.prototype.doCaptureScreenshotToString = function() {
     /**
-    * Capture a PNG screenshot.  It then returns the file as a base 64 encoded string. 
-    * 
+    * Capture a PNG screenshot.  It then returns the file as a base 64 encoded string.
+    *
     * @return string The base 64 encoded string of the screen shot (PNG file)
     */
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
@@ -620,12 +620,12 @@ Selenium.prototype.doCaptureScreenshotToString = function() {
 
 Selenium.prototype.doCaptureEntirePageScreenshotToString = function(kwargs) {
     /**
-    * Downloads a screenshot of the browser current window canvas to a 
+    * Downloads a screenshot of the browser current window canvas to a
     * based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
     * including parts rendered outside of the current view port.
     *
-	* Currently this only works in Mozilla and when running in chrome mode. 
-    * 
+	* Currently this only works in Mozilla and when running in chrome mode.
+    *
     * @param kwargs  A kwargs string that modifies the way the screenshot is captured. Example: "background=#CCFFDD". This may be useful to set for capturing screenshots of less-than-ideal layouts, for example where absolute positioning causes the calculation of the canvas dimension to fail and a black background is exposed  (possibly obscuring black text).
     *
     * @return string The base 64 encoded string of the page screenshot (PNG file)
@@ -637,7 +637,7 @@ Selenium.prototype.doShutDownSeleniumServer = function(keycode) {
     /**
     * Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
     * commands to the server; you can't remotely start the server once it has been stopped.  Normally
-    * you should prefer to run the "stop" command, which terminates the current browser session, rather than 
+    * you should prefer to run the "stop" command, which terminates the current browser session, rather than
     * shutting down the entire server.
     *
     */
