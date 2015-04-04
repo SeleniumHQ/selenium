@@ -60,7 +60,6 @@ zip(name = 'js-resources',
   out = 'js-resources.src.zip',
   srcs = [
     ':evaluate.js',
-    ':json2.js',
     ':modules',
   ],
 )
@@ -74,10 +73,6 @@ folder(name = 'modules',
 
 export_file(name = 'evaluate.js',
   src = 'js/evaluate.js',
-)
-
-export_file(name = 'json2.js',
-  src = 'js/json2.js',
 )
 
 folder(name = 'winnt-x86-msvc',

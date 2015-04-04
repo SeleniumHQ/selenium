@@ -47,7 +47,6 @@ var BASE_PATH = path.normalize(path.join(__dirname, '..'));
 var IGNORE_PATHS = [
   path.join(BASE_PATH, 'atoms/test/jquery.min.js'),
   path.join(BASE_PATH, 'firefox-driver/extension/components/httpd.js'),
-  path.join(BASE_PATH, 'firefox-driver/js/json2.js'),
   path.join(BASE_PATH, 'jsunit'),
   path.join(BASE_PATH, 'selenium-core/lib'),
   path.join(BASE_PATH, 'selenium-core/scripts/ui-element.js'),

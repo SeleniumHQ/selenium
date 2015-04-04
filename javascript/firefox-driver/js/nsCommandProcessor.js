@@ -357,11 +357,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
-  // Since we only support 3.0+, this check is enough to see if we're on 3.0
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-  }
-
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
