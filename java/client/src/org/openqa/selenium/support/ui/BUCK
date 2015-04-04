@@ -37,6 +37,7 @@ java_library(name = 'elements',
 
 java_library(name = 'wait',
   srcs = [
+    'CheckedFunction.java',
     'ExpectedCondition.java',
     'ExpectedConditions.java',
     'FluentWait.java',

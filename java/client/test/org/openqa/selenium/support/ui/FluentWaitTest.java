@@ -39,6 +39,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
@@ -256,6 +257,33 @@ public class FluentWaitTest{
       fail();
     } catch (TestException expected) {
       assertSame(sentinelException, expected);
+    }
+  }
+
+  @Test
+  public void allowCheckedExceptionsToBeIgnored() {
+    final IOException checked = new IOException("Ignore me");
+
+    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.isNowBefore(2L)).thenReturn(false);
+
+    FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
+        .withTimeout(0, TimeUnit.MILLISECONDS)
+        .pollingEvery(2, TimeUnit.SECONDS)
+        .ignoring(IOException.class);
+
+    CheckedFunction<WebDriver, Boolean> pred = new CheckedFunction<WebDriver, Boolean>() {
+      @Override
+      public Boolean apply(WebDriver input) throws Exception {
+        throw checked;
+      }
+    };
+
+    try {
+      wait.until(pred);
+      fail();
+    } catch (TimeoutException ex) {
+      assertSame(checked, ex.getCause());
     }
   }
 

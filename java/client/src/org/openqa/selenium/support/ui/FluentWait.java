@@ -173,11 +173,34 @@ public class FluentWait<T> implements Wait<T> {
    * @throws TimeoutException If the timeout expires.
    */
   public void until(final Predicate<T> isTrue) {
-    until(new Function<T, Boolean>() {
+    until(new CheckedFunction<T, Boolean>() {
+      @Override
       public Boolean apply(T input) {
         return isTrue.apply(input);
       }
 
+      @Override
+      public String toString() {
+        return isTrue.toString();
+      }
+    });
+  }
+
+  /**
+   * Repeatedly applies this instance's input value to the given predicate until the timeout expires
+   * or the predicate evaluates to true.
+   *
+   * @param isTrue The predicate to wait on.
+   * @throws TimeoutException If the timeout expires.
+   */
+  public <V> V until(final Function<? super T, V> isTrue) {
+    return until(new CheckedFunction<T, V>() {
+      @Override
+      public V apply(T input) {
+        return isTrue.apply(input);
+      }
+
+      @Override
       public String toString() {
         return isTrue.toString();
       }
@@ -201,7 +224,7 @@ public class FluentWait<T> implements Wait<T> {
    *         from null or false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */
-  public <V> V until(Function<? super T, V> isTrue) {
+  public <V> V until(CheckedFunction<? super T, V> isTrue) {
     long end = clock.laterBy(timeout.in(MILLISECONDS));
     Throwable lastException = null;
     while (true) {
