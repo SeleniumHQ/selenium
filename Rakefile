@@ -605,6 +605,7 @@ namespace :node do
     cmd =  "node javascript/node/deploy.js" <<
         " --output=build/javascript/node/selenium-webdriver" <<
         " --resource=LICENSE:/LICENSE" <<
+        " --resource=NOTICE:/NOTICE" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
         " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
