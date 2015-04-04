@@ -611,8 +611,9 @@ bot.Device.prototype.maybeToggleOption = function() {
     return;
   }
 
-  // TODO: in a multiselect, clicking an option without the shift key down
-  // should deselect all other selected options.
+  // TODO: In a multiselect, clicking an option without the ctrl key down
+  // should deselect all other selected options. Right now multiselect click
+  // works as ctrl+click should (and unit tests written so that they pass).
 
   this.element_.selected = !wasSelected;
   // Only WebKit fires the change event itself and only for multi-selects,
