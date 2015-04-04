@@ -1,15 +1,20 @@
 /*
- * Copyright 2007-2011 Selenium committers
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ Licensed to the Software Freedom Conservancy (SFC) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The SFC licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
  */
 
 package org.openqa.grid.internal.utils;
@@ -82,7 +87,7 @@ public class SelfRegisteringRemote {
   private SeleniumServer server;
 
   public void startRemoteServer() throws Exception {
-    
+
     System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
 
 
@@ -150,7 +155,7 @@ public class SelfRegisteringRemote {
   /**
    * Adding the browser described by the capability, automatically finding out what platform the
    * node is launched from ( and overriding it if it was specified )
-   * 
+   *
    * @param cap describing the browser
    * @param instances number of times this browser can be started on the node.
    */
@@ -275,9 +280,9 @@ public class SelfRegisteringRemote {
     String hubApi =
         "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
             + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/hub";
-    
+
     HttpClient client = httpClientFactory.getHttpClient();
-    
+
     URL api = new URL(hubApi);
     HttpHost host = new HttpHost(api.getHost(), api.getPort());
     String url = api.toExternalForm();
@@ -290,7 +295,7 @@ public class SelfRegisteringRemote {
     HttpResponse response = client.execute(host, r);
     return extractObject(response);
   }
-  
+
   private boolean isAlreadyRegistered(RegistrationRequest node) {
 
     HttpClient client = httpClientFactory.getHttpClient();

@@ -1,19 +1,21 @@
 /*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
+ Licensed to the Software Freedom Conservancy (SFC) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The SFC licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
 
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
 
 
 package org.openqa.selenium.remote.server.log;
@@ -43,7 +45,7 @@ public class SessionLogsToFileRepository {
    * This creates log file object which represents logs in file form. This opens ObjectOutputStream
    * which is used to write logRecords to log file and opens a ObjectInputStream which is used to
    * read logRecords from the file.
-   * 
+   *
    * @param sessionId session-id for the log file entry needs to be created.
    * @throws IOException
    */
@@ -60,7 +62,7 @@ public class SessionLogsToFileRepository {
    * This creates a mapping between session and file representation of logs if doesnt exist already.
    * Writes the log records to the log file. This does *NOT* flush the logs to file. This does *NOT*
    * clear the records after writing to file.
-   * 
+   *
    * @param sessionId session-id to which the log records belong
    * @param records logRecords that need to be stored
    * @throws IOException
@@ -84,7 +86,7 @@ public class SessionLogsToFileRepository {
   /**
    * This returns the log records storied in the corresponding log file. This does *NOT* clear the
    * log records in the file.
-   * 
+   *
    * @param sessionId session-id for which the file logs needs to be returned.
    * @return A List of LogRecord objects, which can be <i>null</i>.
    * @throws IOException

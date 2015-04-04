@@ -1,22 +1,23 @@
-package org.openqa.selenium.server;
-
 /*
- * Copyright 2006 BEA, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ Licensed to the Software Freedom Conservancy (SFC) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The SFC licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
  */
 
+package org.openqa.selenium.server;
 
 import org.openqa.selenium.net.Urls;
 
@@ -42,7 +43,7 @@ import java.util.logging.Logger;
  * <p>
  * Manages sets of CommandQueues corresponding to windows and frames in a single browser session.
  * </p>
- * 
+ *
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
@@ -273,7 +274,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Sets this frame group's speed, and updates all command queues to use this speed.
-   * 
+   *
    * @param i millisecond delay between queue operations
    */
   protected void setSpeed(int i) {
@@ -285,7 +286,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Returns the delay for this frame group's command queues
-   * 
+   *
    * @return millisecond delay between queue operations
    */
   protected int getSpeed() {
@@ -295,7 +296,7 @@ public class FrameGroupCommandQueueSet {
   /**
    * Schedules the specified command to be retrieved by the next call to handle command result, and
    * returns the result of that command.
-   * 
+   *
    * @param command - the remote command verb
    * @param arg - the first remote argument (meaning depends on the verb)
    * @param value - the second remote argument
@@ -437,7 +438,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Generates a CSV string from the given string array.
-   * 
+   *
    * @param stringArray Array of strings to generate a CSV.
    */
   public String getStringArrayAccessorCSV(String[] stringArray) {
@@ -500,7 +501,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Get a window title in the given CommandQueue.
-   * 
+   *
    * @param queue CommandQueue to get the title from.
    * @return Returns the title if it is found.
    * @throws WindowClosedException
@@ -581,7 +582,7 @@ public class FrameGroupCommandQueueSet {
   /**
    * Waits on the condition, making sure to wait at least as many seconds as specified, unless the
    * condition is signaled first.
-   * 
+   *
    * @param condition
    * @param numSeconds
    */
@@ -631,7 +632,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Does uniqueId point at a window that matches 'windowName'/'localFrame'?
-   * 
+   *
    * @param uniqueId
    * @param windowName
    * @param localFrame
@@ -684,7 +685,7 @@ public class FrameGroupCommandQueueSet {
    * <p>
    * Accepts a command reply, and retrieves the next command to run.
    * </p>
-   * 
+   *
    * @param commandResult - the reply from the previous command, or null
    * @param incomingFrameAddress - frame from which the reply came
    * @param uniqueId

@@ -1,18 +1,20 @@
 /*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ Licensed to the Software Freedom Conservancy (SFC) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The SFC licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
  */
 
 package org.openqa.selenium.server;
@@ -79,7 +81,7 @@ import java.util.logging.Logger;
  * <p/>
  * Remote Selenium requests are described in detail in the class description for
  * <code>SeleniumServer</code>
- * 
+ *
  * @author Paul Hammant
  * @version $Revision: 674 $
  * @see org.openqa.selenium.server.SeleniumServer
@@ -106,7 +108,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * Handy helper to retrieve the first parameter value matching the name
-   * 
+   *
    * @param req - the Jetty HttpRequest
    * @param name - the HTTP parameter whose value we'll return
    * @return the value of the first HTTP parameter whose name matches <code>name</code>, or
@@ -258,7 +260,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * extract the posted data from an incoming request, stripping away a piggybacked data
-   * 
+   *
    * @param req
    * @param sessionId
    * @param uniqueId
@@ -375,7 +377,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * Try to extract the name of the file whose absence caused the exception
-   * 
+   *
    * @param e - the exception
    * @return the name of the file whose absence caused the exception
    */
@@ -818,7 +820,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
    * reliably when we're creating a process while handling the HTTP response! So, removing the
    * "Connection: close" header so that Perl and Ruby think we're morons and hang up on us in
    * disgust.
-   * 
+   *
    * @param res the HTTP response
    */
   private void hackRemoveConnectionCloseHeader(HttpResponse res) {
@@ -857,7 +859,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
    * <p/>
    * Usually externally created browser sessions are managed themselves, but registering them allows
    * the shutdown procedures to be simpler.
-   * 
+   *
    * @param sessionInfo the externally created browser session to register.
    */
   public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
@@ -869,7 +871,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
    * <p/>
    * When an externally managed but registered session is closed, this method should be called to
    * keep the set of active sessions up to date.
-   * 
+   *
    * @param sessionInfo the session to deregister.
    */
   public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {
