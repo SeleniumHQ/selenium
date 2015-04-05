@@ -39,6 +39,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
+require 'rake-tasks/copyright'
 
 require 'rake-tasks/gecko_sdks'
 
@@ -713,6 +714,36 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
+end
+
+namespace :copyright do
+  task :update do
+    Copyright.Update(
+        FileList["javascript/**/*.js"].exclude(
+            "javascript/atoms/test/jquery.min.js",
+            "javascript/firefox-driver/extension/components/httpd.js",
+            "javascript/jsunit/**/*.js",
+            "javascript/node/selenium-webdriver/node_modules/**/*.js",
+            "javascript/selenium-core/lib/**/*.js",
+            "javascript/selenium-core/scripts/ui-element.js",
+            "javascript/selenium-core/scripts/ui-map-sample.js",
+            "javascript/selenium-core/scripts/user-extensions.js",
+            "javascript/selenium-core/scripts/xmlextras.js",
+            "javascript/selenium-core/xpath/**/*.js"))
+    Copyright.Update(
+        FileList["py/**/*.py"],
+        :style => "#",
+        :prefix => "#!/usr/bin/python\n#\n")
+    Copyright.Update(
+        FileList["java/**/*.java"].exclude(
+            "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
+            "java/client/test/org/openqa/selenium/internal/Base64EncoderTest.java",
+            "java/server/src/cybervillains/**/*.java",
+            "java/server/src/org/openqa/selenium/server/FrameGroupCommandQueueSet.java",
+            "java/server/src/org/openqa/selenium/server/FutureFileResource.java",
+            "java/server/src/org/openqa/selenium/server/ProxyHandler.java"
+            ))
+  end
 end
 
 at_exit do
