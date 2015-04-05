@@ -291,7 +291,7 @@ bot.Mouse.prototype.releaseButton = function() {
   // element becomes non-interactable after the mouseup.
   var elementInteractableBeforeMouseup =
       bot.dom.isInteractable(this.getElement());
-  this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
+  this.fireMouseEvent_(bot.events.EventType.MOUSEUP, null, null, true);
 
   // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
