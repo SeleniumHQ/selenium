@@ -340,7 +340,7 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-34/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/34.0/sdk/xulrunner-34.0.en-US.win32.sdk.zip',
            '7a613e5e9503e54205dd16de5c1e9aea'
-  
+
 end
 
 task :'selenium-server_zip' do
@@ -734,6 +734,9 @@ namespace :copyright do
         FileList["py/**/*.py"],
         :style => "#",
         :prefix => "#!/usr/bin/python\n#\n")
+    Copyright.Update(
+      FileList["rb/**/*.rb"],
+      :style => "#")
     Copyright.Update(
         FileList["java/**/*.java"].exclude(
             "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
