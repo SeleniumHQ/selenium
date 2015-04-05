@@ -1,19 +1,19 @@
-/*
- * Copyright 2008 Google, Inc.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
@@ -40,10 +40,10 @@ import java.util.logging.Logger;
 
 /**
  * Browser launcher for Google Chrome.
- * 
+ *
  * <p>
  * Known issues:
- * 
+ *
  * <ul>
  * <li>Does not support the avoidProxy command-line option.</li>
  * <li>Does not fall back to a direct connection if the proxy fails to respond.</li>
@@ -204,10 +204,10 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
   /**
    * A helper class to generate Google Chrome preferences.
-   * 
+   *
    * <p>
    * The structure of a preferences file is as follows:
-   * 
+   *
    * <pre>
      * {
      *    "preference_group_1": {
@@ -220,18 +220,18 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
      *    }
      * }
      * </pre>
-   * 
+   *
    * <p>
    * The format of the file is in JSON.
-   * 
+   *
    * <p>
    * As is shown, preferences are divided into groupings. These groupings are logical: similar
    * preferences are grouped together. Groupings may be nested.
-   * 
+   *
    * <p>
    * Preference names are delimited with a "." between groups. For instance, in the above example
    * the name of the first preference would be: <code>preference_group_1.preference_a</code>.
-   * 
+   *
    * <p>
    * A user of this class should create one <code>PrefNode</code> object as the root and call the
    * <code>setPref</code> method to add preferences. Once all preferences have been added, simply

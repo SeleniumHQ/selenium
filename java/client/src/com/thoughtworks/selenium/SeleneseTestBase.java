@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package com.thoughtworks.selenium;
 
@@ -27,13 +27,13 @@ import java.util.regex.Pattern;
 /**
  * Provides a base class that implements some handy functionality for Selenium testing (you are
  * <i>not</i> required to extend this class).
- * 
+ *
  * <p>
  * This class adds a number of "verify" commands, which are like "assert" commands, but they don't
  * stop the test when they fail. Instead, verification errors are all thrown at once during
  * tearDown.
  * </p>
- * 
+ *
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
  * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
@@ -55,7 +55,7 @@ public class SeleneseTestBase {
 
   /**
    * Calls this.setUp(null)
-   * 
+   *
    * @see #setUp(String)
    */
   public void setUp() throws Exception {
@@ -66,11 +66,11 @@ public class SeleneseTestBase {
   /**
    * Calls this.setUp with the specified url and a default browser. On Windows, the default browser
    * is *iexplore; otherwise, the default browser is *firefox.
-   * 
+   *
    * @see #setUp(String, String)
    * @param url the baseUrl to use for your Selenium tests
    * @throws Exception
-   * 
+   *
    */
   public void setUp(String url) throws Exception {
     setUp(url, runtimeBrowserString());
@@ -96,7 +96,7 @@ public class SeleneseTestBase {
    * string. The port is selected as follows: if the server package's RemoteControlConfiguration
    * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
    * system property is specified, that is used - failing that, the default of 4444 is used.
-   * 
+   *
    * @see #setUp(String, String, int)
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
@@ -121,7 +121,7 @@ public class SeleneseTestBase {
    * string. The port is selected as follows: if the server package's RemoteControlConfiguration
    * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
    * system property is specified, that is used - failing that, the default of 4444 is used.
-   * 
+   *
    * @see #setUp(String, String, int)
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
@@ -213,7 +213,7 @@ public class SeleneseTestBase {
 
   /**
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
-   * 
+   *
    * @param expectedPattern
    * @param actual
    * @return true if actual matches the expectedPattern, or false otherwise
@@ -284,7 +284,7 @@ public class SeleneseTestBase {
 
   /**
    * Compares two objects, but handles "regexp:" strings like HTML Selenese
-   * 
+   *
    * @see #seleniumEquals(String, String)
    * @return true if actual matches the expectedPattern, or false otherwise
    */

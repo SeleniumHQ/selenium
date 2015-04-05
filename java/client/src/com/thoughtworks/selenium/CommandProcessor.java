@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package com.thoughtworks.selenium;
 
@@ -21,7 +21,7 @@ package com.thoughtworks.selenium;
  * <p>
  * Provides a <code>doCommand</code> method, which sends the command to the browser to be performed.
  * </p>
- * 
+ *
  *
  * @author Paul Hammant
  * @version $Revision$
@@ -32,14 +32,14 @@ public interface CommandProcessor {
 
   /**
    * The URL that the RemoteControl instance is allegedly running on
-   * 
+   *
    * @return the URL
    */
   String getRemoteControlServerLocation();
 
   /**
    * Send the specified remote command to the browser to be performed
-   * 
+   *
    * @param command - the remote command verb
    * @param args - the arguments to the remote command (depends on the verb)
    * @return - the command result, defined by the remote JavaScript. "getX" style commands may

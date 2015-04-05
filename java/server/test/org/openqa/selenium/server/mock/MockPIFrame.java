@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server.mock;
 
@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 /**
  * Impersonates a single frame running in PI mode. This is basically a helper object to manage
  * BrowserRequests.
- * 
+ *
  * @author Dan Fabulich
- * 
+ *
  */
 public class MockPIFrame {
   static Logger log = Logger.getLogger(MockPIFrame.class.getName());
@@ -43,7 +43,7 @@ public class MockPIFrame {
 
   /**
    * Constructs a top-level frame with a blank window name.
-   * 
+   *
    * @param driverUrl the url of the Selenium Server
    * @param sessionId sessionId, should already exist in the server
    * @param uniqueId a unique string to identify this frame; normally this would be randomly
@@ -55,7 +55,7 @@ public class MockPIFrame {
 
   /**
    * Constructs a frame.
-   * 
+   *
    * @param driverUrl the url of the Selenium Server
    * @param sessionId sessionId, should already exist in the server
    * @param uniqueId a unique string to identify this frame; normally this would be randomly
@@ -97,7 +97,7 @@ public class MockPIFrame {
 
   /**
    * Transmits the result of the previous command
-   * 
+   *
    * @param body the result of the command, e.g. "OK" or "OK,123"
    * @return request object, used to acquire the next command
    */
@@ -128,7 +128,7 @@ public class MockPIFrame {
   /**
    * Takes a "getWhetherThisFrameMatchFrameExpression" command and tells you whether this frame
    * matches the embedded expression
-   * 
+   *
    * @param identifyCommand the "getWhetherThisFrameMatchFrameExpression" command we're supposed to
    *        run
    * @return true if we match the frame expression

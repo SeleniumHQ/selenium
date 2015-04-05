@@ -1,17 +1,19 @@
-/*
- * Copyright 2011 Selenium committers
- * Copyright 2011 Software Freedom Conservancy
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -128,12 +130,12 @@ public class LoadBalancedTests {
 
       assertNotNull(session);
     }
-    
+
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
     assertEquals(25, proxy2.getResourceUsageInPercent(), 0f);
     assertEquals(16.66, proxy3.getResourceUsageInPercent(), 0.1f);
 
-    
+
     List<TestSession> sessions = new ArrayList<TestSession>();
     // request 3 slots : it should spread the load to 1 FF per proxy.
     for (int i = 0; i < 3; i++) {
@@ -147,8 +149,8 @@ public class LoadBalancedTests {
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
     assertEquals(50, proxy2.getResourceUsageInPercent(), 0f);
     assertEquals(49.98, proxy3.getResourceUsageInPercent(), 0.1f);
-    
-    
+
+
     //release and check the resource are freed.
     for (TestSession session : sessions){
       registry.terminateSynchronousFOR_TEST_ONLY(session);
@@ -156,7 +158,7 @@ public class LoadBalancedTests {
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
     assertEquals(25, proxy2.getResourceUsageInPercent(), 0f);
     assertEquals(16.66, proxy3.getResourceUsageInPercent(), 0.1f);
-    
+
   }
 
 

@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.server;
@@ -52,7 +52,7 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
    * Returns an SSLSocketFactory that will trust all SSL certificates; this is suitable for passing
    * to HttpsURLConnection, either to its instance method setSSLSocketFactory, or to its static
    * method setDefaultSSLSocketFactory.
-   * 
+   *
    * @return SSLSocketFactory suitable for passing to HttpsUrlConnection
    * @see HttpsURLConnection#setSSLSocketFactory(SSLSocketFactory)
    * @see HttpsURLConnection#setDefaultSSLSocketFactory(SSLSocketFactory)
@@ -74,7 +74,7 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
   /**
    * Automatically trusts all SSL certificates in the current process; this is dangerous. You should
    * probably prefer to configure individual HttpsURLConnections with trustAllSSLCertificates
-   * 
+   *
    * @see #trustAllSSLCertificates(HttpsURLConnection)
    */
   public static void trustAllSSLCertificatesUniversally() {
@@ -84,7 +84,7 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
 
   /**
    * Configures a single HttpsURLConnection to trust all SSL certificates.
-   * 
+   *
    * @param connection an HttpsURLConnection which will be configured to trust all certs
    */
   public static void trustAllSSLCertificates(HttpsURLConnection connection) {

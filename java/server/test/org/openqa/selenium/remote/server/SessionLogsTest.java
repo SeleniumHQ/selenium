@@ -1,18 +1,19 @@
-/*
-Copyright 2012-2015 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server;
 
@@ -58,7 +59,7 @@ public class SessionLogsTest extends JUnit4TestBase {
 
   private static OutOfProcessSeleniumServer server;
   private RemoteWebDriver localDriver;
-  
+
   @BeforeClass
   public static void startUpServer() {
     server = new OutOfProcessSeleniumServer();
@@ -78,7 +79,7 @@ public class SessionLogsTest extends JUnit4TestBase {
       localDriver = null;
     }
   }
-  
+
   private void startDriver() {
     DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
     if (caps == null) {
@@ -93,16 +94,16 @@ public class SessionLogsTest extends JUnit4TestBase {
     startDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     stopDriver();
-    Map<String, SessionLogs> sessionMap = 
+    Map<String, SessionLogs> sessionMap =
         SessionLogHandler.getSessionLogs(getValueForPostRequest(server.getWebDriverUrl()));
     for (SessionLogs sessionLogs : sessionMap.values()) {
       for (String logType : logTypes) {
-        assertTrue(String.format("Session logs should include available log type %s", logType), 
+        assertTrue(String.format("Session logs should include available log type %s", logType),
           sessionLogs.getLogTypes().contains(logType));
       }
-    }    
+    }
   }
-  
+
   private static JsonObject getValueForPostRequest(URL serverUrl) throws Exception {
     String postRequest = serverUrl + "/logs";
     HttpClient client = HttpClientBuilder.create().build();

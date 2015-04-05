@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -29,16 +30,16 @@ public interface JavascriptExecutor {
   /**
    * Executes JavaScript in the context of the currently selected frame or window. The script
    * fragment provided will be executed as the body of an anonymous function.
-   * 
+   *
    * <p>
    * Within the script, use <code>document</code> to refer to the current document. Note that local
    * variables will not be available once the script has finished executing, though global variables
    * will persist.
-   * 
+   *
    * <p>
    * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
    * then the following steps will be taken:
-   * 
+   *
    * <ul>
    * <li>For an HTML element, this method returns a WebElement</li>
    * <li>For a decimal, a Double is returned</li>
@@ -49,13 +50,13 @@ public interface JavascriptExecutor {
    * support nested lists.</li>
    * <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ul>
-   * 
+   *
    * <p>
    * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
    * the above. An exception will be thrown if the arguments do not meet these criteria. The
    * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
    * the function were called via "Function.apply"
-   * 
+   *
    * @param script The JavaScript to execute
    * @param args The arguments to the script. May be empty
    * @return One of Boolean, Long, String, List or WebElement. Or null.
@@ -68,11 +69,11 @@ public interface JavascriptExecutor {
    * scripts executed with this method must explicitly signal they are finished by invoking the
    * provided callback. This callback is always injected into the executed function as the last
    * argument.
-   * 
+   *
    * <p>
    * The first argument passed to the callback function will be used as the script's result. This
    * value will be handled as follows:
-   * 
+   *
    * <ul>
    * <li>For an HTML element, this method returns a WebElement</li>
    * <li>For a number, a Long is returned</li>
@@ -89,7 +90,7 @@ public interface JavascriptExecutor {
    * {@link WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)}  beforehand
    * to a value sufficiently large enough.
    *
-   * 
+   *
    * <p>
    * Example #1: Performing a sleep in the browser under test. <pre>{@code
    *   long start = System.currentTimeMillis();
@@ -98,7 +99,7 @@ public interface JavascriptExecutor {
    *   System.out.println(
    *       "Elapsed time: " + System.currentTimeMillis() - start);
    * }</pre>
-   * 
+   *
    * <p>
    * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
    *   WebElement composeButton = driver.findElement(By.id("compose-button"));
@@ -109,7 +110,7 @@ public interface JavascriptExecutor {
    *   driver.switchTo().frame("composeWidget");
    *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
    * }</pre>
-   * 
+   *
    * <p>
    * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
    *   Object response = ((JavascriptExecutor) driver).executeAsyncScript(

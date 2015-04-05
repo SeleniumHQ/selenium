@@ -1,19 +1,19 @@
-/*
-Copyright 2015 Software Freedom Conservancy
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.ui;
 
@@ -36,7 +36,7 @@ public class Select {
   /**
    * Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
    * then an UnexpectedTagNameException is thrown.
-   * 
+   *
    * @param element SELECT element to wrap
    * @throws UnexpectedTagNameException when element is not a SELECT
    */
@@ -103,9 +103,9 @@ public class Select {
   /**
    * Select all options that display text matching the argument. That is, when given "Bar" this
    * would select an option like:
-   * 
+   *
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   * 
+   *
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
    */
@@ -166,7 +166,7 @@ public class Select {
   /**
    * Select the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
-   * 
+   *
    * @param index The option at this index will be selected
    * @throws NoSuchElementException If no matching option elements are found
    */
@@ -191,9 +191,9 @@ public class Select {
   /**
    * Select all options that have a value matching the argument. That is, when given "foo" this
    * would select an option like:
-   * 
+   *
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   * 
+   *
    * @param value The value to match against
    * @throws NoSuchElementException If no matching option elements are found
    */
@@ -217,7 +217,7 @@ public class Select {
 
   /**
    * Clear all selected entries. This is only valid when the SELECT supports multiple selections.
-   * 
+   *
    * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   public void deselectAll() {
@@ -236,9 +236,9 @@ public class Select {
   /**
    * Deselect all options that have a value matching the argument. That is, when given "foo" this
    * would deselect an option like:
-   * 
+   *
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   * 
+   *
    * @param value The value to match against
    * @throws NoSuchElementException If no matching option elements are found
    */
@@ -256,7 +256,7 @@ public class Select {
   /**
    * Deselect the option at the given index. This is done by examining the "index" attribute of an
    * element, and not merely by counting.
-   * 
+   *
    * @param index The option at this index will be deselected
    * @throws NoSuchElementException If no matching option elements are found
    */
@@ -273,9 +273,9 @@ public class Select {
   /**
    * Deselect all options that display text matching the argument. That is, when given "Bar" this
    * would deselect an option like:
-   * 
+   *
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   * 
+   *
    * @param text The visible text to match against
    * @throws NoSuchElementException If no matching option elements are found
    */
