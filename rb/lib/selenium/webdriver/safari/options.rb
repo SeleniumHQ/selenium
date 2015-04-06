@@ -73,7 +73,7 @@ module Selenium
           pn
         end
 
-      end
-    end
-  end
-end
+      end # Options
+    end # Safari
+  end # WebDriver
+end # Selenium

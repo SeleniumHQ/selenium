@@ -25,6 +25,6 @@ module Selenium
         Binary.path = path
       end
 
-    end
-  end
-end
+    end # Firefox
+  end # WebDriver
+end # Selenium

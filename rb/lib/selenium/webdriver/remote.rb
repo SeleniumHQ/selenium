@@ -14,8 +14,6 @@ module Selenium
     # @api private
     module Remote
 
-    end
-  end
-end
-
-
+    end # Remote
+  end # WebDriver
+end # Selenium

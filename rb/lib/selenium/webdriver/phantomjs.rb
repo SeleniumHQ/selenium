@@ -17,6 +17,6 @@ module Selenium
         @path ||= Platform.find_binary("phantomjs")
       end
 
-    end
-  end
-end
+    end # PhantomJS
+  end # WebDriver
+end # Selenium

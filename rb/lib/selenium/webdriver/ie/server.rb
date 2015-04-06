@@ -84,7 +84,7 @@ module Selenium
           args
         end
 
-      end
-    end
-  end
-end
+      end # Server
+    end # IE
+  end # WebDriver
+end # Selenium

@@ -35,9 +35,9 @@ module Selenium
         end
       end
 
-    end
-  end
-end
+    end # Safari
+  end # WebDriver
+end # Selenium
 
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'

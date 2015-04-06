@@ -11,9 +11,10 @@ module Selenium
       def self.driver_path
         @driver_path ||= nil
       end
-    end
-  end
-end
+
+    end # IE
+  end # WebDriver
+end # Selenium
 
 require 'selenium/webdriver/ie/server'
 require 'selenium/webdriver/ie/bridge'

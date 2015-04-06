@@ -37,8 +37,8 @@ module Selenium
         def initialize(bridge)
           @bridge = bridge
         end
-      end
 
-    end
-  end
-end
+      end # SessionStorage
+    end # HTML5
+  end # WebDriver
+end # Selenium

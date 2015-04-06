@@ -13,8 +13,7 @@ module Selenium
           @process.stop if @process
         end
 
-      end
-
-    end
-  end
-end
+      end # Browser
+    end # Safari
+  end # WebDriver
+end # Selenium

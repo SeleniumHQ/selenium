@@ -12,8 +12,8 @@ module Selenium
         def touch_screen
           TouchScreen.new @bridge
         end
-      end
 
-    end
-  end
-end
+      end # HasTouchScreen
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium

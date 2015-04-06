@@ -100,6 +100,6 @@ module Selenium
         end
       end
 
-    end
-  end
-end
+    end # TouchScreen
+  end # WebDriver
+end # Selenium

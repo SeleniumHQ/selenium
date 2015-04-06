@@ -285,9 +285,9 @@ module Selenium
               %{"#{str}"}
             end
           end
-        end # Escaper
 
+        end # Escaper
       end # Select
-    end
-  end
-end
+    end # Support
+  end # WebDriver
+end # Selenium
