@@ -1,19 +1,19 @@
-/*
- * Copyright 2011 Software Freedom Conservancy.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.server;
 
@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * <p>
  * Schedules and coordinates commands to be run.
  * </p>
- * 
+ *
  * @author Paul Hammant
  * @author Jennifer Bevan
  * @version $Revision: 734 $
@@ -82,7 +82,7 @@ public class CommandQueue {
   /**
    * Sends the specified command (to be retrieved by the next call to handle command result), and
    * returns the result of that command.
-   * 
+   *
    * @param command - the remote command verb
    * @param field - the first remote argument (meaning depends on the verb)
    * @param value - the second remote argument
@@ -198,7 +198,7 @@ public class CommandQueue {
    * <p>
    * Accepts a command reply, and retrieves the next command to run.
    * </p>
-   * 
+   *
    * @param commandResult - the reply from the previous command, or null
    * @return - the next command to run
    */
@@ -291,7 +291,7 @@ public class CommandQueue {
 
   /**
    * Get whether this command queue expects a result instead of just "OK".
-   * 
+   *
    * @return Returns whether this command will expect a command result.
    */
   public boolean isResultExpected() {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DefaultElementLocatorFactory.cs" company="WebDriver Committers">
-// Copyright 2014 Software Freedom Conservancy
+// Copyright 2015 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,25 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// A default locator for elements for use with the <see cref="PageFactory"/>. This locator
     /// implements no retry logic for elements not being found, nor for elements being stale.
     /// </summary>
+    [Obsolete("IElementLocatorFactory implementations are replaced by IElementLocator implementations. This class will be removed in a future release. Please use DefaultElementLocator instead.")]
     public class DefaultElementLocatorFactory : IElementLocatorFactory
     {
+        /// <summary>
+        /// Creates an <see cref="IElementLocator"/> object used to locate elements.
+        /// </summary>
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// locator uses for locating elements.</param>
+        /// <returns>The <see cref="IElementLocator"/> used to locate elements.</returns>
+        public IElementLocator CreateLocator(ISearchContext searchContext)
+        {
+            if (searchContext == null)
+            {
+                throw new ArgumentNullException("searchContext", "searchContext may not be null");
+            }
+
+            return new DefaultElementLocator(searchContext);
+        }
+
         /// <summary>
         /// Locates an element using the given <see cref="ISearchContext"/> and list of <see cref="By"/> criteria.
         /// </summary>
@@ -36,30 +53,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns>An <see cref="IWebElement"/> which is the first match under the desired criteria.</returns>
         public IWebElement LocateElement(ISearchContext searchContext, IEnumerable<By> bys)
         {
-            if (searchContext == null)
-            {
-                throw new ArgumentNullException("searchContext", "searchContext may not be null");
-            }
-
-            if (bys == null)
-            {
-                throw new ArgumentNullException("bys", "List of criteria may not be null");
-            }
-
-            string errorString = null;
-            foreach (var by in bys)
-            {
-                try
-                {
-                    return searchContext.FindElement(by);
-                }
-                catch (NoSuchElementException)
-                {
-                    errorString = (errorString == null ? "Could not find element by: " : errorString + ", or: ") + by;
-                }
-            }
-
-            throw new NoSuchElementException(errorString);
+            return this.CreateLocator(searchContext).LocateElement(bys);
         }
 
         /// <summary>
@@ -70,24 +64,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns>An list of all elements which match the desired criteria.</returns>
         public ReadOnlyCollection<IWebElement> LocateElements(ISearchContext searchContext, IEnumerable<By> bys)
         {
-            if (searchContext == null)
-            {
-                throw new ArgumentNullException("searchContext", "searchContext may not be null");
-            }
-
-            if (bys == null)
-            {
-                throw new ArgumentNullException("bys", "List of criteria may not be null");
-            }
-
-            List<IWebElement> collection = new List<IWebElement>();
-            foreach (var by in bys)
-            {
-                ReadOnlyCollection<IWebElement> list = searchContext.FindElements(by);
-                collection.AddRange(list);
-            }
-
-            return collection.AsReadOnly();
+            return this.CreateLocator(searchContext).LocateElements(bys);
         }
     }
 }

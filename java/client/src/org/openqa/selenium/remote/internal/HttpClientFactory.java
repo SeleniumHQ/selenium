@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.selenium.remote.internal;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -50,12 +51,17 @@ import java.net.ProxySelector;
 public class HttpClientFactory {
 
   private final CloseableHttpClient httpClient;
-  private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis(60 * 60 * 3);
+  private static final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis(60 * 60 * 3);
+  private static final int TIMEOUT_TWO_MINUTES = (int) SECONDS.toMillis(60 * 2);
   private final HttpClientConnectionManager gridClientConnectionManager =
       getClientConnectionManager();
 
   public HttpClientFactory() {
-    httpClient = createHttpClient(null);
+    this(TIMEOUT_TWO_MINUTES, TIMEOUT_THREE_HOURS);
+  }
+
+  public HttpClientFactory(int connectionTimeout, int socketTimeout) {
+    httpClient = createHttpClient(null, connectionTimeout, socketTimeout);
   }
 
   private static HttpClientConnectionManager getClientConnectionManager() {
@@ -77,12 +83,25 @@ public class HttpClientFactory {
   }
 
   public CloseableHttpClient createHttpClient(Credentials credentials) {
+      return createHttpClient(credentials, TIMEOUT_TWO_MINUTES, TIMEOUT_THREE_HOURS);
+  }
+
+  public CloseableHttpClient createHttpClient(Credentials credentials, int connectionTimeout, int socketTimeout) {
+    if (connectionTimeout <= 0) {
+        throw new IllegalArgumentException("connection timeout must be > 0");
+    }
+    if (socketTimeout <= 0) {
+        throw new IllegalArgumentException("socket timeout must be > 0");
+    }
+
+    SocketConfig socketConfig = createSocketConfig(socketTimeout);
+    RequestConfig requestConfig = createRequestConfig(connectionTimeout, socketTimeout);
+
     HttpClientBuilder builder = HttpClientBuilder.create()
         .setConnectionManager(getClientConnectionManager())
-        .setDefaultSocketConfig(createSocketConfig())
-        .setDefaultSocketConfig(createSocketConfig())
-        .setRoutePlanner(createRoutePlanner())
-        .setDefaultRequestConfig(createRequestConfig());
+        .setDefaultSocketConfig(createSocketConfig(socketTimeout))
+        .setDefaultRequestConfig(createRequestConfig(connectionTimeout, socketTimeout))
+        .setRoutePlanner(createRoutePlanner());
 
     if (credentials != null) {
       CredentialsProvider provider = new BasicCredentialsProvider();
@@ -93,17 +112,11 @@ public class HttpClientFactory {
     return builder.build();
   }
 
-  public HttpClient getGridHttpClient(int connection_timeout, int socket_timeout) {
+  public HttpClient getGridHttpClient(int connectionTimeout, int socketTimeout) {
     gridClientConnectionManager.closeIdleConnections(100, MILLISECONDS);
 
-    SocketConfig socketConfig = SocketConfig.copy(createSocketConfig())
-        .setSoTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
-        .build();
-
-    RequestConfig requestConfig = RequestConfig.copy(createRequestConfig())
-        .setConnectTimeout(connection_timeout > 0 ? connection_timeout : 120 * 1000)
-        .setSocketTimeout(socket_timeout > 0 ? socket_timeout : TIMEOUT_THREE_HOURS)
-        .build();
+    SocketConfig socketConfig = createSocketConfig(socketTimeout);
+    RequestConfig requestConfig = createRequestConfig(connectionTimeout, socketTimeout);
 
     return HttpClientBuilder.create()
         .setConnectionManager(gridClientConnectionManager)
@@ -114,18 +127,18 @@ public class HttpClientFactory {
         .build();
   }
 
-  private SocketConfig createSocketConfig() {
+  private SocketConfig createSocketConfig(int socketTimeout) {
     return SocketConfig.custom()
         .setSoReuseAddress(true)
-        .setSoTimeout(TIMEOUT_THREE_HOURS)
+        .setSoTimeout(socketTimeout)
         .build();
   }
 
-  private RequestConfig createRequestConfig() {
+  private RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
-        .setConnectTimeout(120 * 1000)
-        .setSocketTimeout(TIMEOUT_THREE_HOURS)
+        .setConnectTimeout(connectionTimeout)
+        .setSocketTimeout(socketTimeout)
         .build();
   }
 

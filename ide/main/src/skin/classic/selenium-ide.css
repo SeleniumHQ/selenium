@@ -78,6 +78,12 @@ treechildren::-moz-tree-cell-text(currentTestCase)
   font-weight: bold;
 }
 
+/*
+ * Autocomplete show deprecated
+ */
+treechildren.autocomplete-treebody::-moz-tree-cell-text(deprecated) {
+    color: red;
+}
 
 /*
  * Log Console
@@ -145,6 +151,17 @@ toolbarbutton.icon image {
 toolbarbutton.icon label {
   display: none;
 }
+#toolbar2 toolbarbutton:hover:not([disabled="true"]) {
+  background-color: #aaaaaa;
+}
+
+toolbarbutton.toolbar2 {
+  list-style-image: url("icons.png");
+}
+
+toolbarbutton.toolbar2[disabled="true"] {
+  list-style-image: url("icons_disabled.png");
+}
 
 #play-suite-button { 
   -moz-image-region: rect(0px 121px 16px 96px);
@@ -163,6 +180,13 @@ toolbarbutton.icon label {
 }
 #record-button[checked="true"] {
   -moz-image-region: rect(16px 48px 32px 32px);
+  background-color: rgba(225, 225, 225, 0.3);
+}
+#schedule-button:not([checked="true"]) {
+  -moz-image-region: rect(0px 166px 16px 150px);
+}
+#schedule-button[checked="true"] {
+  -moz-image-region: rect(16px 166px 32px 150px);
   background-color: rgba(225, 225, 225, 0.3);
 }
 #step-button { 

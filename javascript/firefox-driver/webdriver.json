@@ -2,6 +2,7 @@
   "frozen": {
     "app.update.auto": false,
     "app.update.enabled": false,
+    "browser.displayedE10SNotice": 4,
     "browser.download.manager.showWhenStarting": false,
     "browser.EULA.override": true,
     "browser.EULA.3.accepted": true,
@@ -11,6 +12,7 @@
     "browser.safebrowsing.enabled": false,
     "browser.safebrowsing.malware.enabled": false,
     "browser.search.update": false,
+    "browser.selfsupport.url" : "",
     "browser.sessionstore.resume_from_crash": false,
     "browser.shell.checkDefaultBrowser": false,
     "browser.tabs.warnOnClose": false,

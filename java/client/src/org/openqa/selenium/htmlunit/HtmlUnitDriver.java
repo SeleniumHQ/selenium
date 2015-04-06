@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.htmlunit;
 
@@ -295,7 +295,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   /**
    * Create the underlying webclient, but don't set any fields on it.
-   * 
+   *
    * @param version Which browser to emulate
    * @return a new instance of WebClient.
    */
@@ -306,7 +306,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   /**
    * Child classes can override this method to customise the webclient that the HtmlUnit driver
    * uses.
-   * 
+   *
    * @param client The client to modify
    * @return The modified client
    */
@@ -483,7 +483,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   /**
    * Allows HtmlUnit's about:blank to be loaded in the constructor, and may be useful for other
    * tests?
-   * 
+   *
    * @param fullUrl The URL to visit
    */
   protected void get(URL fullUrl) {
@@ -648,7 +648,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     return parseNativeJavascriptResult(result);
   }
-  
+
   private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
     final Scriptable scope = (Scriptable) page.getEnclosingWindow().getScriptObject();
 
@@ -689,7 +689,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     while (arg instanceof WrapsElement) {
       arg = ((WrapsElement) arg).getWrappedElement();
     }
-    
+
     if (!(arg instanceof HtmlUnitWebElement ||
         arg instanceof HtmlElement || // special case the underlying type
         arg instanceof Number ||
@@ -815,7 +815,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
       return map;
     }
-    
+
     if (value instanceof Location) {
       return convertLocationToMap((Location) value);
     }

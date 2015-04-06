@@ -32,10 +32,10 @@ module Selenium
           MAX_RETRIES = 3
 
           def request(verb, url, headers, payload, redirects = 0)
-            request = new_request_for(verb, url, headers, payload)
-
             retries = 0
+
             begin
+              request = new_request_for(verb, url, headers, payload)
               response = response_for(request)
             rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
               # a retry is sometimes needed on Windows XP where we may quickly
@@ -46,11 +46,16 @@ module Selenium
               #
               # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
               raise if retries >= MAX_RETRIES
-
-              request = new_request_for(verb, url, headers, payload)
               retries += 1
 
               retry
+            rescue Errno::EADDRNOTAVAIL => ex
+              # a retry is sometimes needed when the port becomes temporarily unavailable
+              raise if retries >= MAX_RETRIES
+              retries += 1
+              sleep 2
+              retry
+
             rescue Errno::ECONNREFUSED => ex
               if use_proxy?
                 raise ex.class, "using proxy: #{proxy.http}"

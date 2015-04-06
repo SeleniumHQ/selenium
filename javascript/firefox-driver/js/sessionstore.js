@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('wdSessionStoreService');
 
@@ -91,7 +90,7 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
  * @param {!FirefoxDriver} driver The driver instance.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function(response, desiredCaps, 
+wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
   requiredCaps, driver) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
@@ -135,7 +134,7 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
  * @param {Object.<*>} requiredCaps The required capabilities.
  * @return {*} The setting for the capability.
  */
-wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name, 
+wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name,
   desiredCaps, requiredCaps) {
   var setting = desiredCaps[name];
   if (requiredCaps && requiredCaps[name] !== undefined) {
@@ -183,7 +182,7 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
  * @param {!FirefoxDriver} driver The driver instance.
  * @private
  */
-wdSessionStoreService.prototype.configure_ = function(response, desiredCaps, 
+wdSessionStoreService.prototype.configure_ = function(response, desiredCaps,
     requiredCaps, driver) {
   goog.log.info(wdSessionStoreService.LOG_,
       'Setting preferences based on required capabilities');

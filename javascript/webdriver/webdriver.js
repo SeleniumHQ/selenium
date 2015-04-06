@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview The heart of the WebDriver JavaScript API.
@@ -40,7 +43,6 @@ goog.require('webdriver.TouchSequence');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 goog.require('webdriver.until');
-goog.require('webdriver.promise.Thenable');
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -183,7 +185,7 @@ webdriver.WebDriver.acquireSession_ = function(
  * @return {!webdriver.promise.Promise.<?>} A promise that will resolve to the
  *     input value's JSON representation.
  * @private
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 webdriver.WebDriver.toWireValue_ = function(obj) {
   if (webdriver.promise.isPromise(obj)) {
@@ -277,7 +279,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  *     parent of any unwrapped {@code webdriver.WebElement} values.
  * @param {*} value The value to convert.
  * @return {*} The converted value.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  * @private
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
@@ -1160,7 +1162,7 @@ webdriver.WebDriver.Options = function(driver) {
  *     secure: (boolean|undefined),
  *     expiry: (number|undefined)
  * }}
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
  */
 webdriver.WebDriver.Options.Cookie;
 
@@ -1257,7 +1259,7 @@ webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
  * @return {!webdriver.promise.Promise.<
  *     !Array.<webdriver.WebDriver.Options.Cookie>>} A promise that will be
  *     resolved with the cookies visible to the current page.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
  */
 webdriver.WebDriver.Options.prototype.getCookies = function() {
   return this.driver_.schedule(
@@ -1274,7 +1276,7 @@ webdriver.WebDriver.Options.prototype.getCookies = function() {
  * @return {!webdriver.promise.Promise.<?webdriver.WebDriver.Options.Cookie>} A
  *     promise that will be resolved with the named cookie, or {@code null}
  *     if there is no such cookie.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#cookie-json-object
  */
 webdriver.WebDriver.Options.prototype.getCookie = function(name) {
   return this.getCookies().then(function(cookies) {
@@ -1717,7 +1719,7 @@ goog.inherits(webdriver.WebElement, webdriver.Serializable);
 /**
  * Wire protocol definition of a WebElement ID.
  * @typedef {{ELEMENT: string}}
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 webdriver.WebElement.Id;
 
@@ -1772,7 +1774,7 @@ webdriver.WebElement.prototype.getDriver = function() {
  * @return {!webdriver.promise.Promise.<webdriver.WebElement.Id>} A promise
  *     that resolves to this element's JSON representation as defined by the
  *     WebDriver wire protocol.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 webdriver.WebElement.prototype.getId = function() {
   return this.id_;
@@ -1786,7 +1788,7 @@ webdriver.WebElement.prototype.getId = function() {
  * @package
  */
 webdriver.WebElement.prototype.getRawId = function() {
-  return this.id_.then(function(value) {
+  return this.getId().then(function(value) {
     return value['ELEMENT'];
   });
 };
@@ -2447,16 +2449,6 @@ goog.inherits(webdriver.UnhandledAlertError, bot.Error);
  */
 webdriver.UnhandledAlertError.prototype.getAlertText = function() {
   return this.text_;
-};
-
-
-/**
- * @return {!webdriver.Alert} The open alert.
- * @deprecated Use {@link #getAlertText}. This method will be removed in
- *     2.45.0.
- */
-webdriver.UnhandledAlertError.prototype.getAlert = function() {
-  return this.alert_;
 };
 
 

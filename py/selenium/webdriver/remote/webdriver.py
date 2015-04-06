@@ -1,21 +1,27 @@
-# Copyright 2008-2014 Software freedom conservancy
+#!/usr/bin/python
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""
-The WebDriver implementation.
-"""
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+"""The WebDriver implementation."""
+
 import base64
 import warnings
+
 from .command import Command
 from .webelement import WebElement
 from .remote_connection import RemoteConnection
@@ -33,18 +39,20 @@ try:
 except NameError:
     pass
 
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
-    This server is expected to be running the WebDriver wire protocol as defined
-    here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
+    This server is expected to be running the WebDriver wire protocol
+    as defined at
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
 
     :Attributes:
-     - command_executor - The command.CommandExecutor object used to execute commands.
-     - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.
-     - session_id - The session ID to send with every command.
-     - capabilities - A dictionary of capabilities of the underlying browser for this instance's session.
-     - proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.
+     - session_id - String ID of the browser session started and controlled by this WebDriver.
+     - capabilities - Dictionaty of effective capabilities of this browser session as returned
+         by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
+     - command_executor - remote_connection.RemoteConnection object used to execute commands.
+     - error_handler - errorhandler.ErrorHandler object used to handle errors.
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
@@ -53,9 +61,16 @@ class WebDriver(object):
         Create a new driver that will issue commands using the wire protocol.
 
         :Args:
-         - command_executor - Either a command.CommandExecutor object or a string that specifies the URL of a remote server to send commands to.
-         - desired_capabilities - Dictionary holding predefined values for starting a browser
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.  Only used if Firefox is requested.
+         - command_executor - Either a string representing URL of the remote server or a custom
+             remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
+         - desired_capabilities - A dictionary of capabilities to request when
+             starting the browser session. Required parameter.
+         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.
+             Only used if Firefox is requested. Optional.
+         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
+             be started with given proxy settings, if possible. Optional.
+         - keep_alive - Whether to configure remote_connection.RemoteConnection to use
+             HTTP keep-alive. Defaults to False.
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")

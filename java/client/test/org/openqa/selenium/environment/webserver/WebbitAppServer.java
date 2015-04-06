@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.environment.webserver;
@@ -60,21 +60,21 @@ public class WebbitAppServer implements AppServer {
   private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
   private final NetworkUtils networkUtils = new NetworkUtils();
-  
+
   private final String hostname;
   private int httpPort;
   private int httpsPort;
-  
+
   private WebServer httpServer;
   private WebServer httpsServer;
 
   public WebbitAppServer() {
     this(detectHostname());
   }
-  
+
   public WebbitAppServer(String hostname) {
     this.hostname = hostname;
-    
+
     listenOn(getHttpPort());
     listenSecurelyOn(getHttpsPort());
   }
@@ -87,7 +87,7 @@ public class WebbitAppServer implements AppServer {
   public String getHostName() {
     return hostname;
   }
-  
+
   private int getHttpPort() {
     if (this.httpPort == 0) {
       String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
@@ -141,14 +141,14 @@ public class WebbitAppServer implements AppServer {
     waitFor(httpServer.start());
     waitFor(httpsServer.start());
   }
-  
+
   public void stop() {
     httpServer.stop();
   }
-  
+
   private WebServer configureServer(int port) {
     WebServer server = WebServers.createWebServer(newFixedThreadPool(5), port);
-    
+
     // Note: Does first matching prefix matching, so /common/foo must be set up before /common
     // Delegating to a PathMatchHandler can be used to limit this
     forwardPathToHandlerUnderCommon("/page", new LastPathSegmentHandler(), server);
@@ -174,13 +174,13 @@ public class WebbitAppServer implements AppServer {
 
     return server;
   }
-  
+
   public WebbitAppServer addHandler(String path, HttpHandler handler) {
     forwardPathToHandler(path, handler, httpServer);
     forwardPathToHandler(path, handler, httpsServer);
     return this;
   }
-  
+
   private InputStream getKeystoreFile() {
     try {
       return new FileInputStream(InProject.locate(
@@ -189,7 +189,7 @@ public class WebbitAppServer implements AppServer {
       throw Throwables.propagate(t);
     }
   }
-  
+
   private void waitFor(Future<? extends WebServer> server) {
     long startTime = System.currentTimeMillis();
     while (System.currentTimeMillis() - startTime < 10000) {

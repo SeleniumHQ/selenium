@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
  * should there be an error thrown by the underlying XPath engine.
- * 
+ *
  * @see org.openqa.selenium.ie.InternetExplorerDriver
  * @see org.openqa.selenium.htmlunit.HtmlUnitDriver
  */
@@ -62,14 +62,14 @@ public interface WebDriver extends SearchContext {
    * the underlying page change whilst your test is executing the results of future calls against
    * this interface will be against the freshly loaded page. Synonym for
    * {@link org.openqa.selenium.WebDriver.Navigation#to(String)}.
-   * 
+   *
    * @param url The URL to load. It is best to use a fully qualified URL
    */
   void get(String url);
 
   /**
    * Get a string representing the current URL that the browser is looking at.
-   * 
+   *
    * @return The URL of the page currently loaded in the browser
    */
   String getCurrentUrl();
@@ -78,7 +78,7 @@ public interface WebDriver extends SearchContext {
 
   /**
    * The title of the current page.
-   * 
+   *
    * @return The title of the current page, with leading and trailing whitespace stripped, or null
    *         if one is not already set
    */
@@ -89,7 +89,7 @@ public interface WebDriver extends SearchContext {
    * This method is affected by the 'implicit wait' times in force at the time of execution. When
    * implicitly waiting, this method will return as soon as there are more than 0 items in the
    * found collection, or will return an empty list if the timeout is reached.
-   * 
+   *
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches
    * @see org.openqa.selenium.By
@@ -101,7 +101,7 @@ public interface WebDriver extends SearchContext {
   /**
    * Find the first {@link WebElement} using the given method.
    * This method is affected by the 'implicit wait' times in force at the time of execution.
-   * The findElement(..) invocation will return a matching row, or try again repeatedly until 
+   * The findElement(..) invocation will return a matching row, or try again repeatedly until
    * the configured timeout is reached.
    *
    * findElement should not be used to look for non-present elements, use {@link #findElements(By)}
@@ -125,7 +125,7 @@ public interface WebDriver extends SearchContext {
    * server. The page source returned is a representation of the underlying DOM: do not expect it to
    * be formatted or escaped in the same way as the response sent from the web server. Think of it as
    * an artist's impression.
-   * 
+   *
    * @return The source of the current page
    */
   String getPageSource();
@@ -143,7 +143,7 @@ public interface WebDriver extends SearchContext {
   /**
    * Return a set of window handles which can be used to iterate over all open windows of this
    * WebDriver instance by passing them to {@link #switchTo()}.{@link Options#window()}
-   * 
+   *
    * @return A set of window handles which can be used to iterate over all open windows.
    */
   Set<String> getWindowHandles();
@@ -156,7 +156,7 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Send future commands to a different frame or window.
-   * 
+   *
    * @return A TargetLocator which can be used to select a frame or window
    * @see org.openqa.selenium.WebDriver.TargetLocator
    */
@@ -165,7 +165,7 @@ public interface WebDriver extends SearchContext {
   /**
    * An abstraction allowing the driver to access the browser's history and to navigate to a given
    * URL.
-   * 
+   *
    * @return A {@link org.openqa.selenium.WebDriver.Navigation} that allows the selection of what to
    *         do next
    */
@@ -173,7 +173,7 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Gets the Option interface
-   * 
+   *
    * @return An option interface
    * @see org.openqa.selenium.WebDriver.Options
    */
@@ -187,7 +187,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Add a specific cookie. If the cookie's domain name is left blank, it is assumed that the
      * cookie is meant for the domain of the current document.
-     * 
+     *
      * @param cookie The cookie to add.
      */
     void addCookie(Cookie cookie);
@@ -195,14 +195,14 @@ public interface WebDriver extends SearchContext {
     /**
      * Delete the named cookie from the current domain. This is equivalent to setting the named
      * cookie's expiry date to some time in the past.
-     * 
+     *
      * @param name The name of the cookie to delete
      */
     void deleteCookieNamed(String name);
 
     /**
      * Delete a cookie from the browser's "cookie jar". The domain of the cookie will be ignored.
-     * 
+     *
      * @param cookie
      */
     void deleteCookie(Cookie cookie);
@@ -215,14 +215,14 @@ public interface WebDriver extends SearchContext {
     /**
      * Get all the cookies for the current domain. This is the equivalent of calling
      * "document.cookie" and parsing the result
-     * 
+     *
      * @return A Set of cookies for the current domain.
      */
     Set<Cookie> getCookies();
 
     /**
      * Get a cookie with a given name.
-     * 
+     *
      * @param name the name of the cookie
      * @return the cookie, or null if no cookie with the given name is present
      */
@@ -271,7 +271,7 @@ public interface WebDriver extends SearchContext {
      * <p>
      * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
      * effect on test run time, especially when used with slower location strategies like XPath.
-     * 
+     *
      * @param time The amount of time to wait.
      * @param unit The unit of measure for {@code time}.
      * @return A self reference.
@@ -282,7 +282,7 @@ public interface WebDriver extends SearchContext {
      * Sets the amount of time to wait for an asynchronous script to finish execution before
      * throwing an error. If the timeout is negative, then the script will be allowed to run
      * indefinitely.
-     * 
+     *
      * @param time The timeout value.
      * @param unit The unit of time.
      * @return A self reference.
@@ -310,7 +310,7 @@ public interface WebDriver extends SearchContext {
      * JS expression window.frames[index] where "window" is the DOM window represented by the
      * current context. Once the frame has been selected, all subsequent calls on the WebDriver
      * interface are made to that frame.
-     * 
+     *
      * @param index (zero-based) index
      * @return This driver focused on the given frame
      * @throws NoSuchFrameException If the frame cannot be found
@@ -320,7 +320,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Select a frame by its name or ID. Frames located by matching name attributes are always given
      * precedence over those matched by ID.
-     * 
+     *
      * @param nameOrId the name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt;
      *        element, or the (zero-based) index
      * @return This driver focused on the given frame
@@ -330,7 +330,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Select a frame using its previously located {@link WebElement}.
-     * 
+     *
      * @param frameElement The frame element to switch to.
      * @return This driver focused on the given frame.
      * @throws NoSuchFrameException If the given element is neither an IFRAME nor a FRAME element.
@@ -349,7 +349,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Switch the focus of future commands for this driver to the window with the given name/handle.
-     * 
+     *
      * @param nameOrHandle The name of the window or the handle as returned by
      *        {@link WebDriver#getWindowHandle()}
      * @return This driver focused on the given window
@@ -360,7 +360,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Selects either the first frame on the page, or the main document when a page contains
      * iframes.
-     * 
+     *
      * @return This driver focused on the top window/first frame.
      */
     WebDriver defaultContent();
@@ -369,7 +369,7 @@ public interface WebDriver extends SearchContext {
      * Switches to the element that currently has focus within the document currently "switched to",
      * or the body element if this cannot be detected. This matches the semantics of calling
      * "document.activeElement" in Javascript.
-     * 
+     *
      * @return The WebElement with focus, or the body element if no element with focus can be
      *         detected.
      */
@@ -377,7 +377,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Switches to the currently active modal dialog for this particular driver instance.
-     * 
+     *
      * @return A handle to the dialog.
      * @throws NoAlertPresentException If the dialog cannot be found
      */
@@ -404,14 +404,14 @@ public interface WebDriver extends SearchContext {
      * meta-redirect "rest" for any duration of time, it is best to wait until this timeout is over,
      * since should the underlying page change whilst your test is executing the results of future
      * calls against this interface will be against the freshly loaded page.
-     * 
+     *
      * @param url The URL to load. It is best to use a fully qualified URL
      */
     void to(String url);
 
     /**
      * Overloaded version of {@link #to(String)} that makes it easy to pass in a URL.
-     * 
+     *
      * @param url
      */
     void to(URL url);
@@ -428,7 +428,7 @@ public interface WebDriver extends SearchContext {
   interface ImeHandler {
     /**
      * All available engines on the machine. To use an engine, it has to be activated.
-     * 
+     *
      * @return list of available IME engines.
      * @throws ImeNotAvailableException if the host does not support IME.
      */
@@ -436,7 +436,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Get the name of the active IME engine. The name string is platform-specific.
-     * 
+     *
      * @return name of the active IME engine.
      * @throws ImeNotAvailableException if the host does not support IME.
      */
@@ -444,7 +444,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Indicates whether IME input active at the moment (not if it's available).
-     * 
+     *
      * @return true if IME input is available and currently active, false otherwise.
      * @throws ImeNotAvailableException if the host does not support IME.
      */
@@ -453,7 +453,7 @@ public interface WebDriver extends SearchContext {
     /**
      * De-activate IME input (turns off the currently activated engine). Note that getActiveEngine
      * may still return the name of the engine but isActivated will return false.
-     * 
+     *
      * @throws ImeNotAvailableException if the host does not support IME.
      */
     void deactivate();
@@ -464,8 +464,8 @@ public interface WebDriver extends SearchContext {
      * input sent using sendKeys will be converted by the engine. Noteh that this is a
      * platform-independent method of activating IME (the platform-specific way being using keyboard
      * shortcuts).
-     * 
-     * 
+     *
+     *
      * @param engine name of engine to activate.
      * @throws ImeNotAvailableException if the host does not support IME.
      * @throws ImeActivationFailedException if the engine is not available or if activation failed

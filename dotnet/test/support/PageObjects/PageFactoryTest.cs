@@ -12,6 +12,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         private Mockery mocks;
         private ISearchContext mockDriver;
         private IWebElement mockElement;
+        private IWebDriver mockExplicitDriver;
 
         [SetUp]
         public void SetUp()
@@ -19,6 +20,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             mocks = new Mockery();
             mockDriver = mocks.NewMock<ISearchContext>();
             mockElement = mocks.NewMock<IWebElement>();
+            mockExplicitDriver = mocks.NewMock<IWebDriver>();
         }
         
         [TearDown]
@@ -250,6 +252,26 @@ namespace OpenQA.Selenium.Support.PageObjects
             PageFactory.InitElements(mockDriver, page);
         }
 
+        [Test]
+        public void CanUseGenericInitElementsWithWebDriverConstructor()
+        {
+            WebDriverConstructorPage page = PageFactory.InitElements<WebDriverConstructorPage>(mockExplicitDriver);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor for the specified class containing a single argument of type IWebDriver", MatchType = MessageMatch.Contains)]
+        public void CanNotUseGenericInitElementWithInvalidConstructor()
+        {
+            InvalidConstructorPage page = PageFactory.InitElements<InvalidConstructorPage>(mockExplicitDriver);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "constructor for the specified class containing a single argument of type IWebDriver", MatchType = MessageMatch.Contains)]
+        public void CanNotUseGenericInitElementWithParameterlessConstructor()
+        {
+            ParameterlessConstructorPage page = PageFactory.InitElements<ParameterlessConstructorPage>(mockExplicitDriver);
+        }
+
         #region Test helper methods
 
         private void ExpectOneLookup()
@@ -298,6 +320,36 @@ namespace OpenQA.Selenium.Support.PageObjects
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
+        internal class WebDriverConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+            
+            public WebDriverConstructorPage(IWebDriver driver)
+            {
+            }
+        }
+
+        internal class ParameterlessConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+            
+            public ParameterlessConstructorPage()
+            {
+            }
+        }
+
+        internal class InvalidConstructorPage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+
+            public InvalidConstructorPage(string message)
+            {
+            }
+        }
+
         internal class Page
         {
             [FindsBy(How = How.Name, Using = "someForm")]
@@ -335,7 +387,6 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         private class SubClassToPrivatePage : PrivatePage
         {
-            
         }
 
         private class AbstractParent

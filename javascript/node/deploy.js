@@ -1,16 +1,19 @@
-// Copyright 2012 Selenium committers
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Script used to prepare WebDriverJS as a Node module.
@@ -28,13 +31,15 @@ var optparse = require('./optparse');
 
 
 var CLOSURE_BASE_REGEX = /^var goog = goog \|\| \{\};/;
-var REQUIRE_REGEX = /^\s*(?:(?:var|let|const)\s+[a-zA-Z_$][a-zA-Z0-9$_]*\s*=\s*)?goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
+var MODULE_REGEX = /^goog\.module\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
 var PROVIDE_REGEX = /^goog\.provide\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
+var REQUIRE_REGEX = /^\s*(?:(?:var|let|const)\s+[a-zA-Z_$][a-zA-Z0-9$_]*\s*=\s*)?goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\);?$/;
 
 
 /**
  * Map of file paths to a hash of what symbols that file provides and requires.
- * @type {!Object.<{provides: !Array.<string>,
+ * @type {!Object.<{modules: boolean,
+ *                  provides: !Array.<string>,
  *                  requires: !Array.<string>}>}
  */
 var FILE_INFO = {};
@@ -104,7 +109,7 @@ function updateProviders(path, symbol) {
  */
 function parseFile(path) {
   var contents = fs.readFileSync(path, 'utf8');
-  var info = {provides: [], requires: []};
+  var info = {module: false, provides: [], requires: []};
   FILE_INFO[path] = info;
 
   contents.split(/\n/).forEach(function(line) {
@@ -112,6 +117,10 @@ function parseFile(path) {
     if (match) {
       info.requires.push(match[1]);
       addRequiredEdge(path, match[1]);
+    } else if (match = line.match(MODULE_REGEX)) {
+      info.module = true;
+      info.provides.push(match[1]);
+      updateProviders(path, match[1]);
     } else if (match = line.match(PROVIDE_REGEX)) {
       info.provides.push(match[1]);
       updateProviders(path, match[1]);
@@ -244,7 +253,8 @@ function copyLibraries(outputDirPath, filePaths) {
       'goog.addDependency(',
       JSON.stringify(relativePath), ', ',
       JSON.stringify(FILE_INFO[file].provides), ', ',
-      JSON.stringify(FILE_INFO[file].requires),
+      JSON.stringify(FILE_INFO[file].requires), ', ',
+      !!FILE_INFO[file].module,
       ');'
     ].join(''));
 

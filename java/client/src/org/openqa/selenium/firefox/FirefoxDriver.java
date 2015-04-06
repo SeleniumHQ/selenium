@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2012 Selenium committers
-Portions copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox;
 
@@ -60,17 +60,46 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
- * firefox extension, which gets installed automatically if necessary. Important system variables
- * are:
- * <ul>
- * <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
- * <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
- * </ul>
- * <p>
- * When the driver starts, it will make a copy of the profile it is using, rather than using that
- * profile directly. This allows multiple instances of firefox to be started.
+ * firefox extension, which gets installed automatically if necessary.
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
+
+  public static final class SystemProperty {
+
+    /**
+     * System property that defines the location of the Firefox executable file.
+     */
+    public static final String BROWSER_BINARY = "webdriver.firefox.bin";
+
+    /**
+     * System property that defines the location of the file where Firefox log should be stored.
+     */
+    public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
+
+    /**
+     * System property that defines the additional library path (Linux only).
+     */
+    public static final String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
+
+    /**
+     * System property that defines the profile that should be used as a template.
+     * When the driver starts, it will make a copy of the profile it is using,
+     * rather than using that profile directly.
+     */
+    public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
+
+    /**
+     * System property that defines the location of the webdriver.xpi browser extension to install
+     * in the browser. If not set, the prebuilt extension bundled with this class will be used.
+     */
+    public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
+
+    /**
+     * Boolean system property that instructs FirefoxDriver to use Marionette backend.
+     */
+    public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
+  }
+
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
@@ -79,7 +108,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   // For now, only enable native events on Windows
   public static final boolean USE_MARIONETTE = Boolean.parseBoolean(
-      System.getProperty("webdriver.firefox.marionette"));
+      System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE));
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -100,18 +129,18 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null), 
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null),
         desiredCapabilities);
   }
-  
+
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities), 
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities),
         desiredCapabilities, requiredCapabilities);
   }
 
-  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities, 
+  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    
+
     FirefoxProfile profile = null;
     Object raw = null;
     if (desiredCapabilities != null && desiredCapabilities.getCapability(PROFILE) != null) {
@@ -132,10 +161,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
     }
     profile = getProfile(profile);
-    
+
     populateProfile(profile, desiredCapabilities);
     populateProfile(profile, requiredCapabilities);
-    
+
     return profile;
   }
 
@@ -152,10 +181,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       profile.setAcceptUntrustedCertificates(acceptCerts);
     }
     if (capabilities.getCapability(LOGGING_PREFS) != null) {
-      LoggingPreferences logsPrefs = 
+      LoggingPreferences logsPrefs =
           (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype, 
+        profile.setPreference("webdriver.log." + logtype,
             logsPrefs.getLevel(logtype).intValue());
       }
     }
@@ -185,8 +214,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
     this(binary, profile, capabilities, null);
   }
-  
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, 
+
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     super(new LazyCommandExecutor(binary, profile),
           dropCapabilities(desiredCapabilities, BINARY, PROFILE),
@@ -251,12 +280,13 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   private static FirefoxProfile getProfile(FirefoxProfile profile) {
     FirefoxProfile profileToUse = profile;
-    String suggestedProfile = System.getProperty("webdriver.firefox.profile");
+    String suggestedProfile = System.getProperty(SystemProperty.BROWSER_PROFILE);
     if (profileToUse == null && suggestedProfile != null) {
       profileToUse = new ProfilesIni().getProfile(suggestedProfile);
       if (profileToUse == null) {
-        throw new WebDriverException("Firefox profile '" + suggestedProfile
-            + "' named in system property 'webdriver.firefox.profile' not found");
+        throw new WebDriverException(String.format(
+            "Firefox profile '%s' named in system property '%s' not found",
+            suggestedProfile, SystemProperty.BROWSER_PROFILE));
       }
     } else if (profileToUse == null) {
       profileToUse = new FirefoxProfile();
@@ -278,8 +308,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
     } catch (Exception e) {
       throw new WebDriverException(e);
-    } finally {
-      lock.unlock();
     }
   }
 
@@ -294,7 +322,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   /**
    * Drops capabilities that we shouldn't send over the wire.
-   * 
+   *
    * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
    * launcher.
    */

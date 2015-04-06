@@ -1,19 +1,19 @@
-/*
-Copyright 2011-2012 Selenium committers
-Copyright 2011-2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.chrome;
 
@@ -58,6 +58,12 @@ public class ChromeDriverService extends DriverService {
       "webdriver.chrome.silentOutput";
 
   /**
+   * System property that defines comma-separated list of remote IPv4 addresses which are
+   * allowed to connect to ChromeDriver.
+   */
+  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
+
+  /**
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
@@ -90,6 +96,7 @@ public class ChromeDriverService extends DriverService {
 
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
+    private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
 
     /**
      * Configures the driver server verbosity.
@@ -113,11 +120,23 @@ public class ChromeDriverService extends DriverService {
       return this;
     }
 
+    /**
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
+     * to the driver server.
+     *
+     * @param whitelistedIps comma-separated list of remote IPv4 addresses
+     * @return A self reference.
+     */
+    public Builder withWhitelistedIps(String whitelistedIps) {
+      this.whitelistedIps = whitelistedIps;
+      return this;
+    }
+
     @Override
     protected File findDefaultExecutable() {
       return findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-                            "http://code.google.com/p/selenium/wiki/ChromeDriver",
-                            "http://chromedriver.storage.googleapis.com/index.html");
+          "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
+          "http://chromedriver.storage.googleapis.com/index.html");
     }
 
     @Override
@@ -139,6 +158,9 @@ public class ChromeDriverService extends DriverService {
       }
       if (silent) {
         argsBuilder.add("--silent");
+      }
+      if (whitelistedIps != null) {
+        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
       }
 
       return argsBuilder.build();

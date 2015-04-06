@@ -1,19 +1,19 @@
-/*
-Copyright 2015 Software Freedom Conservancy
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -51,6 +51,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
+    capabilities.putAll(rawMap);
+
     if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
@@ -59,13 +61,15 @@ public class DesiredCapabilities implements Serializable, Capabilities {
         prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
       capabilities.put(LOGGING_PREFS, prefs);
-      // So it does not get added twice
-      rawMap.remove(LOGGING_PREFS);
     }
-    capabilities.putAll(rawMap);
+
     Object value = capabilities.get(PLATFORM);
     if (value instanceof String) {
-      capabilities.put(PLATFORM, Platform.valueOf((String) value));
+      try {
+        capabilities.put(PLATFORM, Platform.fromString((String) value));
+      } catch (WebDriverException ex) {
+        // unrecognized platform, fallback to string
+      }
     }
   }
 

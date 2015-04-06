@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.internal;
 
@@ -48,7 +48,7 @@ import java.util.Map;
  */
 @RunWith(JUnit4.class)
 public class WebElementToJsonConverterTest {
-  
+
   private static final WebElementToJsonConverter CONVERTER = new WebElementToJsonConverter();
 
   @Test
@@ -150,7 +150,7 @@ public class WebElementToJsonConverterTest {
         "fruit", "apples",
         "honest", true));
     assertThat(converted, instanceOf(Map.class));
-    
+
     @SuppressWarnings("unchecked")
     Map<String, Object> map = (Map<String, Object>) converted;
     assertEquals(3, map.size());
@@ -192,7 +192,7 @@ public class WebElementToJsonConverterTest {
 
     Object value = CONVERTER.apply(Lists.newArrayList(element, element2));
     assertThat(value, instanceOf(Collection.class));
-    
+
     List<Object> list = Lists.newArrayList((Collection<Object>) value);
     assertEquals(2, list.size());
     assertIsWebElementObject(list.get(0), "abc123");
@@ -218,22 +218,22 @@ public class WebElementToJsonConverterTest {
     Object value = CONVERTER.apply(new Object[] {
         "abc123", true, 123, Math.PI
     });
-    
+
     assertThat(value, instanceOf(Collection.class));
     assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
         "abc123", true, 123, Math.PI);
   }
-  
+
   @Test
   public void convertsAnArrayWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
-    
+
     Object value = CONVERTER.apply(new Object[] { element });
     assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
         ImmutableMap.of("ELEMENT", "abc123"));
   }
-  
+
   @Test
   public void rejectsUnrecognizedTypes() {
     try {
@@ -255,20 +255,20 @@ public class WebElementToJsonConverterTest {
     assertTrue(map.containsKey("ELEMENT"));
     assertEquals(expectedKey, map.get("ELEMENT"));
   }
-  
+
   private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
     List<Object> expected = Lists.newArrayList(expectedContents);
     assertEquals(expected, list);
   }
-  
+
   private static class WrappingWebElement implements WebElement, WrapsElement {
-    
+
     private WebElement element;
-    
+
     public WrappingWebElement(WebElement element) {
       this.element = element;
     }
-    
+
     public WebElement getWrappedElement() {
       return element;
     }

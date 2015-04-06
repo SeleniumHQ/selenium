@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.grid.internal;
 
 import com.google.common.base.Throwables;
@@ -41,11 +41,11 @@ import java.util.logging.Logger;
  * The listener ({@link TestSessionListener} attached to the test session of this test slot is
  * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
  * executed.The other one will be discarded.
- * 
+ *
  * This class sees multiple threads but is currently sort-of protected by the lock in Registry.
  * Unfortunately the CleanUpThread also messes around in here, so it should be thread safe on its
  * own.
- * 
+ *
  */
 public class TestSlot {
 
@@ -96,7 +96,7 @@ public class TestSlot {
    * <p/>
    * Use {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
    * on the proxy hosting the test slot to modify the definition of match
-   * 
+   *
    * @param desiredCapabilities capabilities for the new session
    * @return a new session linked to that testSlot if possible, null otherwise.
    */
@@ -125,7 +125,7 @@ public class TestSlot {
   /**
    * the type of protocol for the TestSlot.Ideally should always be webdriver, but can also be
    * selenium1 protocol for backward compatibility purposes.
-   * 
+   *
    * @return the protocol for this TestSlot
    */
   public SeleniumProtocol getProtocol() {
@@ -135,7 +135,7 @@ public class TestSlot {
   /**
    * the path the server is using to handle the request. Typically /wd/hub for a webdriver based
    * protocol and /selenium-server/driver/ for a selenium1 based protocol
-   * 
+   *
    * @return the path the server is using for the requests of this slot.
    */
   public String getPath() {
@@ -153,7 +153,7 @@ public class TestSlot {
 
   /**
    * get the test session currently executed on this test slot.
-   * 
+   *
    * @return the session. Null if the slot is not used at the moment.
    */
   public TestSession getSession() {
@@ -167,7 +167,7 @@ public class TestSlot {
    * <p/>
    * That gives time to run exactly once the cleanup operation needed using @see
    * {@link TestSessionListener#afterSession(TestSession)}
-   * 
+   *
    * @return true if that's the first thread trying to release this test slot, false otherwise.
    * @see TestSlot#finishReleaseProcess()
    */
@@ -236,7 +236,7 @@ public class TestSlot {
 
   /**
    * get the full URL the underlying server is listening on for selenium / webdriver commands.
-   * 
+   *
    * @return the url
    */
   public URL getRemoteURL() {

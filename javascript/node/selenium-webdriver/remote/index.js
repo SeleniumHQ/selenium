@@ -1,16 +1,19 @@
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -62,7 +65,7 @@ var ServiceOptions;
  * Manages the life and death of a native executable WebDriver server.
  *
  * It is expected that the driver server implements the
- * [WebDriver wire protocol](http://code.google.com/p/selenium/wiki/JsonWireProtocol).
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
  * Furthermore, the managed server should support multiple concurrent sessions,
  * so that this class may be reused for multiple clients.
  *
@@ -175,12 +178,14 @@ DriverService.prototype.start = function(opt_timeoutMs) {
 
       self.command_.fulfill(command);
 
-      command.result().then(function(result) {
-        self.address_.reject(result.code == null ?
+      var earlyTermination = command.result().then(function(result) {
+        var error = result.code == null ?
             Error('Server was killed with ' + result.signal) :
-            Error('Server exited with ' + result.code));
+            Error('Server terminated early with status ' + result.code);
+        self.address_.reject(error);
         self.address_ = null;
         self.command_ = null;
+        throw error;
       });
 
       var serverUrl = url.format({
@@ -191,7 +196,14 @@ DriverService.prototype.start = function(opt_timeoutMs) {
         pathname: self.path_
       });
 
-      return httpUtil.waitForServer(serverUrl, timeout).then(function() {
+      return new promise.Promise(function(fulfill, reject) {
+        var ready = httpUtil.waitForServer(serverUrl, timeout)
+            .then(fulfill, reject);
+        earlyTermination.thenCatch(function(e) {
+          ready.cancel(e);
+          reject(Error(e.message));
+        });
+      }).then(function() {
         return serverUrl;
       });
     });

@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox;
 
@@ -57,30 +58,32 @@ public class FirefoxProfileTest {
   public void shouldQuoteStringsWhenSettingStringProperties() throws Exception {
     profile.setPreference("cheese", "brie");
 
-    List<String> props = readGeneratedProperties(profile);
-    boolean seenCheese = false;
-    for (String line : props) {
-      if (line.contains("cheese") && line.contains("\"brie\"")) {
-        seenCheese = true;
-      }
-    }
+    assertPreferenceValueEquals("cheese", "\"brie\"");
+  }
 
-    assertTrue(seenCheese);
+  @Test
+  public void getStringPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    String value = "brie";
+    profile.setPreference(key, value);
+
+    String defaultValue = "edam";
+    assertEquals(value, profile.getStringPreference(key, defaultValue));
+  }
+
+  @Test
+  public void getStringPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
+
+    String defaultValue = "brie";
+    assertEquals(defaultValue, profile.getStringPreference(key, defaultValue));
   }
 
   @Test
   public void shouldSetIntegerPreferences() throws Exception {
     profile.setPreference("cheese", 1234);
 
-    List<String> props = readGeneratedProperties(profile);
-    boolean seenCheese = false;
-    for (String line : props) {
-      if (line.contains("cheese") && line.contains(", 1234)")) {
-        seenCheese = true;
-      }
-    }
-
-    assertTrue("Did not see integer value being set correctly", seenCheese);
+    assertPreferenceValueEquals("cheese", 1234);
   }
 
   @Test
@@ -106,6 +109,24 @@ public class FirefoxProfileTest {
     profile.setPreference("cheese", false);
 
     assertPreferenceValueEquals("cheese", false);
+  }
+
+  @Test
+  public void getBooleanPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+    String key = "cheese";
+    boolean value = true;
+    profile.setPreference(key, value);
+
+    boolean defaultValue = false;
+    assertEquals(value, profile.getBooleanPreference(key, defaultValue));
+  }
+
+  @Test
+  public void getBooleanPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+    String key = "cheese";
+
+    boolean defaultValue = true;
+    assertEquals(defaultValue, profile.getBooleanPreference(key, defaultValue));
   }
 
   @Test

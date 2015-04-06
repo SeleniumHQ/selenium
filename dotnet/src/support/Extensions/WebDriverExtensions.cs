@@ -1,5 +1,5 @@
 ﻿// <copyright file="WebDriverExtensions.cs" company="WebDriver Committers">
-// Copyright 2013 Software Freedom Conservancy
+// Copyright 2015 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium.Support.Extensions
             }
 
             object result = executor.ExecuteScript(script, args);
-            if (!result.GetType().IsAssignableFrom(typeof(T)))
+            if (typeof(T).IsInstanceOfType(result) == false)
             {
                 throw new WebDriverException("Script returned a value, but the result could not be cast to the desired type");
             }

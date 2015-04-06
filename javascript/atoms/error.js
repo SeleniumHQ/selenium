@@ -1,21 +1,23 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Utilities for working with errors as defined by WebDriver's
- * wire protocol: http://code.google.com/p/selenium/wiki/JsonWireProtocol.
+ * wire protocol: https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 
 goog.provide('bot.Error');
@@ -24,7 +26,7 @@ goog.provide('bot.ErrorCode');
 
 /**
  * Error codes from the WebDriver wire protocol:
- * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
  * @enum {number}
  */
@@ -46,12 +48,8 @@ bot.ErrorCode = {
   NO_SUCH_WINDOW: 23,
   INVALID_COOKIE_DOMAIN: 24,
   UNABLE_TO_SET_COOKIE: 25,
-  /** @deprecated */
-  MODAL_DIALOG_OPENED: 26,
   UNEXPECTED_ALERT_OPEN: 26,
   NO_SUCH_ALERT: 27,
-  /** @deprecated */
-  NO_MODAL_DIALOG_OPEN: 27,
   SCRIPT_TIMEOUT: 28,
   INVALID_ELEMENT_COORDINATES: 29,
   IME_NOT_AVAILABLE: 30,
@@ -71,7 +69,7 @@ bot.ErrorCode = {
 /**
  * Error extension that includes error status codes from the WebDriver wire
  * protocol:
- * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
+ * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
  * @param {!bot.ErrorCode} code The error's status code.
  * @param {string=} opt_message Optional error message.
@@ -176,7 +174,6 @@ goog.scope(function() {
   map[code.JAVASCRIPT_ERROR] = state.JAVASCRIPT_ERROR;
   map[code.METHOD_NOT_ALLOWED] = state.UNSUPPORTED_OPERATION;
   map[code.MOVE_TARGET_OUT_OF_BOUNDS] = state.MOVE_TARGET_OUT_OF_BOUNDS;
-  map[code.NO_MODAL_DIALOG_OPEN] = state.NO_SUCH_ALERT;
   map[code.NO_SUCH_ALERT] = state.NO_SUCH_ALERT;
   map[code.NO_SUCH_ELEMENT] = state.NO_SUCH_ELEMENT;
   map[code.NO_SUCH_FRAME] = state.NO_SUCH_FRAME;
@@ -187,7 +184,6 @@ goog.scope(function() {
   map[code.SUCCESS] = state.SUCCESS;
   map[code.TIMEOUT] = state.TIMEOUT;
   map[code.UNABLE_TO_SET_COOKIE] = state.UNABLE_TO_SET_COOKIE;
-  map[code.MODAL_DIALOG_OPENED] = state.UNEXPECTED_ALERT_OPEN;
   map[code.UNEXPECTED_ALERT_OPEN] = state.UNEXPECTED_ALERT_OPEN
   map[code.UNKNOWN_ERROR] = state.UNKNOWN_ERROR;
   map[code.UNSUPPORTED_OPERATION] = state.UNKNOWN_COMMAND;

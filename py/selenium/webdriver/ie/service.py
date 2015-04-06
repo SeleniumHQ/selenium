@@ -1,19 +1,21 @@
 #!/usr/bin/python
 #
-# Copyright 2012 Webdriver_name committers
-# Copyright 2012 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 import subprocess
 from subprocess import PIPE
 import time
@@ -28,7 +30,7 @@ class Service(object):
     def __init__(self, executable_path, port=0, host=None, log_level=None, log_file=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to the IEDriver
          - port : Port the service is running on
@@ -48,8 +50,8 @@ class Service(object):
 
     def start(self):
         """
-        Starts the IEDriver Service. 
-        
+        Starts the IEDriver Service.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
@@ -70,16 +72,16 @@ class Service(object):
             raise WebDriverException(
                 "IEDriver executable needs to be available in the path. "
                 "Please download from http://selenium-release.storage.googleapis.com/index.html "
-                "and read up at http://code.google.com/p/selenium/wiki/InternetExplorerDriver")
+                "and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver")
         count = 0
         while not utils.is_url_connectable(self.port):
             count += 1
             time.sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to the IEDriver")
-                
+
     def stop(self):
-        """ 
+        """
         Tells the IEDriver to stop and cleans up the process
         """
         #If its dead dont worry
@@ -96,13 +98,15 @@ class Service(object):
         count = 0
         while utils.is_connectable(self.port):
             if count == 30:
-               break 
+               break
             count += 1
             time.sleep(1)
-        
+
         #Tell the Server to properly die in case
         try:
             if self.process:
+                self.process.stdout.close()
+                self.process.stderr.close()
                 self.process.kill()
                 self.process.wait()
         except WindowsError:

@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox;
 
@@ -70,7 +71,7 @@ public class FirefoxProfile {
    * Constructs a firefox profile from an existing profile directory.
    * <p>
    * Users who need this functionality should consider using a named profile.
-   * 
+   *
    * @param profileDir The profile directory to use as a model.
    */
   public FirefoxProfile(File profileDir) {
@@ -143,10 +144,26 @@ public class FirefoxProfile {
     throw new WebDriverException("Expected boolean value is not a boolean. It is: " + value);
   }
 
+  public String getStringPreference(String key, String defaultValue) {
+    Object preference = additionalPrefs.getPreference(key);
+    if(preference != null && preference instanceof String){
+      return (String) preference;
+    }
+    return defaultValue;
+  }
+
   public int getIntegerPreference(String key, int defaultValue) {
-    Object preference=additionalPrefs.getPreference(key);
-    if(preference!=null && preference instanceof Integer){
-      return (Integer)preference;
+    Object preference = additionalPrefs.getPreference(key);
+    if(preference != null && preference instanceof Integer){
+      return (Integer) preference;
+    }
+    return defaultValue;
+  }
+
+  public boolean getBooleanPreference(String key, boolean defaultValue) {
+    Object preference = additionalPrefs.getPreference(key);
+    if(preference != null && preference instanceof Boolean){
+      return (Boolean) preference;
     }
     return defaultValue;
   }
@@ -184,7 +201,7 @@ public class FirefoxProfile {
 
   /**
    * Attempt to add an extension to install into this instance.
-   * 
+   *
    * @param extensionToInstall
    * @throws IOException
    */
@@ -210,7 +227,7 @@ public class FirefoxProfile {
    * Note that if a value looks as if it is a quoted string (that is, starts with a quote character
    * and ends with one too) an IllegalArgumentException is thrown: Firefox fails to start properly
    * when some values are set to this.
-   * 
+   *
    * @param key The key
    * @param value The new value.
    */
@@ -220,7 +237,7 @@ public class FirefoxProfile {
 
   /**
    * Set a preference for this particular profile.
-   * 
+   *
    * @param key The key
    * @param value The new value.
    */
@@ -230,7 +247,7 @@ public class FirefoxProfile {
 
   /**
    * Set a preference for this particular profile.
-   * 
+   *
    * @param key The key
    * @param value The new value.
    */
@@ -315,7 +332,7 @@ public class FirefoxProfile {
   /**
    * Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
    * even if native events are disabled.
-   * 
+   *
    * @return Whether the no focus library should always be loaded for Firefox on Linux.
    */
   public boolean shouldLoadNoFocusLib() {
@@ -324,7 +341,7 @@ public class FirefoxProfile {
 
   /**
    * Sets whether the no focus library should always be loaded on Linux.
-   * 
+   *
    * @param loadNoFocusLib Whether to always load the no focus library.
    */
   public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
@@ -334,7 +351,7 @@ public class FirefoxProfile {
   /**
    * Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
    * authority or are generally untrusted. This is set to true by default.
-   * 
+   *
    * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
    */
 
@@ -353,7 +370,7 @@ public class FirefoxProfile {
    * If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
    * issued by valid issuer, but has expired or is being served served for a different host (e.g.
    * production certificate served in a testing environment) set this to false.
-   * 
+   *
    * @param untrustedIssuer whether to assume untrusted issuer or not.
    */
   public void setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
@@ -386,10 +403,10 @@ public class FirefoxProfile {
    * Call this to cause the current profile to be written to disk. The profile directory is
    * returned. Note that this profile directory is a temporary one and will be deleted when the JVM
    * exists (at the latest)
-   * 
+   *
    * This method should be called immediately before starting to use the profile and should only be
    * called once per instance of the {@link org.openqa.selenium.firefox.FirefoxDriver}.
-   * 
+   *
    * @return The directory containing the profile.
    */
   public File layoutOnDisk() {

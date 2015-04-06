@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package com.thoughtworks.selenium;
@@ -23,12 +23,12 @@ import java.util.Map;
 
 /**
  * Contains parameters for a single Selenium browser session.
- * 
+ *
  * BrowserConfigurationOptions is used as an argument to {@code Selenium.start()}. The parameters
  * set within will override any command-line parameters set for the same option.
- * 
+ *
  * @author jbevan, chandrap
- * 
+ *
  */
 public class BrowserConfigurationOptions {
   public static final String PROXY_CONFIG = "proxy";
@@ -53,7 +53,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Returns true if any options are set in this instance.
-   * 
+   *
    * @return true if any options are set in this instance.
    */
   public boolean hasOptions() {
@@ -62,7 +62,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Serializes to the format "name=value;name=value".
-   * 
+   *
    * @return String with the above format.
    */
   public String serialize() {
@@ -82,7 +82,7 @@ public class BrowserConfigurationOptions {
   /**
    * Sets the name of the profile, which must exist in the -profilesLocation directory, to use for
    * this browser session.
-   * 
+   *
    * @param profile the name of the profile.
    * @return this BrowserConfigurationOptions object.
    */
@@ -98,7 +98,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Returns true if the {@code SINGLE_WINDOW} field is set.
-   * 
+   *
    * @return true if {@code SINGLE_WINDOW} is set.
    */
   protected boolean isSingleWindow() {
@@ -110,7 +110,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Returns true if the {@code MULTI_WINDOW} field is set.
-   * 
+   *
    * @return true if {@code MULTI_WINDOW} is set.
    */
   protected boolean isMultiWindow() {
@@ -149,7 +149,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Sets the full path for the browser executable.
-   * 
+   *
    * @param executablePath the full path for the browser executable.
    */
   public BrowserConfigurationOptions setBrowserExecutablePath(String executablePath) {
@@ -159,7 +159,7 @@ public class BrowserConfigurationOptions {
 
   /**
    * Sets the timeout, in seconds, for all commands.
-   * 
+   *
    * @param timeout the timeout for all commands
    * @return this BrowserConfigurationOptions instance.
    */
@@ -176,15 +176,15 @@ public class BrowserConfigurationOptions {
 
   /**
    * Sets the "mode" for the browser.
-   * 
+   *
    * Historically, the 'browser' argument for getNewBrowserSession implied the mode for the browser.
    * For example, *iehta indicated HTA mode for IE, whereas *iexplore indicated the default user
    * mode. Using this method allows a browser mode to be specified independently of the base
    * browser, eg. "HTA" or "PROXY".
-   * 
+   *
    * Note that absolutely no publication nor synchronization of these hard-coded strings such as
    * "HTA" has yet been done. Use at your own risk until this is rectified.
-   * 
+   *
    * @param mode
    */
   public BrowserConfigurationOptions setBrowserMode(String mode) {
@@ -231,7 +231,7 @@ public class BrowserConfigurationOptions {
   /**
    * Sets the given key to the given value unless the value is null. In that case, no entry for the
    * key is made.
-   * 
+   *
    * @param key the name of the key
    * @param value the value for the key
    */

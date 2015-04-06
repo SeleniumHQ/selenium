@@ -1,3 +1,28 @@
+## v2.46.0-dev
+
+* Removed deprecated functions:
+    * Capabilities#toJSON()
+    * UnhandledAlertError#getAlert()
+    * chrome.createDriver()
+    * phantomjs.createDriver()
+    * promise.ControlFlow#annotateError()
+    * promise.ControlFlow#await()
+    * promise.ControlFlow#clearHistory()
+    * promise.ControlFlow#getHistory()
+* Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
+    `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
+    `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.
+* FIXED: Correct serialize target elements used in an action sequence.
+* FIXED: `promise.ControlFlow#wait()` now has consistent semantics for an
+    omitted or 0-timeout: it will wait indefinitely.
+* FIXED: `remote.DriverService#start()` will now fail if the child process dies
+    while waiting for the server to start accepting requests. Previously, start
+    would continue to poll the server address until the timeout expired.
+* FIXED: 8564: `firefox.Driver#quit()` will wait for the Firefox process to
+    terminate before deleting the temporary webdriver profile. This eliminates a
+    race condition where Firefox would write profile data during shutdown,
+    causing the `rm -rf` operation on the profile directory to fail.
+
 ## v2.45.1
 
 * FIXED: 8548: Task callbacks are once again dropped if the task was cancelled
@@ -160,7 +185,7 @@ major version release (i.e. 1.0.0).
 * FIXED: 7641: Deprecated `ErrorCode.NO_MODAL_DIALOG_OPEN` and
     `ErrorCode.MODAL_DIALOG_OPENED` in favor of the new
     `ErrorCode.NO_SUCH_ALERT` and `ErrorCode.UNEXPECTED_ALERT_OPEN`,
-    respecitvely.
+    respectively.
 * FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
     timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
 * FIXED: 7470: Make it easier to create WebDriver instances in custom flows for

@@ -153,6 +153,8 @@ function Editor(window) {
   this.document = document;
   this.recordButton = document.getElementById("record-button");
   this.recordMenuItem = document.getElementById("menu_record");
+  this.scheduleButton = document.getElementById("schedule-button");
+  this.scheduleMenuItem = document.getElementById("menu_schedule");
   this.speedMaxInterval = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
   this.initMenus();
   this.app.initOptions();
@@ -162,8 +164,7 @@ function Editor(window) {
   this.loadSeleniumAPI();
   //TODO show plugin errors
   if (this.pluginManager.errors.hasErrors()) {
-    this.showAlert("The following plugins were disabled due to errors while loading their code. See the Plugins section in the Selenium IDE Options dialog for individual plugin details.\n\n"
-        + this.pluginManager.errors.getPluginIdsWithErrors().join("\n"));
+    this.showAlert(Editor.getString('plugin.disabled.message') + "\n\n" + this.pluginManager.errors.getPluginIdsWithErrors().join("\n"));
   }
   this.selectDefaultReference();
   this.treeView = new TreeView(this, document, document.getElementById("commands"));
@@ -220,9 +221,12 @@ function Editor(window) {
   //Samit: Enh: display a webpage on the first start (and also on locale change if the version string is localised)
   var versionString = Editor.getString('selenium-ide.version');
   if (!this.app.options.currentVersion || this.app.options.currentVersion != versionString) {
-    openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
+    openTabOrWindow('https://github.com/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
+
+  this.seleniumScheduler = new SeleniumScheduler(this);
+  this.scheduler = this.seleniumScheduler.scheduler;
   this.log.info("Ready");
   this.app.notify('initComplete');
   this.health.addEvent('editor', 'initialized');
@@ -279,6 +283,7 @@ Editor.controller = {
       case "cmd_selenium_rollup":
       case "cmd_selenium_reload":
       case "cmd_selenium_record":
+      case "cmd_selenium_schedule":
       case "cmd_selenium_speed_fastest":
       case "cmd_selenium_speed_faster":
       case "cmd_selenium_speed_slower":
@@ -324,7 +329,9 @@ Editor.controller = {
         return editor.app.isPlayable() && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
       case "cmd_selenium_step":
         return editor.app.isPlayable() && editor.selDebugger.state == Debugger.PAUSED;
-      case "cmd_selenium_record":
+      case "cmd_selenium_record":   //TODO base it on scheduler?
+        return true;
+      case "cmd_selenium_schedule":
         return true;
       case "cmd_selenium_speed_fastest":
         return editor.getInterval() > 0;
@@ -413,6 +420,35 @@ Editor.controller = {
       case "cmd_selenium_record":
         editor.toggleRecordingEnabled();
         break;
+      case "cmd_selenium_schedule":
+        editor.scheduleButton.checked = !editor.scheduleButton.checked;
+        if (editor.scheduleButton.checked) {
+          //TODO hasJobs() is not enough as there may be jobs that are not valid, need hasValidJobs()
+          if (editor.scheduler.hasJobs()) {
+            editor.toggleRecordingEnabled(false);
+            if (editor.scheduler.pendingJobCount() > 0) {
+              var answer = PromptService.yesNoCancel(Editor.getString('scheduler.runNow.message'), Editor.getString('scheduler.runNow.title'));
+              if (answer.yes) {
+                editor.scheduler.start();
+              } else if (answer.no) {
+                editor.scheduler.resetNextRun();
+                editor.scheduler.start();
+              } else {
+                //Canceled
+                editor.scheduleButton.checked = !editor.scheduleButton.checked;
+              }
+            } else {
+              editor.scheduler.start();
+            }
+          } else {
+            if (PromptService.yesNo(Editor.getString('scheduler.setupJobs.message'), Editor.getString('scheduler.setupJobs.title')).yes) {
+              editor.openSeleniumIDEScheduler();
+            }
+          }
+        } else {
+          editor.scheduler.stop();
+        }
+        break;
       case "cmd_selenium_speed_fastest":
         editor.updateInterval(-1000);
         break;
@@ -476,12 +512,12 @@ Editor.prototype.confirmClose = function () {
     if (saveSuite || changedTestCases > 0) {
       var promptType = (saveSuite ? 1 : 0) + (changedTestCases > 0 ? 2 : 0) - 1;
       var prompt = [
-        "Would you like to save the test suite?",
-        "Would you like to save the " + changedTestCases + " changed test case/s?",
-        "Would you like to save the test suite and the " + changedTestCases + " changed test case/s?"
+        Editor.getString('saveTestSuite.confirm'),
+        Editor.getFormattedString('saveTestCase.confirm', [changedTestCases]),
+        Editor.getFormattedString('saveTestSuiteAndCase.confirm', [changedTestCases])
       ][promptType];
 
-      var result = PromptService.save(prompt, "Save?");
+      var result = PromptService.save(prompt, Editor.getString('save'));
       if (result.save) {
         if (curSuite.isTempSuite()) {
           //For temp suites, just save the test case (as there is only one test case)
@@ -687,6 +723,20 @@ Editor.prototype.resetWindow = function () {
     }
   }
 };
+Editor.prototype.submitDiagInfo = function(){
+  this.health.runDiagnostics();
+  var data = {
+    data: this.health.getJSON(true)
+  };
+  window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
+  if (data.data.length > 0) {
+    GitHub.createGist("Selenium IDE diagnostic information", data).done(function(url){
+      alert("Gist created with diagnostic information.\nPlease update the issue on https://github.com/SeleniumHQ/selenium/issues with this url.\nURL: " + url);
+    }, function(response, success, status){
+      alert("Gist creation failed with status " + status + "\nResponse:-\n" + (response || ''));
+    });
+  }
+};
 
 //Samit: Enh: Introduced experimental features to enable or disable experimental and unstable features
 Editor.prototype.updateExperimentalFeatures = function (show) {
@@ -703,7 +753,7 @@ Editor.prototype.showFormatsPopup = function (e) {
   } else {
     XulUtils.clearChildren(e);
     XulUtils.appendMenuItem(e, {
-      label: "Want the formats back? Click to read more",
+      label: Editor.getString('format.switch.read'),
       value: "stuff"
     });
   }
@@ -726,7 +776,7 @@ Editor.prototype.updateDeveloperTools = function (show) {
 
 //Samit: Enh: Provide a bit of visual assistance
 Editor.prototype.updateVisualEye = function (show) {
-  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar") ;
+  var container = document.getElementById("selenium-ide") || document.getElementById("selenium-ide-sidebar");
   show ? container.classList.add("visualeye") : container.classList.remove("visualeye");
 };
 
@@ -844,6 +894,14 @@ Editor.prototype.appendWaitForPageToLoad = function (window) {
 
 Editor.prototype.openSeleniumIDEPreferences = function () {
   window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
+};
+
+Editor.prototype.openSeleniumIDEScheduler = function (event) {
+  if (event) {
+    event.stopPropagation();
+  }
+  window.openDialog("chrome://selenium-ide/content/scheduler/schedulerui.xul", "scheduler", "chrome,modal,resizable", this);
+  this.scheduleButton.checked = this.scheduler.isActive();
 };
 
 Editor.prototype.showInBrowser = function (url, newWindow) {
@@ -1032,15 +1090,17 @@ Editor.prototype.loadExtensions = function () {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().ideExtensionsPaths, window);
     } catch (error) {
       this.health.addException('editor', 'ide-extensions: ' + this.getOptions().ideExtensionsPaths, error);
-      this.showAlert("error loading Selenium IDE extensions: " + error);
+      this.showAlert(Editor.getFormattedString('ide.extensions.failed', [error.toString()]));
     }
   }
+  var health = this.health;
   var pluginManager = this.pluginManager;
   pluginManager.getEnabledIDEExtensions().forEach(function (plugin) {
     for (var i = 0; i < plugin.code.length; i++) {
       try {
         ExtensionsLoader.loadSubScript(subScriptLoader, plugin.code[i], window);
       } catch (error) {
+        health.addException('editor', 'plugin: ' + plugin.id, error);
         pluginManager.setPluginError(plugin.id, plugin.code[i], error);
         break;
       }
@@ -1068,11 +1128,7 @@ Editor.prototype.loadSeleniumAPI = function () {
       ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, seleniumAPI);
     } catch (error) {
       this.health.addException('editor', 'user-extensions: ' + this.getOptions().userExtensionsURL, error);
-      this.showAlert("Failed to load user-extensions.js!"
-          + "\nfiles=" + this.getOptions().userExtensionsURL
-          + "\nlineNumber=" + error.lineNumber
-          + "\nerror=" + error
-      );
+      this.showAlert(Editor.getFormattedString('user.extensions.failed', [error.toString()]));
     }
   }
 

@@ -38,7 +38,7 @@ ruby_library(name = "common",
     "README.md"
   ],
   resources = [
-    { "../COPYING" : "rb/COPYING" }
+    { "../LICENSE" : "rb/LICENSE" }
   ],
   deps = [ "//java/client/test/org/openqa/selenium/environment" ]
 )

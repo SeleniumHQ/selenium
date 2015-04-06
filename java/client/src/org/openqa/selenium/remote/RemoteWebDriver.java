@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2014 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -31,6 +32,8 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -871,8 +874,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public WebDriver frame(String frameName) {
-      execute(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of("id", frameName));
-      return RemoteWebDriver.this;
+      String name = frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
+      List<WebElement> frameElements = RemoteWebDriver.this.findElements(
+          By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+      if (frameElements.size() == 0) {
+        frameElements = RemoteWebDriver.this.findElements(
+            By.cssSelector("frame#" + name + ",iframe#" + name));
+      }
+      if (frameElements.size() == 0) {
+        throw new NoSuchFrameException("No frame element found by name or id " + frameName);
+      }
+      return frame(frameElements.get(0));
     }
 
     public WebDriver frame(WebElement frameElement) {

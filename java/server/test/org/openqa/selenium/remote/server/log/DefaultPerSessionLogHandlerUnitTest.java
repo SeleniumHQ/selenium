@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.log;
 
@@ -79,8 +79,8 @@ public class DefaultPerSessionLogHandlerUnitTest {
         1, sessionLogs.getLogs(LogType.SERVER).getAll().size());
     assertEquals("Session log should contain logged entry", firstRecord.getMessage(),
         sessionLogs.getLogs(LogType.SERVER).getAll().get(0).getMessage());
-  }   
-  
+  }
+
   @Test
   public void testThreadToSessionMappingOnInitialNullSession()
       throws IOException {
@@ -89,7 +89,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
     LogRecord secondRecord = new LogRecord(Level.INFO, "Second Log Record");
 
     SessionId sessionId = new SessionId("session-1");
-    
+
     handler.publish(firstRecord);
     handler.attachToCurrentThread(sessionId);
     handler.publish(secondRecord);
@@ -112,7 +112,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
 
     SessionId sessionIdOne = new SessionId("session-1");
     SessionId sessionIdTwo = new SessionId("session-2");
-    
+
     handler.publish(firstRecord);
     handler.attachToCurrentThread(sessionIdOne);
     handler.publish(secondRecord);
@@ -137,7 +137,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
 
     SessionId sessionIdOne = new SessionId("session-one");
     SessionId sessionIdTwo = new SessionId("session-two");
-    
+
     // set logs for session-1
     handler.attachToCurrentThread(sessionIdOne);
     handler.publish(firstSessionLog);
@@ -168,7 +168,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
     PerSessionLogHandler handler = createPerSessionLogHandler();
 
     SessionId sessionId = new SessionId("session");
-    
+
     handler.transferThreadTempLogsToSessionLogs(sessionId);
 
     assertNoMessageLoggedForSessionId(handler, sessionId);

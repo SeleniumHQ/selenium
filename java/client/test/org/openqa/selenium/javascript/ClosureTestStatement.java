@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.javascript;
 
 import static org.junit.Assert.fail;
@@ -16,9 +33,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class ClosureTestStatement extends Statement {
-  
+
   private static final Logger LOG = Logger.getLogger(ClosureTestStatement.class.getName());
-  
+
   private final Supplier<WebDriver> driverSupplier;
   private final String testPath;
   private final Function<String, URL> filePathToUrlFn;
@@ -36,7 +53,7 @@ public class ClosureTestStatement extends Statement {
   public void evaluate() throws Throwable {
     URL testUrl = filePathToUrlFn.apply(testPath);
     LOG.info("Running: " + testUrl);
-    
+
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     WebDriver driver = driverSupplier.get();
@@ -58,7 +75,7 @@ public class ClosureTestStatement extends Statement {
     } catch (WebDriverException e) {
       fail("Test failed to load: " + e.getMessage());
     }
-    
+
     while (!getBoolean(executor, Query.IS_FINISHED)) {
       long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
@@ -66,13 +83,13 @@ public class ClosureTestStatement extends Statement {
       }
       TimeUnit.MILLISECONDS.sleep(100);
     }
-    
+
     if (!getBoolean(executor, Query.IS_SUCCESS)) {
       String report = getString(executor, Query.GET_REPORT);
       throw new JavaScriptAssertionError(report);
     }
   }
-  
+
   private boolean getBoolean(JavascriptExecutor executor, Query query) {
     return (Boolean) executor.executeScript(query.script);
   }

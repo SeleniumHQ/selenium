@@ -1,22 +1,27 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package org.openqa.selenium.support.ui;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +31,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
-
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 public class SelectElementTest extends JUnit4TestBase {
 
@@ -256,54 +257,5 @@ public class SelectElementTest extends JUnit4TestBase {
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
 
     assertEquals(1,returnedOptions.size());
-  }
-
-  @Test
-  public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    WebElement selectElement = driver.findElement(By.name("multi"));
-    Select select = new Select(selectElement);
-    String result = select.escapeQuotes("foo");
-
-    assertEquals("\"foo\"", result);
-  }
-
-  @Test
-  public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    WebElement selectElement = driver.findElement(By.name("multi"));
-    Select select = new Select(selectElement);
-    String result = select.escapeQuotes("f'oo");
-
-    assertEquals("\"f'oo\"", result);
-  }
-
-  @Test
-  public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    WebElement selectElement = driver.findElement(By.name("multi"));
-    Select select = new Select(selectElement);
-    String result = select.escapeQuotes("f\"oo");
-
-    assertEquals("'f\"oo'", result);
-  }
-
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    WebElement selectElement = driver.findElement(By.name("multi"));
-    Select select = new Select(selectElement);
-    String result = select.escapeQuotes("f\"o'o");
-
-    assertEquals("concat(\"f\", '\"', \"o'o\")", result);
-  }
-
-  /**
-   * Tests that escapeQuotes returns concatenated strings when the given
-   * string contains a tick and and ends with a quote.
-   */
-  @Test
-  public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    WebElement selectElement = driver.findElement(By.name("multi"));
-    Select select = new Select(selectElement);
-    String result = select.escapeQuotes("Bar \"Rock'n'Roll\"");
-
-    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", result);
   }
 }

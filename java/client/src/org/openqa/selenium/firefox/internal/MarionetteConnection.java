@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2010 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.firefox.internal;
 
@@ -23,8 +23,10 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
@@ -62,6 +64,10 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
   private static Map<String, String> seleniumToMarionetteCommandMap = ImmutableMap.<String, String>builder()
       .put(DriverCommand.GET, "get")
+      .put(DriverCommand.GET_ALERT_TEXT, "getTextFromDialog")
+      .put(DriverCommand.ACCEPT_ALERT, "acceptDialog")
+      .put(DriverCommand.DISMISS_ALERT, "dismissDialog")
+      .put(DriverCommand.SET_ALERT_VALUE, "sendKeysToDialog")
       .put(DriverCommand.GET_CURRENT_WINDOW_HANDLE, "getWindow")
       .put(DriverCommand.GET_WINDOW_HANDLES, "getWindows")
       .put(DriverCommand.CLOSE, "closeWindow")
@@ -103,7 +109,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
       process.clean(profile, profileDir);
 
-      String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+      String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
 
       if (firefoxLogFile !=  null) {
         if ("/dev/stdout".equals(firefoxLogFile)) {
@@ -115,7 +121,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       }
 
       process.startProfile(profile, profileDir, "-foreground", "-marionette");
-      Thread.sleep(5000);
 
       // Just for the record; the critical section is all along while firefox is starting with the
       // profile.
@@ -189,9 +194,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawResponse);
     Response response;
     if (DriverCommand.NEW_SESSION.equals(command.getName())) {
-      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
-      response = new Response(new SessionId(new BeanToJsonConverter().convert(map.get("value"))));
-      response.setValue(Maps.newHashMap());
+      response = new Response(new SessionId(map.get("sessionId").toString()));
+      response.setValue(map.get("value"));
 
     } else {
       if (map.containsKey("error")) {
@@ -246,21 +250,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             response.setValue(wrappedElement);
           }
         }
-
-        if (DriverCommand.FIND_ELEMENTS.equals(command.getName())
-            || DriverCommand.FIND_CHILD_ELEMENTS.equals(command.getName()))
-        {
-          if (response.getStatus() == ErrorCodes.SUCCESS) {
-            List<Object> wrapped = Lists.newArrayList();
-            List<Object> elementIds = (List<Object>) response.getValue();
-            for (Object elementId: elementIds) {
-              Map<String, Object> wrappedElement = Maps.newHashMap();
-              wrappedElement.put("ELEMENT", elementId.toString());
-              wrapped.add(wrappedElement);
-            }
-            response.setValue(wrapped);
-          }
-        }
       }
     }
 
@@ -305,6 +294,16 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       List<Object> actions = Lists.newArrayList();
       actions.add(action);
       params.put("chain", actions);
+
+    } else if (DriverCommand.SET_ALERT_VALUE.equals(commandName)) {
+      renameParameter(params, "text", "value");
+
+    } else if (DriverCommand.SWITCH_TO_FRAME.equals(commandName)) {
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1143908
+      if (params.get("id") instanceof Map) {
+        params.put("element", ((Map<String, Object>) params.get("id")).get("ELEMENT"));
+        params.remove("id");
+      }
     }
 
     if (seleniumToMarionetteCommandMap.containsKey(commandName)) {
@@ -315,8 +314,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     map.put("to", marionetteId != null ? marionetteId : "root");
     map.put("name", commandName);
     if (command.getSessionId() != null) {
-      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1073732
-      map.put("sessionId", new JsonToBeanConverter().convert(Map.class, command.getSessionId().toString()));
+      map.put("sessionId", command.getSessionId().toString());
     }
     map.put("parameters", params);
 
@@ -342,17 +340,27 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     char[] buf = new char[1024];
     int len = reader.read(buf);
     response.append(buf, 0, len);
-    while (len >= 1024) {
+
+    String[] parts = response.toString().split(":", 2);
+    int contentLength = Integer.parseInt(parts[0]);
+
+    while (response.length() < contentLength + ":".length() + parts[0].length()) {
       buf = new char[1024];
       len = reader.read(buf);
-      response.append(buf, 0, len);
+      if (len > 0) {
+        response.append(buf, 0, len);
+      } else {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
+      }
     }
 
     System.out.println("<- |" + response.toString() + "|");
 
-    String[] parts = response.toString().split(":", 2);
-    int length = Integer.parseInt(parts[0]);
-    return parts[1].substring(0, length);
+    parts = response.toString().split(":", 2);
+    return parts[1].substring(0, contentLength);
   }
 
   public void quit() {

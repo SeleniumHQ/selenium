@@ -64,6 +64,5 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-.project
 Gemfile.lock
 /rb/.bundle

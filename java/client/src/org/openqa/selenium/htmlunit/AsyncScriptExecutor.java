@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2010 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.htmlunit;
 
@@ -42,7 +42,7 @@ class AsyncScriptExecutor {
 
   /**
    * Prepares a new asynchronous script for execution.
-   * 
+   *
    * @param page The page to inject the script into.
    * @param timeoutMillis How long to wait for the script to complete, in milliseconds.
    */
@@ -53,7 +53,7 @@ class AsyncScriptExecutor {
 
   /**
    * Injects an asynchronous script for execution and waits for its result.
-   * 
+   *
    * @param scriptBody The script body.
    * @param parameters The script parameters, which can be referenced using the {@code arguments}
    *        JavaScript object.
@@ -128,10 +128,10 @@ class AsyncScriptExecutor {
 
   /**
    * Host object used to capture the result of an asynchronous script.
-   * 
+   *
    * <p/>
    * This class has public visibility so it can be correctly wrapped in a {@link NativeJavaObject}.
-   * 
+   *
    * @see AsyncScriptExecutor
    */
   public static class AsyncScriptResult {
@@ -144,7 +144,7 @@ class AsyncScriptExecutor {
 
     /**
      * Waits for the script to signal it is done by calling {@link #callback(Object) callback}.
-     * 
+     *
      * @return The script result.
      * @throws InterruptedException If this thread is interrupted before a result is ready.
      */
@@ -167,11 +167,11 @@ class AsyncScriptExecutor {
 
     /**
      * Callback function to be exposed in JavaScript.
-     * 
+     *
      * <p/>
      * This method has public visibility for Rhino and should never be called by code outside of
      * Rhino.
-     * 
+     *
      * @param value The asynchronous script result.
      */
     public void callback(Object value) {
@@ -184,7 +184,7 @@ class AsyncScriptExecutor {
     /**
      * Function exposed in JavaScript to signal a timeout. Has no effect if called after the
      * {@link #callback(Object) callback} function.
-     * 
+     *
      * <p/>
      * This method has public visibility for Rhino and should never be called by code outside of
      * Rhino.
@@ -199,7 +199,7 @@ class AsyncScriptExecutor {
     /**
      * Function exposed to JavaScript to signal that a page unload event was fired. WebDriver's
      * asynchronous script execution model does not permit new page loads.
-     * 
+     *
      * <p/>
      * This method has public visibility for Rhino and should never be called by code outside of
      * Rhino.

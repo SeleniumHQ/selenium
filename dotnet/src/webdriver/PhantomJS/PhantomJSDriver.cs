@@ -1,7 +1,5 @@
 // <copyright file="PhantomJSDriver.cs" company="WebDriver Committers">
-// Copyright 2007-2012 WebDriver committers
-// Copyright 2007-2012 Google Inc.
-// Portions copyright 2012 Software Freedom Conservancy
+// Copyright 2015 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -151,7 +149,7 @@ namespace OpenQA.Selenium.PhantomJS
         {
             // Add the custom commandInfo of PhantomJSDriver
             CommandInfo commandInfo = new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/phantom/execute");
-            CommandInfoRepository.Instance.TryAddAdditionalCommand(CommandExecutePhantomScript, commandInfo);
+            CommandInfoRepository.Instance.TryAddCommand(CommandExecutePhantomScript, commandInfo);
         }
 
         /// <summary>

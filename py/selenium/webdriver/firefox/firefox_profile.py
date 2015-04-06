@@ -1,18 +1,21 @@
-# Copyright 2014 Software Freedom Conservancy
-# Copyright 2008-2011 WebDriver committers
-# Copyright 2008-2011 Google Inc.
+#!/usr/bin/python
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 from __future__ import with_statement
 
 import base64
@@ -27,8 +30,6 @@ import zipfile
 
 try:
     from cStringIO import StringIO as BytesIO
-    bytes = str
-    str = basestring
 except ImportError:
     from io import BytesIO
 
@@ -254,7 +255,7 @@ class FirefoxProfile(object):
             tmpdir = tempfile.mkdtemp(suffix='.' + os.path.split(addon)[-1])
             compressed_file = zipfile.ZipFile(addon, 'r')
             for name in compressed_file.namelist():
-                if name.endswith('/'):
+                if name.endswith('/') and not os.path.isdir(os.path.join(tmpdir, name)):
                     os.makedirs(os.path.join(tmpdir, name))
                 else:
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
@@ -353,6 +354,8 @@ class FirefoxProfile(object):
             rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
             description = doc.getElementsByTagName(rdf + 'Description').item(0)
+            if description is None:
+                description = doc.getElementsByTagName('Description').item(0)
             for node in description.childNodes:
                 # Remove the namespace prefix from the tag for comparison
                 entry = node.nodeName.replace(em, "")

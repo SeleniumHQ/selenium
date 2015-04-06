@@ -1,19 +1,19 @@
-/*
-Copyright 2012-2015 Software Freedom Conservancy
-Copyright 2007-2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -303,7 +303,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -317,7 +317,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -331,7 +331,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("!@#$%^&*"));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws InvalidElementStateException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -522,6 +522,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected]"));
@@ -549,29 +550,32 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE},
+          reason = "Chrome: throws WebDriverException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE},
+          reason = "Chrome: throws WebDriverException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws InvalidElementStateException")
+  @Ignore(value = {CHROME, MARIONETTE},
+          reason = "Chrome: throws InvalidElementStateException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
   }
 
-  @Ignore(value = {CHROME},
-          reason = "Chrome: throws InvalidElementStateException")
+  @Ignore(value = {CHROME, MARIONETTE},
+          reason = "Chrome: throws InvalidElementStateException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     assumeFalse("Ignoring test for lack of error in CSS in IE6", TestUtilities.isIe6(driver));
@@ -735,7 +739,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonExistantButton"));
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -751,7 +754,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);

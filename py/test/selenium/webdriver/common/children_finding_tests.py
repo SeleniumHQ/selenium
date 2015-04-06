@@ -1,20 +1,21 @@
 #!/usr/bin/python
-
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import unittest
 from selenium.common.exceptions import NoSuchElementException
@@ -47,7 +48,7 @@ class ChildrenFindingTests(unittest.TestCase):
         self.assertEqual(1, len(children))
         self.assertEqual("A div containing", children[0].text)
 
-    def testShouldFindElementsByXpath(self): 
+    def testShouldFindElementsByXpath(self):
         self._loadPage("nestedElements")
         element = self.driver.find_element_by_name("form2")
         children = element.find_elements_by_xpath("select/option")
@@ -93,11 +94,11 @@ class ChildrenFindingTests(unittest.TestCase):
         self.assertEqual(len(child), 2)
 
     def testShouldFindElementByIdWhenMultipleMatchesExist(self):
-        self._loadPage("nestedElements")    
+        self._loadPage("nestedElements")
         element = self.driver.find_element_by_id("test_id_div")
         child = element.find_element_by_id("test_id")
         self.assertEqual(child.text, "inside")
-    
+
     def testShouldFindElementByIdWhenNoMatchInContext(self):
         self._loadPage("nestedElements")
         element = self.driver.find_element_by_id("test_id_div")
@@ -114,7 +115,7 @@ class ChildrenFindingTests(unittest.TestCase):
         element = self.driver.find_element_by_name("div1")
         child = element.find_element_by_link_text("hello world")
         self.assertEqual(child.get_attribute("name"), "link1")
-    
+
     def testShouldFindElementsByLinkText(self):
         self._loadPage("nestedElements")
         element = self.driver.find_element_by_name("div1")

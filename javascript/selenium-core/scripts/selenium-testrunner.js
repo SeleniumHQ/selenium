@@ -1,19 +1,19 @@
-/*
-* Copyright 2011 Software Freedom Conservancy
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 // An object representing the current test, used external
 var currentTest = null; // TODO: get rid of this global, which mirrors the htmlTestRunner.currentTest
@@ -54,7 +54,7 @@ objectExtend(HtmlTestRunner.prototype, {
         if (selenium == null) {
             var appWindow = self._getApplicationWindow();
             try { appWindow.location; }
-            catch (e) { 
+            catch (e) {
                 // when reloading, we may be pointing at an old window (Perm Denied)
                 setTimeout(fnBind(function() {
                     self.loadSuiteFrame();
@@ -112,7 +112,7 @@ objectExtend(HtmlTestRunner.prototype, {
             var testCaseLoaded = fnBind(function(){this.testCaseLoaded=true;},this);
             var testNumber = 0;
             if (this.controlPanel.getTestNumber() != null){
-                var testNumber = this.controlPanel.getTestNumber() - 1; 
+                var testNumber = this.controlPanel.getTestNumber() - 1;
             }
             this.getTestSuite().getSuiteRows()[testNumber].loadTestCase(testCaseLoaded);
         }
@@ -307,7 +307,7 @@ objectExtend(SeleniumFrame.prototype, {
         var isHTA = browserVersion.isHTA || false;
         // DGF TODO multiWindow
         location += (location.indexOf("?") == -1 ? "?" : "&");
-        location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA; 
+        location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA;
         if (browserVersion.isSafari) {
             // safari doesn't reload the page when the location equals to current location.
             // hence, set the location to blank so that the page will reload automatically.
@@ -491,7 +491,7 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
     getAutoUrl: function() {
         return this._getQueryParameter("autoURL");
     },
-    
+
     getDefaultLogLevel: function() {
         return this._getQueryParameter("defaultLogLevel");
     },
@@ -722,7 +722,7 @@ objectExtend(HtmlTestSuite.prototype, {
             var rowElement = testTable.rows[rowNum];
             result.push(new HtmlTestSuiteRow(rowElement, testFrame, this));
         }
-        
+
         // process the unsuited rows as well
         for (var tableNum = 1; tableNum < sel$A(this.suiteDocument.getElementsByTagName("table")).length; tableNum++) {
             testTable = tables[tableNum];
@@ -912,9 +912,9 @@ objectExtend(SeleniumTestResult.prototype, {
         for (var i = 0; i < form.elements.length; i++) {
             inputs[form.elements[i].name] = form.elements[i].value;
         }
-        
+
         var objFSO = new ActiveXObject("Scripting.FileSystemObject")
-        
+
         // DGF get CSS
         var styles = "";
         try {
@@ -929,10 +929,10 @@ objectExtend(SeleniumTestResult.prototype, {
                 styles = xhr.responseText;
             }
         } catch (e) {}
-        
+
         var scriptFile = objFSO.CreateTextFile(fileName);
-        
-        
+
+
         scriptFile.WriteLine("<html><head><title>Test suite results</title><style>");
         scriptFile.WriteLine(styles);
         scriptFile.WriteLine("</style>");
@@ -947,7 +947,7 @@ objectExtend(SeleniumTestResult.prototype, {
              "<tr>\n<td>numCommandErrors:</td>\n<td>" + inputs["numCommandErrors"] + "</td>\n</tr>\n" +
              "<tr>\n<td>" + inputs["suite"] + "</td>\n<td>&nbsp;</td>\n</tr></table><table>");
         var testNum = inputs["numTestTotal"];
-        
+
         for (var rowNum = 1; rowNum <= testNum; rowNum++) {
             scriptFile.WriteLine("<tr>\n<td>" + inputs["testTable." + rowNum] + "</td>\n<td>&nbsp;</td>\n</tr>");
         }
@@ -979,7 +979,7 @@ objectExtend(HtmlTestCase.prototype, {
                 this.pathname = this.testWindow.location.pathname;
             }
         } catch (e) {}
-            
+
         this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.headerRow = new TitleRow(this.testDocument.getElementsByTagName("tr")[0]);
         this.commandRows = this._collectCommandRows();
@@ -1416,7 +1416,7 @@ Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
 
 Selenium.prototype.assertFailureOnNext = function(message) {
     /**
-     * Tell Selenium to expect a failure on the next command execution. 
+     * Tell Selenium to expect a failure on the next command execution.
      * @param message The failure message we should expect.  This command will fail if the wrong failure message appears.
      */
     if (!message) {
@@ -1430,7 +1430,7 @@ Selenium.prototype.assertFailureOnNext = function(message) {
 
 Selenium.prototype.assertErrorOnNext = function(message) {
     /**
-     * Tell Selenium to expect an error on the next command execution. 
+     * Tell Selenium to expect an error on the next command execution.
      * @param message The error message we should expect.  This command will fail if the wrong error message appears.
      */
      // This command temporarily installs a CommandFactory that generates

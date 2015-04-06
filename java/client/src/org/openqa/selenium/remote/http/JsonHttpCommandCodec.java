@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -35,11 +52,10 @@ import java.util.Map;
 /**
  * A command codec that adheres to the Selenium project's JSON/HTTP wire protocol.
  *
- * @see <a href="https://code.google.com/p/selenium/wiki/JsonWireProtocol">
+ * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">
  *   JSON wire protocol</a>
  */
 public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
-
   private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
@@ -171,7 +187,6 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"));
 
     // Mobile Spec
-    // https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile
     defineCommand(GET_NETWORK_CONNECTION, get("/session/:sessionId/network_connection"));
     defineCommand(SET_NETWORK_CONNECTION, post("/session/:sessionId/network_connection"));
     defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));

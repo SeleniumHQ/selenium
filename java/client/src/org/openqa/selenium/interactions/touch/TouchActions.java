@@ -1,18 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.interactions.touch;
 
@@ -45,8 +46,8 @@ public class TouchActions extends Actions {
 
  /**
    * Allows the execution of single tap on the screen, analogous to click using a Mouse.
-   * 
-   * @param onElement the {@link WebElement} on the screen. 
+   *
+   * @param onElement the {@link WebElement} on the screen.
    */
 
   public TouchActions singleTap(WebElement onElement) {
@@ -57,7 +58,7 @@ public class TouchActions extends Actions {
 /**
    * Allows the execution of the gesture 'down' on the screen. It is typically the first of a
    * sequence of touch gestures.
-   * 
+   *
    * @param x The x coordinate relative to the viewport
    * @param y The y coordinate relative to the viewport
    */
@@ -70,7 +71,7 @@ public class TouchActions extends Actions {
 /**
    * Allows the execution of the gesture 'up' on the screen. It is typically the last of a sequence
    * of touch gestures.
-   * 
+   *
    * @param x The x coordinate relative to the viewport
    * @param y The y coordinate relative to the viewport
    */
@@ -82,7 +83,7 @@ public class TouchActions extends Actions {
 
  /**
    * Allows the execution of the gesture 'move' on the screen.
-   * 
+   *
    * @param x The x coordinate relative to the viewport
    * @param y The y coordinate relative to the viewport
    */
@@ -93,7 +94,7 @@ public class TouchActions extends Actions {
   }
  /**
    * Creates a scroll gesture that starts on a particular screen location.
-   * 
+   *
    * @param onElement the {@link WebElement} where the scroll starts.
    * @param xOffset The x offset to scroll
    * @param yOffset The y offset to scroll
@@ -105,7 +106,7 @@ public class TouchActions extends Actions {
 
  /**
    * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
-   * 
+   *
    * @param onElement The {@link WebElement} to double tap
    */
 
@@ -116,7 +117,7 @@ public class TouchActions extends Actions {
 
  /**
    * Allows the execution of long press gestures.
-   * 
+   *
    * @param  onElement The {@link WebElement} to long press
    */
 
@@ -127,7 +128,7 @@ public class TouchActions extends Actions {
 
   /**
    * Allows the view to be scrolled by an x and y offset.
-   * 
+   *
    * @param xOffset The horizontal offset relative to the viewport
    * @param yOffset The vertical offset relative to the viewport
    */
@@ -139,7 +140,7 @@ public class TouchActions extends Actions {
 
  /**
    * Sends a flick gesture to the current view.
-   * 
+   *
    * @param xSpeed The horizontal speed in pixels/second
    * @param ySpeed The vertical speed in pixels/second
    */
@@ -151,7 +152,7 @@ public class TouchActions extends Actions {
 
  /**
    * Allows the execution of flick gestures starting in a location's element.
-   * 
+   *
    * @param onElement The {@link WebElement} to flick on
    * @param xOffset The x offset relative to the viewport
    * @param yOffset The y offset relative to the viewport

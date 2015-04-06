@@ -1,18 +1,19 @@
-/*
-Copyright 2013 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.testing.drivers;
 
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
  *   <dt>selenium.external.serverUrl</dt>
  *   <dd>Defines the fully qualified URL of an external WebDriver server to send commands to.
  *       This server <i>must</i> be compliant with the
- *       <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">JSON wire protocol</a>.
+ *       <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">JSON wire protocol</a>.
  *       If only this property is provided, then this supplier will provide a new
  *       {@link RemoteWebDriver} instance pointed at the designated server. Otherwise, if a
  *       custom supplier is also defined (see below), this supplier will wait for the server to
@@ -59,7 +60,6 @@ import java.util.logging.Logger;
  * </dl>
  */
 class ExternalDriverSupplier implements Supplier<WebDriver> {
-
   private static final Logger logger = Logger.getLogger(ExternalDriverSupplier.class.getName());
 
   private static final String DELEGATE_SUPPLIER_CLASS_PROPERTY = "selenium.external.supplierClass";
@@ -192,6 +192,4 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       return driver;
     }
   }
-
 }
-

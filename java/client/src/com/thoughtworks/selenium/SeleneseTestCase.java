@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 
 package com.thoughtworks.selenium;
@@ -23,13 +23,13 @@ import junit.framework.TestCase;
 /**
  * Provides a JUnit TestCase base class that implements some handy functionality for Selenium
  * testing (you are <i>not</i> required to extend this class).
- * 
+ *
  * <p>
  * This class adds a number of "verify" commands, which are like "assert" commands, but they don't
  * stop the test when they fail. Instead, verification errors are all thrown at once during
  * tearDown.
  * </p>
- * 
+ *
  * @author Nelson Sproul (nsproul@bea.com) Mar 13-06
  * @deprecated Please consider updating to junit 4 or above
  */
@@ -75,7 +75,7 @@ public class SeleneseTestCase extends TestCase {
 
   /**
    * Calls this.setUp(null)
-   * 
+   *
    * @see #setUp(String)
    */
   @Override
@@ -87,11 +87,11 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Calls this.setUp with the specified url and a default browser. On Windows, the default browser
    * is *iexplore; otherwise, the default browser is *firefox.
-   * 
+   *
    * @see #setUp(String, String)
    * @param url the baseUrl to use for your Selenium tests
    * @throws Exception
-   * 
+   *
    */
   public void setUp(String url) throws Exception {
     stb.setUp(url);
@@ -101,7 +101,7 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
    * string
-   * 
+   *
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
    * @throws Exception
@@ -114,7 +114,7 @@ public class SeleneseTestCase extends TestCase {
   /**
    * Creates a new DefaultSelenium object and starts it using the specified baseURL, browser string
    * and port
-   * 
+   *
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
    * @param port the port of Selenium RC
@@ -201,7 +201,7 @@ public class SeleneseTestCase extends TestCase {
 
   /**
    * Compares two objects, but handles "regexp:" strings like HTML Selenese
-   * 
+   *
    * @see #seleniumEquals(String, String)
    * @return true if actual matches the expectedPattern, or false otherwise
    */
@@ -211,7 +211,7 @@ public class SeleneseTestCase extends TestCase {
 
   /**
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
-   * 
+   *
    * @param expected
    * @param actual
    * @return true if actual matches the expectedPattern, or false otherwise
@@ -238,7 +238,7 @@ public class SeleneseTestCase extends TestCase {
 
   /**
    * Runs the bare test sequence, capturing a screenshot if a test fails
-   * 
+   *
    * @exception Throwable if any exception is thrown
    */
   // @Override

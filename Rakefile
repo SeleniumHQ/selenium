@@ -39,6 +39,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
+require 'rake-tasks/copyright'
 
 require 'rake-tasks/gecko_sdks'
 
@@ -99,9 +100,27 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 # build can also be done here. For example, here we set the default task
 task :default => [:test]
 
-
-task :all => [:'selenium-java']
+task :all => [
+  :"selenium-java",
+  "//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber"
+]
 task :all_zip => [:'selenium-java_zip']
+task :tests => [
+  "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
+  "//java/client/test/org/openqa/selenium/htmlunit:test_js",
+  "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
+  "//java/client/test/org/openqa/selenium/firefox:test_native",
+  "//java/client/test/org/openqa/selenium/ie:test",
+  "//java/client/test/org/openqa/selenium/chrome:test",
+  "//java/client/test/org/openqa/selenium/opera:test_blink",
+  "//java/client/test/org/openqa/selenium/lift:test",
+  "//java/client/test/org/openqa/selenium/support:SmallTests",
+  "//java/client/test/org/openqa/selenium/support:LargeTests",
+  "//java/client/test/org/openqa/selenium/remote:common-tests",
+  "//java/client/test/org/openqa/selenium/remote:client-tests",
+  "//java/server/test/org/openqa/selenium/remote/server/log:test",
+  "//java/server/test/org/openqa/selenium/remote/server:small-tests",
+]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
@@ -212,7 +231,6 @@ if (opera?)
   task :test_java_webdriver => [:test_opera]
 end
 
-
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
   "//java/client/test/org/openqa/selenium:SmallTests:run",
@@ -248,8 +266,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-
-task :build => [:all, :remote, :selenium]
+task :build => [:all, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -499,7 +516,9 @@ task :release => [
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
     mkdir_p deep
-    cp 'java/CHANGELOG', deep
+    cp "java/CHANGELOG", deep
+    cp "NOTICE", deep
+    cp "LICENSE", deep
 
     sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
     renames.each do |from, to|
@@ -586,7 +605,8 @@ namespace :node do
 
     cmd =  "node javascript/node/deploy.js" <<
         " --output=build/javascript/node/selenium-webdriver" <<
-        " --resource=COPYING:/COPYING" <<
+        " --resource=LICENSE:/LICENSE" <<
+        " --resource=NOTICE:/NOTICE" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
         " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
@@ -694,6 +714,36 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
+end
+
+namespace :copyright do
+  task :update do
+    Copyright.Update(
+        FileList["javascript/**/*.js"].exclude(
+            "javascript/atoms/test/jquery.min.js",
+            "javascript/firefox-driver/extension/components/httpd.js",
+            "javascript/jsunit/**/*.js",
+            "javascript/node/selenium-webdriver/node_modules/**/*.js",
+            "javascript/selenium-core/lib/**/*.js",
+            "javascript/selenium-core/scripts/ui-element.js",
+            "javascript/selenium-core/scripts/ui-map-sample.js",
+            "javascript/selenium-core/scripts/user-extensions.js",
+            "javascript/selenium-core/scripts/xmlextras.js",
+            "javascript/selenium-core/xpath/**/*.js"))
+    Copyright.Update(
+        FileList["py/**/*.py"],
+        :style => "#",
+        :prefix => "#!/usr/bin/python\n#\n")
+    Copyright.Update(
+        FileList["java/**/*.java"].exclude(
+            "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
+            "java/client/test/org/openqa/selenium/internal/Base64EncoderTest.java",
+            "java/server/src/cybervillains/**/*.java",
+            "java/server/src/org/openqa/selenium/server/FrameGroupCommandQueueSet.java",
+            "java/server/src/org/openqa/selenium/server/FutureFileResource.java",
+            "java/server/src/org/openqa/selenium/server/ProxyHandler.java"
+            ))
+  end
 end
 
 at_exit do

@@ -1,16 +1,19 @@
-// Copyright 2014 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.require('bot.ErrorCode');
 goog.require('goog.Promise');
@@ -30,9 +33,6 @@ goog.require('webdriver.Serializable');
 goog.require('webdriver.Session');
 goog.require('webdriver.logging');
 goog.require('webdriver.promise');
-goog.require('webdriver.promise.ControlFlow');
-goog.require('webdriver.promise.Deferred');
-goog.require('webdriver.promise.Promise');
 goog.require('webdriver.test.testutil');
 
 var SESSION_ID = 'test_session_id';
@@ -2082,9 +2082,7 @@ function testInterceptsAndTransformsUnhandledAlertErrors() {
   var driver = testHelper.createDriver();
   return driver.findElement(By.id('foo')).then(fail, function(e) {
     assertTrue(e instanceof webdriver.UnhandledAlertError);
-    return e.getAlert().getText();
-  }).then(function(text) {
-    assertEquals('hello', text);
+    assertEquals('hello', e.getAlertText());
   });
 }
 
@@ -2098,9 +2096,7 @@ testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse() {
   var driver = testHelper.createDriver();
   return driver.findElement(By.id('foo')).then(fail, function(e) {
     assertTrue(e instanceof webdriver.UnhandledAlertError);
-    return e.getAlert().getText();
-  }).then(function(text) {
-    assertEquals('', text);
+    assertEquals('', e.getAlertText());
   });
 }
 
@@ -2274,6 +2270,80 @@ function testActionSequenceFailsIfInitialDriverCreationFailed() {
       mouseUp().
       perform().
       thenCatch(assertIsStubError);
+}
+
+
+function testActionSequence_mouseMove_noElement() {
+  var testHelper = new TestHelper()
+      .expect(CName.MOVE_TO, {'xoffset': 0, 'yoffset': 125})
+      .andReturnSuccess()
+      .replayAll();
+
+  return testHelper.createDriver().
+      actions().
+      mouseMove({x: 0, y: 125}).
+      perform();
+}
+
+
+function testActionSequence_mouseMove_element() {
+  var testHelper = new TestHelper()
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'})
+          .andReturnSuccess({'ELEMENT': 'abc123'})
+      .expect(
+          CName.MOVE_TO, {'element': 'abc123', 'xoffset': 0, 'yoffset': 125})
+          .andReturnSuccess()
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var element = driver.findElement(By.id('foo'));
+  return driver.actions()
+      .mouseMove(element, {x: 0, y: 125})
+      .perform();
+}
+
+
+function testActionSequence_mouseDown() {
+  var testHelper = new TestHelper()
+      .expect(CName.MOUSE_DOWN, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .replayAll();
+
+  return testHelper.createDriver().
+      actions().
+      mouseDown().
+      perform();
+}
+
+
+function testActionSequence() {
+  var testHelper = new TestHelper()
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'a'})
+          .andReturnSuccess({'ELEMENT': 'id1'})
+      .expect(CName.FIND_ELEMENT, {'using':'id', 'value':'b'})
+          .andReturnSuccess({'ELEMENT': 'id2'})
+      .expect(CName.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          {'value': [webdriver.Key.SHIFT]})
+          .andReturnSuccess()
+      .expect(CName.MOVE_TO, {'element': 'id1'})
+          .andReturnSuccess()
+      .expect(CName.CLICK, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .expect(CName.MOVE_TO, {'element': 'id2'})
+          .andReturnSuccess()
+      .expect(CName.CLICK, {'button': webdriver.Button.LEFT})
+          .andReturnSuccess()
+      .replayAll();
+
+  var driver = testHelper.createDriver();
+  var element1 = driver.findElement(By.id('a'));
+  var element2 = driver.findElement(By.id('b'));
+
+  return driver.actions()
+      .keyDown(webdriver.Key.SHIFT)
+      .click(element1)
+      .click(element2)
+      .perform();
 }
 
 

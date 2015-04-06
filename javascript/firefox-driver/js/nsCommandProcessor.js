@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Contains a Javascript implementation for
@@ -358,11 +357,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
-  // Since we only support 3.0+, this check is enough to see if we're on 3.0
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-  }
-
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
@@ -600,8 +594,6 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
   this.searchWindows_('navigator:browser', function(win) {
     if (win.top && win.top.fxdriver) {
       res.push(win.top.fxdriver.id);
-    } else if (win.content) {
-      res.push(win.content.name);
     }
   });
   response.value = res;
@@ -636,7 +628,7 @@ nsCommandProcessor.prototype.getLog = function(response, parameters) {
  *     response in.
  * @param {Object.<string, *>} parameters The parameters for the call.
  */
-nsCommandProcessor.prototype.getAvailableLogTypes = function(response, 
+nsCommandProcessor.prototype.getAvailableLogTypes = function(response,
     parameters) {
   response.value = fxdriver.logging.getAvailableLogTypes();
   response.send();
