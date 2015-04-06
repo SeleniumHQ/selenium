@@ -1,13 +1,11 @@
 module Selenium
   module Client
 
-    # Convenience methods not explicitely part of the protocol
+    # Convenience methods not explicitly part of the protocol
     module Extensions
 
 	    # These for all Ajax request to finish (Only works if you are using prototype, the wait happens in the browser)
 	    #
-	    # See http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax for
-	    # more background.
       def wait_for_ajax(options={})
 		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
 	      wait_for_condition builder.no_pending_ajax_requests.script,
