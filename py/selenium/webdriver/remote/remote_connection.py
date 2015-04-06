@@ -166,14 +166,14 @@ class RemoteConnection(object):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
-        addr = parsed_url.hostname
-        if parsed_url.hostname and resolve_ip:
-            port = parsed_url.port or None
-            ip = common_utils.find_connectable_ip(parsed_url.hostname,
-                                                  port=port)
-            if ip:
-                netloc = ip
-                addr = netloc
+        addr = ""
+        if parsed_url.hostname:
+            try:
+                if parsed_url.scheme == "https":
+                    addr = netloc = parsed_url.hostname
+                else:
+                    netloc = socket.gethostbyname(parsed_url.hostname)
+                    addr = netloc
                 if parsed_url.port:
                     netloc = common_utils.join_host_port(netloc,
                                                          parsed_url.port)
