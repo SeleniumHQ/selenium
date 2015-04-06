@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email       = "jari.bakken@gmail.com"
   s.description = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application."
   s.summary     = "The next generation developer focused tool for automated testing of webapps"
-  s.homepage    = "http://selenium.googlecode.com"
+  s.homepage    = "https://github.com/seleniumhq/selenium"
   s.licenses    = ["Apache"]
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=

@@ -1557,8 +1557,7 @@ module Selenium
         # works in Firefox when running in chrome mode, and in IE non-HTA using
         # the EXPERIMENTAL "Snapsie" utility. The Firefox implementation is mostly
         # borrowed from the Screengrab! Firefox extension. Please see
-        # http://www.screengrab.org and http://snapsie.sourceforge.net/ for
-        # details.
+        # http://snapsie.sourceforge.net/ for details.
         #
         # 'filename' is the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.
         # 'kwargs' is a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  *    background::    the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).

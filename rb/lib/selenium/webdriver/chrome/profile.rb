@@ -30,7 +30,7 @@ module Selenium
         #
         # Set a preference in the profile.
         #
-        # See http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium
+        # See https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc
         #
 
         def []=(key, value)
