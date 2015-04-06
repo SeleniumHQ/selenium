@@ -35,8 +35,8 @@ module Selenium
         def keys
           @bridge.getLocalStorageKeys.reverse
         end
-      end
 
-    end
-  end
-end
+      end # LocalStorage
+    end # HTML5
+  end # WebDriver
+end # Selenium

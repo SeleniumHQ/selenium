@@ -59,6 +59,6 @@ module Selenium
         self
       end
 
-    end
-  end
-end
+    end # TouchActionBuilder
+  end # WebDriver
+end # Selenium

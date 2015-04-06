@@ -18,6 +18,6 @@ module Selenium
         @bridge.getAvailableLogTypes
       end
 
-    end
-  end
-end
+    end # Logs
+  end # WebDriver
+end # Selenium

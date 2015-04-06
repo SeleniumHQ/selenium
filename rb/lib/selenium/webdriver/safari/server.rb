@@ -138,8 +138,8 @@ Server: safaridriver-ruby
             str.gsub(":", '%3A').gsub('/', '%2F')
           end
         end
-      end
 
-    end
-  end
-end
+      end # Server
+    end # Safari
+  end # WebDriver
+end # Selenium

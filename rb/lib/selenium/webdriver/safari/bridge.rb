@@ -113,8 +113,8 @@ module Selenium
 
           caps
         end
-      end
 
-    end
-  end
-end
+      end # Bridge
+    end # Safari
+  end # WebDriver
+end # Selenium

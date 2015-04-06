@@ -104,7 +104,7 @@ module Selenium
           "#%02x%02x%02x" % [red, green, blue]
         end
 
-      end
-    end
-  end
-end
+      end # Color
+    end # Support
+  end # WebDriver
+end # Selenium

@@ -10,8 +10,8 @@ module Selenium
             super("status code #{response.code}")
           end
         end
-      end
 
+      end # ServerError
     end # Error
   end # WebDriver
 end # Selenium

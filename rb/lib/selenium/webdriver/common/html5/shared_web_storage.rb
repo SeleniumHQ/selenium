@@ -20,7 +20,7 @@ module Selenium
             yield key
           else
             # should be KeyError, but it's 1.9-specific
-            raise IndexError, "missing key #{key.inspect}" 
+            raise IndexError, "missing key #{key.inspect}"
           end
         end
 
@@ -35,8 +35,8 @@ module Selenium
             yield k, self[k]
           end
         end
-      end
 
-    end
-  end
-end
+      end # SharedWebStorage
+    end # HTML5
+  end # WebDriver
+end # Selenium

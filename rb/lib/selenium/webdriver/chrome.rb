@@ -21,6 +21,6 @@ module Selenium
         @path ||= nil
       end
 
-    end
-  end
-end
+    end # Chrome
+  end # WebDriver
+end # Selenium

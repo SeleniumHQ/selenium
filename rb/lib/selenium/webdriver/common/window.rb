@@ -98,7 +98,6 @@ module Selenium
         @bridge.maximizeWindow
       end
 
-
-    end
-  end
-end
+    end # Window
+  end # WebDriver
+end # Selenium

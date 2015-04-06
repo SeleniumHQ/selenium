@@ -7,7 +7,7 @@ module Selenium
           @bridge.status
         end
 
-      end
-    end
-  end
-end
+      end # HasRemoteStatus
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium

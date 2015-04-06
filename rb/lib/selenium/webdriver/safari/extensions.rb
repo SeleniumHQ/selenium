@@ -164,7 +164,7 @@ module Selenium
           end
         end
 
-      end
-    end
-  end
-end
+      end # Extensions
+    end # Safari
+  end # WebDriver
+end # Selenium

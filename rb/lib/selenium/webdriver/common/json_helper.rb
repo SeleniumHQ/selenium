@@ -29,6 +29,6 @@ module Selenium
         end
       end
 
-    end
-  end
-end
+    end # JsonHelper
+  end # WebDriver
+end # Selenium

@@ -18,8 +18,8 @@ module Selenium
         def set_location(lat, lon, alt)
           self.location = Location.new(Float(lat), Float(lon), Float(alt))
         end
-      end
 
-    end
-  end
-end
+      end #HasLocation
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium

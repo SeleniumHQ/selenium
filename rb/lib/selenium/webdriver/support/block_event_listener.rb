@@ -10,8 +10,8 @@ module Selenium
         def method_missing(meth, *args, &blk)
           @callback.call meth, *args
         end
-      end
 
-    end
-  end
-end
+      end # BlockEventListener
+    end # Support
+  end # WebDriver
+end # Selenium
