@@ -44,6 +44,7 @@ namespace OpenQA.Selenium
         public string rectanglesPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("rectangles.html");
         public string javascriptEnhancedForm = EnvironmentManager.Instance.UrlBuilder.WhereIs("javascriptEnhancedForm.html");
         public string uploadPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("upload.html");
+        public string transparentUploadPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("transparentUpload.html");
         public string childPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("child/childPage.html");
         public string grandchildPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("child/grandchild/grandchildPage.html");
         public string documentWrite = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("document_write_in_onload.html");
