@@ -446,13 +446,20 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
                              reinterpret_cast<LPARAM>(process_window_info));
           if (process_window_info->hwndBrowser != NULL) {
             hr = shell_window_variant.pdispVal->QueryInterface<IWebBrowser2>(&browser);
-            process_window_info->pBrowser = browser.Detach();
+            if (FAILED(hr)) {
+              LOGHR(WARN, hr) << "Found browser window using ShellWindows "
+                              << "API, but QueryInterface for IWebBrowser2 "
+                              << "failed, so could not attach to the browser.";
+            } else {
+              process_window_info->pBrowser = browser.Detach();
+            }
             break;
           }
         }
       }
     }
-    if (process_window_info->hwndBrowser == NULL) {
+    if (process_window_info->hwndBrowser == NULL ||
+        process_window_info->pBrowser == NULL) {
       ::Sleep(250);
     }
   }
@@ -461,6 +468,11 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     *error_message = StringUtilities::Format(ATTACH_TIMEOUT_ERROR_MESSAGE,
                                              process_window_info->dwProcessId,
                                              this->browser_attach_timeout_);
+    return false;
+  }
+
+  if (process_window_info->pBrowser == NULL) {
+    *error_message = ATTACH_FAILURE_ERROR_MESSAGE;
     return false;
   }
   return true;
