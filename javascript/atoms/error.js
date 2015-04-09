@@ -65,7 +65,6 @@ bot.ErrorCode = {
 };
 
 
-
 /**
  * Error extension that includes error status codes from the WebDriver wire
  * protocol:
@@ -125,28 +124,27 @@ goog.inherits(bot.Error, Error);
 bot.Error.State = {
   ELEMENT_NOT_SELECTABLE: 'element not selectable',
   ELEMENT_NOT_VISIBLE: 'element not visible',
-  IME_ENGINE_ACTIVATION_FAILED: 'ime engine activation failed',
-  IME_NOT_AVAILABLE: 'ime not available',
+  INVALID_ARGUMENT: 'invalid argument',
   INVALID_COOKIE_DOMAIN: 'invalid cookie domain',
   INVALID_ELEMENT_COORDINATES: 'invalid element coordinates',
   INVALID_ELEMENT_STATE: 'invalid element state',
   INVALID_SELECTOR: 'invalid selector',
+  INVALID_SESSION_ID: 'invalid session id',
   JAVASCRIPT_ERROR: 'javascript error',
   MOVE_TARGET_OUT_OF_BOUNDS: 'move target out of bounds',
   NO_SUCH_ALERT: 'no such alert',
-  NO_SUCH_DOM: 'no such dom',
   NO_SUCH_ELEMENT: 'no such element',
   NO_SUCH_FRAME: 'no such frame',
   NO_SUCH_WINDOW: 'no such window',
   SCRIPT_TIMEOUT: 'script timeout',
   SESSION_NOT_CREATED: 'session not created',
   STALE_ELEMENT_REFERENCE: 'stale element reference',
-  SUCCESS: 'success',
   TIMEOUT: 'timeout',
   UNABLE_TO_SET_COOKIE: 'unable to set cookie',
   UNEXPECTED_ALERT_OPEN: 'unexpected alert open',
   UNKNOWN_COMMAND: 'unknown command',
   UNKNOWN_ERROR: 'unknown error',
+  UNKNOWN_METHOD: 'unknown method',
   UNSUPPORTED_OPERATION: 'unsupported operation'
 };
 
@@ -163,8 +161,8 @@ goog.scope(function() {
 
   map[code.ELEMENT_NOT_SELECTABLE] = state.ELEMENT_NOT_SELECTABLE;
   map[code.ELEMENT_NOT_VISIBLE] = state.ELEMENT_NOT_VISIBLE;
-  map[code.IME_ENGINE_ACTIVATION_FAILED] = state.IME_ENGINE_ACTIVATION_FAILED;
-  map[code.IME_NOT_AVAILABLE] = state.IME_NOT_AVAILABLE;
+  map[code.IME_ENGINE_ACTIVATION_FAILED] = state.UNKNOWN_ERROR;
+  map[code.IME_NOT_AVAILABLE] = state.UNKNOWN_ERROR;
   map[code.INVALID_COOKIE_DOMAIN] = state.INVALID_COOKIE_DOMAIN;
   map[code.INVALID_ELEMENT_COORDINATES] = state.INVALID_ELEMENT_COORDINATES;
   map[code.INVALID_ELEMENT_STATE] = state.INVALID_ELEMENT_STATE;
@@ -181,7 +179,6 @@ goog.scope(function() {
   map[code.SCRIPT_TIMEOUT] = state.SCRIPT_TIMEOUT;
   map[code.SESSION_NOT_CREATED] = state.SESSION_NOT_CREATED;
   map[code.STALE_ELEMENT_REFERENCE] = state.STALE_ELEMENT_REFERENCE;
-  map[code.SUCCESS] = state.SUCCESS;
   map[code.TIMEOUT] = state.TIMEOUT;
   map[code.UNABLE_TO_SET_COOKIE] = state.UNABLE_TO_SET_COOKIE;
   map[code.UNEXPECTED_ALERT_OPEN] = state.UNEXPECTED_ALERT_OPEN
