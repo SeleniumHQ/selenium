@@ -22,7 +22,7 @@
  * and place it on your
  * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). You must also apply
  * the system configuration outlined on the Selenium project
- * [wiki](http://goo.gl/Z0hCpR)
+ * [wiki](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver)
  */
 
 'use strict';
@@ -129,9 +129,9 @@ Options.fromCapabilities = function(capabilities) {
  * created. Disbling this setting may lead to significant instability as the
  * browser may become unresponsive/hang. Only "best effort" support is provided
  * when using this capability.
- * 
+ *
  * For more information, refer to the IEDriver's
- * [required system configuration](http://goo.gl/Z0hCpR).
+ * [required system configuration](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration).
  *
  * @param {boolean} ignoreSettings Whether to ignore protected mode settings.
  * @return {!Options} A self reference.
