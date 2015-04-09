@@ -102,7 +102,7 @@
  *             .androidActivity('com.example.Activity'))
  *         .build();
  *
- * Refer to the ChromeDriver site] for more information on using the
+ * [Refer to the ChromeDriver site] for more information on using the
  * [ChromeDriver with Android][android].
  *
  * [ChromeDriver]: https://sites.google.com/a/chromium.org/chromedriver/
