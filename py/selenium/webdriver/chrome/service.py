@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import os
+import errno
 import subprocess
 from subprocess import PIPE
 import time
@@ -54,8 +55,10 @@ class Service(object):
         Starts the ChromeDriver Service.
 
         :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+         - WebDriverException : Raised either when it cannot find the
+           executable, when it does not have permissions for the
+           executable, or when it cannot connect to the service.
+         - Possibly other Exceptions in rare circumstances (OSError, etc).
         """
         env = self.env or os.environ
         try:
@@ -63,13 +66,21 @@ class Service(object):
               self.path,
               "--port=%d" % self.port] +
               self.service_args, env=env, stdout=PIPE, stderr=PIPE)
-        except:
-            raise WebDriverException(
-                "'" + os.path.basename(self.path) + "' executable needs to be \
-                available in the path. Please look at \
-                http://docs.seleniumhq.org/download/#thirdPartyDrivers \
-                and read up at \
-                https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver")
+        except OSError as err:
+            docs_msg = "Please see " \
+                   "https://sites.google.com/a/chromium.org/chromedriver/home"
+            if err.errno == errno.ENOENT:
+                raise WebDriverException(
+                    "'%s' executable needs to be in PATH. %s" % (
+                        os.path.basename(self.path), docs_msg)
+                )
+            elif err.errno == errno.EACCES:
+                raise WebDriverException(
+                    "'%s' executable may have wrong permissions. %s" % (
+                        os.path.basename(self.path), docs_msg)
+                )
+            else:
+                raise
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
