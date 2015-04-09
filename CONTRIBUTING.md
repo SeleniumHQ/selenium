@@ -176,7 +176,7 @@ Fixes #141
 ```
 
 The first line must be meaningful as it's what people see when they
-run `git shortlog` or `git log --online`.
+run `git shortlog` or `git log --oneline`.
 
 ### Step 4: Rebase
 
