@@ -17,11 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+http_exception = None
 try:
     import http.client as http_client
 except ImportError:
     import httplib as http_client
+    http_exception = http_client.HTTPException
 
 import shutil
 import socket
@@ -70,7 +71,7 @@ class WebDriver(RemoteWebDriver):
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
-        except (http_client.BadStatusLine, socket.error):
+        except (http_client.BadStatusLine, socket.error, http_exception):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
