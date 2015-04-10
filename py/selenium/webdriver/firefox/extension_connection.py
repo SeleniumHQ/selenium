@@ -72,7 +72,7 @@ class ExtensionConnection(RemoteConnection):
     @classmethod
     def is_connectable(self):
         """Trys to connect to the extension but do not retrieve context."""
-        utils.is_connectable(self.port)
+        utils.is_connectable(self.profile.port)
 
 class ExtensionConnectionError(Exception):
     """An internal error occurred int the extension.
