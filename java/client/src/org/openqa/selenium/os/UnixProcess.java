@@ -93,7 +93,7 @@ class UnixProcess implements OsProcess {
 
   public void executeAsync() {
     try {
-      final OutputStream outputStream = getOutputStream();
+      final OutputStream outputStream = getNewOutputStream();
       executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler(new PumpStreamHandler(
@@ -104,7 +104,7 @@ class UnixProcess implements OsProcess {
     }
   }
 
-  private OutputStream getOutputStream() {
+  private OutputStream getNewOutputStream() {
     inputOut = new ByteArrayOutputStream();
     return new MultioutputStream(inputOut, drainTo);
   }
