@@ -45,10 +45,12 @@ def is_connectable(port):
         socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_.settimeout(1)
         socket_.connect(("127.0.0.1", port))
-        socket_.close()
-        return True
+        result = True
     except socket.error:
-        return False
+        result = False
+    finally:
+        socket_.close()
+    return result
 
 def is_url_connectable(port):
     """
