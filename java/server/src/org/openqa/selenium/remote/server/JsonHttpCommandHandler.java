@@ -126,6 +126,8 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
+import org.openqa.selenium.remote.server.handler.mobile.GetNetworkConnection;
+import org.openqa.selenium.remote.server.handler.mobile.SetNetworkConnection;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 
@@ -313,5 +315,8 @@ public class JsonHttpCommandHandler {
     addNewMapping(GET_AVAILABLE_LOG_TYPES, GetAvailableLogTypesHandler.class);
     addNewMapping(GET_LOG, GetLogHandler.class);
     addNewMapping(GET_SESSION_LOGS, GetSessionLogsHandler.class);
+
+    addNewMapping(GET_NETWORK_CONNECTION, GetNetworkConnection.class);
+    addNewMapping(SET_NETWORK_CONNECTION, SetNetworkConnection.class);
   }
 }
