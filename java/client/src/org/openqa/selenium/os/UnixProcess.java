@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 class UnixProcess implements OsProcess {
   private static final Logger log = Logger.getLogger(UnixProcess.class.getName());
 
-  private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
+  private ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
   private volatile String allInput;
   private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
   private final Executor executor = new DaemonExecutor();
@@ -105,8 +105,8 @@ class UnixProcess implements OsProcess {
   }
 
   private OutputStream getOutputStream() {
-    return drainTo == null ? inputOut
-        : new MultioutputStream(inputOut, drainTo);
+    inputOut = new ByteArrayOutputStream();
+    return new MultioutputStream(inputOut, drainTo);
   }
 
   public int destroy() {
