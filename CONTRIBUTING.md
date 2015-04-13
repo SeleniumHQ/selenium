@@ -5,21 +5,27 @@ number of ways you can help:
 
 ## Bug Reports
 
-When opening new issues or commenting on existing issues on this
-repository please make sure discussions are related to concrete
-technical issues with the Selenium software.
+When opening new issues or commenting on existing issues please make
+sure discussions are related to concrete technical issues with the
+Selenium software.
 
 It's imperative that issue reports outline the steps to reproduce
 the defect. If the issue can't be reproduced it will be closed.
 Please provide [concise reproducible test cases](http://sscce.org/)
 and describe what results you are seeing and what results you expect.
 
-Issues shouldn't be used for support. Please address questions to the
+Issues shouldn't be used for support.  Please address questions to the
 [`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
 Discussion of high level project ideas or non-technical topics should
 move to the
 [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
 instead.
+
+We also need help with triaging
+[issues that needs investigation](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
+This means asking the right questions, procuring the right information
+to properly debug and verify the issue, and bisecting a commit range if
+the issue is a regression.
 
 ## Documentation
 
