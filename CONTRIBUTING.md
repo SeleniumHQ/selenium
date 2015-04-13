@@ -3,7 +3,7 @@
 The Selenium project welcomes contributions from everyone. There are a
 number of ways you can help:
 
-## Issue Contributions
+## Bug Reports
 
 When opening new issues or commenting on existing issues on this
 repository please make sure discussions are related to concrete
@@ -21,7 +21,7 @@ move to the
 [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
 instead.
 
-## Documentation Contributions
+## Documentation
 
 Selenium is a big software project and documentation is key to
 understanding how things work and learning effective ways to exploit
