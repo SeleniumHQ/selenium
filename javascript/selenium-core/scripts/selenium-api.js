@@ -3174,6 +3174,8 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
         height: Math.max(doc.scrollHeight, body.scrollHeight)
     };
 
+    var originalBackground = doc.style.background;
+
     if (kwargs) {
       var args = parse_kwargs(kwargs);
       if (args.viewportOnly) {
@@ -3200,8 +3202,6 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
       box.height = limit;
     }
     LOG.debug('computed dimensions');
-
-    var originalBackground = doc.style.background;
 
     // grab
     var format = 'png';
