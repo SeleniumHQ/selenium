@@ -2937,36 +2937,36 @@ Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefini
     this.browserbot.locationStrategies[strategyName] = safeStrategyFunction;
 }
 
-/**
- * Saves the contents of the OS viewport (i.e. whatever is currently being displayed
- * on the monitor). Currently this only works in Firefox when running in chrome mode,
- * and in IE non-HTA using the EXPERIMENTAL "Snapsie" utility. The Firefox implementation
- * is mostly borrowed from the Screengrab! Firefox extension. Please see
- * http://www.screengrab.org and http://snapsie.sourceforge.net/ for details.
- *
- * @param filename  the path to the file to persist the screenshot as. No
- *                  filename extension will be appended by default.
- *                  Directories will not be created if they do not exist,
- *                  and an exception will be thrown, possibly by native
- *                  code.
- * @param kwargs    a kwargs string that modifies the way the screenshot
- *                  is captured. Example: "background=#CCFFDD" .
- *                  Currently valid options:
- *                  <dl>
- *                   <dt>viewportOnly</dt>
- *                     <dd>captures the contents of the OS viewport (i.e.
- *                     whatever is currently being displayed on the monitor). Used by the
- *                     captureScreenshot command</dd>
- *                   <dt>background</dt>
- *                     <dd>the background CSS for the HTML document. This
- *                     may be useful to set for capturing screenshots of
- *                     less-than-ideal layouts, for example where absolute
- *                     positioning causes the calculation of the canvas
- *                     dimension to fail and a black background is exposed
- *                     (possibly obscuring black text).</dd>
- *                  </dl>
- */
 Selenium.prototype.doCaptureScreenshot = function(filename, kwargs) {
+    /**
+     * Saves the contents of the OS viewport (i.e. whatever is currently being displayed
+     * on the monitor). Currently this only works in Firefox when running in chrome mode,
+     * and in IE non-HTA using the EXPERIMENTAL "Snapsie" utility. The Firefox implementation
+     * is mostly borrowed from the Screengrab! Firefox extension. Please see
+     * http://www.screengrab.org and http://snapsie.sourceforge.net/ for details.
+     *
+     * @param filename  the path to the file to persist the screenshot as. No
+     *                  filename extension will be appended by default.
+     *                  Directories will not be created if they do not exist,
+     *                  and an exception will be thrown, possibly by native
+     *                  code.
+     * @param kwargs    a kwargs string that modifies the way the screenshot
+     *                  is captured. Example: "background=#CCFFDD" .
+     *                  Currently valid options:
+     *                  <dl>
+     *                   <dt>viewportOnly</dt>
+     *                     <dd>captures the contents of the OS viewport (i.e.
+     *                     whatever is currently being displayed on the monitor). Used by the
+     *                     captureScreenshot command</dd>
+     *                   <dt>background</dt>
+     *                     <dd>the background CSS for the HTML document. This
+     *                     may be useful to set for capturing screenshots of
+     *                     less-than-ideal layouts, for example where absolute
+     *                     positioning causes the calculation of the canvas
+     *                     dimension to fail and a black background is exposed
+     *                     (possibly obscuring black text).</dd>
+     *                  </dl>
+     */
     if (kwargs) {
         var args = parse_kwargs(kwargs);
         if (!args.viewportOnly) {
