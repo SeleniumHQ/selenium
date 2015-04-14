@@ -25,39 +25,6 @@ goog.provide('bot.ErrorCode');
 
 
 /**
- * Status strings enumerated in the W3C WebDriver protocol.
- * @enum {string}
- * @see https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors
- */
-bot.Error.State = {
-  ELEMENT_NOT_SELECTABLE: 'element not selectable',
-  ELEMENT_NOT_VISIBLE: 'element not visible',
-  INVALID_ARGUMENT: 'invalid argument',
-  INVALID_COOKIE_DOMAIN: 'invalid cookie domain',
-  INVALID_ELEMENT_COORDINATES: 'invalid element coordinates',
-  INVALID_ELEMENT_STATE: 'invalid element state',
-  INVALID_SELECTOR: 'invalid selector',
-  INVALID_SESSION_ID: 'invalid session id',
-  JAVASCRIPT_ERROR: 'javascript error',
-  MOVE_TARGET_OUT_OF_BOUNDS: 'move target out of bounds',
-  NO_SUCH_ALERT: 'no such alert',
-  NO_SUCH_ELEMENT: 'no such element',
-  NO_SUCH_FRAME: 'no such frame',
-  NO_SUCH_WINDOW: 'no such window',
-  SCRIPT_TIMEOUT: 'script timeout',
-  SESSION_NOT_CREATED: 'session not created',
-  STALE_ELEMENT_REFERENCE: 'stale element reference',
-  TIMEOUT: 'timeout',
-  UNABLE_TO_SET_COOKIE: 'unable to set cookie',
-  UNEXPECTED_ALERT_OPEN: 'unexpected alert open',
-  UNKNOWN_COMMAND: 'unknown command',
-  UNKNOWN_ERROR: 'unknown error',
-  UNKNOWN_METHOD: 'unknown method',
-  UNSUPPORTED_OPERATION: 'unsupported operation'
-};
-
-
-/**
  * Error codes from the Selenium WebDriver protocol:
  * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
@@ -145,6 +112,39 @@ bot.Error = function(code, opt_message) {
   this.stack = template.stack || '';
 };
 goog.inherits(bot.Error, Error);
+
+
+/**
+ * Status strings enumerated in the W3C WebDriver protocol.
+ * @enum {string}
+ * @see https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors
+ */
+bot.Error.State = {
+  ELEMENT_NOT_SELECTABLE: 'element not selectable',
+  ELEMENT_NOT_VISIBLE: 'element not visible',
+  INVALID_ARGUMENT: 'invalid argument',
+  INVALID_COOKIE_DOMAIN: 'invalid cookie domain',
+  INVALID_ELEMENT_COORDINATES: 'invalid element coordinates',
+  INVALID_ELEMENT_STATE: 'invalid element state',
+  INVALID_SELECTOR: 'invalid selector',
+  INVALID_SESSION_ID: 'invalid session id',
+  JAVASCRIPT_ERROR: 'javascript error',
+  MOVE_TARGET_OUT_OF_BOUNDS: 'move target out of bounds',
+  NO_SUCH_ALERT: 'no such alert',
+  NO_SUCH_ELEMENT: 'no such element',
+  NO_SUCH_FRAME: 'no such frame',
+  NO_SUCH_WINDOW: 'no such window',
+  SCRIPT_TIMEOUT: 'script timeout',
+  SESSION_NOT_CREATED: 'session not created',
+  STALE_ELEMENT_REFERENCE: 'stale element reference',
+  TIMEOUT: 'timeout',
+  UNABLE_TO_SET_COOKIE: 'unable to set cookie',
+  UNEXPECTED_ALERT_OPEN: 'unexpected alert open',
+  UNKNOWN_COMMAND: 'unknown command',
+  UNKNOWN_ERROR: 'unknown error',
+  UNKNOWN_METHOD: 'unknown method',
+  UNSUPPORTED_OPERATION: 'unsupported operation'
+};
 
 
 /**
