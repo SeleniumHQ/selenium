@@ -20,13 +20,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
     /// Provides a convenience method for manipulating selections of options in an HTML select element.
     /// </summary>
-    public class SelectElement
+    public class SelectElement : IWrapsElement
     {
         private readonly IWebElement element;
 
@@ -53,6 +54,14 @@ namespace OpenQA.Selenium.Support.UI
             // let check if it's a multiple
             string attribute = element.GetAttribute("multiple");
             this.IsMultiple = attribute != null && attribute.ToLowerInvariant() != "false";
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IWebElement"/> wrapped by this object.
+        /// </summary>
+        public IWebElement WrappedElement
+        {
+            get { return this.element; }
         }
 
         /// <summary>
