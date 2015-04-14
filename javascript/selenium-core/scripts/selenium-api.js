@@ -2967,11 +2967,15 @@ Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefini
  *                  </dl>
  */
 Selenium.prototype.doCaptureScreenshot = function(filename, kwargs) {
-    var args = parse_kwargs(kwargs);
-    if (!args.viewportOnly) {
-        kwargs += ",viewportOnly=true";
+    if (kwargs) {
+        var args = parse_kwargs(kwargs);
+        if (!args.viewportOnly) {
+            kwargs += ",viewportOnly=true";
+        }
+    } else {
+        var kwargs = "viewportOnly=true";
     }
-    Selenium.prototype.doCaptureEntirePageScreenshot(filename, kwargs);
+    this.doCaptureEntirePageScreenshot(filename, kwargs);
 };
 
 Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
