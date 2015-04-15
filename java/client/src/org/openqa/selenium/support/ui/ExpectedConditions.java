@@ -31,6 +31,8 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Canned {@link ExpectedCondition}s which are generally useful within webdriver
@@ -87,6 +89,79 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("title to contain \"%s\". Current title: \"%s\"", title, currentTitle);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the URL of the current page to be a specific url.
+   *
+   * @param url the url that the page should be on
+   * @return <code>true</code> when the URL is what it should be
+   */
+  public static ExpectedCondition<Boolean> urlToBe(final String url) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentUrl = "";
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentUrl = driver.getCurrentUrl();
+        return currentUrl != null && currentUrl.equals(url);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("url to be \"%s\". Current url: \"%s\"", url, currentUrl);
+      }
+    };
+  }
+
+  /**
+   * An expectation for the URL of the current page to contain specific text.
+   *
+   * @param fraction the fraction of the url that the page should be on
+   * @return <code>true</code> when the URL contains the text
+   */
+  public static ExpectedCondition<Boolean> urlContains(final String fraction) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentUrl = "";
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentUrl = driver.getCurrentUrl();
+        return currentUrl != null && currentUrl.contains(fraction);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("url to contain \"%s\". Current url: \"%s\"", fraction, currentUrl);
+      }
+    };
+  }
+
+  /**
+   * Expectation for the URL to match a specific regular expression
+   *
+   * @param regex the regular expression that the URL should match
+   * @return <code>true</code> if the URL matches the specified regular expression
+   */
+  public static ExpectedCondition<Boolean> urlMatches(final String regex) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentUrl;
+      private Pattern pattern;
+      private Matcher matcher;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentUrl = driver.getCurrentUrl();
+        pattern = Pattern.compile(regex);
+        matcher = pattern.matcher(currentUrl);
+        return matcher.find();
+      }
+
+      @Override
+      public String toString() {
+        return String.format("url to match the regex \"%s\". Current url: \"%s\"", regex, currentUrl);
       }
     };
   }
