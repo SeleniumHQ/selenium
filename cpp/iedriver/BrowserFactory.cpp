@@ -306,10 +306,12 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   // ShellWindows might fail if there is an IE modal dialog blocking
   // execution (unverified).
   if (!this->force_shell_windows_api_) {
+    LOG(DEBUG) << "Using Active Accessibility to find IWebBrowser2 interface";
     attached = this->AttachToBrowserUsingActiveAccessibility(process_window_info,
                                                              error_message);
     if (!attached) {
-      LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: " << *error_message;
+      LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: "
+                 << *error_message;
     }
   }
 
@@ -359,13 +361,28 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                                              process_window_info->dwProcessId,
                                              this->browser_attach_timeout_);
     return false;
+  } else {
+    LOG(DEBUG) << "Found window handle " << process_window_info->hwndBrowser
+               << " for window with class 'Internet Explorer_Server' belonging"
+               << " to process with id " << process_window_info->dwProcessId;
   }
 
   CComPtr<IHTMLDocument2> document;
   if (this->GetDocumentFromWindowHandle(process_window_info->hwndBrowser,
                                         &document)) {
+    int get_parent_window_retry_count = 8;
     CComPtr<IHTMLWindow2> window;
     HRESULT hr = document->get_parentWindow(&window);
+    while (FAILED(hr) && get_parent_window_retry_count > 0) {
+      // We know we have a valid document. We *should* be able to do a
+      // document.parentWindow call to get the window. However, on the off-
+      // chance that the document exists, but IE is slow to initialize all
+      // of the COM objects and the full DOM, we'll sleep up to 2 seconds,
+      // retrying to get the parent window.
+      ::Sleep(250);
+      hr = document->get_parentWindow(&window);
+      --get_parent_window_retry_count;
+    }
     if (SUCCEEDED(hr)) {
       // http://support.microsoft.com/kb/257717
       CComPtr<IServiceProvider> provider;
@@ -416,9 +433,6 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     return false;
   }
 
-  HWND hwnd_browser = NULL;
-  CComPtr<IWebBrowser2> browser;
-
   clock_t end = clock() + (this->browser_attach_timeout_ / 1000 * CLOCKS_PER_SEC);
 
   CComPtr<IEnumVARIANT> enumerator;
@@ -429,7 +443,7 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     }
     enumerator->Reset();
     for (CComVariant shell_window_variant;
-         enumerator->Next(1, &shell_window_variant, nullptr) == S_OK;
+         enumerator->Next(1, &shell_window_variant, NULL) == S_OK;
          shell_window_variant.Clear()) {
 
       if (shell_window_variant.vt != VT_DISPATCH) {
@@ -448,6 +462,12 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
                              &BrowserFactory::FindChildWindowForProcess, 
                              reinterpret_cast<LPARAM>(process_window_info));
           if (process_window_info->hwndBrowser != NULL) {
+            LOG(DEBUG) << "Found window handle "
+                       << process_window_info->hwndBrowser
+                       << " for window with class 'Internet Explorer_Server'"
+                       << " belonging to process with id "
+                       << process_window_info->dwProcessId;
+            CComPtr<IWebBrowser2> browser;
             hr = shell_window_variant.pdispVal->QueryInterface<IWebBrowser2>(&browser);
             if (FAILED(hr)) {
               LOGHR(WARN, hr) << "Found browser window using ShellWindows "
