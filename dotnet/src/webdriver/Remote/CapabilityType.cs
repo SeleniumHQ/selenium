@@ -86,5 +86,10 @@ namespace OpenQA.Selenium.Remote
         /// Capability name used to indicate how the browser handles unexpected alerts.
         /// </summary>
         public static readonly string UnexpectedAlertBehavior = "unexpectedAlertBehaviour";
+
+        /// <summary>
+        /// Capability name used to indicate the page load strategy for the browser.
+        /// </summary>
+        public static readonly string PageLoadStrategy = "pageLoadStrategy";
     }
 }

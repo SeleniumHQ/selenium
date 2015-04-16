@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.IE
         private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
         private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
-        private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
+        private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Debug;
         private InternetExplorerDriverEngine engineImplementation = InternetExplorerDriverEngine.Legacy;
         private string host = string.Empty;
         private string logFile = string.Empty;
