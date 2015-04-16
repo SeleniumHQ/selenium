@@ -27,42 +27,44 @@ document.getElementById('padding').style.height = window.innerHeight;
 </div>
 
 <template id="parentTemplate">
-<div id="parentDiv">
+  <div id="parentDiv">
     <div style="border-style:solid;border-color:green">
-        <H3>Parent</H3>
-        <H4>Contents</H4>
-        <content></content>
+      <H3>Parent</H3>
+      <H4>Contents</H4>
+      <content></content>
     </div>
-</div>
+  </div>
 </template>
 <template id="olderChildTemplate">
-<div id="olderChildDiv">
+  <div id="olderChildDiv">
     <div style="border-style:solid;border-color:red">
-        <H3 id="olderHeading">Older Child</H3>
-        As the older child of a nested shadow root, this is the most likely
-        to go wrong bit of the page, so we'll concentrate our tests here.
-        <H4>Contents</H4>
-        <content></content>
-        <input id="olderTextBox" type="text" value="foo"/>
-        <input type="button" onClick="buttonWasClicked()" value="button"
-            id="olderButton"/>
+      <H3 id="olderHeading">Older Child</H3>
+      As the older child of a nested shadow root, this is the most likely
+      to go wrong bit of the page, so we'll concentrate our tests here.
+      <H4>Contents</H4>
+      <content></content>
+      <input id="olderTextBox" type="text" value="foo"/>
+      <input type="button" onClick="buttonWasClicked()" value="button"
+          id="olderButton"/>
     </div>
-</div>
+  </div>
 </template>
 <template id="youngerChildTemplate">
-<div id="youngerChildDiv">
+  <input type="button" onClick="buttonWasClicked()" value="button"
+      id="youngerButton"/>
+  <div id="youngerChildDiv">
     <div style="border-style:solid;border-color:blue">
-        <H3>Younger Child</H3>
-        <div style="border-style:dotted;border-color:blue">
-            <H4>Younger Child Contents</H4>
-            <content></content>
-        </div>
-        <div style="border-style:dashed;border-color:blue">
-            <H4>Younger Child Shadow</H4>
-            <shadow></shadow>
-        </div>
+      <H3>Younger Child</H3>
+      <div style="border-style:dotted;border-color:blue">
+        <H4>Younger Child Contents</H4>
+        <content></content>
+      </div>
+      <div style="border-style:dashed;border-color:blue">
+         <H4>Younger Child Shadow</H4>
+         <shadow></shadow>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 <script type="text/javascript" >
 var parentShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
@@ -105,6 +107,17 @@ function buttonWasClicked() {
         "Textbox #olderTextBox should not be clickable from #olderButton's "
             + "location",
         webdriver.chrome.isElementClickable(elemText,
+            getCenterCoordinate(elemButton)).clickable);
+  }
+
+  function testShadowRootTopLevelComponentIsElementClickable() {
+    // Regression test: check things also work on buttons that are top-level
+    // components of a shadow DOM
+    var elemButton = document.querySelector("* /deep/ #youngerButton");
+    webdriver.chrome.getLocationInView(elemButton, true);
+    assertTrue(
+        "Button #youngerButton should be clickable",
+        webdriver.chrome.isElementClickable(elemButton,
             getCenterCoordinate(elemButton)).clickable);
   }
 

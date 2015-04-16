@@ -118,8 +118,16 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     scrollable.scrollTop += scroll.y;
   }
 
+  function getContainer(elem) {
+    var container = elem.parentNode;
+    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
+      container = elem.host;
+    }
+    return container;
+  }
+
   var doc = goog.dom.getOwnerDocument(elem);
-  var container = elem.parentNode;
+  var container = getContainer(elem);
   var offset;
   while (container &&
          container != doc.documentElement &&
@@ -129,10 +137,7 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     var containerSize = new goog.math.Size(container.clientWidth,
                                            container.clientHeight);
     scrollHelper(container, containerSize, offset, region, center);
-    container = container.parentNode;
-    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
-      container = container.host;
-    }
+    container = getContainer(container);
   }
 
   offset = goog.style.getClientPosition(elem);
