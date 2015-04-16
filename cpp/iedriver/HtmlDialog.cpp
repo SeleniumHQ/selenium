@@ -104,7 +104,7 @@ bool HtmlDialog::IsBusy() {
   return false;
 }
 
-bool HtmlDialog::Wait() {
+bool HtmlDialog::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering HtmlDialog::Wait";
   // If the window is no longer valid, the window is closing,
   // and the wait is completed.

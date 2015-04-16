@@ -70,7 +70,9 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.set_validate_cookie_document_type(validate_cookie_document_type.asBool());
 
       Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
-      mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
+      mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
+      Json::Value page_load_strategy = this->GetCapability(it->second, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+      mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
       Json::Value enable_element_cache_cleanup = this->GetCapability(it->second, ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, Json::booleanValue, true);
       mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
       Json::Value enable_persistent_hover = this->GetCapability(it->second, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
@@ -160,6 +162,34 @@ class NewSessionCommandHandler : public IECommandHandler {
         return "string";
     }
     return "null";
+  }
+
+  std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(const std::string& desired_value) {
+    std::string value = DISMISS_UNEXPECTED_ALERTS;
+    if (desired_value == DISMISS_UNEXPECTED_ALERTS ||
+        desired_value == ACCEPT_UNEXPECTED_ALERTS ||
+        desired_value == IGNORE_UNEXPECTED_ALERTS) {
+      value = desired_value;
+    } else {
+      LOG(WARN) << "Desired value of " << desired_value << " for "
+                << UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY << " is not"
+                << " a valid value. Using default of " << value;
+    }
+    return value;
+  }
+
+  std::string NewSessionCommandHandler::GetPageLoadStrategyValue(const std::string& desired_value) {
+    std::string value = NORMAL_PAGE_LOAD_STRATEGY;
+    if (desired_value == NORMAL_PAGE_LOAD_STRATEGY ||
+        desired_value == EAGER_PAGE_LOAD_STRATEGY ||
+        desired_value == NONE_PAGE_LOAD_STRATEGY) {
+      value = desired_value;
+    } else {
+      LOG(WARN) << "Desired value of " << desired_value << " for "
+                << PAGE_LOAD_STRATEGY_CAPABILITY << " is not"
+                << " a valid value. Using default of " << value;
+    }
+    return value;
   }
 };
 

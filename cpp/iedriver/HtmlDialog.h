@@ -51,7 +51,7 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
 
   void GetDocument(IHTMLDocument2** doc);
   void Close(void);
-  bool Wait(void);
+  bool Wait(const std::string& page_load_strategy);
   bool IsBusy(void);
   HWND GetContentWindowHandle(void);
   HWND GetBrowserWindowHandle(void);

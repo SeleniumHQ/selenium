@@ -12,6 +12,28 @@ not made generally available on the downloads page.
 v2.45.0.1
 =========
  * Updates to JavaScript automation atoms.
+ * Added pageLoadStrategy to IE driver. Setting a capability named 
+   pageLoadStrategy when creating a session with the IE driver will now change
+   the wait behavior when navigating to a new page. The valid values are:
+
+     "normal" - Waits for document.readyState to be 'complete'. This is the
+                default, and is the same behavior as all previous versions of
+                the IE driver.
+     "eager"  - Will abort the wait when document.readyState is
+                'interactive' instead of waiting for 'complete'.
+     "none"   - Will abort the wait immediately, without waiting for any of
+                the page to load.
+
+   Setting the capability to an invalid value will result in use of the
+   "normal" page load strategy.
+ * Added delay and logging on attaching to launched IE. There are times when
+   the two methods used for attaching to a launched instance of Internet
+   Explorer will fail. This commit adds additional logging to help make
+   diagnosing the exact failure points of these circumstances easier.
+
+v2.45.0.1
+=========
+ * Updates to JavaScript automation atoms.
  * Changed to prevent crash when driver fails to connect to IWebBrowser2
    object.
 

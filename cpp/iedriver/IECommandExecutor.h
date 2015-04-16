@@ -41,6 +41,9 @@
 #define IGNORE_UNEXPECTED_ALERTS "ignore"
 #define ACCEPT_UNEXPECTED_ALERTS "accept"
 #define DISMISS_UNEXPECTED_ALERTS "dismiss"
+#define NORMAL_PAGE_LOAD_STRATEGY "normal"
+#define EAGER_PAGE_LOAD_STRATEGY "eager"
+#define NONE_PAGE_LOAD_STRATEGY "none"
 
 namespace webdriver {
 
@@ -177,6 +180,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->unexpected_alert_behavior_ = unexpected_alert_behavior;
   }
 
+  std::string page_load_strategy(void) const {
+    return this->page_load_strategy_;
+  }
+  void set_page_load_strategy(const std::string& page_load_strategy) {
+    this->page_load_strategy_ = page_load_strategy;
+  }
+
   ElementFinder element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -227,6 +237,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
   bool validate_cookie_document_type_;
+  std::string page_load_strategy_;
 
   Command current_command_;
   std::string serialized_response_;

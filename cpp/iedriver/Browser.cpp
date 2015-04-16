@@ -423,8 +423,14 @@ bool Browser::IsBusy() {
   return SUCCEEDED(hr) && is_busy == VARIANT_TRUE;
 }
 
-bool Browser::Wait() {
+bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
+  
+  if (page_load_strategy == "none") {
+    LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
+    this->set_wait_required(false);
+    return true;
+  }
 
   bool is_navigating = true;
 
@@ -484,7 +490,7 @@ bool Browser::Wait() {
   hr = document_dispatch->QueryInterface(&doc);
   if (SUCCEEDED(hr)) {
     LOG(DEBUG) << "Waiting for document to complete...";
-    is_navigating = this->IsDocumentNavigating(doc);
+    is_navigating = this->IsDocumentNavigating(page_load_strategy, doc);
   }
 
   if (!is_navigating) {
@@ -495,7 +501,8 @@ bool Browser::Wait() {
   return !is_navigating;
 }
 
-bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
+bool Browser::IsDocumentNavigating(const std::string& page_load_strategy,
+                                   IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering Browser::IsDocumentNavigating";
 
   bool is_navigating = true;
@@ -504,14 +511,21 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
   is_navigating = this->is_navigation_started_;
   CComBSTR ready_state;
   HRESULT hr = doc->get_readyState(&ready_state);
-  if (FAILED(hr) || is_navigating || _wcsicmp(ready_state, L"complete") != 0) {
+  if (FAILED(hr) || 
+      is_navigating || 
+      _wcsicmp(ready_state, L"complete") != 0 ||
+      (page_load_strategy == "eager" && _wcsicmp(ready_state, L"interactive") != 0)) {
     if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IHTMLDocument2::get_readyState failed.";
     } else if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
     } else {
       std::wstring state = ready_state;
-      LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(state);
+      if (page_load_strategy == "eager") {
+        LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(state);
+      } else {
+        LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(state);
+      }
     }
     return true;
   } else {
@@ -565,7 +579,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
 
       // Recursively call to wait for the frame document to complete
       if (is_valid_frame_document) {
-        is_navigating = this->IsDocumentNavigating(frame_document);
+        is_navigating = this->IsDocumentNavigating(page_load_strategy, frame_document);
         if (is_navigating) {
           break;
         }

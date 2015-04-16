@@ -125,6 +125,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
   this->is_waiting_ = false;
+  this->page_load_strategy_ = "normal";
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
@@ -220,7 +221,7 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
       this->is_waiting_ = false;
       browser->set_wait_required(false);
     } else {
-      this->is_waiting_ = !(browser->Wait());
+      this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
       if (this->is_waiting_) {
         // If we are still waiting, we need to wait a bit then post a message to
         // ourselves to run the wait again. However, we can't wait using Sleep()
