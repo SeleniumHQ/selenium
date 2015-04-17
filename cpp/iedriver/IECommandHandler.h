@@ -36,7 +36,7 @@
 #define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
 #define NATIVE_EVENTS_CAPABILITY "nativeEvents"
 #define PROXY_CAPABILITY "proxy"
-#define PAGE_LOAD_STRATEGY_CAPABILITY "pageLoadingStrategy"
+#define PAGE_LOAD_STRATEGY_CAPABILITY "pageLoadStrategy"
 #define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
 #define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
