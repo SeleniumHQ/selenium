@@ -358,7 +358,11 @@ static HKL attachInputToIEThread(HWND directInputTo)
 	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) &GetMessageProc,
 			moduleHandle, ieWinThreadId);
 
-	// Attach to the IE thread so we can send keys to it.
+  if (hook == NULL) {
+    LOGERR(WARN) << "Unable to set Windows hook. Individual keystrokes will be very slow";
+  }
+
+  // Attach to the IE thread so we can send keys to it.
 	if (ieWinThreadId != currThreadId) {
 		AttachThreadInput(currThreadId, ieWinThreadId, true);
 	}
