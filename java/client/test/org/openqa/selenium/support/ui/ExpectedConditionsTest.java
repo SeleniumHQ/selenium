@@ -17,23 +17,12 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.not;
-import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 import com.google.common.collect.Lists;
 
@@ -50,6 +39,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +52,8 @@ public class ExpectedConditionsTest {
 
   @Mock private WebDriver mockDriver;
   @Mock private WebElement mockElement;
+  @Mock private WebElement mockAnotherElement;
+  private List<WebElement> mockTwoElements = Arrays.asList(mockElement, mockAnotherElement);
   @Mock private Clock mockClock;
   @Mock private Sleeper mockSleeper;
   @Mock private GenericCondition mockCondition;
@@ -440,6 +432,71 @@ public class ExpectedConditionsTest {
     when(mockElement.isSelected()).thenThrow(new StaleElementReferenceException("Stale element"));
 
     assertTrue(wait.until(elementSelectionStateToBe(mockElement, false)));
+  }
+
+  @Test
+  public void waitingForNElementsToBeFoundReturnsTrue() {
+    List webElements = Lists.newArrayList(mockElement);
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 1;
+    when(mockDriver.findElements(testLocator)).thenReturn(webElements);
+
+    assertTrue(
+        wait.until(exactlyNElementsToBeFound(testLocator, testN)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForNElementsToBeFoundThrowsTimeoutExceptionWhenDifferentNumberOfElementsIsFound() {
+    List webElements = Lists.newArrayList(mockElement);
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 3;
+    when(mockDriver.findElements(testLocator)).thenReturn(webElements);
+
+    wait.until(exactlyNElementsToBeFound(testLocator, testN));
+  }
+
+  @Test
+  public void waitingForAtLeastNElementsToBeFoundReturnsTrue() {
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 2;
+    when(mockDriver.findElements(testLocator)).thenReturn(mockTwoElements);
+
+    assertTrue(
+        wait.until(atLeastNElementsToBeFound(testLocator, testN)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAtLeastNElementsToBeFoundThrowsTimeoutExceptionWhenFewerElementsAreFound() {
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 3;
+    when(mockDriver.findElements(testLocator)).thenReturn(mockTwoElements);
+
+    wait.until(atLeastNElementsToBeFound(testLocator, testN));
+  }
+
+  @Test
+  public void waitingForAtMostNElementsToBeFoundReturnsTrue() {
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 2;
+    when(mockDriver.findElements(testLocator)).thenReturn(mockTwoElements);
+
+    assertTrue(
+        wait.until(atMostNElementsToBeFound(testLocator, testN)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForAtMostNElementsToBeFoundThrowsTimeoutExceptionWhenMoreElementsAreFound() {
+    String testSelector = "testSelector";
+    By testLocator = By.cssSelector(testSelector);
+    int testN = 1;
+    when(mockDriver.findElements(testLocator)).thenReturn(mockTwoElements);
+
+    wait.until(atMostNElementsToBeFound(testLocator, testN));
   }
 
   interface GenericCondition extends ExpectedCondition<Object> {}
