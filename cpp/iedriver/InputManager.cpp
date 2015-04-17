@@ -209,7 +209,7 @@ HHOOK InputManager::InstallWindowsHook(std::string hook_procedure_name, int hook
                                    instance_handle,
                                    0);
   if (hook_handle == NULL) {      
-    LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
+    LOGERR(WARN) << "Unable to set windows hook to catch processing of input events.";
   }
   return hook_handle;
 }
