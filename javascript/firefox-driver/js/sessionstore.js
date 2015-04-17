@@ -171,7 +171,8 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
   'browserConnectionEnabled': 'dom.network.enabled',
   'acceptSslCerts': 'webdriver_accept_untrusted_certs',
   'nativeEvents' : 'webdriver_enable_native_events',
-  'pageLoadingStrategy' : 'webdriver.load.strategy'
+  'pageLoadingStrategy' : 'webdriver.load.strategy',
+  'pageLoadStrategy' : 'webdriver.load.strategy'
 };
 // TODO: Don't save firefox specific capability acceptSslCerts as preferences.
 

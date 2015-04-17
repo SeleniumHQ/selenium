@@ -192,7 +192,7 @@ var prefs = Components.classes['@mozilla.org/preferences-service;1']
  * @return {!nsIWebProgressListener} The new listener.
  */
 function buildHandler(browser, toCall, opt_window) {
-  var strategy = Utils.getPageLoadingStrategy();
+  var strategy = Utils.getPageLoadStrategy();
   if ('normal' == strategy) {
     return new PatientListener(browser, toCall, opt_window);
   }
@@ -218,7 +218,7 @@ var loadingListenerTimer;
  * @constructor
  */
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
-  var strategy = Utils.getPageLoadingStrategy();
+  var strategy = Utils.getPageLoadStrategy();
   if ('none' == strategy) {
     toCall(false, true);
     return;

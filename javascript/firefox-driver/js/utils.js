@@ -258,7 +258,7 @@ Utils.useNativeEvents = function() {
   return !!(enableNativeEvents && Utils.getNativeEvents());
 };
 
-Utils.getPageLoadingStrategy = function() {
+Utils.getPageLoadStrategy = function() {
   var prefs =
       fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
   return prefs.prefHasUserValue('webdriver.load.strategy') ?

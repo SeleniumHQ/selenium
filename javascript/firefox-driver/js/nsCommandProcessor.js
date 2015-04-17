@@ -510,12 +510,12 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   }
 
   // TODO: should we delay commands if the page is reloaded on itself?
-//  var pageLoadingTimeout = response.session.getPageLoadTimeout();
+//  var pageLoadTimeout = response.session.getPageLoadTimeout();
 //  var shouldWaitForPageLoad = response.session.getWaitForPageLoad();
-//  if (pageLoadingTimeout != 0 && shouldWaitForPageLoad) {
+//  if (pageLoadTimeout != 0 && shouldWaitForPageLoad) {
 //    driver.window.setTimeout(function () {
 //      response.session.setWaitForPageLoad(false);
-//    }, pageLoadingTimeout);
+//    }, pageLoadTimeout);
 //  }
 
   response.startCommand(sessionWindow);

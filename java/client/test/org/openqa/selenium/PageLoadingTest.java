@@ -75,7 +75,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       localDriver.quit();
     }
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PAGE_LOADING_STRATEGY, strategy);
+    caps.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 
