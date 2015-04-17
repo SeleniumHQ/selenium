@@ -132,7 +132,7 @@ namespace OpenQA.Selenium.IE
         private bool requireWindowFocus;
         private bool enablePersistentHover = true;
         private bool forceCreateProcessApi;
-        private bool forceShellWindowsApi = true;
+        private bool forceShellWindowsApi;
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
         private bool validateCookieDocumentType = true;
