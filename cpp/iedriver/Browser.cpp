@@ -509,27 +509,28 @@ bool Browser::IsDocumentNavigating(const std::string& page_load_strategy,
 
   // Starting WaitForDocumentComplete()
   is_navigating = this->is_navigation_started_;
-  CComBSTR ready_state;
-  HRESULT hr = doc->get_readyState(&ready_state);
-  if (FAILED(hr) || 
-      is_navigating || 
-      _wcsicmp(ready_state, L"complete") != 0 ||
-      (page_load_strategy == "eager" && _wcsicmp(ready_state, L"interactive") != 0)) {
+  CComBSTR ready_state_bstr;
+  HRESULT hr = doc->get_readyState(&ready_state_bstr);
+  if (FAILED(hr) || is_navigating) {
     if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IHTMLDocument2::get_readyState failed.";
     } else if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
-    } else {
-      std::wstring state = ready_state;
-      if (page_load_strategy == "eager") {
-        LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(state);
-      } else {
-        LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(state);
-      }
     }
     return true;
   } else {
-    is_navigating = false;
+    std::wstring ready_state = ready_state_bstr;
+    if ((ready_state == L"complete") ||
+        (page_load_strategy == "eager" && ready_state == L"interactive")) {
+      is_navigating = false;
+    } else {
+      if (page_load_strategy == "eager") {
+        LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(ready_state);
+      } else {
+        LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(ready_state);
+      }
+      return true;
+    }
   }
 
   // document.readyState == complete
