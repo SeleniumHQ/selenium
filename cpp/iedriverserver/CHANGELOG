@@ -9,7 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v2.45.0.1
+v2.45.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Corrected wrong value for pageLoadStrategy capability.
+ * Reset browser window handle on failure to attach via Active Accessibility.
+   When launching a new instance, if the driver attempts to use Active
+   Accessibility to attach to the instance, and the attach fails, the driver
+   should attempt to attach using the ShellWindows API. However, this fallback
+   is skipped if the window has already been found. Resetting the found window
+   handle to NULL allows the driver to proceed with the second attempt.
+
+v2.45.0.2
 =========
  * Updates to JavaScript automation atoms.
  * Added pageLoadStrategy to IE driver. Setting a capability named 

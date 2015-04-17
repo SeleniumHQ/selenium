@@ -312,6 +312,9 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
     if (!attached) {
       LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: "
                  << *error_message;
+      // Reset the browser window handle to NULL, since we didn't attach
+      // using Active Accessibility.
+      process_window_info->hwndBrowser = NULL;
     }
   }
 
