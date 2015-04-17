@@ -41,7 +41,7 @@ import java.io.IOException;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {SAFARI, MARIONETTE}, issues = {4220})
+@Ignore(value = {SAFARI}, issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -63,7 +63,7 @@ public class UploadTest extends JUnit4TestBase {
         TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
-    driver.findElement(By.id("go")).submit();
+    driver.findElement(By.id("go")).click();
 
     // Uploading files across a network may take a while, even if they're really small
     WebElement label = driver.findElement(By.id("upload_label"));
