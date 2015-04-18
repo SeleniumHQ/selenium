@@ -19,8 +19,10 @@ package org.openqa.selenium.support;
 import org.openqa.selenium.support.events.EventFiringWebDriverTest;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.AnnotationsTest;
+import org.openqa.selenium.support.pagefactory.ByAndTest;
 import org.openqa.selenium.support.pagefactory.ByChainedTest;
 import org.openqa.selenium.support.pagefactory.ByCompositeTest;
+import org.openqa.selenium.support.pagefactory.ByLazyOrTest;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecoratorTest;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandlerTest;
@@ -42,6 +44,8 @@ import org.junit.runners.Suite;
     AnnotationsTest.class,
     ByCompositeTest.class,
     ByChainedTest.class,
+    ByAndTest.class,
+    ByLazyOrTest.class,
     ColorTest.class,
     DefaultElementLocatorTest.class,
     DefaultFieldDecoratorTest.class,
