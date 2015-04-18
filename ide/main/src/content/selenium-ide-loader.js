@@ -45,14 +45,15 @@ SeleniumIDE.Loader.getEditors = function () {
   }
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
   var editorWindow = wm.getMostRecentWindow('global:selenium-ide');
-  if (editorWindow && editorWindow.editor) {
+  if (editorWindow && editorWindow.editor && editors.indexOf(editorWindow.editor) == -1) {
     editors.push(editorWindow.editor);
   }
   var mainWindow = wm.getMostRecentWindow("navigator:browser");
   editor = this.getSidebarEditor(mainWindow.document);
-  if (editor) {
+  if (editor && editors.indexOf(editor) == -1) {
     editors.push(editor);
   }
+
   return editors;
 };
 
