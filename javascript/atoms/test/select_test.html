@@ -191,13 +191,19 @@
     var testClickCanToggleOptionsInAMultiSelect =
         // Disabled on Chrome due to
         // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        goog.userAgent.product.CHROME ? goog.nullFunction :
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.click);
 
     var testTapCanToggleOptionsInAMultiSelect =
         // Disabled on Chrome due to
         // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        goog.userAgent.product.CHROME ? goog.nullFunction :
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canToggleOptionsInAMultiSelect, bot.action.tap);
 
     function canToggleCheckboxes(action) {
@@ -328,12 +334,19 @@
     }
 
     var testClickCanSelectOptionWhenDefaultPrevented =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.click);
 
     var testTapCanSelectOptionWhenDefaultPrevented =
         // Disabled on Chrome due to
         // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        goog.userAgent.product.CHROME ? goog.nullFunction :
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.tap);
 
     function cannotSelectCheckboxWhenDefaultPrevented(action) {
@@ -528,12 +541,19 @@
     }
 
     var testClickTogglesByTheTimeChangeEventFires =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.click);
 
     var testTapTogglesByTheTimeChangeEventFires =
         // Disabled on Chrome due to
         // https://code.google.com/p/chromedriver/issues/detail?id=1073
-        goog.userAgent.product.CHROME ? goog.nullFunction :
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.tap);
   </script>
 </head>
