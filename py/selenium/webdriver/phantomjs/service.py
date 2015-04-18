@@ -20,6 +20,7 @@ import platform
 import signal
 import subprocess
 import time
+import traceback
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -75,7 +76,9 @@ class Service(object):
                                             stdout=self._log, stderr=self._log)
 
         except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
+            raise WebDriverException(
+                msg="Unable to start phantomjs with ghostdriver: {}".format(e),
+                stacktrace=traceback.format_exc())
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
