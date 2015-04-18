@@ -18,49 +18,17 @@
 package org.openqa.selenium.support;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ByOr;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-public class ByIdOrName extends By implements Serializable {
+public class ByIdOrName extends ByOr {
 
   private static final long serialVersionUID = 3986638402799576701L;
 
-  private By idFinder;
-  private By nameFinder;
   private String idOrName;
 
   public ByIdOrName(String idOrName) {
+    super(By.id(idOrName), By.name(idOrName));
     this.idOrName = idOrName;
-    idFinder = By.id(idOrName);
-    nameFinder = By.name(idOrName);
-  }
-
-  @Override
-  public WebElement findElement(SearchContext context) {
-    try {
-      // First, try to locate by id
-      return idFinder.findElement(context);
-    } catch (NoSuchElementException e) {
-      // Then by name
-      return nameFinder.findElement(context);
-    }
-  }
-
-  @Override
-  public List<WebElement> findElements(SearchContext context) {
-    List<WebElement> elements = new ArrayList<WebElement>();
-
-    // First: Find by id ...
-    elements.addAll(idFinder.findElements(context));
-    // Second: Find by name ...
-    elements.addAll(nameFinder.findElements(context));
-
-    return elements;
   }
 
   @Override
