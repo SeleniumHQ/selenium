@@ -131,7 +131,7 @@ Options.fromCapabilities = function(capabilities) {
  * when using this capability.
  *
  * For more information, refer to the IEDriver's
- * [required system configuration](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration).
+ * [required system configuration](http://goo.gl/eH0Yi3).
  *
  * @param {boolean} ignoreSettings Whether to ignore protected mode settings.
  * @return {!Options} A self reference.
