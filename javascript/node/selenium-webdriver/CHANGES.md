@@ -12,6 +12,8 @@
 * Removed deprecated enum values: `ErrorCode.NO_MODAL_DIALOG_OPEN` and
     `ErrorCode.MODAL_DIALOG_OPENED`. Use `ErrorCode.NO_SUCH_ALERT` and
     `ErrorCode.UNEXPECTED_ALERT_OPEN`, respectively.
+* FIXED: The `promise.ControlFlow` will maintain state for promise chains
+    generated in a loop.
 * FIXED: Correct serialize target elements used in an action sequence.
 * FIXED: `promise.ControlFlow#wait()` now has consistent semantics for an
     omitted or 0-timeout: it will wait indefinitely.

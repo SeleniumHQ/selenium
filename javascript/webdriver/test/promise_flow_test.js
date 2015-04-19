@@ -1880,3 +1880,78 @@ function testDoesNotModifyRejectionErrorIfPromiseNotInsideAFlow() {
   webdriver.promise.rejected(error).then(pair.callback, pair.errback);
   return waitForIdle().then(pair.assertErrback);
 }
+
+
+/** See https://github.com/SeleniumHQ/selenium/issues/444 */
+function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_1() {
+  var messages = [];
+  flow.execute(function() {
+    return webdriver.promise.fulfilled(['a', 'b', 'c', 'd']);
+  }, 'start').then(function(steps) {
+    steps.forEach(function(step) {
+      webdriver.promise.fulfilled(step)
+      .then(function() {
+        messages.push(step + '.1');
+      }).then(function() {
+        messages.push(step + '.2');
+      });
+    })
+  });
+  return waitForIdle().then(function() {
+    assertArrayEquals(
+        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        messages);
+  });
+}
+
+
+/** See https://github.com/SeleniumHQ/selenium/issues/444 */
+function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_2() {
+  var messages = [];
+  flow.execute(function() {
+    return webdriver.promise.fulfilled(['a', 'b', 'c', 'd']);
+  }, 'start').then(function(steps) {
+    steps.forEach(function(step) {
+      webdriver.promise.fulfilled(step)
+      .then(function() {
+        messages.push(step + '.1');
+      }).then(function() {
+        flow.execute(function() {}, step + '.2').then(function(text) {
+          messages.push(step + '.2');
+        });
+      });
+    })
+  });
+  return waitForIdle().then(function() {
+    assertArrayEquals(
+        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        messages);
+  });
+}
+
+
+/** See https://github.com/SeleniumHQ/selenium/issues/444 */
+function testMaintainsOrderWithPromiseChainsCreatedWithinAForeach_3() {
+  var messages = [];
+  flow.execute(function() {
+    return webdriver.promise.fulfilled(['a', 'b', 'c', 'd']);
+  }, 'start').then(function(steps) {
+    steps.forEach(function(step) {
+      webdriver.promise.fulfilled(step)
+      .then(function(){})
+      .then(function() {
+        messages.push(step + '.1');
+        return flow.execute(function() {}, step + '.1');
+      }).then(function() {
+        flow.execute(function() {}, step + '.2').then(function(text) {
+          messages.push(step + '.2');
+        });
+      });
+    })
+  });
+  return waitForIdle().then(function() {
+    assertArrayEquals(
+        ['a.1', 'b.1', 'c.1', 'd.1', 'a.2', 'b.2', 'c.2', 'd.2'],
+        messages);
+  });
+}

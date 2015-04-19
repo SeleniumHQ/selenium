@@ -53,6 +53,7 @@ goog.module('webdriver.promise');
 goog.module.declareLegacyNamespace();
 
 var Arrays = goog.require('goog.array');
+var asserts = goog.require('goog.asserts');
 var asyncRun = goog.require('goog.async.run');
 var throwException = goog.require('goog.async.throwException');
 var DebugError = goog.require('goog.debug.Error');
@@ -515,7 +516,7 @@ promise.Promise.prototype.scheduleNotifications_ = function() {
     }
 
     if (this.callbacks_ && this.callbacks_.length) {
-      activeFrame = this.flow_.getSchedulingFrame_();
+      activeFrame = this.flow_.getRunningFrame_();
       var self = this;
       this.callbacks_.forEach(function(callback) {
         if (!callback.frame_.getParent()) {
@@ -1239,6 +1240,17 @@ promise.ControlFlow = function() {
   this.activeFrame_ = null;
 
   /**
+   * A reference to the frame which is currently top of the stack in
+   * {@link #runInFrame_}. The {@link #activeFrame_} will always be an ancestor
+   * of the {@link #runningFrame_}, but the two will often not be the same. The
+   * active frame represents which frame is currently executing a task while the
+   * running frame represents either the task itself or a promise callback which
+   * has fired asynchronously.
+   * @private {Frame}
+   */
+  this.runningFrame_ = null;
+
+  /**
    * A reference to the frame in which new tasks should be scheduled. If
    * {@code null}, tasks will be scheduled within the active frame. When forcing
    * a function to run in the context of a new frame, this pointer is used to
@@ -1368,6 +1380,7 @@ promise.ControlFlow.prototype.reset = function() {
 promise.ControlFlow.prototype.getSchedule = function(opt_includeStackTraces) {
   var ret = 'ControlFlow::' + goog.getUid(this);
   var activeFrame = this.activeFrame_;
+  var runningFrame = this.runningFrame_;
   if (!activeFrame) {
     return ret;
   }
@@ -1387,6 +1400,9 @@ promise.ControlFlow.prototype.getSchedule = function(opt_includeStackTraces) {
     }
     if (node === activeFrame) {
       ret = '(active) ' + ret;
+    }
+    if (node === runningFrame) {
+      ret = '(running) ' + ret;
     }
     if (node instanceof Frame) {
       if (node.getPendingTask()) {
@@ -1442,6 +1458,15 @@ promise.ControlFlow.prototype.getActiveFrame_ = function() {
  */
 promise.ControlFlow.prototype.getSchedulingFrame_ = function() {
   return this.schedulingFrame_ || this.getActiveFrame_();
+};
+
+
+/**
+ * @return {!Frame} The frame that is current executing.
+ * @private
+ */
+promise.ControlFlow.prototype.getRunningFrame_ = function() {
+  return this.runningFrame_ || this.getActiveFrame_();
 };
 
 
@@ -1790,10 +1815,10 @@ promise.ControlFlow.prototype.abortFrame_ = function(error, opt_frame) {
 /**
  * Executes a function within a specific frame. If the function does not
  * schedule any new tasks, the frame will be discarded and the function's result
- * returned immediately. Otherwise, a promise will be returned. This promise
- * will be resolved with the function's result once all of the tasks scheduled
- * within the function have been completed. If the function's frame is aborted,
- * the returned promise will be rejected.
+ * returned passed to the given callback immediately. Otherwise, the callback
+ * will be invoked once all of the tasks scheduled within the function have been
+ * completed. If the frame is aborted, the `errback` will be invoked with the
+ * offending error.
  *
  * @param {!Frame} newFrame The frame to use.
  * @param {!Function} fn The function to execute.
@@ -1801,11 +1826,16 @@ promise.ControlFlow.prototype.abortFrame_ = function(error, opt_frame) {
  * @param {function(*)} errback The function to call if there is an error.
  * @param {boolean=} opt_isTask Whether the function is a task and the frame
  *     should be immediately activated to capture subtasks and errors.
+ * @throws {Error} If this function is invoked while another call to this
+ *     function is present on the stack.
  * @template T
  * @private
  */
 promise.ControlFlow.prototype.runInFrame_ = function(
       newFrame, fn, callback, errback, opt_isTask) {
+  asserts.assert(
+      !this.runningFrame_, 'unexpected recursive call to runInFrame');
+
   var self = this,
       oldFrame = this.activeFrame_;
 
@@ -1821,12 +1851,19 @@ promise.ControlFlow.prototype.runInFrame_ = function(
     }
 
     try {
+      this.runningFrame_ = newFrame;
       this.schedulingFrame_ = newFrame;
       activeFlows.push(this);
       var result = fn();
     } finally {
       activeFlows.pop();
       this.schedulingFrame_ = null;
+
+      // `newFrame` should only be considered the running frame when it is
+      // actually executing. After it finishes, set top of stack to its parent
+      // so any failures/interrupts that occur while processing newFrame's
+      // result are handled there.
+      this.runningFrame_ = newFrame.parent_;
     }
     newFrame.isLocked_ = true;
 
@@ -1878,6 +1915,9 @@ promise.ControlFlow.prototype.runInFrame_ = function(
   } catch (ex) {
     removeNewFrame(ex);
     errback(ex);
+  } finally {
+    // No longer running anything, clear the reference.
+    this.runningFrame_ = null;
   }
 
   function isCloseable(frame) {
