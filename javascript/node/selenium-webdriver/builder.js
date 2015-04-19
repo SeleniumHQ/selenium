@@ -95,6 +95,9 @@ var Builder = function() {
   /** @private {string} */
   this.url_ = '';
 
+  /** @private {?string} */
+  this.proxy_ = null;
+
   /** @private {!webdriver.Capabilities} */
   this.capabilities_ = new Capabilities();
 
@@ -153,6 +156,29 @@ Builder.prototype.usingServer = function(url) {
  */
 Builder.prototype.getServerUrl = function() {
   return this.url_;
+};
+
+
+/**
+ * Sets the URL of the proxy to use for the WebDrivers HTTP connections.
+ * If this method is never called, the Builder will create a connection without
+ * proxy.
+ *
+ * @param {string} proxy The URL of a proxy to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.usingWebDriverProxy = function(proxy) {
+  this.proxy_ = proxy;
+  return this;
+};
+
+
+/**
+ * @return {string} The URL of the proxy server to use for the WebDrivers HTTP
+ *    connections.
+ */
+Builder.prototype.getWebDriverProxy = function() {
+  return this.proxy_;
 };
 
 
@@ -415,7 +441,7 @@ Builder.prototype.build = function() {
   }
 
   if (url) {
-    var executor = executors.createExecutor(url);
+    var executor = executors.createExecutor(url, this.proxy_);
     return WebDriver.createSession(executor, capabilities, this.flow_);
   }
 
