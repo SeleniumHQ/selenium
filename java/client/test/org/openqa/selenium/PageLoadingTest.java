@@ -79,7 +79,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -97,7 +97,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -119,7 +119,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {FIREFOX, CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -140,7 +140,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {FIREFOX, CHROME, IE, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
