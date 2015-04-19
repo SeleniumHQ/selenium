@@ -61,7 +61,11 @@ function runClosureTest(file) {
   describe(name, function() {
     var context = new base.Context(true);
     context.closure.document.title = name;
-    if (process.env.VERBOSE != '1') {
+    if (process.env.VERBOSE == '1') {
+      context.closure.goog.require('webdriver.logging');
+      context.closure.goog.module.get('webdriver.logging')
+          .installConsoleHandler();
+    } else {
       // Null out console so everything loads silently.
       context.closure.console = null;
     }
@@ -89,7 +93,8 @@ function runClosureTest(file) {
           }
           var results = tc.getTestResults();
           done(Error('\n' + Object.keys(results).map(function(name) {
-            var msg = [name + ': ' + (results[name].length ? 'FAILED' : 'PASSED')];
+            var msg =
+                [name + ': ' + (results[name].length ? 'FAILED' : 'PASSED')];
             if (results[name].length) {
               msg = msg.concat(results[name]);
             }

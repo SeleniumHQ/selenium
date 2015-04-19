@@ -1,5 +1,7 @@
 ## v2.46.0-dev
 
+* Exposed a new logging API via the `webdriver.logging` module. For usage, see
+    `example/logging.js`.
 * Added support for using a proxy server for WebDriver commands.
     See `Builder#usingWebDriverProxy()` for more info.
 * Removed deprecated functions:

@@ -30,6 +30,7 @@ goog.require('goog.array');
 goog.require('goog.json');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 
 
@@ -78,6 +79,11 @@ webdriver.http.Executor = function(client) {
    * @private {!Object<{method:string, path:string}>}
    */
   this.customCommands_ = {};
+
+  /**
+   * @private {!webdriver.logging.Logger}
+   */
+  this.log_ = webdriver.logging.getLogger('webdriver.http.Executor');
 };
 
 
@@ -113,13 +119,22 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
   var path = webdriver.http.Executor.buildPath_(resource.path, parameters);
   var request = new webdriver.http.Request(resource.method, path, parameters);
 
+  var log = this.log_;
+  log.finer(function() {
+    return '>>>\n' + request;
+  });
+
   this.client_.send(request, function(e, response) {
     var responseObj;
     if (!e) {
+      log.finer(function() {
+        return '<<<\n' + response;
+      });
       try {
         responseObj = webdriver.http.Executor.parseHttpResponse_(
             /** @type {!webdriver.http.Response} */ (response));
       } catch (ex) {
+        log.warning('Error parsing response', ex);
         e = ex;
       }
     }

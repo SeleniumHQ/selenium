@@ -21,7 +21,7 @@ goog.require('goog.testing.jsunit');
 goog.require('webdriver.logging');
 
 function convert(level, msg, name, time) {
-  var recordIn = new goog.debug.LogRecord(level, msg, name, time);
+  var recordIn = new webdriver.logging.LogRecord(level, msg, name, time);
   return webdriver.logging.Entry.fromClosureLogRecord(recordIn);
 }
 
@@ -42,6 +42,18 @@ function testPreferencesToJSON() {
   prefs.setLevel('baz', webdriver.logging.Level.WARNING);
   assertObjectEquals(
       {'foo': 'DEBUG', 'bar': 'OFF', 'baz': 'WARNING'},
+      prefs.toJSON());
+
+  // CONFIG should always map to DEBUG.
+  prefs.setLevel('quux', webdriver.logging.Level.CONFIG);
+  assertObjectEquals(
+      {'foo': 'DEBUG', 'bar': 'OFF', 'baz': 'WARNING', 'quux': 'DEBUG'},
+      prefs.toJSON());
+
+  prefs.setLevel('quot', webdriver.logging.Level.ALL);
+  assertObjectEquals(
+      {'foo': 'DEBUG', 'bar': 'OFF', 'baz': 'WARNING', 'quux': 'DEBUG',
+       'quot': 'ALL'},
       prefs.toJSON());
 }
 
