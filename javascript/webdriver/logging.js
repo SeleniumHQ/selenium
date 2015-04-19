@@ -15,17 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.provide('webdriver.logging');
-goog.provide('webdriver.logging.Preferences');
+goog.module('webdriver.logging');
+goog.module.declareLegacyNamespace();
 
-goog.require('goog.object');
+var Objects = goog.require('goog.object');
 
 
 /**
  * Logging levels.
  * @enum {{value: number, name: string}}
  */
-webdriver.logging.Level = {
+var Level = {
   ALL: {value: Number.MIN_VALUE, name: 'ALL'},
   DEBUG: {value: 700, name: 'DEBUG'},
   INFO: {value: 800, name: 'INFO'},
@@ -33,6 +33,7 @@ webdriver.logging.Level = {
   SEVERE: {value: 1000, name: 'SEVERE'},
   OFF: {value: Number.MAX_VALUE, name: 'OFF'}
 };
+exports.Level = Level;
 
 
 /**
@@ -41,23 +42,23 @@ webdriver.logging.Level = {
  * will be returned.
  * @param {(number|string)} nameOrValue The log level name, or value, to
  *     convert .
- * @return {!webdriver.logging.Level} The converted level.
+ * @return {!Level} The converted level.
  */
-webdriver.logging.getLevel = function(nameOrValue) {
+function getLevel(nameOrValue) {
   var predicate = goog.isString(nameOrValue) ?
       function(val) { return val.name === nameOrValue; } :
       function(val) { return val.value === nameOrValue; };
 
-  return goog.object.findValue(webdriver.logging.Level, predicate) ||
-      webdriver.logging.Level.ALL;
-};
+  return Objects.findValue(Level, predicate) || Level.ALL;
+}
+exports.getLevel = getLevel;
 
 
 /**
  * Common log types.
  * @enum {string}
  */
-webdriver.logging.Type = {
+var Type = {
   /** Logs originating from the browser. */
   BROWSER: 'browser',
   /** Logs from a WebDriver client. */
@@ -69,107 +70,115 @@ webdriver.logging.Type = {
   /** Logs from the remote server. */
   SERVER: 'server'
 };
+exports.Type = Type;
 
 
 /**
  * Describes the log preferences for a WebDriver session.
- * @constructor
+ * @final
  */
-webdriver.logging.Preferences = function() {
-  /** @private {!Object.<string, webdriver.logging.Level>} */
-  this.prefs_ = {};
-};
+var Preferences = goog.defineClass(null, {
+  /** @constructor */
+  constructor: function() {
+    /** @private {!Object.<string, Level>} */
+    this.prefs_ = {};
+  },
 
+  /**
+   * Sets the desired logging level for a particular log type.
+   * @param {(string|Type)} type The log type.
+   * @param {!Level} level The desired log level.
+   */
+  setLevel: function(type, level) {
+    this.prefs_[type] = level;
+  },
 
-/**
- * Sets the desired logging level for a particular log type.
- * @param {(string|webdriver.logging.Type)} type The log type.
- * @param {!webdriver.logging.Level} level The desired log level.
- */
-webdriver.logging.Preferences.prototype.setLevel = function(type, level) {
-  this.prefs_[type] = level;
-};
-
-
-/**
- * Converts this instance to its JSON representation.
- * @return {!Object.<string, string>} The JSON representation of this set of
- *     preferences.
- */
-webdriver.logging.Preferences.prototype.toJSON = function() {
-  var obj = {};
-  for (var type in this.prefs_) {
-    if (this.prefs_.hasOwnProperty(type)) {
-      obj[type] = this.prefs_[type].name;
+  /**
+   * Converts this instance to its JSON representation.
+   * @return {!Object.<string, string>} The JSON representation of this set of
+   *     preferences.
+   */
+  toJSON: function() {
+    var obj = {};
+    for (var type in this.prefs_) {
+      if (this.prefs_.hasOwnProperty(type)) {
+        obj[type] = this.prefs_[type].name;
+      }
     }
+    return obj;
   }
-  return obj;
-};
+});
+exports.Preferences = Preferences;
 
 
 /**
  * A single log entry.
- * @param {(!webdriver.logging.Level|string)} level The entry level.
- * @param {string} message The log message.
- * @param {number=} opt_timestamp The time this entry was generated, in
- *     milliseconds since 0:00:00, January 1, 1970 UTC. If omitted, the
- *     current time will be used.
- * @param {string=} opt_type The log type, if known.
- * @constructor
+ * @final
  */
-webdriver.logging.Entry = function(level, message, opt_timestamp, opt_type) {
+var Entry = goog.defineClass(null, {
+  /**
+   * @param {(!Level|string)} level The entry level.
+   * @param {string} message The log message.
+   * @param {number=} opt_timestamp The time this entry was generated, in
+   *     milliseconds since 0:00:00, January 1, 1970 UTC. If omitted, the
+   *     current time will be used.
+   * @param {string=} opt_type The log type, if known.
+   * @constructor
+   */
+  constructor: function(level, message, opt_timestamp, opt_type) {
 
-  /** @type {!webdriver.logging.Level} */
-  this.level =
-      goog.isString(level) ? webdriver.logging.getLevel(level) : level;
+    /** @type {!Level} */
+    this.level = goog.isString(level) ? getLevel(level) : level;
 
-  /** @type {string} */
-  this.message = message;
+    /** @type {string} */
+    this.message = message;
 
-  /** @type {number} */
-  this.timestamp = goog.isNumber(opt_timestamp) ? opt_timestamp : goog.now();
+    /** @type {number} */
+    this.timestamp = goog.isNumber(opt_timestamp) ? opt_timestamp : goog.now();
 
-  /** @type {string} */
-  this.type = opt_type || '';
-};
+    /** @type {string} */
+    this.type = opt_type || '';
+  },
 
+  statics: {
+    /**
+     * Converts a {@link goog.debug.LogRecord} into a
+     * {@link webdriver.logging.Entry}.
+     * @param {!goog.debug.LogRecord} logRecord The record to convert.
+     * @param {string=} opt_type The log type.
+     * @return {!Entry} The converted entry.
+     */
+    fromClosureLogRecord: function(logRecord, opt_type) {
+      var closureLevel = logRecord.getLevel();
+      var level = Level.SEVERE;
 
-/**
- * @return {{level: string, message: string, timestamp: number,
- *           type: string}} The JSON representation of this entry.
- */
-webdriver.logging.Entry.prototype.toJSON = function() {
-  return {
-    'level': this.level.name,
-    'message': this.message,
-    'timestamp': this.timestamp,
-    'type': this.type
-  };
-};
+      if (closureLevel.value <= Level.DEBUG.value) {
+        level = Level.DEBUG;
+      } else if (closureLevel.value <= Level.INFO.value) {
+        level = Level.INFO;
+      } else if (closureLevel.value <= Level.WARNING.value) {
+        level = Level.WARNING;
+      }
 
+      return new Entry(
+          level,
+          '[' + logRecord.getLoggerName() + '] ' + logRecord.getMessage(),
+          logRecord.getMillis(),
+          opt_type);
+    }
+  },
 
-/**
- * Converts a {@link goog.debug.LogRecord} into a
- * {@link webdriver.logging.Entry}.
- * @param {!goog.debug.LogRecord} logRecord The record to convert.
- * @param {string=} opt_type The log type.
- * @return {!webdriver.logging.Entry} The converted entry.
- */
-webdriver.logging.Entry.fromClosureLogRecord = function(logRecord, opt_type) {
-  var closureLevel = logRecord.getLevel();
-  var level = webdriver.logging.Level.SEVERE;
-
-  if (closureLevel.value <= webdriver.logging.Level.DEBUG.value) {
-    level = webdriver.logging.Level.DEBUG;
-  } else if (closureLevel.value <= webdriver.logging.Level.INFO.value) {
-    level = webdriver.logging.Level.INFO;
-  } else if (closureLevel.value <= webdriver.logging.Level.WARNING.value) {
-    level = webdriver.logging.Level.WARNING;
+  /**
+   * @return {{level: string, message: string, timestamp: number,
+   *           type: string}} The JSON representation of this entry.
+   */
+  toJSON: function() {
+    return {
+      'level': this.level.name,
+      'message': this.message,
+      'timestamp': this.timestamp,
+      'type': this.type
+    };
   }
-
-  return new webdriver.logging.Entry(
-      level,
-      '[' + logRecord.getLoggerName() + '] ' + logRecord.getMessage(),
-      logRecord.getMillis(),
-      opt_type);
-};
+});
+exports.Entry = Entry;

@@ -25,7 +25,7 @@ goog.provide('webdriver.Capability');
 goog.provide('webdriver.ProxyConfig');
 
 goog.require('webdriver.Serializable');
-goog.require('webdriver.logging.Preferences');
+goog.require('webdriver.logging');
 
 
 
