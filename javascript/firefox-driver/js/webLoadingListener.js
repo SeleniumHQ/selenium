@@ -172,7 +172,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
     if (bot.userAgent.isProductVersion('4')) {
       WebLoadingListener.removeListener(this.browser, this);
     }
-    this.onComplete();
+    this.onComplete(false, true);
   }
 
   return 0;
@@ -225,9 +225,9 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   }
 
   loadingListenerTimer = new fxdriver.Timer();
-  var func = function(timedOut) {
+  var func = function(timedOut, opt_stopWaiting) {
     loadingListenerTimer.cancel();
-    toCall(timedOut);
+    toCall(timedOut, opt_stopWaiting);
   };
 
   /** @type {!nsIWebProgressListener} */

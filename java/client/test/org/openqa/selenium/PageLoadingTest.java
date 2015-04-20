@@ -119,7 +119,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {FIREFOX, IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResources() {
