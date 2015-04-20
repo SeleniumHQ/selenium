@@ -23,7 +23,9 @@ import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Mechanism used to locate elements within a document using a series of <i>nested</i> lookups.
@@ -80,7 +82,9 @@ public class ByAnd extends ByComposite {
       }
     }
 
-    return elems;
+    // remove duplicates by turning the list into a set
+    Set<WebElement> set = new HashSet<WebElement>(elems);
+    return new ArrayList<WebElement>(set);
   }
 
   @Override

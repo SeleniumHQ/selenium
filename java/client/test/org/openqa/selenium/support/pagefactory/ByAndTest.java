@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -93,7 +95,7 @@ public class ByAndTest {
     when(cheese2.findElements(By.name("photo"))).thenReturn(elems5);
 
     ByAnd by = new ByAnd(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement(driver), equalTo(elem3));
+    assertThat(by.findElement(driver), anyOf(equalTo(elem3), equalTo(elem4), equalTo(elem5)));
   }
 
   @Test
@@ -110,7 +112,7 @@ public class ByAndTest {
     when(cheese2.findElements(By.name("photo"))).thenReturn(elems5);
 
     ByAnd by = new ByAnd(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements(driver), equalTo(elems345));
+    assertThat(by.findElements(driver), containsInAnyOrder(elem3, elem4, elem5));
   }
 
   @Test
@@ -149,6 +151,19 @@ public class ByAndTest {
 
     ByAnd by = new ByAnd(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver), empty());
+  }
+
+  @Test
+  public void findElementsShouldNotReturnDuplicates() {
+    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final WebElement elem6 = mock(AllElement.class, "webElement6");
+
+    when(driver.findElementsByName("cheese")).thenReturn(cheese1AndCheese2);
+    when(cheese1.findElements(By.name("photo"))).thenReturn(Arrays.asList(elem5));
+    when(cheese2.findElements(By.name("photo"))).thenReturn(Arrays.asList(elem5, elem6));
+
+    ByAnd by = new ByAnd(By.name("cheese"), By.name("photo"));
+    assertThat(by.findElements(driver), containsInAnyOrder(elem5, elem6));
   }
 
   @Test
