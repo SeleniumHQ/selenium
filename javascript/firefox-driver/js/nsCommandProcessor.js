@@ -505,7 +505,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  if(command.name == 'get') {
+  if(command.name == 'get' || command.name == 'refresh') {
     response.session.setWaitForPageLoad(false);
   }
 
