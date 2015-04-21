@@ -29,7 +29,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -49,7 +48,7 @@ import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Webkit bug 22261")
+  @Ignore(value = {MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldFireFocusEventWhenClicking() {
@@ -125,7 +124,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Webkit bug 22261")
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldFireEventsInTheRightOrder() {
@@ -141,6 +140,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
       assertTrue(event + " did not fire at all", index != -1);
       assertTrue(event + " did not fire in the correct order", index > lastIndex);
+      lastIndex = index;
     }
   }
 
