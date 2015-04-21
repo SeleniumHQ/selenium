@@ -201,13 +201,13 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('isElementDisplayed'));
 
   this.bind_('/session/:sessionId/element/:id/location').
-      on(Request.Method.GET, Dispatcher.executeAs('getElementLocation'));
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
   this.bind_('/session/:sessionId/element/:id/location_in_view').
       on(Request.Method.GET, Dispatcher.executeAs(
           'getElementLocationOnceScrolledIntoView'));
 
   this.bind_('/session/:sessionId/element/:id/size').
-      on(Request.Method.GET, Dispatcher.executeAs('getElementSize'));
+      on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
 
   this.bind_('/session/:sessionId/element/:id/rect').
       on(Request.Method.GET, Dispatcher.executeAs('getElementRect'));
