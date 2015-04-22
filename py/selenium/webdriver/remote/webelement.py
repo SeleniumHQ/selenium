@@ -342,7 +342,7 @@ class WebElement(object):
     @property
     def size(self):
         """The size of the element."""
-        size = self._execute(Command.GET_ELEMENT_RECT)['value']
+        size = self._execute(Command.GET_ELEMENT_SIZE)['value']
         new_size = {}
         new_size["height"] = size["height"]
         new_size["width"] = size["width"]
@@ -356,7 +356,7 @@ class WebElement(object):
     @property
     def location(self):
         """The location of the element in the renderable canvas."""
-        old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
+        old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
         new_loc = {"x": old_loc['x'],
                    "y": old_loc['y']}
         return new_loc
