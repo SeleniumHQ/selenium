@@ -3183,6 +3183,8 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     if (kwargs) {
       var args = parse_kwargs(kwargs);
       if (args.viewportOnly) {
+        box.x = window.pageXOffset ? window.pageXOffset : doc.scrollLeft ? doc.scrollLeft : body.scrollLeft;
+        box.y = window.pageYOffset ? window.pageYOffset : doc.scrollTop  ? doc.scrollTop  : body.scrollTop;
         box.width = window.innerWidth;
         box.height = window.innerHeight;
       }
