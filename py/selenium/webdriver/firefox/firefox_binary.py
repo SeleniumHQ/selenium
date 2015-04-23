@@ -108,7 +108,7 @@ class FirefoxBinary(object):
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile "
                       "Dir: %s If you specified a log_file in the "
-                      "FirefoxBinary constructor, check it for details.")
+                      "FirefoxBinary constructor, check it for details." % self.profile)
             count += 1
             time.sleep(1)
         return True
