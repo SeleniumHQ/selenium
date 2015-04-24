@@ -165,7 +165,9 @@ webdriver.Builder.prototype.build = function() {
   } else {
     var url = this.serverUrl_;
     var client;
-    if (url[0] == '/') {
+    if (webdriver.http.CorsClient.isAvailable()) {
+      client = new webdriver.http.XhrClient(url);
+    } else if (url[0] == '/') {
       var origin = window.location.origin ||
           (window.location.protocol + '//' + window.location.host);
       client = new webdriver.http.XhrClient(origin + url);
