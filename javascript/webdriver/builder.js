@@ -64,6 +64,10 @@ webdriver.Builder = function(opt_window) {
   this.sessionId_ =
       /** @type {string} */ (data.get(webdriver.Builder.SESSION_ID_PARAM));
 
+  /** @private {boolean} */
+  this.useBrowserCors_ =
+      /** @type {boolean} */ (data.containsKey(webdriver.Builder.USE_BROWSER_CORS));
+
   /** @private {!webdriver.Capabilities} */
   this.capabilities_ = new webdriver.Capabilities();
 };
@@ -92,6 +96,24 @@ webdriver.Builder.SERVER_URL_PARAM = 'wdurl';
  */
 webdriver.Builder.DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
 
+
+/**
+ * Query parameter that defines whether browser CORS support should be used,
+ * if available.
+ * @type {string}
+ * @const
+ */
+webdriver.Builder.USE_BROWSER_CORS = 'wdcors';
+
+
+/**
+ * Configures the WebDriver to use browser's CORS, if available.
+ * @return {!webdriver.Builder} This Builder instance for chain calling.
+ */
+webdriver.Builder.prototype.useBrowserCors = function() {
+  this.useBrowserCors_ = true;
+  return this;
+};
 
 /**
  * Configures which WebDriver server should be used for new sessions.
@@ -165,7 +187,9 @@ webdriver.Builder.prototype.build = function() {
   } else {
     var url = this.serverUrl_;
     var client;
-    if (url[0] == '/') {
+    if (this.useBrowserCors_ && webdriver.http.CorsClient.isAvailable()) {
+      client = new webdriver.http.XhrClient(url);
+    } else if (url[0] == '/') {
       var origin = window.location.origin ||
           (window.location.protocol + '//' + window.location.host);
       client = new webdriver.http.XhrClient(origin + url);
