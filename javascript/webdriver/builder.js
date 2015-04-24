@@ -58,7 +58,7 @@ webdriver.Builder = function(opt_window) {
   /** @private {string} */
   this.serverUrl_ =
       /** @type {string} */ (data.get(webdriver.Builder.SERVER_URL_PARAM,
-      webdriver.Builder.DEFAULT_SERVER_URL));
+      webdriver.Builder.DEFAULT_SERVER_URL)).replace(/\/$/, "");
 
   /** @private {string} */
   this.sessionId_ =
@@ -99,7 +99,7 @@ webdriver.Builder.DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
  * @return {!webdriver.Builder} This Builder instance for chain calling.
  */
 webdriver.Builder.prototype.usingServer = function(url) {
-  this.serverUrl_ = url;
+  this.serverUrl_ = url.replace(/\/$/, "");
   return this;
 };
 
