@@ -248,7 +248,7 @@ ServiceBuilder.prototype.setNumHttpThreads = function(n) {
  * @return {!ServiceBuilder} A self reference.
  */
 ServiceBuilder.prototype.setUrlBasePath = function(path) {
-  this.args_.push('--url-base=' + path);
+  this.args_.push('--url-base ' + path);
   return this;
 };
 
