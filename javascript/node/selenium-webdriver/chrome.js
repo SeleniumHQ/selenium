@@ -167,7 +167,7 @@ var ServiceBuilder = function(opt_exe) {
 
 
 /** @private {string} */
-ServiceBuilder.prototype.path_ = "";
+ServiceBuilder.prototype.path_ = null;
 
 /** @private {number} */
 ServiceBuilder.prototype.port_ = 0;
