@@ -295,7 +295,7 @@ ServiceBuilder.prototype.build = function() {
 
   return new remote.DriverService(this.exe_, {
     loopback: true,
-    path: this.path_ || "",
+    path: this.path_,
     port: port,
     args: webdriver.promise.when(port, function(port) {
       return args.concat('--port=' + port);
