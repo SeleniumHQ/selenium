@@ -166,6 +166,9 @@ var ServiceBuilder = function(opt_exe) {
 };
 
 
+/** @private {string} */
+ServiceBuilder.prototype.path_ = "";
+
 /** @private {number} */
 ServiceBuilder.prototype.port_ = 0;
 
@@ -249,6 +252,7 @@ ServiceBuilder.prototype.setNumHttpThreads = function(n) {
  */
 ServiceBuilder.prototype.setUrlBasePath = function(path) {
   this.args_.push('--url-base=' + path);
+  this.path_ = path;
   return this;
 };
 
@@ -291,6 +295,7 @@ ServiceBuilder.prototype.build = function() {
 
   return new remote.DriverService(this.exe_, {
     loopback: true,
+    path: this.path_ || "",
     port: port,
     args: webdriver.promise.when(port, function(port) {
       return args.concat('--port=' + port);
