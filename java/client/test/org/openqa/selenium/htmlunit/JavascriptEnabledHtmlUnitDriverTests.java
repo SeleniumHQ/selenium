@@ -39,7 +39,7 @@ public class JavascriptEnabledHtmlUnitDriverTests {
     private static Capabilities tweak(Capabilities capabilities) {
       DesiredCapabilities caps = new DesiredCapabilities(capabilities);
       caps.setJavascriptEnabled(true);
-      caps.setVersion("3.6");
+      caps.setVersion("31");
       return caps;
     }
   }
