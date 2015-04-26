@@ -239,13 +239,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         int version = Integer.parseInt(browserVersion);
         switch (version) {
-          case 17:
-            return BrowserVersion.FIREFOX_17;
-          default:
+          case 24:
             return BrowserVersion.FIREFOX_24;
+          default:
+            return BrowserVersion.FIREFOX_31;
         }
       } catch (NumberFormatException e) {
-        return BrowserVersion.FIREFOX_24;
+        return BrowserVersion.FIREFOX_31;
       }
     }
 
@@ -260,8 +260,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         switch (version) {
           case 8:
             return BrowserVersion.INTERNET_EXPLORER_8;
-          case 9:
-            return BrowserVersion.INTERNET_EXPLORER_9;
           default:
             return BrowserVersion.INTERNET_EXPLORER_11;
         }
@@ -590,7 +588,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public void quit() {
     if (webClient != null) {
-      webClient.closeAllWindows();
+      webClient.close();
       webClient = null;
     }
     currentWindow = null;

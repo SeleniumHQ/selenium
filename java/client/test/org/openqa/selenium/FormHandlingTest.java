@@ -283,7 +283,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_explicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
+  @Ignore(value = {SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );

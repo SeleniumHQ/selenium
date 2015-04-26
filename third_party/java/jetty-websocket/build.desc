@@ -1,4 +1,8 @@
 java_library(name = "jetty-websocket",
   deps = [
-    "jetty-websocket-8.1.8.jar",
+    "websocket-api-9.2.10.v20150310.jar",
+    "websocket-client-9.2.10.v20150310.jar",
+    "websocket-common-9.2.10.v20150310.jar",
+    "jetty-util-9.2.10.v20150310.jar",
+    "jetty-io-9.2.10.v20150310.jar"
   ])
