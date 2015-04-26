@@ -1,9 +1,9 @@
 
 java_library(name = "apache-httpclient",
   deps = [
-    "httpclient-4.3.6.jar",
-    "httpcore-4.3.3.jar",
-    "httpmime-4.3.6.jar",
+    "httpclient-4.4.1.jar",
+    "httpcore-4.4.1.jar",
+    "httpmime-4.4.1.jar",
     "//third_party/java/apache-mime4j",
     "//third_party/java/commons-codec",
     "//third_party/java/commons-logging"

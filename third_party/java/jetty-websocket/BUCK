@@ -1,6 +1,32 @@
-prebuilt_jar(name = 'jetty-websocket',
-  binary_jar = 'jetty-websocket-8.1.8.jar',
+java_library(name = 'jetty-websocket',
+  exported_deps = [
+    ':websocket-api',
+    ':websocket-client',
+    ':websocket-common',
+    ':jetty-util',
+    ':jetty-io',
+  ],
   visibility = [
     '//third_party/java/...',
   ],
+)
+
+prebuilt_jar(name = 'websocket-api',
+  binary_jar = 'websocket-api-9.2.10.v20150310.jar',
+)
+
+prebuilt_jar(name = 'websocket-client',
+  binary_jar = 'websocket-client-9.2.10.v20150310.jar',
+)
+
+prebuilt_jar(name = 'websocket-common',
+  binary_jar = 'websocket-common-9.2.10.v20150310.jar',
+)
+
+prebuilt_jar(name = 'jetty-util',
+  binary_jar = 'jetty-util-9.2.10.v20150310.jar',
+)
+
+prebuilt_jar(name = 'jetty-io',
+  binary_jar = 'jetty-io-9.2.10.v20150310.jar',
 )
