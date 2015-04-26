@@ -210,7 +210,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);

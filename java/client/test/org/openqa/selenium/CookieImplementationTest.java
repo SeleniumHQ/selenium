@@ -245,7 +245,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, IE}, reason = "Untested browsers.")
+  @Ignore(value = {CHROME, IE}, reason = "Untested browsers.")
   @Test
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
@@ -403,7 +403,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
