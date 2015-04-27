@@ -573,7 +573,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
-      log(sessionId, command.getName(), command, When.AFTER);
+      
+      String command_and_response = command + "\n" + response.getValue();
+      log(sessionId, command.getName(), command_and_response, When.AFTER);
 
       if (response == null) {
         return null;
