@@ -38,6 +38,9 @@ try:
 except NameError:
     pass
 
+if sys.version > '3':
+    long = int
+
 
 class WebElement(object):
     """Represents a DOM element.
@@ -313,7 +316,7 @@ class WebElement(object):
         for val in value:
             if isinstance(val, Keys):
                 typing.append(val)
-            elif isinstance(val, int):
+            elif isinstance(val, (int, long)):
                 val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
