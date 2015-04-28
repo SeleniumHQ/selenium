@@ -91,9 +91,9 @@ py_env(
 )
 
 py_install(
-	name = "install"
+  name = "install"
 )
 
 py_prep(
-	name = "prep"
+  name = "prep"
 )
