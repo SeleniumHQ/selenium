@@ -89,3 +89,11 @@ py_env(
   ],
   dest = "build/python"
 )
+
+py_install(
+  name = "install"
+)
+
+py_prep(
+  name = "prep"
+)
