@@ -385,7 +385,10 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    sh cmd
 end
 
-task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :chrome, "//javascript/firefox-driver:webdriver_prefs", "//py:prep"]
+task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", 
+  :chrome, 
+  "//javascript/firefox-driver:webdriver_prefs", 
+  "//py:prep"]
 
 task :py_docs => "//py:docs"
 
