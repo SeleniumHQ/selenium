@@ -328,11 +328,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ElementsWithOpacityZeroShouldNotBeVisible()
+        public void ElementsWithOpacityZeroShouldBeVisible()
         {
             driver.Url = clickJackerPage;
             IWebElement element = driver.FindElement(By.Id("clickJacker"));
-            Assert.IsFalse(element.Displayed);
+            Assert.IsTrue(element.Displayed);
         }
     }
 }
