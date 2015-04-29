@@ -15,7 +15,6 @@
     <orderEntry type="library" scope="RUNTIME" name="commons-collections" level="project" />
     <orderEntry type="library" name="commons-exec" level="project" />
     <orderEntry type="library" name="commons-fileupload" level="project" />
-    <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
@@ -41,5 +40,6 @@
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
+    <orderEntry type="library" name="apache-httpclient" level="project" />
   </component>
 </module>

@@ -12,7 +12,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="client" exported="" />
     <orderEntry type="library" name="bouncycastle" level="project" />
-    <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" name="commons-logging" level="project" />
     <orderEntry type="library" name="jcip-annotations" level="project" />
@@ -26,6 +25,6 @@
     <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
+    <orderEntry type="library" name="apache-httpclient" level="project" />
   </component>
 </module>
-
