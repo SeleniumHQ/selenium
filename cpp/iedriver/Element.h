@@ -60,7 +60,7 @@ class Element {
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 
-  int IsDisplayed(bool* result);
+  int IsDisplayed(bool ignore_opacity, bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
   bool IsInteractable(void);

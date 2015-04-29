@@ -108,7 +108,7 @@ class ClickElementCommandHandler : public IECommandHandler {
           }
         } else {
           bool displayed;
-          status_code = element_wrapper->IsDisplayed(&displayed);
+          status_code = element_wrapper->IsDisplayed(true, &displayed);
           if (status_code != WD_SUCCESS) {
             response->SetErrorResponse(status_code, "Unable to determine element is displayed");
             return;

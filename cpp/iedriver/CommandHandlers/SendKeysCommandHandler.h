@@ -81,7 +81,7 @@ class SendKeysCommandHandler : public IECommandHandler {
 
       if (status_code == WD_SUCCESS) {
         bool displayed;
-        status_code = element_wrapper->IsDisplayed(&displayed);
+        status_code = element_wrapper->IsDisplayed(true, &displayed);
         if (status_code != WD_SUCCESS || !displayed) {
           response->SetErrorResponse(EELEMENTNOTDISPLAYED,
                                      "Element is not displayed");

@@ -53,7 +53,7 @@ class IsElementDisplayedCommandHandler : public IECommandHandler {
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == WD_SUCCESS) {
         bool result;
-        status_code = element_wrapper->IsDisplayed(&result);
+        status_code = element_wrapper->IsDisplayed(false, &result);
         if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(result);
         } else {

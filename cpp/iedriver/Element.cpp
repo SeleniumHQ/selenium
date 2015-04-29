@@ -83,7 +83,7 @@ Json::Value Element::ConvertToJson() {
   return json_wrapper;
 }
 
-int Element::IsDisplayed(bool* result) {
+int Element::IsDisplayed(bool ignore_opacity, bool* result) {
   LOG(TRACE) << "Entering Element::IsDisplayed";
 
   int status_code = WD_SUCCESS;
@@ -100,7 +100,7 @@ int Element::IsDisplayed(bool* result) {
   // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(false);
+  script_wrapper.AddArgument(ignore_opacity);
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
@@ -214,7 +214,7 @@ int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
   LOG(TRACE) << "Entering Element::GetClickLocation";
 
   bool displayed;
-  int status_code = this->IsDisplayed(&displayed);
+  int status_code = this->IsDisplayed(true, &displayed);
   if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine element is displayed";
     return status_code;
