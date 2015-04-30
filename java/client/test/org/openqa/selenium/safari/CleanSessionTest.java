@@ -20,6 +20,7 @@ package org.openqa.selenium.safari;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -105,6 +106,15 @@ public class CleanSessionTest extends SafariTestBase {
         "return window.messages.length;");
 
     assertEquals(1L, numMessages);
+  }
+
+  @Test
+  public void doesNotCreateExtraIframeOnPageUnderTest() {
+    driver.get(appServer.whereIs("messages.html"));
+    assertEquals(0, driver.findElements(By.tagName("iframe")).size());
+
+    ((JavascriptExecutor) driver).executeScript("return location.href;");
+    assertEquals(0, driver.findElements(By.tagName("iframe")).size());
   }
 
   private void assertHasCookie(Cookie cookie) {
