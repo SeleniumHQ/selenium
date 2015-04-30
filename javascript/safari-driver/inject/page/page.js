@@ -63,6 +63,14 @@ safaridriver.inject.page.encoder;
 safaridriver.inject.page.init = function() {
   goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.INFO);
 
+  // The page script is installed with an empty 'this' object, to avoid
+  // polluting the global namespace. But we still want Closure libraries to be
+  // able to read the properties of window that would normally be in
+  // goog.global, so we copy those into goog.global.
+  if (window != goog.global) {
+    copyWindowPropertiesTo(goog.global);
+  }
+
   var handler = new safaridriver.logging.ForwardingHandler(window);
   handler.captureConsoleOutput();
 
@@ -96,6 +104,17 @@ safaridriver.inject.page.init = function() {
     window[name].toString = function() {
       return oldFn.toString();
     };
+  }
+
+  function copyWindowPropertiesTo(obj) {
+    goog.array.forEach(Object.getOwnPropertyNames(window), function(name) {
+      if (!(name in obj)) {
+        var descriptor = Object.getOwnPropertyDescriptor(window, name);
+        if (descriptor) {
+          Object.defineProperty(obj, name, descriptor);
+        }
+      }
+    });
   }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
