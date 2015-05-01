@@ -261,8 +261,9 @@ class FirefoxProfile(object):
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))
                     data = compressed_file.read(name)
-                    with open(os.path.join(tmpdir, name), 'wb') as f:
-                        f.write(data)
+                    if os.path.isfile(os.path.join(tmpdir, name)):
+                        with open(os.path.join(tmpdir, name), 'wb') as f:
+                            f.write(data)
             xpifile = addon
             addon = tmpdir
 
