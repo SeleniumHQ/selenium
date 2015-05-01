@@ -120,10 +120,7 @@ public class HtmlUnitKeyboard implements Keyboard {
     htmlElement.sendKeyUpEvent(keyToRelease);
   }
 
-  /**
-   * @deprecated Visibility will soon be reduced.
-   */
-  public void performSingleKeyAction(HtmlElement element, CharSequence modifierKey, String eventDescription) {
+  void performSingleKeyAction(HtmlElement element, CharSequence modifierKey, String eventDescription) {
     boolean shiftKey = modifierKey.equals(Keys.SHIFT);
     boolean ctrlKey = modifierKey.equals(Keys.CONTROL);
     boolean altKey = modifierKey.equals(Keys.ALT);

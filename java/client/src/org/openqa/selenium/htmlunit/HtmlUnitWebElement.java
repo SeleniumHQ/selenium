@@ -18,27 +18,12 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.DomText;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlLabel;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
-import com.gargoylesoftware.htmlunit.html.HtmlScript;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.javascript.host.Event;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
@@ -65,12 +50,25 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Callable;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.DomText;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlLabel;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
+import com.gargoylesoftware.htmlunit.html.HtmlScript;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.javascript.host.Event;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 
 public class HtmlUnitWebElement implements WrapsDriver,
@@ -306,17 +304,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
     element.focus();
   }
 
-  /**
-   * @deprecated Visibility will soon be reduced.
-   */
-  public void sendKeyDownEvent(CharSequence modifierKey) {
+  void sendKeyDownEvent(CharSequence modifierKey) {
     sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_DOWN);
   }
 
-  /**
-   * @deprecated Visibility will soon be reduced.
-   */
-  public void sendKeyUpEvent(CharSequence modifierKey) {
+  void sendKeyUpEvent(CharSequence modifierKey) {
     sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_UP);
   }
 
