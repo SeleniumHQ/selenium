@@ -495,10 +495,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public boolean isDisplayed() {
     assertElementNotStale();
 
-    if (!parent.isJavascriptEnabled()) {
-      return true;
-    }
-
     return element.isDisplayed();
   }
 
