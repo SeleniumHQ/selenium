@@ -148,13 +148,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // element not visible either
     }
 
-    if (element instanceof HtmlButton) {
-      String type = element.getAttribute("type");
-      if (type == DomElement.ATTRIBUTE_NOT_DEFINED || type == DomElement.ATTRIBUTE_VALUE_EMPTY) {
-        element.setAttribute("type", "submit");
-      }
-    }
-
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
 
@@ -209,7 +202,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         continue;
       }
 
-      if (isBefore(submit)) {
+      if (submit == null) {
         submit = element;
       }
     }
@@ -246,10 +239,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     return candidate != null;
-  }
-
-  private boolean isBefore(HtmlElement submit) {
-    return submit == null;
   }
 
   @Override
