@@ -64,14 +64,12 @@ public class HtmlUnitMouse implements Mouse {
     moveOutIfNeeded(element);
 
     try {
-      if (parent.isJavascriptEnabled()) {
-        if (!(element instanceof HtmlInput)) {
-          element.focus();
-        }
-
-        element.mouseOver();
-        element.mouseMove();
+      if (!(element instanceof HtmlInput)) {
+        element.focus();
       }
+
+      element.mouseOver();
+      element.mouseMove();
 
       element.click(keyboard.isShiftPressed(),
           keyboard.isCtrlPressed(), keyboard.isAltPressed());
