@@ -43,11 +43,14 @@ import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -80,8 +83,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       .build();
 
   private Socket socket;
-  private PrintWriter writer;
-  private Reader reader;
+  private OutputStream writer;
+  private InputStream reader;
 
   private String marionetteId;
 
@@ -96,6 +99,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     this.process = binary;
   }
 
+  @Override
   public void start() throws IOException {
     int port = PortProber.findFreePort();
 
@@ -173,8 +177,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   private void tryToConnect(String host, int port) {
     try {
       socket = new Socket(host, port);
-      writer = new PrintWriter(socket.getOutputStream(), true);
-      reader = new InputStreamReader(socket.getInputStream());
+      writer = socket.getOutputStream();
+      reader = socket.getInputStream();
     } catch (ConnectException ex) {
       socket = null;
       writer = null;
@@ -186,6 +190,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     }
   }
 
+  @Override
   public Response execute(Command command) throws IOException {
     String commandAsString = serializeCommand(command);
     sendCommand(commandAsString);
@@ -327,42 +332,52 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     params.remove(origParName);
   }
 
-  private void sendCommand(String commandAsString) {
-    String line = "" + commandAsString.length() + ":" + commandAsString;
-    System.out.println(line);
-    writer.write(line);
+  private static final byte[] SEPARATOR = ":".getBytes(StandardCharsets.UTF_8);
+
+  private void sendCommand(String commandAsString) throws IOException {
+    byte[] bytes = commandAsString.getBytes(StandardCharsets.UTF_8);
+    writer.write(Integer.toString(bytes.length).getBytes(StandardCharsets.UTF_8));
+    writer.write(SEPARATOR);
+    writer.write(bytes);
     writer.flush();
   }
 
   private String receiveResponse() throws IOException {
-    StringBuilder response = new StringBuilder();
-
-    char[] buf = new char[1024];
-    int len = reader.read(buf);
-    response.append(buf, 0, len);
-
-    String[] parts = response.toString().split(":", 2);
-    int contentLength = Integer.parseInt(parts[0]);
-
-    while (response.length() < contentLength + ":".length() + parts[0].length()) {
-      buf = new char[1024];
-      len = reader.read(buf);
-      if (len > 0) {
-        response.append(buf, 0, len);
+    // read length
+    int read;
+    int len = 0;
+    while ((read = reader.read()) != -1) {
+      if (read == ':') {
+        // we got the length
+        break;
+      } else if (Character.isDigit(read)) {
+        len = len * 10 + (read - '0');
       } else {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-        }
+        throw new IOException("Length not found");
       }
     }
-
-    System.out.println("<- |" + response.toString() + "|");
-
-    parts = response.toString().split(":", 2);
-    return parts[1].substring(0, contentLength);
+    if (read == -1) {
+      throw new IOException("end of stream");
+    }
+    if (len == 0) {
+      return "";
+    }
+    // read json payload
+    byte[] bytes = new byte[len];
+    int off = 0;
+    while (len != 0 && (read = reader.read(bytes, off, len)) != -1) {
+      off += read;
+      len -= read;
+    }
+    if (read == -1) {
+      throw new IOException("end of stream");
+    }
+    String response = new String(bytes, StandardCharsets.UTF_8);
+    System.out.println("<- |" + response + "|");
+    return response;
   }
 
+  @Override
   public void quit() {
     try {
       writer.close();
@@ -380,10 +395,12 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     }
   }
 
+  @Override
   public boolean isConnected() {
     return socket != null && socket.isConnected();
   }
 
+  @Override
   public void setLocalLogs(LocalLogs logs) {
     this.logs = logs;
   }
