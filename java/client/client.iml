@@ -40,6 +40,6 @@
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
-    <orderEntry type="library" name="apache-httpclient" level="project" />
+    <orderEntry type="library" name="commons-httpclient" level="project" />
   </component>
 </module>
