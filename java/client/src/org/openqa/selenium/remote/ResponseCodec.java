@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.remote.Response;
-
 /**
  * Converts {@link Response} objects to and from another representation.
  *
