@@ -402,13 +402,6 @@ task :py_release => :py_prep_for_install_release do
     sh "git checkout setup.py"
 end
 
-
-task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
-    if python? then
-        sh "python2.6 selenium/test/py/runtests.py", :verbose => true
-    end
-end
-
 file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
   cp "build/third_party/js/sizzle/sizzle.h", "cpp/iedriver/sizzle.h"
 end
