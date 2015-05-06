@@ -106,6 +106,33 @@ public class JsonToBeanConverter {
       return (T) new Command(sessionId, name);
     }
 
+    if (Response.class.equals(clazz)) {
+      Response response = new Response();
+      JsonObject json = new JsonParser().parse((String) text).getAsJsonObject();
+
+      if (json.has("state") && ! json.get("state").isJsonNull()) {
+        String state = json.get("state").getAsString();
+        response.setState(state);
+        response.setStatus(ErrorCodes.toStatus(state));
+      }
+      if (json.has("status") && ! json.get("status").isJsonNull()) {
+        JsonElement status = json.get("status");
+        if (status.getAsJsonPrimitive().isString()) {
+          String state = status.getAsString();
+          response.setState(state);
+          response.setStatus(ErrorCodes.toStatus(state));
+        } else {
+          int intStatus = status.getAsInt();
+          response.setState(ErrorCodes.toState(intStatus));
+          response.setStatus(intStatus);
+        }
+      }
+
+      response.setValue(convert(Object.class, json.get("value")));
+
+      return (T) response;
+    }
+
     if (SessionId.class.equals(clazz)) {
       // Stupid heuristic to tell if we are dealing with a selenium 2 or 3 session id.
       JsonElement json = text instanceof String

@@ -380,6 +380,42 @@ public class JsonToBeanConverterTest {
     assertEquals(46.19140625, value.get("height").doubleValue(), 0.00001);
   }
 
+  @Test
+  public void testShouldRecognizeNumericStatus() {
+    Response response = new JsonToBeanConverter()
+      .convert(Response.class, "{\"status\":0,\"value\":\"cheese\"}");
+
+    assertEquals(0, response.getStatus());
+    assertEquals(ErrorCodes.toState(0), response.getState());
+    @SuppressWarnings("unchecked")
+    String value = (String) response.getValue();
+    assertEquals("cheese", value);
+  }
+
+  @Test
+  public void testShouldRecognizeStringStatus() {
+    Response response = new JsonToBeanConverter()
+      .convert(Response.class, "{\"status\":\"success\",\"value\":\"cheese\"}");
+
+    assertEquals(0, response.getStatus());
+    assertEquals(ErrorCodes.toState(0), response.getState());
+    @SuppressWarnings("unchecked")
+    String value = (String) response.getValue();
+    assertEquals("cheese", value);
+  }
+
+  @Test
+  public void testShouldRecognizeStringState() {
+    Response response = new JsonToBeanConverter()
+      .convert(Response.class, "{\"state\":\"success\",\"value\":\"cheese\"}");
+
+    assertEquals("success", response.getState());
+    assertEquals(0, response.getStatus());
+    @SuppressWarnings("unchecked")
+    String value = (String) response.getValue();
+    assertEquals("cheese", value);
+  }
+
   public static class SimpleBean {
 
     private String value;

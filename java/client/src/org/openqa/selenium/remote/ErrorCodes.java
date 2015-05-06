@@ -116,6 +116,18 @@ public class ErrorCodes {
       .put(XPATH_LOOKUP_ERROR, "invalid selector")
       .build();
 
+  private static Map<String, Integer> stateToStatus;
+  static {
+    ImmutableMap.Builder<String, Integer> builder = ImmutableMap.<String, Integer>builder();
+    for (Map.Entry<Integer, String> pair : statusToState.entrySet()) {
+      // Ignore duplicate "invalid selector" codes
+      if (! pair.getValue().equals("invalid selector") || pair.getKey() == INVALID_SELECTOR_ERROR) {
+        builder.put(pair.getValue(), pair.getKey());
+      }
+    }
+    stateToStatus = builder.build();
+  }
+
   /**
    * Returns the exception type that corresponds to the given {@code statusCode}. All unrecognized
    * status codes will be mapped to {@link WebDriverException WebDriverException.class}.
@@ -236,8 +248,11 @@ public class ErrorCodes {
     return statusCode != SUCCESS && statusCode != UNHANDLED_ERROR;
   }
 
-  @Beta
-  public String toState(int status) {
+  public static String toState(int status) {
     return statusToState.get(status);
+  }
+
+  public static int toStatus(String state) {
+    return stateToStatus.get(state);
   }
 }
