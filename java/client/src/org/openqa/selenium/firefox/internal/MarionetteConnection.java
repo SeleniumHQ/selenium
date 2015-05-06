@@ -17,13 +17,17 @@
 
 package org.openqa.selenium.firefox.internal;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -41,18 +45,10 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 @Beta
 public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs {
@@ -332,11 +328,11 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     params.remove(origParName);
   }
 
-  private static final byte[] SEPARATOR = ":".getBytes(StandardCharsets.UTF_8);
+  private static final byte[] SEPARATOR = ":".getBytes(Charsets.UTF_8);
 
   private void sendCommand(String commandAsString) throws IOException {
-    byte[] bytes = commandAsString.getBytes(StandardCharsets.UTF_8);
-    writer.write(Integer.toString(bytes.length).getBytes(StandardCharsets.UTF_8));
+    byte[] bytes = commandAsString.getBytes(Charsets.UTF_8);
+    writer.write(Integer.toString(bytes.length).getBytes(Charsets.UTF_8));
     writer.write(SEPARATOR);
     writer.write(bytes);
     writer.flush();
@@ -372,7 +368,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     if (read == -1) {
       throw new IOException("end of stream");
     }
-    String response = new String(bytes, StandardCharsets.UTF_8);
+    String response = new String(bytes, Charsets.UTF_8);
     System.out.println("<- |" + response + "|");
     return response;
   }
