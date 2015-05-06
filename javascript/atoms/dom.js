@@ -596,8 +596,9 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return false;
   }
 
-  // Any element with hidden visibility is not shown.
-  if (bot.dom.getEffectiveStyle(elem, 'visibility') == 'hidden') {
+  // Any element with hidden/collapsed visibility is not shown.
+  var visibility = bot.dom.getEffectiveStyle(elem, 'visibility');
+  if (visibility == 'collapse' || visibility == 'hidden') {
     return false;
   }
 

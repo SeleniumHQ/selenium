@@ -357,6 +357,29 @@
         assertFalse(isShown(elem));
       });
     }
+
+    function testTableRowDefaultVisibility() {
+      var elem = findElement({id: 'visible-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
+    }
+
+    function testTableRowCollapsedVisibility() {
+      expectedFailures.expectFailureFor(
+          (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
+          'IE does not support visibilty:collapsed until IE8');
+      var elem = findElement({id: 'collapsed-row'});
+      expectedFailures.run(function() {
+        assertFalse(isShown(elem));
+        assertFalse(isShown(elem.firstChild));
+      });
+    }
+
+    function testVisibleTableRowAfterCollapsedRow() {
+      var elem = findElement({id: 'post-collapsed-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
+    }
   </script>
 
   <style type="text/css">
@@ -532,5 +555,10 @@
   </div>
 </div>
 <div id='html5hidden' hidden>This is not visible</div>
+<table>
+<tr id="visible-row"><td>a</td></tr>
+<tr id="collapsed-row" style="visibility:collapse"><td>b</td></tr>
+<tr id="post-collapsed-row"><td>c</td></tr>
+</table>
 </body>
 </html>
