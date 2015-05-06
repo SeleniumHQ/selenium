@@ -23,8 +23,6 @@ var fs = require('fs'),
 var promise = require('..').promise;
 
 
-var PATH_SEPARATOR = process.platform === 'win32' ? ';' : ':';
-
 
 // PUBLIC API
 
@@ -211,7 +209,7 @@ exports.findInPath = function(file, opt_checkCwd) {
     }
   }
 
-  var dirs = process.env['PATH'].split(PATH_SEPARATOR);
+  var dirs = process.env['PATH'].split(path.delimiter);
   var found = null;
   dirs.forEach(function(dir) {
     var tmp = path.join(dir, file);
