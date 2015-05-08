@@ -92,8 +92,6 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
       profileDir = profile.layoutOnDisk();
 
-      process.clean(profile, profileDir);
-
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       delegate.setLocalLogs(logs);
       String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);

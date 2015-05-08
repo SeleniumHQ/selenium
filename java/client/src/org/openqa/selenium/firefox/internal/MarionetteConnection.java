@@ -23,7 +23,6 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -106,8 +105,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     lock.lock(connectTimeout);
     try {
       profileDir = profile.layoutOnDisk();
-
-      process.clean(profile, profileDir);
 
       String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
 

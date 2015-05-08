@@ -237,16 +237,6 @@ public class FirefoxBinary {
     return Streams.drainStream(stream);
   }
 
-  public void clean(FirefoxProfile profile, File profileDir) throws IOException {
-    startProfile(profile, profileDir, "-silent");
-    try {
-      waitFor(timeout);
-    } catch (InterruptedException e) {
-      process.destroy();
-      throw new WebDriverException(e);
-    }
-  }
-
   public long getTimeout() {
     return timeout;
   }
