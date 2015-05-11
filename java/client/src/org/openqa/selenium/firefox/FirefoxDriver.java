@@ -301,7 +301,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
 
       if (USE_MARIONETTE) {
-//        System.out.println("************************** Using marionette");
+        System.out.println(String.format(
+          "*** Use MarionetteDriver class instead of setting %s property ***",
+          SystemProperty.DRIVER_USE_MARIONETTE));
         return new MarionetteConnection(lock, bin, profile, host);
       } else {
         return new NewProfileExtensionConnection(lock, bin, profile, host);

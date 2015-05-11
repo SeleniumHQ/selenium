@@ -130,7 +130,9 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
   }
 
   private String getFirefoxClassName() {
-    if (isInDevMode()) {
+    if (Boolean.parseBoolean(System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE))) {
+      return "org.openqa.selenium.firefox.MarionetteDriver";
+    } else if (isInDevMode()) {
       return "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
     } else {
       return "org.openqa.selenium.firefox.FirefoxDriver";
