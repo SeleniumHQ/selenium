@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -240,6 +241,18 @@ public class BeanToJsonConverterTest {
   public void testShouldCallToMapMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new Mappable2("a key", "a value"));
     assertEquals("{\"a key\":\"a value\"}", json);
+  }
+
+  @Test
+  public void testShouldCallAsListMethodIfPresent() {
+    String json = new BeanToJsonConverter().convert(new Listable1("item1", "item2"));
+    assertEquals("[\"item1\",\"item2\"]", json);
+  }
+
+  @Test
+  public void testShouldCallToListMethodIfPresent() {
+    String json = new BeanToJsonConverter().convert(new Listable2("item1", "item2"));
+    assertEquals("[\"item1\",\"item2\"]", json);
   }
 
   @Test
@@ -562,4 +575,29 @@ public class BeanToJsonConverterTest {
       return ImmutableMap.of(key, value);
     }
   }
+
+  public class Listable1 {
+    private List<String> items;
+
+    public Listable1(String... items) {
+      this.items = ImmutableList.copyOf(items);
+    }
+
+    public List<String> asList() {
+      return items;
+    }
+  }
+
+  public class Listable2 {
+    private List<String> items;
+
+    public Listable2(String... items) {
+      this.items = ImmutableList.copyOf(items);
+    }
+
+    public List<String> toList() {
+      return items;
+    }
+  }
+
 }

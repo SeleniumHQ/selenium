@@ -192,6 +192,22 @@ public class BeanToJsonConverter {
       }
     }
 
+    Method toList = getMethod(toConvert, "toList");
+    if (toList == null) {
+      toList = getMethod(toConvert, "asList");
+    }
+    if (toList != null) {
+      try {
+        return convertObject(toList.invoke(toConvert), maxDepth - 1);
+      } catch (IllegalArgumentException e) {
+        throw new WebDriverException(e);
+      } catch (IllegalAccessException e) {
+        throw new WebDriverException(e);
+      } catch (InvocationTargetException e) {
+        throw new WebDriverException(e);
+      }
+    }
+
     Method toJson = getMethod(toConvert, "toJson");
     if (toJson != null) {
       try {
