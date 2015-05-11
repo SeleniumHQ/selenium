@@ -231,6 +231,18 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
+  public void testShouldCallAsMapMethodIfPresent() {
+    String json = new BeanToJsonConverter().convert(new Mappable1("a key", "a value"));
+    assertEquals("{\"a key\":\"a value\"}", json);
+  }
+
+  @Test
+  public void testShouldCallToMapMethodIfPresent() {
+    String json = new BeanToJsonConverter().convert(new Mappable2("a key", "a value"));
+    assertEquals("{\"a key\":\"a value\"}", json);
+  }
+
+  @Test
   public void testConvertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
     // We want this parsed as a string primitive, but JsonParser will reject it
     // as malformed because of the slash.
@@ -520,6 +532,34 @@ public class BeanToJsonConverterTest {
 
     public String toJson() {
       return convertedValue;
+    }
+  }
+
+  public class Mappable1 {
+    private String key;
+    private Object value;
+
+    public Mappable1(String key, Object value) {
+      this.key = key;
+      this.value = value;
+    }
+
+    public Map<String, Object> asMap() {
+      return ImmutableMap.of(key, value);
+    }
+  }
+
+  public class Mappable2 {
+    private String key;
+    private Object value;
+
+    public Mappable2(String key, Object value) {
+      this.key = key;
+      this.value = value;
+    }
+
+    public Map<String, Object> toMap() {
+      return ImmutableMap.of(key, value);
     }
   }
 }
