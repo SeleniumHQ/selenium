@@ -127,7 +127,9 @@ public class JsonToBeanConverter {
           response.setStatus(intStatus);
         }
       }
-      response.setSessionId(json.get("sessionId").getAsString());
+      if (json.has("sessionId") && ! json.get("sessionId").isJsonNull()) {
+        response.setSessionId(json.get("sessionId").getAsString());
+      }
 
       response.setValue(convert(Object.class, json.get("value")));
 
