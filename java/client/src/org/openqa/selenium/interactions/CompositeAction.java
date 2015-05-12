@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +42,9 @@ public class CompositeAction implements Action {
 
   public int getNumberOfActions() {
     return actionsList.size();
+  }
+
+  public List<Action> asList() {
+    return ImmutableList.copyOf(actionsList);
   }
 }
