@@ -17,17 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.ActionChainExecutor;
 import org.openqa.selenium.interactions.CompositeAction;
-import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
