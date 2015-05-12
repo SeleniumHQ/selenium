@@ -19,6 +19,8 @@ package org.openqa.selenium.interactions;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.WebDriver;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +29,24 @@ import java.util.List;
  *
  */
 public class CompositeAction implements Action {
+  private WebDriver driver;
   private List<Action> actionsList = new ArrayList<Action>();
 
+  public CompositeAction() {
+  }
+
+  public CompositeAction(WebDriver driver) {
+    this.driver = driver;
+  }
+
   public void perform() {
-    for (Action action : actionsList) {
-      action.perform();
+    if (driver != null && driver instanceof CanPerformActionChain) {
+      ((CanPerformActionChain) driver).getActionChainExecutor().execute(this);
+
+    } else {
+      for (Action action : actionsList) {
+        action.perform();
+      }
     }
   }
 

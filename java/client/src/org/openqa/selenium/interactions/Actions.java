@@ -30,6 +30,7 @@ import org.openqa.selenium.internal.Locatable;
  * method calls.
  */
 public class Actions {
+  protected WebDriver driver;
   protected Mouse mouse;
   protected Keyboard keyboard;
   protected CompositeAction action;
@@ -39,8 +40,10 @@ public class Actions {
    * @param driver the driver providing the implementations to use.
    */
   public Actions(WebDriver driver) {
-    this(((HasInputDevices) driver).getKeyboard(),
-        ((HasInputDevices) driver).getMouse());
+    this.driver = driver;
+    this.mouse = ((HasInputDevices) driver).getMouse();
+    this.keyboard = ((HasInputDevices) driver).getKeyboard();
+    resetCompositeAction();
   }
 
   /**
@@ -65,7 +68,7 @@ public class Actions {
   }
 
   private void resetCompositeAction() {
-    action = new CompositeAction();
+    action = new CompositeAction(driver);
   }
 
   /**
