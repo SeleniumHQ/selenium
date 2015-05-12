@@ -7,6 +7,9 @@ java_library(name = 'interactions',
     ':exceptions',
     '//java/client/src/org/openqa/selenium:core',
   ],
+  deps = [
+    '//third_party/java/guava-libraries',
+  ],
   visibility = ['PUBLIC'],
 )
 
