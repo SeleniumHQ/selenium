@@ -21,13 +21,17 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.MarionetteConnection;
+import org.openqa.selenium.interactions.ActionChainExecutor;
+import org.openqa.selenium.interactions.CanPerformActionChain;
 import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.remote.RemoteActionChainExecutor;
+import org.openqa.selenium.remote.RemoteExecuteMethod;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox using Marionette interface.
  */
 @Beta
-public class MarionetteDriver extends FirefoxDriver {
+public class MarionetteDriver extends FirefoxDriver implements CanPerformActionChain {
 
   public MarionetteDriver() {
     this(new FirefoxBinary(), null);
@@ -68,5 +72,9 @@ public class MarionetteDriver extends FirefoxDriver {
     } catch (Exception e) {
       throw new WebDriverException(e);
     }
+  }
+
+  public ActionChainExecutor getActionChainExecutor() {
+    return new RemoteActionChainExecutor(new RemoteExecuteMethod(this));
   }
 }
