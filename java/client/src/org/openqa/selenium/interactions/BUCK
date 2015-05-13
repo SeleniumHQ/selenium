@@ -6,6 +6,7 @@ java_library(name = 'interactions',
     ':core',
     ':exceptions',
     '//java/client/src/org/openqa/selenium:core',
+    '//java/client/src/org/openqa/remote:remote',
   ],
   deps = [
     '//third_party/java/guava-libraries',
@@ -40,6 +41,5 @@ java_library(name = 'exceptions',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/remote:remote',
   ],
 )

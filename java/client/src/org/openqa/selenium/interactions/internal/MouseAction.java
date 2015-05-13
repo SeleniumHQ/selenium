@@ -25,6 +25,17 @@ import org.openqa.selenium.internal.Locatable;
  * Base class for all mouse-related actions.
  */
 public class MouseAction extends BaseAction {
+  public enum Button {
+    LEFT(0),
+    MIDDLE(1),
+    RIGHT(2);
+
+    private final int b;
+    Button(int b) {
+      this.b = b;
+    }
+  }
+
   protected final Mouse mouse;
 
   protected MouseAction(Mouse mouse, Locatable locationProvider) {

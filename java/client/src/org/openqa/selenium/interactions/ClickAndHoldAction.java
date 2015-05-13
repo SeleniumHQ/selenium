@@ -20,6 +20,9 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Presses the left mouse button without releasing it.
  *
@@ -37,5 +40,9 @@ public class ClickAndHoldAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.mouseDown(getActionLocation());
+  }
+
+  public List<Object> asList() {
+    return Arrays.<Object>asList("press", getTargetId());
   }
 }

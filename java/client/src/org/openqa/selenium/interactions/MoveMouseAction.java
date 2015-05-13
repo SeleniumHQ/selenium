@@ -20,6 +20,9 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Moves the mouse to an element.
  *
@@ -34,5 +37,9 @@ public class MoveMouseAction extends MouseAction implements Action {
 
   public void perform() {
     mouse.mouseMove(getActionLocation());
+  }
+
+  public List<Object> asList() {
+    return Arrays.<Object>asList("move", getTargetId());
   }
 }

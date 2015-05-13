@@ -20,6 +20,9 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Releases the left mouse button
  *
@@ -39,5 +42,9 @@ public class ButtonReleaseAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.mouseUp(getActionLocation());
+  }
+
+  public List<Object> asList() {
+    return Arrays.<Object>asList("release");
   }
 }

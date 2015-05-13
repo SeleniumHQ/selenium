@@ -20,6 +20,9 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Double-clicks an element.
  *
@@ -35,5 +38,9 @@ public class DoubleClickAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.doubleClick(getActionLocation());
+  }
+
+  public List<Object> asList() {
+    return Arrays.<Object>asList("click", getTargetId(), Button.LEFT, 2);
   }
 }

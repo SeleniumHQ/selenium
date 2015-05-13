@@ -34,6 +34,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.HasIdentity;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -46,7 +47,7 @@ import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
-                                         FindsByXPath, WrapsDriver, Locatable {
+                                         FindsByXPath, WrapsDriver, Locatable, HasIdentity {
 
   private String foundBy;
   protected String id;

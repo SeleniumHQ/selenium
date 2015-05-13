@@ -76,6 +76,10 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       .put(DriverCommand.GET_ELEMENT_LOCATION, "getElementPosition")
       .put(DriverCommand.GET_ALL_COOKIES, "getAllCookies")
       .put(DriverCommand.QUIT, "deleteSession")
+      .put(DriverCommand.MOVE_TO, "move")
+      .put(DriverCommand.MOUSE_DOWN, "press")
+      .put(DriverCommand.MOUSE_UP, "release")
+      .put(DriverCommand.CLICK, "click")
       .build();
 
   private Socket socket;
@@ -195,39 +199,11 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       response.setValue(map.get("value"));
 
     } else {
+      response = new JsonToBeanConverter().convert(Response.class, rawResponse);
       if (map.containsKey("error")) {
-        // ***************************************************************
-        // Marionette Compliance Issue: Error responses should, at a
-        // minimum, put the status property at the root of the object.
-        // In other words:
-        // {
-        //   status: 7,
-        //   value:
-        //   {
-        //     message: "Did not find element with id=foo",
-        //     stackTrace: <stack trace goes here>
-        //   }
-        // }
-        // ***************************************************************
-        response = new Response();
-        Object value = map.get("error");
-        if (value != null) {
-          if (value instanceof Map) {
-            Map<String, Object> errorMap = (Map<String, Object>) value;
-            if (errorMap != null) {
-              response.setStatus(Integer.parseInt(errorMap.get("status").toString()));
-              errorMap.remove("status");
-              response.setValue(errorMap);
-            }
-          } else {
-            response.setStatus(ErrorCodes.UNHANDLED_ERROR);
-            response.setValue(value + ": " + map.get("message"));
-          }
-        }
+        response.setValue(map.get("error"));
 
       } else {
-        response = new JsonToBeanConverter().convert(Response.class, rawResponse);
-
         // ***************************************************************
         // Marionette Compliance Issue: Responses from findElements
         // are returned with raw element IDs as the value.
@@ -280,7 +256,8 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             || DriverCommand.MOUSE_DOWN.equals(commandName)
             || DriverCommand.MOUSE_UP.equals(commandName)
             || DriverCommand.MOVE_TO.equals(commandName)) {
-      String actionName = commandName;
+      String actionName = seleniumToMarionetteCommandMap.containsKey(commandName) ?
+                          seleniumToMarionetteCommandMap.get(commandName) : commandName;
       commandName = "actionChain";
       List<Object> action = Lists.newArrayList();
       action.add(actionName);

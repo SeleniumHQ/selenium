@@ -15,35 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.internal;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.internal.SingleKeyAction;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * Emulates key release only, without the press.
- *
- */
-public class KeyUpAction extends SingleKeyAction implements Action {
-  public KeyUpAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
-    super(keyboard, mouse, locationProvider, key);
-  }
-
-  public KeyUpAction(Keyboard keyboard, Mouse mouse, Keys key) {
-    super(keyboard, mouse, key);
-  }
-
-  public void perform() {
-    focusOnElement();
-
-    keyboard.releaseKey(key);
-  }
-
-  public List<Object> asList() {
-    return Arrays.<Object>asList("keyUp", key);
-  }
+public interface HasIdentity {
+  String getId();
 }

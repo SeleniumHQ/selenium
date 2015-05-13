@@ -21,6 +21,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.internal.Locatable;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Emulates key press only, without the release.
  *
@@ -38,5 +41,9 @@ public class KeyDownAction extends SingleKeyAction implements Action {
     focusOnElement();
 
     keyboard.pressKey(key);
+  }
+
+  public List<Object> asList() {
+    return Arrays.<Object>asList("keyDown", key);
   }
 }

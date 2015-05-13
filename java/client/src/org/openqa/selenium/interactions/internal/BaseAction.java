@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.interactions.internal;
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.HasIdentity;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsElement;
 
 /**
  * Base class for all actions.
@@ -39,5 +42,23 @@ public abstract class BaseAction {
    */
   protected BaseAction() {
     this.where = null;
+  }
+
+  protected String getTargetId() {
+    if (!(where instanceof WebElement)) {
+      return null;
+    }
+
+    WebElement target = (WebElement) where;
+
+    while (target instanceof WrapsElement) {
+      target = ((WrapsElement) target).getWrappedElement();
+    }
+
+    if (target instanceof HasIdentity) {
+      return ((HasIdentity) target).getId();
+    }
+
+    return null;
   }
 }
