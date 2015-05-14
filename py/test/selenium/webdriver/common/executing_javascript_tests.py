@@ -217,11 +217,15 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self._loadSimplePage()
         nums = [1, 2]
         args = {"bar": "test", "foo": nums}
-
-
         res = self.driver.execute_script("return arguments[0]['foo'][1]", args);
 
         self.assertEqual(2, res)
+
+    def testReturnDomElementInAnObject(self):
+        self._loadSimplePage()
+        result = self.driver.execute_script("return {a: document.body}")
+        self.assertIsInstance(result, dict)
+        self.assertEquals("body", result["a"].tag_name)
 
     def testCanPassANone(self):
         self._loadSimplePage()
