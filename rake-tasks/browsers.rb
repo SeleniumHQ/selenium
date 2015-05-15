@@ -49,6 +49,17 @@ BROWSERS = {
     :browser_name => "chrome",
     :available => chrome?
   },
+  "blackberry" => {
+    :python => {
+      :ignore => "blackberry",
+      :dir => "blackberry",
+      :file_string => "blackberry",
+      :class => "BlackBerry",
+      :constructor_args => "device_pass='password', bb_tools_dir='/Applications/Momentics.app/host_10_3_0_2702/darwin/x86/usr/bin'"
+
+    },
+    :browser_name => "blackberry"
+  },
   "phantomjs" => {
     :python => {
       :ignore => "phantomjs",

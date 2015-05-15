@@ -24,6 +24,7 @@ from .chrome.options import Options as ChromeOptions
 from .ie.webdriver import WebDriver as Ie
 from .opera.webdriver import WebDriver as Opera
 from .safari.webdriver import WebDriver as Safari
+from .blackberry.webdriver import WebDriver as BlackBerry
 from .phantomjs.webdriver import WebDriver as PhantomJS
 from .android.webdriver import WebDriver as Android
 from .remote.webdriver import WebDriver as Remote
