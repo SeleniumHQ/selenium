@@ -49,6 +49,16 @@ BROWSERS = {
     :browser_name => "chrome",
     :available => chrome?
   },
+  "blackberry" => {
+    :python => {
+      :ignore => "blackberry",
+      :dir => "blackberry",
+      :file_string => "blackberry",
+      :class => "BlackBerry",
+      :constructor_args => "device_password='password'"
+    },
+    :browser_name => "blackberry"
+  },
   "phantomjs" => {
     :python => {
       :ignore => "phantomjs",
