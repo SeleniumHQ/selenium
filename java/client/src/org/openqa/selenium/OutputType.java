@@ -43,6 +43,10 @@ public interface OutputType<T> {
     public String convertFromPngBytes(byte[] png) {
       return new Base64Encoder().encode(png);
     }
+
+    public String toString() {
+      return "OutputType.BASE64";
+    }
   };
 
   /**
@@ -55,6 +59,10 @@ public interface OutputType<T> {
 
     public byte[] convertFromPngBytes(byte[] png) {
       return png;
+    }
+
+    public String toString() {
+      return "OutputType.BYTES";
     }
   };
 
@@ -93,6 +101,10 @@ public interface OutputType<T> {
           }
         }
       }
+    }
+
+    public String toString() {
+      return "OutputType.FILE";
     }
   };
 
