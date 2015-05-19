@@ -62,7 +62,7 @@ public class JsonHttpResponseCodecTest {
         Response.class, new String(converted.getContent(), UTF_8));
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
-    assertEquals(response.getState(), rebuilt.getState());
+    assertEquals(ErrorCodes.toState(response.getStatus()), rebuilt.getState());
     assertEquals(response.getSessionId(), rebuilt.getSessionId());
     assertEquals(response.getValue(), rebuilt.getValue());
   }
@@ -81,7 +81,7 @@ public class JsonHttpResponseCodecTest {
         Response.class, new String(converted.getContent(), UTF_8));
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
-    assertEquals(response.getState(), rebuilt.getState());
+    assertEquals(ErrorCodes.toState(response.getStatus()), rebuilt.getState());
     assertEquals(response.getSessionId(), rebuilt.getSessionId());
     assertEquals(response.getValue(), rebuilt.getValue());
   }
@@ -104,11 +104,11 @@ public class JsonHttpResponseCodecTest {
   public void decodeNonJsonResponse_200() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("foobar".getBytes(UTF_8));
+    response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
     assertEquals(ErrorCodes.SUCCESS, decoded.getStatus());
-    assertEquals("foobar", decoded.getValue());
+    assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
   @Test
@@ -125,22 +125,22 @@ public class JsonHttpResponseCodecTest {
   public void decodeNonJsonResponse_4xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_BAD_REQUEST);
-    response.setContent("foobar".getBytes(UTF_8));
+    response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
     assertEquals(ErrorCodes.UNKNOWN_COMMAND, decoded.getStatus());
-    assertEquals("foobar", decoded.getValue());
+    assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
   @Test
   public void decodeNonJsonResponse_5xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_INTERNAL_ERROR);
-    response.setContent("foobar".getBytes(UTF_8));
+    response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
     assertEquals(ErrorCodes.UNHANDLED_ERROR, decoded.getStatus());
-    assertEquals("foobar", decoded.getValue());
+    assertEquals("{\"foobar\"}", decoded.getValue());
   }
 
   @Test
