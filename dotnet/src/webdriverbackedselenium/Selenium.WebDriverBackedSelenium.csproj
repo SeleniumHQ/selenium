@@ -234,20 +234,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js" "$(TargetDir)"
-copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js" "$(TargetDir)"
-if exist $(SolutionDir)build\javascript\selenium-atoms\findElement.js copy /y $(SolutionDir)build\javascript\selenium-atoms\findElement.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\findOption.js copy /y $(SolutionDir)build\javascript\selenium-atoms\findOption.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\fireEvent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\fireEvent.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\fireEventAt.js copy /y $(SolutionDir)build\javascript\selenium-atoms\fireEventAt.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\getAttribute.js copy /y $(SolutionDir)build\javascript\selenium-atoms\getAttribute.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\getText.js copy /y $(SolutionDir)build\javascript\selenium-atoms\getText.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\linkLocator.js copy /y $(SolutionDir)build\javascript\selenium-atoms\linkLocator.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\isElementPresent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isElementPresent.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\isSomethingSelected.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isSomethingSelected.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\isTextPresent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isTextPresent.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\isVisible.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isVisible.js $(TargetDir)
-if exist $(SolutionDir)build\javascript\selenium-atoms\type.js copy /y $(SolutionDir)build\javascript\selenium-atoms\type.js $(TargetDir)
+    <PostBuildEvent>copy /y "$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js" "$(TargetDir)"
+copy /y "$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js" "$(TargetDir)"
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findElement.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findElement.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getAttribute.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getAttribute.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isSomethingSelected.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isSomethingSelected.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isTextPresent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isTextPresent.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isVisible.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isVisible.js $(TargetDir)
+if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\type.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\type.js $(TargetDir)
 
 </PostBuildEvent>
   </PropertyGroup>
