@@ -276,7 +276,7 @@ limitations under the License.
       </stack>
     </vbox>
   </stack>
-  <toolbarbutton id="schedule-button" type="menu-button" label="Scheduler" class="toolbar2 toolbarbutton-1" tooltiptext="Turn test scheduler on/off" command="cmd_selenium_schedule">
+  <toolbarbutton id="schedule-button" type="menu-button" label="Scheduler" class="toolbar2 toolbarbutton-1" tooltiptext="Click to turn scheduler on" command="cmd_selenium_schedule">
     <menupopup id="schedulerPopup">
       <menuitem label="Play test suites periodically" oncommand="window.editor.openSeleniumIDEScheduler(event);" />
       <menuitem label="Toggle Scheduler" command="cmd_selenium_schedule" />
