@@ -55,8 +55,7 @@ BROWSERS = {
       :dir => "blackberry",
       :file_string => "blackberry",
       :class => "BlackBerry",
-      :constructor_args => "device_pass='password', bb_tools_dir='/Applications/Momentics.app/host_10_3_0_2702/darwin/x86/usr/bin'"
-
+      :constructor_args => "device_password='password'"
     },
     :browser_name => "blackberry"
   },

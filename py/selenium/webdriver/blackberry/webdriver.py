@@ -26,53 +26,70 @@ from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
 
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the BlackBerry Browser and allows you to drive it.
 
+    :Args:
+     - device_password - password for the BlackBerry device or emulator you are
+       trying to drive
+     - bb_tools_dir path to the blackberry-deploy executable. If the default
+       is used it assumes it is in the $PATH
+     - hostip - the ip for the device you are trying to drive. Falls back to
+       169.254.0.1 which is the default ip used
+     - port - the port being used for WebDriver on device. defaults to 1338
+     - desired_capabilities: Dictionary object with non-browser specific
+       capabilities only, such as "proxy" or "loggingPref".
+
+    Note: To get blackberry-deploy you will need to install the BlackBerry
+          WebWorks SDK - the default install will put it in the $PATH for you.
+          Download at https://developer.blackberry.com/html5/downloads/
     """
-    def __init__(self, device_pass, bb_tools_dir, hostip=None, port=1338,desired_capabilities={}):
-        """
-        Creates a new instance of the BlackBerry driver.
+    def __init__(self, device_password, bb_tools_dir=None,
+                 hostip='169.254.0.1', port=1338, desired_capabilities={}):
 
-        """
-        if(hostip == None):
-            hostip = '169.254.0.1'
+        remote_addr = 'http://{}:{}'.format(hostip, port)
 
-        remoteAddr = 'http://' + str(hostip) + ':' + str(port)
+        filename = 'blackberry-deploy'
+        if platform.system() == "Windows":
+            filename += '.bat'
 
-        """
-        Find blackberry-deploy, this is need to launch the browser remotely.
-
-        This is installed by getting the BlackBerry 10 NDK
-        """
-        if(os.path.isdir(bb_tools_dir)):
-            filename = 'blackberry-deploy'
-            if(platform.system() == "Windows"):
-                filename += '.bat'
-
-            bb_deploy_location = os.path.join(bb_tools_dir, filename)
+        if bb_tools_dir is not None:
+            if os.path.isdir(bb_tools_dir):
+                bb_deploy_location = os.path.join(bb_tools_dir, filename)
+                if not os.path.isfile(bb_deploy_location):
+                    raise WebDriverException('invalid blackberry-deploy location')
+            else:
+                raise WebDriverException('invalid blackberry-deploy location')
         else:
-            raise WebDriverException('invalid blackberry-deploy location')
+            bb_deploy_location = filename
+
         """
         Now launch the BlackBerry browser before allowing anything else to run.
         """
         try:
-            launchArgs = [bb_deploy_location, '-launchApp', str(hostip), '-package-name', 'sys.browser', '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0', '-password', str(device_pass)]
-            with open(os.devnull, 'w') as fp: #this allows the suppression of the blackberry-deploy command output, it's a bit chatty
+            launchArgs = [bb_deploy_location,
+                          '-launchApp',
+                          str(hostip),
+                          '-package-name', 'sys.browser',
+                          '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
+                          '-password', str(device_password)]
+
+            with open(os.devnull, 'w') as fp:
                 p = subprocess.Popen(launchArgs, stdout=fp)
 
             returncode = p.wait()
 
-            if(returncode == 0):
-                time.sleep(3) # give the browser time to initialize
+            if returncode == 0:
+                time.sleep(3)  # give the browser time to initialize
                 RemoteWebDriver.__init__(self,
-                    command_executor=remoteAddr,
-                    desired_capabilities=desired_capabilities)
+                                         command_executor=remote_addr,
+                                         desired_capabilities=desired_capabilities)
             else:
-                raise WebDriverException('bb-deploy failed to launch browser')
+                raise WebDriverException('blackberry-deploy failed to launch browser')
         except:
-            raise WebDriverException('something went wrong launching blackbery-deploy')
+            raise WebDriverException('Something went wrong launching blackberry-deploy')
 
     def quit(self):
         """
