@@ -59,9 +59,9 @@ class WebDriver(RemoteWebDriver):
             if os.path.isdir(bb_tools_dir):
                 bb_deploy_location = os.path.join(bb_tools_dir, filename)
                 if not os.path.isfile(bb_deploy_location):
-                    raise WebDriverException('invalid blackberry-deploy location')
+                    raise WebDriverException('Invalid blackberry-deploy location: {}'.format(bb_deploy_location))
             else:
-                raise WebDriverException('invalid blackberry-deploy location')
+                raise WebDriverException('Invalid blackberry tools location, must be a directory: {}'.format(bb_tools_dir))
         else:
             bb_deploy_location = filename
 
@@ -69,20 +69,32 @@ class WebDriver(RemoteWebDriver):
         Now launch the BlackBerry browser before allowing anything else to run.
         """
         try:
-            launchArgs = [bb_deploy_location,
-                          '-launchApp',
-                          str(hostip),
-                          '-package-name', 'sys.browser',
-                          '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
-                          '-password', str(device_password)]
+            launch_args = [bb_deploy_location,
+                           '-launchApp',
+                           str(hostip),
+                           '-package-name', 'sys.browser',
+                           '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
+                           '-password', str(device_password)]
 
             with open(os.devnull, 'w') as fp:
-                p = subprocess.Popen(launchArgs, stdout=fp)
+                p = subprocess.Popen(launch_args, stdout=fp)
 
             returncode = p.wait()
 
             if returncode == 0:
-                time.sleep(3)  # give the browser time to initialize
+                # wait for the BlackBerry10 browser to load.
+                while True:
+                    is_running_args = [bb_deploy_location,
+                                       '-isAppRunning',
+                                       str(hostip),
+                                       '-package-name', 'sys.browser',
+                                       '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
+                                       '-password', str(device_password)]
+
+                    result = subprocess.check_output(is_running_args)
+                    if result.find('result::true'):
+                        break
+
                 RemoteWebDriver.__init__(self,
                                          command_executor=remote_addr,
                                          desired_capabilities=desired_capabilities)
