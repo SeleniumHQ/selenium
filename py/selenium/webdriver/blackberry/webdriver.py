@@ -92,15 +92,18 @@ class WebDriver(RemoteWebDriver):
                                    '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
                                    '-password', str(device_password)]
 
-                WebDriverWait(None, LOAD_TIMEOUT).until(lambda x: subprocess.check_output(is_running_args).find('result::true'))
+                WebDriverWait(None, LOAD_TIMEOUT)\
+                    .until(lambda x: subprocess.check_output(is_running_args)
+                           .find('result::true'),
+                           message='waiting for BlackBerry10 browser to load')
 
                 RemoteWebDriver.__init__(self,
                                          command_executor=remote_addr,
                                          desired_capabilities=desired_capabilities)
             else:
                 raise WebDriverException('blackberry-deploy failed to launch browser')
-        except:
-            raise WebDriverException('Something went wrong launching blackberry-deploy')
+        except Exception as e:
+            raise WebDriverException('Something went wrong launching blackberry-deploy', stacktrace=getattr(e, 'stacktrace', None))
 
     def quit(self):
         """
