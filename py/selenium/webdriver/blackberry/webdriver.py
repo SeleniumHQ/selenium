@@ -25,9 +25,11 @@ import subprocess
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class WebDriver(RemoteWebDriver):
+    LOAD_TIMEOUT = 10
     """
     Controls the BlackBerry Browser and allows you to drive it.
 
@@ -83,17 +85,14 @@ class WebDriver(RemoteWebDriver):
 
             if returncode == 0:
                 # wait for the BlackBerry10 browser to load.
-                while True:
-                    is_running_args = [bb_deploy_location,
-                                       '-isAppRunning',
-                                       str(hostip),
-                                       '-package-name', 'sys.browser',
-                                       '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
-                                       '-password', str(device_password)]
+                is_running_args = [bb_deploy_location,
+                                   '-isAppRunning',
+                                   str(hostip),
+                                   '-package-name', 'sys.browser',
+                                   '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
+                                   '-password', str(device_password)]
 
-                    result = subprocess.check_output(is_running_args)
-                    if result.find('result::true'):
-                        break
+                WebDriverWait(None, 10).until(lambda x: subprocess.check_output(is_running_args).find('result::true'))
 
                 RemoteWebDriver.__init__(self,
                                          command_executor=remote_addr,
