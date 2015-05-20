@@ -67,6 +67,12 @@ static HINSTANCE moduleHandle = NULL;
 // Left Mouse button pressed?
 static bool leftMouseButtonPressed = false;
 
+void activateWindow(HWND hwnd)
+{
+  SendMessage(hwnd, WM_ACTIVATE, WA_CLICKACTIVE, 0);
+  SendMessage(hwnd, WM_SETFOCUS, NULL, 0);
+}
+
 void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 {
   pause = pause / 3;
@@ -695,6 +701,8 @@ LRESULT clickAt(WINDOW_HANDLE handle, long x, long y, long button)
 	}
 
 	HWND directInputTo = (HWND) handle;
+
+    activateWindow(directInputTo);
 
 	LRESULT result = mouseDownAt(handle, x, y, button);
     if (result != 0) {
