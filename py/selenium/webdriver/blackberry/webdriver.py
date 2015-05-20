@@ -27,9 +27,10 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 
+LOAD_TIMEOUT = 5
+
 
 class WebDriver(RemoteWebDriver):
-    LOAD_TIMEOUT = 10
     """
     Controls the BlackBerry Browser and allows you to drive it.
 
@@ -50,7 +51,6 @@ class WebDriver(RemoteWebDriver):
     """
     def __init__(self, device_password, bb_tools_dir=None,
                  hostip='169.254.0.1', port=1338, desired_capabilities={}):
-
         remote_addr = 'http://{}:{}'.format(hostip, port)
 
         filename = 'blackberry-deploy'
@@ -92,7 +92,7 @@ class WebDriver(RemoteWebDriver):
                                    '-package-id', 'gYABgJYFHAzbeFMPCCpYWBtHAm0',
                                    '-password', str(device_password)]
 
-                WebDriverWait(None, 10).until(lambda x: subprocess.check_output(is_running_args).find('result::true'))
+                WebDriverWait(None, LOAD_TIMEOUT).until(lambda x: subprocess.check_output(is_running_args).find('result::true'))
 
                 RemoteWebDriver.__init__(self,
                                          command_executor=remote_addr,
