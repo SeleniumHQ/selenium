@@ -1785,7 +1785,6 @@ webdriver.WebElement.prototype.getId = function() {
  * Returns the raw ID string ID for this element.
  * @return {!webdriver.promise.Promise<string>} A promise that resolves to this
  *     element's raw ID as a string value.
- * @package
  */
 webdriver.WebElement.prototype.getRawId = function() {
   return this.getId().then(function(value) {
@@ -2483,7 +2482,6 @@ webdriver.FileDetector = goog.defineClass(null, {
    * @param {string} path The path to process.
    * @return {!webdriver.promise.Promise<string>} A promise for the processed
    *     file path.
-   * @package
    */
   handleFile: function(driver, path) {
     return webdriver.promise.fulfilled(path);
