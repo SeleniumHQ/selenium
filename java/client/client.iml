@@ -42,4 +42,11 @@
     <orderEntry type="library" name="objenesis-1.0" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
   </component>
+  <component name="sonarModuleSettings">
+    <option name="alternativeWorkingDirPath" value="" />
+    <option name="localAnalysisScripName" value="&lt;NO LOCAL ANALYSIS&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;PROJECT&gt;" />
+  </component>
 </module>
