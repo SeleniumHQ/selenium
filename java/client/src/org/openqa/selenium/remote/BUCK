@@ -30,6 +30,27 @@ java_library(
   srcs = [ 'HttpSessionId.java' ],
 )
 
+java_library(name = 'augmenter',
+  srcs = [
+    'AugmenterProvider.java',
+    'AddFindsByCss.java',
+    'AddFindsChildByCss.java',
+    'AddRemoteTouchScreen.java',
+    'AddRotatable.java',
+    'BaseAugmenter.java',
+    'InterfaceImplementation.java',
+    'html5/AddApplicationCache.java',
+    'html5/AddLocationContext.java',
+    'html5/AddWebStorage.java',
+    'mobile/AddNetworkConnection.java',
+  ],
+  deps = [
+    ':capabilities',
+    ':remote',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+)
+
 java_library(name = 'remote',
   srcs = [
     'BeanToJsonConverter.java',
@@ -77,6 +98,7 @@ java_library(name = 'remote',
     'internal/HttpClientFactory.java',
     'internal/JsonToWebElementConverter.java',
     'internal/WebElementToJsonConverter.java',
+    'mobile/RemoteNetworkConnection.java',
   ],
   exported_deps = [
     ':api',

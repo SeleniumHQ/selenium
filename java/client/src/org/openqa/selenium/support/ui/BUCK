@@ -26,6 +26,7 @@ java_library(name = 'components',
 
 java_library(name = 'elements',
   srcs = [
+    'Quotes.java',
     'Select.java',
     'UnexpectedTagNameException.java',
   ],
