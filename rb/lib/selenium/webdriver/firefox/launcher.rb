@@ -49,7 +49,6 @@ module Selenium
           socket_lock.locked do
             find_free_port
             create_profile
-            start_silent_and_wait
             start
             connect_until_stable
           end
@@ -79,13 +78,6 @@ module Selenium
         def start
           assert_profile
           @binary.start_with @profile, @profile_dir, "-foreground"
-        end
-
-        def start_silent_and_wait
-          assert_profile
-
-          @binary.start_with @profile, @profile_dir, "-silent"
-          @binary.wait
         end
 
         def connect_until_stable
