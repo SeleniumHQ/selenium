@@ -17,12 +17,17 @@
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
@@ -73,6 +78,16 @@ public class UploadTest extends JUnit4TestBase {
 
     WebElement body = driver.findElement(By.xpath("//body"));
     wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+  }
+
+  @Test
+  @Ignore(value = {CHROME, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI})
+  public void testCleanFileInput() throws Exception {
+    driver.get(pages.uploadPage);
+    WebElement element = driver.findElement(By.id("upload"));
+    element.sendKeys(testFile.getAbsolutePath());
+    element.clear();
+    assertEquals("", element.getAttribute("value"));
   }
 
   private File createTmpFile(String content) throws IOException {
