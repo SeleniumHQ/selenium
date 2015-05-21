@@ -55,6 +55,7 @@ import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -355,7 +356,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     return target.convertFromBase64Png(base64);
   }
 
-  private static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
+  public static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     private ExtensionConnection connection;
     private final FirefoxBinary binary;
     private final FirefoxProfile profile;
@@ -397,6 +398,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       if (connection != null) {
         connection.setLocalLogs(logs);
       }
+    }
+
+    public URI getAddressOfRemoteServer() {
+      return connection.getAddressOfRemoteServer();
     }
   }
 }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,6 +48,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +63,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   private final String host;
   private final Lock lock;
   private File profileDir;
+  private int port;
 
   private static Map<String, String> seleniumToMarionetteCommandMap = ImmutableMap.<String, String>builder()
       .put(DriverCommand.GET, "get")
@@ -100,7 +104,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   public void start() throws IOException {
-    int port = PortProber.findFreePort();
+    port = PortProber.findFreePort();
 
     profile.setPreference("marionette.defaultPrefs.enabled", true);
     profile.setPreference("marionette.defaultPrefs.port", port);
@@ -357,5 +361,16 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
   public void setLocalLogs(LocalLogs logs) {
     this.logs = logs;
+  }
+
+  public URI getAddressOfRemoteServer() {
+    Preconditions.checkState(host == null, "The host must be non-null.");
+    Preconditions.checkState(port != 0, "The port must be non-0.");
+
+    try {
+      return new URI("net.tcp://" + host + ":" + port);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
