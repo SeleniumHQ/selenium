@@ -102,6 +102,8 @@ public class DefaultDriverSessions implements DriverSessions {
       log.log(Level.INFO, "Unable to register driver with className " + className + " due to ClassNotFoundException");
     } catch (NoClassDefFoundError e) {
       log.log(Level.WARNING, "Unable to register driver with className " + className + " due to NoClassDefFoundError");
+    } catch (UnsupportedClassVersionError e) {
+      log.log(Level.WARNING, "Unable to register driver with className " + className + " due to UnsupportedClassVersionError");
     }
   }
 
