@@ -1,7 +1,36 @@
-unreleased
-==========
+v2.46.0
+=======
 
-* Support for Presto-based Operas have been discontinued.
+Important changes in this release:
+
+* Remove all support from both webdriver and RC for Presto-based
+  Opera. Blink-based Opera is still supported!
+* Added beta Marionette driver (for Firefox OS and recent desktop
+  releases).
+* Fixing critical selenium server error caused by a user registering a
+  driver class compiled with a higher Java version than the server is
+  running (eg: server runs with Java 7, but the driver is comopiled to
+  target Java 8)
+* FirefoxDriver: now supported on OpenBSD (added by minusf@gmail.com)
+
+Other notable changes:
+
+* Added ability to clear file input fields for Firefox.
+* Fix bug in Safari where Selenium updated the page under test in some
+  circumstances.
+* HtmlUnit: do not disable mouse notifications when js is disabled,
+  css is also related to this information (only partly implemented in
+  HtmlUnit at the moment)
+* Updated htmlunitdriver to use htmlunit 2.16
+* Changed capability name from pageLoadingStrategy to pageLoadStrategy
+* FIX: Google Code issue #7749: Add Get/Set network connection
+  commands to JsonHttpCommandHandler to be able to use commands in
+  selenium grid.
+* Allow clients to specify TCP timeouts in the remote webdriver.
+* Allow the chrome binary passed in capabilities to have a higher
+  priority than node configuration.
+* ChromeDriver: Added ability to pass whitelisted-ips option to the
+  chromedriver
 
 
 v2.45.0
