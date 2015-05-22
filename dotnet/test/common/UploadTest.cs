@@ -46,7 +46,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IE, "Transparent file upload element not yet handled")]
+        //[IgnoreBrowser(Browser.IE, "Transparent file upload element not yet handled")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             driver.Url = transparentUploadPage;

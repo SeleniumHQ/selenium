@@ -80,20 +80,6 @@ class SendKeysCommandHandler : public IECommandHandler {
       status_code = this->GetElement(executor, element_id, &element_wrapper);
 
       if (status_code == WD_SUCCESS) {
-        bool displayed;
-        status_code = element_wrapper->IsDisplayed(true, &displayed);
-        if (status_code != WD_SUCCESS || !displayed) {
-          response->SetErrorResponse(EELEMENTNOTDISPLAYED,
-                                     "Element is not displayed");
-          return;
-        }
-
-        if (!element_wrapper->IsEnabled()) {
-          response->SetErrorResponse(EELEMENTNOTENABLED,
-                                     "Element is not enabled");
-          return;
-        }
-
         CComPtr<IHTMLElement> element(element_wrapper->element());
 
         LocationInfo location = {};
@@ -144,6 +130,20 @@ class SendKeysCommandHandler : public IECommandHandler {
           // We're now blocked until the dialog closes.
           ::CloseHandle(thread_handle);
           response->SetSuccessResponse(Json::Value::null);
+          return;
+        }
+
+        bool displayed;
+        status_code = element_wrapper->IsDisplayed(true, &displayed);
+        if (status_code != WD_SUCCESS || !displayed) {
+          response->SetErrorResponse(EELEMENTNOTDISPLAYED,
+                                     "Element is not displayed");
+          return;
+        }
+
+        if (!element_wrapper->IsEnabled()) {
+          response->SetErrorResponse(EELEMENTNOTENABLED,
+                                     "Element is not enabled");
           return;
         }
 
