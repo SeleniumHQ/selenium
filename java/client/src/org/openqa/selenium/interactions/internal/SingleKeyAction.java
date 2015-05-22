@@ -41,7 +41,7 @@ public abstract class SingleKeyAction extends KeysRelatedAction {
     this.key = key;
     boolean isModifier = false;
     for (Keys modifier : MODIFIER_KEYS) {
-      isModifier = isModifier | modifier.equals(key);
+      isModifier = isModifier || modifier.equals(key);
     }
 
     if (!isModifier) {
