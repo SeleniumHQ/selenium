@@ -220,28 +220,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes the binary with the specified profile.
-        /// </summary>
-        /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
-        public void Clean(FirefoxProfile profile)
-        {
-            if (profile == null)
-            {
-                throw new ArgumentNullException("profile", "profile cannot be null");
-            }
-
-            this.StartProfile(profile, "-silent");
-            try
-            {
-                this.WaitForProcessExit();
-            }
-            catch (ThreadInterruptedException e)
-            {
-                throw new WebDriverException("Thread was interrupted", e);
-            }
-        }
-
-        /// <summary>
         /// Stops the execution of this <see cref="FirefoxBinary"/>, terminating the process if necessary.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
