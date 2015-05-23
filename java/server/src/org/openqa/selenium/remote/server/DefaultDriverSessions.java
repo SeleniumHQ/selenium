@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
@@ -25,6 +27,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -42,15 +45,23 @@ public class DefaultDriverSessions implements DriverSessions {
   private final Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
 
-  private static Map<Capabilities, String> defaultDrivers = new HashMap<Capabilities, String>() {{
-    put(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver");
-    put(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver");
-    put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
-    put(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver");
-    put(DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver");
-    put(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver");
-    put(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver");
-  }};
+  private static List<DriverProvider> defaultDriverProviders =
+    new ImmutableList.Builder<DriverProvider>()
+      .add(new DefaultDriverProvider(DesiredCapabilities.chrome(),
+                                     "org.openqa.selenium.chrome.ChromeDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.firefox(),
+                                     "org.openqa.selenium.firefox.FirefoxDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
+                                     "org.openqa.selenium.ie.InternetExplorerDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.opera(),
+                                     "com.opera.core.systems.OperaDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
+                                     "org.openqa.selenium.opera.OperaDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.safari(),
+                                     "org.openqa.selenium.safari.SafariDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
+                                     "org.openqa.selenium.phantomjs.PhantomJSDriver"))
+      .build();
 
   public DefaultDriverSessions() {
     this(Platform.getCurrent(), new DefaultDriverFactory());
@@ -67,42 +78,28 @@ public class DefaultDriverSessions implements DriverSessions {
   protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
     this.factory = factory;
     registerDefaults(runningOn);
-    registerDriverProviders(runningOn);
+    registerServiceLoaders(runningOn);
   }
 
   private void registerDefaults(Platform current) {
-    for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
-      Capabilities caps = entry.getKey();
-      if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
-        registerDriver(caps, entry.getValue());
-      } else {
-        log.info("Default driver " + entry.getValue() + " registration is skipped: registration capabilities "
-                 + caps.toString() + " does not match with current platform: " + current.toString());
-      }
+    for (DriverProvider provider : defaultDriverProviders) {
+      registerDriverProvider(current, provider);
     }
   }
 
-  private void registerDriverProviders(Platform current) {
+  private void registerServiceLoaders(Platform current) {
     for (DriverProvider provider : ServiceLoader.load(DriverProvider.class)) {
-      Capabilities caps = provider.getProvidedCapabilities();
-      if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
-        factory.registerDriverProvider(caps, provider);
-      } else {
-        log.info("Driver provider " + provider + " registration is skipped: registration capabilities "
-                 + caps.toString() + " does not match with current platform: " + current.toString());
-      }
+      registerDriverProvider(current, provider);
     }
   }
 
-  private void registerDriver(Capabilities caps, String className) {
-    try {
-      registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
-    } catch (ClassNotFoundException e) {
-      log.log(Level.INFO, "Unable to register driver with className " + className + " due to ClassNotFoundException");
-    } catch (NoClassDefFoundError e) {
-      log.log(Level.WARNING, "Unable to register driver with className " + className + " due to NoClassDefFoundError");
-    } catch (UnsupportedClassVersionError e) {
-      log.log(Level.WARNING, "Unable to register driver with className " + className + " due to UnsupportedClassVersionError");
+  private void registerDriverProvider(Platform current, DriverProvider provider) {
+    Capabilities caps = provider.getProvidedCapabilities();
+    if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
+      factory.registerDriverProvider(caps, provider);
+    } else {
+      log.info("Driver provider " + provider + " registration is skipped: registration capabilities "
+               + caps.toString() + " does not match with current platform: " + current.toString());
     }
   }
 

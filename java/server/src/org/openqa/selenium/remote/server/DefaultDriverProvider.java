@@ -22,18 +22,25 @@ import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DefaultDriverProvider implements DriverProvider {
 
-  private static final Logger log = Logger.getLogger(DefaultDriverProvider.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultDriverProvider.class.getName());
 
   private Capabilities capabilities;
   private Class<? extends WebDriver> implementation;
+  private String driverClass;
 
   public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> implementation) {
     this.capabilities = capabilities;
     this.implementation = implementation;
+  }
+
+  public DefaultDriverProvider(Capabilities capabilities, String driverClass) {
+    this.capabilities = capabilities;
+    this.driverClass = driverClass;
   }
 
   @Override
@@ -43,14 +50,28 @@ public class DefaultDriverProvider implements DriverProvider {
 
   @Override
   public Class<? extends WebDriver> getDriverClass() {
-    return implementation;
+    if (implementation != null) {
+      return implementation;
+    }
+    try {
+      return Class.forName(driverClass).asSubclass(WebDriver.class);
+    } catch (ClassNotFoundException e) {
+      LOG.log(Level.INFO, "Driver class not found: " + driverClass);
+      throw new WebDriverException("Driver class not found: " + driverClass, e);
+    } catch (NoClassDefFoundError e) {
+      LOG.log(Level.INFO, "Driver class not found: " + driverClass);
+      throw new WebDriverException("Driver class not found: " + driverClass, e);
+    } catch (UnsupportedClassVersionError e) {
+      LOG.log(Level.INFO, "Driver class is built for higher Java version: " + driverClass);
+      throw new WebDriverException("Driver class is built for higher Java version: " + driverClass, e);
+    }
   }
 
   @Override
   public WebDriver newInstance(Capabilities capabilities) {
-    log.info("Creating a new session for " + capabilities);
+    LOG.info("Creating a new session for " + capabilities);
     // Try and call the single arg constructor that takes a capabilities first
-    return callConstructor(implementation, capabilities);
+    return callConstructor(getDriverClass(), capabilities);
   }
 
   private WebDriver callConstructor(Class<? extends WebDriver> from, Capabilities capabilities) {
