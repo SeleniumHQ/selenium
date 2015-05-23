@@ -94,4 +94,9 @@ public class DefaultDriverProvider implements DriverProvider {
       throw new WebDriverException(e);
     }
   }
+
+  @Override
+  public String toString() {
+    return implementation != null ? implementation.toString() : driverClass;
+  }
 }

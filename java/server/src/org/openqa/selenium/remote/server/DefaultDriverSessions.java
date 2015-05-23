@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 
 public class DefaultDriverSessions implements DriverSessions {
 
-  private static final Logger log = Logger.getLogger(DefaultDriverSessions.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultDriverSessions.class.getName());
 
   private final DriverFactory factory;
 
@@ -67,6 +67,15 @@ public class DefaultDriverSessions implements DriverSessions {
     this(Platform.getCurrent(), new DefaultDriverFactory());
   }
 
+  public DefaultDriverSessions(DriverFactory factory) {
+    this(Platform.getCurrent(), factory);
+  }
+
+  /**
+   * @deprecated Use DefaultDriverSessions(DriverFactory factory) constructor
+   * and register all drivers to the factory
+   */
+  @Deprecated
   public DefaultDriverSessions(
       DriverFactory factory, Map<Capabilities, Class<? extends WebDriver>> drivers) {
     this.factory = factory;
@@ -95,12 +104,26 @@ public class DefaultDriverSessions implements DriverSessions {
 
   private void registerDriverProvider(Platform current, DriverProvider provider) {
     Capabilities caps = provider.getProvidedCapabilities();
-    if (caps.getPlatform() == null || caps.getPlatform() == Platform.ANY || current.is(caps.getPlatform())) {
-      factory.registerDriverProvider(caps, provider);
-    } else {
-      log.info("Driver provider " + provider + " registration is skipped: registration capabilities "
-               + caps.toString() + " does not match with current platform: " + current.toString());
+    if (!platformMatches(current, caps)) {
+      LOG.info(String.format(
+                 "Driver provider %s registration is skipped:%n"
+                 + "registration capabilities %s does not match the current platform %s",
+                 provider, caps, current));
+      return;
     }
+
+    factory.registerDriverProvider(caps, provider);
+  }
+
+  private boolean platformMatches(Platform current, Capabilities caps) {
+    return caps.getPlatform() == null
+           || caps.getPlatform() == Platform.ANY
+           || current.is(caps.getPlatform());
+  }
+
+  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
+    factory.registerDriverProvider(
+      capabilities, new DefaultDriverProvider(capabilities, implementation));
   }
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
@@ -121,10 +144,6 @@ public class DefaultDriverSessions implements DriverSessions {
     if (removedSession != null) {
       removedSession.close();
     }
-  }
-
-  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    factory.registerDriver(capabilities, implementation);
   }
 
   public Set<SessionId> getSessions() {
