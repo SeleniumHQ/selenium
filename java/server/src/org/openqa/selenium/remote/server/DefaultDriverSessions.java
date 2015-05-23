@@ -45,7 +45,6 @@ public class DefaultDriverSessions implements DriverSessions {
   private static Map<Capabilities, String> defaultDrivers = new HashMap<Capabilities, String>() {{
     put(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver");
     put(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver");
-    put(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver");
     put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
     put(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver");
     put(DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver");

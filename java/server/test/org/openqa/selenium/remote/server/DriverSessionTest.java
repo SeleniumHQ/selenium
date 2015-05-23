@@ -37,7 +37,6 @@ public class DriverSessionTest {
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.htmlUnit()));
     assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
@@ -48,7 +47,6 @@ public class DriverSessionTest {
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.htmlUnit()));
     assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
@@ -59,7 +57,6 @@ public class DriverSessionTest {
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.htmlUnit()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
