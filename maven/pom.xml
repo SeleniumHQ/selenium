@@ -174,7 +174,7 @@
             </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
-                <artifactId>platform</artifactId>
+                <artifactId>jna-platform</artifactId>
                 <version>4.1.0</version>
             </dependency>
             <dependency>
