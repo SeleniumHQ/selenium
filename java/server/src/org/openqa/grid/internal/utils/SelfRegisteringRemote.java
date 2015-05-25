@@ -262,9 +262,9 @@ public class SelfRegisteringRemote {
         HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
         HttpResponse response = client.execute(host, r);
         if (response.getStatusLine().getStatusCode() != 200) {
-          throw new RuntimeException(String.format("The hub responded with %s:%s",
-                                                   response.getStatusLine().getStatusCode(),
-                                                   response.getStatusLine().getReasonPhrase()));
+          throw new GridException(String.format("The hub responded with %s:%s",
+                                                response.getStatusLine().getStatusCode(),
+                                                response.getStatusLine().getReasonPhrase()));
         }
       } catch (Exception e) {
         throw new GridException("Error sending the registration request: " + e.getMessage());
@@ -280,7 +280,7 @@ public class SelfRegisteringRemote {
    * @return
    * @throws Exception
    */
-  private JsonObject getHubConfiguration() throws Exception{
+  private JsonObject getHubConfiguration() throws Exception {
     String hubApi =
         "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
             + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/hub";
