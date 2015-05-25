@@ -75,7 +75,7 @@ public class GridTestHelper {
       caps.setBrowserName(browser);
       return caps;
     } else {
-      return DesiredCapabilities.firefox();
+      return DesiredCapabilities.htmlUnit();
     }
   }
 
