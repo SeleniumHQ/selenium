@@ -18,6 +18,8 @@
 package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+import static org.openqa.grid.internal.utils.ServerJsonValues.BROWSER_TIMEOUT;
+import static org.openqa.grid.internal.utils.ServerJsonValues.CLIENT_TIMEOUT;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -53,7 +55,6 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
@@ -94,18 +95,16 @@ public class SelfRegisteringRemote {
     RemoteControlConfiguration remoteControlConfiguration = nodeConfig.getRemoteControlConfiguration();
 
     try {
-      final String CLIENT_TIMEOUT = "timeout";
-      final String BROWSER_TIMEOUT = "browserTimeout";
       JsonObject hubParameters = getHubConfiguration();
-      if (hubParameters.has(CLIENT_TIMEOUT)){
-        int timeout = hubParameters.get(CLIENT_TIMEOUT).getAsInt() / 1000;
+      if (hubParameters.has(CLIENT_TIMEOUT.getKey())){
+        int timeout = hubParameters.get(CLIENT_TIMEOUT.getKey()).getAsInt() / 1000;
         remoteControlConfiguration.setTimeoutInSeconds(timeout);
       }
-      if (hubParameters.has(BROWSER_TIMEOUT)) {
-        int browserTimeout = hubParameters.get(BROWSER_TIMEOUT).getAsInt();
+      if (hubParameters.has(BROWSER_TIMEOUT.getKey())) {
+        int browserTimeout = hubParameters.get(BROWSER_TIMEOUT.getKey()).getAsInt();
         remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
       }
-    }catch (Exception e) {
+    } catch (Exception e) {
       LOG.warning(
         "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
           .getMessage());
