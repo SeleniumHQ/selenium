@@ -366,16 +366,14 @@ public class RegistrationRequest {
 
     res.role = GridRole.find(args);
 
-
     String defaultConfig = "defaults/DefaultNode.json";
     String nodeType = helper.getParamValue("-role");
-    if (GridRole.RCAliases().contains(nodeType)) {
+    if (GridRole.isRC(nodeType)) {
       defaultConfig = "defaults/DefaultNodeSelenium.json";
     }
-    if (GridRole.WDAliases().contains(nodeType)) {
+    if (GridRole.isWebDriver(nodeType)) {
       defaultConfig = "defaults/DefaultNodeWebDriver.json";
     }
-
 
     res.loadFromJSON(defaultConfig);
 
@@ -398,7 +396,7 @@ public class RegistrationRequest {
       }
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
         cap.setCapability(SELENIUM_PROTOCOL,
-          GridRole.RCAliases().contains(nodeType)
+          GridRole.isRC(nodeType)
             ? SeleniumProtocol.Selenium.toString() : SeleniumProtocol.WebDriver.toString());
       }
     }

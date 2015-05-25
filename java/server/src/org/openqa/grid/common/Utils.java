@@ -19,8 +19,16 @@ package org.openqa.grid.common;
 
 import org.openqa.selenium.remote.BrowserType;
 
+/**
+ * @deprecated This class is not used in Selenium code, to be removed in the next release
+ */
+@Deprecated
 public class Utils {
 
+  /**
+   * @deprecated This method is not used in Selenium code, to be removed in the next release
+   */
+  @Deprecated
   public static String getSelenium1Equivalent(String webDriverBrowserName) {
     if (BrowserType.FIREFOX.equals(webDriverBrowserName)) {
       return "*firefox";

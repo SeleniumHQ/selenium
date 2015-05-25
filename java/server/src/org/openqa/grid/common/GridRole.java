@@ -17,6 +17,8 @@
 
 package org.openqa.grid.common;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 
 import java.util.ArrayList;
@@ -24,6 +26,23 @@ import java.util.List;
 
 public enum GridRole {
   NOT_GRID, HUB, NODE;
+
+  private static List<String> rcAliases = new ImmutableList.Builder<String>()
+    .add("rc")
+    .add("remotecontrol")
+    .add("remote-control")
+    .build();
+
+  private static List<String> wdAliases = new ImmutableList.Builder<String>()
+    .add("wd")
+    .add("webdriver")
+    .build();
+
+  private static List<String> nodeAliases = new ImmutableList.Builder<String>()
+    .add("node")
+    .addAll(rcAliases)
+    .addAll(wdAliases)
+    .build();
 
   /**
    * finds the requested role from the parameters.
@@ -42,7 +61,7 @@ public enum GridRole {
               "-role needs to be followed by the role of this component in the grid.");
         } else {
           String role = args[i + 1].toLowerCase();
-          if (NodeAliases().contains(role)) {
+          if (nodeAliases.contains(role)) {
             return NODE;
           } else if ("hub".equals(role)) {
             return HUB;
@@ -56,26 +75,11 @@ public enum GridRole {
     return NOT_GRID;
   }
 
-  private static List<String> NodeAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("node");
-    res.addAll(RCAliases());
-    res.addAll(WDAliases());
-    return res;
+  public static boolean isRC(String nodeType) {
+    return rcAliases.contains(nodeType);
   }
 
-  public static List<String> RCAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("rc");
-    res.add("remotecontrol");
-    res.add("remote-control");
-    return res;
-  }
-
-  public static List<String> WDAliases() {
-    List<String> res = new ArrayList<String>();
-    res.add("wd");
-    res.add("webdriver");
-    return res;
+  public static boolean isWebDriver(String nodeType) {
+    return wdAliases.contains(nodeType);
   }
 }
