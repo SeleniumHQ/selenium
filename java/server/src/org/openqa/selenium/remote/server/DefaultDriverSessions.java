@@ -61,6 +61,8 @@ public class DefaultDriverSessions implements DriverSessions {
                                      "org.openqa.selenium.safari.SafariDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
                                      "org.openqa.selenium.phantomjs.PhantomJSDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.htmlUnit(),
+                                     "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
       .build();
 
   public DefaultDriverSessions() {
