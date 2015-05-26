@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebDriver;
@@ -56,7 +57,8 @@ public class CompositeAction implements Action {
     return this;
   }
 
-  public int getNumberOfActions() {
+  @VisibleForTesting
+  int getNumberOfActions() {
     return actionsList.size();
   }
 
