@@ -28,7 +28,7 @@ module Selenium
           http_client = opts.delete(:http_client)
           proxy       = opts.delete(:proxy)
 
-          caps = opts.delete(:desired_capabilities) || {}
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
 
           @launcher = create_launcher(port, profile)
 
