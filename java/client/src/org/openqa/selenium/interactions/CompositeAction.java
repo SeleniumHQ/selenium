@@ -20,6 +20,7 @@ package org.openqa.selenium.interactions;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.internal.MultiAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,14 @@ public class CompositeAction implements Action {
   }
 
   public List<Action> asList() {
-    return ImmutableList.copyOf(actionsList);
+    ImmutableList.Builder<Action> builder = new ImmutableList.Builder<Action>();
+    for (Action action : actionsList) {
+      if (action instanceof MultiAction) {
+        builder.addAll(((MultiAction) action).getActions());
+      } else {
+        builder.add(action);
+      }
+    }
+    return builder.build();
   }
 }
