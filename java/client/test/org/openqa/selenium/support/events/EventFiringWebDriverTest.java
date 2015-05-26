@@ -36,7 +36,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.StubElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
@@ -392,14 +391,10 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void shouldBeAbleToAccessWrappedElementInstanceFromEventCalls() {
-    final StubElement stubElement = new StubElement();
+    final WebElement stubElement = mock(WebElement.class);
 
-    final WebDriver stubDriver = new StubDriver() {
-      @Override
-      public WebElement findElement(By by) {
-        return stubElement;
-      }
-    };
+    final WebDriver stubDriver = mock(WebDriver.class);
+    when(stubDriver.findElement(By.name("stub"))).thenReturn(stubElement);
 
     EventFiringWebDriver driver = new EventFiringWebDriver(stubDriver);
 
@@ -417,19 +412,11 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void shouldReturnLocatorFromToStringMethod() {
-    final StubElement stubElement = new StubElement() {
-      @Override
-      public String toString() {
-        return "cheese";
-      }
-    };
+    final WebElement stubElement = mock(WebElement.class);
+    when(stubElement.toString()).thenReturn("cheese");
 
-    StubDriver driver = new StubDriver() {
-      @Override
-      public WebElement findElement(By by) {
-        return stubElement;
-      }
-    };
+    final WebDriver driver = mock(WebDriver.class);
+    when(driver.findElement(By.id("ignored"))).thenReturn(stubElement);
 
     EventFiringWebDriver firingDriver = new EventFiringWebDriver(driver);
     WebElement firingElement = firingDriver.findElement(By.id("ignored"));
