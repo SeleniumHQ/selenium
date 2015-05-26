@@ -256,7 +256,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             || DriverCommand.MOVE_TO.equals(commandName)) {
       String actionName = seleniumToMarionetteCommandMap.containsKey(commandName) ?
                           seleniumToMarionetteCommandMap.get(commandName) : commandName;
-      commandName = "actionChain";
+      commandName = DriverCommand.ACTION_CHAIN;
       List<Object> action = Lists.newArrayList();
       action.add(actionName);
       if (params.containsKey("element")) {
