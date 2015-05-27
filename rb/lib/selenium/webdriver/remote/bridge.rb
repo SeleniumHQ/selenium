@@ -582,11 +582,7 @@ module Selenium
         end
 
         def elementEquals(element, other)
-          if element.ref == other.ref
-            true
-          else
-            execute :elementEquals, :id => element.ref, :other => other.ref
-          end
+          element.ref == other.ref
         end
 
         #
