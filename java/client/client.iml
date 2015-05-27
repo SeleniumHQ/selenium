@@ -4,7 +4,7 @@
     <output url="file://$MODULE_DIR$/build/production" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../build/javascript/atoms">
+    <content url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms">
       <sourceFolder url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms" type="java-resource" relativeOutputPath="com/thoughtworks/selenium/webdriven" />
     </content>
     <content url="file://$MODULE_DIR$">
