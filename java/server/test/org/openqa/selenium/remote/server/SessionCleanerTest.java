@@ -19,13 +19,13 @@ package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -52,7 +52,7 @@ public class SessionCleanerTest {
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
     SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
@@ -72,7 +72,7 @@ public class SessionCleanerTest {
     KillableDriver killableDriver = (KillableDriver) session.getDriver();
     assertTrue(session.isInUse());
     SessionCleaner sessionCleaner = new SessionCleaner(testSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, testSessions.getSessions().size());
     assertTrue(killableDriver.killed);
@@ -112,7 +112,7 @@ public class SessionCleanerTest {
     assertEquals(2, defaultDriverSessions.getSessions().size());
     SessionCleaner sessionCleaner = new TestSessionCleaner(defaultDriverSessions, log, 10);
     sessionCleaner.start();
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     synchronized (sessionCleaner) {
       sessionCleaner.wait();
     }
@@ -120,8 +120,8 @@ public class SessionCleanerTest {
     sessionCleaner.stopCleaner();
   }
 
-  private void waitForAllSessionsToExpire() throws InterruptedException {
-    Thread.sleep(11);
+  private void waitForAllSessionsToExpire(long time) throws InterruptedException {
+    Thread.sleep(time);
   }
 
   class TestSessionCleaner extends SessionCleaner {
@@ -143,12 +143,13 @@ public class SessionCleanerTest {
     DriverSessions defaultDriverSessions = getDriverSessions();
     SessionId firstSession = defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 100, 100);
+    defaultDriverSessions.get(firstSession).updateLastAccessTime();
+    waitForAllSessionsToExpire(120);
     defaultDriverSessions.get(firstSession).updateLastAccessTime();
     sessionCleaner.checkExpiry();
     assertEquals(1, defaultDriverSessions.getSessions().size());
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(120);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
@@ -169,11 +170,7 @@ public class SessionCleanerTest {
 
     @Override
     public WebDriver newInstance(Capabilities capabilities) {
-      return new StubDriver() {
-        @Override
-        public void quit() {
-        }
-      };
+      return mock(WebDriver.class);
     }
 
     @Override
