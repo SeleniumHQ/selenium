@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -34,7 +35,6 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -48,7 +48,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldReturnANormalWebDriverUntouched() {
-    WebDriver driver = new StubDriver();
+    WebDriver driver = mock(WebDriver.class);
 
     WebDriver returned = getAugmenter().augment(driver);
 

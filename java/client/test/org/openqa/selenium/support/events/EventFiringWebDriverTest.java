@@ -26,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -269,7 +270,8 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void shouldUnpackElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(stubbedElement);
@@ -279,12 +281,13 @@ public class EventFiringWebDriverTest {
 
     WebElement element = testedDriver.findElement(By.id("foo"));
     testedDriver.executeScript("foo", element);
-    verify(mockedDriver).executeScript("foo", element);
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo", element);
   }
 
   @Test
   public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
@@ -302,7 +305,7 @@ public class EventFiringWebDriverTest {
       add("after");
     }});
 
-    verify(mockedDriver).executeScript("foo", new ArrayList<Object>() {{
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo", new ArrayList<Object>() {{
       add("before");
       add(mockElement);
       add("after");
@@ -311,7 +314,8 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
@@ -334,7 +338,7 @@ public class EventFiringWebDriverTest {
       }});
     }});
 
-    verify(mockedDriver).executeScript("foo", new HashMap<String, Object>() {{
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo", new HashMap<String, Object>() {{
       put("foo", "bar");
       put("element", mockElement);
       put("nested", new ArrayList<Object>() {{
@@ -358,27 +362,15 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void shouldBeAbleToAccessWrappedInstanceFromEventCalls() {
-    class MyStub extends StubDriver {
-      @Override
-      public void get(String url) {
-        // Do nothing
-      }
-
-      @SuppressWarnings("unused")
-      public void fishy() {
-      }
-
-    }
-
-    final WebDriver stub = new MyStub();
+    final WebDriver stub = mock(WebDriver.class);
     EventFiringWebDriver driver = new EventFiringWebDriver(stub);
-    MyStub wrapped = (MyStub) driver.getWrappedDriver();
+    WebDriver wrapped = driver.getWrappedDriver();
     assertEquals(stub, wrapped);
 
     class MyListener extends AbstractWebDriverEventListener {
       @Override
       public void beforeNavigateTo(String url, WebDriver driver) {
-        MyStub unwrapped = (MyStub) ((WrapsDriver) driver).getWrappedDriver();
+        WebDriver unwrapped = ((WrapsDriver) driver).getWrappedDriver();
 
         assertEquals(stub, unwrapped);
       }
@@ -423,8 +415,6 @@ public class EventFiringWebDriverTest {
 
     assertEquals(stubElement.toString(), firingElement.toString());
   }
-
-  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 
   private static class ChildDriver extends StubDriver {}
 }
