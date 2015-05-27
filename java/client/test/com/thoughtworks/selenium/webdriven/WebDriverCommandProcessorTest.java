@@ -19,15 +19,17 @@ package com.thoughtworks.selenium.webdriven;
 
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 public class WebDriverCommandProcessorTest {
   @Test
   public void testDriverNeedNotImplementHasCapabilities() {
-    WebDriver driver = new StubJsDriver();
+    WebDriver driver = mock(WebDriver.class,
+                            withSettings().extraInterfaces(JavascriptExecutor.class));
 
     try {
       new WebDriverCommandProcessor("http://www.example.com", driver);
@@ -38,28 +40,12 @@ public class WebDriverCommandProcessorTest {
 
   @Test
   public void testRequiresAJavascriptEnabledDriver() {
-    WebDriver driver = new StubDriver();
+    WebDriver driver = mock(WebDriver.class);
 
     try {
       new WebDriverCommandProcessor("http://example.com", driver);
       fail("Was not expected to succeed");
     } catch (IllegalStateException expected) {
-    }
-  }
-
-  private static class StubJsDriver extends StubDriver implements JavascriptExecutor {
-
-    @Override
-    public String getWindowHandle() {
-      return null;
-    }
-
-    public Object executeScript(String script, Object... args) {
-      return null;
-    }
-
-    public Object executeAsyncScript(String script, Object... args) {
-      return null;
     }
   }
 }
