@@ -615,7 +615,7 @@ Options.prototype.androidPackage = function(pkg) {
  * @return {!Options} A self reference.
  */
 Options.prototype.androidProcess = function(processName) {
-  this.options_.androidProcess = pkg;
+  this.options_.androidProcess = processName;
   return this;
 };
 
