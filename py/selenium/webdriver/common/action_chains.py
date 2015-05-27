@@ -165,7 +165,7 @@ class ActionChains(object):
         
         Example, pressing ctrl+c::
 
-            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
 
         """
         if element: self.click(element)
@@ -185,7 +185,7 @@ class ActionChains(object):
 
         Example, pressing ctrl+c::
 
-            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
 
         """
         if element: self.click(element)
