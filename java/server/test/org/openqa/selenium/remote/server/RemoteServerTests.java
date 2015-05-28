@@ -33,8 +33,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     DriverFactoryTest.class,
     DriverServletTest.class,
     DriverSessionTest.class,
-    RemoteWebDriverScreenshotTest.class,
-    RemoteWebDriverTest.class,
     ResultConfigTest.class,
     SendKeyToActiveElementTest.class,
     SessionCleanerTest.class,
@@ -42,5 +40,5 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     UploadFileTest.class,
     UtilsTest.class
 })
-public class ServerSpecificTests {
+public class RemoteServerTests {
 }

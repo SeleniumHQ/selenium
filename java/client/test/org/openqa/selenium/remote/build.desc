@@ -32,3 +32,19 @@ java_test(name = "client-tests",
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
   ])
+
+java_test(name = "remote-driver-tests",
+  srcs = [
+    "RemoteWebDriverScreenshotTest.java",
+    "RemoteWebDriverTest.java",
+    "RemoteWebDriverTests.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "ff" },
+    { "selenium.browser.remote" : "true" },
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/test/org/openqa/selenium:tests",
+    "//third_party/java/junit",
+  ])

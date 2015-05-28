@@ -1,20 +1,9 @@
-java_test(
-  name = "test",
-  test_suite = "org.openqa.selenium.remote.server.RemoteWebDriverTests",
-  sysproperties = [
-    { "selenium.browser" : "ff" },
-    { "selenium.browser.remote" : "true" },
-  ],
-  deps = [
-    ":lib"
-  ])
-
 # Note, "htmlunit" below is a hacky way to exclude
 # tests that start browsers (currently SessionLogsTest, SessionLogsTest)
 # and make this test target truly small. All tests can still be run as ":test".
 java_test(
   name = "small-tests",
-  test_suite = "org.openqa.selenium.remote.server.ServerSpecificTests",
+  test_suite = "org.openqa.selenium.remote.server.RemoteServerTests",
   sysproperties = [
     { "selenium.browser" : "htmlunit" },
     { "selenium.browser.remote" : "true" },
