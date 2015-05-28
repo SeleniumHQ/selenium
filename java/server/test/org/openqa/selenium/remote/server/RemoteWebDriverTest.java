@@ -43,47 +43,6 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
   private boolean quitCalled = false;
 
   @Test
-  public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException {
-    if (!(driver instanceof RemoteWebDriver)) {
-      System.out.println("Skipping test: driver is not a remote webdriver");
-      return;
-    }
-
-    RemoteWebDriver remote = (RemoteWebDriver) driver;
-    CommandExecutor executor = remote.getCommandExecutor();
-
-    if (!(executor instanceof HttpCommandExecutor)) {
-      System.out.println("Skipping test: driver is not using a HttpCommandExecutor");
-      return;
-    }
-
-    HttpCommandExecutor httpExecutor = (HttpCommandExecutor) executor;
-    URL statusUrl = new URL(httpExecutor.getAddressOfRemoteServer() + "/status");
-    HttpURLConnection connection = null;
-    try {
-      System.out.println("Opening connection to " + statusUrl);
-      connection = (HttpURLConnection) statusUrl.openConnection();
-      connection.connect();
-
-      assertEquals(200, connection.getResponseCode());
-
-      String raw = new String(ByteStreams.toByteArray(connection.getInputStream()));
-      JsonObject response = new JsonParser().parse(raw).getAsJsonObject();
-      assertEquals(raw, ErrorCodes.SUCCESS, response.get("status").getAsInt());
-
-      JsonObject value = response.get("value").getAsJsonObject();
-      assertHasKeys(value, "os", "build", "java");
-      assertHasKeys(value.get("os").getAsJsonObject(), "name", "arch", CapabilityType.VERSION);
-      assertHasKeys(value.get("build").getAsJsonObject(), CapabilityType.VERSION, "revision", "time");
-      assertHasKeys(value.get("java").getAsJsonObject(), CapabilityType.VERSION);
-    } finally {
-      if (connection != null) {
-        connection.disconnect();
-      }
-    }
-  }
-
-  @Test
   public void testStopsClientIfStartClientFails() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
