@@ -55,7 +55,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       CommandListener,
       TestSessionListener {
 
-  private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
   public static final int DEFAULT_POLLING_INTERVAL = 10000;
   public static final int DEFAULT_UNREGISTER_DELAY = 60000;
@@ -83,7 +83,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     }
     boolean ok = session.sendDeleteSessionRequest();
     if (!ok) {
-      log.warning("Error releasing the resources on timeout for session " + session);
+      LOG.warning("Error releasing the resources on timeout for session " + session);
     }
   }
 
@@ -119,7 +119,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       getStatus();
       return true;
     } catch (Exception e) {
-      log.warning("Failed to check status of node: " + e.getMessage());
+      LOG.fine("Failed to check status of node: " + e.getMessage());
       return false;
     }
   }
@@ -138,14 +138,16 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
                     failedPollingTries++;
                     if (failedPollingTries >= downPollingLimit) {
                       downSince = System.currentTimeMillis();
-                      addNewEvent(new RemoteNotReachableException("Marking the node as down. " +
-                                                                  "Cannot reach the node for " + failedPollingTries + " tries."));
+                      addNewEvent(new RemoteNotReachableException(String.format(
+                        "Marking the node %s as down: cannot reach the node for %s tries",
+                        DefaultRemoteProxy.this, failedPollingTries)));
                     }
                   } else {
                     long downFor = System.currentTimeMillis() - downSince;
                     if (downFor > unregisterDelay) {
-                      addNewEvent(new RemoteUnregisterException(
-                          "Unregistering the node. It's been down for " + downFor + " milliseconds."));
+                      addNewEvent(new RemoteUnregisterException(String.format(
+                        "Unregistering the node %s because it's been down for %s milliseconds",
+                        DefaultRemoteProxy.this, downFor)));
                     }
                   }
                 } else {
@@ -176,12 +178,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
     for (RemoteException e : events) {
       if (e instanceof RemoteNotReachableException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         down = true;
         this.errors.clear();
       }
       if (e instanceof RemoteUnregisterException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         Registry registry = this.getRegistry();
         registry.removeIfPresent(this);
       }

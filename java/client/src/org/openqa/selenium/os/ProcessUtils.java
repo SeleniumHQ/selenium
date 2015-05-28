@@ -24,6 +24,7 @@ import com.google.common.io.Closeables;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -34,7 +35,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinNT;
 
 public class ProcessUtils {
-  static Logger log = Logger.getLogger(ProcessUtils.class.getName());
+
+  private static Logger LOG = Logger.getLogger(ProcessUtils.class.getName());
 
   /**
    * Waits the specified timeout for the process to die
@@ -106,13 +108,12 @@ public class ProcessUtils {
         throw ex;
       }
       try {
-        log.info("Process didn't die after 10 seconds");
+        LOG.info("Process didn't die after 10 seconds");
         kill9(process);
         exitValue = waitForProcessDeath(process, 10000);
         closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
-        log.warning("Process refused to die after 10 seconds, and couldn't kill9 it");
-        e.printStackTrace();
+        LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't kill9 it", ex);
         throw new RuntimeException(
             "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
             ex);
@@ -136,9 +137,8 @@ public class ProcessUtils {
 
       killPID("" + pid);
       exitValue = waitForProcessDeath(process, 10000);
-    } catch (Throwable ex) {
-      log.warning("Process refused to die after 10 seconds, and couldn't taskkill it");
-      ex.printStackTrace();
+    } catch (Exception ex) {
+      LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't taskkill it", ex);
       throw new RuntimeException(
           "Process refused to die after 10 seconds, and couldn't taskkill it: " + ex.getMessage(),
           ex);
@@ -151,12 +151,12 @@ public class ProcessUtils {
     private volatile InterruptedException t;
     private final Process p;
 
-    public InterruptedException getException() {
-      return t;
-    }
-
     public ProcessWaiter(Process p) {
       this.p = p;
+    }
+
+    public InterruptedException getException() {
+      return t;
     }
 
     public void run() {
@@ -191,8 +191,7 @@ public class ProcessUtils {
     try {
       Field f = p.getClass().getDeclaredField("pid");
       f.setAccessible(true);
-      Integer pid = (Integer) f.get(p);
-      return pid;
+      return (Integer) f.get(p);
     } catch (Exception e) {
       throw new RuntimeException("Couldn't detect pid", e);
     }
@@ -200,13 +199,13 @@ public class ProcessUtils {
 
   /** runs "kill -9" on the specified pid */
   private static void kill9(Integer pid) {
-    log.fine("kill -9 " + pid);
+    LOG.fine("kill -9 " + pid);
 
     CommandLine command = new CommandLine("kill", "-9", pid.toString());
     command.execute();
     String result = command.getStdOut();
     int output = command.getExitCode();
-    log.fine(String.valueOf(output));
+    LOG.fine(String.valueOf(output));
     if (!command.isSuccessful()) {
       throw new RuntimeException("exec return code " + result + ": " + output);
     }

@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -42,8 +41,8 @@ public class DesiredCapabilitiesTest {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
         new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
 
-    capabilitiesToDriver.put(DesiredCapabilities.firefox(), StubDriver.class);
-    capabilitiesToDriver.put(DesiredCapabilities.firefox(), StubDriver.class);
+    capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
+    capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
 
     assertEquals(1, capabilitiesToDriver.size());
   }

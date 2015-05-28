@@ -173,6 +173,13 @@
       assertThrows(goog.partial(bot.action.clear, e));
     }
 
+    function testClearingAFileInputShouldBeNoOp() {
+      var e = goog.dom.getElement('fileField');
+      doNotExpectChangeEvent(e);
+      bot.action.clear(e);
+      assertEquals('', e.value);
+    }
+
     function testSubmittingANonFormElementShouldResultInAnError() {
       assertThrows(goog.partial(bot.action.submit, document.body));
     }
@@ -254,6 +261,10 @@
     </div>
       <label for="passwordField">Password field</label>
       <input type="password" id="passwordField">
+    </div>
+    </div>
+      <label for="fileField">File field</label>
+      <input type="file" id="fileField">
     </div>
   </form>
 

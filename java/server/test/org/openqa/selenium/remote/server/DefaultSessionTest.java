@@ -17,12 +17,16 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -31,7 +35,8 @@ public class DefaultSessionTest {
 
   @Test
   public void shouldClearTempFsWhenSessionCloses() throws Exception {
-    final DriverFactory factory = new StubDriverFactory();
+    final DriverFactory factory = mock(DriverFactory.class);
+    when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     final TemporaryFilesystem tempFs = mock(TemporaryFilesystem.class);
 
     Session session = DefaultSession.createSession(factory, tempFs, null, DesiredCapabilities.firefox());

@@ -25,6 +25,13 @@
     <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
-    <orderEntry type="library" name="apache-httpclient" level="project" />
+    <orderEntry type="library" name="commons-httpclient" level="project" />
+  </component>
+  <component name="sonarModuleSettings">
+    <option name="alternativeWorkingDirPath" value="" />
+    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;MODULE&gt;" />
   </component>
 </module>

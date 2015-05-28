@@ -27,4 +27,8 @@
     <orderEntry type="library" scope="PROVIDED" name="webmock (v1.20.4, ruby-2.1.3-p242) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="websocket (v1.2.1, ruby-2.1.3-p242) [gem]" level="application" />
   </component>
+  <component name="sonarModuleSettings">
+    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+  </component>
 </module>

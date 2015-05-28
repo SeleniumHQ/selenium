@@ -15,17 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StubDriver;
+package org.openqa.selenium.interactions.internal;
 
-public class StubInputDeviceDriver extends StubDriver implements JavascriptExecutor {
-  public Object executeScript(String script, Object... args) {
-    return null;
-  }
+import org.openqa.selenium.interactions.Action;
 
-  public Object executeAsyncScript(String script, Object... args) {
-    return null;
-  }
+import java.util.List;
+
+/**
+ * Represents a complex action that is a series of primitive actions listed in the standard.
+ */
+public interface MultiAction {
+
+  /**
+   * Returns the list of primitive actions that compose this complex action.
+   *
+   * @return list of primitive actions that compose this complex action.
+   */
+  List<Action> getActions();
 }

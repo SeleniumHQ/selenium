@@ -20,9 +20,14 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 public interface DriverFactory {
+
+  /**
+   * @deprecated Use registerDriverProvider instead
+   */
+  @Deprecated
   void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
 
-  void registerDriverProvider(Capabilities capabilities, DriverProvider implementation);
+  void registerDriverProvider(DriverProvider implementation);
 
   WebDriver newInstance(Capabilities capabilities);
 

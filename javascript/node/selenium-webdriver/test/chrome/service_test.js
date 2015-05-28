@@ -15,18 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
+'use strict';
 
-package org.openqa.selenium;
+var webdriver = require('../..'),
+    chrome = require('../../chrome'),
+    assert = require('../../testing/assert');
 
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
+var test = require('../../lib/test');
 
-/**
- * Stub rendered web element.
- */
-public class StubRenderedWebElement extends StubElement implements Locatable {
 
-  public Coordinates getCoordinates() {
-    return null;
-  }
-}
+test.suite(function(env) {
+  describe('chromedriver', function() {
+    var service;
+    test.afterEach(function() {
+      if (service) {
+        return service.kill();
+      }
+    });
+
+    test.it('can be started on a custom path', function() {
+      service = new chrome.ServiceBuilder()
+          .setUrlBasePath('/foo/bar/baz')
+          .build();
+      return service.start().then(function(url) {
+        assert(url).endsWith('/foo/bar/baz');
+      });
+    });
+  });
+}, {browsers: ['chrome']});

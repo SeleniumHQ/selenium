@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,7 +24,7 @@ import org.openqa.selenium.StandardSeleniumTests;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    ServerSpecificTests.class
+    RemoteWebDriverScreenshotTest.class
 })
 public class RemoteWebDriverTests {
 }

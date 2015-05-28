@@ -144,13 +144,12 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
       throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
+          String.format("Failed to connect to binary %s on port %d; process output follows: %n%s",
               process.toString(), port, process.getConsoleOutput()), e);
     } catch (WebDriverException e) {
       throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
+          String.format("Failed to connect to binary %s on port %d; process output follows: %n%s",
               process.toString(), port, process.getConsoleOutput()), e);
     } catch (Exception e) {
       throw new WebDriverException(e);
@@ -160,7 +159,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
     // Marionette sends back an initial acknowledgement response upon first
     // connect. We need to read that response before we can proceed.
-    String rawResponse = receiveResponse();
+    String ignored = receiveResponse();
 
     // This initializes the "actor" for future communication with this instance.
     sendCommand(serializeCommand(new Command(null, "getMarionetteID")));
@@ -230,7 +229,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   private String serializeCommand(Command command) {
-//    System.out.println("Command " + command);
     String commandName = command.getName();
     Map<String, Object> params = Maps.newHashMap();
     params.putAll(command.getParameters());
@@ -258,7 +256,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             || DriverCommand.MOVE_TO.equals(commandName)) {
       String actionName = seleniumToMarionetteCommandMap.containsKey(commandName) ?
                           seleniumToMarionetteCommandMap.get(commandName) : commandName;
-      commandName = "actionChain";
+      commandName = DriverCommand.ACTION_CHAIN;
       List<Object> action = Lists.newArrayList();
       action.add(actionName);
       if (params.containsKey("element")) {
@@ -343,7 +341,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       reader.close();
       socket.close();
     } catch (IOException e) {
-      e.printStackTrace();
     }
     socket = null;
     // This should only be called after the QUIT command has been sent,

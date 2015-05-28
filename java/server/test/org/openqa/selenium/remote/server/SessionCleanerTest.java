@@ -19,17 +19,20 @@ package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.testing.StaticTestSessions;
 
@@ -52,7 +55,7 @@ public class SessionCleanerTest {
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
     SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
@@ -60,7 +63,9 @@ public class SessionCleanerTest {
   @Test
   public void testCleanupWithTimedOutKillableDriver() throws Exception {
     Capabilities capabilities = new DesiredCapabilities("foo", "1", Platform.ANY);
-    DriverSessions testSessions = new StaticTestSessions(capabilities, new KillableDriver());
+    WebDriver killableDriver = mock(WebDriver.class,
+                                    withSettings().extraInterfaces(Killable.class));
+    DriverSessions testSessions = new StaticTestSessions(capabilities, killableDriver);
 
     final Session session = testSessions.get(testSessions.newSession(capabilities));
     final CountDownLatch started = new CountDownLatch(1);
@@ -69,13 +74,12 @@ public class SessionCleanerTest {
     new Thread( runnable).start();
     started.await();
 
-    KillableDriver killableDriver = (KillableDriver) session.getDriver();
     assertTrue(session.isInUse());
     SessionCleaner sessionCleaner = new SessionCleaner(testSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, testSessions.getSessions().size());
-    assertTrue(killableDriver.killed);
+    verify((Killable) killableDriver).kill();
     testDone.countDown();
   }
 
@@ -112,7 +116,7 @@ public class SessionCleanerTest {
     assertEquals(2, defaultDriverSessions.getSessions().size());
     SessionCleaner sessionCleaner = new TestSessionCleaner(defaultDriverSessions, log, 10);
     sessionCleaner.start();
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(11);
     synchronized (sessionCleaner) {
       sessionCleaner.wait();
     }
@@ -120,8 +124,8 @@ public class SessionCleanerTest {
     sessionCleaner.stopCleaner();
   }
 
-  private void waitForAllSessionsToExpire() throws InterruptedException {
-    Thread.sleep(11);
+  private void waitForAllSessionsToExpire(long time) throws InterruptedException {
+    Thread.sleep(time);
   }
 
   class TestSessionCleaner extends SessionCleaner {
@@ -143,51 +147,20 @@ public class SessionCleanerTest {
     DriverSessions defaultDriverSessions = getDriverSessions();
     SessionId firstSession = defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10, 10);
-    waitForAllSessionsToExpire();
+    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 100, 100);
+    defaultDriverSessions.get(firstSession).updateLastAccessTime();
+    waitForAllSessionsToExpire(120);
     defaultDriverSessions.get(firstSession).updateLastAccessTime();
     sessionCleaner.checkExpiry();
     assertEquals(1, defaultDriverSessions.getSessions().size());
-    waitForAllSessionsToExpire();
+    waitForAllSessionsToExpire(120);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
 
   private DriverSessions getDriverSessions() {
-    DriverFactory factory = new MyDriverFactory();
+    DriverFactory factory = mock(DriverFactory.class);
+    when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     return new DefaultDriverSessions(Platform.LINUX, factory);
   }
-
-  class MyDriverFactory implements DriverFactory {
-    @Override
-    public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    }
-
-    @Override
-    public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
-    }
-
-    @Override
-    public WebDriver newInstance(Capabilities capabilities) {
-      return new StubDriver() {
-        @Override
-        public void quit() {
-        }
-      };
-    }
-
-    @Override
-    public boolean hasMappingFor(Capabilities capabilities) {
-      return true;
-    }
-  }
-
-  static class KillableDriver extends RemoteWebDriver implements Killable {
-    boolean killed;
-
-    public void kill() {
-      killed = true;
-    }
-  }
-
 }

@@ -35,6 +35,7 @@ js_library(name = 'http',
   srcs = glob(['http/*.js']),
   deps = [
     ':base',
+    ':logging',
     ':promise',
     '//javascript/atoms:errors',
     '//third_party/closure:closure',

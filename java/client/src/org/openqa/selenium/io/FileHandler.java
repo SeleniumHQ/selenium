@@ -39,7 +39,6 @@ import java.util.List;
  */
 public class FileHandler {
 
-  // TODO(simon): Move to using Zip class
   public static File unzip(InputStream resource) throws IOException {
     File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir("unzip", "stream");
 

@@ -173,7 +173,7 @@ public class WindowsUtils {
     cmd.execute();
 
     String output = cmd.getStdOut();
-    if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128) {
+    if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128 || cmd.getExitCode() ==  255) {
       return;
     }
     throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);

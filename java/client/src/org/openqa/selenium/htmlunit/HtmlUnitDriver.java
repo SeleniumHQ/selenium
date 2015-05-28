@@ -121,6 +121,11 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+/**
+ * An implementation of {@link WebDriver} that drives <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>,
+ * which is a headless (GUI-less) browser simulator.
+ * <p>The main supported browsers are Chrome, Firefox and Internet Explorer. 
+ */
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
@@ -144,6 +149,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public static final String INVALIDSELECTIONERROR =
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
+  /**
+   * Constructs a new instance with the specified {@link BrowserVersion}.
+   *
+   * @param version the browser version to use
+   */
   public HtmlUnitDriver(BrowserVersion version) {
     webClient = createWebClient(version);
     currentWindow = webClient.getCurrentWindow();
@@ -187,22 +197,35 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     resetKeyboardAndMouseState();
   }
 
+  /**
+   * Constructs a new instance with JavaScript disabled,
+   * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
+   */
   public HtmlUnitDriver() {
     this(false);
   }
 
+  /**
+   * Constructs a new instance, specify JavaScript support
+   * and using the {@link BrowserVersion#getDefault() default} BrowserVersion.
+   *
+   * @param enableJavascript whether to enable JavaScript support or not
+   */
   public HtmlUnitDriver(boolean enableJavascript) {
     this(BrowserVersion.getDefault());
     setJavascriptEnabled(enableJavascript);
   }
 
   /**
-   * Note: There are two configuration modes for the HtmlUnitDriver using this constructor. The
-   * first is where the browserName is "firefox", "internet explorer" and browserVersion denotes the
-   * desired version. The second one is where the browserName is "htmlunit" and the browserVersion
-   * denotes the required browser AND its version. In this mode the browserVersion could either be
-   * "firefox" for Firefox or "internet explorer-7" for IE 7. The Remote WebDriver uses the second
-   * mode - the first mode is deprecated and should not be used.
+   * Note: There are two configuration modes for the HtmlUnitDriver using this constructor.
+   * <ol>
+   *   <li>The first is where the browserName is "chrome", "firefox" or "internet explorer"
+   *       and browserVersion denotes the desired version.</li>
+   *   <li>The second one is where the browserName is "htmlunit" and the browserVersion
+   *       denotes the required browser AND its version. In this mode the browserVersion could be
+   *       "chrome" for Chrome, "firefox-31" for Firefox 31 or "internet explorer-11" for IE 11.</li>
+   * </ol>
+   * <p>The Remote WebDriver uses the second mode - the first mode is deprecated and should not be used.
    */
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
@@ -292,7 +315,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Create the underlying webclient, but don't set any fields on it.
+   * Create the underlying WebClient, but don't set any fields on it.
    *
    * @param version Which browser to emulate
    * @return a new instance of WebClient.
@@ -302,7 +325,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Child classes can override this method to customise the webclient that the HtmlUnit driver
+   * Child classes can override this method to customize the WebClient that the HtmlUnit driver
    * uses.
    *
    * @param client The client to modify

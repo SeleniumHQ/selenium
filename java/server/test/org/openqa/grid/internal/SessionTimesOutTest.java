@@ -77,7 +77,7 @@ public class SessionTimesOutTest {
   /**
    * check that the proxy is freed after it times out.
    */
-  @Test(timeout = 2000)
+  @Test(timeout = 3000)
   public void testTimeout() throws InterruptedException {
 
     Registry registry = Registry.newInstance();

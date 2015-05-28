@@ -19,30 +19,37 @@ package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class DefaultDriverFactory implements DriverFactory {
+
+  private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
   private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<Capabilities, DriverProvider>();
 
-  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    registerDriverProvider(capabilities, new DefaultDriverProvider(capabilities, implementation));
+  @Deprecated
+  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
+    registerDriverProvider(new DefaultDriverProvider(capabilities, driverClass));
   }
 
-  public void registerDriverProvider(Capabilities capabilities, DriverProvider implementation) {
-    capabilitiesToDriverProvider.put(capabilities, implementation);
+  public void registerDriverProvider(DriverProvider driverProvider) {
+    if (driverProvider.canCreateDriverInstances()) {
+      capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
+    } else {
+      LOG.info(String.format("Driver provider %s is not registered", driverProvider));
+    }
   }
 
-  protected Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
-    return getProviderMatching(desired).getDriverClass();
-  }
-
-  protected DriverProvider getProviderMatching(Capabilities desired) {
+  @VisibleForTesting
+  DriverProvider getProviderMatching(Capabilities desired) {
     // We won't be able to make a match if no drivers have been registered.
     checkState(!capabilitiesToDriverProvider.isEmpty(),
                "No drivers have been registered, will be unable to match %s", desired);

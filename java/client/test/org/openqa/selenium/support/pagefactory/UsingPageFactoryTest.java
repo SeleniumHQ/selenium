@@ -21,15 +21,16 @@ package org.openqa.selenium.support.pagefactory;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -72,12 +73,8 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     final RemoteWebElement element = new RemoteWebElement();
     element.setId("foo");
 
-    WebDriver driver = new StubDriver() {
-      @Override
-      public WebElement findElement(By by) {
-        return element;
-      }
-    };
+    WebDriver driver = mock(WebDriver.class);
+    when(driver.findElement(new ByIdOrName("element"))).thenReturn(element);
 
     PublicPage page = new PublicPage();
     PageFactory.initElements(driver, page);

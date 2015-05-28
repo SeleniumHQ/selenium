@@ -52,6 +52,48 @@ public class GridLauncher {
       return;
     }
 
+    configureLogging(helper);
+
+    GridRole role = GridRole.find(args);
+
+    switch (role) {
+      case NOT_GRID:
+        log.info("Launching a standalone Selenium Server");
+        SeleniumServer.main(args);
+        log.info("Selenium Server is up and running");
+        break;
+      case HUB:
+        log.info("Launching Selenium Grid hub");
+        try {
+          GridHubConfiguration c = GridHubConfiguration.build(args);
+          Hub h = new Hub(c);
+          h.start();
+          log.info("Nodes should register to " + h.getRegistrationURL());
+          log.info("Selenium Grid hub is up and running");
+        } catch (GridConfigurationException e) {
+          GridDocHelper.printHelp(e.getMessage());
+          e.printStackTrace();
+        }
+        break;
+      case NODE:
+        log.info("Launching a Selenium Grid node");
+        try {
+          RegistrationRequest c = RegistrationRequest.build(args);
+          SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
+          remote.startRemoteServer();
+          log.info("Selenium Grid node is up and ready to register to the hub");
+          remote.startRegistrationProcess();
+        } catch (GridConfigurationException e) {
+          GridDocHelper.printHelp(e.getMessage());
+          e.printStackTrace();
+        }
+        break;
+      default:
+        throw new RuntimeException("NI");
+    }
+  }
+
+  private static void configureLogging(CommandLineOptionHelper helper) {
     Level logLevel =
         helper.isParamPresent("-debug")
         ? Level.FINE
@@ -60,6 +102,7 @@ public class GridLauncher {
       logLevel = Level.INFO;
     }
     Logger.getLogger("").setLevel(logLevel);
+    Logger.getLogger("org.openqa.jetty").setLevel(Level.WARNING);
 
     String logFilename =
         helper.isParamPresent("-log")
@@ -88,40 +131,5 @@ public class GridLauncher {
         }
       }
     }
-
-    GridRole role = GridRole.find(args);
-
-    switch (role) {
-      case NOT_GRID:
-        log.info("Launching a standalone server");
-        SeleniumServer.main(args);
-        break;
-      case HUB:
-        log.info("Launching a selenium grid server");
-        try {
-          GridHubConfiguration c = GridHubConfiguration.build(args);
-          Hub h = new Hub(c);
-          h.start();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
-        }
-        break;
-      case NODE:
-        log.info("Launching a selenium grid node");
-        try {
-          RegistrationRequest c = RegistrationRequest.build(args);
-          SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-          remote.startRemoteServer();
-          remote.startRegistrationProcess();
-        } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
-          e.printStackTrace();
-        }
-        break;
-      default:
-        throw new RuntimeException("NI");
-    }
   }
-
 }

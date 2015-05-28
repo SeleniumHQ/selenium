@@ -306,6 +306,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     execute(DriverCommand.GET, ImmutableMap.of("url", url));
   }
 
+  /**
+   * @deprecated The status command is not included in the WebDriver standard
+   */
+  @Deprecated
   public RemoteStatus getRemoteStatus() {
     Response response = execute(DriverCommand.STATUS);
     return new RemoteStatus((Map<String, Object>) response.getValue());

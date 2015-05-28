@@ -4,9 +4,15 @@
     <output url="file://$MODULE_DIR$/build/production" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms">
+      <sourceFolder url="file://$MODULE_DIR$/../../build/javascript/selenium-atoms" type="java-resource" relativeOutputPath="com/thoughtworks/selenium/webdriven" />
+    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../third_party/js/sizzle">
+      <sourceFolder url="file://$MODULE_DIR$/../../third_party/js/sizzle" type="java-resource" relativeOutputPath="com/thoughtworks/selenium/webdriven" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -41,5 +47,12 @@
     <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
     <orderEntry type="library" name="objenesis-1.0" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
+  </component>
+  <component name="sonarModuleSettings">
+    <option name="alternativeWorkingDirPath" value="" />
+    <option name="localAnalysisScripName" value="&lt;NO LOCAL ANALYSIS&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;PROJECT&gt;" />
   </component>
 </module>

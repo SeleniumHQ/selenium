@@ -19,12 +19,14 @@ package org.openqa.selenium.support;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.HasTouchScreen;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,11 +34,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Kristian Rosenvold
  */
+@RunWith(JUnit4.class)
 public class ThreadGuardTest {
 
   @Test
   public void testProtect() throws Exception {
-    WebDriver actual = new PermissiveStubDriver();
+    WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     final AtomicInteger successes = new AtomicInteger();
     Thread foo = new Thread(new Runnable() {
@@ -52,23 +55,17 @@ public class ThreadGuardTest {
 
   @Test
   public void testProtectSuccess() throws Exception {
-    WebDriver actual = new PermissiveStubDriver();
+    WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     assertNull(protect.findElement(By.id("foo")));
   }
 
   @Test
   public void testInterfacesProxiedProperly() throws Exception {
-    WebDriver actual = new PermissiveStubDriver();
+    WebDriver actual = mock(WebDriver.class,
+                            withSettings().extraInterfaces(HasTouchScreen.class));
     final WebDriver webdriver = ThreadGuard.protect(actual);
     HasTouchScreen hasTouchScreen = (HasTouchScreen) webdriver;
     assertNotNull(hasTouchScreen);
-  }
-
-  class PermissiveStubDriver extends StubDriver {
-    @Override
-    public WebElement findElement(By by) {
-      return null;
-    }
   }
 }

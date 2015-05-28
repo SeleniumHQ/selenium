@@ -19,6 +19,9 @@ package org.openqa.selenium.remote.server.handler;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -29,14 +32,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultSession;
+import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.StubDriverFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,14 +50,15 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class UploadFileTest {
 
-  private StubDriverFactory driverFactory;
+  private DriverFactory driverFactory;
   private TemporaryFilesystem tempFs;
   private SessionId sessionId;
   private File tempDir;
 
   @Before
   public void setUp() {
-    driverFactory = new StubDriverFactory();
+    driverFactory = mock(DriverFactory.class);
+    when(driverFactory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     tempDir = Files.createTempDir();
     sessionId = new SessionId("foo");
     tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);

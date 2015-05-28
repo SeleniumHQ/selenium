@@ -177,10 +177,11 @@ if (!mac?)
   task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 end
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
-task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
+task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
 task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
@@ -386,9 +387,9 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
 end
 
 task :py_prep_for_install_release => [
-  "//javascript/firefox-driver:webdriver", 
-  :chrome, 
-  "//javascript/firefox-driver:webdriver_prefs", 
+  "//javascript/firefox-driver:webdriver",
+  :chrome,
+  "//javascript/firefox-driver:webdriver_prefs",
   "//py:prep"
 ]
 

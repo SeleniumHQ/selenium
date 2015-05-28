@@ -23,14 +23,6 @@ public class CommandInfo {
   private final String url;
   private final HttpMethod method;
 
-  /**
-   * @deprecated replaced by org.openqa.selenium.remote.CommandInfo(String, HttpMethod).
-   */
-  @Deprecated
-  public CommandInfo(String url, HttpVerb verb) {
-    this(url, verb.toHttpMethod());
-  }
-
   public CommandInfo(String url, HttpMethod method) {
     this.url = url;
     this.method = method;

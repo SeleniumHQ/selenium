@@ -43,7 +43,7 @@
             </dependency>
             <dependency>
               <groupId>net.java.dev.jna</groupId>
-              <artifactId>platform</artifactId>
+              <artifactId>jna-platform</artifactId>
             </dependency>
     </dependencies>
 

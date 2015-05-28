@@ -79,7 +79,7 @@ public class ElementFinder {
 
         return toReturn;
       } catch (WebDriverException e) {
-        throw new SeleniumException("Element " + locator + " not found");
+        throw new SeleniumException("Element " + locator + " not found", e);
       }
     }
 

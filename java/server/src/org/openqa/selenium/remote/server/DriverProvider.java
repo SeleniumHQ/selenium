@@ -19,10 +19,50 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * Classes that implement this interface are used by {org.openqa.selenium.remote.server.DriverFactory}
+ * to create new driver instances associated with specific set of capabilities.
+ *
+ * When a driver factory registers a driver provider it checks ability of the provider to create
+ * instances by a call to its isDriverAvailable method. Default driver provide implementation
+ * checks for presence of the driver class in the classpath. Other driver provider classes may
+ * perform more sophisiticated verification.
+ *
+ * If the driver provides is verified successfully it is registered as the driver provider
+ * associated with the capabilities returned by getProvidedCapabilities method.
+ *
+ * Selenium Server trusts the driver providers, it does not check that a driver provider actually
+ * creates driver instances that have the specified capabilities.
+ */
 public interface DriverProvider {
+
+  /**
+   * The provider "promices" that created driver instances will have (at least) this set of
+   * capabilities. The grid uses this information to match the capabilites requested by the client
+   * against the capabilities provided by all registered providers to pick the "best" one.
+   */
   Capabilities getProvidedCapabilities();
 
+  /**
+   * This method was used for testing purposes only and will be removed from the interface soon.
+   * @deprecated
+   */
+  @Deprecated
   Class<? extends WebDriver> getDriverClass();
 
+  /**
+   * Checks if the provider can create driver instances.
+   *
+   * @return true if the provider can create driver instances.
+   */
+  boolean canCreateDriverInstances();
+
+  /**
+   * Creates a new driver instance. The specified capabilities are to be passed to the driver
+   * constructor.
+   *
+   * @param capabilities Capabilities are to be passed to the driver constructor.
+   * @return A new driver instance
+   */
   WebDriver newInstance(Capabilities capabilities);
 }

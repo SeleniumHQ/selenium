@@ -67,7 +67,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  public static Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
+  public static final Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
 
   private final T input;
   private final Clock clock;

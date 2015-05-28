@@ -100,6 +100,11 @@ public interface NetworkConnection {
     }
 
     @Override
+    public int hashCode() {
+      return mask;
+    }
+
+    @Override
     public String toString() {
       return Integer.toString(mask);
     }
