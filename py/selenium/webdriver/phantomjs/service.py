@@ -17,9 +17,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import platform
-import signal
 import subprocess
 import time
+import traceback
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -67,7 +67,7 @@ class Service(object):
 
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+           or when it can't connect to the service.
         """
         try:
             self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
@@ -75,13 +75,16 @@ class Service(object):
                                             stdout=self._log, stderr=self._log)
 
         except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
+            raise WebDriverException(
+                msg="Unable to start phantomjs with ghostdriver: {}".format(e),
+                stacktrace=traceback.format_exc())
         count = 0
         while not utils.is_connectable(self.port):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to GhostDriver")
+                 raise WebDriverException(
+                     "Can not connect to GhostDriver on port {}".format(self.port))
 
     @property
     def service_url(self):
