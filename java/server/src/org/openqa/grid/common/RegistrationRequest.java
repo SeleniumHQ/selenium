@@ -351,13 +351,6 @@ public class RegistrationRequest {
     }
   }
 
-  // TODO freynaud : this is only used in tests. Move the method ?
-  public static RegistrationRequest localWebdriverNoCapabilities() {
-    RegistrationRequest res = build("-role", "webdriver","-host","localhost");
-    res.capabilities.clear();
-    return res;
-  }
-
   public static RegistrationRequest build(String... args) {
     RegistrationRequest res = new RegistrationRequest();
     res.args = args;

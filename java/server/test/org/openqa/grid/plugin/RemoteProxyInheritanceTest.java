@@ -38,7 +38,9 @@ public class RemoteProxyInheritanceTest {
 
   @Test
   public void defaultToRemoteProxy() {
-    RegistrationRequest req = RegistrationRequest.localWebdriverNoCapabilities();
+    RegistrationRequest res = RegistrationRequest.build("-role", "webdriver", "-host", "localhost");
+    res.getCapabilities().clear();
+    RegistrationRequest req = res;
 
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
