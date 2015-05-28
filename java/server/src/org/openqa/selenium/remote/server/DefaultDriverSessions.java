@@ -26,14 +26,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DefaultDriverSessions implements DriverSessions {
@@ -114,7 +112,7 @@ public class DefaultDriverSessions implements DriverSessions {
       return;
     }
 
-    factory.registerDriverProvider(caps, provider);
+    factory.registerDriverProvider(provider);
   }
 
   private boolean platformMatches(Platform current, Capabilities caps) {
@@ -123,9 +121,8 @@ public class DefaultDriverSessions implements DriverSessions {
            || current.is(caps.getPlatform());
   }
 
-  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    factory.registerDriverProvider(
-      capabilities, new DefaultDriverProvider(capabilities, implementation));
+  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
+    factory.registerDriverProvider(new DefaultDriverProvider(capabilities, driverClass));
   }
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {

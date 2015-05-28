@@ -30,17 +30,17 @@ public class DefaultDriverProvider implements DriverProvider {
   private static final Logger LOG = Logger.getLogger(DefaultDriverProvider.class.getName());
 
   private Capabilities capabilities;
-  private Class<? extends WebDriver> implementation;
-  private String driverClass;
+  private Class<? extends WebDriver> driverClass;
+  private String driverClassName;
 
-  public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> implementation) {
-    this.capabilities = capabilities;
-    this.implementation = implementation;
-  }
-
-  public DefaultDriverProvider(Capabilities capabilities, String driverClass) {
+  public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
     this.capabilities = capabilities;
     this.driverClass = driverClass;
+  }
+
+  public DefaultDriverProvider(Capabilities capabilities, String driverClassName) {
+    this.capabilities = capabilities;
+    this.driverClassName = driverClassName;
   }
 
   @Override
@@ -49,21 +49,26 @@ public class DefaultDriverProvider implements DriverProvider {
   }
 
   @Override
+  public boolean canCreateDriverInstances() {
+    return getDriverClass() != null;
+  }
+
+  @Override
   public Class<? extends WebDriver> getDriverClass() {
-    if (implementation != null) {
-      return implementation;
+    if (driverClass != null) {
+      return driverClass;
     }
     try {
-      return Class.forName(driverClass).asSubclass(WebDriver.class);
+      return Class.forName(driverClassName).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
-      LOG.log(Level.INFO, "Driver class not found: " + driverClass);
-      throw new WebDriverException("Driver class not found: " + driverClass, e);
+      LOG.log(Level.INFO, "Driver class not found: " + driverClassName);
+      return null;
     } catch (NoClassDefFoundError e) {
-      LOG.log(Level.INFO, "Driver class not found: " + driverClass);
-      throw new WebDriverException("Driver class not found: " + driverClass, e);
+      LOG.log(Level.INFO, "Driver class not found: " + driverClassName);
+      return null;
     } catch (UnsupportedClassVersionError e) {
-      LOG.log(Level.INFO, "Driver class is built for higher Java version: " + driverClass);
-      throw new WebDriverException("Driver class is built for higher Java version: " + driverClass, e);
+      LOG.log(Level.INFO, "Driver class is built for higher Java version: " + driverClassName);
+      return null;
     }
   }
 
@@ -97,6 +102,6 @@ public class DefaultDriverProvider implements DriverProvider {
 
   @Override
   public String toString() {
-    return implementation != null ? implementation.toString() : driverClass;
+    return driverClass != null ? driverClass.toString() : driverClassName;
   }
 }
