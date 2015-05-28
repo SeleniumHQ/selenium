@@ -85,6 +85,10 @@
   <ItemGroup>
     <Compile Include="By.cs" />
     <Compile Include="DefaultFileDetector.cs" />
+    <Compile Include="Edge\EdgeDriver.cs" />
+    <Compile Include="Edge\EdgeDriverService.cs" />
+    <Compile Include="Edge\EdgeOptions.cs" />
+    <Compile Include="Edge\EdgeWebElement.cs" />
     <Compile Include="Firefox\FirefoxDriverCommandExecutor.cs" />
     <Compile Include="Firefox\FirefoxDriverServer.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
