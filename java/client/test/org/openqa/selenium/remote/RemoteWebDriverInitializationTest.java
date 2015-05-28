@@ -18,34 +18,35 @@
 package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.gson.JsonObject;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RemoteWebDriverTest extends JUnit4TestBase {
+@RunWith(JUnit4.class)
+public class RemoteWebDriverInitializationTest {
   private boolean stopClientCalled = false;
   private boolean quitCalled = false;
 
   @Test
   public void testStopsClientIfStartClientFails() {
-    if (!(driver instanceof RemoteWebDriver)) {
-      System.out.println("Skipping test: driver is not a remote webdriver");
-      return;
-    }
-
-    RemoteWebDriver remote = (RemoteWebDriver) driver;
+    RemoteWebDriver driver = mock(RemoteWebDriver.class);
+    doThrow(new RuntimeException("Stub client that should fail")).when(driver).startClient();
     boolean exceptionThrown = false;
     AtomicBoolean stopCalled = new AtomicBoolean(false);
 
     try {
-      new BadStartClientRemoteWebDriver(remote.getCommandExecutor(),
-                                        remote.getCapabilities(),
-                                        remote.getCapabilities(),
+      new BadStartClientRemoteWebDriver(mock(CommandExecutor.class),
+                                        new DesiredCapabilities(),
+                                        new DesiredCapabilities(),
                                         stopCalled);
     } catch (RuntimeException e) {
       assertTrue(e.getMessage().contains("Stub client that should fail"));
@@ -59,18 +60,12 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
 
   @Test
   public void testQuitsIfStartSessionFails() {
-    if (!(driver instanceof RemoteWebDriver)) {
-      System.out.println("Skipping test: driver is not a remote webdriver");
-      return;
-    }
-
-    RemoteWebDriver remote = (RemoteWebDriver) driver;
     boolean exceptionThrown = false;
 
     try {
-      new BadStartSessionRemoteWebDriver(remote.getCommandExecutor(),
-                                        remote.getCapabilities(),
-                                        remote.getCapabilities());
+      new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class),
+                                         new DesiredCapabilities(),
+                                         new DesiredCapabilities());
     } catch (RuntimeException e) {
       assertTrue(e.getMessage().contains("Stub session that should fail"));
 
@@ -79,13 +74,6 @@ public class RemoteWebDriverTest extends JUnit4TestBase {
 
     assertTrue(exceptionThrown);
     assertTrue(quitCalled);
-  }
-
-  private static void assertHasKeys(JsonObject object, String... keys) {
-    for (String key : keys) {
-      assertTrue("Object does not contain expected key: " + key + " (" + object + ")",
-          object.has(key));
-    }
   }
 
   private class BadStartClientRemoteWebDriver extends RemoteWebDriver {

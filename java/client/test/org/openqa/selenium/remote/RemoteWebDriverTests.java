@@ -24,8 +24,6 @@ import org.openqa.selenium.StandardSeleniumTests;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-
-    RemoteWebDriverTest.class,
     RemoteWebDriverScreenshotTest.class
 })
 public class RemoteWebDriverTests {

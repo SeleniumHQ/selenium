@@ -26,7 +26,8 @@ import org.openqa.selenium.remote.internal.CircularOutputStreamTest;
 @Suite.SuiteClasses({
     AugmenterTest.class,
     ErrorHandlerTest.class,
-    CircularOutputStreamTest.class
+    CircularOutputStreamTest.class,
+    RemoteWebDriverInitializationTest.class
 })
 public class RemoteClientTests {
 }
