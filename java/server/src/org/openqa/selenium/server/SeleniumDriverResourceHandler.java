@@ -899,16 +899,4 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   public BrowserLauncherFactory getBrowserLauncherFactory() {
     return browserLauncherFactory;
   }
-
-  /**
-   * This method will soon be removed.
-   *
-   * @param browserLauncherFactory To use when creating new browser sessions.
-   * @deprecated
-   */
-  @Deprecated
-  public void setBrowserLauncherFactory(
-      BrowserLauncherFactory browserLauncherFactory) {
-    this.browserLauncherFactory = browserLauncherFactory;
-  }
 }
