@@ -174,7 +174,6 @@ public class SelfRegisteringRemote {
    * Use only for testing.
    */
   public void sendRegistrationRequest() {
-
     registerToHub(false);
   }
 
@@ -186,7 +185,7 @@ public class SelfRegisteringRemote {
    * - register again every X ms is specified in the config of the node.
    */
   public void startRegistrationProcess() {
-    LOG.info("Using the json request : " + nodeConfig.toJSON());
+    LOG.fine("Using the json request : " + nodeConfig.toJSON());
 
     Boolean register = (Boolean) nodeConfig.getConfiguration().get(AUTO_REGISTER);
 
@@ -199,7 +198,7 @@ public class SelfRegisteringRemote {
 
               public void run() {
                 boolean first = true;
-                LOG.info("Starting auto register thread. Will try to register every "
+                LOG.info("Starting auto registration thread. Will try to register every "
                          + registerCycleInterval + " ms.");
                 while (true) {
                   try {
@@ -251,7 +250,7 @@ public class SelfRegisteringRemote {
       HttpClient client = httpClientFactory.getHttpClient();
       try {
         URL registration = new URL(tmp);
-        LOG.info("Registering the node to hub: " + registration);
+        LOG.info("Registering the node to the hub: " + registration);
 
         BasicHttpEntityEnclosingRequest r =
             new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
@@ -265,6 +264,7 @@ public class SelfRegisteringRemote {
                                                 response.getStatusLine().getStatusCode(),
                                                 response.getStatusLine().getReasonPhrase()));
         }
+        LOG.info("The node is registered to the hub and ready to use");
       } catch (Exception e) {
         throw new GridException("Error sending the registration request: " + e.getMessage());
       }

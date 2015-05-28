@@ -243,6 +243,11 @@ public class SeleniumServer implements SslCertificateGenerator {
                                                                                      // infinite
     seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);
     seleniumProxy.boot();
+
+    // todo: This is still buggy because it should resolve to external port
+    seleniumProxy.LOGGER.info(
+      format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
+             networkUtils.getPrivateLocalAddress(), seleniumProxy.getPort()));
   }
 
   public SeleniumServer() throws Exception {
@@ -396,10 +401,6 @@ public class SeleniumServer implements SslCertificateGenerator {
     ServletHandler handler = new ServletHandler();
     handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());
     webdriverContext.addHandler(handler);
-
-    LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
-        networkUtils.getPrivateLocalAddress(), getPort())); // todo: This is still buggy because it
-                                                            // should resolve to external port
 
     return webdriverContext;
   }

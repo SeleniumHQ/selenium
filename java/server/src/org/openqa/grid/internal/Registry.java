@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 public class Registry {
 
   public static final String KEY = Registry.class.getName();
-  private static final Logger log = Logger.getLogger(Registry.class.getName());
+  private static final Logger LOG = Logger.getLogger(Registry.class.getName());
 
   // lock for anything modifying the tests session currently running on this
   // registry.
@@ -173,8 +173,8 @@ public class Registry {
     // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
     // those test sessions, we need to operate on that original object.
     if (proxies.contains(proxy)) {
-      log.warning(String.format(
-          "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+      LOG.warning(String.format(
+        "Cleaning up stale test sessions on the unregistered node %s", proxy));
 
       final RemoteProxy p = proxies.remove(proxy);
       for (TestSlot slot : p.getTestSlots()) {
@@ -270,9 +270,9 @@ public class Registry {
         // Just make sure we delete anything that is logged on this thread from memory
         LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {
-        log.info("Shutting down registry.");
+        LOG.info("Shutting down registry.");
       } catch (Throwable t) {
-        log.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
+        LOG.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
       }
     }
 
@@ -316,7 +316,7 @@ public class Registry {
       release(session1, reason);
       return;
     }
-    log.warning("Tried to release session with internal key " + internalKey +
+    LOG.warning("Tried to release session with internal key " + internalKey +
                 " but couldn't find it.");
   }
 
@@ -330,14 +330,14 @@ public class Registry {
     if (proxy == null) {
       return;
     }
-    log.fine("adding  " + proxy);
+    LOG.info("Registered a node " + proxy);
     try {
       lock.lock();
 
       removeIfPresent(proxy);
 
       if (registeringProxies.contains(proxy)) {
-        log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
+        LOG.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
 
         return;
       }
@@ -354,7 +354,7 @@ public class Registry {
         ((RegistrationListener) proxy).beforeRegistration();
       }
     } catch (Throwable t) {
-      log.severe("Error running the registration listener on " + proxy + ", " + t.getMessage());
+      LOG.severe("Error running the registration listener on " + proxy + ", " + t.getMessage());
       t.printStackTrace();
       listenerOk = false;
     }
@@ -465,7 +465,7 @@ public class Registry {
   private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, Throwable e) {
-      log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
+      LOG.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }
   }
   public CapabilityMatcher getCapabilityMatcher() {
