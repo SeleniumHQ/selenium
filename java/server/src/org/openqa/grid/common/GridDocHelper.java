@@ -35,7 +35,7 @@ public class GridDocHelper {
   }
 
   public static void printHubHelp(String msg, boolean error) {
-    printHelpInConsole(msg, hubProperties, error);
+    printHelpInConsole(msg, "hub", hubProperties, error);
     RemoteControlLauncher.printWrappedLine(
       "",
       "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
@@ -46,7 +46,7 @@ public class GridDocHelper {
   }
 
   public static void printNodeHelp(String msg, boolean error) {
-    printHelpInConsole(msg, nodeProperties, error);
+    printHelpInConsole(msg, "node", nodeProperties, error);
     RemoteControlLauncher.printWrappedLine(
       "",
       "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
@@ -72,7 +72,7 @@ public class GridDocHelper {
     return getParam(nodeProperties, param);
   }
 
-  private static void printHelpInConsole(String msg, Properties properties, boolean error) {
+  private static void printHelpInConsole(String msg, String role, Properties properties, boolean error) {
     String indent = "  ";
     String indent2x = indent + indent;
     if (msg != null) {
@@ -83,7 +83,7 @@ public class GridDocHelper {
       }
     }
 
-    System.out.println("Usage :");
+    System.out.println("Usage: java -jar selenium-server.jar -role " + role + " [options]\n");
     for (Object key : properties.keySet()) {
       System.out.println(indent + "-" + key + ":");
       RemoteControlLauncher.printWrappedLine(System.out, indent2x, getParam(properties, key.toString()), true);
