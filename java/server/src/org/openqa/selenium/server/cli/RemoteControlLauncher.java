@@ -31,7 +31,7 @@ public class RemoteControlLauncher {
 
   public static void usage(String msg) {
     if (msg != null) {
-      System.out.println(msg + ":");
+      System.out.println(msg);
     }
     String INDENT = "  ";
     String INDENT2X = INDENT + INDENT;
@@ -109,7 +109,7 @@ public class RemoteControlLauncher {
             "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");
     printWrappedLine(
       "",
-      "\nThis synopsis lists options available in standalone role only. To get help on the command line options available for other roles run the server with both -role and -help options.");
+      "\nThis synopsis lists options available in standalone role only. To get help on the options available for other roles run the server with -help option and the corresponding -role option value.");
   }
 
   public static RemoteControlConfiguration parseLauncherOptions(String[] args) {

@@ -38,7 +38,7 @@ public class GridDocHelper {
     printHelpInConsole(msg, hubProperties, error);
     RemoteControlLauncher.printWrappedLine(
       "",
-      "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with both -role and -help options.");
+      "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
   }
 
   public static void printNodeHelp(String msg) {
@@ -49,7 +49,7 @@ public class GridDocHelper {
     printHelpInConsole(msg, nodeProperties, error);
     RemoteControlLauncher.printWrappedLine(
       "",
-      "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with both -role and -help options.");
+      "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
   }
 
   private static String getParam(Properties properties, String param) {
