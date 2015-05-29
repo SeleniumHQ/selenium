@@ -17,28 +17,36 @@
 
 package org.openqa.grid.common;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParser;
+
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class GridDocHelper {
-  private static Properties hubProperties = load(
-    "org/openqa/grid/common/defaults/HubParameters.properties");
-  private static Properties nodeProperties = load(
-    "org/openqa/grid/common/defaults/NodeParameters.properties");
+  private static List<Option> hubOptions = load(
+    "org/openqa/grid/common/defaults/HubOptions.json");
+  private static List<Option> nodeOptions = load(
+    "org/openqa/grid/common/defaults/NodeOptions.json");
 
   public static void printHubHelp(String msg) {
     printHubHelp(msg, true);
   }
 
   public static void printHubHelp(String msg, boolean error) {
-    printHelpInConsole(msg, "hub", hubProperties, error);
+    printHelpInConsole(msg, "hub", hubOptions, error);
     RemoteControlLauncher.printWrappedLine(
       "",
-      "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
+      "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with -help name and the corresponding -role name value.");
   }
 
   public static void printNodeHelp(String msg) {
@@ -46,33 +54,29 @@ public class GridDocHelper {
   }
 
   public static void printNodeHelp(String msg, boolean error) {
-    printHelpInConsole(msg, "node", nodeProperties, error);
+    printHelpInConsole(msg, "node", nodeOptions, error);
     RemoteControlLauncher.printWrappedLine(
       "",
-      "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with -help option and the corresponding -role option value.");
+      "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with -help name and the corresponding -role name value.");
   }
 
-  private static String getParam(Properties properties, String param) {
-    if (param == null) {
-      return "";
-    }
-    String s = (String) properties.get(param);
-    if (s == null) {
-      return "No help specified for " + param;
-    } else {
-      return s;
-    }
-  }
+  private static Map<String, String> hubOptionsMap;
 
   public static String getHubParam(String param) {
-    return getParam(hubProperties, param);
+    if (hubOptionsMap == null) {
+      hubOptionsMap = new HashMap<String, String>();
+      for (Option option : hubOptions) {
+        hubOptionsMap.put(option.name, option.description);
+      }
+    }
+    if (hubOptionsMap.containsKey(param)) {
+      return hubOptionsMap.get(param);
+    } else {
+      return "No help specified for " + param;
+    }
   }
 
-  public static String getNodeParam(String param) {
-    return getParam(nodeProperties, param);
-  }
-
-  private static void printHelpInConsole(String msg, String role, Properties properties, boolean error) {
+  private static void printHelpInConsole(String msg, String role, List<Option> options, boolean error) {
     String indent = "  ";
     String indent2x = indent + indent;
     if (msg != null) {
@@ -84,25 +88,36 @@ public class GridDocHelper {
     }
 
     System.out.println("Usage: java -jar selenium-server.jar -role " + role + " [options]\n");
-    for (Object key : properties.keySet()) {
-      System.out.println(indent + "-" + key + ":");
-      RemoteControlLauncher.printWrappedLine(System.out, indent2x, getParam(properties, key.toString()), true);
+    for (Option option : options) {
+      System.out.println(indent + "-" + option.name + ":");
+      RemoteControlLauncher.printWrappedLine(System.out, indent2x, option.description, true);
       System.out.println("");
     }
   }
 
-  private static Properties load(String resource) {
+  private static List<Option> load(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-    Properties p = new Properties();
-    if (in != null) {
-      try {
-        p.load(in);
-        return p;
-      } catch (IOException e) {
-        throw new RuntimeException(resource + " cannot be loaded.");
+    List<Option> result = new ArrayList<Option>();
+    try {
+      JsonElement json = new JsonParser().parse(new InputStreamReader(in));
+      for (JsonElement element : json.getAsJsonArray()) {
+        JsonArray arr = element.getAsJsonArray();
+        result.add(new Option(arr.get(0).getAsString(), arr.get(1).getAsString()));
       }
-    } else {
+
+    } catch (JsonIOException e) {
       throw new RuntimeException(resource + " cannot be loaded.");
+    }
+    return result;
+  }
+
+  private static class Option {
+    private final String name;
+    private final String description;
+
+    public Option(String option, String description) {
+      this.name = option;
+      this.description = description;
     }
   }
 }
