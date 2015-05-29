@@ -45,6 +45,23 @@ public class GridLauncher {
   public static void main(String[] args) throws Exception {
 
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
+    GridRole role = GridRole.find(args);
+
+    if (role == null) {
+      System.out.println(
+        "\n" +
+        "The role '" + helper.getParamValue("-role") + "' does not match a recognized role for Selenium server\n" +
+        "\n" +
+        "Selenium server can run in one of the following roles:\n" +
+        "    hub         as a hub of a Selenium grid\n" +
+        "    node        as a node of a Selenium grid\n" +
+        "    standalone  as a standalone server not being a part of a grid\n" +
+        "\n" +
+        "If -role option is not specified the server runs standalone" +
+        "\n");
+      return;
+    }
+
     if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
       String separator = "\n----------------------------------\n";
       RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
@@ -53,8 +70,6 @@ public class GridLauncher {
     }
 
     configureLogging(helper);
-
-    GridRole role = GridRole.find(args);
 
     switch (role) {
       case NOT_GRID:
