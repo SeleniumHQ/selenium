@@ -62,7 +62,7 @@ public class RegistrationRequest {
 
   private String[] args;
 
-  private static final Logger log = Logger.getLogger(RegistrationRequest.class.getName());
+  private static final Logger LOG = Logger.getLogger(RegistrationRequest.class.getName());
 
   // some special param for capability
   public static final String APP = "applicationName";
@@ -195,8 +195,10 @@ public class RegistrationRequest {
     }
     try {
       return Integer.parseInt(o.toString());
-    } catch (Throwable t) {
-      log.warning("Error. " + param + " is supposed to be an int. Keeping default of " + defaultValue);
+    } catch (NumberFormatException t) {
+      LOG.warning(String.format(
+        "Parameter %s has value '%s', but it is supposed to be an int. Keeping default of %s",
+        param, o, defaultValue));
       return defaultValue;
     }
 
@@ -321,7 +323,7 @@ public class RegistrationRequest {
         registrationInfo.put(URLDecoder.decode(configItem[0], "UTF-8"),
             URLDecoder.decode(configItem[1], "UTF-8"));
       } catch (UnsupportedEncodingException e) {
-        log.warning(String.format("Unable to decode registration request portion: %s", part));
+        LOG.warning(String.format("Unable to decode registration request portion: %s", part));
       }
     }
 
@@ -499,7 +501,7 @@ public class RegistrationRequest {
   }
 
   private DesiredCapabilities addCapabilityFromString(String capability) {
-    log.info("Adding " + capability);
+    LOG.info("Adding " + capability);
     String[] s = capability.split(",");
     if (s.length == 0) {
       throw new GridConfigurationException("-browser must be followed by a browser description");

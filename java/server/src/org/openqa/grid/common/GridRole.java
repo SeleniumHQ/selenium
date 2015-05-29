@@ -64,9 +64,10 @@ public enum GridRole {
             return NODE;
           } else if ("hub".equals(role)) {
             return HUB;
+          } else if ("standalone".equals(role)) {
+            return NOT_GRID;
           } else {
-            throw new GridConfigurationException("The role specified :" + role
-                + " doesn't match a recognized role for grid.");
+            return null;
           }
         }
       }
