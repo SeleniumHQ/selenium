@@ -57,15 +57,25 @@ public class GridLauncher {
         "    node        as a node of a Selenium grid\n" +
         "    standalone  as a standalone server not being a part of a grid\n" +
         "\n" +
-        "If -role option is not specified the server runs standalone" +
+        "If -role option is not specified the server runs standalone\n" +
         "\n");
+      RemoteControlLauncher.printWrappedLine("",
+        "To get help on the command line options available for each role run the server with both -role and -help options");
       return;
     }
 
     if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
-      String separator = "\n----------------------------------\n";
-      RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
-      GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);
+      String separator = "\n-----------------------------------------\n";
+      if (role == GridRole.NOT_GRID) {
+        RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
+      } else if (role == GridRole.HUB) {
+        GridDocHelper.printHubHelp(
+          separator + "To use in a grid environment as the hub:" + separator, false);
+      } else if (role == GridRole.NODE) {
+        GridDocHelper.printNodeHelp(separator + "To use in a grid environment as a node:" + separator, false);
+      } else {
+        GridDocHelper.printHubHelp(separator + "To use in a grid environment :" + separator, false);
+      }
       return;
     }
 
@@ -86,7 +96,7 @@ public class GridLauncher {
           log.info("Nodes should register to " + h.getRegistrationURL());
           log.info("Selenium Grid hub is up and running");
         } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
+          GridDocHelper.printHubHelp(e.getMessage());
           e.printStackTrace();
         }
         break;
@@ -99,7 +109,7 @@ public class GridLauncher {
           log.info("Selenium Grid node is up and ready to register to the hub");
           remote.startRegistrationProcess();
         } catch (GridConfigurationException e) {
-          GridDocHelper.printHelp(e.getMessage());
+          GridDocHelper.printNodeHelp(e.getMessage());
           e.printStackTrace();
         }
         break;

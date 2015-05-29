@@ -25,22 +25,38 @@ import java.util.Properties;
 
 
 public class GridDocHelper {
-  private static Properties gridProperties = load("org/openqa/grid/common/defaults/GridParameters.properties");
+  private static Properties hubProperties = load(
+    "org/openqa/grid/common/defaults/HubParameters.properties");
+  private static Properties nodeProperties = load(
+    "org/openqa/grid/common/defaults/NodeParameters.properties");
 
-  public static void printHelp(String msg) {
-    printHelpInConsole(msg, true);
+  public static void printHubHelp(String msg) {
+    printHubHelp(msg, true);
   }
 
-  public static void printHelp(String msg, boolean error) {
-    printHelpInConsole(msg, error);
+  public static void printHubHelp(String msg, boolean error) {
+    printHelpInConsole(msg, hubProperties, error);
+    RemoteControlLauncher.printWrappedLine(
+      "",
+      "This synopsis lists options available in hub role only. To get help on the command line options available for other roles run the server with both -role and -help options.");
   }
 
+  public static void printNodeHelp(String msg) {
+    printNodeHelp(msg, true);
+  }
 
-  public static String getGridParam(String param) {
+  public static void printNodeHelp(String msg, boolean error) {
+    printHelpInConsole(msg, nodeProperties, error);
+    RemoteControlLauncher.printWrappedLine(
+      "",
+      "This synopsis lists options available in node role only. To get help on the command line options available for other roles run the server with both -role and -help options.");
+  }
+
+  private static String getParam(Properties properties, String param) {
     if (param == null) {
       return "";
     }
-    String s = (String) gridProperties.get(param);
+    String s = (String) properties.get(param);
     if (s == null) {
       return "No help specified for " + param;
     } else {
@@ -48,8 +64,15 @@ public class GridDocHelper {
     }
   }
 
+  public static String getHubParam(String param) {
+    return getParam(hubProperties, param);
+  }
 
-  private static void printHelpInConsole(String msg, boolean error) {
+  public static String getNodeParam(String param) {
+    return getParam(nodeProperties, param);
+  }
+
+  private static void printHelpInConsole(String msg, Properties properties, boolean error) {
     String indent = "  ";
     String indent2x = indent + indent;
     if (msg != null) {
@@ -61,9 +84,9 @@ public class GridDocHelper {
     }
 
     System.out.println("Usage :");
-    for (Object key : gridProperties.keySet()) {
-      System.out.println(indent + "-" + key + ":\t");
-      RemoteControlLauncher.printWrappedLine(System.out, indent2x, getGridParam(key.toString()), true);
+    for (Object key : properties.keySet()) {
+      System.out.println(indent + "-" + key + ":");
+      RemoteControlLauncher.printWrappedLine(System.out, indent2x, getParam(properties, key.toString()), true);
       System.out.println("");
     }
   }
@@ -82,6 +105,4 @@ public class GridDocHelper {
       throw new RuntimeException(resource + " cannot be loaded.");
     }
   }
-
-
 }
