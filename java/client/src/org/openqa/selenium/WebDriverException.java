@@ -17,12 +17,11 @@
 
 package org.openqa.selenium;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.net.NetworkUtils;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
 
@@ -30,6 +29,10 @@ public class WebDriverException extends RuntimeException {
   public static final String DRIVER_INFO = "Driver info";
 
   private Map<String, String> extraInfo = new HashMap<String, String>();
+
+  static {
+    NetworkUtils.scheduleIpHostResolving();
+  }
 
   public WebDriverException() {
     super();
@@ -64,17 +67,9 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getSystemInformation() {
-    String host = "N/A";
-    String ip   = "N/A";
-
-    try{
-      host = InetAddress.getLocalHost().getHostName();
-      ip   = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException throw_away) {}
-
     return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      host,
-      ip,
+      NetworkUtils.host,
+      NetworkUtils.ip,
       System.getProperty("os.name"),
       System.getProperty("os.arch"),
       System.getProperty("os.version"),

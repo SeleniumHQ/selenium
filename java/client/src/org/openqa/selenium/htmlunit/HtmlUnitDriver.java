@@ -76,6 +76,7 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
@@ -124,11 +125,15 @@ import com.google.common.collect.Sets;
 /**
  * An implementation of {@link WebDriver} that drives <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>,
  * which is a headless (GUI-less) browser simulator.
- * <p>The main supported browsers are Chrome, Firefox and Internet Explorer. 
+ * <p>The main supported browsers are Chrome, Firefox and Internet Explorer.
  */
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
+
+  static {
+    NetworkUtils.scheduleIpHostResolving();
+  }
 
   private WebClient webClient;
   private WebWindow currentWindow;

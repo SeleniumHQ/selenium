@@ -58,6 +58,7 @@ import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.security.Credentials;
@@ -78,6 +79,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities, TakesScreenshot {
+
+  static {
+    NetworkUtils.scheduleIpHostResolving();
+  }
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());

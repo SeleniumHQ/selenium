@@ -24,6 +24,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.net.NetworkUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,6 +45,10 @@ import java.util.List;
  * </code>
  */
 public abstract class By {
+  static {
+    NetworkUtils.scheduleIpHostResolving();
+  }
+
   /**
    * @param id The value of the "id" attribute to search for
    * @return a By which locates elements by the value of the "id" attribute.
