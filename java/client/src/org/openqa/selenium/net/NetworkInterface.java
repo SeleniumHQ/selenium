@@ -31,22 +31,13 @@ import java.util.logging.Logger;
 public class NetworkInterface {
 
   private final String name;
+  private java.net.NetworkInterface networkInterface;
   private final Iterable<InetAddress> inetAddresses;
-  private boolean isLoopback;
+  private Boolean isLoopback;
 
   public NetworkInterface(java.net.NetworkInterface networkInterface) {
     this(networkInterface.getName(), list(networkInterface.getInetAddresses()));
-    try {
-      // Issue 1181 : determine whether this NetworkInterface instance is loopback
-      // from java.net.NetworkInterface API
-      this.isLoopback = networkInterface.isLoopback();
-    } catch (SocketException ex) {
-      Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-      // If an SocketException is caught, determine whether this NetworkInterface
-      // instance is loopback from computation from its inetAddresses
-      this.isLoopback =
-          isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
-    }
+    this.networkInterface = networkInterface;
   }
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
@@ -64,6 +55,22 @@ public class NetworkInterface {
   }
 
   public boolean isLoopBack() {
+    if (isLoopback == null) {
+      if (networkInterface != null) {
+        try {
+          // Issue 1181 : determine whether this NetworkInterface instance is loopback
+          // from java.net.NetworkInterface API
+          isLoopback = networkInterface.isLoopback();
+        } catch (SocketException ex) {
+          Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        }
+      }
+      // If a SocketException is caught, determine whether this NetworkInterface
+      // instance is loopback from computation from its inetAddresses
+      if (isLoopback == null) {
+        isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
+      }
+    }
     return isLoopback;
   }
 
@@ -80,11 +87,11 @@ public class NetworkInterface {
     // Most "normal" boxes don't have multiple addresses so we'll just refine this
     // algorithm until it works.
     // See NetworkUtilsTest#testOpenSuseBoxIssue1181
-    InetAddress lastFound = null;
     // Issue 1181
-    if (!isLoopback) {
-      return lastFound;
+    if (!isLoopBack()) {
+      return null;
     }
+    InetAddress lastFound = null;
     for (InetAddress inetAddress : inetAddresses) {
       if (inetAddress.isLoopbackAddress() && !isIpv6(inetAddress)) {
         lastFound = inetAddress;
