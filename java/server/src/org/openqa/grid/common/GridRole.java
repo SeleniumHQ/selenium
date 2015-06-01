@@ -56,8 +56,7 @@ public enum GridRole {
     for (int i = 0; i < args.length; i++) {
       if ("-role".equals(args[i])) {
         if (i == args.length - 1) {
-          throw new GridConfigurationException(
-              "-role needs to be followed by the role of this component in the grid.");
+          return null;
         } else {
           String role = args[i + 1].toLowerCase();
           if (nodeAliases.contains(role)) {

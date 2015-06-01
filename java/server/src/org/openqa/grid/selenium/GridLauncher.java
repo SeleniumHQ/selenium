@@ -43,39 +43,16 @@ public class GridLauncher {
   private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
 
   public static void main(String[] args) throws Exception {
-
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
     GridRole role = GridRole.find(args);
 
     if (role == null) {
-      System.out.println(
-        "\n" +
-        "The role '" + helper.getParamValue("-role") + "' does not match a recognized role for Selenium server\n" +
-        "\n" +
-        "Selenium server can run in one of the following roles:\n" +
-        "    hub         as a hub of a Selenium grid\n" +
-        "    node        as a node of a Selenium grid\n" +
-        "    standalone  as a standalone server not being a part of a grid\n" +
-        "\n" +
-        "If -role option is not specified the server runs standalone\n" +
-        "\n");
-      RemoteControlLauncher.printWrappedLine("",
-        "To get help on the command line options available for each role run the server with both -role and -help options");
+      printInfoAboutRoles(helper);
       return;
     }
 
-    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
-      String separator = "\n-----------------------------------------\n";
-      if (role == GridRole.NOT_GRID) {
-        RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
-      } else if (role == GridRole.HUB) {
-        GridDocHelper.printHubHelp(
-          separator + "To use in a grid environment as the hub:" + separator, false);
-      } else if (role == GridRole.NODE) {
-        GridDocHelper.printNodeHelp(separator + "To use in a grid environment as a node:" + separator, false);
-      } else {
-        GridDocHelper.printHubHelp(separator + "To use in a grid environment :" + separator, false);
-      }
+    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")) {
+      printInfoAboutOptionsForRole(role);
       return;
     }
 
@@ -114,7 +91,47 @@ public class GridLauncher {
         }
         break;
       default:
-        throw new RuntimeException("NI");
+        throw new GridConfigurationException("Unknown role: " + role);
+    }
+  }
+
+  private static void printInfoAboutRoles(CommandLineOptionHelper helper) {
+    if (helper.hasParamValue("-role")) {
+      RemoteControlLauncher.printWrappedLine(
+        "",
+        "Error: the role '" + helper.getParamValue("-role") + "' does not match a recognized server role\n");
+    } else {
+      RemoteControlLauncher.printWrappedLine(
+        "",
+        "Error: -role option needs to be followed by the value that defines role of this component in the grid\n");
+    }
+    System.out.println(
+      "Selenium server can run in one of the following roles:\n" +
+      "  hub         as a hub of a Selenium grid\n" +
+      "  node        as a node of a Selenium grid\n" +
+      "  standalone  as a standalone server not being a part of a grid\n" +
+      "\n" +
+      "If -role option is omitted the server runs standalone\n");
+    RemoteControlLauncher.printWrappedLine(
+      "",
+      "To get help on the options available for a specific role run the server"
+      + " with -help option and the corresponding -role option value");
+  }
+
+  private static void printInfoAboutOptionsForRole(GridRole role) {
+    String separator = "\n-------------------------------\n";
+    switch (role) {
+      case NOT_GRID:
+        RemoteControlLauncher.usage(separator + "Running as a standalone server:" + separator);
+        break;
+      case HUB:
+        GridDocHelper.printHubHelp(separator + "Running as a grid hub:" + separator, false);
+        break;
+      case NODE:
+        GridDocHelper.printNodeHelp(separator + "Running as a grid node:" + separator, false);
+        break;
+      default:
+        throw new GridConfigurationException("Unknown role: " + role);
     }
   }
 

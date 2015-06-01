@@ -45,6 +45,29 @@ public class CommandLineOptionHelper {
     return false;
   }
 
+  public boolean hasParamValue(String name) {
+    int index = -1;
+    for (int i = 0; i < args.length; i++) {
+      if (name.equals(args[i])) {
+        index = i;
+        break;
+      }
+    }
+    if (index == -1) {
+      throw new GridConfigurationException("The parameter " + name + " isn't specified.");
+    }
+
+    if (args.length == index) {
+      return false;
+    }
+
+    if (((index + 1) < args.length) && !args[index + 1].startsWith("-")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public String getParamValue(String name) {
     int index = -1;
     for (int i = 0; i < args.length; i++) {
