@@ -22,11 +22,13 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+import com.thoughtworks.selenium.SeleniumException;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class TestAttachFile extends InternalSelenseTestBase {
@@ -56,5 +58,17 @@ public class TestAttachFile extends InternalSelenseTestBase {
     selenium.waitForPageToLoad("30000");
     selenium.selectFrame("upload_target");
     assertEquals(selenium.getText("//body"), LOREM_IPSUM_TEXT);
+  }
+
+  @Test
+  public void testAttachNonExistingFile() throws Exception {
+    selenium.open("/common/upload.html");
+    try {
+      selenium.attachFile("upload", testFile.toURI().toURL().toString() + "-missing");
+    } catch (SeleniumException expected) {
+      assertTrue(expected.getCause() instanceof IOException);
+      return;
+    }
+    fail("Exception expected");
   }
 }

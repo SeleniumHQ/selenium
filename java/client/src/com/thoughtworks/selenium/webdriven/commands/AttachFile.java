@@ -62,7 +62,7 @@ public class AttachFile extends SeleneseCommand<Void> {
       fos = new FileOutputStream(outputTo);
       Resources.copy(url, fos);
     } catch (IOException e) {
-
+      throw new SeleniumException("Can't access file to upload: " + url, e);
     }
 
     return outputTo;
