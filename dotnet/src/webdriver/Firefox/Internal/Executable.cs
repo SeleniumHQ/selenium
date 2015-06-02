@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             throw new WebDriverException("Cannot find Firefox binary in PATH or default install locations. " +
-                "Make sure Firefox is installed. OS appears to be: " + Platform.CurrentPlatform);
+                "Make sure Firefox is installed. OS appears to be: " + Platform.CurrentPlatform.ToString());
         }
         #endregion
 

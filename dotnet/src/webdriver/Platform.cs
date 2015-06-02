@@ -204,5 +204,14 @@ namespace OpenQA.Selenium
 
             return platformIsType;
         }
+
+        /// <summary>
+        /// Returns the string value for this platform type.
+        /// </summary>
+        /// <returns>The string value for this platform type.</returns>
+        public override string ToString()
+        {
+            return this.platformTypeValue.ToString();
+        }
     }
 }
