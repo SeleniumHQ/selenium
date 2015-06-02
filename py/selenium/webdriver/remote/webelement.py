@@ -32,7 +32,6 @@ from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-
 try:
     str = basestring
 except NameError:
@@ -105,7 +104,7 @@ class WebElement(object):
             attributeValue = None
         else:
             attributeValue = resp['value']
-            if name != 'value' and attributeValue.lower() in ('true', 'false'):
+            if name != 'value' and isinstance(attributeValue, str) and attributeValue.lower() in ('true', 'false'):
                 attributeValue = attributeValue.lower()
         return attributeValue
 
