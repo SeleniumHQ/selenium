@@ -11,7 +11,6 @@ public class SearchContextTest {
 
   private interface SubClassingSearchContext extends SearchContext {
 
-    @Override
     List<TestWebElement> findElements(By by);
 
     @Override
