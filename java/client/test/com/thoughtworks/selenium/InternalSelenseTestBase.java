@@ -77,11 +77,11 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
     try {
       new Build().of(
-          "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
+          "//java/client/src/com/thoughtworks/selenium/webdriven",
           "//third_party/js/sizzle"
       ).go();
 
-      File buildDir = InProject.locate("java/client/build/production/org/openqa/selenium/internal/seleniumemulation");
+      File buildDir = InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");
       buildDir = new File(buildDir, "selenium_atoms");
       if (!buildDir.exists()) {
         assertTrue(buildDir.mkdir());
