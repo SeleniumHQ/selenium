@@ -55,10 +55,7 @@ public class AttachFile extends SeleneseCommand<Void> {
     URL url = getUrl(name);
 
     File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("attachFile", "dir");
-    File outputTo = new File(dir, url.getFile());
-    if (!outputTo.getParentFile().mkdirs()) {
-      throw new SeleniumException("Cannot create file for upload: " + outputTo);
-    }
+    File outputTo = new File(dir, new File(url.getFile()).getName());
 
     FileOutputStream fos = null;
     try {
