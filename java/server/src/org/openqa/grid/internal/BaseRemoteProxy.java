@@ -479,7 +479,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public String toString() {
-    return getRemoteHost().toString();
+    return getRemoteHost() != null ? getRemoteHost().toString() : "<detached>";
   }
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
