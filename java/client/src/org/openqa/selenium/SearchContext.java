@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 import java.util.List;
 
-public interface SearchContext {
+public interface SearchContext<E extends WebElement> {
   /**
    * Find all elements within the current context using the given mechanism.
    *
@@ -27,7 +27,7 @@ public interface SearchContext {
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches
    * @see org.openqa.selenium.By
    */
-  List<WebElement> findElements(By by);
+  List<E> findElements(By by);
 
 
   /**
@@ -37,5 +37,5 @@ public interface SearchContext {
    * @return The first matching element on the current context
    * @throws NoSuchElementException If no matching elements are found
    */
-  WebElement findElement(By by);
+  E findElement(By by);
 }
