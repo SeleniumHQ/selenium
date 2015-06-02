@@ -24,7 +24,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.net.NetworkUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -46,7 +45,7 @@ import java.util.List;
  */
 public abstract class By {
   static {
-    NetworkUtils.scheduleIpHostResolving();
+    WebDriverException.scheduleIpHostResolving();
   }
 
   /**

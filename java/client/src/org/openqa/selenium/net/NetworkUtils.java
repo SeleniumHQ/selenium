@@ -30,9 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NetworkUtils {
 
-  public static String host = "N/A";
-  public static String ip   = "N/A";
-
   private final NetworkInterfaceProvider networkInterfaceProvider;
 
   NetworkUtils(NetworkInterfaceProvider networkInterfaceProvider) {
@@ -217,38 +214,6 @@ public class NetworkUtils {
       result.append("   address.isLoopbackAddress() = ");
       result.append(address.isLoopbackAddress());
       result.append("\n");
-    }
-  }
-
-  public static synchronized void scheduleIpHostResolving() {
-    if (!IpHostResolver.started.get()) {
-      Thread resolver = new Thread(new IpHostResolver(), "ip-host-resolver");
-      resolver.setDaemon(true);
-      resolver.start();
-      IpHostResolver.started.set(true);
-    }
-  }
-
-  private static class IpHostResolver implements Runnable {
-    private static AtomicBoolean started = new AtomicBoolean(false);
-
-    @Override
-    public void run() {
-      while (true) {
-        try {
-          InetAddress localHost = InetAddress.getLocalHost();
-          host = localHost.getHostName();
-          ip = localHost.getHostAddress();
-        } catch (UnknownHostException e) {
-          System.err.println("Unable to resolve ip/host: " + e);
-        }
-
-        try {
-          Thread.sleep(10000);
-        } catch (InterruptedException e) {
-          break;
-        }
-      }
     }
   }
 

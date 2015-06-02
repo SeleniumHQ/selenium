@@ -76,7 +76,6 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
@@ -132,7 +131,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
 
   static {
-    NetworkUtils.scheduleIpHostResolving();
+    WebDriverException.scheduleIpHostResolving();
   }
 
   private WebClient webClient;

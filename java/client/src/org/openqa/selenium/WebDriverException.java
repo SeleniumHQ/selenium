@@ -18,21 +18,26 @@
 package org.openqa.selenium;
 
 import org.openqa.selenium.internal.BuildInfo;
-import org.openqa.selenium.net.NetworkUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
 
-  private Map<String, String> extraInfo = new HashMap<String, String>();
+  private static String host = "N/A";
+  private static String ip   = "N/A";
 
   static {
-    NetworkUtils.scheduleIpHostResolving();
+    scheduleIpHostResolving();
   }
+
+  private Map<String, String> extraInfo = new HashMap<String, String>();
 
   public WebDriverException() {
     super();
@@ -68,8 +73,8 @@ public class WebDriverException extends RuntimeException {
 
   public String getSystemInformation() {
     return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      NetworkUtils.host,
-      NetworkUtils.ip,
+      host,
+      ip,
       System.getProperty("os.name"),
       System.getProperty("os.arch"),
       System.getProperty("os.version"),
@@ -114,5 +119,37 @@ public class WebDriverException extends RuntimeException {
       }
     }
     return result;
+  }
+
+  public static synchronized void scheduleIpHostResolving() {
+    if (!IpHostResolver.started.get()) {
+      Thread resolver = new Thread(new IpHostResolver(), "ip-host-resolver");
+      resolver.setDaemon(true);
+      resolver.start();
+      IpHostResolver.started.set(true);
+    }
+  }
+
+  private static class IpHostResolver implements Runnable {
+    private static AtomicBoolean started = new AtomicBoolean(false);
+
+    @Override
+    public void run() {
+      while (true) {
+        try {
+          InetAddress localHost = InetAddress.getLocalHost();
+          host = localHost.getHostName();
+          ip = localHost.getHostAddress();
+        } catch (UnknownHostException e) {
+          System.err.println("Unable to resolve ip/host: " + e);
+        }
+
+        try {
+          Thread.sleep(60000);
+        } catch (InterruptedException e) {
+          break;
+        }
+      }
+    }
   }
 }
