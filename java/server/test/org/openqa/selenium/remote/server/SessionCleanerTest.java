@@ -50,7 +50,7 @@ public class SessionCleanerTest {
 
   @Test
   public void testCleanup() throws Exception {
-    DriverSessions defaultDriverSessions = getDriverSessions();
+    DriverSessions defaultDriverSessions = getDriverSessions(new SystemClock());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
@@ -110,7 +110,7 @@ public class SessionCleanerTest {
 
   @Test
   public void testCleanupWithThread() throws Exception {
-    DriverSessions defaultDriverSessions = getDriverSessions();
+    DriverSessions defaultDriverSessions = getDriverSessions(new SystemClock());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
@@ -144,23 +144,24 @@ public class SessionCleanerTest {
 
   @Test
   public void testCleanupWithSessionExtension() throws Exception {
-    DriverSessions defaultDriverSessions = getDriverSessions();
+    Clock clock = new FakeClock();
+    DriverSessions defaultDriverSessions = getDriverSessions(clock);
     SessionId firstSession = defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 100, 100);
+    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, clock, 100, 100);
     defaultDriverSessions.get(firstSession).updateLastAccessTime();
-    waitForAllSessionsToExpire(120);
+    clock.pass(120);
     defaultDriverSessions.get(firstSession).updateLastAccessTime();
     sessionCleaner.checkExpiry();
     assertEquals(1, defaultDriverSessions.getSessions().size());
-    waitForAllSessionsToExpire(120);
+    clock.pass(120);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
 
-  private DriverSessions getDriverSessions() {
+  private DriverSessions getDriverSessions(Clock clock) {
     DriverFactory factory = mock(DriverFactory.class);
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
-    return new DefaultDriverSessions(Platform.LINUX, factory);
+    return new DefaultDriverSessions(Platform.LINUX, factory, clock);
   }
 }

@@ -42,6 +42,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class UploadFileTest {
 
   @Test
   public void shouldWriteABase64EncodedZippedFileToDiskAndKeepName() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
 
     File tempFile = touch(null, "foo");
     String encoded = new Zip().zipFile(tempFile.getParentFile(), tempFile);
@@ -88,7 +89,7 @@ public class UploadFileTest {
 
   @Test
   public void shouldThrowAnExceptionIfMoreThanOneFileIsSent() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
     File baseDir = Files.createTempDir();
 
     touch(baseDir, "example");
