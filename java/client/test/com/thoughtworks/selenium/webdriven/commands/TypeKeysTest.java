@@ -28,7 +28,6 @@ import org.openqa.selenium.WebElement;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.internal.seleniumemulation.AlertOverrideStub;
 
 public class TypeKeysTest {
   private ElementFinder elementFinder;
