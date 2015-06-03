@@ -223,7 +223,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    *       and browserVersion denotes the desired version.</li>
    *   <li>The second one is where the browserName is "htmlunit" and the browserVersion
    *       denotes the required browser AND its version. In this mode the browserVersion could be
-   *       "chrome" for Chrome, "firefox-31" for Firefox 31 or "internet explorer-11" for IE 11.</li>
+   *       "chrome" for Chrome, "firefox-38" for Firefox 38 or "internet explorer-11" for IE 11.</li>
    * </ol>
    * <p>The Remote WebDriver uses the second mode - the first mode is deprecated and should not be used.
    */
@@ -262,13 +262,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         int version = Integer.parseInt(browserVersion);
         switch (version) {
-          case 24:
-            return BrowserVersion.FIREFOX_24;
-          default:
+          case 31:
             return BrowserVersion.FIREFOX_31;
+          default:
+            return BrowserVersion.FIREFOX_38;
         }
       } catch (NumberFormatException e) {
-        return BrowserVersion.FIREFOX_31;
+        return BrowserVersion.FIREFOX_38;
       }
     }
 

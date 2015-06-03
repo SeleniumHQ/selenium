@@ -45,7 +45,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_31);
+        BrowserVersion.FIREFOX_38);
   }
 
   @Test
@@ -54,7 +54,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_31);
+        BrowserVersion.FIREFOX_38);
   }
 
   @Test
