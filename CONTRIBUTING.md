@@ -128,7 +128,7 @@ directly on top of master.
 
 ### Step 3: Commit
 
-FIrst make sure git knows your name and email address:
+First make sure git knows your name and email address:
 
 ```text
 % git config --global user.name 'Santa Claus'
@@ -216,7 +216,7 @@ branch.
 
 When code review is complete, a committer will take your PR and
 integrate it on Selenium's master branch. Because we like to keep a
-linear history on th master branch, we will normally squash and rebase
+linear history on the master branch, we will normally squash and rebase
 your branch history.
 
 ## Stages of an Issue or PR
