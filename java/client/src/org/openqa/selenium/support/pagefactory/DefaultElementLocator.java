@@ -30,7 +30,7 @@ import java.util.List;
  * annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
-  private final SearchContext<WebElement> searchContext;
+  private final SearchContext searchContext;
   private final boolean shouldCache;
   private final By by;
   private WebElement cachedElement;
@@ -42,7 +42,7 @@ public class DefaultElementLocator implements ElementLocator {
    * @param searchContext The context to use when finding the element
    * @param field The field on the Page Object that will hold the located value
    */
-  public DefaultElementLocator(SearchContext<WebElement> searchContext, Field field) {
+  public DefaultElementLocator(SearchContext searchContext, Field field) {
     this(searchContext, new Annotations(field));
   }
 
@@ -52,7 +52,7 @@ public class DefaultElementLocator implements ElementLocator {
    * @param searchContext The context to use when finding the element
    * @param annotations AbstractAnnotations class implementation
    */
-  public DefaultElementLocator(SearchContext<WebElement> searchContext, AbstractAnnotations annotations) {
+  public DefaultElementLocator(SearchContext searchContext, AbstractAnnotations annotations) {
     this.searchContext = searchContext;
     this.shouldCache = annotations.isLookupCached();
     this.by = annotations.buildBy();
