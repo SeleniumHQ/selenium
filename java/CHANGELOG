@@ -17,7 +17,7 @@ Important changes in this release:
   running (eg: server runs with Java 7, but the driver is comopiled to
   target Java 8)
 * FirefoxDriver: now supported on OpenBSD (added by minusf@gmail.com)
-* HtmlUnitDriver: Requires Java 7 or above to work.
+* HtmlUnitDriver: Updated to HtmlUnit 2.17. Requires Java 7 or above to work.
 
 Other notable changes:
 
