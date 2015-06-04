@@ -34,11 +34,17 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   private final long insideBrowserTimeout;
   private final long sleepInterval;
   private final Logger log;
+  private final Clock clock;
   private volatile boolean running = true;
 
   SessionCleaner(DriverSessions driverSessions, Logger log, long clientGoneTimeout, long insideBrowserTimeout) {
+    this(driverSessions, log, new SystemClock(), clientGoneTimeout, insideBrowserTimeout);
+  }
+
+  SessionCleaner(DriverSessions driverSessions, Logger log, Clock clock, long clientGoneTimeout, long insideBrowserTimeout) {
     super("DriverServlet Session Cleaner");
     this.log = log;
+    this.clock = clock;
     this.clientGoneTimeout = clientGoneTimeout;
     this.insideBrowserTimeout = insideBrowserTimeout;
     this.driverSessions = driverSessions;
@@ -60,11 +66,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   public void run() {
     while (running) {
       checkExpiry();
-      try {
-        Thread.sleep(sleepInterval);
-      } catch (InterruptedException e) {
-        log.info("Exiting session cleaner thread");
-      }
+      clock.pass(sleepInterval);
     }
   }
 

@@ -70,6 +70,7 @@ public class DefaultSession implements Session {
   private final KnownElements knownElements;
   private final ThreadPoolExecutor executor;
   private final Capabilities capabilities; // todo: Investigate memory model implications of map
+  private final Clock clock;
   // elements inside capabilities.
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
@@ -77,30 +78,36 @@ public class DefaultSession implements Session {
   private TemporaryFilesystem tempFs;
 
   // This method is to avoid constructor escape of partially constructed session object
-  public static Session createSession(DriverFactory factory,
-                                      SessionId sessionId, Capabilities capabilities)
-      throws Exception {
+  public static Session createSession(DriverFactory factory, SessionId sessionId,
+                                      Capabilities capabilities) throws Exception {
+    return createSession(factory, new SystemClock(), sessionId, capabilities);
+  }
+
+  // This method is to avoid constructor escape of partially constructed session object
+  public static Session createSession(DriverFactory factory, Clock clock, SessionId sessionId,
+                                      Capabilities capabilities) throws Exception {
     File tmpDir = new File(System.getProperty("java.io.tmpdir"), sessionId.toString());
     if (!tmpDir.mkdir()) {
       throw new WebDriverException("Cannot create temp directory: " + tmpDir);
     }
     TemporaryFilesystem tempFs = TemporaryFilesystem.getTmpFsBasedOn(tmpDir);
 
-    return new DefaultSession(factory, tempFs, sessionId, capabilities);
+    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
   }
 
   @VisibleForTesting
-  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
+  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
                                       SessionId sessionId, Capabilities capabilities)
       throws Exception {
-    return new DefaultSession(factory, tempFs, sessionId, capabilities);
+    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
   }
 
-  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs,
+  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
                          SessionId sessionId, final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
     this.tempFs = tempFs;
+    this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
@@ -141,11 +148,11 @@ public class DefaultSession implements Session {
    * Touches the session.
    */
   public void updateLastAccessTime() {
-    lastAccess = System.currentTimeMillis();
+    lastAccess = clock.now();
   }
 
   public boolean isTimedOut(long timeout) {
-    return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
+    return timeout > 0 && (lastAccess + timeout) < clock.now();
   }
 
   public void close() {

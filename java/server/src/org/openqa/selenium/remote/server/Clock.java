@@ -15,39 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.webdriven.commands.AlertOverride;
+package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.WebDriver;
+/**
+ * A simple encapsulation to allowing timing
+ */
+public interface Clock {
 
-public class AlertOverrideStub extends AlertOverride {
+  /**
+   * Returns the current time.
+   *
+   * @return The current time.
+   */
+  long now();
 
-  public AlertOverrideStub() {
-    super(true);
-  }
-
-  @Override
-  public void replaceAlertMethod(WebDriver driver) {
-  }
-
-  @Override
-  public String getNextAlert(WebDriver driver) {
-    return null;
-  }
-
-  @Override
-  public boolean isAlertPresent(WebDriver driver) {
-    return false;
-  }
-
-  @Override
-  public String getNextConfirmation(WebDriver driver) {
-    return null;
-  }
-
-  @Override
-  public boolean isConfirmationPresent(WebDriver driver) {
-    return false;
-  }
+  /**
+   * Moves the clock to the future.
+   *
+   * @param durationInMillis Time to pass, in milliseconds.
+   */
+  void pass(long durationInMillis);
 }

@@ -116,7 +116,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
+  @Ignore(value = {IE}, reason = "IE fails this test if requireWindowFocus=true")
   @Test
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
@@ -230,7 +230,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI}, reason = "IE fails this test if requireWindowFocus=true")
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

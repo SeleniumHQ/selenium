@@ -9,7 +9,7 @@ that lets you write interchangable code for all major web browsers.
 The project is made possible by volunteer contributors who have put in
 thousands of hours of their own time, and made the source code freely
 available under the [Apache 2.0
-license](https://github.com/SeleniumHQ/selenium/blob/master/COPYING).
+license](https://github.com/SeleniumHQ/selenium/blob/master/LICENSE).
 
 ## Documentation
 
@@ -33,7 +33,7 @@ See [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIB
 ## Building
 
 Selenium uses a custom build system aptly named
-[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild)
+[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build)
 available on all fine platforms (Linux, Mac, Windows).  We are in the
 process of replacing this with
 [buck](http://facebook.github.io/buck/), so don't be alarmed if you
@@ -264,7 +264,7 @@ build/java/client/src/org/openqa/selenium/selenium-api.jar
 
 If you watch the build, each step should print where its output is
 going.  Java test outputs appear in one of two places: either under
-`build/test_logs` for [JUnit](http://junit.sourceforge.net/) or in
+`build/test_logs` for [JUnit](http://junit.org/) or in
 `build/build_log.xml` for [TestNG](http://testng.org/doc/index.html)
 tests.  If you'd like the build to be chattier, just append `log=true`
 to the build command line.
@@ -285,7 +285,7 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven, it is
-built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/CrazyFunBuild) though
+built with [Crazy-Fun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) though
 that is invoked with *go* as outlined above so you do not really have
 to learn too much about that.
 
@@ -309,5 +309,5 @@ the name.
 ## Useful Resources
 
 Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/BuildingWebDriver) wiki
+Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver) wiki
 page for the last word on building the bits and pieces of Selenium.

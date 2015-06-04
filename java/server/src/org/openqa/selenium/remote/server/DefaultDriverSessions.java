@@ -39,6 +39,7 @@ public class DefaultDriverSessions implements DriverSessions {
   private static final Logger LOG = Logger.getLogger(DefaultDriverSessions.class.getName());
 
   private final DriverFactory factory;
+  private final Clock clock;
 
   private final Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
@@ -82,10 +83,16 @@ public class DefaultDriverSessions implements DriverSessions {
     for (Map.Entry<Capabilities, Class<? extends WebDriver>> entry : drivers.entrySet()) {
       registerDriver(entry.getKey(), entry.getValue());
     }
+    this.clock = new SystemClock();
   }
 
   protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
+    this(runningOn, factory, new SystemClock());
+  }
+
+  protected DefaultDriverSessions(Platform runningOn, DriverFactory factory, Clock clock) {
     this.factory = factory;
+    this.clock = clock;
     registerDefaults(runningOn);
     registerServiceLoaders(runningOn);
   }
@@ -127,7 +134,7 @@ public class DefaultDriverSessions implements DriverSessions {
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
     SessionId sessionId = new SessionId(UUID.randomUUID().toString());
-    Session session = DefaultSession.createSession(factory, sessionId, desiredCapabilities);
+    Session session = DefaultSession.createSession(factory, clock, sessionId, desiredCapabilities);
 
     sessionIdToDriver.put(sessionId, session);
 
