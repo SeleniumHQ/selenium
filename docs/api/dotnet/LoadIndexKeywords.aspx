@@ -1,27 +1,26 @@
 ﻿<%@ Page Language="C#" EnableViewState="False" %>
 
 <script runat="server">
-//=============================================================================
+//===============================================================================================================
 // System  : Sandcastle Help File Builder
 // File    : LoadIndexKeywords.aspx
 // Author  : Eric Woodruff  (Eric@EWoodruff.us) from code by Ferdinand Prantl
-// Updated : 04/01/2008
-// Note    : Copyright 2008, Eric Woodruff, All rights reserved
+// Updated : 04/09/2014
+// Note    : Copyright 2008-2014, Eric Woodruff, All rights reserved
 // Compiler: Microsoft C#
 //
-// This file contains the code used to search for keywords within the help
-// topics using the full-text index files created by the help file builder.
+// This file contains the code used to search for keywords within the help topics using the full-text index
+// files created by the help file builder.
 //
-// This code is published under the Microsoft Public License (Ms-PL).  A copy
-// of the license should be distributed with the code.  It can also be found
-// at the project website: http://SHFB.CodePlex.com.   This notice, the
-// author's name, and all copyright notices must remain intact in all
-// applications, documentation, and source files.
+// This code is published under the Microsoft Public License (Ms-PL).  A copy of the license should be
+// distributed with the code.  It can also be found at the project website: http://SHFB.CodePlex.com.  This
+// notice, the author's name, and all copyright notices must remain intact in all applications, documentation,
+// and source files.
 //
-// Version     Date     Who  Comments
-// ============================================================================
-// 1.6.0.7  04/01/2008  EFW  Created the code
-//=============================================================================
+//    Date     Who  Comments
+// ==============================================================================================================
+// 04/01/2008  EFW  Created the code
+//===============================================================================================================
 
 /// <summary>
 /// Render the keyword index
@@ -73,7 +72,7 @@ protected override void Render(HtmlTextWriter writer)
         sb.AppendFormat("<div class=\"IndexItem\">\r\n" +
             "<span>&nbsp;</span><a class=\"UnselectedNode\" " +
             "onclick=\"javascript: return SelectIndexNode(this);\" " +
-            "href=\"{0}\"{1}>{2}</a>\r\n", url, target,
+						"href=\"{0}\"{1}>{2}</a>\r\n", HttpUtility.HtmlEncode(url), target,
             HttpUtility.HtmlEncode(node.Attributes["Title"].Value));
 
         if(node.ChildNodes.Count != 0)
@@ -82,7 +81,7 @@ protected override void Render(HtmlTextWriter writer)
                     "<img src=\"Item.gif\"/><a class=\"UnselectedNode\" " +
                     "onclick=\"javascript: return SelectIndexNode(this);\" " +
                     "href=\"{0}\" target=\"TopicContent\">{1}</a>\r\n</div>\r\n",
-                    subNode.Attributes["Url"].Value,
+										HttpUtility.HtmlEncode(subNode.Attributes["Url"].Value),
                     HttpUtility.HtmlEncode(subNode.Attributes["Title"].Value));
 
         sb.Append("</div>\r\n");

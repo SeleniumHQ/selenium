@@ -34,10 +34,8 @@ Keyword Index
 <div id="divNavOpts" class="NavOpts" style="height: 20px;">
     <img class="TOCLink" onclick="javascript: SyncTOC();" src="SyncTOC.gif"
         height="16" width="16" alt="Sync to TOC"/>
-    <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(true);"
-        src="ExpandAll.bmp" height="16" width="16" alt="Expand all "/>
     <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(false);"
-        src="CollapseAll.bmp" height="16" width="16" alt="Collapse all" />
+        src="CollapseAll.png" height="16" width="16" alt="Collapse all" />
     <img class="TOCLink" onclick="javascript: ShowHideIndex(true);"
         src="Index.gif" height="16" width="16" alt="Index" />
     <img class="TOCLink" onclick="javascript: ShowHideSearch(true);"
@@ -74,30 +72,28 @@ This page uses an IFRAME but your browser does not support it.
 </html>
 
 <script runat="server">
-//=============================================================================
+//===============================================================================================================
 // System  : Sandcastle Help File Builder
 // File    : Index.aspx
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 02/18/2012
-// Note    : Copyright 2007-2012, Eric Woodruff, All rights reserved
+// Updated : 04/09/2014
+// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
 // Compiler: Microsoft C#
 //
-// This file contains the code used to display the index page for a website
-// produced by the help file builder.  The root nodes are loaded for the table
-// of content.  Child nodes are loaded dynamically when first expanded using
-// an Ajax call.
+// This file contains the code used to display the index page for a website produced by the help file builder.
+// The root nodes are loaded for the table of content.  Child nodes are loaded dynamically when first expanded
+// using an Ajax call.
 //
-// This code is published under the Microsoft Public License (Ms-PL).  A copy
-// of the license should be distributed with the code.  It can also be found
-// at the project website: http://SHFB.CodePlex.com.   This notice, the
-// author's name, and all copyright notices must remain intact in all
-// applications, documentation, and source files.
+// This code is published under the Microsoft Public License (Ms-PL).  A copy of the license should be
+// distributed with the code.  It can also be found at the project website: http://SHFB.CodePlex.com.  This
+// notice, the author's name, and all copyright notices must remain intact in all applications, documentation,
+// and source files.
 //
-// Version     Date     Who  Comments
-// ============================================================================
-// 1.5.0.0  06/21/2007  EFW  Created the code
-// 1.9.4.0  02/18/2012  EFW  Merged code from tom103 to show direct link
-//=============================================================================
+//    Date     Who  Comments
+// ==============================================================================================================
+// 06/21/2007  EFW  Created the code
+// 02/18/2012  EFW  Merged code from tom103 to show direct link
+//===============================================================================================================
 
 protected void Page_Load(object sender, EventArgs e)
 {
@@ -132,7 +128,7 @@ protected void Page_Load(object sender, EventArgs e)
                 "onclick=\"javascript: return Expand(this);\" " +
                 "href=\"{0}\"{1}>{2}</a>\r\n" +
                 "<div id=\"{3}\" class=\"Hidden\"></div>\r\n</div>\r\n",
-                url, target, HttpUtility.HtmlEncode(title), id);
+								HttpUtility.HtmlEncode(url), target, HttpUtility.HtmlEncode(title), id);
         }
         else
         {
@@ -148,7 +144,7 @@ protected void Page_Load(object sender, EventArgs e)
                 "<a class=\"UnselectedNode\" " +
                 "onclick=\"javascript: return SelectNode(this);\" " +
                 "href=\"{0}\" target=\"TopicContent\">{1}</a>\r\n" +
-                "</div>\r\n", url, HttpUtility.HtmlEncode(title));
+								"</div>\r\n", HttpUtility.HtmlEncode(url), HttpUtility.HtmlEncode(title));
         }
     }
 

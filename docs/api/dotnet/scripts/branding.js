@@ -4,9 +4,6 @@
 var allLanguageTagSets = new Array();
 // we stored the ids of code snippets of same pages so that we can do interaction between them when tab are selected
 var snippetIdSets = new Array();
-var isSearchPage = false;
-// Width of TOC: 1 (280px), 2 (480px), 3 (680px)
-var tocPosition = 1;
 
 function onLoad()
 {
@@ -20,86 +17,120 @@ function onLoad()
 
     try
     {
-        var linkEnum = new Enumerator(document.getElementsByTagName('link'));
+        var linkEnum = document.getElementsByTagName("link");
         var link;
 
-        for (linkEnum.moveFirst(); !linkEnum.atEnd(); linkEnum.moveNext())
+        for(var idx = 0; idx < linkEnum.length; idx++)
         {
-            link = linkEnum.item();
-            if (link.rel.toLowerCase() == 'shortcut icon')
+            link = linkEnum[idx];
+
+            if(link.rel.toLowerCase() == "shortcut icon")
                 iconPath = link.href.toString();
         }
     }
-    catch (e) {}
+    catch (e) { }
     finally {}
 
     if(iconPath)
     {
         try
         {
-            var styleSheetEnum = new Enumerator(document.styleSheets);
+            var styleSheetEnum = document.styleSheets;
             var styleSheet;
             var ruleNdx;
             var rule;
 
-            for(styleSheetEnum.moveFirst(); !styleSheetEnum.atEnd(); styleSheetEnum.moveNext())
+            for(var idx = 0; idx < styleSheetEnum.length; idx++)
             {
-                styleSheet = styleSheetEnum.item();
+                styleSheet = styleSheetEnum[idx];
 
-                if(styleSheet.rules)
-                    if(styleSheet.rules.length != 0)
-                        for(ruleNdx = 0; ruleNdx != styleSheet.rules.length; ruleNdx++)
-                        {
-                            rule = styleSheet.rules.item(ruleNdx);
+                // Ignore sheets at ms-help URLs
+                if(styleSheet.href != null && styleSheet.href.substr(0,8) == "ms-help:")
+                    continue;
 
-                            var bgUrl = rule.style.backgroundImageName;
+                // Ignore errors (Help Viewer 2).  styleSheet.rules is inaccessible due to security restrictions
+                // for all style sheets not defined within the page.
+                try
+                {
+                    // Get sheet rules
+                    var rules = styleSheet.rules;
 
-                            if(typeof(bgUrl) != "undefined")
-                                rule.style.backgroundImage = "url(" + iconPath.replace("favicon.ico", bgUrl) + ")";
-                        }
+                    if(rules == null)
+                        rules = styleSheet.cssRules;
+
+                    if(rules != null)
+                        if(rules.length != 0)
+                            for(ruleNdx = 0; ruleNdx != rules.length; ruleNdx++)
+                            {
+                                rule = rules.item(ruleNdx);
+
+                                var selectorText = rule.selectorText.toLowerCase();
+
+                                // The selector text may show up grouped or individually for these
+                                if(selectorText == ".oh_codesnippetcontainertableftactive, .oh_codesnippetcontainertableft, .oh_codesnippetcontainertableftdisabled" ||
+                                  selectorText == ".oh_codesnippetcontainertableftactive" ||
+                                  selectorText == ".oh_codesnippetcontainertableft" ||
+                                  selectorText == ".oh_codesnippetcontainertableftdisabled")
+                                {
+                                    rule.style.backgroundImage = "url(" + iconPath.replace("favicon.ico", "tabLeftBG.gif") + ")";
+                                }
+
+                                if(selectorText == ".oh_codesnippetcontainertabrightactive, .oh_codesnippetcontainertabright, .oh_codesnippetcontainertabrightdisabled" ||
+                                  selectorText == ".oh_codesnippetcontainertabrightactive" ||
+                                  selectorText == ".oh_codesnippetcontainertabright" ||
+                                  selectorText == ".oh_codesnippetcontainertabrightdisabled")
+                                {
+                                    rule.style.backgroundImage = "url(" + iconPath.replace("favicon.ico", "tabRightBG.gif") + ")";
+                                }
+
+                                if(selectorText == ".oh_footer")
+                                {
+                                    rule.style.backgroundImage = "url(" + iconPath.replace("favicon.ico", "footer_slice.gif") + ")";
+                                }
+                            }
+                }
+                catch (e) { }
+                finally {}
             }
         }
-        catch (e) {}
+        catch (e) { }
         finally {}
     }
 
-    // This compensates for a bug in the default transforms that changes <br/> to <br></br> in SelfBranded content
+    // In MS Help Viewer, the transform the topic is ran through can move the footer.  Move it back where it
+    // belongs if necessary.
     try
     {
-        var brTags = document.all.tags("br");
+        var footer = document.getElementById("OH_footer")
 
-        if(brTags)
+        if(footer)
         {
-            var brEnum = new Enumerator(brTags);
+            var footerParent = document.body;
 
-            for(brEnum.moveFirst(); !brEnum.atEnd(); brEnum.moveNext())
+            if(footer.parentElement != footerParent)
             {
-                var brTag = brEnum.item();
-                var brNext = brTag.nextSibling;
-
-                if(brNext)
-                    if(brNext.tagName.toLowerCase() == "br")
-                        brNext.parentElement.removeChild (brNext);
+                footer.parentElement.removeChild(footer);
+                footerParent.appendChild(footer);
             }
         }
     }
-    catch (e) {}
-    finally {}
+    catch(e) { }
+    finally { }
 
   var lang = GetCookie("CodeSnippetContainerLang", "C#");
   var currentLang = getDevLangFromCodeSnippet(lang);
 
   // if LST exists on the page, then set the LST to show the user selected programming language.
   updateLST(currentLang);
- 
-  // if codesnippet exists
+
+  // if code snippet exists
   if (snippetIdSets.length > 0)
   {
     var i = 0;
     while (i < snippetIdSets.length)
     {
       var _tempSnippetCount = 5;
-      if (document.getElementById(snippetIdSets[i] + "_tab5") == null)
+      if (document.getElementById(snippetIdSets[i] + "_tab4") == null)
         _tempSnippetCount = 1;
 
       if (_tempSnippetCount < 2)
@@ -151,7 +182,7 @@ function onLoad()
       }
      
       }
-      if (document.getElementById(snippetIdSets[i] + "_tab5").className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
+      if (document.getElementById(snippetIdSets[i] + "_tab4").className.indexOf("OH_CodeSnippetContainerTabDisabled") != -1)
       {
         // disable right most img if last tab disabled
         document.getElementById(snippetIdSets[i] + "_tabimgright").className = "OH_CodeSnippetContainerTabRightDisabled";
@@ -160,19 +191,8 @@ function onLoad()
       i++;
     }
   }
-
-  updateSearchUI();
-
-  // Check for high contrast mode
-  if (isHighContrast())
-  {
-    onHighContrast(isBlackBackground());
-  }
-
-  // Position TOC
-  tocPosition = GetCookie("TocPosition", 1);
-  resizeToc();
 }
+
 // The function executes on OnLoad event and Changetab action on Code snippets.
 // The function parameter changeLang is the user choosen programming language, VB is used as default language if the app runs for the fist time.
 // this function iterates through the 'lanSpecTextIdSet' dictionary object to update the node value of the LST span tag per user's choosen programming language.
@@ -200,124 +220,6 @@ function updateLST(currentLang)
     }
 }
 
-function updateSearchUI()
-{
-  var searchWatermark = document.getElementById('searchWatermark');
-  var searchBtn = document.getElementById('btnS');
-  var searchTextbox = document.getElementById('qu');
-
-  if (searchWatermark && searchBtn && searchTextbox)
-  {
-    if (searchBtn.innerText == '' || searchBtn.textContent == '')  // true if we are not on the search results page
-    {
-      // Position watermarks
-      searchWatermark.style.top = searchTextbox.offsetTop + 'px';
-      searchWatermark.style.left = searchTextbox.offsetLeft + 'px';
-      if (searchTextbox.value != '')
-      {
-        searchWatermark.style.display = 'none';
-        searchTextbox.focus();
-      }
-      else
-      {
-        searchWatermark.style.display = 'inline';
-        searchTextbox.blur();
-      }
-    }
-    else
-    {
-      isSearchPage = true;
-      searchWatermark.style.display = 'none';
-      searchTextbox.focus();
-    }
-  }
-}
-
-// We use a colored span to detect high contrast mode
-function isHighContrast()
-{
-  var elem = document.getElementById('HCColorTest');
-  if (elem)
-  {
-    // Set SPAN text color - will not be applied if in contrast mode
-    elem.style.color = '#ff00ff';
-    if (window.getComputedStyle)
-    { // Firefox
-      var textcolor = window.getComputedStyle(elem, null).color;
-      if (textcolor != 'rgb(255, 0, 255)'
-       && textcolor != '#ff00ff')
-      {
-        return true;
-      }
-    }
-    else if (elem.currentStyle)
-    { // IE
-      if (elem.currentStyle.color != '#ff00ff')
-      {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-// Called to determine if background is black
-// Only accurate when in high constrast mode
-function isBlackBackground()
-{
-  var color = '';
-
-  if (window.getComputedStyle)
-  { // Firefox
-    color = window.getComputedStyle(document.body, null).backgroundColor;
-  }
-  else if (document.body.currentStyle)
-  { // IE
-    color = document.body.currentStyle.backgroundColor;
-  }
-
-  if (color == 'rgb(0, 0, 0)'
-   || color == '#000000')
-  {
-    return true;
-  }
-
-  return false;
-}
-
-// Called when high constrast is detected
-function onHighContrast(black)
-{
-  if (black)
-  { // Black background, so use alternative images
-
-    // VS logo
-    var logo = document.getElementById('VSLogo');
-    if (logo)
-    {
-      var logoHC = document.getElementById('VSLogoHC');
-      if (logoHC)
-      {
-        logo.style.display = 'none';
-        logoHC.style.display = '';
-      }
-    }
-
-    // Search
-    var searchImage = document.getElementById('searchImage');
-    if (searchImage)
-    {
-      var searchImageHC = document.getElementById('searchImageHC');
-      if (searchImageHC)
-      {
-        searchImage.style.display = 'none';
-        searchImageHC.style.display = '';
-      }
-    }
-  }
-}
-
 function getDevLangFromCodeSnippet(lang)
 {
   var tagSet = "nu";
@@ -330,7 +232,9 @@ function getDevLangFromCodeSnippet(lang)
       tagSet = "cs";
     if ((temp.indexOf("cplusplus") != -1) || (temp.indexOf("visualc++") != -1))
       tagSet = "cpp";
-  }
+    if((temp.indexOf("fsharp") != -1) || (temp.indexOf("f#") != -1))
+        tagSet = "fs";
+}
   return tagSet;
 }
 // Cookie functionality
@@ -372,7 +276,7 @@ function SetCodeSnippetContainerLangCookie(lang)
 }
 
 // we store the ids of LST control as dictionary object key values, so that we can get access to them and update when user changes to a different programming language. 
-// The values of this dictioanry objects are ';' separated languagespecific attributes of the mtps:languagespecific control in the content.
+// The values of this dictionary objects are ';' separated languagespecific attributes of the mtps:languagespecific control in the content.
 // This function is called from LanguageSpecificText.xslt
 var lanSpecTextIdSet = new Object();
 function addToLanSpecTextIdSet(id)
@@ -388,16 +292,16 @@ function ChangeTab(objid, lang, index, snippetCount)
   setCurrentLang(objid, lang, index, snippetCount, true);
   SetCodeSnippetContainerLangCookie(lang);
 
-  // switch tab for all of other codesnippets
+  // switch tab for all of other code snippets
   i = 0;
   while (i < snippetIdSets.length)
   {
-    // we just care about other snippes
+    // we just care about other snippets
     if (snippetIdSets[i] != objid)
     {
 
       var _tempSnippetCount = 5;
-      if (document.getElementById(snippetIdSets[i] + "_tab5") == null)
+      if (document.getElementById(snippetIdSets[i] + "_tab4") == null)
         _tempSnippetCount = 1;
       if (_tempSnippetCount < 2)
       { // Tabs are not grouped - skip
@@ -536,61 +440,7 @@ function addSpecificTextLanguageTagSet(codesnippetid)
   }
   snippetIdSets.push(codesnippetid);
 }
-function ExchangeTitleContent(objid, snippetCount)
-{
-  ApplyExchangeTitleContent(objid, snippetCount);
 
-  // switch tab for all of other codesnippets
-  i = 0;
-  while (i < snippetIdSets.length)
-  {
-    // we just care about other snippes
-    if (snippetIdSets[i] != objid)
-    {
-      var _tempSnippetCount = 5;
-      if (document.getElementById(snippetIdSets[i] + "_tab5") == null)
-        _tempSnippetCount = 1;
-
-      if (_tempSnippetCount < 2) return;
-
-      ApplyExchangeTitleContent(snippetIdSets[i], _tempSnippetCount);
-    }
-    i++;
-  }
-}
-
-function ApplyExchangeTitleContent(objid, snippetCount)
-{
-  var i = 1;
-  while (i <= snippetCount)
-  {
-    var obj = document.getElementById(objid + '_code_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none'))
-    {
-      obj.style.display = 'none';
-      document.getElementById(objid + '_code_Plain_Div' + i).style.display = 'block';
-      viewPlain = true;
-
-      document.getElementById(objid + '_ViewPlain').style.display = 'none';
-      document.getElementById(objid + '_ViewColorized').style.display = 'inline';
-      break;
-    }
-
-    obj = document.getElementById(objid + '_code_Plain_Div' + i);
-    if ((obj != null) && (obj.style.display != 'none'))
-    {
-      obj.style.display = 'none';
-      document.getElementById(objid + '_code_Div' + i).style.display = 'block';
-      viewPlain = false;
-
-      document.getElementById(objid + '_ViewPlain').style.display = 'inline';
-      document.getElementById(objid + '_ViewColorized').style.display = 'none';
-      break;
-    }
-
-    i++;
-  }
-}
 function CopyToClipboard(objid, snippetCount)
 {
   var contentid;
@@ -654,6 +504,7 @@ function CopyToClipboard(objid, snippetCount)
     return;
   }
 }
+
 function Print(objid, snippetCount)
 {
   var contentid;
@@ -679,7 +530,6 @@ function Print(objid, snippetCount)
   var obj = document.getElementById(contentid);
   if (obj)
   {
-    //var tempwin = window.open('', '', '');
       var tempwin = window.open('', '', 'top=900000, left=900000, dependent=yes');
       if (tempwin && tempwin.document) {
           try {
@@ -691,68 +541,3 @@ function Print(objid, snippetCount)
       }
   }
 }
-
-function SearchTextboxKeyUp(e)
-{
-  var e = window.event || e;
-  var key = e.charCode || e.keyCode;
-  if (key == 27)
-  { // If user pressed ESCAPE, clear the textbox (IE doesn't pass special keys to onkeypress)
-    document.getElementById('qu').value = '';
-    return false;
-  }
-  preventEventBubbling(e);
-}
-
-// TOC resize script
-
-function onIncreaseToc()
-{
-  tocPosition++;
-  if (tocPosition > 3) tocPosition = 1;
-  resizeToc();
-  SetCookie("TocPosition", tocPosition);
-}
-
-function onResetToc()
-{
-  tocPosition = 1;
-  resizeToc();
-  SetCookie("TocPosition", tocPosition);
-}
-
-function resizeToc()
-{
-  var toc = document.getElementById("LeftNav");
-  if (toc)
-  {
-    // Set TOC width
-    // Positions: 1 (280px) 2 (380px) 3 (480px)
-    var tocWidth = 280 + ((tocPosition - 1) * 100);
-    toc.style.width = tocWidth + "px";
-
-    // Position images
-    if (document.all) tocWidth -= 1;
-    document.getElementById("TocResize").style.left = tocWidth + "px";
-
-    // Hide/show increase TOC width image
-    document.getElementById("ResizeImageIncrease").style.display = (tocPosition == 3) ? "none" : "";
-
-    // Hide/show reset TOC width image
-    document.getElementById("ResizeImageReset").style.display = (tocPosition != 3) ? "none" : "";
-  }
-}
-
-function preventEventBubbling(e)
-{
-  if (e && e.stopPropagation)
-  {
-    e.stopPropagation();
-  }
-  else
-  {
-    event.cancelBubble = true;
-  }
-}
-
-

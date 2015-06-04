@@ -32,10 +32,8 @@ Keyword Index
 <div id="divNavOpts" class="NavOpts" style="height: 20px;">
     <img class="TOCLink" onclick="javascript: SyncTOC();" src="SyncTOC.gif"
         height="16" width="16" alt="Sync to TOC"/>
-    <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(true);"
-        src="ExpandAll.bmp" height="16" width="16" alt="Expand all "/>
     <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(false);"
-        src="CollapseAll.bmp" height="16" width="16" alt="Collapse all" />
+        src="CollapseAll.png" height="16" width="16" alt="Collapse all" />
     <img class="TOCLink" onclick="javascript: ShowHideIndex(true);"
         src="Index.gif" height="16" width="16" alt="Index" />
     <img class="TOCLink" onclick="javascript: ShowHideSearch(true);"

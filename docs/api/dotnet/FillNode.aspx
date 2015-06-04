@@ -1,90 +1,157 @@
 ﻿<%@ Page Language="C#" EnableViewState="False" %>
 
 <script runat="server">
-//=============================================================================
+//===============================================================================================================
 // System  : Sandcastle Help File Builder
 // File    : FillNode.aspx
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/02/2008
-// Note    : Copyright 2007-2008, Eric Woodruff, All rights reserved
+// Updated : 04/09/2014
+// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
 // Compiler: Microsoft C#
 //
-// This file contains the code used to dynamically load a parent node with its
-// child table of content nodes when first expanded.
+// This file contains the code used to dynamically load a parent node with its child table of content nodes when
+// first expanded.
 //
-// This code is published under the Microsoft Public License (Ms-PL).  A copy
-// of the license should be distributed with the code.  It can also be found
-// at the project website: http://SHFB.CodePlex.com.   This notice, the
-// author's name, and all copyright notices must remain intact in all
-// applications, documentation, and source files.
+// This code is published under the Microsoft Public License (Ms-PL).  A copy of the license should be
+// distributed with the code.  It can also be found at the project website: http://SHFB.CodePlex.com.  This
+// notice, the author's name, and all copyright notices must remain intact in all applications, documentation,
+// and source files.
 //
-// Version     Date     Who  Comments
-// ============================================================================
-// 1.5.0.0  06/21/2007  EFW  Created the code
-//=============================================================================
+//    Date     Who  Comments
+// ==============================================================================================================
+// 06/21/2007  EFW  Created the code
+// 07/17/2013  EFW  Merged code contributed by Procomp Solutions Oy that improves performance for large TOCs by
+//								  using XML serialization and caching.
+//===============================================================================================================
 
+private static readonly TocNode[] NoChildNodes = new TocNode[0];
+private static readonly object TocLoadSyncObject = new object();
+
+// This is used to contain the serialized table of contents
+[XmlRoot("HelpTOC")]
+public sealed class TableOfContents
+{
+	[XmlElement("HelpTOCNode")]
+	public TocNode[] ChildNodes;
+
+	[XmlIgnore]
+	public IDictionary<string, TocNode> NodesById;
+
+	internal void IndexNodes()
+	{
+		this.NodesById = new Dictionary<string, TocNode>();
+		AddToIndex(this.NodesById, this.ChildNodes);
+	}
+
+	private static void AddToIndex(IDictionary<string, TocNode> nodesById, TocNode[] nodes)
+	{
+		foreach(TocNode node in nodes)
+			if(!String.IsNullOrEmpty(node.Id))
+			{
+				nodesById.Add(node.Id, node);
+				AddToIndex(nodesById, node.ChildNodes);
+			}
+	}
+}
+
+// This represents a single node in the table of contents
+public sealed class TocNode
+{
+	[XmlAttribute("Id")]
+	public string Id;
+
+	[XmlAttribute("Title")]
+	public string Title;
+
+	[XmlAttribute("Url")]
+	public string Url;
+
+	[XmlElement("HelpTOCNode")]
+	public TocNode[] ChildNodes;
+}
+
+// Load the TOC info and store it in the cache on first use
+private TableOfContents GetToc()
+{
+	string tocPath = Server.MapPath("WebTOC.xml");
+	string tocCacheKey = tocPath;
+
+	lock(TocLoadSyncObject)
+	{
+		TableOfContents toc = this.Cache[tocCacheKey] as TableOfContents;
+
+		if(toc == null)
+		{
+			CacheDependency cacheDependency = new CacheDependency(tocPath);
+
+			using(XmlReader reader = XmlReader.Create(tocPath))
+			{
+				toc = (TableOfContents)new XmlSerializer(typeof(TableOfContents)).Deserialize(reader);
+				toc.IndexNodes();
+			}
+
+			this.Cache.Insert(tocCacheKey, toc, cacheDependency);
+		}
+
+		return toc;
+	}
+}
+
+// Load the requested node with its children
 protected override void Render(HtmlTextWriter writer)
 {
-    StringBuilder sb = new StringBuilder(10240);
-    string id, url, target, title;
+	StringBuilder sb = new StringBuilder(10240);
+	TableOfContents toc = this.GetToc();
 
-    XPathDocument toc = new XPathDocument(Server.MapPath("WebTOC.xml"));
-    XPathNavigator navToc = toc.CreateNavigator();
+	// The ID to use should be passed in the query string
+	string expandedId = this.Request.QueryString["Id"];
+	TocNode expandedNode;
 
-    // The ID to use should be passed in the query string
-    XPathNodeIterator root = navToc.Select("//HelpTOCNode[@Id='" +
-        this.Request.QueryString["Id"] + "']/*");
+	if(toc.NodesById.TryGetValue(expandedId, out expandedNode))
+	{
+		foreach(TocNode childNode in expandedNode.ChildNodes ?? NoChildNodes)
+		{
+			if(childNode.ChildNodes != null && childNode.ChildNodes.Length != 0)
+			{
+				// Write out a parent TOC entry
+				string childUrl = childNode.Url;
+				string childTarget;
 
-    if(root.Count == 0)
-    {
-        writer.Write("<b>TOC node not found!</b>");
-        return;
-    }
+				if(!String.IsNullOrEmpty(childUrl))
+					childTarget = " target=\"TopicContent\"";
+				else
+				{
+					childUrl = "#";
+					childTarget = String.Empty;
+				}
 
-    foreach(XPathNavigator node in root)
-    {
-        if(node.HasChildren)
-        {
-            // Write out a parent TOC entry
-            id = node.GetAttribute("Id", String.Empty);
-            title = node.GetAttribute("Title", String.Empty);
-            url = node.GetAttribute("Url", String.Empty);
+				sb.AppendFormat("<div class=\"TreeNode\">\r\n" +
+					"<img class=\"TreeNodeImg\" onclick=\"javascript: Toggle(this);\" src=\"Collapsed.gif\"/>" +
+					"<a class=\"UnselectedNode\" onclick=\"javascript: return Expand(this);\" " +
+					"href=\"{0}\"{1}>{2}</a>\r\n" +
+					"<div id=\"{3}\" class=\"Hidden\"></div>\r\n" +
+					"</div>\r\n", HttpUtility.HtmlEncode(childUrl), childTarget, HttpUtility.HtmlEncode(childNode.Title),
+					childNode.Id);
+			}
+			else
+			{
+				string childUrl = childNode.Url;
 
-            if(!String.IsNullOrEmpty(url))
-                target = " target=\"TopicContent\"";
-            else
-            {
-                url = "#";
-                target = String.Empty;
-            }
+				if(String.IsNullOrEmpty(childUrl))
+					childUrl = "about:blank";
 
-            sb.AppendFormat("<div class=\"TreeNode\">\r\n" +
-                "<img class=\"TreeNodeImg\" " +
-                "onclick=\"javascript: Toggle(this);\" " +
-                "src=\"Collapsed.gif\"/><a class=\"UnselectedNode\" " +
-                "onclick=\"javascript: return Expand(this);\" " +
-                "href=\"{0}\"{1}>{2}</a>\r\n" +
-                "<div id=\"{3}\" class=\"Hidden\"></div>\r\n</div>\r\n",
-                url, target, HttpUtility.HtmlEncode(title), id);
-        }
-        else
-        {
-            title = node.GetAttribute("Title", String.Empty);
-            url = node.GetAttribute("Url", String.Empty);
+				// Write out a TOC entry that has no children
+				sb.AppendFormat("<div class=\"TreeItem\">\r\n" +
+					"<img src=\"Item.gif\"/><a class=\"UnselectedNode\" " +
+					"onclick=\"javascript: return SelectNode(this);\" href=\"{0}\" " +
+					"target=\"TopicContent\">{1}</a>\r\n" +
+					"</div>\r\n", HttpUtility.HtmlEncode(childUrl), HttpUtility.HtmlEncode(childNode.Title));
+			}
+		}
 
-            if(String.IsNullOrEmpty(url))
-                url = "about:blank";
-
-            // Write out a TOC entry that has no children
-            sb.AppendFormat("<div class=\"TreeItem\">\r\n" +
-                "<img src=\"Item.gif\"/>" +
-                "<a class=\"UnselectedNode\" " +
-                "onclick=\"javascript: return SelectNode(this);\" " +
-                "href=\"{0}\" target=\"TopicContent\">{1}</a>\r\n" +
-                "</div>\r\n", url, HttpUtility.HtmlEncode(title));
-        }
-    }
-
-    writer.Write(sb.ToString());
+		writer.Write(sb.ToString());
+	}
+	else
+		writer.Write("<b>TOC node not found!</b>");
 }
 </script>
