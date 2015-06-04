@@ -14,14 +14,17 @@ mv build/docs/api/py docs/api/py
 
 git add -A docs/api
 
-echo "Do you want to commit the changes? (Y/n):"
+read -p "Do you want to commit the chages? (Y/n):" changes </dev/tty
 
-read changes
-
-if [ $changes != "" || $changes != "Y" || $changes != "y" ]
-then
-  exit;
+if [ -z $changes ]; then
+  changes=Y
 fi
+
+case "$changes" in
+  Y|y) echo "";;
+  N|n) exit;;
+  *) exit;;
+esac
 
 echo "Commiting changes"
 git commit -am "updating javadoc and py docs"
