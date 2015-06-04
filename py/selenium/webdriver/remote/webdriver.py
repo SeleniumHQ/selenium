@@ -455,7 +455,7 @@ class WebDriver(object):
         :Usage:
             driver.page_source
         """
-        return self.execute_script("return document.documentElement.outerHTML;")
+        return self.execute(Command.GET_PAGE_SOURCE)['value']
 
     def close(self):
         """
