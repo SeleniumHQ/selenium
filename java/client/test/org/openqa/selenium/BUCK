@@ -1,5 +1,4 @@
 java_test(name = 'small-tests',
-java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
