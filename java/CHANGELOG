@@ -3,6 +3,11 @@ v2.46.0
 
 Important changes in this release:
 
+* Supports native events for Firefox version 31 (immediately previous
+  ESR). Native event support has been discontinued for versions of
+  Firefox later than 33. Synthetic events tested on Firefox versions 31
+  (immediately previous ESR), 37 (immediately previous release), and 38
+  (current release and current ESR).
 * Remove all support from both webdriver and RC for Presto-based
   Opera. Blink-based Opera is still supported!
 * Added beta Marionette driver (for Firefox OS and recent desktop
@@ -23,6 +28,7 @@ Other notable changes:
   css is also related to this information (only partly implemented in
   HtmlUnit at the moment)
 * Updated htmlunitdriver to use htmlunit 2.16
+* Upgraded commons-exec from 1.1 to 1.3
 * Changed capability name from pageLoadingStrategy to pageLoadStrategy
 * FIX: Google Code issue #7749: Add Get/Set network connection
   commands to JsonHttpCommandHandler to be able to use commands in
@@ -32,7 +38,33 @@ Other notable changes:
   priority than node configuration.
 * ChromeDriver: Added ability to pass whitelisted-ips option to the
   chromedriver
-
+* Implement lazy loopback detection. This provides ~10x speed
+  improvement of selenium server startup.
+* Allow loading option descriptions from JSON file instead of
+  Properties, allowing the server to manage order of options in the
+  help message
+* SafariDriver: In SafariDriver's page script, copy window properties
+  to goog.global. (provided by juangj@google.com)
+* Add a method toList that allows converting CompositeAction to JSON
+* FirefoxDriver: Skip the profile cleaning step when launching Firefox
+* Implement both integer (legacy) and string (standard) response status
+  for the JSON wire protocol
+* FirefoxDriver: Disable https://wiki.mozilla.org/Advocacy/heartbeat
+  Firefox 37+ feature in browser sessions started by FirefoxDriver.
+* FirefoxDriver: Added getters to FirefoxProfile to allow reading
+  preset preference values
+* PageFactory: Changed default value of how part of @FindBy annotation
+  from ID to UNSET, but treat them equivalent to ensure backward
+  compatibility
+* PageFactory: Provide ability to use custom annotations. (Provided
+  by Artem Koshelev)
+* Use DaemonExecutor from commons-exec instead of DefaultExecutor. 
+  Fixes Google Code issue 4734. (Provided by Richard Atkins)
+* FirefoxDriver and Java language bindings now handle both legacy and
+  W3C specification dialects of element reference serialization in the
+  JSON wire protocol.
+* FirefoxDriver:  Don't force garbage collection in httpd.js for
+  Firefox when connections are closed
 
 v2.45.0
 =======
