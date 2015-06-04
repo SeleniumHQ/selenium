@@ -27,7 +27,7 @@ Other notable changes:
 * HtmlUnit: do not disable mouse notifications when js is disabled,
   css is also related to this information (only partly implemented in
   HtmlUnit at the moment)
-* Updated htmlunitdriver to use htmlunit 2.16
+* Updated htmlunitdriver to use htmlunit 2.17
 * Upgraded commons-exec from 1.1 to 1.3
 * Changed capability name from pageLoadingStrategy to pageLoadStrategy
 * FIX: Google Code issue #7749: Add Get/Set network connection
