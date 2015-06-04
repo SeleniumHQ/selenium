@@ -1,8 +1,13 @@
-unreleased
+2.46.0 (2015-06-04)
 ===================
+
+Firefox:
+  * Support for Firefox 38
+  * Fix performance bug by not forcing garbage collection in httpd.js
 
 Ruby changes:
   * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
+  * Remove Presto-Opera support (Blink-based Opera still supported)
 
 2.45.0 (2015-02-28)
 ===================
