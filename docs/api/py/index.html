@@ -52,18 +52,18 @@
 <p>The <cite>selenium</cite> package is used automate web browser interaction from Python.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="11%" />
+<col width="89%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><strong>Home</strong>:</td>
 <td><a class="reference external" href="http://www.seleniumhq.org">http://www.seleniumhq.org</a></td>
 </tr>
 <tr class="row-even"><td><strong>Docs</strong>:</td>
-<td><a class="reference external" href="http://selenium.googlecode.com/git/docs/api/py/api.html">selenium package API</a></td>
+<td><a class="reference external" href="http://seleniumhq.github.io/selenium/docs/api/py/api.html">selenium package API</a></td>
 </tr>
 <tr class="row-odd"><td><strong>Dev</strong>:</td>
-<td><a class="reference external" href="https://code.google.com/p/selenium/">https://code.google.com/p/selenium/</a></td>
+<td><a class="reference external" href="https://github.com/SeleniumHQ/Selenium">https://github.com/SeleniumHQ/Selenium</a></td>
 </tr>
 <tr class="row-even"><td><strong>PyPI</strong>:</td>
 <td><a class="reference external" href="https://pypi.python.org/pypi/selenium">https://pypi.python.org/pypi/selenium</a></td>
@@ -87,7 +87,7 @@
 <p>If you have <a class="reference external" href="http://www.pip-installer.org">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
 <div class="highlight-python"><pre>pip install -U selenium</pre>
 </div>
-<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.45.tar.gz), unarchive it, and run:</p>
+<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.46.tar.gz), unarchive it, and run:</p>
 <div class="highlight-python"><pre>python setup.py install</pre>
 </div>
 <p>Note: both of the methods described above install <cite>selenium</cite> as a system-wide package  That will require administrative/root access to ther machine.  You may consider using a <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> to create isolated Python environments instead.</p>
@@ -152,9 +152,9 @@
 <h2>Selenium Server (optional)<a class="headerlink" href="#selenium-server-optional" title="Permalink to this headline">¶</a></h2>
 <p>For normal WebDriver scripts (non-Remote), the Java server is not needed.</p>
 <p>However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).</p>
-<p>Download the server separately, from: <a class="reference external" href="http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar">http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar</a></p>
+<p>Download the server separately, from: <a class="reference external" href="http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar">http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar</a></p>
 <p>Run the server from the command line:</p>
-<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.45.0.jar</pre>
+<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.46.0.jar</pre>
 </div>
 <p>Then run your Python client scripts.</p>
 </div>
@@ -168,9 +168,6 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>official:</td>
-<td><a class="reference external" href="https://code.google.com/p/selenium/source/browse/py">https://code.google.com/p/selenium/source/browse/py</a></td>
-</tr>
-<tr class="row-even"><td>mirror:</td>
 <td><a class="reference external" href="https://github.com/SeleniumHQ/selenium/tree/master/py">https://github.com/SeleniumHQ/selenium/tree/master/py</a></td>
 </tr>
 </tbody>

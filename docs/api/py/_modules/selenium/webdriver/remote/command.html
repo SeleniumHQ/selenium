@@ -47,20 +47,24 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.command</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2010 WebDriver committers</span>
-<span class="c"># Copyright 2010 Google Inc.</span>
+<span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
 
 <div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -70,7 +74,8 @@
 <span class="sd">    used to marshal commands through a service that implements WebDriver&#39;s</span>
 <span class="sd">    remote wire protocol:</span>
 
-<span class="sd">        http://code.google.com/p/selenium/wiki/JsonWireProtocol</span>
+<span class="sd">        https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># Keep in sync with org.openqa.selenium.remote.DriverCommand</span>
@@ -174,9 +179,6 @@
     <span class="n">GET_APP_CACHE_STATUS</span> <span class="o">=</span> <span class="s">&quot;getAppCacheStatus&quot;</span>
     <span class="n">CLEAR_APP_CACHE</span> <span class="o">=</span> <span class="s">&quot;clearAppCache&quot;</span>
 
-    <span class="n">GET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;getNetworkConnection&quot;</span>
-    <span class="n">SET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;setNetworkConnection&quot;</span>
-
     <span class="n">GET_LOCAL_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;getLocalStorageItem&quot;</span>
     <span class="n">REMOVE_LOCAL_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;removeLocalStorageItem&quot;</span>
     <span class="n">GET_LOCAL_STORAGE_KEYS</span> <span class="o">=</span> <span class="s">&quot;getLocalStorageKeys&quot;</span>
@@ -189,7 +191,14 @@
     <span class="n">GET_SESSION_STORAGE_KEYS</span> <span class="o">=</span> <span class="s">&quot;getSessionStorageKeys&quot;</span>
     <span class="n">SET_SESSION_STORAGE_ITEM</span> <span class="o">=</span> <span class="s">&quot;setSessionStorageItem&quot;</span>
     <span class="n">CLEAR_SESSION_STORAGE</span> <span class="o">=</span> <span class="s">&quot;clearSessionStorage&quot;</span>
-    <span class="n">GET_SESSION_STORAGE_SIZE</span> <span class="o">=</span> <span class="s">&quot;getSessionStorageSize&quot;</span></div>
+    <span class="n">GET_SESSION_STORAGE_SIZE</span> <span class="o">=</span> <span class="s">&quot;getSessionStorageSize&quot;</span>
+    
+    <span class="c"># Mobile</span>
+    <span class="n">GET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;getNetworkConnection&quot;</span>
+    <span class="n">SET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s">&quot;setNetworkConnection&quot;</span>
+    <span class="n">CURRENT_CONTEXT_HANDLE</span> <span class="o">=</span> <span class="s">&quot;getCurrentContextHandle&quot;</span>
+    <span class="n">CONTEXT_HANDLES</span> <span class="o">=</span> <span class="s">&quot;getContextHandles&quot;</span>
+    <span class="n">SWITCH_TO_CONTEXT</span> <span class="o">=</span> <span class="s">&quot;switchToContext&quot;</span></div>
 </pre></div>
 
           </div>

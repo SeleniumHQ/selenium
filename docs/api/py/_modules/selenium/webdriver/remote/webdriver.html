@@ -47,24 +47,30 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webdriver</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2014 Software freedom conservancy</span>
+<span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The WebDriver implementation.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;The WebDriver implementation.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
 <span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">RemoteConnection</span>
@@ -82,18 +88,20 @@
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="k">pass</span>
 
+
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Controls a browser by sending commands to a remote server.</span>
-<span class="sd">    This server is expected to be running the WebDriver wire protocol as defined</span>
-<span class="sd">    here: http://code.google.com/p/selenium/wiki/JsonWireProtocol</span>
+<span class="sd">    This server is expected to be running the WebDriver wire protocol</span>
+<span class="sd">    as defined at</span>
+<span class="sd">    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</span>
 
 <span class="sd">    :Attributes:</span>
-<span class="sd">     - command_executor - The command.CommandExecutor object used to execute commands.</span>
-<span class="sd">     - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.</span>
-<span class="sd">     - session_id - The session ID to send with every command.</span>
-<span class="sd">     - capabilities - A dictionary of capabilities of the underlying browser for this instance&#39;s session.</span>
-<span class="sd">     - proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.</span>
+<span class="sd">     - session_id - String ID of the browser session started and controlled by this WebDriver.</span>
+<span class="sd">     - capabilities - Dictionaty of effective capabilities of this browser session as returned</span>
+<span class="sd">         by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities</span>
+<span class="sd">     - command_executor - remote_connection.RemoteConnection object used to execute commands.</span>
+<span class="sd">     - error_handler - errorhandler.ErrorHandler object used to handle errors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="s">&#39;http://127.0.0.1:4444/wd/hub&#39;</span><span class="p">,</span>
@@ -102,9 +110,16 @@
 <span class="sd">        Create a new driver that will issue commands using the wire protocol.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - command_executor - Either a command.CommandExecutor object or a string that specifies the URL of a remote server to send commands to.</span>
-<span class="sd">         - desired_capabilities - Dictionary holding predefined values for starting a browser</span>
-<span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.  Only used if Firefox is requested.</span>
+<span class="sd">         - command_executor - Either a string representing URL of the remote server or a custom</span>
+<span class="sd">             remote_connection.RemoteConnection object. Defaults to &#39;http://127.0.0.1:4444/wd/hub&#39;.</span>
+<span class="sd">         - desired_capabilities - A dictionary of capabilities to request when</span>
+<span class="sd">             starting the browser session. Required parameter.</span>
+<span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.</span>
+<span class="sd">             Only used if Firefox is requested. Optional.</span>
+<span class="sd">         - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will</span>
+<span class="sd">             be started with given proxy settings, if possible. Optional.</span>
+<span class="sd">         - keep_alive - Whether to configure remote_connection.RemoteConnection to use</span>
+<span class="sd">             HTTP keep-alive. Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Desired Capabilities can&#39;t be None&quot;</span><span class="p">)</span>
@@ -181,7 +196,7 @@
                 <span class="n">converted</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">converted</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -194,8 +209,13 @@
         <span class="k">return</span> <span class="n">WebElement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_id</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_unwrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;ELEMENT&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s">&#39;ELEMENT&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+            <span class="n">wrapped_id</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">wrapped_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span><span class="p">])</span>
+
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

@@ -47,20 +47,24 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.firefox.extension_connection</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2011 WebDriver committers</span>
-<span class="c"># Copyright 2008-2011 Google Inc.</span>
+<span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -117,7 +121,7 @@
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="ExtensionConnection.is_connectable"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.is_connectable">[docs]</a>    <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trys to connect to the extension but do not retrieve context.&quot;&quot;&quot;</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
 </div></div>
 <div class="viewcode-block" id="ExtensionConnectionError"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnectionError">[docs]</a><span class="k">class</span> <span class="nc">ExtensionConnectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An internal error occurred int the extension.</span>

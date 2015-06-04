@@ -47,20 +47,24 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.firefox.firefox_binary</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2011 WebDriver committers</span>
-<span class="c"># Copyright 2008-2011 Google Inc.</span>
+<span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
 
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -113,7 +117,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_from_profile_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until_connectable</span><span class="p">()</span>
- </div>
+</div>
 <div class="viewcode-block" id="FirefoxBinary.kill"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill">[docs]</a>    <span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Kill the browser.</span>
 
@@ -128,14 +132,10 @@
 
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;linux&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cli</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span><span class="p">:</span>
                 <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
-
-        <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
-              <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-        <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-foreground&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
             <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
@@ -186,7 +186,7 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&quot;</span>
- 
+
         <span class="k">return</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_firefox_start_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -195,7 +195,7 @@
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Darwin&quot;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Windows&quot;</span><span class="p">:</span>
-            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span> 
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Java&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">_name</span> <span class="o">==</span> <span class="s">&#39;nt&#39;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">()</span>
@@ -206,7 +206,7 @@
                     <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># couldn&#39;t find firefox on the system path</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Could not find firefox in your system PATH.&quot;</span> <span class="o">+</span> 
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Could not find firefox in your system PATH.&quot;</span> <span class="o">+</span>
                     <span class="s">&quot; Please specify the firefox binary location or install firefox&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">start_cmd</span>
 
@@ -246,7 +246,7 @@
         <span class="k">return</span> <span class="n">built_path</span>
 
 <div class="viewcode-block" id="FirefoxBinary.which"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which">[docs]</a>    <span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the fully qualified path by searching Path of the given </span>
+        <span class="sd">&quot;&quot;&quot;Returns the fully qualified path by searching Path of the given</span>
 <span class="sd">        name&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">pe</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;PATH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
             <span class="n">checkname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>

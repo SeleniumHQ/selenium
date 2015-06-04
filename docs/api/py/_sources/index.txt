@@ -9,17 +9,17 @@ Python language bindings for Selenium WebDriver.
 
 The `selenium` package is used automate web browser interaction from Python.
 
-+-----------+-----------------------------------------------------------------------------------+
-| **Home**: | http://www.seleniumhq.org                                                         |
-+-----------+-----------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
-+-----------+-----------------------------------------------------------------------------------+
-| **Dev**:  | https://code.google.com/p/selenium/                                               |
-+-----------+-----------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.python.org/pypi/selenium                                             |
-+-----------+-----------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on freenode                                                 |
-+-----------+-----------------------------------------------------------------------------------+
++-----------+-------------------------------------------------------------------------------------+
+| **Home**: | http://www.seleniumhq.org                                                           |
++-----------+-------------------------------------------------------------------------------------+
+| **Docs**: | `selenium package API <http://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
++-----------+-------------------------------------------------------------------------------------+
+| **Dev**:  | https://github.com/SeleniumHQ/Selenium                                              |
++-----------+-------------------------------------------------------------------------------------+
+| **PyPI**: | https://pypi.python.org/pypi/selenium                                               |
++-----------+-------------------------------------------------------------------------------------+
+| **IRC**:  | **#selenium** channel on freenode                                                   |
++-----------+-------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS), as well as the Remote protocol.
 
@@ -36,7 +36,7 @@ If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.45.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.46.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -107,11 +107,11 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-2.45.0.jar
+    java -jar selenium-server-standalone-2.46.0.jar
 
 Then run your Python client scripts.
 
@@ -121,7 +121,5 @@ Use The Source Luke!
 View source code online:
 
 +-----------+-------------------------------------------------------+
-| official: | https://code.google.com/p/selenium/source/browse/py   |
-+-----------+-------------------------------------------------------+
-| mirror:   | https://github.com/SeleniumHQ/selenium/tree/master/py |
+| official: | https://github.com/SeleniumHQ/selenium/tree/master/py |
 +-----------+-------------------------------------------------------+

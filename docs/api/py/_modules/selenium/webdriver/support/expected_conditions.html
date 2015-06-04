@@ -47,21 +47,24 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.support.expected_conditions</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Copyright 2012 WebDriver committers</span>
-<span class="c"># Copyright 2012 Software Freedom Conservancy.</span>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c">#      http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
 
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
@@ -135,8 +138,8 @@
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
 </div>
-<span class="k">def</span> <span class="nf">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">element</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span> <span class="k">else</span> <span class="bp">False</span>
+<span class="k">def</span> <span class="nf">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">visibility</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">element</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span> <span class="o">==</span> <span class="n">visibility</span> <span class="k">else</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="presence_of_all_elements_located"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located">[docs]</a><span class="k">class</span> <span class="nc">presence_of_all_elements_located</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; An expectation for checking that there is at least one element present</span>
@@ -216,7 +219,7 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="ow">not</span> <span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">),</span> <span class="bp">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="c"># In the case of NoSuchElement, returns true because the element is</span>
             <span class="c"># not present in DOM. The try block checks if the element is present</span>
@@ -316,17 +319,14 @@
             <span class="k">return</span> <span class="bp">False</span>
 </div>
 <span class="k">def</span> <span class="nf">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Looks up an element. Logs and re-raises WebDriverException if thrown.</span>
-<span class="sd">    Method exists to gather data for</span>
-<span class="sd">    http://code.google.com/p/selenium/issues/detail?id=1800</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Looks up an element. Logs and re-raises ``WebDriverException``</span>
+<span class="sd">    if thrown.&quot;&quot;&quot;</span>
     <span class="k">try</span> <span class="p">:</span>
-      <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">by</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">by</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">e</span>
-
 
 <span class="k">def</span> <span class="nf">_find_elements</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
     <span class="k">try</span> <span class="p">:</span>
