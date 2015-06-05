@@ -708,8 +708,10 @@ namespace :copyright do
         :style => "#",
         :prefix => "#!/usr/bin/python\n#\n")
     Copyright.Update(
-      FileList["rb/**/*.rb"],
-      :style => "#")
+      FileList["rb/**/*.rb"].exclude(
+          "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),
+      :style => "#",
+      :prefix => "# encoding: utf-8\n#\n")
     Copyright.Update(
         FileList["java/**/*.java"].exclude(
             "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
