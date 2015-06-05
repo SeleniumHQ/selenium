@@ -19,9 +19,11 @@
 package org.openqa.grid.web.servlet.handler;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
@@ -38,6 +40,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -60,27 +63,20 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   private final Map<String, Object> desiredCapability;
   private final long timestamp = System.currentTimeMillis();
 
+  private static List<SeleniumBasedRequestFactory> requestFactories =
+    new ImmutableList.Builder<SeleniumBasedRequestFactory>()
+      .add(new LegacySeleniumRequestFactory())
+      .add(new WebDriverRequestFactory())
+      .build();
 
   public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
-    if (SeleniumBasedRequest.getRequestProtocol(request) == SeleniumProtocol.Selenium) {
-      return new LegacySeleniumRequest(request, registry);
-    } else {
-      return new WebDriverRequest(request, registry);
+    for (SeleniumBasedRequestFactory factory : requestFactories) {
+      SeleniumBasedRequest sbr = factory.createFromRequest(request, registry);
+      if (sbr != null) {
+        return sbr;
+      }
     }
-  }
-
-
-  /**
-   * check the request and finds out if that's a selenium legacy protocol( RC ) or a WebDriver one.
-   * @param request
-   * @return Either SeleniumProtocol.Selenium or SeleniumProtocol.WebDriver.
-   */
-  public static SeleniumProtocol getRequestProtocol(HttpServletRequest request) {
-    if ("/selenium-server/driver".equals(request.getServletPath())) {
-      return SeleniumProtocol.Selenium;
-    } else {
-      return SeleniumProtocol.WebDriver;
-    }
+    throw new GridException("Request path " + request.getServletPath() + " is not recognized");
   }
 
   @VisibleForTesting
@@ -135,12 +131,9 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
    */
   public abstract Map<String, Object> extractDesiredCapability();
 
-
   // TODO freynaud remove the TestSession parameter.The listener can modify the
   // original request instead.
   public abstract String getNewSessionRequestedCapability(TestSession session);
-
-
 
   public RequestType getRequestType() {
     return type;
@@ -163,7 +156,6 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     }else {
       return body.length;
     }
-
   }
 
   public String getBody() {
@@ -190,7 +182,6 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   public long getCreationTime(){
     return timestamp;
   }
-
 
   public String toString() {
     SimpleDateFormat format = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
@@ -231,7 +222,4 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
       throw new RuntimeException("not implemented");
     }
   }
-
-
-
 }
