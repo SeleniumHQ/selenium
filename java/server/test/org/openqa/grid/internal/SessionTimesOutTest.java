@@ -172,7 +172,7 @@ public class SessionTimesOutTest {
   }
 
   // a proxy throwing an exception will end up not releasing the resources.
-  @Test(timeout = 1000)
+  @Test(timeout = 5000)
   public void testTimeoutBug() throws InterruptedException {
     final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
