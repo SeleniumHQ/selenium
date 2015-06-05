@@ -9,6 +9,9 @@ Firefox:
   * Support for Firefox 38
   * Fix performance bug by not forcing garbage collection in httpd.js
 
+Chrome:
+  * Fixed ChromeDriver port race condition (#449 - thanks Jason Anderson)
+
 Ruby changes:
   * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
   * Remove Presto-Opera support (Blink-based Opera still supported)
