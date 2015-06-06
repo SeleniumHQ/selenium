@@ -39,9 +39,9 @@ import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.StdOutHandler;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +81,7 @@ public class BrowserSessionFactoryUnitTest {
     final RemoteControlConfiguration configuration;
 
     BrowserLauncherFactory blf = mock(BrowserLauncherFactory.class);
-    DummyLauncher launcherMock = mock(DummyLauncher.class);
+    BrowserLauncher launcherMock = mock(BrowserLauncher.class);
 
     configuration = new RemoteControlConfiguration();
     configuration.setTimeoutInSeconds(1);
@@ -269,13 +269,13 @@ public class BrowserSessionFactoryUnitTest {
   }
 
   private BrowserSessionInfo getTestSession1() {
-    DummyLauncher mockLauncher1 = new DummyLauncher();
+    BrowserLauncher mockLauncher1 = mock(BrowserLauncher.class);
     return new BrowserSessionInfo(
         SESSION_ID_1, BROWSER_1, BASEURL1, mockLauncher1, null);
   }
 
   private BrowserSessionInfo getTestSession2() {
-    DummyLauncher mockLauncher2 = new DummyLauncher();
+    BrowserLauncher mockLauncher2 = mock(BrowserLauncher.class);
     return new BrowserSessionInfo(
         SESSION_ID_2, BROWSER2, BASEURL2, mockLauncher2, null);
   }
