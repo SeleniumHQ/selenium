@@ -1,4 +1,4 @@
-## v2.46.0-dev
+## v2.46.0
 
 * Exposed a new logging API via the `webdriver.logging` module. For usage, see
     `example/logging.js`.
