@@ -53,8 +53,7 @@ public class DefaultDriverProvider implements DriverProvider {
     return getDriverClass() != null;
   }
 
-  @Override
-  public Class<? extends WebDriver> getDriverClass() {
+  private Class<? extends WebDriver> getDriverClass() {
     if (driverClass != null) {
       return driverClass;
     }

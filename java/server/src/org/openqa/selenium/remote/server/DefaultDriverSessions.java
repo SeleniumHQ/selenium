@@ -72,20 +72,6 @@ public class DefaultDriverSessions implements DriverSessions {
     this(Platform.getCurrent(), factory);
   }
 
-  /**
-   * @deprecated Use DefaultDriverSessions(DriverFactory factory) constructor
-   * and register all drivers to the factory
-   */
-  @Deprecated
-  public DefaultDriverSessions(
-      DriverFactory factory, Map<Capabilities, Class<? extends WebDriver>> drivers) {
-    this.factory = factory;
-    for (Map.Entry<Capabilities, Class<? extends WebDriver>> entry : drivers.entrySet()) {
-      registerDriver(entry.getKey(), entry.getValue());
-    }
-    this.clock = new SystemClock();
-  }
-
   protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
     this(runningOn, factory, new SystemClock());
   }

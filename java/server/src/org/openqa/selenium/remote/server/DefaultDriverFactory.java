@@ -35,11 +35,6 @@ public class DefaultDriverFactory implements DriverFactory {
   private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<Capabilities, DriverProvider>();
 
-  @Deprecated
-  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    registerDriverProvider(new DefaultDriverProvider(capabilities, driverClass));
-  }
-
   public void registerDriverProvider(DriverProvider driverProvider) {
     if (driverProvider.canCreateDriverInstances()) {
       capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
