@@ -44,13 +44,6 @@ public interface DriverProvider {
   Capabilities getProvidedCapabilities();
 
   /**
-   * This method was used for testing purposes only and will be removed from the interface soon.
-   * @deprecated
-   */
-  @Deprecated
-  Class<? extends WebDriver> getDriverClass();
-
-  /**
    * Checks if the provider can create driver instances.
    *
    * @return true if the provider can create driver instances.
