@@ -25,6 +25,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This driver provider uses reflection to find and call a driver constructor that accepts
+ * a parameter of Capabilities type.
+ */
 public class DefaultDriverProvider implements DriverProvider {
 
   private static final Logger LOG = Logger.getLogger(DefaultDriverProvider.class.getName());
@@ -48,9 +52,23 @@ public class DefaultDriverProvider implements DriverProvider {
     return capabilities;
   }
 
+  /**
+   * Checks that driver class can be loaded.
+   */
   @Override
   public boolean canCreateDriverInstances() {
     return getDriverClass() != null;
+  }
+
+  /**
+   * Checks that the browser name set in the provided capabilities matches the browser name
+   * set in the desired capabilities.
+   * @param capabilities The desired capabilities
+   * @return true if the browser name is the same, false otherwise
+   */
+  @Override
+  public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
+    return this.capabilities.getBrowserName().equals(capabilities.getBrowserName());
   }
 
   private Class<? extends WebDriver> getDriverClass() {
