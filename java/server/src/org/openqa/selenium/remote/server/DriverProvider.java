@@ -44,11 +44,18 @@ public interface DriverProvider {
   Capabilities getProvidedCapabilities();
 
   /**
-   * Checks if the provider can create driver instances.
+   * Checks if the provider can create driver instances "in general".
    *
    * @return true if the provider can create driver instances.
    */
   boolean canCreateDriverInstances();
+
+  /**
+   * Checks if the provider can create driver instance with the desired capabilities.
+   *
+   * @return true if the provider can create driver instance with the desired capabilities.
+   */
+  boolean canCreateDriverInstanceFor(Capabilities capabilities);
 
   /**
    * Creates a new driver instance. The specified capabilities are to be passed to the driver
