@@ -56,7 +56,9 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
+        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False,
+        session_id=None, capabilities=None
+        ):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -71,6 +73,9 @@ class WebDriver(object):
              be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive. Defaults to False.
+         - session_id - If this driver will re-use a old session_id specify it here.
+         - capabilities - Used with session_id when reusing a old session, and are the capabilities
+             of the Webdriver as returned by the NEW_SESSION command
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -82,11 +87,11 @@ class WebDriver(object):
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
         self._is_remote = True
-        self.session_id = None
-        self.capabilities = {}
+        self.session_id = session_id
+        self.capabilities = capabilities
         self.error_handler = ErrorHandler()
         self.start_client()
-        self.start_session(desired_capabilities, browser_profile)
+        self.start_session(desired_capabilities, browser_profile, force_new=False)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = LocalFileDetector()
@@ -121,9 +126,10 @@ class WebDriver(object):
         """
         pass
 
-    def start_session(self, desired_capabilities, browser_profile=None):
+    def start_session(self, desired_capabilities, browser_profile=None, force_new=True):
         """
-        Creates a new session with the desired capabilities.
+        Creates a new session with the desired capabilities. If your object already has a session_id (and force_new is False) 
+        it will just query for capabilities, in a effort to reuse the credentials.
 
         :Args:
          - browser_name - The name of the browser to request.
@@ -131,14 +137,20 @@ class WebDriver(object):
          - platform - Which platform to request the browser on.
          - javascript_enabled - Whether the new session should support JavaScript.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
+         - force_new: If True (default), it always create a fresh new session, even if you have provided a session_id 
         """
         if browser_profile:
             desired_capabilities['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, {
-            'desiredCapabilities': desired_capabilities,
-        })
-        self.session_id = response['sessionId']
-        self.capabilities = response['value']
+        
+        if force_new or self.session_id is None:
+            response = self.execute(Command.NEW_SESSION, {
+                'desiredCapabilities': desired_capabilities,
+            })
+            self.session_id = response['sessionId']
+            self.capabilities = response['value']
+        elif self.capabilities is None:
+            response = self.execute(Command.GET_SESSION, {})
+            self.capabilities = response['value']
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
