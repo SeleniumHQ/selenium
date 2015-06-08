@@ -25,5 +25,9 @@ public interface DriverFactory {
 
   WebDriver newInstance(Capabilities capabilities);
 
+  /**
+   * @deprecated This method is used in tests only and subject to be removed from the interface
+   */
+  @Deprecated
   boolean hasMappingFor(Capabilities capabilities);
 }
