@@ -17,13 +17,16 @@
 
 package org.openqa.grid.common;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
@@ -36,16 +39,13 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * helper to register to the grid. Using JSON to exchange the object between the node and grid.
@@ -416,7 +416,13 @@ public class RegistrationRequest {
       try {
         URL ur = new URL(u);
         res.configuration.put(HUB_HOST, ur.getHost());
-        res.configuration.put(HUB_PORT, ur.getPort());
+        //If port was not defined after -hub default it to 4444
+        int port = ur.getPort();
+        if(port==-1){
+        	port=4444;
+        	LOG.info("No port was provided in -hub. Defaulting hub port to 4444");
+        }
+        res.configuration.put(HUB_PORT, port);
       } catch (MalformedURLException e) {
         throw new GridConfigurationException("the specified hub is not valid : -hub " + u);
       }
