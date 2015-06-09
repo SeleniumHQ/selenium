@@ -83,7 +83,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     try {
       homePage = new ChromeUrlConvert().convert(url);
       profilePath = makeCustomProfile(homePage);
-      populateCustomProfileDirectory(profilePath);
 
       log.info("Launching Firefox...");
       process = prepareCommand(
@@ -95,28 +94,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
       process.executeAsync();
     } catch (IOException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void populateCustomProfileDirectory(String profilePath) {
-    /*
-     * The first time we launch Firefox with an empty profile directory, Firefox will launch itself,
-     * populate the profile directory, then kill/relaunch itself, so our process handle goes out of
-     * date. So, the first time we launch Firefox, we'll start it up at an URL that will immediately
-     * shut itself down.
-     */
-    CommandLine command = prepareCommand(browserInstallation.launcherFilePath(),
-        "-profile", profilePath,
-        "-silent"
-        );
-    command.setDynamicLibraryPath(browserInstallation.libraryPath());
-    log.info("Preparing Firefox profile...");
-    command.execute();
-    try {
-      waitForFullProfileToBeCreated(20 * 1000);
-    } catch (RuntimeException e) {
-      command.destroy();
-      throw e;
     }
   }
 

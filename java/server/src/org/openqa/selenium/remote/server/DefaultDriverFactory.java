@@ -23,6 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,11 +35,6 @@ public class DefaultDriverFactory implements DriverFactory {
 
   private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<Capabilities, DriverProvider>();
-
-  @Deprecated
-  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    registerDriverProvider(new DefaultDriverProvider(capabilities, driverClass));
-  }
 
   public void registerDriverProvider(DriverProvider driverProvider) {
     if (driverProvider.canCreateDriverInstances()) {
@@ -59,7 +55,14 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   public WebDriver newInstance(Capabilities capabilities) {
-    return getProviderMatching(capabilities).newInstance(capabilities);
+    DriverProvider provider = getProviderMatching(capabilities);
+    if (provider.canCreateDriverInstanceFor(capabilities)) {
+      return getProviderMatching(capabilities).newInstance(capabilities);
+    } else {
+      throw new WebDriverException(String.format(
+        "The best matching driver provider %s can't create a new driver instance for %s",
+        provider, capabilities));
+    }
   }
 
   public boolean hasMappingFor(Capabilities capabilities) {
