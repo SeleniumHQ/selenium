@@ -607,6 +607,10 @@ public class RegistrationRequest {
           + HUB_HOST + " X -" + HUB_PORT + " 5555. The specified config was -" + HUB_HOST + " "
           + hub + " -" + HUB_PORT + " " + port);
     }
+    
+    if(port==-1){
+    	throw new GridConfigurationException("No port was specified in -hub parameter. Example - http://"+hub+":4444/grid/register");
+    }
   }
 
 
