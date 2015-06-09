@@ -94,10 +94,11 @@ public class SessionLogsToFileRepository {
     if (logFile == null) {
       return new ArrayList<LogRecord>();
     }
-    logFile.openLogReader();
-    ObjectInputStream logObjInStream = logFile.getLogReader();
+
     List<LogRecord> logRecords = new ArrayList<LogRecord>();
     try {
+      logFile.openLogReader();
+      ObjectInputStream logObjInStream = logFile.getLogReader();
       LogRecord tmpLogRecord;
       while (null != (tmpLogRecord = (LogRecord) logObjInStream
           .readObject())) {

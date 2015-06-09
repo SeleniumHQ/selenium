@@ -22,6 +22,8 @@ import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDI
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
 
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -105,7 +107,7 @@ public class Proxies {
 
     Object tempProxy = capabilities.getCapability(CapabilityType.PROXY);
     if (tempProxy != null) {
-      Proxy proxy = Proxy.extractFrom(capabilities);
+      Proxy proxy = Preconditions.checkNotNull(Proxy.extractFrom(capabilities));
       if (proxy.getHttpProxy() != null) {
         pac.defaults().toProxy(proxy.getHttpProxy());
       } else if (proxy.getProxyAutoconfigUrl() != null) {
