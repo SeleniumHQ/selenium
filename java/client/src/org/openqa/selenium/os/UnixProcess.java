@@ -119,6 +119,7 @@ class UnixProcess implements OsProcess {
       if (!isRunning()) {
         return getExitCode();
       }
+      log.info("Command failed to close cleanly. Destroying forcefully (v2). " + this);
     }
 
     watchdog.destroyHarder();
@@ -243,9 +244,7 @@ class UnixProcess implements OsProcess {
     }
 
     private void destroyHarder() {
-      log.info("Command failed to close cleanly. Destroying forcefully (v2). " + this);
-      Process ourProc = process;
-      ProcessUtils.killProcess(ourProc);
+      ProcessUtils.killProcess(process);
     }
   }
 
