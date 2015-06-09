@@ -16,6 +16,8 @@
 
 package org.openqa.selenium.server;
 
+import com.google.common.base.Preconditions;
+
 import cybervillains.ca.KeyStoreManager;
 
 import org.openqa.jetty.http.HttpConnection;
@@ -67,7 +69,7 @@ import javax.net.ssl.SSLHandshakeException;
  * make proxy requests.
  * <p/>
  * The HttpTunnel mechanism is also used to implement the CONNECT method.
- * 
+ *
  * @author Greg Wilkins (gregw)
  * @author giacof@tiscali.it (chained proxy)
  * @version $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
@@ -641,7 +643,7 @@ public class ProxyHandler extends AbstractHttpHandler {
           new KeyStoreManager(root, "http://127.0.0.1:" + port +
               "/selenium-server/sslSupport/blank_crl.pem");
       mgr.getCertificateByHostname(host);
-      mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
+      Preconditions.checkNotNull(mgr.getKeyStore()).deleteEntry(KeyStoreManager._caPrivKeyAlias);
       mgr.persist();
 
       listener.setKeystore(new File(root, "cybervillainsCA.jks").getAbsolutePath());
@@ -670,7 +672,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Is URL Proxied. Method to allow derived handlers to select which URIs are proxied and to where.
-   * 
+   *
    * @param uri The requested URI, which should include a scheme, host and port.
    * @return The URL to proxy to, or null if the passed URI should not be proxied. The default
    *         implementation returns the passed uri if isForbidden() returns true.
@@ -688,7 +690,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Is URL Forbidden.
-   * 
+   *
    * @return True if the URL is not forbidden. Calls isForbidden(scheme,host,port,true);
    */
   protected boolean isForbidden(URI uri) {
@@ -702,7 +704,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Is scheme,host & port Forbidden.
-   * 
+   *
    * @param scheme A scheme that mast be in the proxySchemes StringMap.
    * @param host A host that must pass the white and black lists
    * @return True if the request to the scheme,host and port is not forbidden.

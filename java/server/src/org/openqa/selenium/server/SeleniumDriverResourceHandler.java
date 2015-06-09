@@ -226,7 +226,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       String postedData, String uniqueId) {
     StringBuffer sb = new StringBuffer();
     sb.append(
-        "Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
+      "Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
     if (!frameAddress.isDefault()) {
       sb.append(" from " + frameAddress);
     }
@@ -686,14 +686,23 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           "Cannot directory for holding the downloaded file: " + outputFile);
     }
 
+    FileOutputStream outputTo = null;
     try {
-      FileOutputStream outputTo = new FileOutputStream(outputFile);
+       outputTo = new FileOutputStream(outputFile);
 
       Resources.copy(url, outputTo);
     } catch (FileNotFoundException e) {
       throw Throwables.propagate(e);
     } catch (IOException e) {
       throw Throwables.propagate(e);
+    } finally {
+      if (outputTo != null) {
+        try {
+          outputTo.close();
+        } catch (IOException e) {
+          log.log(Level.WARNING, "Unable to close " + outputFile, e);
+        }
+      }
     }
   }
 

@@ -148,8 +148,9 @@ public class LauncherUtils {
     InputStream input = getSeleniumResourceAsStream(resourceFile);
     BufferedReader br = new BufferedReader(new InputStreamReader(input));
     File hta = new File(dir, outFile);
+    FileWriter fw = null;
     try {
-      FileWriter fw = new FileWriter(hta);
+      fw = new FileWriter(hta);
       String line = br.readLine();
       fw.write(line);
       fw.write('\n');
@@ -162,6 +163,14 @@ public class LauncherUtils {
       fw.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      try {
+        if (fw != null) {
+          fw.close();
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
     return hta;
   }

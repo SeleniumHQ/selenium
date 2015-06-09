@@ -46,7 +46,7 @@ public class WebDriverRequest extends SeleniumBasedRequest {
       return RequestType.START_SESSION;
     } else if (getMethod().equalsIgnoreCase("DELETE")) {
       ExternalSessionKey externalKey = ExternalSessionKey.fromWebDriverRequest(getPathInfo());
-      if (getPathInfo().endsWith("/session/" + externalKey.getKey())) {
+      if (externalKey != null && getPathInfo().endsWith("/session/" + externalKey.getKey())) {
         return RequestType.STOP_SESSION;
       }
     }

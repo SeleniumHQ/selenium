@@ -38,12 +38,12 @@ import java.util.Date;
  * $> rm -r new_certs
  * $> COMMIT TO SELENIUM REPO
  * </pre>
- * 
+ *
  * *************************************************************************************** Copyright
  * (c) 2012, NeuStar, Inc. All Rights Reserved.
- * 
+ *
  * In a special exception, Selenium/OpenQA is allowed to use this code under the Apache License 2.0.
- * 
+ *
  * @author Mark Watson <watsonmw@gmail.com>, Ivan De Marino <ivan.de.marino@gmail.com>
  */
 public class Generator {
@@ -62,6 +62,9 @@ public class Generator {
         X509Certificate caCrlCert = null;
         try {
             caCrlCert = mgr.getSigningCert();
+            if (caCrlCert == null) {
+                throw new IllegalStateException("Unable to obtain signing certificate");
+            }
             PrivateKey caCrlPrivateKey = mgr.getSigningPrivateKey();
 
             crlGen.setIssuerDN(mgr.getSigningCert().getSubjectX500Principal());
