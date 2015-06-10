@@ -75,7 +75,7 @@ class Service(object):
                                             stdout=self._log, stderr=self._log)
 
         except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
+            raise WebDriverException("Unable to start phantomjs with ghostdriver: %s" % e)
         count = 0
         while not utils.is_connectable(self.port):
             count += 1

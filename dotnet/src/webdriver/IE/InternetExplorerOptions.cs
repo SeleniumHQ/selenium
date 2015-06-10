@@ -66,6 +66,9 @@ namespace OpenQA.Selenium.IE
         Dismiss
     }
 
+    /// <summary>
+    /// Specifies the behavior of waiting for page loads in the IE driver.
+    /// </summary>
     public enum InternetExplorerPageLoadStrategy
     {
         /// <summary>

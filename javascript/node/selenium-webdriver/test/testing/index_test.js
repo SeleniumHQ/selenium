@@ -97,8 +97,6 @@ describe('Mocha Integration', function() {
         promise.controlFlow().removeListener(
             promise.ControlFlow.EventType.RESET, onreset);
         assert.ok(flowReset, 'control flow was not reset after a timeout');
-        assert.ok(timeoutErr instanceof Error);
-        assert.equal(timeoutErr.message, 'timeout of 50ms exceeded');
       });
 
       function onreset() {

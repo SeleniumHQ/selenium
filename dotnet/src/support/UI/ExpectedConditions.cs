@@ -317,7 +317,7 @@ namespace OpenQA.Selenium.Support.UI
 
         /// <summary>
         /// An expectation for checking whether the given frame is available to switch
-        /// to. <p> If the frame is available it switches the given driver to the
+        /// to. If the frame is available it switches the given driver to the
         /// specified frame.
         /// </summary>
         /// <param name="frameLocator">Used to find the frame (id or name)</param>
@@ -339,7 +339,7 @@ namespace OpenQA.Selenium.Support.UI
 
         /// <summary>
         /// An expectation for checking whether the given frame is available to switch
-        /// to. <p> If the frame is available it switches the given driver to the
+        /// to. If the frame is available it switches the given driver to the
         /// specified frame.
         /// </summary>
         /// <param name="locator">Locator for the Frame</param>

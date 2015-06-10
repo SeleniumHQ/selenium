@@ -230,7 +230,7 @@ public class OperaOptions {
    * @return DesiredCapabilities for Opera with these options.
    */
   DesiredCapabilities toCapabilities() {
-    DesiredCapabilities capabilities = DesiredCapabilities.opera();
+    DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
     capabilities.setCapability(CAPABILITY, this);
     return capabilities;
   }

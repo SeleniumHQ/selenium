@@ -21,15 +21,13 @@ import org.openqa.selenium.WebDriver;
 
 public interface DriverFactory {
 
-  /**
-   * @deprecated Use registerDriverProvider instead
-   */
-  @Deprecated
-  void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
-
   void registerDriverProvider(DriverProvider implementation);
 
   WebDriver newInstance(Capabilities capabilities);
 
+  /**
+   * @deprecated This method is used in tests only and subject to be removed from the interface
+   */
+  @Deprecated
   boolean hasMappingFor(Capabilities capabilities);
 }

@@ -1,3 +1,99 @@
+v2.46.0
+=======
+ * Supports native events for Firefox version 31 (immediately previous ESR).
+   Native event support has been discontinued for versions of Firefox later
+   than 33. Synthetic events tested on Firefox versions 31 (immediately
+   previous ESR), 37 (immediately previous release), and 38 (current release,
+   and current ESR).
+ * (on behalf of Darrin Cherry) Modified ExpectedConditions class to more
+   closely mimic the one provided by Java.
+ * Added ToString override to Platform class. Fixes issue #580.
+ * Removed Firefox profile cleaning step when launching Firefox. Firefox used
+   to require launching to clean up potential issues with the anonymous
+   temporary profile that we use with the driver. This is no longer the case.
+ * Added type safe support to InternetExplorerOptions for page load strategy.
+ * Added ability to get wrapped IWebElement from SelectElement. When using a
+   SelectElement wrapper class to manipulate <select> elements, the user
+   previously had to keep a separate reference to the IWebElement representing
+   the actual element. The SelectElement class now implements IWrapsElement,
+   exposing the WrappedElement property, which gives the user the ability to
+   access the underlying IWebElement. Fixes issue #350.
+ * (on behalf of clz.livio) Added additional PhantomJS command-line options.
+   Added the ProxyAuthorization property and SslCertificatesPath property to
+   the PhantomJSDriverSerivce class. These translate to the --proxy-auth and
+   --ssl-certificates-path command line options on PhantomJS respectively.
+ * (on behalf of clz.livio) Improved DriverService to check response on
+   startup. A driver using a driver service will now throw a WebDriverException
+   if it cannot start the driver service, or if the service executable returns
+   an invalid response. Note that the checks for the validation of the
+   repsonses is minimal, checking for the Content-Type header and that the
+   response code is a 200.
+ * (on behalf of Sergey Tikhomirov) Refactored PageFactory implementation, 
+   including a number of changes to make it more extensible and more robust.
+
+   First, instead of the hand-rolled proxy classes that had been used
+   previously, this refactor introduces proxy objects based on
+   System.Runtime.Remoting.Proxies.RealProxy, which allows for more
+   flexibility in the types of objects proxied.
+    
+   Second, this refactor now allows users to provide their own implementation
+   engines for examining attributes of Page Object classes and determining
+   what course to take. To create a new implementation the user must provide
+   an implementation of the IPageObjectMemberDecorator interface, which
+   determines which attributes to examine fields and properties for, and how
+   to create the proxy objects assigned to the members.
+    
+   Third, this refactor introduces a new IElementLocator interface to Page
+   Object implementations, and deprecates the IElementLocatorFactory
+   interface. The IElementLocator interface is substantially similar to the
+   now-deprecated IElementLocatorFactory, but requires implementations to
+   provide a property to retrieve the ISearchContext implementation used to
+   actually find elements. The implications of this change are that
+   IElementLocator implementations will need to keep a reference to the
+   IWebDriver or IWebElement they are using. Recommended practice is for this
+   context to be passed in via a the IElementLocator implementation's
+   constructor, and this technique is demonstrated in the source code to the
+   two implementations provided in the regular .NET language bindings
+   releases.
+    
+   Finally, this commit also introduces a breaking change in
+   IElementLocatorFactory. Developers of classes that implement this
+   interface will now be required to implement the CreateLocator method,
+   which will return a valid IElementLocator implmentation. This is to
+   prepare for the removal of the IElementLocatorFactory interface and its
+   implmentations in a future release.
+ * Added FindsByAllAttribute to .NET PageFactory implementation. This allows
+   the user to specify that an element must match the criteria of all of the
+   FindsBy attributes a property or field is marked with in order to be found
+   by the PageFactory. Previously, a class member marked with multiple FindsBy
+   attributes would find an element matching any of the attributes' criteria.
+   Because of the nature of this change, you cannot use FindsBySequence and
+   FindsByAll on the same class member. Attempting to do so will result in an
+   exception when InitElements is called.
+ * (on behalf of Immanuel Hayden) Added support for ByAll, finding elements
+   matching all locators.
+ * (on behalf of Chris Block) Changed ExecuteJavaScript extension method for
+   converting result, so that it now validates that the ExecuteJavaScript
+   extension method will correctly detect if the script result is convertable
+   to the generic type.
+ * (on behalf of Yi Zeng) Added constructor overload which takes in single
+   DriverService parameter. This pattern was already implemented in
+   PhantomJSDriver, but not yet in ChromeDriver and InternetExplorerDriver.
+ * Added ability to add custom wire protocol commands in .NET bindings. This
+   allows projects that use a WebDriver-like JSON-over-HTTP wire protocol to
+   add additional end points for their use. It does this by exposing (and
+   renaming) a formerly internal method on the singleton CommandInfoRepository
+   class. To add additonal commands, one would call the TryAddCommand method,
+   which is now public. Fixes Google Code issue #8594.
+ * Added ability to handle W3C spec compliant element serialization.
+ * (on behalf of Eberhard Beilharz) Made PhantomJS driver more cross-platform
+   aware. On Linux the filesystem is case-sensitive and executables don't end
+   with ".exe". This change modifies the PhantomJSDriver to search for
+   "phantomjs" on Unix systems while keeping the filename "PhantomJS.exe" on
+   Windows. This allows to use the default constructor of the PhantomJSDriver
+   class on Linux. Previously using the default c'tor resulted in an error that
+   "PhantomJS.exe" can't be found.
+
 v2.45.0
 =======
  * Supports native events for Firefox versions 31 (current ESR), and

@@ -11,8 +11,8 @@ java_library(name = 'xml',
 )
 
 prebuilt_jar(name = 'xalan',
-  binary_jar = 'xalan-2.7.1.jar',
-  source_jar = 'xalan-2.7.1-sources.jar',
+  binary_jar = 'xalan-2.7.2.jar',
+  source_jar = 'xalan-2.7.2-sources.jar',
 )
 
 prebuilt_jar(name = 'xerces',

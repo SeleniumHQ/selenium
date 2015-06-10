@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-Selenium.version = "2.45";
+Selenium.version = "2.46";
 Selenium.revision = ".0";
 
 window.top.document.title += " v" + Selenium.version + Selenium.revision;

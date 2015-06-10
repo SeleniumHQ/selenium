@@ -1,3 +1,13 @@
+Selenium 2.46.0
+* Firefox support up to 38
+* BlackBerry browser support
+* remove Presto-Opera support
+* firefox extension extraction fixes 
+* process management fixes with phantomjs
+* Comparing remote web element for equality does not require a remote command
+* Issues Fixed: (gcode) 8493, 8521, 8498, 8274, 8497, 5923
+* Issues Fixed: (github) 401
+
 Selenium 2.45.0
 * Firefox support up to 35, support for native events up to 34.
 * Make Opera driver support also the new Blink based Opera

@@ -106,7 +106,7 @@ public class DefaultToFIFOPriorityTest {
         requests.get(0).getSession();
         break;
       } catch (Throwable e) {
-        // ignore.
+        cpt++;
       }
       Thread.sleep(250);
     }

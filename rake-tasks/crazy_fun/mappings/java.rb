@@ -56,7 +56,7 @@ module CrazyFunJava
   def self.ant
     @ant ||= (
       require 'third_party/java/eclipse_compiler/ecj-4.3.2.jar'
-      require 'third_party/java/junit/junit-dep-4.11.jar'
+      require 'third_party/java/junit/junit-4.12.jar'
 
       Ant.load_bundled
 
@@ -318,8 +318,8 @@ module CrazyFunJava
             :optimize             => true,
             :debug                => true,
             :nowarn               => true,
-            :source               => '1.6',
-            :target               => '1.6'
+            :source               => '1.7',
+            :target               => '1.7'
           ) { |ant|
             ant.classpath(:refid => "#{args[:name]}.path")
 

@@ -126,11 +126,24 @@ public class HTABrowserLauncher implements BrowserLauncher {
 
     if (queueSet.getExtensionJs().length() > 0) {
       String path = "scripts/user-extensions.js[" + sessionId + "]";
-      FileWriter fileWriter = new FileWriter(new File(coreDir, path));
-      BufferedWriter writer = new BufferedWriter(fileWriter);
 
-      writer.write(queueSet.getExtensionJs());
-      writer.close();
+      FileWriter fileWriter = null;
+      BufferedWriter writer = null;
+
+      try {
+        fileWriter = new FileWriter(new File(coreDir, path));
+        writer = new BufferedWriter(fileWriter);
+
+        writer.write(queueSet.getExtensionJs());
+      } finally {
+        if (writer != null) {
+          writer.close();
+        }
+        if (fileWriter != null) {
+          fileWriter.close();
+        }
+      }
+
 
       fileWriter.close();
     }

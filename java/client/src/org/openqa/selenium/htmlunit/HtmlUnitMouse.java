@@ -27,7 +27,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
+import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 import com.google.common.base.Preconditions;
 
 /**

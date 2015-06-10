@@ -1,8 +1,24 @@
-unreleased
+2.46.2 (2015-06-05)
 ===================
+* Fix encoding issue which prevents Element#send_keys to work on Ruby < 2.0 (#621)
+
+2.46.1 (2015-06-04)
+===================
+  * Fix aborted rubygems.org release
+
+2.46.0 (2015-06-04)
+===================
+
+Firefox:
+  * Support for Firefox 38
+  * Fix performance bug by not forcing garbage collection in httpd.js
+
+Chrome:
+  * Fixed ChromeDriver port race condition (#449 - thanks Jason Anderson)
 
 Ruby changes:
   * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
+  * Remove Presto-Opera support (Blink-based Opera still supported)
 
 2.45.0 (2015-02-28)
 ===================
