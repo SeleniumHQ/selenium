@@ -308,6 +308,74 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
+  public void testToleratesNonNumericLineNumber() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "stackTrace", Lists.newArrayList(
+            ImmutableMap.of("lineNumber", "some string, might be empty or 'Not avalable'",
+                "methodName", "someMethod",
+                "className", "MyClass",
+                "fileName", "Resource.m")));
+
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+          expected.getMessage());
+
+      StackTraceElement[] expectedTrace = {
+          new StackTraceElement("MyClass", "someMethod", "Resource.m", -1)
+      };
+      WebDriverException helper = new WebDriverException("some error message");
+      helper.setStackTrace(expectedTrace);
+
+      Throwable cause = expected.getCause();
+      assertNotNull(cause);
+      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(helper.getMessage(),
+          cause.getMessage());
+
+      assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+    }
+  }
+  
+  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
+  public void testToleratesNumericLineNumberAsString() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "stackTrace", Lists.newArrayList(
+            ImmutableMap.of("lineNumber", "1224", // number as a string
+                "methodName", "someMethod",
+                "className", "MyClass",
+                "fileName", "Resource.m")));
+
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+          expected.getMessage());
+
+      StackTraceElement[] expectedTrace = {
+          new StackTraceElement("MyClass", "someMethod", "Resource.m", 1224)
+      };
+      WebDriverException helper = new WebDriverException("some error message");
+      helper.setStackTrace(expectedTrace);
+
+      Throwable cause = expected.getCause();
+      assertNotNull(cause);
+      assertEquals(WebDriverException.class, cause.getClass());
+      assertEquals(helper.getMessage(),
+          cause.getMessage());
+
+      assertStackTracesEqual(expectedTrace, cause.getStackTrace());
+    }
+  }
+  
+  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
