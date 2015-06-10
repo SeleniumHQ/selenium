@@ -30,6 +30,7 @@
     "extensions.logging.enabled": true,
     "extensions.update.enabled": false,
     "extensions.update.notifyUser": false,
+    "javascript.enabled": true,
     "network.manage-offline-status": false,
     "network.http.phishy-userpass-length": 255,
     "offline-apps.allow_by_default": true,

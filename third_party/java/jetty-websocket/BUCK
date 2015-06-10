@@ -28,5 +28,5 @@ prebuilt_jar(name = 'jetty-util',
 )
 
 prebuilt_jar(name = 'jetty-io',
-  binary_jar = 'jetty-io-9.9.2.11.v20150529.jar',
+  binary_jar = 'jetty-io-9.2.11.v20150529.jar',
 )

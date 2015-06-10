@@ -69,29 +69,50 @@ public class ResourceExtractor {
 
   private static void extractResourcePathFromJar(Class cl, File jarFile, String resourcePath,
       File dest) throws IOException {
-    ZipFile z = new ZipFile(jarFile, ZipFile.OPEN_READ);
-    String zipStyleResourcePath = resourcePath.substring(1) + "/";
-    ZipEntry ze = z.getEntry(zipStyleResourcePath);
-    log.fine("Extracting " + resourcePath + " to " + dest.getAbsolutePath());
-    if (ze != null) {
-      // DGF If it's a directory, then we need to look at all the entries
-      for (Enumeration entries = z.entries(); entries.hasMoreElements();) {
-        ze = (ZipEntry) entries.nextElement();
-        if (ze.getName().startsWith(zipStyleResourcePath)) {
-          String relativePath = ze.getName().substring(zipStyleResourcePath.length());
-          File destFile = new File(dest, relativePath);
-          if (ze.isDirectory()) {
-            destFile.mkdirs();
-          } else {
-            FileOutputStream fos = new FileOutputStream(destFile);
-            copyStream(z.getInputStream(ze), fos);
+    ZipFile z = null;
+
+    try {
+      z = new ZipFile(jarFile, ZipFile.OPEN_READ);
+      String zipStyleResourcePath = resourcePath.substring(1) + "/";
+      ZipEntry ze = z.getEntry(zipStyleResourcePath);
+      log.fine("Extracting " + resourcePath + " to " + dest.getAbsolutePath());
+      if (ze != null) {
+        // DGF If it's a directory, then we need to look at all the entries
+        for (Enumeration entries = z.entries(); entries.hasMoreElements(); ) {
+          ze = (ZipEntry) entries.nextElement();
+          if (ze.getName().startsWith(zipStyleResourcePath)) {
+            String relativePath = ze.getName().substring(zipStyleResourcePath.length());
+            File destFile = new File(dest, relativePath);
+            if (ze.isDirectory()) {
+              destFile.mkdirs();
+            } else {
+              FileOutputStream fos = null;
+              try {
+                fos = new FileOutputStream(destFile);
+                copyStream(z.getInputStream(ze), fos);
+              } finally {
+                if (fos != null) {
+                  fos.close();
+                }
+              }
+            }
+          }
+        }
+      } else {
+        FileOutputStream fos = null;
+        try {
+          fos = new FileOutputStream(dest);
+          copyStream(ClassPathResource.getSeleniumResourceAsStream(resourcePath), fos);
+        } finally {
+          if (fos != null) {
+            fos.close();
           }
         }
       }
-    } else {
-      FileOutputStream fos = new FileOutputStream(dest);
-      copyStream(ClassPathResource.getSeleniumResourceAsStream(resourcePath), fos);
-
+    } finally {
+      if (z != null) {
+        z.close();
+      }
     }
   }
 

@@ -343,8 +343,8 @@ public class SeleniumServer implements SslCertificateGenerator {
     String coreRevision = p.getProperty("selenium.core.revision");
     BuildInfo info = new BuildInfo();
     LOGGER.info(String.format(
-        "v%s%s, with Core v%s%s. Built from revision %s",
-        rcVersion, rcRevision, coreVersion, coreRevision, info.getBuildRevision()));
+      "v%s%s, with Core v%s%s. Built from revision %s",
+      rcVersion, rcRevision, coreVersion, coreRevision, info.getBuildRevision()));
   }
 
 
@@ -691,11 +691,13 @@ public class SeleniumServer implements SslCertificateGenerator {
               userInput);
       Thread t = new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
+
+          InputStream is = null;
           try {
             LOGGER.info("---> Requesting " + url.toString());
             URLConnection conn = url.openConnection();
             conn.connect();
-            InputStream is = conn.getInputStream();
+            is = conn.getInputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buffer = new byte[2048];
             int length;
@@ -715,6 +717,17 @@ public class SeleniumServer implements SslCertificateGenerator {
             System.err.println(e.getMessage());
             if (debugMode) {
               e.printStackTrace();
+            }
+          } finally {
+            if (is != null) {
+              try {
+                is.close();
+              } catch (IOException e) {
+                System.err.println(e.getMessage());
+                if (debugMode) {
+                  e.printStackTrace();
+                }
+              }
             }
           }
         }
