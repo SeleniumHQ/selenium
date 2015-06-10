@@ -32,8 +32,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AttachFile extends SeleneseCommand<Void> {
+  private final static Logger LOGGER = Logger.getLogger(AttachFile.class.getName());
   private final ElementFinder finder;
 
   public AttachFile(ElementFinder finder) {
@@ -63,6 +66,15 @@ public class AttachFile extends SeleneseCommand<Void> {
       Resources.copy(url, fos);
     } catch (IOException e) {
       throw new SeleniumException("Can't access file to upload: " + url, e);
+    } finally {
+      try {
+        if (fos != null) {
+          fos.close();
+        }
+      } catch (IOException e) {
+        // Nothing sane to do. Log and continue.
+        LOGGER.log(Level.WARNING, "Unable to close stream used for reading file: " + name, e);
+      }
     }
 
     return outputTo;
