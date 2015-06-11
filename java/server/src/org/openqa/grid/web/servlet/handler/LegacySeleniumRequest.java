@@ -82,7 +82,7 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
       } catch (UnsupportedEncodingException e) {}
       if (piece.startsWith("1=")) {
         String envt = piece.replace("1=", "");
-        Map<String, Object> cap = new HashMap<String, Object>();
+        Map<String, Object> cap = new HashMap<>();
         // TODO freynaud : more splitting, like trying to guess the
         // platform or version ?
 

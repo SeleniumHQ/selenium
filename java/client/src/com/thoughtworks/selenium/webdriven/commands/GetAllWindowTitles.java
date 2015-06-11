@@ -29,7 +29,7 @@ public class GetAllWindowTitles extends SeleneseCommand<String[]> {
   protected String[] handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     String current = driver.getWindowHandle();
 
-    List<String> attributes = new ArrayList<String>();
+    List<String> attributes = new ArrayList<>();
     for (String handle : driver.getWindowHandles()) {
       driver.switchTo().window(handle);
       attributes.add(driver.getTitle());

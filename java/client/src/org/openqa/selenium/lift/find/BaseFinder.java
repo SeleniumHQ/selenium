@@ -31,7 +31,7 @@ import java.util.List;
  */
 public abstract class BaseFinder<S, T> implements Finder<S, T> {
 
-  protected List<Matcher<S>> matchers = new ArrayList<Matcher<S>>();
+  protected List<Matcher<S>> matchers = new ArrayList<>();
 
   public Collection<S> findFrom(T context) {
 
@@ -64,7 +64,7 @@ public abstract class BaseFinder<S, T> implements Finder<S, T> {
   protected abstract void describeTargetTo(Description description);
 
   protected Collection<S> allMatching(List<Matcher<S>> matchers, Collection<S> items) {
-    Collection<S> temp = new ArrayList<S>();
+    Collection<S> temp = new ArrayList<>();
     for (S item : items) {
       if (allOf(matchers).matches(item)) {
         temp.add(item);

@@ -57,8 +57,8 @@ public class RegistrationRequest {
   private String description;
 
   private GridRole role;
-  private List<DesiredCapabilities> capabilities = new ArrayList<DesiredCapabilities>();
-  private Map<String, Object> configuration = new HashMap<String, Object>();
+  private List<DesiredCapabilities> capabilities = new ArrayList<>();
+  private Map<String, Object> configuration = new HashMap<>();
 
   private String[] args;
 
@@ -550,7 +550,7 @@ public class RegistrationRequest {
       JsonObject base = JSONConfigurationUtils.loadJSON(resource);
 
       if (base.has("capabilities")) {
-        capabilities = new ArrayList<DesiredCapabilities>();
+        capabilities = new ArrayList<>();
         JsonArray a = base.get("capabilities").getAsJsonArray();
         for (int i = 0; i < a.size(); i++) {
           DesiredCapabilities c = new JsonToBeanConverter()
@@ -585,7 +585,7 @@ public class RegistrationRequest {
   }
 
   public RemoteControlConfiguration getRemoteControlConfiguration() {
-    List<String> params = new ArrayList<String>();
+    List<String> params = new ArrayList<>();
     for (String key : configuration.keySet()) {
       params.add("-" + key);
 

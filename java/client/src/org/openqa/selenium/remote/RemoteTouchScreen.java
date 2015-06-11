@@ -37,21 +37,21 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   public void down(int x, int y) {
-    Map<String, Object> downParams = new HashMap<String, Object>();
+    Map<String, Object> downParams = new HashMap<>();
     downParams.put("x", x);
     downParams.put("y", y);
     executeMethod.execute(DriverCommand.TOUCH_DOWN, downParams);
   }
 
   public void up(int x, int y) {
-    Map<String, Object> upParams = new HashMap<String, Object>();
+    Map<String, Object> upParams = new HashMap<>();
     upParams.put("x", x);
     upParams.put("y", y);
     executeMethod.execute(DriverCommand.TOUCH_UP, upParams);
   }
 
   public void move(int x, int y) {
-    Map<String, Object> moveParams = new HashMap<String, Object>();
+    Map<String, Object> moveParams = new HashMap<>();
     moveParams.put("x", x);
     moveParams.put("y", y);
     executeMethod.execute(DriverCommand.TOUCH_MOVE, moveParams);
@@ -75,14 +75,14 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   public void scroll(int xOffset, int yOffset) {
-    Map<String, Object> scrollParams = new HashMap<String, Object>();
+    Map<String, Object> scrollParams = new HashMap<>();
     scrollParams.put("xoffset", xOffset);
     scrollParams.put("yoffset", yOffset);
     executeMethod.execute(DriverCommand.TOUCH_SCROLL, scrollParams);
   }
 
   public void flick(int xSpeed, int ySpeed) {
-    Map<String, Object> flickParams = new HashMap<String, Object>();
+    Map<String, Object> flickParams = new HashMap<>();
     flickParams.put("xspeed", xSpeed);
     flickParams.put("yspeed", ySpeed);
     executeMethod.execute(DriverCommand.TOUCH_FLICK, flickParams);

@@ -136,7 +136,7 @@ public class LoadBalancedTests {
     assertEquals(16.66, proxy3.getResourceUsageInPercent(), 0.1f);
 
 
-    List<TestSession> sessions = new ArrayList<TestSession>();
+    List<TestSession> sessions = new ArrayList<>();
     // request 3 slots : it should spread the load to 1 FF per proxy.
     for (int i = 0; i < 3; i++) {
       MockedRequestHandler req = GridHelper.createNewSessionHandler(registry2, firefox());
@@ -164,7 +164,7 @@ public class LoadBalancedTests {
 
 
   private static Map<String, Object> firefox() {
-    Map<String, Object> ff = new HashMap<String, Object>();
+    Map<String, Object> ff = new HashMap<>();
     ff.put(APP, "firefox");
     return ff;
   }
@@ -172,7 +172,7 @@ public class LoadBalancedTests {
   private static RegistrationRequest getRequestOfNSlots(int n, String name) {
     RegistrationRequest request = new RegistrationRequest();
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(MAX_SESSION, n);
     config.put(REMOTE_HOST, "http://" + name + ":4444");
     request.setConfiguration(config);

@@ -28,7 +28,7 @@ class Maps {
    * Run the specified pattern on each line of the data to extract a dictionary
    */
   public static Map<String, String> parseDictionary(String data, Pattern pattern, boolean reverse) {
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new HashMap<>();
     for (String line : data.split("\n")) {
       Matcher m = pattern.matcher(line);
       if (!m.find()) {

@@ -53,7 +53,7 @@ public class ThreadGuard {
 
   private static Class[] getInterfaces(Object target) {
     Class base = target.getClass();
-    Set<Class> interfaces = new HashSet<Class>();
+    Set<Class> interfaces = new HashSet<>();
     if (base.isInterface()) {
       interfaces.add(base);
     }

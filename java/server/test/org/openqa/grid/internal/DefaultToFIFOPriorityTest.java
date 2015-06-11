@@ -45,7 +45,7 @@ public class DefaultToFIFOPriorityTest {
   // priority rule : nothing defined = FIFO
   private static Prioritizer fifo = null;
 
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ff = new HashMap<>();
   private static RemoteProxy p1;
   private static List<MockedRequestHandler> requests = Collections
       .synchronizedList(new ArrayList<MockedRequestHandler>());
@@ -65,7 +65,7 @@ public class DefaultToFIFOPriorityTest {
     registry.add(p1);
 
     for (int i = 1; i <= MAX; i++) {
-      Map<String, Object> cap = new HashMap<String, Object>();
+      Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
       MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, cap);

@@ -200,7 +200,7 @@ public class FirefoxProfileTest {
     File prefs = new File(generatedProfile, "user.js");
     BufferedReader reader = new BufferedReader(new FileReader(prefs));
 
-    List<String> prefLines = new ArrayList<String>();
+    List<String> prefLines = new ArrayList<>();
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
       prefLines.add(line);
     }

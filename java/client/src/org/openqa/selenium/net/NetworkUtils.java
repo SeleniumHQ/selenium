@@ -143,7 +143,7 @@ public class NetworkUtils {
   }
 
   private List<InetAddress> getLocalInterfaceAddress() {
-    List<InetAddress> localAddresses = new ArrayList<InetAddress>();
+    List<InetAddress> localAddresses = new ArrayList<>();
 
     for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
       for (InetAddress addr : iface.getInetAddresses()) {

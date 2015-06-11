@@ -40,7 +40,7 @@ public class AddingProxyAgainFreesResources {
 
   private static Registry registry;
 
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ff = new HashMap<>();
   private static RemoteProxy p1;
   private static RequestHandler handler;
   private static RequestHandler handler2;

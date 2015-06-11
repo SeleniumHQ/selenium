@@ -72,7 +72,7 @@ public class IgnoredTestPrinter {
       return ImmutableSet.<Class<?>>of(suite);
     }
 
-    Set<Class<?>> testClasses = new HashSet<Class<?>>();
+    Set<Class<?>> testClasses = new HashSet<>();
     for (Class<?> suiteClass : suiteClasses.value()) {
       testClasses.addAll(getTestClasses(suiteClass));
     }

@@ -27,14 +27,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class SlotsLines {
-  Map<MiniCapability, List<TestSlot>> slots = new HashMap<MiniCapability, List<TestSlot>>();
+  Map<MiniCapability, List<TestSlot>> slots = new HashMap<>();
 
 
   public void add(TestSlot slot) {
     MiniCapability c = new MiniCapability(slot);
     List<TestSlot> l = slots.get(c);
     if (l == null) {
-      l = new ArrayList<TestSlot>();
+      l = new ArrayList<>();
       slots.put(c, l);
     }
     l.add(slot);

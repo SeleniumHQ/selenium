@@ -47,7 +47,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
       throw new WebDriverException(e);
     }
 
-    List<NetworkInterface> result = new ArrayList<NetworkInterface>();
+    List<NetworkInterface> result = new ArrayList<>();
     while (interfaces.hasMoreElements()) {
       result.add(createInterface(interfaces.nextElement()));
     }

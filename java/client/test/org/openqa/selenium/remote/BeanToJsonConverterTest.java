@@ -70,7 +70,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertAMapIntoAJsonObject() throws Exception {
-    Map<String, String> toConvert = new HashMap<String, String>();
+    Map<String, String> toConvert = new HashMap<>();
     toConvert.put("cheese", "cheddar");
     toConvert.put("fish", "nice bit of haddock");
 
@@ -447,7 +447,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("some id");
     String commandName = "some command";
-    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> parameters = new HashMap<>();
     parameters.put("param1", "value1");
     parameters.put("param2", "value2");
     Command command = new Command(sessionId, commandName, parameters);
@@ -496,7 +496,7 @@ public class BeanToJsonConverterTest {
 
     @SuppressWarnings("unused")
     public Set<?> getSomething() {
-      Set<Integer> integers = new HashSet<Integer>();
+      Set<Integer> integers = new HashSet<>();
       integers.add(1);
       integers.add(43);
       return integers;

@@ -47,7 +47,7 @@ public class CommandHolder {
 
   public CommandHolder(String queueId, int timeoutInSeconds) {
     this.queueId = queueId;
-    queue = new SingleEntryAsyncQueue<RemoteCommand>(timeoutInSeconds);
+    queue = new SingleEntryAsyncQueue<>(timeoutInSeconds);
     queue.setPoison(poisonCommand);
   }
 

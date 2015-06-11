@@ -52,10 +52,10 @@ public class DoNotUseProxyPac implements Serializable {
 
   // Make an effort to preserve the ordering the user asked for.
   private final Set<String> directUrls = new LinkedHashSet<String>();
-  private final Map<String, String> proxiedUrls = new HashMap<String, String>();
-  private final Map<String, String> proxiedRegexUrls = new HashMap<String, String>();
+  private final Map<String, String> proxiedUrls = new HashMap<>();
+  private final Map<String, String> proxiedRegexUrls = new HashMap<>();
   private final Set<String> directHosts = new LinkedHashSet<String>();
-  private final Map<String, String> proxiedHosts = new HashMap<String, String>();
+  private final Map<String, String> proxiedHosts = new HashMap<>();
   // TODO(simon): Is this right? Really?
   private String defaultProxy = ""; // Does nothing. Emulates old behaviour of Selenium
   private URI deriveFrom;
@@ -171,7 +171,7 @@ public class DoNotUseProxyPac implements Serializable {
   }
 
   public Map asMap() {
-    Map<String, Object> toReturn = new HashMap<String, Object>();
+    Map<String, Object> toReturn = new HashMap<>();
     if (!directUrls.isEmpty()) {
       toReturn.put("directUrls", unmodifiableSet(directUrls));
     }

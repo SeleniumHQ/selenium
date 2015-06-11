@@ -42,8 +42,8 @@ public class RemoteProxyInheritanceTest {
     res.getCapabilities().clear();
     RegistrationRequest req = res;
 
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(ID, "abc");
 
@@ -57,8 +57,8 @@ public class RemoteProxyInheritanceTest {
 
   @Test
   public void existing() {
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "org.openqa.grid.plugin.MyRemoteProxy");
 
@@ -82,8 +82,8 @@ public class RemoteProxyInheritanceTest {
 
   @Test(expected = InvalidParameterException.class)
   public void notExisting() {
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "I Don't exist");
 
@@ -96,8 +96,8 @@ public class RemoteProxyInheritanceTest {
 
   @Test(expected = InvalidParameterException.class)
   public void notExtendingProxyExisting() {
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "java.lang.String");
 
@@ -111,8 +111,8 @@ public class RemoteProxyInheritanceTest {
   // when some mandatory param are missing -> InvalidParameterException
   @Test(expected = InvalidParameterException.class)
   public void badConfig() {
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(PROXY_CLASS, "I Don't exist");
 

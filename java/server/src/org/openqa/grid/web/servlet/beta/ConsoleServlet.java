@@ -122,7 +122,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append(getHeader());
 
     // TODO freynaud : registry to return a copy of proxies ?
-    List<String> nodes = new ArrayList<String>();
+    List<String> nodes = new ArrayList<>();
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
       HtmlRenderer beta = new WebProxyHtmlRendererBeta(proxy);
       nodes.add(beta.renderSummary());
@@ -298,7 +298,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     }
     b.append("</br></br>");
     b.append("<u>all params :</u></br></br>");
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     keys.addAll(config.getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {

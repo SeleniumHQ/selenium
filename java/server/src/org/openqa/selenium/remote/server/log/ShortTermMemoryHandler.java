@@ -81,7 +81,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
   public synchronized LogRecord[] records() {
     final ArrayList<LogRecord> validRecords;
 
-    validRecords = new ArrayList<LogRecord>(capacity);
+    validRecords = new ArrayList<>(capacity);
     for (int i = currentIndex; i < capacity; i++) {
       if (null != lastRecords[i]) {
         validRecords.add(lastRecords[i]);

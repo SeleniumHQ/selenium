@@ -154,9 +154,8 @@ public class Augmenter extends BaseAugmenter {
 
   private class CompoundHandler implements MethodInterceptor {
 
-    private Map<Method, InterfaceImplementation> handlers =
-        new HashMap<Method, InterfaceImplementation>();
-    private Set<Class<?>> interfaces = new HashSet<Class<?>>();
+    private Map<Method, InterfaceImplementation> handlers = new HashMap<>();
+    private Set<Class<?>> interfaces = new HashSet<>();
 
     private final RemoteWebDriver driver;
     private final Object originalInstance;

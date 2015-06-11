@@ -34,7 +34,7 @@ import java.util.List;
 public class StaticContentHandler extends ResourceHandler {
   private static final long serialVersionUID = 8031049889874827358L;
   private static boolean slowResources;
-  private List<ResourceLocator> resourceLocators = new ArrayList<ResourceLocator>();
+  private List<ResourceLocator> resourceLocators = new ArrayList<>();
   public static final int SERVER_DELAY = 1000;
   private final String debugURL;
   private final boolean proxyInjectionMode;

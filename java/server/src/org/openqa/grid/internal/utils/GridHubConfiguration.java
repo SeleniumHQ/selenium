@@ -73,12 +73,12 @@ public class GridHubConfiguration {
    * list of extra servlets this hub will display. Allows to present custom view of the hub for
    * monitoring and management purpose
    */
-  private List<String> servlets = new ArrayList<String>();
+  private List<String> servlets = new ArrayList<>();
 
   /**
    * name <-> browser mapping from grid1
    */
-  private Map<String, String> grid1Mapping = new HashMap<String, String>();
+  private Map<String, String> grid1Mapping = new HashMap<>();
 
   /**
    * to specify the order in which the new session request will be handled.
@@ -111,7 +111,7 @@ public class GridHubConfiguration {
    */
   private boolean isDebug = false;
 
-  private Map<String, Object> allParams = new HashMap<String, Object>();
+  private Map<String, Object> allParams = new HashMap<>();
 
   /**
    * original command line param, useful for debugging
@@ -510,7 +510,7 @@ public class GridHubConfiguration {
     }
     b.append("\n\n");
     b.append("all params :\n");
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     keys.addAll(allParams.keySet());
     Collections.sort(keys);
     for (String s : keys) {

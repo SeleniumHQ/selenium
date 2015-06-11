@@ -76,7 +76,7 @@ public class CaptureNetworkTrafficCommandTest {
     Date start = sdf.parse("2009-04-15T09:22:41.000-0700");
     Date end = sdf.parse("2009-04-15T09:22:41.102-0700");
 
-    final Map<String, String> requestHeaders = new TreeMap<String, String>();
+    final Map<String, String> requestHeaders = new TreeMap<>();
     requestHeaders.put("foo", "bar");
     requestHeaders.put("baz", "blah");
     HttpRequest req = new HttpRequest() {

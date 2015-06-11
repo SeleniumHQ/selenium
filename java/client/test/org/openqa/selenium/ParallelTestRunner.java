@@ -58,7 +58,7 @@ public class ParallelTestRunner {
   }
 
   public void run() throws Exception {
-    final List<WorkerThread> threads = new ArrayList<WorkerThread>(_workers.size());
+    final List<WorkerThread> threads = new ArrayList<>(_workers.size());
     Throwable t = null;
     int i = 1;
     for (Worker worker : _workers) {

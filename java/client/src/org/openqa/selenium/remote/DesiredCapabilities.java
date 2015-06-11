@@ -38,7 +38,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
-  private final Map<String, Object> capabilities = new HashMap<String, Object>();
+  private final Map<String, Object> capabilities = new HashMap<>();
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);

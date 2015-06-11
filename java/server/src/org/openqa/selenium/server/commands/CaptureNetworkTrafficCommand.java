@@ -272,8 +272,8 @@ public class CaptureNetworkTrafficCommand extends Command {
     private Date start;
     private Date end;
     private long bytes;
-    private List<Header> requestHeaders = new ArrayList<Header>();
-    private List<Header> responseHeaders = new ArrayList<Header>();
+    private List<Header> requestHeaders = new ArrayList<>();
+    private List<Header> responseHeaders = new ArrayList<>();
 
     public Entry(String method, String url) {
       this.method = method;

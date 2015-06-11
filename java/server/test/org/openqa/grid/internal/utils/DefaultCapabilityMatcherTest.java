@@ -37,13 +37,13 @@ import java.util.Map;
 public class DefaultCapabilityMatcherTest {
 
 
-  static Map<String, Object> firefox = new HashMap<String, Object>();
-  static Map<String, Object> tl = new HashMap<String, Object>();
+  static Map<String, Object> firefox = new HashMap<>();
+  static Map<String, Object> tl = new HashMap<>();
 
-  static Map<String, Object> firefox2 = new HashMap<String, Object>();
-  static Map<String, Object> tl2 = new HashMap<String, Object>();
+  static Map<String, Object> firefox2 = new HashMap<>();
+  static Map<String, Object> tl2 = new HashMap<>();
 
-  static Map<String, Object> exotic = new HashMap<String, Object>();
+  static Map<String, Object> exotic = new HashMap<>();
 
 
   CapabilityMatcher helper = new DefaultCapabilityMatcher();
@@ -99,12 +99,12 @@ public class DefaultCapabilityMatcherTest {
   public void nullEmptyValues() {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
-    Map<String, Object> requested = new HashMap<String, Object>();
+    Map<String, Object> requested = new HashMap<>();
     requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     requested.put(CapabilityType.PLATFORM, null);
     requested.put(CapabilityType.VERSION, "");
 
-    Map<String, Object> node = new HashMap<String, Object>();
+    Map<String, Object> node = new HashMap<>();
     node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     node.put(CapabilityType.PLATFORM, Platform.LINUX);
     node.put(CapabilityType.VERSION, "3.6");
