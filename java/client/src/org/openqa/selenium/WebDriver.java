@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * @see org.openqa.selenium.ie.InternetExplorerDriver
  * @see org.openqa.selenium.htmlunit.HtmlUnitDriver
  */
-public interface WebDriver extends SearchContext {
+public interface WebDriver extends SearchContext, AutoCloseable {
   // Navigation
 
   /**
