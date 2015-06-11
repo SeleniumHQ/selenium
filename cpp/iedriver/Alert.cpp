@@ -208,6 +208,16 @@ std::string Alert::GetDirectUIDialogText() {
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Failed to get accName property from text object";
     return alert_text_value;
+  } else if (hr != S_OK) {
+    // N.B., get_accName can return an error value without it being a
+    // standard COM error.
+    LOG(WARN) << "Getting accName property from text object returned an error "
+              << "(value: " << hr << "). The text object may not have a name.";
+    return alert_text_value;
+  } else if (text_bstr == NULL) {
+    LOG(WARN) << "Getting accName property from text object returned a null "
+              << "value";
+    return alert_text_value;
   }
 
   std::wstring text = text_bstr;
