@@ -93,11 +93,11 @@ public class StatusServletTests {
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444", registry);
 
     RegistrationRequest req = new RegistrationRequest();
-    Map<String, Object> capability = new HashMap<String, Object>();
+    Map<String, Object> capability = new HashMap<>();
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
     req.addDesiredCapability(capability);
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444");
     req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
@@ -108,7 +108,7 @@ public class StatusServletTests {
     registry.add(p4);
     registry.add(customProxy);
 
-    Map<String, Object> cap = new HashMap<String, Object>();
+    Map<String, Object> cap = new HashMap<>();
     cap.put(CapabilityType.BROWSER_NAME, "app1");
 
     RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, cap);

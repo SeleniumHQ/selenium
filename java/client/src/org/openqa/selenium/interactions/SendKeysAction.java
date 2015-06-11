@@ -50,7 +50,7 @@ public class SendKeysAction extends KeysRelatedAction implements Action, MultiAc
   }
 
   public List<Action> getActions() {
-    List<Action> actions = new ArrayList<Action>();
+    List<Action> actions = new ArrayList<>();
     for (CharSequence chars : keysToSend) {
       for (int i = 0; i < chars.length(); i++) {
         Keys key = Keys.getKeyFromUnicode(chars.charAt(i));

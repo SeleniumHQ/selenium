@@ -34,7 +34,7 @@ import java.util.Set;
 public class StaticTestSessions implements DriverSessions {
 
   private final Map<SessionId, Session> sessionIdToDriver = Maps.newHashMap();
-  private final List<SessionId> freeSessions = new ArrayList<SessionId>();
+  private final List<SessionId> freeSessions = new ArrayList<>();
 
 
   public StaticTestSessions(Capabilities capabilities, WebDriver... drivers) {

@@ -91,7 +91,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       LogFactory.getLog(SeleniumDriverResourceHandler.class.getName() + ".browserSideLog");
 
   private SeleniumServer remoteControl;
-  private Map<String, String> domainsBySessionId = new HashMap<String, String>();
+  private Map<String, String> domainsBySessionId = new HashMap<>();
   private StringBuffer logMessagesBuffer = new StringBuffer();
 
   private BrowserLauncherFactory browserLauncherFactory;

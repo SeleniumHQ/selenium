@@ -90,12 +90,12 @@ public class RegistryTest {
   }
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
-  static Map<String, Object> app2 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
+  static Map<String, Object> app2 = new HashMap<>();
 
   @BeforeClass
   public static void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(CapabilityType.BROWSER_NAME, "app1");
     app2.put(CapabilityType.BROWSER_NAME, "app2");
     config.put(REMOTE_HOST, "http://machine1:4444");

@@ -208,7 +208,7 @@ public class DefaultConditionRunner implements ConditionRunner {
   private final class ContextImpl implements ConditionRunner.Context {
 
     private final long start;
-    private List<String> info = new ArrayList<String>();
+    private List<String> info = new ArrayList<>();
     private String lastInfo;
 
     public ContextImpl() {

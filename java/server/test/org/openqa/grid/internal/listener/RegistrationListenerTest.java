@@ -58,11 +58,11 @@ public class RegistrationListenerTest {
   }
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
 
   @BeforeClass
   public static void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     config.put(REMOTE_HOST, "http://machine1:4444");
     config.put("host","localhost");

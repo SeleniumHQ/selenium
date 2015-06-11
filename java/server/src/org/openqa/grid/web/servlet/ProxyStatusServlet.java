@@ -138,7 +138,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
         // requested.
         List<String> methods = getExtraMethodsRequested(requestJSON);
 
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (String method : methods) {
           try {
             Object o = getValueByReflection(proxy, method);
@@ -168,7 +168,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   }
 
   private List<String> getExtraMethodsRequested(JsonObject request) {
-    List<String> res = new ArrayList<String>();
+    List<String> res = new ArrayList<>();
 
     for (Map.Entry<String, JsonElement> entry : request.entrySet()) {
       if (!"id".equals(entry.getKey())) {

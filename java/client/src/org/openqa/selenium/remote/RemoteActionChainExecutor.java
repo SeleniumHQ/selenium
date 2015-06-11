@@ -38,7 +38,7 @@ public class RemoteActionChainExecutor implements ActionChainExecutor {
   }
 
   public void execute(Action action) {
-    List<Action> actions = new ArrayList<Action>();
+    List<Action> actions = new ArrayList<>();
     if (action instanceof CompositeAction) {
       actions = ((CompositeAction) action).asList();
     } else {

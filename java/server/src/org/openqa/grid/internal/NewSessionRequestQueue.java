@@ -41,7 +41,7 @@ class NewSessionRequestQueue {
 
   private static final Logger log = Logger.getLogger(NewSessionRequestQueue.class.getName());
 
-  private final List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
+  private final List<RequestHandler> newSessionRequests = new ArrayList<>();
 
 
   /**
@@ -64,13 +64,13 @@ class NewSessionRequestQueue {
 
     final List<RequestHandler> copy;
     if (prioritizer != null) {
-      copy = new ArrayList<RequestHandler>(newSessionRequests);
+      copy = new ArrayList<>(newSessionRequests);
       Collections.sort(copy);
     } else {
       copy = newSessionRequests;
     }
 
-    List<RequestHandler> matched = new ArrayList<RequestHandler>();
+    List<RequestHandler> matched = new ArrayList<>();
     for (RequestHandler request : copy) {
       if (handlerConsumer.apply(request)) {
         matched.add(request);
@@ -106,7 +106,7 @@ class NewSessionRequestQueue {
    * @return An Iterable of unmodifiable maps.
    */
   public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
-    List<DesiredCapabilities> result = new ArrayList<DesiredCapabilities>();
+    List<DesiredCapabilities> result = new ArrayList<>();
     for (RequestHandler req : newSessionRequests) {
       result.add(new DesiredCapabilities(req.getRequest().getDesiredCapabilities()));
     }

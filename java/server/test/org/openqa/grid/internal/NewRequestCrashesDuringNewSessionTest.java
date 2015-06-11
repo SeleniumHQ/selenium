@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public class NewRequestCrashesDuringNewSessionTest {
 
   private static Registry registry;
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ff = new HashMap<>();
   private static RemoteProxy p1;
 
   /**

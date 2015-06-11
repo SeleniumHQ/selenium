@@ -205,7 +205,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationManualProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
     proxyData.put("ftpProxy", "ftp.proxy");
@@ -232,7 +232,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationPACProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "PAC");
     proxyData.put("proxyAutoconfigUrl", "http://aaa/bbb.pac");
 
@@ -253,7 +253,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationAutodetectProxy() {
-    Map<String, Object> proxyData = new HashMap<String, Object>();
+    Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "AUTODETECT");
     proxyData.put("autodetect", true);
 
@@ -274,7 +274,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationSystemProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "system");
 
     Proxy proxy = new Proxy(proxyData);
@@ -294,7 +294,7 @@ public class ProxyTest {
 
   @Test
   public void testInitializationDirectProxy() {
-    Map<String, String> proxyData = new HashMap<String, String>();
+    Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "DIRECT");
 
     Proxy proxy = new Proxy(proxyData);
@@ -314,7 +314,7 @@ public class ProxyTest {
 
   @Test
   public void constructingWithNullKeysWorksAsExpected() {
-    Map<String, String> rawProxy = new HashMap<String, String>();
+    Map<String, String> rawProxy = new HashMap<>();
     rawProxy.put("ftpProxy", null);
     rawProxy.put("httpProxy", "http://www.example.com");
     rawProxy.put("autodetect", null);

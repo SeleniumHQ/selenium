@@ -87,8 +87,8 @@ public class HTMLSuiteResult {
     }
 
     String foo;
-    public List<String> hrefList = new ArrayList<String>();
-    public List<Integer> tagPositions = new ArrayList<Integer>();
+    public List<String> hrefList = new ArrayList<>();
+    public List<Integer> tagPositions = new ArrayList<>();
 
     @Override
     public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {

@@ -46,7 +46,7 @@ public class PriorityTest {
     }
   };
 
-  static Map<String, Object> ff = new HashMap<String, Object>();
+  static Map<String, Object> ff = new HashMap<>();
   static RemoteProxy p1;
 
   static RequestHandler newSessionRequest1;
@@ -55,7 +55,7 @@ public class PriorityTest {
   static RequestHandler newSessionRequest4;
   static RequestHandler newSessionRequest5;
 
-  static List<RequestHandler> requests = new ArrayList<RequestHandler>();
+  static List<RequestHandler> requests = new ArrayList<>();
 
   /**
    * create a hub with 1 FF
@@ -71,23 +71,23 @@ public class PriorityTest {
     registry.add(p1);
 
     // create 5 sessionRequest, with priority =1 .. 5
-    Map<String, Object> ff1 = new HashMap<String, Object>();
+    Map<String, Object> ff1 = new HashMap<>();
     ff1.put(APP, "FF");
     ff1.put("_priority", 1);
 
-    Map<String, Object> ff2 = new HashMap<String, Object>();
+    Map<String, Object> ff2 = new HashMap<>();
     ff2.put(APP, "FF");
     ff2.put("_priority", 2);
 
-    Map<String, Object> ff3 = new HashMap<String, Object>();
+    Map<String, Object> ff3 = new HashMap<>();
     ff3.put(APP, "FF");
     ff3.put("_priority", 3);
 
-    Map<String, Object> ff4 = new HashMap<String, Object>();
+    Map<String, Object> ff4 = new HashMap<>();
     ff4.put(APP, "FF");
     ff4.put("_priority", 4);
 
-    Map<String, Object> ff5 = new HashMap<String, Object>();
+    Map<String, Object> ff5 = new HashMap<>();
     ff5.put(APP, "FF");
     ff5.put("_priority", 5);
 

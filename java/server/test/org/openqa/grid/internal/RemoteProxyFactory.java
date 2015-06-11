@@ -45,7 +45,7 @@ public class RemoteProxyFactory {
     capability.setBrowserName(browser);
     req.addDesiredCapability(capability);
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(RegistrationRequest.REMOTE_HOST, url);
     req.setConfiguration(config);
     return createProxy(registry, req);

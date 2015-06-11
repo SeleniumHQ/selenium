@@ -39,8 +39,8 @@ public class BaseRemoteProxyTest {
   private static RemoteProxy p1 = null;
   private static RemoteProxy p2 = null;
 
-  private static Map<String, Object> app1Capability = new HashMap<String, Object>();
-  private static Map<String, Object> app2Capability = new HashMap<String, Object>();
+  private static Map<String, Object> app1Capability = new HashMap<>();
+  private static Map<String, Object> app2Capability = new HashMap<>();
   private static Registry registry = Registry.newInstance();
 
   @BeforeClass
@@ -52,7 +52,7 @@ public class BaseRemoteProxyTest {
     p1 =
         RemoteProxyFactory
             .getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
-    List<Map<String, Object>> caps = new ArrayList<Map<String, Object>>();
+    List<Map<String, Object>> caps = new ArrayList<>();
     caps.add(app1Capability);
     caps.add(app2Capability);
     p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
@@ -68,10 +68,10 @@ public class BaseRemoteProxyTest {
 
   @Test(expected = GridException.class)
   public void create() {
-    Map<String, Object> cap = new HashMap<String, Object>();
+    Map<String, Object> cap = new HashMap<>();
     cap.put(APP, "corrupted");
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(REMOTE_HOST, "ebay.com");
 
     RegistrationRequest request = new RegistrationRequest();

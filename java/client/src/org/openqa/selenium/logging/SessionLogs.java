@@ -38,7 +38,7 @@ public class SessionLogs {
   private final Map<String, LogEntries> logTypeToEntriesMap;
 
   public SessionLogs() {
-    this.logTypeToEntriesMap = new HashMap<String, LogEntries>();
+    this.logTypeToEntriesMap = new HashMap<>();
   }
 
   public LogEntries getLogs(String logType) {
@@ -65,7 +65,7 @@ public class SessionLogs {
     for (Map.Entry<String, JsonElement> entry : rawSessionLogs.entrySet()) {
       String logType = entry.getKey();
       JsonArray rawLogEntries = entry.getValue().getAsJsonArray();
-      List<LogEntry> logEntries = new ArrayList<LogEntry>();
+      List<LogEntry> logEntries = new ArrayList<>();
       for (int index = 0; index < rawLogEntries.size(); index++) {
         JsonObject rawEntry = rawLogEntries.get(index).getAsJsonObject();
         logEntries.add(new LogEntry(LogLevelMapping.toLevel(

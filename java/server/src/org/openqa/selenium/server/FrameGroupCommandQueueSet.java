@@ -49,7 +49,7 @@ public class FrameGroupCommandQueueSet {
   private static final Logger log = Logger.getLogger(FrameGroupCommandQueueSet.class.getName());
 
   static private final Map<String, FrameGroupCommandQueueSet> queueSets =
-      new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
+      new ConcurrentHashMap<>();
   static private Lock dataLock = new ReentrantLock(); //
   static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
 
@@ -74,9 +74,9 @@ public class FrameGroupCommandQueueSet {
 
   private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
   private Map<String, CommandQueue> uniqueIdToCommandQueue =
-      new ConcurrentHashMap<String, CommandQueue>();
+      new ConcurrentHashMap<>();
 
-  private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<String, Boolean>();
+  private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<>();
 
   private int pageLoadTimeoutInMilliseconds = 30000;
   private AtomicInteger millisecondDelayBetweenOperations;
@@ -93,7 +93,7 @@ public class FrameGroupCommandQueueSet {
    * Queues which will not be used anymore, but which cannot be immediately destroyed because their
    * corresponding windows may still be listening.
    */
-  private Set<CommandQueue> orphanedQueues = new HashSet<CommandQueue>();
+  private Set<CommandQueue> orphanedQueues = new HashSet<>();
 
   public static final String DEFAULT_LOCAL_FRAME_ADDRESS = "top";
   /**
@@ -479,7 +479,7 @@ public class FrameGroupCommandQueueSet {
     }
 
     Set<String> frameAddressSet = uniqueIdToCommandQueue.keySet();
-    List<String> windowTitles = new ArrayList<String>();
+    List<String> windowTitles = new ArrayList<>();
 
     // Find all window names in the set of frame addresses
     for (String uniqueId : frameAddressSet) {

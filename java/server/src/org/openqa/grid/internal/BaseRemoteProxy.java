@@ -149,7 +149,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
-    List<TestSlot> slots = new ArrayList<TestSlot>();
+    List<TestSlot> slots = new ArrayList<>();
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
@@ -163,7 +163,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
       int value = Integer.parseInt(maxInstance.toString());
       for (int i = 0; i < value; i++) {
-        Map<String, Object> c = new HashMap<String, Object>();
+        Map<String, Object> c = new HashMap<>();
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
@@ -239,7 +239,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
                                           Map<String, Object> configuration2) {
-    Map<String, Object> res = new HashMap<String, Object>();
+    Map<String, Object> res = new HashMap<>();
     res.putAll(configuration1);
 
     for (String key : configuration2.keySet()) {

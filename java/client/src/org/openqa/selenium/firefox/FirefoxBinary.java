@@ -150,7 +150,7 @@ public class FirefoxBinary {
     // 3. Create a new LD_LIB_PATH string to contain:
     // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
 
-    Set<String> pathsSet = new HashSet<String>();
+    Set<String> pathsSet = new HashSet<>();
     pathsSet.add(jarPath32Bit);
     pathsSet.add(jarPath64Bit);
 
