@@ -11,6 +11,11 @@ not made generally available on the downloads page.
 
 v2.46.0.0
 =========
+ * Handles issue with alert text controls conatining no accText property in IE.
+   Fixes issue #651.
+
+v2.46.0.0
+=========
  * Release to synchronize with release of Selenium project.
  * Updates to JavaScript automation atoms.
 
