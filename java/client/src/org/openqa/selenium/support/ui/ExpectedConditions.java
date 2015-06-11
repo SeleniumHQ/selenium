@@ -518,6 +518,32 @@ public class ExpectedConditions {
       }
     };
   }
+  
+  /**
+   * An expectation for checking whether the given frame is available to switch
+   * to. <p> If the frame is available it switches the given driver to the
+   * specified frameIndex.
+   *
+   * @param frameLocator used to find the frame (index)
+   */
+  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
+      final int frameLocator) {
+    return new ExpectedCondition<WebDriver>() {
+      @Override
+      public WebDriver apply(WebDriver driver) {
+        try {
+          return driver.switchTo().frame(frameLocator);
+        } catch (NoSuchFrameException e) {
+          return null;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return "frame to be available: " + frameLocator;
+      }
+    };
+  }
 
   /**
    * An expectation for checking that an element is either invisible or not
