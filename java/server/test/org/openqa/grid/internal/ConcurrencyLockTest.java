@@ -44,8 +44,8 @@ public class ConcurrencyLockTest {
 
   private static Registry registry;
 
-  private static Map<String, Object> ie = new HashMap<String, Object>();
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ie = new HashMap<>();
+  private static Map<String, Object> ff = new HashMap<>();
 
   /**
    * create a hub with 1 IE and 1 FF
@@ -68,13 +68,13 @@ public class ConcurrencyLockTest {
 
   @Test(timeout = 10000)
   public void runTest() throws InterruptedException {
-    List<Map<String, Object>> caps = new ArrayList<Map<String, Object>>();
+    List<Map<String, Object>> caps = new ArrayList<>();
     caps.add(ff);
     caps.add(ff);
     caps.add(ff);
     caps.add(ie);
 
-    List<Thread> threads = new ArrayList<Thread>();
+    List<Thread> threads = new ArrayList<>();
     for (final Map<String, Object> cap : caps) {
       Thread t = new Thread(new Runnable() { // Thread safety reviewed
         public void run() {

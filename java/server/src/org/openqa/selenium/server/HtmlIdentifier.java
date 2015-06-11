@@ -59,7 +59,7 @@ import java.util.logging.Logger;
 
 public class HtmlIdentifier {
   static Logger log = Logger.getLogger(HtmlIdentifier.class.getName());
-  private static List<Rule> rules = new ArrayList<Rule>();
+  private static List<Rule> rules = new ArrayList<>();
   private static final int INJECTION_THRESHOLD = 200;
 
   static {
@@ -133,7 +133,7 @@ public class HtmlIdentifier {
   }
 
   static class ExtensionRule extends Rule {
-    List<String> exts = new ArrayList<String>();
+    List<String> exts = new ArrayList<>();
 
     public ExtensionRule(String ext, int score) {
       super("extension " + ext, score, 0);

@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ExecuteScript extends WebDriverHandler<Object> implements JsonParametersAware {
   private volatile String script;
-  private volatile List<Object> args = new ArrayList<Object>();
+  private volatile List<Object> args = new ArrayList<>();
 
   public ExecuteScript(Session session) {
     super(session);

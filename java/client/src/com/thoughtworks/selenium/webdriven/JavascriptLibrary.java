@@ -36,7 +36,7 @@ public class JavascriptLibrary {
 
   static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
       .getName().replace(".", "/") + "/";
-  private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<String, String>();
+  private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<>();
 
   private static final String injectableSelenium =
       "/com/thoughtworks/selenium/webdriven/injectableSelenium.js";
@@ -62,7 +62,7 @@ public class JavascriptLibrary {
     builder.append("return browserbot.").append(functionName)
         .append(".apply(browserbot, arguments);");
 
-    List<Object> args = new ArrayList<Object>();
+    List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 
@@ -76,7 +76,7 @@ public class JavascriptLibrary {
     builder.append("return htmlutils.").append(functionName)
         .append(".apply(htmlutils, arguments);");
 
-    List<Object> args = new ArrayList<Object>();
+    List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 

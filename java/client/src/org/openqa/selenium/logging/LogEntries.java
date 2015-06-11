@@ -35,7 +35,7 @@ public class LogEntries implements Iterable<LogEntry> {
   private final List<LogEntry> entries;
 
   public LogEntries(Iterable<LogEntry> entries) {
-    List<LogEntry> mutableEntries = new ArrayList<LogEntry>();
+    List<LogEntry> mutableEntries = new ArrayList<>();
     for (LogEntry entry : entries) {
       mutableEntries.add(entry);
     }
@@ -56,7 +56,7 @@ public class LogEntries implements Iterable<LogEntry> {
    * @return all log entries for that level and above
    */
   public List<LogEntry> filter(Level level) {
-    List<LogEntry> toReturn = new ArrayList<LogEntry>();
+    List<LogEntry> toReturn = new ArrayList<>();
 
     for (LogEntry entry : entries) {
       if (entry.getLevel().intValue() >= level.intValue()) {

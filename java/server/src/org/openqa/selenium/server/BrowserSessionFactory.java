@@ -160,7 +160,7 @@ public class BrowserSessionFactory {
    */
   protected void endAllBrowserSessions(RemoteControlConfiguration configuration) {
     boolean done = false;
-    Set<BrowserSessionInfo> allSessions = new HashSet<BrowserSessionInfo>();
+    Set<BrowserSessionInfo> allSessions = new HashSet<>();
     while (!done) {
       // to avoid concurrent modification exceptions...
       synchronized (activeSessions) {

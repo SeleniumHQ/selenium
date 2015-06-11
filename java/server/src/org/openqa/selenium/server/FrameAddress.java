@@ -35,8 +35,7 @@ public class FrameAddress {
    * to prevent the allocation of multiple FrameAddress objects corresponding to the same address.
    * Use the hash to help enforce this prohibition.
    */
-  static private Map<String, FrameAddress> stringToFrameAddress =
-      new HashMap<String, FrameAddress>();
+  static private Map<String, FrameAddress> stringToFrameAddress = new HashMap<>();
 
   private FrameAddress(String windowName, String localFrameAddress) {
     this.windowName =

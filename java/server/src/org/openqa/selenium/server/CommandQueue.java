@@ -63,7 +63,7 @@ public class CommandQueue {
     browserResponseSequencer = new BrowserResponseSequencer(newUniqueId);
     resultExpected = new AtomicBoolean(false);
     closed = new AtomicBoolean(false);
-    cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>();
+    cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<>();
     idGenerator.incrementAndGet();
     commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
     defaultTimeout = new AtomicLong(configuration.getTimeoutInSeconds());

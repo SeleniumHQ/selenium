@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class CompositeAction implements Action {
   private WebDriver driver;
-  private List<Action> actionsList = new ArrayList<Action>();
+  private List<Action> actionsList = new ArrayList<>();
 
   public CompositeAction() {
   }

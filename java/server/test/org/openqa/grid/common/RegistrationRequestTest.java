@@ -40,7 +40,7 @@ public class RegistrationRequestTest {
     RegistrationRequest req = new RegistrationRequest();
     String url = "http://a.c:2";
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(CLEAN_UP_CYCLE, 1);
     config.put(REMOTE_HOST, url);
 
@@ -66,7 +66,7 @@ public class RegistrationRequestTest {
     String name = "%super !";
     String value = "%з // \\";
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     config.put(name, value);
 
     req.setConfiguration(config);

@@ -33,7 +33,7 @@ public class SessionLogHandler {
    * @return The session logs mapped to session IDs.
    */
   public static Map<String, SessionLogs> getSessionLogs(JsonObject rawSessionMap) {
-    Map<String, SessionLogs> sessionLogsMap = new HashMap<String, SessionLogs>();
+    Map<String, SessionLogs> sessionLogsMap = new HashMap<>();
     for (Map.Entry<String, JsonElement> entry : rawSessionMap.entrySet()) {
       String sessionId = entry.getKey();
       SessionLogs sessionLogs = SessionLogs.fromJSON(entry.getValue().getAsJsonObject());

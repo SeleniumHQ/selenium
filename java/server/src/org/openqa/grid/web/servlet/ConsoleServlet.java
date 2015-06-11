@@ -234,7 +234,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     }
     b.append("</br></br>");
     b.append("<u>all params :</u></br></br>");
-    List<String> keys = new ArrayList<String>();
+    List<String> keys = new ArrayList<>();
     keys.addAll(config.getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {

@@ -144,7 +144,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Set of allowed CONNECT ports.
    */
-  protected HashSet<Integer> _allowedConnectPorts = new HashSet<Integer>();
+  protected HashSet<Integer> _allowedConnectPorts = new HashSet<>();
 
   private int port;
 

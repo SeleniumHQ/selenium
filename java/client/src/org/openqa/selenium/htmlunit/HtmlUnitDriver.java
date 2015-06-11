@@ -349,7 +349,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     switch (proxy.getProxyType()) {
       case MANUAL:
 
-        ArrayList<String> noProxyHosts = new ArrayList<String>();
+        ArrayList<String> noProxyHosts = new ArrayList<>();
         String noProxy = proxy.getNoProxy();
         if (noProxy != null && !noProxy.equals("")) {
           String[] hosts = noProxy.split(",");
@@ -735,14 +735,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return element.getScriptObject();
 
     } else if (arg instanceof Collection<?>) {
-      List<Object> list = new ArrayList<Object>();
+      List<Object> list = new ArrayList<>();
       for (Object o : (Collection<?>) arg) {
         list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
       }
       return context.newArray(scope, list.toArray());
 
     } else if (arg.getClass().isArray()) {
-      List<Object> list = new ArrayList<Object>();
+      List<Object> list = new ArrayList<>();
       for (Object o : (Object[]) arg) {
         list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
       }
@@ -899,7 +899,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private List<Object> parseJavascriptResultsList(JavaScriptResultsCollection array) {
-    List<Object> list = new ArrayList<Object>(array.getLength());
+    List<Object> list = new ArrayList<>(array.getLength());
     for (int i = 0; i < array.getLength(); ++i) {
       list.add(parseNativeJavascriptResult(array.item(i)));
     }
@@ -951,7 +951,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsByLinkText(String selector) {
-    List<WebElement> elements = new ArrayList<WebElement>();
+    List<WebElement> elements = new ArrayList<>();
 
     if (!(lastPage() instanceof HtmlPage)) {
       return elements;
@@ -1037,7 +1037,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element using css", ex);
     }
 
-    List<WebElement> toReturn = new ArrayList<WebElement>();
+    List<WebElement> toReturn = new ArrayList<>();
 
     for (DomNode node : allNodes) {
       if (node instanceof HtmlElement) {
@@ -1067,7 +1067,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public List<WebElement> findElementsByName(String using) {
     if (!(lastPage() instanceof HtmlPage)) {
-      return new ArrayList<WebElement>();
+      return new ArrayList<>();
     }
 
     List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(using);
@@ -1091,11 +1091,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public List<WebElement> findElementsByTagName(String using) {
     if (!(lastPage() instanceof HtmlPage)) {
-      return new ArrayList<WebElement>();
+      return new ArrayList<>();
     }
 
     NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(using);
-    List<WebElement> toReturn = new ArrayList<WebElement>(allElements.getLength());
+    List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
     for (int i = 0; i < allElements.getLength(); i++) {
       Node item = allElements.item(i);
       if (item instanceof HtmlElement) {
@@ -1135,7 +1135,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public List<WebElement> findElementsByXPath(String selector) {
     if (!(lastPage() instanceof HtmlPage)) {
-      return new ArrayList<WebElement>();
+      return new ArrayList<>();
     }
 
     List<?> nodes;
@@ -1167,7 +1167,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private List<WebElement> convertRawHtmlElementsToWebElements(List<?> nodes) {
-    List<WebElement> elements = new ArrayList<WebElement>();
+    List<WebElement> elements = new ArrayList<>();
 
     for (Object node : nodes) {
       if (node instanceof HtmlElement) {
@@ -1658,7 +1658,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public List<WebElement> findElementsByPartialLinkText(String using) {
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
-    List<WebElement> elements = new ArrayList<WebElement>();
+    List<WebElement> elements = new ArrayList<>();
     for (HtmlAnchor anchor : anchors) {
       if (anchor.asText().contains(using)) {
         elements.add(newHtmlUnitWebElement(anchor));

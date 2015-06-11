@@ -68,7 +68,7 @@ public class ByAllTest {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<>();
     elems12.add(elem1);
     elems12.add(elem2);
 
@@ -83,7 +83,7 @@ public class ByAllTest {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<>();
     elems12.add(elem1);
     elems12.add(elem2);
 
@@ -96,7 +96,7 @@ public class ByAllTest {
   @Test
   public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
-    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems = new ArrayList<>();
 
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
@@ -112,7 +112,7 @@ public class ByAllTest {
   @Test
   public void findElementsOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
-    final List<WebElement> elems = new ArrayList<WebElement>();
+    final List<WebElement> elems = new ArrayList<>();
 
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
@@ -127,10 +127,10 @@ public class ByAllTest {
     final WebElement elem2 = mock(AllElement.class, "webElement2");
     final WebElement elem3 = mock(AllElement.class, "webElement3");
     final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<WebElement>();
+    final List<WebElement> elems34 = new ArrayList<>();
     elems34.add(elem3);
     elems34.add(elem4);
 
@@ -148,13 +148,13 @@ public class ByAllTest {
     final WebElement elem2 = mock(AllElement.class, "webElement2");
     final WebElement elem3 = mock(AllElement.class, "webElement3");
     final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<WebElement>();
+    final List<WebElement> elems12 = new ArrayList<>();
     elems12.add(elem1);
     elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<WebElement>();
+    final List<WebElement> elems34 = new ArrayList<>();
     elems34.add(elem3);
     elems34.add(elem4);
-    final List<WebElement> elems1234 = new ArrayList<WebElement>();
+    final List<WebElement> elems1234 = new ArrayList<>();
     elems1234.addAll(elems12);
     elems1234.addAll(elems34);
 

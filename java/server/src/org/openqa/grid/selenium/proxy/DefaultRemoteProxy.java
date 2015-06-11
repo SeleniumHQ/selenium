@@ -238,7 +238,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
         if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
           Map<String, Object> options = (Map<String, Object>) cap.get(ChromeOptions.CAPABILITY);
           if (options == null) {
-            options = new HashMap<String, Object>();
+            options = new HashMap<>();
           }
           if (!options.containsKey("binary")) {
             options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));

@@ -38,16 +38,16 @@ class ActiveTestSessions {
 
   private static final Logger log = Logger.getLogger(ActiveTestSessions.class.getName());
 
-  private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
+  private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<>();
 
   private final
   Queue<ExternalSessionKey>
       terminatedSessions =
-      new ConcurrentLinkedQueue<ExternalSessionKey>();
+      new ConcurrentLinkedQueue<>();
   private final
   Map<ExternalSessionKey, SessionTerminationReason>
       reasons =
-      new ConcurrentHashMap<ExternalSessionKey, SessionTerminationReason>();
+      new ConcurrentHashMap<>();
 
 
   public boolean add(TestSession testSession) {

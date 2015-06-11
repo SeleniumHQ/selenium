@@ -33,7 +33,7 @@ import java.util.Map;
 public class ExecuteAsyncScript extends WebDriverHandler<Object>
     implements JsonParametersAware {
   private volatile String script;
-  private final List<Object> args = new ArrayList<Object>();
+  private final List<Object> args = new ArrayList<>();
 
   public ExecuteAsyncScript(Session session) {
     super(session);

@@ -40,7 +40,7 @@ public class LoggingPreferences implements Serializable {
   private static final long serialVersionUID = 6708028456766320675L;
 
   // Mapping the {@link LogType} to {@link Level}
-  private final Map<String, Level> prefs = new HashMap<String, Level>();
+  private final Map<String, Level> prefs = new HashMap<>();
 
   /**
    * Enables logging for the given log type at the specified level and above.
@@ -55,7 +55,7 @@ public class LoggingPreferences implements Serializable {
    * @return the set of log types for which logging has been enabled.
    */
   public Set<String> getEnabledLogTypes() {
-    return new HashSet<String>(prefs.keySet());
+    return new HashSet<>(prefs.keySet());
   }
 
   /**

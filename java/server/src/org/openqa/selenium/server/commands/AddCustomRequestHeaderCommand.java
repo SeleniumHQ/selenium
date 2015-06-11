@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AddCustomRequestHeaderCommand extends Command {
-  private static Map<String, String> headers = new ConcurrentHashMap<String, String>();
+  private static Map<String, String> headers = new ConcurrentHashMap<>();
 
   private String key;
   private String value;

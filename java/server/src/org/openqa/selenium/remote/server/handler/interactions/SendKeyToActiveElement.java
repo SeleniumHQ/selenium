@@ -41,7 +41,7 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     // TODO: merge this code with the code in the SendKeys handler.
     List<String> rawKeys = (List<String>) allParameters.get("value");
-    List<String> temp = new ArrayList<String>();
+    List<String> temp = new ArrayList<>();
     for (String key : rawKeys) {
       temp.add(key);
     }

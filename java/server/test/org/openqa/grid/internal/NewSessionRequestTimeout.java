@@ -31,7 +31,7 @@ import java.util.Map;
 public class NewSessionRequestTimeout {
 
   private static Registry registry;
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ff = new HashMap<>();
   private static RemoteProxy p1;
 
   /**

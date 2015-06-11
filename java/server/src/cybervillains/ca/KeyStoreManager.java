@@ -163,7 +163,7 @@ public class KeyStoreManager {
 
       if (!privKeys.exists())
       {
-        _rememberedPrivateKeys = new HashMap<PublicKey, PrivateKey>();
+        _rememberedPrivateKeys = new HashMap<>();
       }
       else
       {
@@ -178,7 +178,7 @@ public class KeyStoreManager {
 
       if (!pubKeys.exists())
       {
-        _mappedPublicKeys = new HashMap<PublicKey, PublicKey>();
+        _mappedPublicKeys = new HashMap<>();
       }
       else
       {
@@ -252,7 +252,7 @@ public class KeyStoreManager {
 
       if (!file.exists())
       {
-        _certMap = new HashMap<String, String>();
+        _certMap = new HashMap<>();
       }
       else
       {
@@ -282,7 +282,7 @@ public class KeyStoreManager {
 
       if (!file.exists())
       {
-        _subjectMap = new HashMap<String, String>();
+        _subjectMap = new HashMap<>();
       }
       else
       {

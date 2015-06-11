@@ -42,7 +42,7 @@ public class DefaultDriverSessions implements DriverSessions {
   private final Clock clock;
 
   private final Map<SessionId, Session> sessionIdToDriver =
-      new ConcurrentHashMap<SessionId, Session>();
+      new ConcurrentHashMap<>();
 
   private static List<DriverProvider> defaultDriverProviders =
     new ImmutableList.Builder<DriverProvider>()

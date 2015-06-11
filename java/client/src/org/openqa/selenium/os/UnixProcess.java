@@ -56,7 +56,7 @@ class UnixProcess implements OsProcess {
       ExecuteWatchdog.INFINITE_TIMEOUT);
 
   private final org.apache.commons.exec.CommandLine cl;
-  private final Map<String, String> env = new ConcurrentHashMap<String, String>();
+  private final Map<String, String> env = new ConcurrentHashMap<>();
 
   public UnixProcess(String executable, String... args) {
     String actualExe = checkNotNull(new ExecutableFinder().find(executable),

@@ -189,7 +189,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   private void submitForm(HtmlForm form) {
     assertElementNotStale();
 
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
     names.add("input");
     names.add("button");
     List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
@@ -622,7 +622,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<?> allChildren = element.getByXPath(".//" + tagName);
-    List<WebElement> elements = new ArrayList<WebElement>();
+    List<WebElement> elements = new ArrayList<>();
     for (Object o : allChildren) {
       if (!(o instanceof HtmlElement)) {
         continue;
@@ -722,7 +722,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByXPath(String xpathExpr) {
     assertElementNotStale();
 
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List<WebElement> webElements = new ArrayList<>();
 
     List<?> htmlElements;
     try {
@@ -765,7 +765,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     String expectedText = linkText.trim();
     List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List<WebElement> webElements = new ArrayList<>();
     for (HtmlElement e : htmlElements) {
       if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
         webElements.add(getParent().newHtmlUnitWebElement(e));
@@ -791,7 +791,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
-    List<WebElement> webElements = new ArrayList<WebElement>();
+    List<WebElement> webElements = new ArrayList<>();
     for (HtmlElement e : htmlElements) {
       if (e.getTextContent().contains(linkText)
           && e.getAttribute("href") != null) {
@@ -817,7 +817,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<HtmlElement> elements = element.getHtmlElementsByTagName(name);
-    List<WebElement> toReturn = new ArrayList<WebElement>(elements.size());
+    List<WebElement> toReturn = new ArrayList<>(elements.size());
     for (HtmlElement element : elements) {
       toReturn.add(parent.newHtmlUnitWebElement(element));
     }

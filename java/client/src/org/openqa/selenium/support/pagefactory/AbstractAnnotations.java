@@ -171,7 +171,7 @@ public abstract class AbstractAnnotations {
       }
     }
 
-    Set<String> finders = new HashSet<String>();
+    Set<String> finders = new HashSet<>();
     if (!"".equals(findBy.using())) finders.add("how: " + findBy.using());
     if (!"".equals(findBy.className())) finders.add("class name:" + findBy.className());
     if (!"".equals(findBy.css())) finders.add("css:" + findBy.css());

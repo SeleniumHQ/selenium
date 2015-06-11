@@ -36,7 +36,7 @@ public class SessionLogsToFileRepository {
   private Map<SessionId, LogFile> sessionToLogFileMap;
 
   public SessionLogsToFileRepository() {
-    sessionToLogFileMap = new HashMap<SessionId, LogFile>();
+    sessionToLogFileMap = new HashMap<>();
   }
 
   /**
@@ -92,10 +92,10 @@ public class SessionLogsToFileRepository {
   public List<LogRecord> getLogRecords(SessionId sessionId) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
     if (logFile == null) {
-      return new ArrayList<LogRecord>();
+      return new ArrayList<>();
     }
 
-    List<LogRecord> logRecords = new ArrayList<LogRecord>();
+    List<LogRecord> logRecords = new ArrayList<>();
     try {
       logFile.openLogReader();
       ObjectInputStream logObjInStream = logFile.getLogReader();

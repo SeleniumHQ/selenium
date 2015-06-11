@@ -40,8 +40,8 @@ public class RegistryStateTest {
 
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
-  static Map<String, Object> app2 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
+  static Map<String, Object> app2 = new HashMap<>();
 
   /**
    * create a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at
@@ -50,7 +50,7 @@ public class RegistryStateTest {
   @BeforeClass
   public static void prepareReqRequest() {
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     app1.put(MAX_INSTANCES, 5);
 

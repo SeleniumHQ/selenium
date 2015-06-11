@@ -30,7 +30,7 @@ public class GetAttributeFromAllWindows extends SeleneseCommand<String[]> {
   protected String[] handleSeleneseCommand(WebDriver driver, String attributeName, String ignored) {
     String current = driver.getWindowHandle();
 
-    List<String> attributes = new ArrayList<String>();
+    List<String> attributes = new ArrayList<>();
     for (String handle : driver.getWindowHandles()) {
       driver.switchTo().window(handle);
       String value = (String) ((JavascriptExecutor) driver).executeScript(

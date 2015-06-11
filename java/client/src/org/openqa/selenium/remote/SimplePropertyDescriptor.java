@@ -47,8 +47,7 @@ public class SimplePropertyDescriptor {
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<? extends Object> clazz) {
-    HashMap<String, SimplePropertyDescriptor> properties =
-        new HashMap<String, SimplePropertyDescriptor>();
+    HashMap<String, SimplePropertyDescriptor> properties = new HashMap<>();
     for (Method m : clazz.getMethods()) {
       String methodName = m.getName();
       if (methodName.length() > 2 && methodName.startsWith("is")) {

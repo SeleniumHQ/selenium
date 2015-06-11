@@ -93,13 +93,13 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     if (sessionId != null) {
       List<LogRecord> records = perSessionRecords.get(sessionId);
       if (records == null) {
-        records = new ArrayList<LogRecord>();
+        records = new ArrayList<>();
       }
       records.add(record);
       perSessionRecords.put(sessionId, records);
 
       if (records.size() > capacity) {
-        perSessionRecords.put( sessionId, new ArrayList<LogRecord>());
+        perSessionRecords.put(sessionId, new ArrayList<LogRecord>());
         // flush records to file;
         try {
           logFileRepository.flushRecordsToLogFile(sessionId, records);
@@ -112,7 +112,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     } else {
       List<LogRecord> records = perThreadTempRecords.get(threadId);
       if (records == null) {
-        records = new ArrayList<LogRecord>();
+        records = new ArrayList<>();
         perThreadTempRecords.put(threadId, records);
       }
       records.add(record);
@@ -169,7 +169,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
     if (threadRecords != null) {
       if (sessionRecords == null) {
-        sessionRecords = new ArrayList<LogRecord>();
+        sessionRecords = new ArrayList<>();
         perSessionRecords.put(sessionId, sessionRecords);
       }
       sessionRecords.addAll(threadRecords);

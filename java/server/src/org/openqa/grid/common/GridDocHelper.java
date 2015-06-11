@@ -64,7 +64,7 @@ public class GridDocHelper {
 
   public static String getHubParam(String param) {
     if (hubOptionsMap == null) {
-      hubOptionsMap = new HashMap<String, String>();
+      hubOptionsMap = new HashMap<>();
       for (Option option : hubOptions) {
         hubOptionsMap.put(option.name, option.description);
       }
@@ -97,7 +97,7 @@ public class GridDocHelper {
 
   private static List<Option> load(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-    List<Option> result = new ArrayList<Option>();
+    List<Option> result = new ArrayList<>();
     try {
       JsonElement json = new JsonParser().parse(new InputStreamReader(in));
       for (JsonElement element : json.getAsJsonArray()) {

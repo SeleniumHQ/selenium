@@ -518,7 +518,7 @@ public class MacProxyManagerUnitTest {
   }
 
   private static class MockableMacProxyManager extends MacProxyManager {
-    List<List<String>> networkSetupCalls = new ArrayList<List<String>>();
+    List<List<String>> networkSetupCalls = new ArrayList<>();
     MockPreferences mockPrefs;
 
     public MockableMacProxyManager(String sessionId, int port) {
@@ -606,7 +606,7 @@ public class MacProxyManagerUnitTest {
 
   private static class MockPreferences extends AbstractPreferences {
 
-    Map<String, String> internalPrefs = new HashMap<String, String>();
+    Map<String, String> internalPrefs = new HashMap<>();
 
     protected MockPreferences() {
       super(null, "");
