@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.10
+==========
+ * Init last known mouse position with -1, -1. This avoids issues where the
+   first operation is to move the mouse to [0, 0]. Patch provided by Anton
+   Usmansky.
+
 v2.46.0.9
 =========
  * Fixed bug in SOCKS proxy authentication settings retrieval.
