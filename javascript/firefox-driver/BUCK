@@ -369,6 +369,7 @@ js_library(name = 'files',
     'js/files.js',
   ],
   deps = [
+    ':error',
     '//third_party/closure:closure',
   ],
 )
