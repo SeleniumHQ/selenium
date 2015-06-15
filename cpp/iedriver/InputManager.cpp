@@ -41,8 +41,8 @@ InputManager::InputManager() {
   this->is_alt_pressed_ = false;
   this->is_control_pressed_ = false;
   this->is_shift_pressed_ = false;
-  this->last_known_mouse_x_ = 0;
-  this->last_known_mouse_y_ = 0;
+  this->last_known_mouse_x_ = -1;
+  this->last_known_mouse_y_ = -1;
 
   CComVariant keyboard_state;
   keyboard_state.vt = VT_NULL;
