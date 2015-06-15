@@ -177,8 +177,14 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     this->InstallWindowsHook();
 
-    browser->SetWidth(max_width);
-    browser->SetHeight(max_height);
+    // Only resize if we need to in order to fit everything.
+    // Avoiding resizing fixes issue 6503 (ie8 unnecessarily resized)
+    if (max_width > original_width) {
+      browser->SetWidth(max_width);
+    }
+    if (max_height > original_height) {
+      browser->SetHeight(max_height);
+    }
 
     // Capture the window's canvas to a DIB.
     BOOL created = this->image_->Create(document_info.width,
