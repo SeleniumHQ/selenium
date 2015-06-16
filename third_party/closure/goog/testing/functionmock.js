@@ -108,7 +108,7 @@ goog.testing.GlobalFunctionMock = function(functionName, opt_strictness) {
  *     set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
  *     goog.testing.Mock.STRICT. The default is STRICT.
- * @return {goog.testing.MockInterface} The mocked function.
+ * @return {!goog.testing.MockInterface} The mocked function.
  */
 goog.testing.createFunctionMock = function(opt_functionName, opt_strictness) {
   return goog.testing.FunctionMock(opt_functionName, opt_strictness);

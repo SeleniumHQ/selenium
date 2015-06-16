@@ -94,7 +94,8 @@ goog.format.InternationalizedEmailAddress.ADDRESS_SEPARATORS_ =
     '\u061B' + // ( ‎؛‎ ) ARABIC SEMICOLON
     '\u1364' + // ( ፤ ) ETHIOPIC SEMICOLON
     '\uFF1B' + // ( ； ) FULLWIDTH SEMICOLON
-    '\uFF64'; // ( ､ ) HALFWIDTH IDEOGRAPHIC COMMA
+    '\uFF64' + // ( ､ ) HALFWIDTH IDEOGRAPHIC COMMA
+    '\u104A'; // ( ၊ ) MYANMAR SIGN LITTLE SECTION
 
 
 /**

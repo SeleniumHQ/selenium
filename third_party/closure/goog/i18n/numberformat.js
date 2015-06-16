@@ -44,18 +44,27 @@ goog.require('goog.math');
  * @constructor
  */
 goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
+  /** @private {string} */
   this.intlCurrencyCode_ = opt_currency ||
       goog.i18n.NumberFormatSymbols.DEF_CURRENCY_CODE;
 
+  /** @private {number} */
   this.currencyStyle_ = opt_currencyStyle ||
       goog.i18n.NumberFormat.CurrencyStyle.LOCAL;
 
+  /** @private {number} */
   this.maximumIntegerDigits_ = 40;
+  /** @private {number} */
   this.minimumIntegerDigits_ = 1;
+  /** @private {number} */
   this.significantDigits_ = 0; // invariant, <= maximumFractionDigits
+  /** @private {number} */
   this.maximumFractionDigits_ = 3; // invariant, >= minFractionDigits
+  /** @private {number} */
   this.minimumFractionDigits_ = 0;
+  /** @private {number} */
   this.minExponentDigits_ = 0;
+  /** @private {boolean} */
   this.useSignForPositiveExponent_ = false;
 
   /**
@@ -65,16 +74,25 @@ goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
    */
   this.showTrailingZeros_ = false;
 
+  /** @private {string} */
   this.positivePrefix_ = '';
+  /** @private {string} */
   this.positiveSuffix_ = '';
+  /** @private {string} */
   this.negativePrefix_ = '-';
+  /** @private {string} */
   this.negativeSuffix_ = '';
 
   // The multiplier for use in percent, per mille, etc.
+  /** @private {number} */
   this.multiplier_ = 1;
+  /** @private {number} */
   this.groupingSize_ = 3;
+  /** @private {boolean} */
   this.decimalSeparatorAlwaysShown_ = false;
+  /** @private {boolean} */
   this.useExponentialNotation_ = false;
+  /** @private {goog.i18n.NumberFormat.CompactStyle} */
   this.compactStyle_ = goog.i18n.NumberFormat.CompactStyle.NONE;
 
   /**
@@ -359,7 +377,6 @@ goog.i18n.NumberFormat.prototype.parse = function(text, opt_pos) {
     throw Error('Parsing of compact numbers is unimplemented');
   }
 
-  var start = pos[0];
   var ret = NaN;
 
   // we don't want to handle 2 kind of space in parsing, normalize it to nbsp

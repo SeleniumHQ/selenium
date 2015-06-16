@@ -76,7 +76,8 @@ goog.dom.AbstractRange.getBrowserSelectionForWindow = function(win) {
           if (range.parentElement().document != doc) {
             return null;
           }
-        } else if (!range.length || range.item(0).document != doc) {
+        } else if (!range.length ||
+            /** @type {ControlRange} */ (range).item(0).document != doc) {
           // For ControlRanges, check that the range has items, and that
           // the first item in the range is in the correct document.
           return null;

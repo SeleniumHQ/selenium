@@ -30,6 +30,7 @@ goog.require('goog.math.Size');
  * @param {number} y Top.
  * @param {number} w Width.
  * @param {number} h Height.
+ * @struct
  * @constructor
  */
 goog.math.Rect = function(x, y, w, h) {
@@ -67,6 +68,18 @@ goog.math.Rect.prototype.toBox = function() {
                            right,
                            bottom,
                            this.left);
+};
+
+
+/**
+ * Creates a new Rect object with the position and size given.
+ * @param {!goog.math.Coordinate} position The top-left coordinate of the Rect
+ * @param {!goog.math.Size} size The size of the Rect
+ * @return {!goog.math.Rect} A new Rect initialized with the given position and
+ *     size.
+ */
+goog.math.Rect.createFromPositionAndSize = function(position, size) {
+  return new goog.math.Rect(position.x, position.y, size.width, size.height);
 };
 
 

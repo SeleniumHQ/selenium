@@ -44,16 +44,44 @@ goog.require('goog.string');
  */
 goog.dom.browserrange.IeRange = function(range, doc) {
   /**
+   * Lazy cache of the node containing the entire selection.
+   * @private {Node}
+   */
+  this.parentNode_ = null;
+
+  /**
+   * Lazy cache of the node containing the start of the selection.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * Lazy cache of the node containing the end of the selection.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * Lazy cache of the offset in startNode_ where this range starts.
+   * @private {number}
+   */
+  this.startOffset_ = -1;
+
+  /**
+   * Lazy cache of the offset in endNode_ where this range ends.
+   * @private {number}
+   */
+  this.endOffset_ = -1;
+
+  /**
    * The browser range object this class wraps.
-   * @type {TextRange}
-   * @private
+   * @private {TextRange}
    */
   this.range_ = range;
 
   /**
    * The document the range exists in.
-   * @type {Document}
-   * @private
+   * @private {Document}
    */
   this.doc_ = doc;
 };
@@ -256,50 +284,6 @@ goog.dom.browserrange.IeRange.createFromNodes = function(startNode,
   range.endOffset_ = endOffset;
   return range;
 };
-
-
-// Even though goog.dom.TextRange does similar caching to below, keeping these
-// caches allows for better performance in the get*Offset methods.
-
-
-/**
- * Lazy cache of the node containing the entire selection.
- * @type {Node}
- * @private
- */
-goog.dom.browserrange.IeRange.prototype.parentNode_ = null;
-
-
-/**
- * Lazy cache of the node containing the start of the selection.
- * @type {Node}
- * @private
- */
-goog.dom.browserrange.IeRange.prototype.startNode_ = null;
-
-
-/**
- * Lazy cache of the node containing the end of the selection.
- * @type {Node}
- * @private
- */
-goog.dom.browserrange.IeRange.prototype.endNode_ = null;
-
-
-/**
- * Lazy cache of the offset in startNode_ where this range starts.
- * @type {number}
- * @private
- */
-goog.dom.browserrange.IeRange.prototype.startOffset_ = -1;
-
-
-/**
- * Lazy cache of the offset in endNode_ where this range ends.
- * @type {number}
- * @private
- */
-goog.dom.browserrange.IeRange.prototype.endOffset_ = -1;
 
 
 /**

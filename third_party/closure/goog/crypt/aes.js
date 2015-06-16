@@ -84,6 +84,13 @@ goog.crypt.Aes = function(key) {
    */
   this.temp_ = [[], [], [], []];
 
+  /**
+   * The key schedule.
+   * @type {!Array<!Array<number>>}
+   * @private
+   */
+  this.keySchedule_;
+
   this.keyExpansion_();
 };
 
@@ -288,7 +295,7 @@ goog.crypt.Aes.prototype.testAfterAddRoundKey_ = goog.nullFunction;
  * before each round on the round key.  *Gets called in both the encrypt() and
  * decrypt() functions.*
  * @param {number} roundNum Round number.
- * @param {!Array<number>} Computed key schedule.
+ * @param {Array<!Array<number>>} Computed key schedule.
  * @param {number} index The index into the key schedule to test. This is not
  *     necessarily roundNum because the key schedule is used in reverse
  *     in the case of decryption.
@@ -552,14 +559,6 @@ goog.crypt.Aes.prototype.rotWord_ = function(w) {
 
   return w;
 };
-
-
-/**
- * The key schedule.
- * @type {!Array<number>}
- * @private
- */
-goog.crypt.Aes.prototype.keySchedule_;
 
 
 /**

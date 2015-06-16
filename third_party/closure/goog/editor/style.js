@@ -90,12 +90,12 @@ goog.editor.style.isDisplayBlock = function(node) {
  * @return {boolean} Whether the element is a container.
  */
 goog.editor.style.isContainer = function(element) {
-  var nodeName = element && element.nodeName.toLowerCase();
+  var nodeName = element && element.nodeName;
   return !!(element &&
-      (goog.editor.style.isDisplayBlock(element) ||
-          nodeName == 'td' ||
-          nodeName == 'table' ||
-          nodeName == 'li'));
+            (goog.editor.style.isDisplayBlock(element) ||
+             nodeName == goog.dom.TagName.TD ||
+             nodeName == goog.dom.TagName.TABLE ||
+             nodeName == goog.dom.TagName.LI));
 };
 
 

@@ -20,6 +20,8 @@
 
 goog.provide('goog.dom.forms');
 
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.structs.Map');
 
 
@@ -73,20 +75,20 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
         (el.form != form) ||
         el.disabled ||
         // HTMLFieldSetElement has a form property but no value.
-        el.tagName.toLowerCase() == 'fieldset') {
+        el.tagName == goog.dom.TagName.FIELDSET) {
       continue;
     }
 
     var name = el.name;
     switch (el.type.toLowerCase()) {
-      case 'file':
+      case goog.dom.InputType.FILE:
         // file inputs are not supported
-      case 'submit':
-      case 'reset':
-      case 'button':
+      case goog.dom.InputType.SUBMIT:
+      case goog.dom.InputType.RESET:
+      case goog.dom.InputType.BUTTON:
         // don't submit these
         break;
-      case 'select-multiple':
+      case goog.dom.InputType.SELECT_MULTIPLE:
         var values = goog.dom.forms.getValue(el);
         if (values != null) {
           for (var value, j = 0; value = values[j]; j++) {
@@ -103,9 +105,10 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   }
 
   // input[type=image] are not included in the elements collection
-  var inputs = form.getElementsByTagName('input');
+  var inputs = form.getElementsByTagName(goog.dom.TagName.INPUT);
   for (var input, i = 0; input = inputs[i]; i++) {
-    if (input.form == form && input.type.toLowerCase() == 'image') {
+    if (input.form == form &&
+        input.type.toLowerCase() == goog.dom.InputType.IMAGE) {
       name = input.name;
       fnAppend(result, name, input.value);
       fnAppend(result, name + '.x', '0');
@@ -152,7 +155,8 @@ goog.dom.forms.addFormDataToStringBuffer_ = function(sb, name, value) {
 goog.dom.forms.hasFileInput = function(form) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (!el.disabled && el.type && el.type.toLowerCase() == 'file') {
+    if (!el.disabled && el.type &&
+        el.type.toLowerCase() == goog.dom.InputType.FILE) {
       return true;
     }
   }
@@ -167,7 +171,7 @@ goog.dom.forms.hasFileInput = function(form) {
  */
 goog.dom.forms.setDisabled = function(el, disabled) {
   // disable all elements in a form
-  if (el.tagName == 'FORM') {
+  if (el.tagName == goog.dom.TagName.FORM) {
     var els = el.elements;
     for (var i = 0; el = els[i]; i++) {
       goog.dom.forms.setDisabled(el, disabled);
@@ -230,12 +234,12 @@ goog.dom.forms.getValue = function(el) {
     return null;
   }
   switch (type.toLowerCase()) {
-    case 'checkbox':
-    case 'radio':
+    case goog.dom.InputType.CHECKBOX:
+    case goog.dom.InputType.RADIO:
       return goog.dom.forms.getInputChecked_(el);
-    case 'select-one':
+    case goog.dom.InputType.SELECT_ONE:
       return goog.dom.forms.getSelectSingle_(el);
-    case 'select-multiple':
+    case goog.dom.InputType.SELECT_MULTIPLE:
       return goog.dom.forms.getSelectMultiple_(el);
     default:
       return goog.isDef(el.value) ? el.value : null;
@@ -332,16 +336,16 @@ goog.dom.forms.setValue = function(el, opt_value) {
   var type = el.type;
   if (goog.isDef(type)) {
     switch (type.toLowerCase()) {
-      case 'checkbox':
-      case 'radio':
+      case goog.dom.InputType.CHECKBOX:
+      case goog.dom.InputType.RADIO:
         goog.dom.forms.setInputChecked_(el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-one':
+      case goog.dom.InputType.SELECT_ONE:
         goog.dom.forms.setSelectSingle_(el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-multiple':
+      case goog.dom.InputType.SELECT_MULTIPLE:
         goog.dom.forms.setSelectMultiple_(el,
             /** @type {Array<string>} */ (opt_value));
         break;
@@ -363,7 +367,7 @@ goog.dom.forms.setValue = function(el, opt_value) {
  * @private
  */
 goog.dom.forms.setInputChecked_ = function(el, opt_value) {
-  el.checked = opt_value ? 'checked' : null;
+  el.checked = opt_value;
 };
 
 

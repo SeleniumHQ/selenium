@@ -108,38 +108,6 @@ goog.editor.plugins.Blockquote.prototype.isSilentCommand = goog.functions.TRUE;
 
 
 /**
- * Checks if a node is a blockquote node.  If isAlreadySetup is set, it also
- * makes sure the node has the blockquote classname applied.  Otherwise, it
- * ensures that the blockquote does not already have the classname applied.
- * @param {Node} node DOM node to check.
- * @param {boolean} isAlreadySetup True to enforce that the classname must be
- *                  set in order for it to count as a blockquote, false to
- *                  enforce that the classname must not be set in order for
- *                  it to count as a blockquote.
- * @param {boolean} requiresClassNameToSplit Whether only blockquotes with the
- *     class name should be split.
- * @param {string} className The official blockquote class name.
- * @return {boolean} Whether node is a blockquote and if isAlreadySetup is
- *    true, then whether this is a setup blockquote.
- * @deprecated Use {@link #isSplittableBlockquote},
- *     {@link #isSetupBlockquote}, or {@link #isUnsetupBlockquote} instead
- *     since this has confusing behavior.
- */
-goog.editor.plugins.Blockquote.isBlockquote = function(node, isAlreadySetup,
-    requiresClassNameToSplit, className) {
-  if (node.tagName != goog.dom.TagName.BLOCKQUOTE) {
-    return false;
-  }
-  if (!requiresClassNameToSplit) {
-    return isAlreadySetup;
-  }
-  var hasClassName = goog.dom.classlist.contains(
-      /** @type {!Element} */ (node), className);
-  return isAlreadySetup ? hasClassName : !hasClassName;
-};
-
-
-/**
  * Checks if a node is a blockquote which can be split. A splittable blockquote
  * meets the following criteria:
  * <ol>

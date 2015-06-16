@@ -23,6 +23,7 @@
 goog.provide('goog.ui.FlatMenuButtonRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.FlatButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
@@ -78,7 +79,8 @@ goog.ui.FlatMenuButtonRenderer.prototype.createDom = function(control) {
   var attributes = {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
   };
-  var element = button.getDomHelper().createDom('div', attributes,
+  var element = button.getDomHelper().createDom(
+      goog.dom.TagName.DIV, attributes,
       [this.createCaption(button.getContent(), button.getDomHelper()),
        this.createDropdown(button.getDomHelper())]);
   this.setTooltip(
@@ -161,7 +163,7 @@ goog.ui.FlatMenuButtonRenderer.prototype.decorate = function(button, element) {
  */
 goog.ui.FlatMenuButtonRenderer.prototype.createCaption = function(content,
                                                                   dom) {
-  return dom.createDom('div',
+  return dom.createDom(goog.dom.TagName.DIV,
       goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
       goog.getCssName(this.getCssClass(), 'caption'), content);
 };
@@ -178,7 +180,7 @@ goog.ui.FlatMenuButtonRenderer.prototype.createCaption = function(content,
  */
 goog.ui.FlatMenuButtonRenderer.prototype.createDropdown = function(dom) {
   // 00A0 is &nbsp;
-  return dom.createDom('div', {
+  return dom.createDom(goog.dom.TagName.DIV, {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
         goog.getCssName(this.getCssClass(), 'dropdown'),
     'aria-hidden': true
@@ -205,4 +207,3 @@ goog.ui.registry.setDecoratorByClassName(
       return new goog.ui.MenuButton(null, null,
           goog.ui.FlatMenuButtonRenderer.getInstance());
     });
-

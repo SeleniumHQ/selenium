@@ -26,6 +26,7 @@ goog.require('goog.async.Deferred');
 goog.require('goog.async.Delay');
 goog.require('goog.dispose');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
@@ -460,7 +461,8 @@ goog.net.xpc.CrossPageChannel.prototype.createPeerIframe = function(
   // TODO(user) Opera creates a history-entry when creating an iframe
   // programmatically as follows. Find a way which avoids this.
 
-  var iframeElm = goog.dom.getDomHelper(parentElm).createElement('IFRAME');
+  var iframeElm = goog.dom.getDomHelper(parentElm).createElement(
+      goog.dom.TagName.IFRAME);
   iframeElm.id = iframeElm.name = iframeId;
   if (opt_configureIframeCb) {
     opt_configureIframeCb(iframeElm);
@@ -649,14 +651,6 @@ goog.net.xpc.CrossPageChannel.prototype.notifyConnected = function(opt_delay) {
     this.connectCb_();
   }
 };
-
-
-/**
- * Alias for notifyConected, for backward compatibility reasons.
- * @private
- */
-goog.net.xpc.CrossPageChannel.prototype.notifyConnected_ =
-    goog.net.xpc.CrossPageChannel.prototype.notifyConnected;
 
 
 /**

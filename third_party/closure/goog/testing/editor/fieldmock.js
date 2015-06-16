@@ -96,5 +96,21 @@ goog.testing.editor.FieldMock =
   this.setModalMode = function(mode) {
     inModalMode = mode;
   };
+
+  var uneditable = false;
+
+  /**
+   * @return {boolean} Whether the field is uneditable.
+   */
+  this.isUneditable = function() {
+    return uneditable;
+  };
+
+  /**
+   * @param {boolean} isUneditable Whether the field is uneditable.
+   */
+  this.setUneditable = function(isUneditable) {
+    uneditable = isUneditable;
+  };
 };
 goog.inherits(goog.testing.editor.FieldMock, goog.testing.LooseMock);

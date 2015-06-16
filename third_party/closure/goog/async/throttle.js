@@ -37,12 +37,14 @@ goog.require('goog.Timer');
  *     only be called once per interval.
  * @param {T=} opt_handler Object in whose scope to call the listener.
  * @constructor
+ * @struct
+ * @suppress {checkStructDictInheritance}
  * @extends {goog.Disposable}
  * @final
  * @template T
  */
 goog.async.Throttle = function(listener, interval, opt_handler) {
-  goog.Disposable.call(this);
+  goog.async.Throttle.base(this, 'constructor');
 
   /**
    * Function to callback
@@ -164,7 +166,7 @@ goog.async.Throttle.prototype.resume = function() {
 
 /** @override */
 goog.async.Throttle.prototype.disposeInternal = function() {
-  goog.async.Throttle.superClass_.disposeInternal.call(this);
+  goog.async.Throttle.base(this, 'disposeInternal');
   this.stop();
 };
 

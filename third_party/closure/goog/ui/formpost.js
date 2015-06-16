@@ -21,6 +21,7 @@
 goog.provide('goog.ui.FormPost');
 
 goog.require('goog.array');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.html.SafeHtml');
@@ -104,5 +105,5 @@ goog.ui.FormPost.prototype.setParameters_ = function(form, parameters) {
  */
 goog.ui.FormPost.prototype.createInput_ = function(name, value) {
   return goog.html.SafeHtml.create('input',
-      {'type': 'hidden', 'name': name, 'value': value});
+      {'type': goog.dom.InputType.HIDDEN, 'name': name, 'value': value});
 };

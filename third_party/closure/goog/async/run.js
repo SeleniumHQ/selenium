@@ -14,6 +14,7 @@
 
 goog.provide('goog.async.run');
 
+goog.require('goog.async.WorkQueue');
 goog.require('goog.async.nextTick');
 goog.require('goog.async.throwException');
 goog.require('goog.testing.watchers');
@@ -37,8 +38,7 @@ goog.async.run = function(callback, opt_context) {
     goog.async.run.workQueueScheduled_ = true;
   }
 
-  goog.async.run.workQueue_.push(
-      new goog.async.run.WorkItem_(callback, opt_context));
+  goog.async.run.workQueue_.add(callback, opt_context);
 };
 
 
@@ -69,10 +69,19 @@ goog.async.run.initializeRunner_ = function() {
  * This should only be done in unit tests. It's useful because MockClock
  * replaces nextTick, but not the browser Promise implementation, so it allows
  * Promise-based code to be tested with MockClock.
+ *
+ * However, we also want to run promises if the MockClock is no longer in
+ * control so we schedule a backup "setTimeout" to the unmocked timeout if
+ * provided.
+ *
+ * @param {function(function())=} opt_realSetTimeout
  */
-goog.async.run.forceNextTick = function() {
+goog.async.run.forceNextTick = function(opt_realSetTimeout) {
   goog.async.run.schedule_ = function() {
     goog.async.nextTick(goog.async.run.processWorkQueue);
+    if (opt_realSetTimeout) {
+      opt_realSetTimeout(goog.async.run.processWorkQueue);
+    }
   };
 };
 
@@ -88,18 +97,18 @@ goog.async.run.schedule_;
 goog.async.run.workQueueScheduled_ = false;
 
 
-/** @private {!Array<!goog.async.run.WorkItem_>} */
-goog.async.run.workQueue_ = [];
+/** @private {!goog.async.WorkQueue} */
+goog.async.run.workQueue_ = new goog.async.WorkQueue();
 
 
 if (goog.DEBUG) {
   /**
-   * Reset the event queue.
+   * Reset the work queue.
    * @private
    */
   goog.async.run.resetQueue_ = function() {
     goog.async.run.workQueueScheduled_ = false;
-    goog.async.run.workQueue_ = [];
+    goog.async.run.workQueue_ = new goog.async.WorkQueue();
   };
 
   // If there is a clock implemenation in use for testing
@@ -114,37 +123,17 @@ if (goog.DEBUG) {
  * goog.async.nextTick.
  */
 goog.async.run.processWorkQueue = function() {
-  // NOTE: additional work queue items may be pushed while processing.
-  while (goog.async.run.workQueue_.length) {
-    // Don't let the work queue grow indefinitely.
-    var workItems = goog.async.run.workQueue_;
-    goog.async.run.workQueue_ = [];
-    for (var i = 0; i < workItems.length; i++) {
-      var workItem = workItems[i];
-      try {
-        workItem.fn.call(workItem.scope);
-      } catch (e) {
-        goog.async.throwException(e);
-      }
+  // NOTE: additional work queue items may be added while processing.
+  var item = null;
+  while (item = goog.async.run.workQueue_.remove()) {
+    try {
+      item.fn.call(item.scope);
+    } catch (e) {
+      goog.async.throwException(e);
     }
+    goog.async.run.workQueue_.returnUnused(item);
   }
 
-  // There are no more work items, reset the work queue.
+  // There are no more work items, allow processing to be scheduled again.
   goog.async.run.workQueueScheduled_ = false;
-};
-
-
-
-/**
- * @constructor
- * @final
- * @struct
- * @private
- *
- * @param {function()} fn
- * @param {Object|null|undefined} scope
- */
-goog.async.run.WorkItem_ = function(fn, scope) {
-  /** @const */ this.fn = fn;
-  /** @const */ this.scope = scope;
 };

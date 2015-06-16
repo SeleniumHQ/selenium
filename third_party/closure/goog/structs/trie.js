@@ -296,7 +296,7 @@ goog.structs.Trie.prototype.containsPrefix = function(prefix) {
 /**
  * Checks to see if a certain value is in the trie.  Worst case is O(N) where
  * N is the number of nodes in the trie.
- * @param {!VALUE} value A value that may be in the trie.
+ * @param {VALUE} value A value that may be in the trie.
  * @return {boolean} Whether the trie contains the value.
  */
 goog.structs.Trie.prototype.containsValue = function(value) {
@@ -325,7 +325,7 @@ goog.structs.Trie.prototype.clear = function() {
  * Removes a key from the trie or throws an exception if the key is not in the
  * trie.  O(L), where L is the length of the key.
  * @param {string} key A key that should be removed from the trie.
- * @return {!VALUE} The value whose key was removed.
+ * @return {VALUE} The value whose key was removed.
  */
 goog.structs.Trie.prototype.remove = function(key) {
   var node = this;

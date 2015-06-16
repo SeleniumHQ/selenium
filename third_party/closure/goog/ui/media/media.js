@@ -95,6 +95,7 @@ goog.provide('goog.ui.media.Media');
 goog.provide('goog.ui.media.MediaRenderer');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
@@ -202,26 +203,27 @@ goog.inherits(goog.ui.media.MediaRenderer, goog.ui.ControlRenderer);
 goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
   goog.asserts.assertInstanceof(control, goog.ui.media.Media);
   var domHelper = control.getDomHelper();
-  var div = domHelper.createElement('div');
+  var div = domHelper.createElement(goog.dom.TagName.DIV);
   div.className = this.getClassNames(control).join(' ');
 
   var dataModel = control.getDataModel();
 
   // Only creates DOMs if the data is available.
   if (dataModel.getCaption()) {
-    var caption = domHelper.createElement('div');
+    var caption = domHelper.createElement(goog.dom.TagName.DIV);
     caption.className = goog.getCssName(this.getCssClass(), 'caption');
     caption.appendChild(domHelper.createDom(
-        'p', goog.getCssName(this.getCssClass(), 'caption-text'),
+        goog.dom.TagName.P, goog.getCssName(this.getCssClass(), 'caption-text'),
         dataModel.getCaption()));
     domHelper.appendChild(div, caption);
   }
 
   if (dataModel.getDescription()) {
-    var description = domHelper.createElement('div');
+    var description = domHelper.createElement(goog.dom.TagName.DIV);
     description.className = goog.getCssName(this.getCssClass(), 'description');
     description.appendChild(domHelper.createDom(
-        'p', goog.getCssName(this.getCssClass(), 'description-text'),
+        goog.dom.TagName.P,
+        goog.getCssName(this.getCssClass(), 'description-text'),
         dataModel.getDescription()));
     domHelper.appendChild(div, description);
   }
@@ -230,7 +232,7 @@ goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
   var thumbnails = dataModel.getThumbnails() || [];
   for (var index = 0; index < thumbnails.length; index++) {
     var thumbnail = thumbnails[index];
-    var thumbnailElement = domHelper.createElement('img');
+    var thumbnailElement = domHelper.createElement(goog.dom.TagName.IMG);
     thumbnailElement.src = thumbnail.getUrl();
     thumbnailElement.className = this.getThumbnailCssName(index);
 
@@ -248,7 +250,7 @@ goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
 
   if (dataModel.getPlayer()) {
     // if medias have players, allow UI for a play button.
-    var playButton = domHelper.createElement('div');
+    var playButton = domHelper.createElement(goog.dom.TagName.DIV);
     playButton.className = goog.getCssName(this.getCssClass(), 'playbutton');
     domHelper.appendChild(div, playButton);
   }

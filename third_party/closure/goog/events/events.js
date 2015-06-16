@@ -250,13 +250,14 @@ goog.events.listen_ = function(
   // Attach the proxy through the browser's API
   if (src.addEventListener) {
     src.addEventListener(type.toString(), proxy, capture);
-  } else {
-    // The else above used to be else if (src.attachEvent) and then there was
-    // another else statement that threw an exception warning the developer
-    // they made a mistake. This resulted in an extra object allocation in IE6
-    // due to a wrapper object that had to be implemented around the element
-    // and so was removed.
+  } else if (src.attachEvent) {
+    // The else if above used to be an unconditional else. It would call
+    // exception on IE11, spoiling the day of some callers. The previous
+    // incarnation of this code, from 2007, indicates that it replaced an
+    // earlier still version that caused excess allocations on IE6.
     src.attachEvent(goog.events.getOnString_(type.toString()), proxy);
+  } else {
+    throw Error('addEventListener and attachEvent are unavailable.');
   }
 
   goog.events.listenerCountEstimate_++;
@@ -683,7 +684,8 @@ goog.events.fireListeners = function(obj, type, capture, eventObject) {
  * @private
  */
 goog.events.fireListeners_ = function(obj, type, capture, eventObject) {
-  var retval = 1;
+  /** @type {boolean} */
+  var retval = true;
 
   var listenerMap = goog.events.getListenerMap_(
       /** @type {EventTarget} */ (obj));
@@ -699,13 +701,13 @@ goog.events.fireListeners_ = function(obj, type, capture, eventObject) {
         var listener = listenerArray[i];
         // We might not have a listener if the listener was removed.
         if (listener && listener.capture == capture && !listener.removed) {
-          retval &=
-              goog.events.fireListener(listener, eventObject) !== false;
+          var result = goog.events.fireListener(listener, eventObject);
+          retval = retval && (result !== false);
         }
       }
     }
   }
-  return Boolean(retval);
+  return retval;
 };
 
 
@@ -800,6 +802,7 @@ goog.events.handleBrowserEvent_ = function(listener, opt_evt) {
     var ieEvent = opt_evt ||
         /** @type {Event} */ (goog.getObjectByName('window.event'));
     var evt = new goog.events.BrowserEvent(ieEvent, this);
+    /** @type {boolean} */
     var retval = true;
 
     if (goog.events.CAPTURE_SIMULATION_MODE ==
@@ -820,7 +823,8 @@ goog.events.handleBrowserEvent_ = function(listener, opt_evt) {
         for (var i = ancestors.length - 1; !evt.propagationStopped_ && i >= 0;
              i--) {
           evt.currentTarget = ancestors[i];
-          retval &= goog.events.fireListeners_(ancestors[i], type, true, evt);
+          var result = goog.events.fireListeners_(ancestors[i], type, true, evt);
+          retval = retval && result;
         }
 
         // Fire bubble listeners.
@@ -834,7 +838,8 @@ goog.events.handleBrowserEvent_ = function(listener, opt_evt) {
         // actually specify the order as the registration order.)
         for (var i = 0; !evt.propagationStopped_ && i < ancestors.length; i++) {
           evt.currentTarget = ancestors[i];
-          retval &= goog.events.fireListeners_(ancestors[i], type, false, evt);
+          var result = goog.events.fireListeners_(ancestors[i], type, false, evt);
+          retval = retval && result;
         }
       }
     } else {

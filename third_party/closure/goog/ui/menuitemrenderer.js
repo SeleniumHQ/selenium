@@ -23,6 +23,7 @@ goog.provide('goog.ui.MenuItemRenderer');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.ControlRenderer');
@@ -120,7 +121,7 @@ goog.ui.MenuItemRenderer.prototype.getAriaRole = function() {
  */
 goog.ui.MenuItemRenderer.prototype.createDom = function(item) {
   var element = item.getDomHelper().createDom(
-      'div', this.getClassNames(item).join(' '),
+      goog.dom.TagName.DIV, this.getClassNames(item).join(' '),
       this.createContent(item.getContent(), item.getDomHelper()));
   this.setEnableCheckBoxStructure(item, element,
       item.isSupportedState(goog.ui.Component.State.SELECTED) ||
@@ -209,7 +210,7 @@ goog.ui.MenuItemRenderer.prototype.hasContentStructure = function(element) {
 goog.ui.MenuItemRenderer.prototype.createContent = function(content, dom) {
   var contentClassName = this.getCompositeCssClass_(
       goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CONTENT);
-  return dom.createDom('div', contentClassName, content);
+  return dom.createDom(goog.dom.TagName.DIV, contentClassName, content);
 };
 
 
@@ -284,7 +285,8 @@ goog.ui.MenuItemRenderer.prototype.setEnableCheckBoxStructure = function(item,
       var checkboxClassName = this.getCompositeCssClass_(
           goog.ui.MenuItemRenderer.CompositeCssClassIndex_.CHECKBOX);
       contentElement.insertBefore(
-          item.getDomHelper().createDom('div', checkboxClassName),
+          item.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                        checkboxClassName),
           contentElement.firstChild || null);
     } else {
       // Remove checkbox structure.

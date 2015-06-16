@@ -113,12 +113,15 @@ goog.ui.Css3MenuButtonRenderer.prototype.canDecorate = function(element) {
 goog.ui.Css3MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom('div', inlineBlock,
-      dom.createDom('div', [goog.getCssName(baseClass, 'caption'),
-                            goog.getCssName('goog-inline-block')],
+  return dom.createDom(goog.dom.TagName.DIV, inlineBlock,
+      dom.createDom(goog.dom.TagName.DIV, [
+                         goog.getCssName(baseClass, 'caption'),
+                         goog.getCssName('goog-inline-block')
+                    ],
                     content),
-      dom.createDom('div', [goog.getCssName(baseClass, 'dropdown'),
-                            goog.getCssName('goog-inline-block')]));
+      dom.createDom(goog.dom.TagName.DIV, [
+                         goog.getCssName(baseClass, 'dropdown'),
+                         goog.getCssName('goog-inline-block')]));
 };
 
 
@@ -143,4 +146,3 @@ goog.ui.registry.setDecoratorByClassName(
       return new goog.ui.MenuButton(null, null,
           goog.ui.Css3MenuButtonRenderer.getInstance());
     });
-

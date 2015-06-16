@@ -26,6 +26,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.xml');
 goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataManager');
+goog.require('goog.ds.DataNode');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
 goog.require('goog.net.XhrIo');
@@ -294,7 +295,7 @@ goog.ds.XmlDataSource.createChildlessDocument_ = function() {
  * A URI of an empty string will mean that no request is made
  * and the data source will be a single, empty node.
  *
- * @param {(string,goog.Uri)} uri URL of the XMLHttpRequest.
+ * @param {(string|goog.Uri)} uri URL of the XMLHttpRequest.
  * @param {string} name Name of the datasource.
  *
  * implements goog.ds.XmlHttpDataSource.

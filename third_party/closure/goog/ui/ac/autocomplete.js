@@ -370,20 +370,6 @@ goog.ui.ac.AutoComplete.prototype.getHighlightedId = function() {
 
 
 /**
- * Sets the current highlighted row to the given id (not index). Note
- * that this does not change any rendering.
- *
- * NOTE(chrishenry): This method will likely go away when we figure
- * out a better API.
- *
- * @param {number} id The new highlighted row id.
- */
-goog.ui.ac.AutoComplete.prototype.setHighlightedIdInternal = function(id) {
-  this.hiliteId_ = id;
-};
-
-
-/**
  * Generic event handler that handles any events this object is listening to.
  * @param {goog.events.Event} e Event Object.
  */

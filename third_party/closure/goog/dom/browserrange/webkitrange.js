@@ -98,11 +98,6 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
 /** @override */
 goog.dom.browserrange.WebKitRange.prototype.selectInternal = function(
     selection, reversed) {
-  // Unselect everything. This addresses a bug in Webkit where it sometimes
-  // caches the old selection.
-  // https://bugs.webkit.org/show_bug.cgi?id=20117
-  selection.removeAllRanges();
-
   if (reversed) {
     selection.setBaseAndExtent(this.getEndNode(), this.getEndOffset(),
         this.getStartNode(), this.getStartOffset());

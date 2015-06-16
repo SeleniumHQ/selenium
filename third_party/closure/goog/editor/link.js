@@ -232,7 +232,7 @@ goog.editor.Link.prototype.updateLinkDisplay_ = function(field, url) {
  *     a valid link address.
  */
 goog.editor.Link.prototype.getValidLinkFromText = function() {
-  var text = this.getCurrentText();
+  var text = goog.string.trim(this.getCurrentText());
   if (goog.editor.Link.isLikelyUrl(text)) {
     if (text.search(/:/) < 0) {
       return 'http://' + goog.string.trimLeft(text);

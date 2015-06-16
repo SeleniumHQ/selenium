@@ -24,6 +24,7 @@ goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.object');
 goog.require('goog.ui.ControlRenderer');
@@ -54,7 +55,7 @@ goog.ui.CheckboxRenderer.CSS_CLASS = goog.getCssName('goog-checkbox');
 /** @override */
 goog.ui.CheckboxRenderer.prototype.createDom = function(checkbox) {
   var element = checkbox.getDomHelper().createDom(
-      'span', this.getClassNames(checkbox).join(' '));
+      goog.dom.TagName.SPAN, this.getClassNames(checkbox).join(' '));
 
   var state = checkbox.getChecked();
   this.setCheckboxState(element, state);

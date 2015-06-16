@@ -1242,11 +1242,6 @@ goog.fx.DragDropEvent = function(type, source, sourceItem,
 goog.inherits(goog.fx.DragDropEvent, goog.events.Event);
 
 
-/** @override */
-goog.fx.DragDropEvent.prototype.disposeInternal = function() {
-};
-
-
 
 /**
  * Class representing a source or target element for drag and drop operations.

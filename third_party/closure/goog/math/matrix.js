@@ -49,6 +49,7 @@ goog.require('goog.string');
  *     dimensions, or the number of rows.
  * @param {number=} opt_n Number of columns of the matrix (only applicable if
  *     the first argument is also numeric).
+ * @struct
  * @constructor
  * @final
  */

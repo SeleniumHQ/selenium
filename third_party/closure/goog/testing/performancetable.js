@@ -163,15 +163,19 @@ goog.testing.PerformanceTable.prototype.recordResults = function(
   var average = results['average'];
   var standardDeviation = results['standardDeviation'];
   var isSuspicious = average < 0 || standardDeviation > average * .5;
-  var resultsRow = goog.dom.createDom('tr', null,
-      goog.dom.createDom('td', 'test-description',
+  var resultsRow = goog.dom.createDom(goog.dom.TagName.TR, null,
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-description',
           opt_desc || 'No description'),
-      goog.dom.createDom('td', 'test-count', String(results['count'])),
-      goog.dom.createDom('td', 'test-average', this.round_(average)),
-      goog.dom.createDom('td', 'test-standard-deviation',
-          this.round_(standardDeviation)),
-      goog.dom.createDom('td', 'test-minimum', String(results['minimum'])),
-      goog.dom.createDom('td', 'test-maximum', String(results['maximum'])));
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-count',
+                         String(results['count'])),
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-average',
+                         this.round_(average)),
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-standard-deviation',
+                         this.round_(standardDeviation)),
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-minimum',
+                         String(results['minimum'])),
+      goog.dom.createDom(goog.dom.TagName.TD, 'test-maximum',
+                         String(results['maximum'])));
   if (isSuspicious) {
     resultsRow.className = 'test-suspicious';
   }
@@ -185,7 +189,8 @@ goog.testing.PerformanceTable.prototype.recordResults = function(
  */
 goog.testing.PerformanceTable.prototype.reportError = function(reason) {
   this.getTableBody_().appendChild(
-      goog.dom.createDom('tr', null,
-          goog.dom.createDom('td', {'class': 'test-error', 'colSpan': 5},
-              String(reason))));
+      goog.dom.createDom(goog.dom.TagName.TR, null,
+          goog.dom.createDom(goog.dom.TagName.TD,
+                             {'class': 'test-error', 'colSpan': 5},
+                             String(reason))));
 };

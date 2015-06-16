@@ -42,6 +42,7 @@ goog.provide('goog.ui.ServerChart.UriTooLongEvent');
 goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.Event');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
@@ -316,7 +317,7 @@ goog.ui.ServerChart.prototype.numVisibleDataSets_ = null;
 goog.ui.ServerChart.prototype.createDom = function() {
   var size = this.getSize();
   this.setElementInternal(this.getDomHelper().createDom(
-      'img', {'src': this.getUri(),
+      goog.dom.TagName.IMG, {'src': this.getUri(),
         'class': goog.getCssName('goog-serverchart-image'),
         'width': size[0], 'height': size[1]}));
 };
@@ -1482,7 +1483,7 @@ goog.ui.ServerChart.prototype.getMultiAxisLabelStyle =
  * Adds a data set.
  * NOTE: The color string should NOT have a '#' at the beginning of it.
  *
- * @param {Array<number|null>} data An array of numbers (values can be
+ * @param {Array<?number>} data An array of numbers (values can be
  *     NaN or null).
  * @param {string} color The hex value for this data set's color.
  * @param {string=} opt_legendText The legend text, if any, for this data
