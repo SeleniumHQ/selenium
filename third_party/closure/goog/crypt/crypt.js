@@ -53,7 +53,7 @@ goog.crypt.byteArrayToString = function(bytes) {
   var CHUNK_SIZE = 8192;
 
   // Special-case the simple case for speed's sake.
-  if (bytes.length < CHUNK_SIZE) {
+  if (bytes.length <= CHUNK_SIZE) {
     return String.fromCharCode.apply(null, bytes);
   }
 

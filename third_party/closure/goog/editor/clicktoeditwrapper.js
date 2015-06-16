@@ -37,7 +37,6 @@ goog.require('goog.editor.range');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
-goog.require('goog.log');
 
 
 
@@ -111,14 +110,6 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 };
 goog.inherits(goog.editor.ClickToEditWrapper, goog.Disposable);
 
-
-/**
- * The logger for this class.
- * @type {goog.log.Logger}
- * @private
- */
-goog.editor.ClickToEditWrapper.prototype.logger_ =
-    goog.log.getLogger('goog.editor.ClickToEditWrapper');
 
 
 /** @return {goog.editor.Field} The field. */
@@ -325,8 +316,6 @@ goog.editor.ClickToEditWrapper.prototype.renderSelection_ = function() {
   }
 
   if (hasCarets) {
-    var startCaretParent = startCaret.parentNode;
-    var endCaretParent = endCaret.parentNode;
 
     this.savedCaretRange_.restore();
     this.fieldObj_.dispatchSelectionChangeEvent();

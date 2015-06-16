@@ -436,6 +436,26 @@ goog.async.Deferred.prototype.addBoth = function(f, opt_scope) {
 
 
 /**
+ * Like addBoth, but propagates uncaught exceptions in the errback.
+ *
+ * @param {function(this:T,?):?} f The function to be called on any result.
+ * @param {T=} opt_scope An optional scope to call the function in.
+ * @return {!goog.async.Deferred<VALUE>} This Deferred.
+ * @template T
+ */
+goog.async.Deferred.prototype.addFinally = function(f, opt_scope) {
+  var self = this;
+  return this.addCallbacks(f, function(err) {
+    var result = f.call(self, err);
+    if (!goog.isDef(result)) {
+      throw err;
+    }
+    return result;
+  }, opt_scope);
+};
+
+
+/**
  * Registers a callback function and an errback function at the same position
  * in the execution sequence. Only one of these functions will execute,
  * depending on the error state during the execution sequence.
@@ -443,9 +463,9 @@ goog.async.Deferred.prototype.addBoth = function(f, opt_scope) {
  * NOTE: This is not equivalent to {@code def.addCallback().addErrback()}! If
  * the callback is invoked, the errback will be skipped, and vice versa.
  *
- * @param {(function(this:T,VALUE):?)|null} cb The function to be called on a
+ * @param {?(function(this:T,VALUE):?)} cb The function to be called on a
  *     successful result.
- * @param {(function(this:T,?):?)|null} eb The function to be called on an
+ * @param {?(function(this:T,?):?)} eb The function to be called on an
  *     unsuccessful result.
  * @param {T=} opt_scope An optional scope to call the functions in.
  * @return {!goog.async.Deferred} This Deferred.
@@ -635,7 +655,9 @@ goog.async.Deferred.prototype.fire_ = function() {
           this.result_ = res = ret;
         }
 
-        if (goog.Thenable.isImplementedBy(res)) {
+        if (goog.Thenable.isImplementedBy(res) ||
+            (typeof goog.global['Promise'] === 'function' &&
+            res instanceof goog.global['Promise'])) {
           isNewlyBlocked = true;
           this.blocked_ = true;
         }

@@ -46,6 +46,7 @@ var storage = goog.labs.storage;
  *     storage mechanism.
  * @param {number} maxItems Maximum number of items in storage.
  * @constructor
+ * @struct
  * @extends {goog.storage.CollectableStorage}
  * @final
  */
@@ -78,28 +79,30 @@ storage.BoundedCollectableStorage.KEY_LIST_KEY_ = 'bounded-collectable-storage';
  */
 storage.BoundedCollectableStorage.prototype.rebuildIndex_ = function() {
   var keys = [];
-  goog.iter.forEach(this.mechanism.__iterator__(true), function(key) {
-    if (storage.BoundedCollectableStorage.KEY_LIST_KEY_ == key) {
-      return;
-    }
+  goog.iter.forEach(/** @type {goog.storage.mechanism.IterableMechanism} */ (
+      this.mechanism).__iterator__(true), function(key) {
+        if (storage.BoundedCollectableStorage.KEY_LIST_KEY_ == key) {
+          return;
+        }
 
-    var wrapper;
-    /** @preserveTry */
-    try {
-      wrapper = this.getWrapper(key, true);
-    } catch (ex) {
-      if (ex == goog.storage.ErrorCode.INVALID_VALUE) {
-        // Skip over bad wrappers and continue.
-        return;
-      }
-      // Unknown error, escalate.
-      throw ex;
-    }
-    goog.asserts.assert(wrapper);
+        var wrapper;
+        /** @preserveTry */
+        try {
+          wrapper = this.getWrapper(key, true);
+        } catch (ex) {
+          if (ex == goog.storage.ErrorCode.INVALID_VALUE) {
+            // Skip over bad wrappers and continue.
+            return;
+          }
+          // Unknown error, escalate.
+          throw ex;
+        }
+        goog.asserts.assert(wrapper);
 
-    var creationTime = goog.storage.ExpiringStorage.getCreationTime(wrapper);
-    keys.push({key: key, created: creationTime});
-  }, this);
+        var creationTime =
+            goog.storage.ExpiringStorage.getCreationTime(wrapper);
+        keys.push({key: key, created: creationTime});
+      }, this);
 
   goog.array.sort(keys, function(a, b) {
     return a.created - b.created;

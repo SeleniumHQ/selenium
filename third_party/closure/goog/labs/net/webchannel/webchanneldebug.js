@@ -116,46 +116,6 @@ WebChannelDebug.prototype.xmlHttpChannelResponseText =
 
 
 /**
- * Logs a Trident ActiveX request.
- * @param {string} verb The request type (GET/POST).
- * @param {goog.Uri} uri The request destination.
- * @param {string|number|undefined} id The request id.
- * @param {number} attempt Which attempt # the request was.
- */
-WebChannelDebug.prototype.tridentChannelRequest =
-    function(verb, uri, id, attempt) {
-  this.info(
-      'TRIDENT REQ (' + id + ') [ attempt ' + attempt + ']: ' +
-      verb + '\n' + uri);
-};
-
-
-/**
- * Logs the response text received from a Trident ActiveX request.
- * @param {string|number|undefined} id The request id.
- * @param {string} responseText The response text.
- */
-WebChannelDebug.prototype.tridentChannelResponseText =
-    function(id, responseText) {
-  this.info(
-      'TRIDENT TEXT (' + id + '): ' +
-      this.redactResponse_(responseText));
-};
-
-
-/**
- * Logs the done response received from a Trident ActiveX request.
- * @param {string|number|undefined} id The request id.
- * @param {boolean} successful Whether the request was successful.
- */
-WebChannelDebug.prototype.tridentChannelResponseDone =
-    function(id, successful) {
-  this.info(
-      'TRIDENT TEXT (' + id + '): ' + successful ? 'success' : 'failure');
-};
-
-
-/**
  * Logs a request timeout.
  * @param {goog.Uri} uri The uri that timed out.
  */

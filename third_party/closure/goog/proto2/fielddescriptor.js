@@ -174,7 +174,9 @@ goog.proto2.FieldDescriptor.prototype.getTag = function() {
  * @return {!goog.proto2.Descriptor} The descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getContainingType = function() {
-  return this.parent_.getDescriptor();
+  // Generated JS proto_library messages have getDescriptor() method which can
+  // be called with or without an instance.
+  return this.parent_.prototype.getDescriptor();
 };
 
 
@@ -256,7 +258,11 @@ goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
  * @return {!goog.proto2.Descriptor} The message descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
-  return this.nativeType_.getDescriptor();
+  // Generated JS proto_library messages have getDescriptor() method which can
+  // be called with or without an instance.
+  var messageClass = /** @type {function(new:goog.proto2.Message)} */(
+      this.nativeType_);
+  return messageClass.prototype.getDescriptor();
 };
 
 

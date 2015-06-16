@@ -38,7 +38,7 @@ goog.net.ChannelDebug = function() {
   /**
    * The logger instance.
    * @const
-   * @private
+   * @private {?goog.debug.Logger}
    */
   this.logger_ = goog.log.getLogger('goog.net.BrowserChannel');
 };

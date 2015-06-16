@@ -23,6 +23,7 @@
 
 goog.provide('goog.dom.selection');
 
+goog.require('goog.dom.InputType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
@@ -209,7 +210,7 @@ goog.dom.selection.getEndPoints_ = function(textfield, getOnlyStart) {
 
     if (range.inRange(selectionRange)) {
       range.setEndPoint('EndToStart', selectionRange);
-      if (textfield.type == 'textarea') {
+      if (textfield.type == goog.dom.InputType.TEXTAREA) {
         return goog.dom.selection.getEndPointsTextareaIe_(
             range, selectionRange, getOnlyStart);
       }
@@ -344,7 +345,7 @@ goog.dom.selection.getText = function(textfield) {
 
     if (!range.inRange(selectionRange)) {
       return '';
-    } else if (textfield.type == 'textarea') {
+    } else if (textfield.type == goog.dom.InputType.TEXTAREA) {
       return goog.dom.selection.getSelectionRangeText_(selectionRange);
     }
     return selectionRange.text;
@@ -419,7 +420,7 @@ goog.dom.selection.getRangeIe_ = function(el) {
   // el.createTextRange() doesn't work on textareas
   var range;
 
-  if (el.type == 'textarea') {
+  if (el.type == goog.dom.InputType.TEXTAREA) {
     range = doc.body.createTextRange();
     range.moveToElementText(el);
   } else {
@@ -441,7 +442,7 @@ goog.dom.selection.getRangeIe_ = function(el) {
  *     move('character', pos).
  */
 goog.dom.selection.canonicalizePositionIe_ = function(textfield, pos) {
-  if (textfield.type == 'textarea') {
+  if (textfield.type == goog.dom.InputType.TEXTAREA) {
     // We do this only for textarea because it is the only one which can
     // have a \r\n (input cannot have this).
     var value = textfield.value.substring(0, pos);

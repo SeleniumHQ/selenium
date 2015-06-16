@@ -42,6 +42,46 @@ goog.require('goog.userAgent');
  * @final
  */
 goog.dom.TextRange = function() {
+  /**
+   * The browser specific range wrapper.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {goog.dom.browserrange.AbstractRange?}
+   */
+  this.browserRangeWrapper_ = null;
+
+  /**
+   * The start node of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * The start offset of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {?number}
+   */
+  this.startOffset_ = null;
+
+  /**
+   * The end node of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * The end offset of the range.  This can be null if one of the other
+   * representations of the range is specified.
+   * @private {?number}
+   */
+  this.endOffset_ = null;
+
+  /**
+   * Whether the focus node is before the anchor node.
+   * @private {boolean}
+   */
+  this.isReversed_ = false;
 };
 goog.inherits(goog.dom.TextRange, goog.dom.AbstractRange);
 
@@ -141,65 +181,6 @@ goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
 
   return range;
 };
-
-
-// Representation 1: a browser range wrapper.
-
-
-/**
- * The browser specific range wrapper.  This can be null if one of the other
- * representations of the range is specified.
- * @type {goog.dom.browserrange.AbstractRange?}
- * @private
- */
-goog.dom.TextRange.prototype.browserRangeWrapper_ = null;
-
-
-// Representation 2: two endpoints specified as nodes + offsets
-
-
-/**
- * The start node of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {Node}
- * @private
- */
-goog.dom.TextRange.prototype.startNode_ = null;
-
-
-/**
- * The start offset of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {?number}
- * @private
- */
-goog.dom.TextRange.prototype.startOffset_ = null;
-
-
-/**
- * The end node of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {Node}
- * @private
- */
-goog.dom.TextRange.prototype.endNode_ = null;
-
-
-/**
- * The end offset of the range.  This can be null if one of the other
- * representations of the range is specified.
- * @type {?number}
- * @private
- */
-goog.dom.TextRange.prototype.endOffset_ = null;
-
-
-/**
- * Whether the focus node is before the anchor node.
- * @type {boolean}
- * @private
- */
-goog.dom.TextRange.prototype.isReversed_ = false;
 
 
 // Method implementations

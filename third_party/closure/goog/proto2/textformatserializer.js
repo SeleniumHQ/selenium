@@ -119,9 +119,11 @@ goog.proto2.TextFormatSerializer.prototype.serializeMessage_ =
   }, this);
 
   // Add the unknown fields, if any.
-  message.forEachUnknown(function(tag, value) {
-    this.serializeUnknown_(tag, value, printer);
-  }, this);
+  message.forEachUnknown(
+      /** @this {goog.proto2.TextFormatSerializer} */
+      function(tag, value) {
+        this.serializeUnknown_(tag, value, goog.asserts.assert(printer));
+      }, this);
 };
 
 

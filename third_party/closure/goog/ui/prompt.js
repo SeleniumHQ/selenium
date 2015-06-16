@@ -23,6 +23,8 @@ goog.provide('goog.ui.Prompt');
 
 goog.require('goog.Timer');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
@@ -221,7 +223,7 @@ goog.ui.Prompt.prototype.setInputDecoratorFn = function(inputDecoratorFn) {
  */
 goog.ui.Prompt.prototype.setRows = function(rows) {
   if (this.isInDocument()) {
-    if (this.userInputEl_.tagName.toLowerCase() == 'input') {
+    if (this.userInputEl_.tagName == goog.dom.TagName.INPUT) {
       if (rows > 1) {
         throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
       }
@@ -251,7 +253,7 @@ goog.ui.Prompt.prototype.getRows = function() {
 goog.ui.Prompt.prototype.setCols = function(cols) {
   this.cols_ = cols;
   if (this.userInputEl_) {
-    if (this.userInputEl_.tagName.toLowerCase() == 'input') {
+    if (this.userInputEl_.tagName == goog.dom.TagName.INPUT) {
       this.userInputEl_.size = cols;
     } else {
       this.userInputEl_.cols = cols;
@@ -284,15 +286,15 @@ goog.ui.Prompt.prototype.createDom = function() {
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.
     this.userInputEl_ = /** @type {!HTMLInputElement} */
-        (this.getDomHelper().createDom('input', attrs));
-    this.userInputEl_.type = 'text';
+        (this.getDomHelper().createDom(goog.dom.TagName.INPUT, attrs));
+    this.userInputEl_.type = goog.dom.InputType.TEXT;
     if (this.cols_) {
       this.userInputEl_.size = this.cols_;
     }
   } else {
     // If rows > 1 then use a textarea.
     this.userInputEl_ = /** @type {!HTMLInputElement} */
-        (this.getDomHelper().createDom('textarea', attrs));
+        (this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, attrs));
     this.userInputEl_.rows = this.rows_;
     if (this.cols_) {
       this.userInputEl_.cols = this.cols_;
@@ -302,7 +304,7 @@ goog.ui.Prompt.prototype.createDom = function() {
   this.userInputEl_.id = this.inputElementId_;
   var contentEl = this.getContentElement();
   contentEl.appendChild(this.getDomHelper().createDom(
-      'div', {'style': 'overflow: auto'}, this.userInputEl_));
+      goog.dom.TagName.DIV, {'style': 'overflow: auto'}, this.userInputEl_));
 };
 
 

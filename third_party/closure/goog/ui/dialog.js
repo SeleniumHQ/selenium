@@ -586,18 +586,19 @@ goog.ui.Dialog.prototype.createDom = function() {
   goog.asserts.assert(element, 'getElement() returns null');
 
   var dom = this.getDomHelper();
-  this.titleEl_ = dom.createDom('div', goog.getCssName(this.class_, 'title'),
+  this.titleEl_ = dom.createDom(goog.dom.TagName.DIV,
+                                goog.getCssName(this.class_, 'title'),
       this.titleTextEl_ = dom.createDom(
-          'span',
+          goog.dom.TagName.SPAN,
           {'className': goog.getCssName(this.class_, 'title-text'),
             'id': this.getId()},
           this.title_),
       this.titleCloseEl_ = dom.createDom(
-          'span', goog.getCssName(this.class_, 'title-close'))),
+          goog.dom.TagName.SPAN, goog.getCssName(this.class_, 'title-close'))),
   goog.dom.append(element, this.titleEl_,
-      this.contentEl_ = dom.createDom('div',
+      this.contentEl_ = dom.createDom(goog.dom.TagName.DIV,
           goog.getCssName(this.class_, 'content')),
-      this.buttonEl_ = dom.createDom('div',
+      this.buttonEl_ = dom.createDom(goog.dom.TagName.DIV,
           goog.getCssName(this.class_, 'buttons')));
 
   // Make the title and close button behave correctly with screen readers.
@@ -640,7 +641,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
   this.contentEl_ = goog.dom.getElementsByTagNameAndClass(
       null, contentClass, dialogElement)[0];
   if (!this.contentEl_) {
-    this.contentEl_ = this.getDomHelper().createDom('div', contentClass);
+    this.contentEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                                    contentClass);
     if (this.content_) {
       goog.dom.safe.setInnerHtml(this.contentEl_, this.content_);
     }
@@ -664,7 +666,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
   } else {
     // Create the title bar element and insert it before the content area.
     // This is useful if the element to decorate only includes a content area.
-    this.titleEl_ = this.getDomHelper().createDom('div', titleClass);
+    this.titleEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                                  titleClass);
     dialogElement.insertBefore(this.titleEl_, this.contentEl_);
   }
 
@@ -677,7 +680,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
     }
   } else {
     this.titleTextEl_ = goog.dom.createDom(
-        'span', {'className': titleTextClass, 'id': this.getId()});
+        goog.dom.TagName.SPAN,
+        {'className': titleTextClass, 'id': this.getId()});
     this.titleEl_.appendChild(this.titleTextEl_);
   }
   this.titleTextId_ = this.titleTextEl_.id;
@@ -685,7 +689,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
       this.titleTextId_ || '');
   // Decorate or create the title close element.
   if (!this.titleCloseEl_) {
-    this.titleCloseEl_ = this.getDomHelper().createDom('span', titleCloseClass);
+    this.titleCloseEl_ = this.getDomHelper().createDom(goog.dom.TagName.SPAN,
+                                                       titleCloseClass);
     this.titleEl_.appendChild(this.titleCloseEl_);
   }
   goog.style.setElementShown(this.titleCloseEl_, this.hasTitleCloseButton_);
@@ -701,7 +706,8 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
     this.buttons_.decorate(this.buttonEl_);
   } else {
     // Create new button container element, and render a button set into it.
-    this.buttonEl_ = this.getDomHelper().createDom('div', buttonsClass);
+    this.buttonEl_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                                   buttonsClass);
     dialogElement.appendChild(this.buttonEl_);
     if (this.buttons_) {
       this.buttons_.attachToElement(this.buttonEl_);
@@ -996,7 +1002,7 @@ goog.ui.Dialog.prototype.onButtonClick_ = function(e) {
 goog.ui.Dialog.prototype.findParentButton_ = function(element) {
   var el = element;
   while (el != null && el != this.buttonEl_) {
-    if (el.tagName == 'BUTTON') {
+    if (el.tagName == goog.dom.TagName.BUTTON) {
       return /** @type {Element} */(el);
     }
     el = el.parentNode;
@@ -1026,7 +1032,7 @@ goog.ui.Dialog.prototype.onKey_ = function(e) {
 
       // Users may expect to hit escape on a SELECT element.
       var isSpecialFormElement =
-          target.tagName == 'SELECT' && !target.disabled;
+          target.tagName == goog.dom.TagName.SELECT && !target.disabled;
 
       if (cancel && !isSpecialFormElement) {
         hasHandler = true;
@@ -1048,7 +1054,7 @@ goog.ui.Dialog.prototype.onKey_ = function(e) {
     // Only handle ENTER in keypress events, in case the action opens a
     // popup window.
     var key;
-    if (target.tagName == 'BUTTON' && !target.disabled) {
+    if (target.tagName == goog.dom.TagName.BUTTON && !target.disabled) {
       // If the target is a button and it's enabled, we can fire that button's
       // handler.
       key = target.name;
@@ -1063,8 +1069,9 @@ goog.ui.Dialog.prototype.onKey_ = function(e) {
 
       // Users may expect to hit enter on a TEXTAREA, SELECT or an A element.
       var isSpecialFormElement =
-          (target.tagName == 'TEXTAREA' || target.tagName == 'SELECT' ||
-           target.tagName == 'A') && !target.disabled;
+          (target.tagName == goog.dom.TagName.TEXTAREA ||
+           target.tagName == goog.dom.TagName.SELECT ||
+           target.tagName == goog.dom.TagName.A) && !target.disabled;
 
       if (defaultButton && !defaultButton.disabled && !isSpecialFormElement) {
         key = defaultKey;
@@ -1261,7 +1268,8 @@ goog.ui.Dialog.ButtonSet.prototype.render = function() {
         this.element_, goog.html.SafeHtml.EMPTY);
     var domHelper = goog.dom.getDomHelper(this.element_);
     this.forEach(function(caption, key) {
-      var button = domHelper.createDom('button', {'name': key}, caption);
+      var button = domHelper.createDom(goog.dom.TagName.BUTTON, {'name': key},
+                                       caption);
       if (key == this.defaultButton_) {
         button.className = goog.getCssName(this.class_, 'default');
       }
@@ -1286,7 +1294,7 @@ goog.ui.Dialog.ButtonSet.prototype.decorate = function(element) {
   }
 
   this.element_ = element;
-  var buttons = this.element_.getElementsByTagName('button');
+  var buttons = this.element_.getElementsByTagName(goog.dom.TagName.BUTTON);
   for (var i = 0, button, key, caption; button = buttons[i]; i++) {
     // Buttons should have a "name" attribute and have their caption defined by
     // their innerHTML, but not everyone knows this, and we should play nice.

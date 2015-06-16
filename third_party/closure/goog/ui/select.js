@@ -474,17 +474,29 @@ goog.ui.Select.prototype.updateAriaActiveDescendant_ = function() {
         // We can't use selectionmodel's getItemCount here because we need to
         // skip separators.
         var items = this.selectionModel_.getItems();
-        var menuItemCount = goog.array.count(items, function(item) {
-          return item instanceof goog.ui.MenuItem;
-        });
         goog.a11y.aria.setState(contentElement, goog.a11y.aria.State.SETSIZE,
-            menuItemCount);
-        // Set a human-readable selection index.
+            this.getNumMenuItems_(items));
+        // Set a human-readable selection index, excluding menu separators.
+        var index = this.selectionModel_.getSelectedIndex();
         goog.a11y.aria.setState(contentElement, goog.a11y.aria.State.POSINSET,
-            1 + this.selectionModel_.getSelectedIndex());
+            index >= 0 ?
+            this.getNumMenuItems_(goog.array.slice(items, 0, index + 1)) : 0);
       }
     }
   }
+};
+
+
+/**
+ * Gets the number of menu items in the array.
+ * @param {!Array<?Object>} items The items.
+ * @return {number}
+ * @private
+ */
+goog.ui.Select.prototype.getNumMenuItems_ = function(items) {
+  return goog.array.count(items, function(item) {
+    return item instanceof goog.ui.MenuItem;
+  });
 };
 
 

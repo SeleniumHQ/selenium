@@ -210,7 +210,7 @@ goog.testing.MockControl.prototype.createConstructorMock = function(
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
  *     goog.testing.Mock.STRICT. The default is STRICT.
- * @return {goog.testing.MockInterface} The mocked function.
+ * @return {!goog.testing.MockInterface} The mocked function.
  */
 goog.testing.MockControl.prototype.createGlobalFunctionMock = function(
     functionName, opt_strictness) {

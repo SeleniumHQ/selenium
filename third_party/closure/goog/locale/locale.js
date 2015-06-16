@@ -28,7 +28,7 @@ goog.require('goog.locale.nativeNameConstants');
 
 
 /**
- * Set currnet locale to the specified one.
+ * Set current locale to the specified one.
  * @param {string} localeName Locale name string. We are following the usage
  *     in CLDR, but can make a few compromise for existing name compatibility.
  */

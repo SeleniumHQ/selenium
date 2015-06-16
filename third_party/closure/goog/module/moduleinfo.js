@@ -20,6 +20,7 @@
 goog.provide('goog.module.ModuleInfo');
 
 goog.require('goog.Disposable');
+goog.require('goog.async.throwException');
 goog.require('goog.functions');
 /** @suppress {extraRequire} */
 goog.require('goog.module');
@@ -313,7 +314,8 @@ goog.module.ModuleInfo.prototype.callCallbacks_ = function(callbacks, context) {
   //
   // Our strategy here is to protect module manager from exceptions, so that
   // the failure of one module doesn't affect the loading of other modules.
-  // Then, we try to report the exception as best we can.
+  // Errors are thrown outside of the current stack frame, so they still
+  // get reported but don't interrupt execution.
 
   // Call each callback in the order they were registered
   var errors = [];
@@ -321,6 +323,7 @@ goog.module.ModuleInfo.prototype.callCallbacks_ = function(callbacks, context) {
     try {
       callbacks[i].execute(context);
     } catch (e) {
+      goog.async.throwException(e);
       errors.push(e);
     }
   }

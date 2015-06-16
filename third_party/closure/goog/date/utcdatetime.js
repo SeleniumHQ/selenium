@@ -41,6 +41,7 @@ goog.require('goog.date.Interval');
  * @param {number=} opt_seconds UTC seconds, 0 - 59.
  * @param {number=} opt_milliseconds UTC milliseconds, 0 - 999.
  * @constructor
+ * @struct
  * @extends {goog.date.DateTime}
  */
 goog.date.UtcDateTime = function(opt_year, opt_month, opt_date, opt_hours,

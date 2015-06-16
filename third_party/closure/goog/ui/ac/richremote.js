@@ -46,6 +46,12 @@ goog.require('goog.ui.ac.RichRemoteArrayMatcher');
  * inputbox or textarea from data provided via ajax.  The server returns a
  * complex data structure that is used with client-side javascript functions to
  * render the results.
+ *
+ * This class makes use of goog.html.legacyconversions and provides no
+ * HTML-type-safe alternative. As such, it is not compatible with
+ * code that sets goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS to
+ * false.
+ *
  * @param {string} url The Uri which generates the auto complete matches.
  * @param {Element} input Input element or text area.
  * @param {boolean=} opt_multi Whether to allow multiple entries; defaults

@@ -38,6 +38,7 @@ goog.require('goog.math.Coordinate3');
  * @param {number} x The x value for the vector.
  * @param {number} y The y value for the vector.
  * @param {number} z The z value for the vector.
+ * @struct
  * @constructor
  * @extends {goog.math.Coordinate3}
  */

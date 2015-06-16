@@ -142,6 +142,7 @@ goog.dom.TagName = {
   TABLE: 'TABLE',
   TBODY: 'TBODY',
   TD: 'TD',
+  TEMPLATE: 'TEMPLATE',
   TEXTAREA: 'TEXTAREA',
   TFOOT: 'TFOOT',
   TH: 'TH',

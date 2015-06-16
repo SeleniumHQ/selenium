@@ -98,8 +98,9 @@ ForwardChannelRequestPool.MAX_POOL_SIZE_ = 10;
  * @private
  */
 ForwardChannelRequestPool.isSpdyEnabled_ = function() {
-  return !!(window.chrome && window.chrome.loadTimes &&
-      window.chrome.loadTimes() && window.chrome.loadTimes().wasFetchedViaSpdy);
+  return !!(goog.global.chrome && goog.global.chrome.loadTimes &&
+      goog.global.chrome.loadTimes() &&
+      goog.global.chrome.loadTimes().wasFetchedViaSpdy);
 };
 
 

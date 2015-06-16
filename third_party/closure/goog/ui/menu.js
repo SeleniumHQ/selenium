@@ -44,6 +44,7 @@
 goog.provide('goog.ui.Menu');
 goog.provide('goog.ui.Menu.EventType');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -464,8 +465,9 @@ goog.ui.Menu.prototype.setHighlightedIndex = function(index) {
  */
 goog.ui.Menu.prototype.decorateContent = function(element) {
   var renderer = this.getRenderer();
-  var contentElements = this.getDomHelper().getElementsByTagNameAndClass('div',
-      goog.getCssName(renderer.getCssClass(), 'content'), element);
+  var contentElements = this.getDomHelper().getElementsByTagNameAndClass(
+      goog.dom.TagName.DIV, goog.getCssName(renderer.getCssClass(), 'content'),
+      element);
 
   // Some versions of IE do not like it when you access this nodeList
   // with invalid indices. See

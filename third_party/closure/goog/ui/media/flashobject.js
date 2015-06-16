@@ -29,7 +29,9 @@
  * Examples of usage:
  *
  * <pre>
- *   var flash = new goog.ui.media.FlashObject('http://hostname/flash.swf');
+ *   var url = goog.html.TrustedResourceUrl.fromConstant(
+ *       goog.string.Const.from('https://hostname/flash.swf'))
+ *   var flash = new goog.ui.media.FlashObject(url);
  *   flash.setFlashVar('myvar', 'foo');
  *   flash.render(goog.dom.getElement('parent'));
  * </pre>
@@ -45,9 +47,15 @@ goog.provide('goog.ui.media.FlashObject.ScriptAccessLevel');
 goog.provide('goog.ui.media.FlashObject.Wmodes');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.html.flash');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -65,7 +73,11 @@ goog.require('goog.userAgent.flash');
  * {@link goog.ui.Component}, which makes it very easy to be embedded on the
  * page.
  *
- * @param {string} flashUrl The flash SWF URL.
+ * @param {string|!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
+ *     If possible pass a TrustedResourceUrl. string is supported
+ *     for backwards-compatibility only, uses goog.html.legacyconversions,
+ *     and will be sanitized with goog.html.SafeUrl.sanitize() before being
+ *     used.
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DomHelper.
  * @extends {goog.ui.Component}
  * @constructor
@@ -73,13 +85,23 @@ goog.require('goog.userAgent.flash');
 goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
+  var trustedResourceUrl;
+  if (flashUrl instanceof goog.html.TrustedResourceUrl) {
+    trustedResourceUrl = flashUrl;
+  } else {
+    var flashUrlSanitized =
+        goog.html.SafeUrl.unwrap(goog.html.SafeUrl.sanitize(flashUrl));
+    trustedResourceUrl = goog.html.legacyconversions
+        .trustedResourceUrlFromString(flashUrlSanitized);
+  }
+
   /**
    * The URL of the flash movie to be embedded.
    *
-   * @type {string}
+   * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.flashUrl_ = flashUrl;
+  this.flashUrl_ = trustedResourceUrl;
 
   /**
    * An event handler used to handle events consistently between browsers.
@@ -184,70 +206,6 @@ goog.ui.media.FlashObject.CSS_CLASS = goog.getCssName('goog-ui-media-flash');
  */
 goog.ui.media.FlashObject.FLASH_CSS_CLASS =
     goog.getCssName('goog-ui-media-flash-object');
-
-
-/**
- * Template for the object tag for IE prior to version 11.
- *
- * @private {string}
- * @const
- */
-goog.ui.media.FlashObject.IE_HTML_ =
-    '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"' +
-    ' id="%s"' +
-    ' name="%s"' +
-    ' class="%s"' +
-    '>' +
-    '<param name="movie" value="%s"/>' +
-    '<param name="quality" value="high"/>' +
-    '<param name="FlashVars" value="%s"/>' +
-    '<param name="bgcolor" value="%s"/>' +
-    '<param name="AllowScriptAccess" value="%s"/>' +
-    '<param name="allowFullScreen" value="true"/>' +
-    '<param name="SeamlessTabbing" value="false"/>' +
-    '%s' +
-    '</object>';
-
-
-/**
- * Template for the wmode param for IE prior to version 11.
- *
- * @private {string}
- * @const
- */
-goog.ui.media.FlashObject.IE_WMODE_PARAMS_ = '<param name="wmode" value="%s"/>';
-
-
-/**
- * Embed tag template for most browsers.
- *
- * @private {string}
- * @const
- */
-goog.ui.media.FlashObject.EMBED_HTML_ =
-    '<embed quality="high"' +
-    ' id="%s"' +
-    ' name="%s"' +
-    ' class="%s"' +
-    ' src="%s"' +
-    ' FlashVars="%s"' +
-    ' bgcolor="%s"' +
-    ' AllowScriptAccess="%s"' +
-    ' allowFullScreen="true"' +
-    ' SeamlessTabbing="false"' +
-    ' type="application/x-shockwave-flash"' +
-    ' pluginspage="http://www.macromedia.com/go/getflashplayer"' +
-    ' %s>' +
-    '</embed>';
-
-
-/**
- * Template for the wmode param for most browsers.
- *
- * @private {string}
- * @const
- */
-goog.ui.media.FlashObject.WMODE_PARAMS_ = 'wmode=%s';
 
 
 /**
@@ -495,7 +453,8 @@ goog.ui.media.FlashObject.prototype.enterDocument = function() {
 
   // The SWF tag must be written after this component's element is appended to
   // the DOM. Otherwise Flash's ExternalInterface is broken in IE.
-  this.getElement().innerHTML = this.generateSwfTag_();
+  goog.dom.safe.setInnerHtml(
+      /** @type {!Element} */ (this.getElement()), this.createSwfTag_());
   if (this.width_ && this.height_) {
     this.setSize(this.width_, this.height_);
   }
@@ -543,49 +502,90 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
     throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
   }
 
-  var element = this.getDomHelper().createElement('div');
+  var element = this.getDomHelper().createElement(goog.dom.TagName.DIV);
   element.className = goog.ui.media.FlashObject.CSS_CLASS;
   this.setElementInternal(element);
 };
 
 
 /**
- * Writes the HTML to embed the flash object.
+ * Creates the HTML to embed the flash object.
  *
- * @return {string} Browser appropriate HTML to add the SWF to the DOM.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
  * @private
  */
-goog.ui.media.FlashObject.prototype.generateSwfTag_ = function() {
-  var template = goog.ui.media.FlashObject.EMBED_HTML_;
-  var params = goog.ui.media.FlashObject.WMODE_PARAMS_;
-
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) {
-    template = goog.ui.media.FlashObject.IE_HTML_;
-    params = goog.ui.media.FlashObject.IE_WMODE_PARAMS_;
-  }
-  params = goog.string.subs(params, this.wmode_);
-
+goog.ui.media.FlashObject.prototype.createSwfTag_ = function() {
   var keys = this.flashVars_.getKeys();
   var values = this.flashVars_.getValues();
-
   var flashVars = [];
   for (var i = 0; i < keys.length; i++) {
     var key = goog.string.urlEncode(keys[i]);
     var value = goog.string.urlEncode(values[i]);
     flashVars.push(key + '=' + value);
   }
+  var flashVarsString = flashVars.join('&');
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) {
+    return this.createSwfTagOldIe_(flashVarsString);
+  } else {
+    return this.createSwfTagModern_(flashVarsString);
+  }
+};
 
-  // TODO(user): find a more efficient way to build the HTML.
-  return goog.string.subs(
-      template,
-      this.getId(),
-      this.getId(),
-      goog.ui.media.FlashObject.FLASH_CSS_CLASS,
-      goog.string.htmlEscape(this.flashUrl_),
-      goog.string.htmlEscape(flashVars.join('&')),
-      this.backgroundColor_,
-      this.allowScriptAccess_,
-      params);
+
+/**
+ * Creates the HTML to embed the flash object for IE>=11 and other browsers.
+ *
+ * @param {string} flashVars The value of the FlashVars attribute.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
+ * @private
+ */
+goog.ui.media.FlashObject.prototype.createSwfTagModern_ = function(flashVars) {
+  return goog.html.flash.createEmbed(
+      this.flashUrl_,
+      {
+        'AllowScriptAccess': this.allowScriptAccess_,
+        'allowFullScreen': 'true',
+        'allowNetworking': 'all',
+        'bgcolor': this.backgroundColor_,
+        'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
+        'FlashVars': flashVars,
+        'id': this.getId(),
+        'name': this.getId(),
+        'quality': 'high',
+        'SeamlessTabbing': 'false',
+        'wmode': this.wmode_
+      });
+};
+
+
+/**
+ * Creates the HTML to embed the flash object for IE<11.
+ *
+ * @param {string} flashVars The value of the FlashVars attribute.
+ * @return {!goog.html.SafeHtml} Browser appropriate HTML to add the SWF to the
+ *     DOM.
+ * @private
+ */
+goog.ui.media.FlashObject.prototype.createSwfTagOldIe_ = function(flashVars) {
+  return goog.html.flash.createObjectForOldIe(
+      this.flashUrl_,
+      {
+        'allowFullScreen': 'true',
+        'AllowScriptAccess': this.allowScriptAccess_,
+        'allowNetworking': 'all',
+        'bgcolor': this.backgroundColor_,
+        'FlashVars': flashVars,
+        'quality': 'high',
+        'SeamlessTabbing': 'false',
+        'wmode': this.wmode_
+      },
+      {
+        'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
+        'id': this.getId(),
+        'name': this.getId()
+      });
 };
 
 

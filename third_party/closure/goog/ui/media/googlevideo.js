@@ -146,7 +146,7 @@ goog.ui.media.GoogleVideo.prototype.createDom = function(c) {
       /** @type {goog.ui.media.GoogleVideoModel} */ (control.getDataModel());
 
   var flash = new goog.ui.media.FlashObject(
-      dataModel.getPlayer().getUrl() || '',
+      dataModel.getPlayer().getTrustedResourceUrl(),
       control.getDomHelper());
   flash.render(div);
 

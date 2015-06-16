@@ -26,6 +26,7 @@ goog.provide('goog.labs.net.webChannel.WebChannelBaseTransport');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
+goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.log');
 goog.require('goog.net.WebChannel');
@@ -45,7 +46,11 @@ goog.require('goog.string.path');
  * @implements {goog.net.WebChannelTransport}
  * @final
  */
-goog.labs.net.webChannel.WebChannelBaseTransport = function() {};
+goog.labs.net.webChannel.WebChannelBaseTransport = function() {
+  if (!goog.labs.net.webChannel.ChannelRequest.supportsXhrStreaming()) {
+    throw new Error('Environmental error: no available transport.');
+  }
+};
 
 
 goog.scope(function() {
@@ -137,17 +142,16 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
    */
   this.supportsCrossDomainXhr_ =
       (opt_options && opt_options.supportsCrossDomainXhr) || false;
+
+  /**
+   * The channel handler.
+   *
+   * @type {WebChannelBaseTransport.Channel.Handler_}
+   * @private
+   */
+  this.channelHandler_ = new WebChannelBaseTransport.Channel.Handler_(this);
 };
 goog.inherits(WebChannelBaseTransport.Channel, goog.events.EventTarget);
-
-
-/**
- * The channel handler.
- *
- * @type {WebChannelBase.Handler}
- * @private
- */
-WebChannelBaseTransport.Channel.prototype.channelHandler_ = null;
 
 
 /**
@@ -156,11 +160,10 @@ WebChannelBaseTransport.Channel.prototype.channelHandler_ = null;
  * @override
  */
 WebChannelBaseTransport.Channel.prototype.open = function() {
-  this.channel_.connect(this.testUrl_, this.url_,
-                        (this.messageUrlParams_ || undefined));
-
-  this.channelHandler_ = new WebChannelBaseTransport.Channel.Handler_(this);
   this.channel_.setHandler(this.channelHandler_);
+  this.channel_.connect(this.testUrl_, this.url_,
+      (this.messageUrlParams_ || undefined));
+
   if (this.supportsCrossDomainXhr_) {
     this.channel_.setSupportsCrossDomainXhrs(true);
   }
@@ -333,13 +336,6 @@ WebChannelBaseTransport.ChannelProperties = function(channel) {
    */
   this.channel_ = channel;
 
-  /**
-   * The flag to turn on/off server-side flow control.
-   *
-   * @private {boolean}
-   */
-  this.serverFlowControlEnabled_ = false;
-
 };
 
 
@@ -373,4 +369,11 @@ WebChannelBaseTransport.ChannelProperties.prototype.setServerFlowControl =
  */
 WebChannelBaseTransport.ChannelProperties.prototype.getNonAckedMessageCount =
     goog.abstractMethod;
+
+
+/** @override */
+WebChannelBaseTransport.ChannelProperties.prototype.getLastStatusCode =
+    function() {
+  return this.channel_.getLastStatusCode();
+};
 });  // goog.scope

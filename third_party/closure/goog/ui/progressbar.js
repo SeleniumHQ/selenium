@@ -26,6 +26,7 @@ goog.provide('goog.ui.ProgressBar.Orientation');
 goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -92,8 +93,8 @@ goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[
 goog.ui.ProgressBar.prototype.createDom = function() {
   this.thumbElement_ = this.createThumb_();
   var cs = goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[this.orientation_];
-  this.setElementInternal(
-      this.getDomHelper().createDom('div', cs, this.thumbElement_));
+  this.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.DIV, cs, this.thumbElement_));
   this.setValueState_();
   this.setMinimumState_();
   this.setMaximumState_();
@@ -129,8 +130,8 @@ goog.ui.ProgressBar.prototype.exitDocument = function() {
  * @return {HTMLDivElement} The created thumb element.
  */
 goog.ui.ProgressBar.prototype.createThumb_ = function() {
-  return /** @type {!HTMLDivElement} */ (this.getDomHelper().createDom('div',
-      goog.getCssName('progress-bar-thumb')));
+  return /** @type {!HTMLDivElement} */ (this.getDomHelper().createDom(
+      goog.dom.TagName.DIV, goog.getCssName('progress-bar-thumb')));
 };
 
 

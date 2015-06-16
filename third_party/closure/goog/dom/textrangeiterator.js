@@ -48,6 +48,30 @@ goog.require('goog.iter.StopIteration');
  */
 goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     endOffset, opt_reverse) {
+  /**
+   * The first node in the selection.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * The last node in the selection.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * The offset within the first node in the selection.
+   * @private {number}
+   */
+  this.startOffset_ = 0;
+
+  /**
+   * The offset within the last node in the selection.
+   * @private {number}
+   */
+  this.endOffset_ = 0;
+
   var goNext;
 
   if (startNode) {
@@ -85,8 +109,9 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     }
   }
 
-  goog.dom.RangeIterator.call(this, opt_reverse ? this.endNode_ :
-      this.startNode_, opt_reverse);
+  goog.dom.TextRangeIterator.base(
+      this, 'constructor', opt_reverse ? this.endNode_ : this.startNode_,
+      opt_reverse);
 
   if (goNext) {
     try {
@@ -99,38 +124,6 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
   }
 };
 goog.inherits(goog.dom.TextRangeIterator, goog.dom.RangeIterator);
-
-
-/**
- * The first node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.startNode_ = null;
-
-
-/**
- * The last node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.endNode_ = null;
-
-
-/**
- * The offset within the first node in the selection.
- * @type {number}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.startOffset_ = 0;
-
-
-/**
- * The offset within the last node in the selection.
- * @type {number}
- * @private
- */
-goog.dom.TextRangeIterator.prototype.endOffset_ = 0;
 
 
 /** @override */

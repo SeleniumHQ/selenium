@@ -22,6 +22,7 @@ goog.provide('goog.ui.FlatButtonRenderer');
 
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.ButtonRenderer');
@@ -67,7 +68,7 @@ goog.ui.FlatButtonRenderer.prototype.createDom = function(button) {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
   };
   var element = button.getDomHelper().createDom(
-      'div', attributes, button.getContent());
+      goog.dom.TagName.DIV, attributes, button.getContent());
   this.setTooltip(element, button.getTooltip());
   return element;
 };
@@ -92,7 +93,7 @@ goog.ui.FlatButtonRenderer.prototype.getAriaRole = function() {
  * @override
  */
 goog.ui.FlatButtonRenderer.prototype.canDecorate = function(element) {
-  return element.tagName == 'DIV';
+  return element.tagName == goog.dom.TagName.DIV;
 };
 
 

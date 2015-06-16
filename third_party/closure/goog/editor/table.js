@@ -164,7 +164,7 @@ goog.editor.Table.prototype.insertRow = function(opt_rowIndex) {
     refRow = this.rows[rowIndex - 1];
     insertAfter = true;
   }
-  var newTr = this.dom_.createElement('tr');
+  var newTr = this.dom_.createElement(goog.dom.TagName.TR);
   for (var i = 0, cell; cell = refRow.columns[i]; i += 1) {
     // Check whether the existing cell will span this new row.
     // If so, instead of creating a new cell, extend

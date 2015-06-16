@@ -52,6 +52,8 @@ goog.require('goog.functions');
  *     Defaults to the global object.
  * @param {Object=} opt_handler The object scope to invoke the function in.
  * @constructor
+ * @struct
+ * @suppress {checkStructDictInheritance}
  * @extends {goog.Disposable}
  * @final
  */
@@ -59,50 +61,42 @@ goog.async.AnimationDelay = function(listener, opt_window, opt_handler) {
   goog.async.AnimationDelay.base(this, 'constructor');
 
   /**
+   * Identifier of the active delay timeout, or event listener,
+   * or null when inactive.
+   * @private {goog.events.Key|number}
+   */
+  this.id_ = null;
+
+  /**
+   * If we're using dom listeners.
+   * @private {?boolean}
+   */
+  this.usingListeners_ = false;
+
+  /**
    * The function that will be invoked after a delay.
-   * @type {function(number)}
-   * @private
+   * @private {function(number)}
    */
   this.listener_ = listener;
 
   /**
    * The object context to invoke the callback in.
-   * @type {Object|undefined}
-   * @private
+   * @private {Object|undefined}
    */
   this.handler_ = opt_handler;
 
   /**
-   * @type {Window}
-   * @private
+   * @private {Window}
    */
   this.win_ = opt_window || window;
 
   /**
    * Cached callback function invoked when the delay finishes.
-   * @type {function()}
-   * @private
+   * @private {function()}
    */
   this.callback_ = goog.bind(this.doAction_, this);
 };
 goog.inherits(goog.async.AnimationDelay, goog.Disposable);
-
-
-/**
- * Identifier of the active delay timeout, or event listener,
- * or null when inactive.
- * @type {goog.events.Key|number|null}
- * @private
- */
-goog.async.AnimationDelay.prototype.id_ = null;
-
-
-/**
- * If we're using dom listeners.
- * @type {?boolean}
- * @private
- */
-goog.async.AnimationDelay.prototype.usingListeners_ = false;
 
 
 /**
@@ -263,7 +257,8 @@ goog.async.AnimationDelay.prototype.getRaf_ = function() {
  */
 goog.async.AnimationDelay.prototype.getCancelRaf_ = function() {
   var win = this.win_;
-  return win.cancelRequestAnimationFrame ||
+  return win.cancelAnimationFrame ||
+      win.cancelRequestAnimationFrame ||
       win.webkitCancelRequestAnimationFrame ||
       win.mozCancelRequestAnimationFrame ||
       win.oCancelRequestAnimationFrame ||

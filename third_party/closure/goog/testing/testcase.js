@@ -29,8 +29,11 @@ goog.provide('goog.testing.TestCase.Order');
 goog.provide('goog.testing.TestCase.Result');
 goog.provide('goog.testing.TestCase.Test');
 
+
 goog.require('goog.Promise');
 goog.require('goog.Thenable');
+goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.stacktrace');
@@ -93,6 +96,12 @@ goog.testing.TestCase = function(opt_name) {
    */
   this.testsToRun_ = null;
 
+  /**
+   * The order to run the auto-discovered tests in.
+   * @type {string}
+   */
+  this.order = goog.testing.TestCase.Order.SORTED;
+
   /** @private {function(!goog.testing.TestCase.Result)} */
   this.runNextTestCallback_ = goog.nullFunction;
 
@@ -108,28 +117,6 @@ goog.testing.TestCase = function(opt_name) {
   /** @private {goog.testing.TestCase.Test} */
   this.curTest_ = null;
 
-  var search = '';
-  if (goog.global.location) {
-    search = goog.global.location.search;
-  }
-
-  // Parse the 'runTests' query parameter into a set of test names and/or
-  // test indices.
-  var runTestsMatch = search.match(/(?:\?|&)runTests=([^?&]+)/i);
-  if (runTestsMatch) {
-    this.testsToRun_ = {};
-    var arr = runTestsMatch[1].split(',');
-    for (var i = 0, len = arr.length; i < len; i++) {
-      this.testsToRun_[arr[i]] = 1;
-    }
-  }
-
-  // Checks the URL for a valid order param.
-  var orderMatch = search.match(/(?:\?|&)order=(natural|random|sorted)/i);
-  if (orderMatch) {
-    this.order = orderMatch[1];
-  }
-
   /**
    * Object used to encapsulate the test results.
    * @type {!goog.testing.TestCase.Result}
@@ -137,11 +124,6 @@ goog.testing.TestCase = function(opt_name) {
    * @suppress {underscore|visibility}
    */
   this.result_ = new goog.testing.TestCase.Result(this);
-
-  // This silences a compiler warning from the legacy property check, which
-  // is deprecated. It idly writes to testRunner properties that are used
-  // in this file.
-  var testRunnerMethods = {isFinished: true, hasErrors: true};
 };
 
 
@@ -193,16 +175,9 @@ goog.testing.TestCase.MAX_STACK_DEPTH_ = 100;
 
 
 /**
- * The order to run the auto-discovered tests in.
- * @type {string}
- */
-goog.testing.TestCase.prototype.order = goog.testing.TestCase.Order.SORTED;
-
-
-/**
  * Save a reference to {@code window.setTimeout}, so any code that overrides the
  * default behavior (the MockClock, for example) doesn't affect our runner.
- * @type {function((Function|string), number, *=): number}
+ * @type {function((Function|string), number=, *=): number}
  * @private
  */
 goog.testing.TestCase.protectedSetTimeout_ = goog.global.setTimeout;
@@ -411,6 +386,24 @@ goog.testing.TestCase.prototype.reset = function() {
  */
 goog.testing.TestCase.prototype.setCompletedCallback = function(fn) {
   this.onCompleteCallback_ = fn;
+};
+
+
+/**
+ * @param {goog.testing.TestCase.Order} order The sort order for running tests.
+ */
+goog.testing.TestCase.prototype.setOrder = function(order) {
+  this.order = order;
+};
+
+
+/**
+ * @param {Object<string, boolean>} testsToRun Set of tests to run. Entries in
+ *     the set may be test names, like "testFoo", or numeric indicies. Only
+ *     tests identified by name or by index will be executed.
+ */
+goog.testing.TestCase.prototype.setTestsToRun = function(testsToRun) {
+  this.testsToRun_ = testsToRun;
 };
 
 
@@ -773,14 +766,30 @@ goog.testing.TestCase.prototype.invokeTestFunction_ = function(
         goog.isFunction(retval && retval['then'])) {
       var self = this;
       retval.then(
-          function() { onSuccess.call(self); },
-          function(e) { onFailure.call(self, e); });
+          function() {
+            self.resetBatchTimeAfterPromise_();
+            onSuccess.call(self);
+          },
+          function(e) {
+            self.resetBatchTimeAfterPromise_();
+            onFailure.call(self, e);
+          });
     } else {
       onSuccess.call(this);
     }
   } catch (e) {
     onFailure.call(this, e);
   }
+};
+
+
+/**
+ * Resets the batch run timer. This should only be called after resolving a
+ * promise since Promise.then() has an implicit yield.
+ * @private
+ */
+goog.testing.TestCase.prototype.resetBatchTimeAfterPromise_ = function() {
+  this.batchTime_ = this.now();
 };
 
 
@@ -808,9 +817,7 @@ goog.testing.TestCase.prototype.finishTestInvocation_ = function(opt_error) {
   if (this.depth_ > goog.testing.TestCase.MAX_STACK_DEPTH_ ||
       this.now() - this.batchTime_ > goog.testing.TestCase.maxRunTime) {
     this.saveMessage('Breaking async');
-    this.batchTime_ = this.now();
-    this.depth_ = 0;
-    this.timeout(goog.bind(this.runNextTest_, this), 0);
+    this.timeout(goog.bind(this.startNextBatch_, this), 0);
   } else {
     ++this.depth_;
     this.runNextTest_();
@@ -819,28 +826,37 @@ goog.testing.TestCase.prototype.finishTestInvocation_ = function(opt_error) {
 
 
 /**
- * Reorders the tests depending on the {@code order} field.
- * @param {Array<goog.testing.TestCase.Test>} tests An array of tests to
- *     reorder.
+ * Start a new batch to tests after yielding, resetting batchTime and depth.
  * @private
  */
-goog.testing.TestCase.prototype.orderTests_ = function(tests) {
+goog.testing.TestCase.prototype.startNextBatch_ = function() {
+  this.batchTime_ = this.now();
+  this.depth_ = 0;
+  this.runNextTest_();
+};
+
+
+/**
+ * Reorders the tests depending on the {@code order} field.
+ * @private
+ */
+goog.testing.TestCase.prototype.orderTests_ = function() {
   switch (this.order) {
     case goog.testing.TestCase.Order.RANDOM:
       // Fisher-Yates shuffle
-      var i = tests.length;
+      var i = this.tests_.length;
       while (i > 1) {
         // goog.math.randomInt is inlined to reduce dependencies.
         var j = Math.floor(Math.random() * i); // exclusive
         i--;
-        var tmp = tests[i];
-        tests[i] = tests[j];
-        tests[j] = tmp;
+        var tmp = this.tests_[i];
+        this.tests_[i] = this.tests_[j];
+        this.tests_[j] = tmp;
       }
       break;
 
     case goog.testing.TestCase.Order.SORTED:
-      tests.sort(function(t1, t2) {
+      this.tests_.sort(function(t1, t2) {
         if (t1.name == t2.name) {
           return 0;
         }
@@ -925,7 +941,6 @@ goog.testing.TestCase.prototype.tearDown = function() {};
 
 /**
  * @return {string} The function name prefix used to auto-discover tests.
- * @protected
  */
 goog.testing.TestCase.prototype.getAutoDiscoveryPrefix = function() {
   return 'test';
@@ -965,29 +980,57 @@ goog.testing.TestCase.prototype.createTestFromAutoDiscoveredFunction =
 
 
 /**
- * Adds any functions defined in the global scope that correspond to
- * lifecycle events for the test case. Overrides setUp, tearDown, setUpPage,
- * tearDownPage and runTests if they are defined.
+ * Adds any functions defined on 'obj' (the global object, by default)
+ * that correspond to lifecycle events for the test case. Overrides
+ * setUp, tearDown, setUpPage, tearDownPage, runTests, and shouldRunTests
+ * if they are defined on 'obj'.
+ * @param {!Object=} opt_obj Defaults to goog.global.
  */
-goog.testing.TestCase.prototype.autoDiscoverLifecycle = function() {
-  if (goog.global['setUp']) {
-    this.setUp = goog.bind(goog.global['setUp'], goog.global);
+goog.testing.TestCase.prototype.autoDiscoverLifecycle = function(opt_obj) {
+  var obj = opt_obj || goog.global;
+  if (obj['setUp']) {
+    this.setUp = goog.bind(obj['setUp'], obj);
   }
-  if (goog.global['tearDown']) {
-    this.tearDown = goog.bind(goog.global['tearDown'], goog.global);
+  if (obj['tearDown']) {
+    this.tearDown = goog.bind(obj['tearDown'], obj);
   }
-  if (goog.global['setUpPage']) {
-    this.setUpPage = goog.bind(goog.global['setUpPage'], goog.global);
+  if (obj['setUpPage']) {
+    this.setUpPage = goog.bind(obj['setUpPage'], obj);
   }
-  if (goog.global['tearDownPage']) {
-    this.tearDownPage = goog.bind(goog.global['tearDownPage'], goog.global);
+  if (obj['tearDownPage']) {
+    this.tearDownPage = goog.bind(obj['tearDownPage'], obj);
   }
-  if (goog.global['runTests']) {
-    this.runTests = goog.bind(goog.global['runTests'], goog.global);
+  if (obj['runTests']) {
+    this.runTests = goog.bind(obj['runTests'], obj);
   }
-  if (goog.global['shouldRunTests']) {
-    this.shouldRunTests = goog.bind(goog.global['shouldRunTests'], goog.global);
+  if (obj['shouldRunTests']) {
+    this.shouldRunTests = goog.bind(obj['shouldRunTests'], obj);
   }
+};
+
+
+// TODO(johnlenz): make this package private
+/**
+ * @param {!Object} obj  An object from which to extract test and lifecycle
+ * methods.
+ */
+goog.testing.TestCase.prototype.setTestObj = function(obj) {
+  // Drop any previously added (likely auto-discovered) tests, only one source
+  // of discovered test and life-cycle methods is allowed.
+  goog.asserts.assert(this.tests_.length == 0,
+      'Test methods have already been configured.');
+
+  var regex = new RegExp('^' + this.getAutoDiscoveryPrefix());
+  for (var name in obj) {
+    if (regex.test(name)) {
+      var testMethod = obj[name];
+      if (goog.isFunction(testMethod)) {
+        this.addNewTest(name, testMethod, obj);
+      }
+    }
+  }
+
+  this.autoDiscoverLifecycle(obj);
 };
 
 
@@ -1023,11 +1066,10 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
     }
   }
 
-  this.orderTests_(foundTests);
-
   for (var i = 0; i < foundTests.length; i++) {
     this.add(foundTests[i]);
   }
+  this.orderTests_();
 
   this.log(this.getCount() + ' tests auto-discovered');
 
@@ -1085,7 +1127,7 @@ goog.testing.TestCase.prototype.cycleTests = function() {
  * @private
  */
 goog.testing.TestCase.prototype.countNumFilesLoaded_ = function() {
-  var scripts = document.getElementsByTagName('script');
+  var scripts = document.getElementsByTagName(goog.dom.TagName.SCRIPT);
   var count = 0;
   for (var i = 0, n = scripts.length; i < n; i++) {
     if (scripts[i].src) {
@@ -1414,6 +1456,14 @@ goog.testing.TestCase.Result.prototype.getSummary = function() {
  */
 goog.testing.TestCase.initializeTestRunner = function(testCase) {
   testCase.autoDiscoverTests();
+
+  if (goog.global.location) {
+    var search = goog.global.location.search;
+    testCase.setOrder(goog.testing.TestCase.parseOrder_(search) ||
+        goog.testing.TestCase.Order.SORTED);
+    testCase.setTestsToRun(goog.testing.TestCase.parseRunTests_(search));
+  }
+
   var gTestRunner = goog.global['G_testRunner'];
   if (gTestRunner) {
     gTestRunner['initialize'](testCase);
@@ -1421,6 +1471,45 @@ goog.testing.TestCase.initializeTestRunner = function(testCase) {
     throw Error('G_testRunner is undefined. Please ensure goog.testing.jsunit' +
         ' is included.');
   }
+};
+
+
+/**
+ * Parses URL query parameters for the 'order' parameter.
+ * @param {string} search The URL query string.
+ * @return {?goog.testing.TestCase.Order} The sort order for running tests.
+ * @private
+ */
+goog.testing.TestCase.parseOrder_ = function(search) {
+  var order = null;
+  var orderMatch = search.match(
+      /(?:\?|&)order=(natural|random|sorted)/i);
+  if (orderMatch) {
+    order = /** @type {goog.testing.TestCase.Order} */ (
+        orderMatch[1].toLowerCase());
+  }
+  return order;
+};
+
+
+/**
+ * Parses URL query parameters for the 'runTests' parameter.
+ * @param {string} search The URL query string.
+ * @return {Object<string, boolean>} A set of test names or test indices to be
+ *     run by the test runner.
+ * @private
+ */
+goog.testing.TestCase.parseRunTests_ = function(search) {
+  var testsToRun = null;
+  var runTestsMatch = search.match(/(?:\?|&)runTests=([^?&]+)/i);
+  if (runTestsMatch) {
+    testsToRun = {};
+    var arr = runTestsMatch[1].split(',');
+    for (var i = 0, len = arr.length; i < len; i++) {
+      testsToRun[arr[i]] = true;
+    }
+  }
+  return testsToRun;
 };
 
 
@@ -1447,10 +1536,25 @@ goog.testing.TestCase.Error = function(source, message, opt_stack) {
   this.message = message;
 
   /**
-   * Scope that the test function should be called in.
+   * The stack.
    * @type {?string}
    */
-  this.stack = opt_stack || null;
+  this.stack = null;
+
+  if (opt_stack) {
+    this.stack = opt_stack;
+  } else {
+    // Attempt to capture a stack trace.
+    if (Error.captureStackTrace) {
+      // See https://code.google.com/p/v8-wiki/wiki/JavaScriptStackTraceApi
+      Error.captureStackTrace(this, goog.testing.TestCase.Error);
+    } else {
+      var stack = new Error().stack;
+      if (stack) {
+        this.stack = stack;
+      }
+    }
+  }
 };
 
 

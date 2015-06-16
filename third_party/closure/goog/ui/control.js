@@ -25,9 +25,12 @@
 
 goog.provide('goog.ui.Control');
 
+goog.require('goog.Disposable');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.Event');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
@@ -77,6 +80,12 @@ goog.ui.Control = function(opt_content, opt_renderer, opt_domHelper) {
   this.renderer_ = opt_renderer ||
       goog.ui.registry.getDefaultRenderer(this.constructor);
   this.setContentInternal(goog.isDef(opt_content) ? opt_content : null);
+
+  /** @private {?string} The control's aria-label. */
+  this.ariaLabel_ = null;
+
+  /** @private {goog.ui.Control.IeMouseEventSequenceSimulator_} */
+  this.ieMouseEventSequenceSimulator_;
 };
 goog.inherits(goog.ui.Control, goog.ui.Component);
 goog.tagUnsealableClass(goog.ui.Control);
@@ -458,6 +467,30 @@ goog.ui.Control.prototype.setPreferredAriaRole = function(role) {
 
 
 /**
+ * Gets the control's aria label.
+ * @return {?string} This control's aria label.
+ */
+goog.ui.Control.prototype.getAriaLabel = function() {
+  return this.ariaLabel_;
+};
+
+
+/**
+ * Sets the control's aria label. This can be used to assign aria label to the
+ * element after it is rendered.
+ * @param {string} label The string to set as the aria label for this control.
+ *     No escaping is done on this value.
+ */
+goog.ui.Control.prototype.setAriaLabel = function(label) {
+  this.ariaLabel_ = label;
+  var element = this.getElement();
+  if (element) {
+    this.renderer_.setAriaLabel(element, label);
+  }
+};
+
+
+/**
  * Returns the DOM element into which child components are to be rendered,
  * or null if the control itself hasn't been rendered yet.  Overrides
  * {@link goog.ui.Component#getContentElement} by delegating to the renderer.
@@ -577,6 +610,11 @@ goog.ui.Control.prototype.enableMouseEventHandling_ = function(enable) {
     if (goog.userAgent.IE) {
       handler.listen(element, goog.events.EventType.DBLCLICK,
           this.handleDblClick);
+      if (!this.ieMouseEventSequenceSimulator_) {
+        this.ieMouseEventSequenceSimulator_ =
+            new goog.ui.Control.IeMouseEventSequenceSimulator_(this);
+        this.registerDisposable(this.ieMouseEventSequenceSimulator_);
+      }
     }
   } else {
     handler.
@@ -593,6 +631,8 @@ goog.ui.Control.prototype.enableMouseEventHandling_ = function(enable) {
     if (goog.userAgent.IE) {
       handler.unlisten(element, goog.events.EventType.DBLCLICK,
           this.handleDblClick);
+      goog.dispose(this.ieMouseEventSequenceSimulator_);
+      this.ieMouseEventSequenceSimulator_ = null;
     }
   }
 };
@@ -626,6 +666,7 @@ goog.ui.Control.prototype.disposeInternal = function() {
   delete this.renderer_;
   this.content_ = null;
   this.extraClassNames_ = null;
+  this.ieMouseEventSequenceSimulator_ = null;
 };
 
 
@@ -1232,7 +1273,7 @@ goog.ui.Control.prototype.handleMouseDown = function(e) {
       if (this.isAutoState(goog.ui.Component.State.ACTIVE)) {
         this.setActive(true);
       }
-      if (this.renderer_.isFocusable(this)) {
+      if (this.renderer_ && this.renderer_.isFocusable(this)) {
         this.getKeyEventTarget().focus();
       }
     }
@@ -1394,3 +1435,108 @@ goog.ui.registry.setDecoratorByClassName(goog.ui.ControlRenderer.CSS_CLASS,
     function() {
       return new goog.ui.Control(null);
     });
+
+
+
+/**
+ * A singleton that helps goog.ui.Control instances play well with screen
+ * readers.  It necessitated by shortcomings in IE, and need not be
+ * instantiated in any other browser.
+ *
+ * In most cases, a click on a goog.ui.Control results in a sequence of events:
+ * MOUSEDOWN, MOUSEUP and CLICK.  UI controls rely on this sequence since most
+ * behavior is trigged by MOUSEDOWN and MOUSEUP.  But when IE is used with some
+ * traditional screen readers (JAWS, NVDA and perhaps others), IE only sends
+ * the CLICK event, resulting in the control being unresponsive.  This class
+ * monitors the sequence of these events, and if it detects a CLICK event not
+ * not preceded by a MOUSEUP event, directly calls the control's event handlers
+ * for MOUSEDOWN, then MOUSEUP.  While the resulting sequence is different from
+ * the norm (the CLICK comes first instead of last), testing thus far shows
+ * the resulting behavior to be correct.
+ *
+ * See http://goo.gl/qvQR4C for more details.
+ *
+ * @param {!goog.ui.Control} control
+ * @constructor
+ * @extends {goog.Disposable}
+ * @private
+ */
+goog.ui.Control.IeMouseEventSequenceSimulator_ = function(control) {
+  /** @private {goog.ui.Control}*/
+  this.control_ = control;
+
+  /** @private {boolean} */
+  this.clickExpected_ = false;
+
+  /** @private @const */
+  this.handler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.handler_);
+
+  var element = this.control_.getElementStrict();
+  this.handler_.
+      listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_).
+      listen(element, goog.events.EventType.MOUSEUP, this.handleMouseUp_).
+      listen(element, goog.events.EventType.CLICK, this.handleClick_);
+};
+goog.inherits(goog.ui.Control.IeMouseEventSequenceSimulator_, goog.Disposable);
+
+
+/** @private */
+goog.ui.Control.IeMouseEventSequenceSimulator_.prototype.handleMouseDown_ =
+    function() {
+  this.clickExpected_ = false;
+};
+
+
+/** @private */
+goog.ui.Control.IeMouseEventSequenceSimulator_.prototype.handleMouseUp_ =
+    function() {
+  this.clickExpected_ = true;
+};
+
+
+/**
+ * @param {!goog.events.Event} e
+ * @private
+ */
+goog.ui.Control.IeMouseEventSequenceSimulator_.prototype.handleClick_ =
+    function(e) {
+  if (this.clickExpected_) {
+    // This is the end of a normal click sequence: mouse-down, mouse-up, click.
+    // Assume appropriate actions have already been performed.
+    this.clickExpected_ = false;
+    return;
+  }
+
+  // For click events not part of a normal sequence, similate the mouse-down and
+  // mouse-up events by creating synthetic events for each and directly invoke
+  // the corresponding event listeners in order.
+
+  var browserEvent = /** @type {goog.events.BrowserEvent} */ (e);
+
+  var event = browserEvent.getBrowserEvent();
+  var origEventButton = event.button;
+  var origEventType = event.type;
+
+  event.button = goog.events.BrowserEvent.MouseButton.LEFT;
+
+  event.type = goog.events.EventType.MOUSEDOWN;
+  this.control_.handleMouseDown(
+      new goog.events.BrowserEvent(event, browserEvent.currentTarget));
+
+  event.type = goog.events.EventType.MOUSEUP;
+  this.control_.handleMouseUp(
+      new goog.events.BrowserEvent(event, browserEvent.currentTarget));
+
+  // Restore original values for click handlers that have not yet been invoked.
+  event.button = origEventButton;
+  event.type = origEventType;
+};
+
+
+/** @override */
+goog.ui.Control.IeMouseEventSequenceSimulator_.prototype.disposeInternal =
+    function() {
+  this.control_ = null;
+  goog.ui.Control.IeMouseEventSequenceSimulator_.base(this, 'disposeInternal');
+};

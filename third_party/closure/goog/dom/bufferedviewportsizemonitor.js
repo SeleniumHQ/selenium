@@ -51,6 +51,12 @@ goog.dom.BufferedViewportSizeMonitor = function(
   goog.dom.BufferedViewportSizeMonitor.base(this, 'constructor');
 
   /**
+   * Delay for the resize event.
+   * @private {goog.async.Delay}
+   */
+  this.resizeDelay_;
+
+  /**
    * The underlying viewport size monitor.
    * @type {goog.dom.ViewportSizeMonitor}
    * @private
@@ -95,14 +101,6 @@ goog.dom.BufferedViewportSizeMonitor.EventType = {
   RESIZE_HEIGHT: goog.events.getUniqueId('resizeheight'),
   RESIZE_WIDTH: goog.events.getUniqueId('resizewidth')
 };
-
-
-/**
- * Delay for the resize event.
- * @type {goog.async.Delay}
- * @private
- */
-goog.dom.BufferedViewportSizeMonitor.prototype.resizeDelay_;
 
 
 /**

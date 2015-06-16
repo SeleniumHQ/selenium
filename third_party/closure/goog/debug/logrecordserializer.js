@@ -39,8 +39,7 @@ goog.debug.logRecordSerializer.Param_ = {
   MSG: 'm',
   LOGGER_NAME: 'n',
   SEQUENCE_NUMBER: 's',
-  EXCEPTION: 'e',
-  EXCEPTION_TEXT: 'et'
+  EXCEPTION: 'e'
 };
 
 
@@ -59,8 +58,7 @@ goog.debug.logRecordSerializer.serialize = function(record) {
       param.MSG, record.getMessage(),
       param.LOGGER_NAME, record.getLoggerName(),
       param.SEQUENCE_NUMBER, record.getSequenceNumber(),
-      param.EXCEPTION, record.getException(),
-      param.EXCEPTION_TEXT, record.getExceptionText()));
+      param.EXCEPTION, record.getException() && record.getException().message));
 };
 
 
@@ -99,8 +97,10 @@ goog.debug.logRecordSerializer.reconstitute_ = function(o) {
 
   var ret = new goog.debug.LogRecord(level, o[param.MSG],
       o[param.LOGGER_NAME], o[param.TIME], o[param.SEQUENCE_NUMBER]);
-  ret.setException(o[param.EXCEPTION]);
-  ret.setExceptionText(o[param.EXCEPTION_TEXT]);
+  var exceptionMessage = o[param.EXCEPTION];
+  if (goog.isDefAndNotNull(exceptionMessage)) {
+    ret.setException(new Error(exceptionMessage));
+  }
   return ret;
 };
 

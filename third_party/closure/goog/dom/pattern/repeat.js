@@ -41,65 +41,51 @@ goog.require('goog.dom.pattern.MatchType');
 goog.dom.pattern.Repeat = function(pattern,
                                    opt_minimum,
                                    opt_maximum) {
+  /**
+   * Pattern to repetitively match.
+   *
+   * @private {goog.dom.pattern.AbstractPattern}
+   */
   this.pattern_ = pattern;
+
+  /**
+   * Minimum number of times to match the pattern.
+   *
+   * @private {number}
+   */
   this.minimum_ = opt_minimum || 0;
+
+  /**
+   * Optional maximum number of times to match the pattern. A {@code null} value
+   * will be treated as infinity.
+   *
+   * @private {?number}
+   */
   this.maximum_ = opt_maximum || null;
+
+  /**
+   * The matched nodes.
+   *
+   * @type {Array<Node>}
+   */
   this.matches = [];
+
+  /**
+   * Number of times the pattern has matched.
+   *
+   * @type {number}
+   */
+  this.count = 0;
+
+  /**
+   * Whether the pattern has recently matched or failed to match and will need
+   * to be reset when starting a new round of matches.
+   *
+   * @private {boolean}
+   */
+  this.needsReset_ = false;
 };
 goog.inherits(goog.dom.pattern.Repeat, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * Pattern to repetitively match.
- *
- * @type {goog.dom.pattern.AbstractPattern}
- * @private
- */
-goog.dom.pattern.Repeat.prototype.pattern_;
-
-
-/**
- * Minimum number of times to match the pattern.
- *
- * @private
- */
-goog.dom.pattern.Repeat.prototype.minimum_ = 0;
-
-
-/**
- * Optional maximum number of times to match the pattern.  A {@code null} value
- * will be treated as infinity.
- *
- * @type {?number}
- * @private
- */
-goog.dom.pattern.Repeat.prototype.maximum_ = 0;
-
-
-/**
- * Number of times the pattern has matched.
- *
- * @type {number}
- */
-goog.dom.pattern.Repeat.prototype.count = 0;
-
-
-/**
- * Whether the pattern has recently matched or failed to match and will need to
- * be reset when starting a new round of matches.
- *
- * @type {boolean}
- * @private
- */
-goog.dom.pattern.Repeat.prototype.needsReset_ = false;
-
-
-/**
- * The matched nodes.
- *
- * @type {Array<Node>}
- */
-goog.dom.pattern.Repeat.prototype.matches;
 
 
 /**
