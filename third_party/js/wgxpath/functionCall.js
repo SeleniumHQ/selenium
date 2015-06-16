@@ -109,7 +109,7 @@ wgxpath.FunctionCall.prototype.toString = function() {
  *     context node when not given arguments.
  * @param {boolean} needContextNodeWithArgs Whether the function needs a context
  *     node when the function is given arguments.
- * @param {function(!wgxpath.Context, ...[!wgxpath.Expr]):*} evaluate
+ * @param {function(!wgxpath.Context, ...!wgxpath.Expr):*} evaluate
  *     Evaluates the function in a context with any number of expression
  *     arguments.
  * @param {number} minArgs Minimum number of arguments accepted by the function.
@@ -153,7 +153,7 @@ wgxpath.FunctionCall.Func_ = function(name, dataType, needContextPosition,
   this.needContextNodeWithArgs_ = needContextNodeWithArgs;
 
   /**
-   * @type {function(!wgxpath.Context, ...[!wgxpath.Expr]):*}
+   * @type {function(!wgxpath.Context, ...!wgxpath.Expr):*}
    * @private
    */
   this.evaluate_ = evaluate;
@@ -206,7 +206,7 @@ wgxpath.FunctionCall.nameToFuncMap_ = {};
  *     context node when not given arguments.
  * @param {boolean} needContextNodeWithArgs Whether the function needs a context
  *     node when the function is given arguments.
- * @param {function(!wgxpath.Context, ...[!wgxpath.Expr]):*} evaluate
+ * @param {function(!wgxpath.Context, ...!wgxpath.Expr):*} evaluate
  *     Evaluates the function in a context with any number of expression
  *     arguments.
  * @param {number} minArgs Minimum number of arguments accepted by the function.
