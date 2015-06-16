@@ -67,7 +67,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     }
   }
 
-  private boolean isDecoratableList(Field field) {
+  protected boolean isDecoratableList(Field field) {
     if (!List.class.isAssignableFrom(field.getType())) {
       return false;
     }

@@ -1,3 +1,7 @@
+## v2.46.1
+
+* Fixed internal module loading on Windows.
+
 ## v2.46.0
 
 * Exposed a new logging API via the `webdriver.logging` module. For usage, see

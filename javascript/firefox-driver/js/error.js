@@ -16,6 +16,64 @@
 // under the License.
 
 goog.provide('fxdriver.error');
+goog.provide('WebDriverError');
+
+
+/**
+ * A WebDriver error.
+ * @param {!number} code The error code.
+ * @param {!string|Error} messageOrError The error message, or another Error to
+ *     propagate.
+ * @param {!Object=} additional Additional fields bearing useful information.
+ * @constructor
+ */
+WebDriverError = function(code, messageOrError, additional) {
+  var message;
+  var stack;
+  if (messageOrError instanceof Error) {
+    message = messageOrError.message;
+    stack = messageOrError.stack;
+  } else {
+    message = messageOrError.toString();
+    stack = Error(message).stack.split('\n');
+    stack.shift();
+    stack = stack.join('\n');
+  }
+
+  this.additionalFields = [];
+
+  if (!!additional) {
+    for (var field in additional) {
+      this.additionalFields.push(field);
+      this[field] = additional[field];
+    }
+  }
+
+  /**
+   * This error's status code.
+   * @type {!number}
+   */
+  this.code = code;
+
+  /**
+   * This error's message.
+   * @type {string}
+   */
+  this.message = message;
+
+  /**
+   * Captures a stack trace for when this error was thrown.
+   * @type {string}
+   */
+  this.stack = stack;
+
+  /**
+   * Used to identify this class since instanceof will not work across
+   * component boundaries.
+   * @type {!boolean}
+   */
+  this.isWebDriverError = true;
+};
 
 
 /**

@@ -20,6 +20,9 @@
 goog.provide('fxdriver.files');
 goog.provide('fxdriver.files.File');
 
+goog.require('WebDriverError');
+goog.require('bot.ErrorCode');
+
 /**
  * Creates a temporary text file starting with opt_prefix and ending with
  * opt_suffix.
@@ -127,8 +130,11 @@ fxdriver.files.READ_MODE_ = 0x01;
 fxdriver.files.File.prototype.append = function(toAppend) {
   var ostream = Components.classes['@mozilla.org/network/file-output-stream;1']
       .createInstance(Components.interfaces['nsIFileOutputStream']);
-  ostream.init(this.nsIFile_, fxdriver.files.APPEND_MODE_,
-      parseInt('666', 8), 0);
+  try {
+    ostream.init(this.nsIFile_, fxdriver.files.APPEND_MODE_, parseInt('666', 8), 0);
+  } catch (e) {
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR, e);
+  }
 
   var converter =
       Components.classes['@mozilla.org/intl/converter-output-stream;1']
