@@ -22,6 +22,7 @@ goog.provide('goog.ui.CustomColorPalette');
 
 goog.require('goog.color');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.ColorPalette');
 goog.require('goog.ui.Component');
@@ -60,7 +61,7 @@ goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
   var MSG_CLOSURE_CUSTOM_COLOR_BUTTON = goog.getMsg('Add a color');
 
   var nl = goog.ui.CustomColorPalette.base(this, 'createColorNodes');
-  nl.push(goog.dom.createDom('div', {
+  nl.push(goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': goog.getCssName('goog-palette-customcolor'),
     'title': MSG_CLOSURE_CUSTOM_COLOR_BUTTON
   }, '+'));

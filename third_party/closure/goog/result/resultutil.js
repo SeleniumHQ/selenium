@@ -122,7 +122,7 @@ goog.result.canceledResult = function() {
  * @param {!goog.result.Result} result The result to install the handlers.
  * @param {function(this:T, !goog.result.Result)} handler The handler to be
  *     called. The handler is passed the result object as the only parameter.
- * @param {!T=} opt_scope Optional scope for the handler.
+ * @param {T=} opt_scope Optional scope for the handler.
  * @template T
  */
 goog.result.wait = function(result, handler, opt_scope) {
@@ -151,7 +151,7 @@ goog.result.wait = function(result, handler, opt_scope) {
  * @param {function(this:T, ?, !goog.result.Result)} handler The handler to be
  *     called. The handler is passed the result value and the result as
  *     parameters.
- * @param {!T=} opt_scope Optional scope for the handler.
+ * @param {T=} opt_scope Optional scope for the handler.
  * @template T
  */
 goog.result.waitOnSuccess = function(result, handler, opt_scope) {
@@ -185,7 +185,7 @@ goog.result.waitOnSuccess = function(result, handler, opt_scope) {
  * @param {function(this:T, ?, !goog.result.Result)} handler The handler to be
  *     called. The handler is passed the error and the result object as
  *     parameters.
- * @param {!T=} opt_scope Optional scope for the handler.
+ * @param {T=} opt_scope Optional scope for the handler.
  * @template T
  */
 goog.result.waitOnError = function(result, handler, opt_scope) {

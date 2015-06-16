@@ -133,7 +133,7 @@ goog.testing.proto2.assertEquals = function(expected, actual,
  * @param {function(new:MessageType)} messageCtor A constructor that
  *     creates a {@code goog.proto2.Message} subclass instance.
  * @param {!Object} json JSON object which uses field names as keys.
- * @return {!MessageType} The deserialized protocol buffer.
+ * @return {MessageType} The deserialized protocol buffer.
  * @template MessageType
  */
 goog.testing.proto2.fromObject = function(messageCtor, json) {

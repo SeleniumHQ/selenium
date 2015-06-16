@@ -33,6 +33,7 @@ goog.require('goog.storage.mechanism.IterableMechanism');
  *
  * @param {Storage} storage The Web storage object.
  * @constructor
+ * @struct
  * @extends {goog.storage.mechanism.IterableMechanism}
  */
 goog.storage.mechanism.HTML5WebStorage = function(storage) {

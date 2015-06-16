@@ -68,9 +68,12 @@ goog.provide('goog.net.CrossDomainRpc');
 
 goog.require('goog.Uri');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
@@ -81,7 +84,13 @@ goog.require('goog.userAgent');
 
 
 /**
- * Creates a new instance of cross domain RPC
+ * Creates a new instance of cross domain RPC.
+ *
+ * This class makes use of goog.html.legacyconversions and provides no
+ * HTML-type-safe alternative. As such, it is not compatible with
+ * code that sets goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS to
+ * false.
+ *
  * @extends {goog.events.EventTarget}
  * @constructor
  * @final
@@ -279,7 +288,7 @@ goog.net.CrossDomainRpc.getDummyResourceUri_ = function() {
 
   // find a style sheet if not on IE, which will attempt to save style sheet
   if (goog.userAgent.GECKO) {
-    var links = document.getElementsByTagName('link');
+    var links = document.getElementsByTagName(goog.dom.TagName.LINK);
     for (var i = 0; i < links.length; i++) {
       var link = links[i];
       // find a link which is on the same domain as this page
@@ -293,7 +302,7 @@ goog.net.CrossDomainRpc.getDummyResourceUri_ = function() {
     }
   }
 
-  var images = document.getElementsByTagName('img');
+  var images = document.getElementsByTagName(goog.dom.TagName.IMG);
   for (var i = 0; i < images.length; i++) {
     var image = images[i];
     // find a link which is on the same domain as this page
@@ -408,7 +417,7 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
     function(uri, opt_method, opt_params, opt_headers) {
   // create request frame
   var requestFrame = this.requestFrame_ = /** @type {!HTMLIFrameElement} */ (
-      document.createElement('iframe'));
+      document.createElement(goog.dom.TagName.IFRAME));
   var requestId = goog.net.CrossDomainRpc.nextRequestId_++;
   requestFrame.id = goog.net.CrossDomainRpc.REQUEST_MARKER_ + '-' + requestId;
   if (!goog.net.CrossDomainRpc.debugMode_) {
@@ -453,9 +462,11 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
   var requestFrameContent = '<body><form method="' +
       (opt_method == 'GET' ? 'GET' : 'POST') + '" action="' +
       uri + '">' + inputs.join('') + '</form></body>';
+  var requestFrameContentHtml = goog.html.legacyconversions.safeHtmlFromString(
+      requestFrameContent);
   var requestFrameDoc = goog.dom.getFrameContentDocument(requestFrame);
   requestFrameDoc.open();
-  requestFrameDoc.write(requestFrameContent);
+  goog.dom.safe.documentWrite(requestFrameDoc, requestFrameContentHtml);
   requestFrameDoc.close();
 
   requestFrameDoc.forms[0].submit();
@@ -788,7 +799,7 @@ goog.net.CrossDomainRpc.sendResponse =
           data.substring(chunkStart) :
           data.substring(chunkStart, chunkEnd);
 
-      var responseFrame = document.createElement('iframe');
+      var responseFrame = document.createElement(goog.dom.TagName.IFRAME);
       responseFrame.src = dummyUri +
           goog.net.CrossDomainRpc.getPayloadDelimiter_(dummyUri) +
           goog.net.CrossDomainRpc.CHUNK_PREFIX_ + chunk;
@@ -816,7 +827,7 @@ goog.net.CrossDomainRpc.sendResponse =
  */
 goog.net.CrossDomainRpc.createResponseInfo_ =
     function(dummyUri, numChunks, isDataJson, status, headers) {
-  var responseInfoFrame = document.createElement('iframe');
+  var responseInfoFrame = document.createElement(goog.dom.TagName.IFRAME);
   document.body.appendChild(responseInfoFrame);
   responseInfoFrame.src = dummyUri +
       goog.net.CrossDomainRpc.getPayloadDelimiter_(dummyUri) +

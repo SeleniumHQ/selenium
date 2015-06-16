@@ -39,36 +39,28 @@ goog.require('goog.dom.pattern.MatchType');
  * @final
  */
 goog.dom.pattern.Sequence = function(patterns, opt_ignoreWhitespace) {
+  /**
+   * Ordered array of patterns to match.
+   *
+   * @type {Array<goog.dom.pattern.AbstractPattern>}
+   */
   this.patterns = patterns;
+
+  /**
+   * Whether or not to ignore whitespace only Text nodes.
+   *
+   * @private {boolean}
+   */
   this.ignoreWhitespace_ = !!opt_ignoreWhitespace;
+
+  /**
+   * Position in the patterns array we have reached by successful matches.
+   *
+   * @private {number}
+   */
+  this.currentPosition_ = 0;
 };
 goog.inherits(goog.dom.pattern.Sequence, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * Ordered array of patterns to match.
- *
- * @type {Array<goog.dom.pattern.AbstractPattern>}
- */
-goog.dom.pattern.Sequence.prototype.patterns;
-
-
-/**
- * Position in the patterns array we have reached by successful matches.
- *
- * @type {number}
- * @private
- */
-goog.dom.pattern.Sequence.prototype.currentPosition_ = 0;
-
-
-/**
- * Whether or not to ignore whitespace only Text nodes.
- *
- * @type {boolean}
- * @private
- */
-goog.dom.pattern.Sequence.prototype.ignoreWhitespace_ = false;
 
 
 /**

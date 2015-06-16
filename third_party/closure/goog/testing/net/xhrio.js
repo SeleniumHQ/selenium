@@ -228,6 +228,14 @@ goog.testing.net.XhrIo.prototype.response_ = '';
 
 
 /**
+ * The status code.
+ * @type {number}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.statusCode_ = 0;
+
+
+/**
  * Mock ready state.
  * @type {number}
  * @private
@@ -243,15 +251,6 @@ goog.testing.net.XhrIo.prototype.readyState_ =
  * @private
  */
 goog.testing.net.XhrIo.prototype.timeoutInterval_ = 0;
-
-
-/**
- * Window timeout ID used to cancel the timeout event handler if the request
- * completes successfully.
- * @type {Object}
- * @private
- */
-goog.testing.net.XhrIo.prototype.timeoutId_ = null;
 
 
 /**
@@ -372,6 +371,7 @@ goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
   if (this.active_) {
     try {
       this.active_ = false;
+      this.statusCode_ = -1;
       this.lastErrorCode_ = opt_failureCode || goog.net.ErrorCode.ABORT;
       this.dispatchEvent(goog.net.EventType.COMPLETE);
       this.dispatchEvent(goog.net.EventType.ABORT);

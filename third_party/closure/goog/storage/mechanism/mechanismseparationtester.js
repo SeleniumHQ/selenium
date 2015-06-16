@@ -25,12 +25,11 @@
 goog.provide('goog.storage.mechanism.mechanismSeparationTester');
 
 goog.require('goog.iter.StopIteration');
+/** @suppress {extraRequire} */
+goog.require('goog.storage.mechanism.mechanismTestDefinition');
 goog.require('goog.testing.asserts');
+
 goog.setTestOnly('goog.storage.mechanism.mechanismSeparationTester');
-
-
-var mechanism = null;
-var mechanism_separate = null;
 
 
 function testSeparateSet() {

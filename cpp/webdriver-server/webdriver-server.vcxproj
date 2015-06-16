@@ -62,19 +62,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\build\cpp\lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\build\cpp\lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\build\cpp\lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)..\..\build\cpp\lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

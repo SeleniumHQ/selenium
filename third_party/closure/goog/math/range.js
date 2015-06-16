@@ -27,6 +27,7 @@ goog.require('goog.asserts');
  * A number range.
  * @param {number} a One end of the range.
  * @param {number} b The other end of the range.
+ * @struct
  * @constructor
  */
 goog.math.Range = function(a, b) {

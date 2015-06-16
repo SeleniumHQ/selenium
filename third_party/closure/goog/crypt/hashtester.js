@@ -22,6 +22,7 @@ goog.provide('goog.crypt.hashTester');
 goog.require('goog.array');
 goog.require('goog.crypt');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.testing.PerformanceTable');
 goog.require('goog.testing.PseudoRandom');
 goog.require('goog.testing.asserts');
@@ -172,7 +173,7 @@ goog.crypt.hashTester.runBlockTests = function(hash, blockBytes) {
  */
 goog.crypt.hashTester.runPerfTests = function(hashFactory, hashName) {
   var body = goog.dom.getDocument().body;
-  var perfTable = goog.dom.createElement('div');
+  var perfTable = goog.dom.createElement(goog.dom.TagName.DIV);
   goog.dom.appendChild(body, perfTable);
 
   var table = new goog.testing.PerformanceTable(perfTable);

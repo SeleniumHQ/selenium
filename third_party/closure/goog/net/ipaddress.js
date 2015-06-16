@@ -55,12 +55,6 @@ goog.net.IpAddress = function(address, version) {
    */
   this.version_ = version;
 
-  /**
-   * The IPAddress, as string.
-   * @type {string}
-   * @private
-   */
-  this.ipStr_ = '';
 };
 
 

@@ -360,30 +360,20 @@ goog.userAgent.determineVersion_ = function() {
   // All browsers have different ways to detect the version and they all have
   // different naming schemes.
 
-  // version is a string rather than a number because it may contain 'b', 'a',
-  // and so on.
-  var version = '', re;
-
   if (goog.userAgent.OPERA && goog.global['opera']) {
     var operaVersion = goog.global['opera'].version;
     return goog.isFunction(operaVersion) ? operaVersion() : operaVersion;
   }
 
-  if (goog.userAgent.GECKO) {
-    re = /rv\:([^\);]+)(\)|;)/;
-  } else if (goog.userAgent.IE) {
-    re = /\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/;
-  } else if (goog.userAgent.WEBKIT) {
-    // WebKit/125.4
-    re = /WebKit\/(\S+)/;
-  }
-
-  if (re) {
-    var arr = re.exec(goog.userAgent.getUserAgentString());
+  // version is a string rather than a number because it may contain 'b', 'a',
+  // and so on.
+  var version = '';
+  var arr = goog.userAgent.getVersionRegexResult_();
+  if (arr) {
     version = arr ? arr[1] : '';
   }
 
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !goog.labs.userAgent.engine.isEdge()) {
     // IE9 can be in document mode 9 but be reporting an inconsistent user agent
     // version.  If it is identifying as a version lower than 9 we take the
     // documentMode as the version instead.  IE8 has similar behavior.
@@ -396,6 +386,31 @@ goog.userAgent.determineVersion_ = function() {
   }
 
   return version;
+};
+
+
+/**
+ * @return {Array|undefined} The version regex matches from parsing the user
+ *     agent string. These regex statements must be executed inline so they can
+ *     be compiled out by the closure compiler with the rest of the useragent
+ *     detection logic when ASSUME_* is specified.
+ * @private
+ */
+goog.userAgent.getVersionRegexResult_ = function() {
+  var userAgent = goog.userAgent.getUserAgentString();
+  if (goog.userAgent.GECKO) {
+    return /rv\:([^\);]+)(\)|;)/.exec(userAgent);
+  }
+  if (goog.userAgent.IE && goog.labs.userAgent.engine.isEdge()) {
+    return /Edge\/([\d\.]+)/.exec(userAgent);
+  }
+  if (goog.userAgent.IE) {
+    return /\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/.exec(userAgent);
+  }
+  if (goog.userAgent.WEBKIT) {
+    // WebKit/125.4
+    return /WebKit\/(\S+)/.exec(userAgent);
+  }
 };
 
 
@@ -478,7 +493,9 @@ goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
 
 /**
  * Whether the IE effective document mode is higher or the same as the given
- * document mode version.
+ * document mode version. Because document modes were deprecated with the launch
+ * of IE's new Edge engine, Edge browsers will always return true for this
+ * function.
  * NOTE: Only for IE, return false for another browser.
  *
  * @param {number} documentMode The document mode version to check.
@@ -486,7 +503,8 @@ goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
  *     same as the given version.
  */
 goog.userAgent.isDocumentModeOrHigher = function(documentMode) {
-  return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE >= documentMode;
+  return goog.userAgent.IE && (goog.labs.userAgent.engine.isEdge() ||
+      goog.userAgent.DOCUMENT_MODE >= documentMode);
 };
 
 
@@ -501,19 +519,20 @@ goog.userAgent.isDocumentMode = goog.userAgent.isDocumentModeOrHigher;
 
 
 /**
- * For IE version < 7, documentMode is undefined, so attempt to use the
- * CSS1Compat property to see if we are in standards mode. If we are in
- * standards mode, treat the browser version as the document mode. Otherwise,
- * IE is emulating version 5.
+ * For IE version < 7 and IE Edge browsers, documentMode is undefined. For
+ * non-Edge browsers attempt to use the CSS1Compat property to see if we are in
+ * standards mode. If we are in standards mode, treat the browser version as the
+ * document mode. Otherwise, IE is emulating version 5.
  * @type {number|undefined}
  * @const
  */
 goog.userAgent.DOCUMENT_MODE = (function() {
   var doc = goog.global['document'];
-  if (!doc || !goog.userAgent.IE) {
+  var mode = goog.userAgent.getDocumentMode_();
+  if (!doc || !goog.userAgent.IE ||
+      (!mode && goog.labs.userAgent.engine.isEdge())) {
     return undefined;
   }
-  var mode = goog.userAgent.getDocumentMode_();
   return mode || (doc['compatMode'] == 'CSS1Compat' ?
       parseInt(goog.userAgent.VERSION, 10) : 5);
 })();

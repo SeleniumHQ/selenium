@@ -29,6 +29,7 @@ goog.require('goog.storage.RichStorage');
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
+ * @struct
  * @extends {goog.storage.RichStorage}
  */
 goog.storage.ExpiringStorage = function(mechanism) {

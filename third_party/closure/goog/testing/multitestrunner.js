@@ -27,6 +27,7 @@ goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
 goog.require('goog.functions');
@@ -542,11 +543,11 @@ goog.testing.MultiTestRunner.prototype.getTestsThatFailed = function() {
  */
 goog.testing.MultiTestRunner.prototype.resetProgressDom_ = function() {
   goog.dom.removeChildren(this.progressEl_);
-  var progressTable = this.dom_.createDom('table');
-  var progressTBody = this.dom_.createDom('tbody');
-  this.progressRow_ = this.dom_.createDom('tr');
+  var progressTable = this.dom_.createDom(goog.dom.TagName.TABLE);
+  var progressTBody = this.dom_.createDom(goog.dom.TagName.TBODY);
+  this.progressRow_ = this.dom_.createDom(goog.dom.TagName.TR);
   for (var i = 0; i < this.activeTests_.length; i++) {
-    var progressCell = this.dom_.createDom('td');
+    var progressCell = this.dom_.createDom(goog.dom.TagName.TD);
     this.progressRow_.appendChild(progressCell);
   }
   progressTBody.appendChild(this.progressRow_);
@@ -561,15 +562,16 @@ goog.testing.MultiTestRunner.prototype.createDom = function() {
   var el = this.getElement();
   el.className = goog.getCssName('goog-testrunner');
 
-  this.progressEl_ = this.dom_.createDom('div');
+  this.progressEl_ = this.dom_.createDom(goog.dom.TagName.DIV);
   this.progressEl_.className = goog.getCssName('goog-testrunner-progress');
   el.appendChild(this.progressEl_);
 
-  var buttons = this.dom_.createDom('div');
+  var buttons = this.dom_.createDom(goog.dom.TagName.DIV);
   buttons.className = goog.getCssName('goog-testrunner-buttons');
-  this.startButtonEl_ = this.dom_.createDom('button', null, 'Start');
+  this.startButtonEl_ = this.dom_.createDom(goog.dom.TagName.BUTTON,
+                                            null, 'Start');
   this.stopButtonEl_ =
-      this.dom_.createDom('button', {'disabled': true}, 'Stop');
+      this.dom_.createDom(goog.dom.TagName.BUTTON, {'disabled': true}, 'Stop');
   buttons.appendChild(this.startButtonEl_);
   buttons.appendChild(this.stopButtonEl_);
   el.appendChild(buttons);
@@ -579,30 +581,30 @@ goog.testing.MultiTestRunner.prototype.createDom = function() {
   this.eh_.listen(this.stopButtonEl_, 'click',
       this.onStopClicked_);
 
-  this.logEl_ = this.dom_.createElement('div');
+  this.logEl_ = this.dom_.createElement(goog.dom.TagName.DIV);
   this.logEl_.className = goog.getCssName('goog-testrunner-log');
   el.appendChild(this.logEl_);
 
-  this.reportEl_ = this.dom_.createElement('div');
+  this.reportEl_ = this.dom_.createElement(goog.dom.TagName.DIV);
   this.reportEl_.className = goog.getCssName('goog-testrunner-report');
   this.reportEl_.style.display = 'none';
   el.appendChild(this.reportEl_);
 
-  this.statsEl_ = this.dom_.createElement('div');
+  this.statsEl_ = this.dom_.createElement(goog.dom.TagName.DIV);
   this.statsEl_.className = goog.getCssName('goog-testrunner-stats');
   this.statsEl_.style.display = 'none';
   el.appendChild(this.statsEl_);
 
-  this.logTabEl_ = this.dom_.createDom('div', null, 'Log');
+  this.logTabEl_ = this.dom_.createDom(goog.dom.TagName.DIV, null, 'Log');
   this.logTabEl_.className = goog.getCssName('goog-testrunner-logtab') + ' ' +
       goog.getCssName('goog-testrunner-activetab');
   el.appendChild(this.logTabEl_);
 
-  this.reportTabEl_ = this.dom_.createDom('div', null, 'Report');
+  this.reportTabEl_ = this.dom_.createDom(goog.dom.TagName.DIV, null, 'Report');
   this.reportTabEl_.className = goog.getCssName('goog-testrunner-reporttab');
   el.appendChild(this.reportTabEl_);
 
-  this.statsTabEl_ = this.dom_.createDom('div', null, 'Stats');
+  this.statsTabEl_ = this.dom_.createDom(goog.dom.TagName.DIV, null, 'Stats');
   this.statsTabEl_.className = goog.getCssName('goog-testrunner-statstab');
   el.appendChild(this.statsTabEl_);
 
@@ -681,7 +683,7 @@ goog.testing.MultiTestRunner.prototype.log = function(msg) {
     msg = this.getTimeStamp_() + ' : ' + msg;
   }
 
-  this.logEl_.appendChild(this.dom_.createDom('div', null, msg));
+  this.logEl_.appendChild(this.dom_.createDom(goog.dom.TagName.DIV, null, msg));
 
   // Autoscroll if we're near the bottom.
   var top = this.logEl_.scrollTop;
@@ -778,7 +780,8 @@ goog.testing.MultiTestRunner.prototype.finish_ = function() {
   }
 
   if (unfinished.length) {
-    this.reportEl_.appendChild(goog.dom.createDom('pre', undefined,
+    this.reportEl_.appendChild(goog.dom.createDom(
+        goog.dom.TagName.PRE, undefined,
         'Theses tests did not finish:\n' + unfinished.join('\n')));
   }
 };
@@ -790,7 +793,7 @@ goog.testing.MultiTestRunner.prototype.finish_ = function() {
  */
 goog.testing.MultiTestRunner.prototype.resetReport_ = function() {
   goog.dom.removeChildren(this.reportEl_);
-  var summary = this.dom_.createDom('div');
+  var summary = this.dom_.createDom(goog.dom.TagName.DIV);
   summary.className = goog.getCssName('goog-testrunner-progress-summary');
   this.reportEl_.appendChild(summary);
   this.writeCurrentSummary_();
@@ -846,7 +849,7 @@ goog.testing.MultiTestRunner.prototype.drawTimeHistogram_ = function() {
  * Draws a stats histogram.
  * @param {string} statsField Field of the stats object to graph.
  * @param {number} bucketSize The size for the histogram's buckets.
- * @param {function(number, ...[*]): *} valueTransformFn Function for
+ * @param {function(number, ...*): *} valueTransformFn Function for
  *     transforming the x-labels value for display.
  * @param {number} width The width in pixels of the graph.
  * @param {string} title The graph's title.
@@ -945,7 +948,7 @@ goog.testing.MultiTestRunner.prototype.drawWorstTestsTable_ = function() {
           th('center', 'Run time (ms)'),
           th('center', 'Total time (ms)')));
   var body = tbody();
-  var table = this.dom_.createDom('table', null, head, body);
+  var table = this.dom_.createDom(goog.dom.TagName.TABLE, null, head, body);
 
   for (var i = 0; i < this.stats_.length; i++) {
     var stat = this.stats_[i];
@@ -1019,7 +1022,7 @@ goog.testing.MultiTestRunner.prototype.drawTestResult_ = function(
     test, success, report) {
   var text = goog.string.isEmptyOrWhitespace(report) ?
       'No report for ' + test + '\n' : report;
-  var el = this.dom_.createDom('div');
+  var el = this.dom_.createDom(goog.dom.TagName.DIV);
   text = goog.string.htmlEscape(text).replace(/\n/g, '<br>');
   if (success) {
     el.className = goog.getCssName('goog-testrunner-report-success');
@@ -1386,8 +1389,8 @@ goog.testing.MultiTestRunner.TestFrame.prototype.finish_ = function() {
  * @private
  */
 goog.testing.MultiTestRunner.TestFrame.prototype.createIframe_ = function() {
-  this.iframeEl_ =
-      /** @type {!HTMLIFrameElement} */ (this.dom_.createDom('iframe'));
+  this.iframeEl_ = /** @type {!HTMLIFrameElement} */ (
+      this.dom_.createDom(goog.dom.TagName.IFRAME));
   this.getElement().appendChild(this.iframeEl_);
   this.eh_.listen(this.iframeEl_, 'load', this.onIframeLoaded_);
 };

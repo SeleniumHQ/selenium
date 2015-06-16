@@ -705,8 +705,7 @@ namespace :copyright do
             "javascript/selenium-core/xpath/**/*.js"))
     Copyright.Update(
         FileList["py/**/*.py"],
-        :style => "#",
-        :prefix => "#!/usr/bin/python\n#\n")
+        :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"].exclude(
           "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),

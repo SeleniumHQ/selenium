@@ -276,6 +276,9 @@ js_library(name = "events",
 js_library(name = "files",
   srcs = [
     "js/files.js",
+  ],
+  deps = [
+    ":error",
   ])
 
 js_library(name = "logging",

@@ -42,7 +42,7 @@ goog.iter.Iterable;
 goog.iter.StopIteration = ('StopIteration' in goog.global) ?
     // For script engines that support legacy iterators.
     goog.global['StopIteration'] :
-    Error('StopIteration');
+    { message: 'StopIteration', stack: ''};
 
 
 
@@ -890,7 +890,7 @@ goog.iter.compress = function(iterable, selectors) {
  * Implements the {@code goog.iter.groupBy} iterator.
  * @param {!goog.iter.Iterator<VALUE>|!goog.iter.Iterable} iterable The
  *     iterable to group.
- * @param {function(...[VALUE]): KEY=} opt_keyFunc  Optional function for
+ * @param {function(...VALUE): KEY=} opt_keyFunc  Optional function for
  *     determining the key value for each group in the {@code iterable}. Default
  *     is the identity function.
  * @constructor
@@ -910,7 +910,7 @@ goog.iter.GroupByIterator_ = function(iterable, opt_keyFunc) {
    * A function for determining the key value for each element in the iterable.
    * If no function is provided, the identity function is used and returns the
    * element unchanged.
-   * @type {function(...[VALUE]): KEY}
+   * @type {function(...VALUE): KEY}
    */
   this.keyFunc = opt_keyFunc || goog.functions.identity;
 
@@ -980,7 +980,7 @@ goog.iter.GroupByIterator_.prototype.groupItems_ = function(targetKey) {
  * @see http://docs.python.org/2/library/itertools.html#itertools.groupby
  * @param {!goog.iter.Iterator<VALUE>|!goog.iter.Iterable} iterable The
  *     iterable to group.
- * @param {function(...[VALUE]): KEY=} opt_keyFunc  Optional function for
+ * @param {function(...VALUE): KEY=} opt_keyFunc  Optional function for
  *     determining the key value for each group in the {@code iterable}. Default
  *     is the identity function.
  * @return {!goog.iter.Iterator<!Array<?>>} A new iterator that returns
@@ -1002,7 +1002,7 @@ goog.iter.groupBy = function(iterable, opt_keyFunc) {
  *
  * @param {!goog.iter.Iterable<!goog.iter.Iterable>} iterable The iterable of
  *     iterables to iterate over.
- * @param {function(this:THIS,...[*]):RESULT} f The function to call for every
+ * @param {function(this:THIS,...*):RESULT} f The function to call for every
  *     element.  This function takes N+2 arguments, where N represents the
  *     number of items from the next element of the iterable. The two
  *     additional arguments passed to the function are undefined and the

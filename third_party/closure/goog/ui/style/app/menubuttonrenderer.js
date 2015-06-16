@@ -24,6 +24,7 @@ goog.provide('goog.ui.style.app.MenuButtonRenderer');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
@@ -198,7 +199,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
     function(content, dom) {
-  var caption = dom.createDom('div', null, content, this.createDropdown(dom));
+  var caption = dom.createDom(goog.dom.TagName.DIV, null, content,
+                              this.createDropdown(dom));
   return goog.array.toArray(caption.childNodes);
 };
 
@@ -211,7 +213,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
  * @return {Element} Dropdown element.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createDropdown = function(dom) {
-  return dom.createDom('div', goog.getCssName(this.getCssClass(), 'dropdown'));
+  return dom.createDom(goog.dom.TagName.DIV,
+                       goog.getCssName(this.getCssClass(), 'dropdown'));
 };
 
 

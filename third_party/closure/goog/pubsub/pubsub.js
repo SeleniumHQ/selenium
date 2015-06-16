@@ -39,70 +39,60 @@ goog.require('goog.array');
  * @extends {goog.Disposable}
  */
 goog.pubsub.PubSub = function() {
-  goog.Disposable.call(this);
+  goog.pubsub.PubSub.base(this, 'constructor');
+
+  /**
+   * The next available subscription key.  Internally, this is an index into the
+   * sparse array of subscriptions.
+   *
+   * @private {number}
+   */
+  this.key_ = 1;
+
+  /**
+   * Array of subscription keys pending removal once publishing is done.
+   *
+   * @private {!Array<number>}
+   * @const
+   */
+  this.pendingKeys_ = [];
+
+  /**
+   * Lock to prevent the removal of subscriptions during publishing. Incremented
+   * at the beginning of {@link #publish}, and decremented at the end.
+   *
+   * @private {number}
+   */
+  this.publishDepth_ = 0;
+
+  /**
+   * Sparse array of subscriptions. Each subscription is represented by a tuple
+   * comprising a topic identifier, a function, and an optional context object.
+   * Each tuple occupies three consecutive positions in the array, with the
+   * topic identifier at index n, the function at index (n + 1), the context
+   * object at index (n + 2), the next topic at index (n + 3), etc. (This
+   * representation minimizes the number of object allocations and has been
+   * shown to be faster than an array of objects with three key-value pairs or
+   * three parallel arrays, especially on IE.) Once a subscription is removed
+   * via {@link #unsubscribe} or {@link #unsubscribeByKey}, the three
+   * corresponding array elements are deleted, and never reused. This means the
+   * total number of subscriptions during the lifetime of the pubsub channel is
+   * limited by the maximum length of a JavaScript array to (2^32 - 1) / 3 =
+   * 1,431,655,765 subscriptions, which should suffice for most applications.
+   *
+   * @private {!Array<?>}
+   * @const
+   */
   this.subscriptions_ = [];
+
+  /**
+   * Map of topics to arrays of subscription keys.
+   *
+   * @private {!Object<!Array<number>>}
+   */
   this.topics_ = {};
 };
 goog.inherits(goog.pubsub.PubSub, goog.Disposable);
-
-
-/**
- * Sparse array of subscriptions.  Each subscription is represented by a tuple
- * comprising a topic identifier, a function, and an optional context object.
- * Each tuple occupies three consecutive positions in the array, with the topic
- * identifier at index n, the function at index (n + 1), the context object at
- * index (n + 2), the next topic at index (n + 3), etc.  (This representation
- * minimizes the number of object allocations and has been shown to be faster
- * than an array of objects with three key-value pairs or three parallel arrays,
- * especially on IE.)  Once a subscription is removed via {@link #unsubscribe}
- * or {@link #unsubscribeByKey}, the three corresponding array elements are
- * deleted, and never reused.  This means the total number of subscriptions
- * during the lifetime of the pubsub channel is limited by the maximum length
- * of a JavaScript array to (2^32 - 1) / 3 = 1,431,655,765 subscriptions, which
- * should suffice for most applications.
- *
- * @type {!Array<?>}
- * @private
- */
-goog.pubsub.PubSub.prototype.subscriptions_;
-
-
-/**
- * The next available subscription key.  Internally, this is an index into the
- * sparse array of subscriptions.
- *
- * @type {number}
- * @private
- */
-goog.pubsub.PubSub.prototype.key_ = 1;
-
-
-/**
- * Map of topics to arrays of subscription keys.
- *
- * @type {!Object<!Array<number>>}
- * @private
- */
-goog.pubsub.PubSub.prototype.topics_;
-
-
-/**
- * Array of subscription keys pending removal once publishing is done.
- *
- * @type {Array<number>}
- * @private
- */
-goog.pubsub.PubSub.prototype.pendingKeys_;
-
-
-/**
- * Lock to prevent the removal of subscriptions during publishing.  Incremented
- * at the beginning of {@link #publish}, and decremented at the end.
- *
- * @type {number}
- * @private
- */
-goog.pubsub.PubSub.prototype.publishDepth_ = 0;
 
 
 /**
@@ -206,9 +196,6 @@ goog.pubsub.PubSub.prototype.unsubscribe = function(topic, fn, opt_context) {
 goog.pubsub.PubSub.prototype.unsubscribeByKey = function(key) {
   if (this.publishDepth_ != 0) {
     // Defer removal until after publishing is complete.
-    if (!this.pendingKeys_) {
-      this.pendingKeys_ = [];
-    }
     this.pendingKeys_.push(key);
     return false;
   }
@@ -268,7 +255,7 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
     // Unlock subscriptions.
     this.publishDepth_--;
 
-    if (this.pendingKeys_ && this.publishDepth_ == 0) {
+    if (this.pendingKeys_.length > 0 && this.publishDepth_ == 0) {
       var pendingKey;
       while ((pendingKey = this.pendingKeys_.pop())) {
         this.unsubscribeByKey(pendingKey);
@@ -328,8 +315,7 @@ goog.pubsub.PubSub.prototype.getCount = function(opt_topic) {
 
 /** @override */
 goog.pubsub.PubSub.prototype.disposeInternal = function() {
-  goog.pubsub.PubSub.superClass_.disposeInternal.call(this);
-  delete this.subscriptions_;
-  delete this.topics_;
-  delete this.pendingKeys_;
+  goog.pubsub.PubSub.base(this, 'disposeInternal');
+  this.clear();
+  this.pendingKeys_.length = 0;
 };

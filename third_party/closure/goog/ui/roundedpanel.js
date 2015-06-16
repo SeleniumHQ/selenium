@@ -26,6 +26,7 @@ goog.provide('goog.ui.RoundedPanel.Corner');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.graphics');
 goog.require('goog.graphics.Path');
@@ -215,7 +216,8 @@ goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
       goog.ui.RoundedPanel.Classes_.PANEL);
 
   // Create backgroundElement_, and add it to the DOM.
-  this.backgroundElement_ = this.getDomHelper().createElement('div');
+  this.backgroundElement_ = this.getDomHelper().createElement(
+      goog.dom.TagName.DIV);
   this.backgroundElement_.className = goog.ui.RoundedPanel.Classes_.BACKGROUND;
   this.getElement().appendChild(this.backgroundElement_);
 
@@ -224,7 +226,7 @@ goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
   this.contentElement_ = goog.dom.getElementsByTagNameAndClass(
       null, goog.ui.RoundedPanel.Classes_.CONTENT, this.getElement())[0];
   if (!this.contentElement_) {
-    this.contentElement_ = this.getDomHelper().createDom('div');
+    this.contentElement_ = this.getDomHelper().createDom(goog.dom.TagName.DIV);
     this.contentElement_.className = goog.ui.RoundedPanel.Classes_.CONTENT;
     this.getElement().appendChild(this.contentElement_);
   }

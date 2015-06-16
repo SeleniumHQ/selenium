@@ -49,8 +49,9 @@ goog.require('goog.style');
  *     should handle the TOGGLE event in its own way. If a function is passed,
  *     then if will be called to create the content element the first time the
  *     zippy is expanded.
- * @param {boolean=} opt_expanded Initial expanded/visibility state. Defaults to
- *     false.
+ * @param {boolean=} opt_expanded Initial expanded/visibility state. If
+ *     undefined, attempts to infer the state from the DOM. Setting visibility
+ *     using one of the standard Soy templates guarantees correct inference.
  * @param {Element|string=} opt_expandedHeader Element to use as the header when
  *     the zippy is expanded.
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DOM helper.
@@ -104,6 +105,19 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
    * @private
    */
   this.expanded_ = opt_expanded == true;
+  if (!goog.isDef(opt_expanded) && !this.lazyCreateFunc_) {
+    // For the dual caption case, we can get expanded_ from the visibility of
+    // the expandedHeader. For the single-caption case, we use the
+    // presence/absence of the relevant class. Using one of the standard Soy
+    // templates guarantees that this will work.
+    if (this.elExpandedHeader_) {
+      this.expanded_ = goog.style.isElementShown(this.elExpandedHeader_);
+    } else if (this.elHeader_) {
+      this.expanded_ = goog.dom.classlist.contains(
+          this.elHeader_, goog.getCssName('goog-zippy-expanded'));
+    }
+  }
+
 
   /**
    * A keyboard events handler. If there are two headers it is shared for both.

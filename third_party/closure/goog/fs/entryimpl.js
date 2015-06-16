@@ -263,7 +263,6 @@ goog.fs.DirectoryEntryImpl.prototype.createPath = function(path) {
 
   // Filter out any empty path components caused by '//' or a leading slash.
   var parts = goog.array.filter(path.split('/'), goog.functions.identity);
-  var existed = [];
 
   /**
    * @param {goog.fs.DirectoryEntryImpl} dir

@@ -32,34 +32,28 @@ goog.require('goog.storage.mechanism.IterableMechanism');
  *     iterable storage mechanism.
  * @param {string} prefix Prefix for creating an artificial namespace.
  * @constructor
+ * @struct
  * @extends {goog.storage.mechanism.IterableMechanism}
  * @final
  */
 goog.storage.mechanism.PrefixedMechanism = function(mechanism, prefix) {
   goog.storage.mechanism.PrefixedMechanism.base(this, 'constructor');
+  /**
+   * The mechanism to be prefixed.
+   *
+   * @private {goog.storage.mechanism.IterableMechanism}
+   */
   this.mechanism_ = mechanism;
+
+  /**
+   * The prefix for creating artificial namespaces.
+   *
+   * @private {string}
+   */
   this.prefix_ = prefix + '::';
 };
 goog.inherits(goog.storage.mechanism.PrefixedMechanism,
               goog.storage.mechanism.IterableMechanism);
-
-
-/**
- * The mechanism to be prefixed.
- *
- * @type {goog.storage.mechanism.IterableMechanism}
- * @private
- */
-goog.storage.mechanism.PrefixedMechanism.prototype.mechanism_ = null;
-
-
-/**
- * The prefix for creating artificial namespaces.
- *
- * @type {string}
- * @private
- */
-goog.storage.mechanism.PrefixedMechanism.prototype.prefix_ = '';
 
 
 /** @override */

@@ -69,6 +69,7 @@
 goog.provide('goog.ui.media.Youtube');
 goog.provide('goog.ui.media.YoutubeModel');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.media.FlashObject');
@@ -170,14 +171,14 @@ goog.ui.media.Youtube.prototype.setState = function(c, state, enable) {
 
   if (!!(state & goog.ui.Component.State.SELECTED) && enable) {
     var flashEls = domHelper.getElementsByTagNameAndClass(
-        'div',
+        goog.dom.TagName.DIV,
         goog.ui.media.FlashObject.CSS_CLASS,
         control.getElement());
     if (flashEls.length > 0) {
       return;
     }
     var youtubeFlash = new goog.ui.media.FlashObject(
-        dataModel.getPlayer().getUrl() || '',
+        dataModel.getPlayer().getTrustedResourceUrl(),
         domHelper);
     control.addChild(youtubeFlash, true);
   }

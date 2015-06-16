@@ -199,7 +199,7 @@ goog.i18n.DateTimeFormat.prototype.applyPattern_ = function(pattern) {
 
 
 /**
- * Format the given date object according to preset pattern and current lcoale.
+ * Format the given date object according to preset pattern and current locale.
  * @param {goog.date.DateLike} date The Date object that is being formatted.
  * @param {goog.i18n.TimeZone=} opt_timeZone optional, if specified, time
  *    related fields will be formatted based on its setting. When this field
@@ -223,7 +223,7 @@ goog.i18n.DateTimeFormat.prototype.format = function(date, opt_timeZone) {
   // Thing get a little bit tricky when daylight time transition happens. For
   // example, suppose OS timeZone is America/Los_Angeles, it is impossible to
   // represent "2006/4/2 02:30" even for those timeZone that has no transition
-  // at this time. Because 2:00 to 3:00 on that day does not exising in
+  // at this time. Because 2:00 to 3:00 on that day does not exist in
   // America/Los_Angeles time zone. To avoid calculating date field through
   // our own code, we uses 3 Date object instead, one for "Year, month, day",
   // one for time within that day, and one for timeZone object since it need
@@ -232,10 +232,23 @@ goog.i18n.DateTimeFormat.prototype.format = function(date, opt_timeZone) {
       (date.getTimezoneOffset() - opt_timeZone.getOffset(date)) * 60000 : 0;
   var dateForDate = diff ? new Date(date.getTime() + diff) : date;
   var dateForTime = dateForDate;
-  // in daylight time switch on/off hour, diff adjustment could alter time
-  // because of timeZone offset change, move 1 day forward or backward.
+  // When the time manipulation applied above spans the DST on/off hour, this
+  // could alter the time incorrectly by adding or subtracting an additional
+  // hour.
+  // We can mitigate this by:
+  // - Adding the difference in timezone offset to the date. This ensures that
+  //   the dateForDate is still within the right day if the extra DST hour
+  //   affected the date.
+  // - Move the time one day forward if we applied a timezone offset backwards,
+  //   or vice versa. This trick ensures that the time is in the same offset
+  //   as the original date, so we remove the additional hour added or
+  //   subtracted by the DST switch.
   if (opt_timeZone &&
       dateForDate.getTimezoneOffset() != date.getTimezoneOffset()) {
+    var dstDiff = (dateForDate.getTimezoneOffset() - date.getTimezoneOffset()) *
+        60000;
+    dateForDate = new Date(dateForDate.getTime() + dstDiff);
+
     diff += diff > 0 ? -goog.date.MS_PER_DAY : goog.date.MS_PER_DAY;
     dateForTime = new Date(date.getTime() + diff);
   }

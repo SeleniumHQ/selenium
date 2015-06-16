@@ -41,6 +41,7 @@ goog.provide('goog.math.Integer');
  * pieces, which can easily be multiplied within Javascript's floating-point
  * representation without overflow or change in sign.
  *
+ * @struct
  * @constructor
  * @param {Array<number>} bits Array containing the bits of the number.
  * @param {number} sign The sign of the number: -1 for negative and 0 positive.

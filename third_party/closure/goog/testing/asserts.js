@@ -1042,10 +1042,12 @@ var assertRoughlyEquals = function(a, b, c, opt_d) {
 
 
 /**
- * Checks if the given element is the member of the given container.
- * @param {*} a Failure message (3 arguments) or the contained element
+ * Checks if the test value is a member of the given container.  Uses
+ * container.indexOf as the underlying function, so this works for strings
+ * and arrays.
+ * @param {*} a Failure message (3 arguments) or the test value
  *     (2 arguments).
- * @param {*} b The contained element (3 arguments) or the container
+ * @param {*} b The test value (3 arguments) or the container
  *     (2 arguments).
  * @param {*=} opt_c The container.
  */

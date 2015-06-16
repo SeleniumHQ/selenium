@@ -25,6 +25,7 @@ goog.provide('goog.ui.GaugeColoredRange');
 
 goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.fx.Animation');
 goog.require('goog.fx.Transition');
@@ -622,7 +623,8 @@ goog.ui.Gauge.prototype.addBackgroundColor = function(fromValue, toValue,
  */
 goog.ui.Gauge.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom(
-      'div', goog.getCssName('goog-gauge'), this.graphics_.getElement()));
+      goog.dom.TagName.DIV, goog.getCssName('goog-gauge'),
+      this.graphics_.getElement()));
 };
 
 

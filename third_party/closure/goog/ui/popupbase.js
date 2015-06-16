@@ -24,6 +24,7 @@ goog.provide('goog.ui.PopupBase.Type');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -565,7 +566,8 @@ goog.ui.PopupBase.prototype.show_ = function() {
         // document.activeElement to throw an Unspecified Error.  This
         // may have to do with loading a popup within a hidden iframe.
       }
-      while (activeElement && activeElement.nodeName == 'IFRAME') {
+      while (activeElement &&
+             activeElement.nodeName == goog.dom.TagName.IFRAME) {
         /** @preserveTry */
         try {
           var tempDoc = goog.dom.getFrameContentDocument(activeElement);
@@ -826,7 +828,7 @@ goog.ui.PopupBase.prototype.onDocumentBlur_ = function(e) {
   if (typeof document.activeElement != 'undefined') {
     var activeElement = doc.activeElement;
     if (!activeElement || goog.dom.contains(this.element_,
-        activeElement) || activeElement.tagName == 'BODY') {
+        activeElement) || activeElement.tagName == goog.dom.TagName.BODY) {
       return;
     }
 

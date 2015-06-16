@@ -30,6 +30,7 @@ goog.require('goog.cssom.iframe.style');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Field');
 goog.require('goog.editor.icontent');
@@ -38,7 +39,9 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.log');
+goog.require('goog.string.Const');
 goog.require('goog.style');
 
 
@@ -418,7 +421,7 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
   }
   var field = this.getElement();
   var head = goog.dom.getDomHelper(field).getElementsByTagNameAndClass(
-      'head')[0];
+      goog.dom.TagName.HEAD)[0];
   if (head) {
     // We created this <head>, and we know the only thing we put in there
     // is a <style> block.  So it's safe to blow away all the children
@@ -680,7 +683,11 @@ goog.editor.SeamlessField.prototype.attachIframe = function(iframe) {
     var doc = iframe.contentWindow.document;
     if (goog.editor.node.isStandardsMode(iframe.ownerDocument)) {
       doc.open();
-      doc.write('<!DOCTYPE HTML><html></html>');
+      var emptyHtml = goog.html.uncheckedconversions
+          .safeHtmlFromStringKnownToSatisfyTypeContract(
+              goog.string.Const.from('HTML from constant string'),
+              '<!DOCTYPE HTML><html></html>');
+      goog.dom.safe.documentWrite(doc, emptyHtml);
       doc.close();
     }
   }

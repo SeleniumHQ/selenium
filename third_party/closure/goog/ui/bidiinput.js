@@ -25,10 +25,11 @@ goog.provide('goog.ui.BidiInput');
 
 
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.InputHandler');
 goog.require('goog.i18n.bidi');
-goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.ui.Component');
 
 
@@ -76,7 +77,8 @@ goog.ui.BidiInput.prototype.decorateInternal = function(element) {
  */
 goog.ui.BidiInput.prototype.createDom = function() {
   this.setElementInternal(
-      this.getDomHelper().createDom('input', {'type': 'text'}));
+      this.getDomHelper().createDom(goog.dom.TagName.INPUT,
+                                    {'type': goog.dom.InputType.TEXT}));
   this.init_();
 };
 
@@ -110,17 +112,9 @@ goog.ui.BidiInput.prototype.init_ = function() {
  */
 goog.ui.BidiInput.prototype.setDirection_ = function() {
   var element = this.getElement();
-  var text = this.getValue();
-  switch (goog.i18n.bidi.estimateDirection(text)) {
-    case (goog.i18n.bidi.Dir.LTR):
-      element.dir = 'ltr';
-      break;
-    case (goog.i18n.bidi.Dir.RTL):
-      element.dir = 'rtl';
-      break;
-    default:
-      // Default for no direction, inherit from document.
-      element.removeAttribute('dir');
+  if (element) {
+    var text = this.getValue();
+    goog.i18n.bidi.setElementDirByTextDirectionality(element, text);
   }
 };
 

@@ -1,4 +1,4 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+// Copyright 2014 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,19 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// All Rights Reserved
+
 
 /**
- * @fileoverview File #2 of module A.
+ * @fileoverview This shim namespace defines the shared
+ * mechanism variables used in mechanismSeparationTester
+ * and mechanismSelectionTester. This exists to allow test compilation
+ * to work correctly for these legacy tests.
+ * @visibility {//visibility:private}
  */
 
-goog.provide('goog.module.testdata.modA_2');
+goog.provide('goog.storage.mechanism.mechanismTestDefinition');
+goog.setTestOnly('goog.storage.mechanism.mechanismTestDefinition');
 
-goog.setTestOnly('goog.module.testdata.modA_2');
-
-goog.require('goog.module.ModuleManager');
-
-if (window.modA2Loaded) throw Error('modA_2 loaded twice');
-window.modA2Loaded = true;
-
-goog.module.ModuleManager.getInstance().setLoaded('modA');
+var mechanism;
+var mechanism_shared;
+var mechanism_separate;

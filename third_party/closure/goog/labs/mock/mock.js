@@ -358,7 +358,7 @@ goog.labs.mock.MockManager_ = function() {
  * is later used to bind a stub for a method.
  *
  * @param {string} methodName The name of the method being bound.
- * @param {...} var_args The arguments to the method.
+ * @param {...*} var_args The arguments to the method.
  * @return {!goog.labs.mock.StubBinder_} The stub binder.
  * @private
  */
@@ -445,7 +445,7 @@ goog.labs.mock.MockManager_.prototype.getExecutor = function(methodName, args) {
  * function associated with that stub.
  *
  * @param {string} methodName The name of the method to execute.
- * @param {...} var_args The arguments passed to the method.
+ * @param {...*} var_args The arguments passed to the method.
  * @return {*} Value returned by the stub function.
  * @protected
  */
@@ -483,7 +483,7 @@ goog.labs.mock.MockManager_.prototype.recordCall_ =
  * Verify invocation of a method with specific arguments.
  *
  * @param {string} methodName The name of the method.
- * @param {...} var_args The arguments passed.
+ * @param {...*} var_args The arguments passed.
  * @protected
  */
 goog.labs.mock.MockManager_.prototype.verifyInvocation =

@@ -23,6 +23,7 @@ goog.provide('goog.debug.Formatter');
 goog.provide('goog.debug.HtmlFormatter');
 goog.provide('goog.debug.TextFormatter');
 
+goog.require('goog.debug');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.RelativeTimeProvider');
 goog.require('goog.html.SafeHtml');
@@ -97,6 +98,14 @@ goog.debug.Formatter.prototype.showSeverityLevel = false;
  * @return {string} The formatted string.
  */
 goog.debug.Formatter.prototype.formatRecord = goog.abstractMethod;
+
+
+/**
+ * Formats a record as SafeHtml.
+ * @param {goog.debug.LogRecord} logRecord the logRecord to format.
+ * @return {!goog.html.SafeHtml} The formatted string as SafeHtml.
+ */
+goog.debug.Formatter.prototype.formatRecordAsHtml = goog.abstractMethod;
 
 
 /**
@@ -233,10 +242,15 @@ goog.debug.HtmlFormatter.prototype.formatRecord = function(logRecord) {
 
 /**
  * Formats a record.
- * @param {!goog.debug.LogRecord} logRecord the logRecord to format.
+ * @param {goog.debug.LogRecord} logRecord the logRecord to format.
  * @return {!goog.html.SafeHtml} The formatted string as SafeHtml.
+ * @override
  */
 goog.debug.HtmlFormatter.prototype.formatRecordAsHtml = function(logRecord) {
+  if (!logRecord) {
+    return goog.html.SafeHtml.EMPTY;
+  }
+
   var className;
   switch (logRecord.getLevel().value) {
     case goog.debug.Logger.Level.SHOUT.value:
@@ -283,8 +297,7 @@ goog.debug.HtmlFormatter.prototype.formatRecordAsHtml = function(logRecord) {
   if (this.showExceptionText && logRecord.getException()) {
     exceptionHtml = goog.html.SafeHtml.concat(
         goog.html.SafeHtml.create('br'),
-        goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
-            logRecord.getExceptionText() || ''));
+        goog.debug.exposeExceptionAsHtml(logRecord.getException()));
   }
   var logRecordHtml = goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
       logRecord.getMessage());
@@ -328,7 +341,6 @@ goog.inherits(goog.debug.TextFormatter, goog.debug.Formatter);
  * @override
  */
 goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
-  // Build message html
   var sb = [];
   sb.push(this.prefix_, ' ');
   if (this.showAbsoluteTime) {
@@ -346,11 +358,30 @@ goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
     sb.push('[', logRecord.getLevel().name, '] ');
   }
   sb.push(logRecord.getMessage());
-  if (this.showExceptionText && logRecord.getException()) {
-    sb.push('\n', logRecord.getExceptionText());
+  if (this.showExceptionText) {
+    var exception = logRecord.getException();
+    if (exception) {
+      var exceptionText = exception instanceof Error ?
+          exception.message :
+          exception.toString();
+      sb.push('\n', exceptionText);
+    }
   }
   if (this.appendNewline) {
     sb.push('\n');
   }
   return sb.join('');
+};
+
+
+/**
+ * Formats a record as text
+ * @param {goog.debug.LogRecord} logRecord the logRecord to format.
+ * @return {!goog.html.SafeHtml} The formatted string as SafeHtml. This is
+ *     just an HTML-escaped version of the text obtained from formatRecord().
+ * @override
+ */
+goog.debug.TextFormatter.prototype.formatRecordAsHtml = function(logRecord) {
+  return goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
+      goog.debug.TextFormatter.prototype.formatRecord(logRecord));
 };

@@ -58,7 +58,9 @@ var HttpStatus = goog.net.HttpStatus;
  *      http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-overridemimetype
  * - responseType: may be set to change the response type to an arraybuffer or
  *      blob for downloading binary data. See:
- *      http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-responsetype
+ *      http://www.w3.org/TR/XMLHttpRequest/#dom-xmlhttprequest-responsetype]
+ * - xmlHttpFactory: allows the caller to override the factory used to create
+ *      XMLHttpRequest objects.
  * - xssiPrefix: Prefix used for protecting against XSSI attacks, which should
  *      be removed before parsing the response as JSON.
  *
@@ -68,6 +70,7 @@ var HttpStatus = goog.net.HttpStatus;
  *   responseType: (xhr.ResponseType|undefined),
  *   timeoutMs: (number|undefined),
  *   withCredentials: (boolean|undefined),
+ *   xmlHttpFactory: (goog.net.XmlHttpFactory|undefined),
  *   xssiPrefix: (string|undefined)
  * }}
  */
@@ -241,7 +244,8 @@ xhr.send = function(method, url, data, opt_options) {
     var options = opt_options || {};
     var timer;
 
-    var request = goog.net.XmlHttp();
+    var request = options.xmlHttpFactory ?
+        options.xmlHttpFactory.createInstance() : goog.net.XmlHttp();
     try {
       request.open(method, url, true);
     } catch (e) {

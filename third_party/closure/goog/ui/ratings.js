@@ -36,6 +36,7 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.Component');
@@ -141,7 +142,7 @@ goog.ui.Ratings.EventType = {
  * @override
  */
 goog.ui.Ratings.prototype.decorateInternal = function(el) {
-  var select = el.getElementsByTagName('select')[0];
+  var select = el.getElementsByTagName(goog.dom.TagName.SELECT)[0];
   if (!select) {
     throw Error('Can not decorate ' + el + ', with Ratings. Must ' +
                 'contain select box');
@@ -178,7 +179,7 @@ goog.ui.Ratings.prototype.enterDocument = function() {
 
   // Create the elements for the stars
   for (var i = 0; i < this.ratings_.length; i++) {
-    var star = this.getDomHelper().createDom('span', {
+    var star = this.getDomHelper().createDom(goog.dom.TagName.SPAN, {
       'title': this.ratings_[i],
       'class': this.getClassName_(i, false),
       'index': i});
@@ -236,7 +237,7 @@ goog.ui.Ratings.prototype.setSelectedIndex = function(index) {
     this.selectedIndex_ = index;
     this.highlightIndex_(this.selectedIndex_);
     if (this.attachedFormField_) {
-      if (this.attachedFormField_.tagName == 'SELECT') {
+      if (this.attachedFormField_.tagName == goog.dom.TagName.SELECT) {
         this.attachedFormField_.selectedIndex = index;
       } else {
         this.attachedFormField_.value =

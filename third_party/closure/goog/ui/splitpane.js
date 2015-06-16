@@ -35,6 +35,7 @@ goog.provide('goog.ui.SplitPane.Orientation');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
@@ -282,15 +283,16 @@ goog.ui.SplitPane.prototype.createDom = function() {
   var dom = this.getDomHelper();
 
   // Create the components.
-  var firstContainer = dom.createDom('div',
+  var firstContainer = dom.createDom(goog.dom.TagName.DIV,
       goog.ui.SplitPane.FIRST_CONTAINER_CLASS_NAME_);
-  var secondContainer = dom.createDom('div',
+  var secondContainer = dom.createDom(goog.dom.TagName.DIV,
       goog.ui.SplitPane.SECOND_CONTAINER_CLASS_NAME_);
-  var splitterHandle = dom.createDom('div',
+  var splitterHandle = dom.createDom(goog.dom.TagName.DIV,
       goog.ui.SplitPane.HANDLE_CLASS_NAME_);
 
   // Create the primary element, a DIV that holds the two containers and handle.
-  this.setElementInternal(dom.createDom('div', goog.ui.SplitPane.CLASS_NAME_,
+  this.setElementInternal(dom.createDom(
+      goog.dom.TagName.DIV, goog.ui.SplitPane.CLASS_NAME_,
       firstContainer, secondContainer, splitterHandle));
 
   this.firstComponentContainer_ = firstContainer;
@@ -779,8 +781,8 @@ goog.ui.SplitPane.prototype.handleDragStart_ = function(e) {
       // put one on, but make it opaque.
       cssStyles += ';background-color: #000;filter: Alpha(Opacity=0)';
     }
-    this.iframeOverlay_ =
-        this.getDomHelper().createDom('div', {'style': cssStyles});
+    this.iframeOverlay_ = this.getDomHelper().createDom(goog.dom.TagName.DIV,
+                                                        {'style': cssStyles});
 
     this.getDomHelper().appendChild(this.getElement(), this.iframeOverlay_);
   }

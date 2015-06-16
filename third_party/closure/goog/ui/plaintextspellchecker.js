@@ -25,6 +25,7 @@ goog.require('goog.Timer');
 goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
@@ -56,7 +57,7 @@ goog.ui.PlainTextSpellChecker = function(handler, opt_domHelper) {
    * @private {!HTMLDivElement}
    */
   this.overlay_ = /** @type {!HTMLDivElement} */
-      (this.getDomHelper().createDom('div'));
+      (this.getDomHelper().createDom(goog.dom.TagName.DIV));
   goog.style.setPreWrap(this.overlay_);
 
   /**
@@ -150,7 +151,8 @@ goog.ui.PlainTextSpellChecker.prototype.textArrayProcess_;
  * @override
  */
 goog.ui.PlainTextSpellChecker.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createElement('textarea'));
+  this.setElementInternal(this.getDomHelper().createElement(
+      goog.dom.TagName.TEXTAREA));
 };
 
 
@@ -406,7 +408,7 @@ goog.ui.PlainTextSpellChecker.prototype.processRange = function(node, text) {
     }
     node.appendChild(this.getDomHelper().createTextNode(result[1]));
     if (result[2]) {
-      node.appendChild(this.getDomHelper().createElement('br'));
+      node.appendChild(this.getDomHelper().createElement(goog.dom.TagName.BR));
     }
   }
 };

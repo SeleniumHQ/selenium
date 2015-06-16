@@ -27,6 +27,7 @@ goog.provide('goog.fx.Dragger');
 goog.provide('goog.fx.Dragger.EventType');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
@@ -76,14 +77,14 @@ goog.tagUnsealableClass(goog.fx.Dragger);
 
 /**
  * Whether setCapture is supported by the browser.
- * @type {boolean}
- * @private
+ * @private {boolean}
+ * @const
  */
 goog.fx.Dragger.HAS_SET_CAPTURE_ =
-    // IE and Gecko after 1.9.3 has setCapture
+    // IE (up to and including IE 11) and Gecko after 1.9.3 have setCapture
     // WebKit does not yet: https://bugs.webkit.org/show_bug.cgi?id=27330
-    goog.userAgent.IE ||
-    goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9.3');
+    (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('12')) ||
+    (goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9.3'));
 
 
 /**
@@ -96,23 +97,25 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ =
  */
 goog.fx.Dragger.cloneNode = function(sourceEl) {
   var clonedEl = /** @type {Element} */ (sourceEl.cloneNode(true)),
-      origTexts = sourceEl.getElementsByTagName('textarea'),
-      dragTexts = clonedEl.getElementsByTagName('textarea');
+      origTexts = sourceEl.getElementsByTagName(goog.dom.TagName.TEXTAREA),
+      dragTexts = clonedEl.getElementsByTagName(goog.dom.TagName.TEXTAREA);
   // Cloning does not copy the current value of textarea elements, so correct
   // this manually.
   for (var i = 0; i < origTexts.length; i++) {
     dragTexts[i].value = origTexts[i].value;
   }
-  switch (sourceEl.tagName.toLowerCase()) {
-    case 'tr':
+  switch (sourceEl.tagName) {
+    case goog.dom.TagName.TR:
+      return goog.dom.createDom(goog.dom.TagName.TABLE, null,
+                                goog.dom.createDom(goog.dom.TagName.TBODY,
+                                                   null, clonedEl));
+    case goog.dom.TagName.TD:
+    case goog.dom.TagName.TH:
       return goog.dom.createDom(
-          'table', null, goog.dom.createDom('tbody', null, clonedEl));
-    case 'td':
-    case 'th':
-      return goog.dom.createDom(
-          'table', null, goog.dom.createDom('tbody', null, goog.dom.createDom(
-          'tr', null, clonedEl)));
-    case 'textarea':
+          goog.dom.TagName.TABLE, null, goog.dom.createDom(
+              goog.dom.TagName.TBODY, null, goog.dom.createDom(
+                  goog.dom.TagName.TR, null, clonedEl)));
+    case goog.dom.TagName.TEXTAREA:
       clonedEl.value = sourceEl.value;
     default:
       return clonedEl;
@@ -246,6 +249,13 @@ goog.fx.Dragger.prototype.enabled_ = true;
  * @private
  */
 goog.fx.Dragger.prototype.dragging_ = false;
+
+
+/**
+ * Whether mousedown should be default prevented.
+ * @private {boolean}
+ */
+goog.fx.Dragger.prototype.preventMouseDown_ = true;
 
 
 /**
@@ -400,6 +410,16 @@ goog.fx.Dragger.prototype.setEnabled = function(enabled) {
 };
 
 
+/**
+ * Set whether mousedown should be default prevented.
+ * @param {boolean} preventMouseDown Whether mousedown should be default
+ *     prevented.
+ */
+goog.fx.Dragger.prototype.setPreventMouseDown = function(preventMouseDown) {
+  this.preventMouseDown_ = preventMouseDown;
+};
+
+
 /** @override */
 goog.fx.Dragger.prototype.disposeInternal = function() {
   goog.fx.Dragger.superClass_.disposeInternal.call(this);
@@ -445,12 +465,14 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
     if (this.hysteresisDistanceSquared_ == 0) {
       if (this.fireDragStart_(e)) {
         this.dragging_ = true;
-        e.preventDefault();
+        if (this.preventMouseDown_) {
+          e.preventDefault();
+        }
       } else {
         // If the start drag is cancelled, don't setup for a drag.
         return;
       }
-    } else {
+    } else if (this.preventMouseDown_) {
       // Need to preventDefault for hysteresis to prevent page getting selected.
       e.preventDefault();
     }

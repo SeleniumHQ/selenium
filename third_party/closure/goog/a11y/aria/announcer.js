@@ -21,10 +21,12 @@
 goog.provide('goog.a11y.aria.Announcer');
 
 goog.require('goog.Disposable');
+goog.require('goog.Timer');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.LivePriority');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.object');
 
 
@@ -78,7 +80,15 @@ goog.a11y.aria.Announcer.prototype.disposeInternal = function() {
 goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
   var priority = opt_priority || goog.a11y.aria.LivePriority.POLITE;
   var liveRegion = this.getLiveRegion_(priority);
-  goog.dom.setTextContent(liveRegion, message);
+  // Resets text content to force a DOM mutation (so that the setTextContent
+  // post-timeout function will be noticed by the screen reader). This is to
+  // avoid the problem of when the same message is "said" twice, which doesn't
+  // trigger a DOM mutation.
+  goog.dom.setTextContent(liveRegion, '');
+  // Uses non-zero timer to make VoiceOver and NVDA work
+  goog.Timer.callOnce(function() {
+    goog.dom.setTextContent(liveRegion, message);
+  }, 1);
 };
 
 
@@ -89,12 +99,14 @@ goog.a11y.aria.Announcer.prototype.say = function(message, opt_priority) {
  * @private
  */
 goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
-  // Removing the previous live region ensures that the newest message is always
-  // read without delay, even if the message is an exact duplicate of the prior
-  // message.
-  this.removeLiveRegion_(priority);
+  var liveRegion = this.liveRegions_[priority];
+  if (liveRegion) {
+    // Make sure the live region is not aria-hidden.
+    goog.a11y.aria.removeState(liveRegion, goog.a11y.aria.State.HIDDEN);
+    return liveRegion;
+  }
 
-  var liveRegion = this.domHelper_.createElement('div');
+  liveRegion = this.domHelper_.createElement(goog.dom.TagName.DIV);
   // Note that IE has a habit of declaring things that aren't display:none as
   // invisible to third-party tools like JAWs, so we can't just use height:0.
   liveRegion.style.position = 'absolute';
@@ -108,18 +120,4 @@ goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
   this.domHelper_.getDocument().body.appendChild(liveRegion);
   this.liveRegions_[priority] = liveRegion;
   return liveRegion;
-};
-
-
-/**
- * Removes any previous live region that was used to communicate announcements.
- * @param {!goog.a11y.aria.LivePriority} priority The required priority.
- * @private
- */
-goog.a11y.aria.Announcer.prototype.removeLiveRegion_ = function(priority) {
-  var liveRegion = this.liveRegions_[priority];
-  if (liveRegion) {
-    this.domHelper_.removeNode(liveRegion);
-    delete this.liveRegions_[priority];
-  }
 };

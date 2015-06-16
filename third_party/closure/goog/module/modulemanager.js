@@ -42,14 +42,15 @@ goog.require('goog.object');
  * Since modules may not have their code loaded, we must keep track of them.
  * @constructor
  * @extends {goog.Disposable}
+ * @struct
+ * @suppress {checkStructDictInheritance}
  */
 goog.module.ModuleManager = function() {
-  goog.Disposable.call(this);
+  goog.module.ModuleManager.base(this, 'constructor');
 
   /**
    * A mapping from module id to ModuleInfo object.
-   * @type {Object}
-   * @private
+   * @private {Object<string, !goog.module.ModuleInfo>}
    */
   this.moduleInfoMap_ = {};
 
@@ -101,7 +102,7 @@ goog.module.ModuleManager = function() {
   /**
    * A map of callback types to the functions to call for the specified
    * callback type.
-   * @type {Object}
+   * @type {Object<goog.module.ModuleManager.CallbackType, Array<Function>>}
    * @private
    */
   this.callbackMap_ = {};
@@ -142,6 +143,67 @@ goog.module.ModuleManager = function() {
    * @private {!goog.async.Deferred}
    */
   this.initialModulesLoaded_ = new goog.async.Deferred();
+
+  /**
+   * A logger.
+   * @private {goog.log.Logger}
+   */
+  this.logger_ = goog.log.getLogger('goog.module.ModuleManager');
+
+  /**
+   * Whether the batch mode (i.e. the loading of multiple modules with just one
+   * request) has been enabled.
+   * @private {boolean}
+   */
+  this.batchModeEnabled_ = false;
+
+  /**
+   * Whether the module requests may be sent out of order.
+   * @private {boolean}
+   */
+  this.concurrentLoadingEnabled_ = false;
+
+  /**
+   * A loader for the modules that implements loadModules(ids, moduleInfoMap,
+   * opt_successFn, opt_errorFn, opt_timeoutFn, opt_forceReload) method.
+   * @private {goog.module.AbstractModuleLoader}
+   */
+  this.loader_ = null;
+
+  // TODO(user): Remove tracer.
+  /**
+   * Tracer that measures how long it takes to load a module.
+   * @private {?number}
+   */
+  this.loadTracer_ = null;
+
+  /**
+   * The number of consecutive failures that have happened upon module load
+   * requests.
+   * @private {number}
+   */
+  this.consecutiveFailures_ = 0;
+
+  /**
+   * Determines if the module manager was just active before the processing of
+   * the last data.
+   * @private {boolean}
+   */
+  this.lastActive_ = false;
+
+  /**
+   * Determines if the module manager was just user active before the processing
+   * of the last data. The module manager is user active if any of the
+   * user-initiated modules are loading or queued up to load.
+   * @private {boolean}
+   */
+  this.userLastActive_ = false;
+
+  /**
+   * The module context needed for module initialization.
+   * @private {Object}
+   */
+  this.moduleContext_ = null;
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
@@ -191,86 +253,6 @@ goog.module.ModuleManager.CallbackType = {
  * @type {number}
  */
 goog.module.ModuleManager.CORRUPT_RESPONSE_STATUS_CODE = 8001;
-
-
-/**
- * A logger.
- * @type {goog.log.Logger}
- * @private
- */
-goog.module.ModuleManager.prototype.logger_ = goog.log.getLogger(
-    'goog.module.ModuleManager');
-
-
-/**
- * Whether the batch mode (i.e. the loading of multiple modules with just one
- * request) has been enabled.
- * @type {boolean}
- * @private
- */
-goog.module.ModuleManager.prototype.batchModeEnabled_ = false;
-
-
-/**
- * Whether the module requests may be sent out of order.
- * @type {boolean}
- * @private
- */
-goog.module.ModuleManager.prototype.concurrentLoadingEnabled_ = false;
-
-
-/**
- * A loader for the modules that implements loadModules(ids, moduleInfoMap,
- * opt_successFn, opt_errorFn, opt_timeoutFn, opt_forceReload) method.
- * @type {goog.module.AbstractModuleLoader}
- * @private
- */
-goog.module.ModuleManager.prototype.loader_ = null;
-
-
-// TODO(user): Remove tracer.
-/**
- * Tracer that measures how long it takes to load a module.
- * @type {?number}
- * @private
- */
-goog.module.ModuleManager.prototype.loadTracer_ = null;
-
-
-/**
- * The number of consecutive failures that have happened upon module load
- * requests.
- * @type {number}
- * @private
- */
-goog.module.ModuleManager.prototype.consecutiveFailures_ = 0;
-
-
-/**
- * Determines if the module manager was just active before the processing of
- * the last data.
- * @type {boolean}
- * @private
- */
-goog.module.ModuleManager.prototype.lastActive_ = false;
-
-
-/**
- * Determines if the module manager was just user active before the processing
- * of the last data. The module manager is user active if any of the
- * user-initiated modules are loading or queued up to load.
- * @type {boolean}
- * @private
- */
-goog.module.ModuleManager.prototype.userLastActive_ = false;
-
-
-/**
- * The module context needed for module initialization.
- * @type {Object}
- * @private
- */
-goog.module.ModuleManager.prototype.moduleContext_ = null;
 
 
 /**
@@ -372,7 +354,7 @@ goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
 /**
  * Gets a module info object by id.
  * @param {string} id A module identifier.
- * @return {goog.module.ModuleInfo} The module info.
+ * @return {!goog.module.ModuleInfo} The module info.
  */
 goog.module.ModuleManager.prototype.getModuleInfo = function(id) {
   return this.moduleInfoMap_[id];
@@ -914,7 +896,7 @@ goog.module.ModuleManager.prototype.isModuleLoading = function(id) {
  *     user initiated.
  * @param {boolean=} opt_preferSynchronous TRUE iff the function should be
  *     executed synchronously if the module has already been loaded.
- * @return {goog.module.ModuleLoadCallback} A callback wrapper that exposes
+ * @return {!goog.module.ModuleLoadCallback} A callback wrapper that exposes
  *     an abort and execute method.
  */
 goog.module.ModuleManager.prototype.execOnLoad = function(
@@ -1362,7 +1344,7 @@ goog.module.ModuleManager.prototype.executeCallbacks_ = function(type) {
 
 /** @override */
 goog.module.ModuleManager.prototype.disposeInternal = function() {
-  goog.module.ModuleManager.superClass_.disposeInternal.call(this);
+  goog.module.ModuleManager.base(this, 'disposeInternal');
 
   // Dispose of each ModuleInfo object.
   goog.disposeAll(

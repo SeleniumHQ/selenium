@@ -22,10 +22,12 @@ goog.provide('goog.ds.JsonDataSource');
 
 goog.require('goog.Uri');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ds.DataManager');
 goog.require('goog.ds.JsDataSource');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
+goog.require('goog.log');
 
 
 
@@ -112,8 +114,10 @@ goog.ds.JsonDataSource.prototype.load = function() {
     goog.global['JsonReceive'][this.dataName_] =
         goog.bind(this.receiveData, this);
 
-    var scriptEl = goog.dom.createDom('script', {'src': uriToCall});
-    goog.dom.getElementsByTagNameAndClass('head')[0].appendChild(scriptEl);
+    var scriptEl = goog.dom.createDom(goog.dom.TagName.SCRIPT,
+                                      {'src': uriToCall});
+    goog.dom.getElementsByTagNameAndClass(
+        goog.dom.TagName.HEAD)[0].appendChild(scriptEl);
   } else {
     this.root_ = {};
     this.loadState_ = goog.ds.LoadState.NOT_LOADED;

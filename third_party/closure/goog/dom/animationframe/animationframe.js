@@ -133,6 +133,13 @@ goog.dom.animationFrame.taskId_ = 0;
 
 
 /**
+ * Whether the animationframe runTasks_ loop is currently running.
+ * @private {boolean}
+ */
+goog.dom.animationFrame.running_ = false;
+
+
+/**
  * Returns a function that schedules the two passed-in functions to be run upon
  * the next animation frame. Calling the function again during the same
  * animation frame does nothing.
@@ -146,11 +153,10 @@ goog.dom.animationFrame.taskId_ = 0;
  *   mutate: (function(this:THIS, !goog.dom.animationFrame.State)|undefined)
  * }} spec
  * @param {THIS=} opt_context Context in which to run the function.
- * @return {function(...[?])}
+ * @return {function(...?)}
  * @template THIS
  */
 goog.dom.animationFrame.createTask = function(spec, opt_context) {
-  var genericSpec = /** @type {!goog.dom.animationFrame.Spec} */ (spec);
   var id = goog.dom.animationFrame.taskId_++;
   var measureTask = {
     id: id,
@@ -213,6 +219,7 @@ goog.dom.animationFrame.createTask = function(spec, opt_context) {
  * @private
  */
 goog.dom.animationFrame.runTasks_ = function() {
+  goog.dom.animationFrame.running_ = true;
   goog.dom.animationFrame.requestedFrame_ = false;
   var tasksArray = goog.dom.animationFrame
                        .tasks_[goog.dom.animationFrame.doubleBufferIndex_];
@@ -252,6 +259,17 @@ goog.dom.animationFrame.runTasks_ = function() {
 
   // Clear the tasks array as we have finished processing all the tasks.
   tasksArray.length = 0;
+  goog.dom.animationFrame.running_ = false;
+};
+
+
+/**
+ * @return {boolean} Whether the animationframe is currently running. For use
+ *     by callers who need not to delay tasks scheduled during runTasks_ for an
+ *     additional frame.
+ */
+goog.dom.animationFrame.isRunning = function() {
+  return goog.dom.animationFrame.running_;
 };
 
 

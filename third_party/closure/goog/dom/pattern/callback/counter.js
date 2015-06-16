@@ -28,24 +28,20 @@ goog.provide('goog.dom.pattern.callback.Counter');
  * @final
  */
 goog.dom.pattern.callback.Counter = function() {
+  /**
+   * The count of objects matched so far.
+   *
+   * @type {number}
+   */
+  this.count = 0;
+
+  /**
+   * The callback function.  Suitable as a callback for
+   * {@link goog.dom.pattern.Matcher}.
+   * @private {Function}
+   */
+  this.callback_ = null;
 };
-
-
-/**
- * The count of objects matched so far.
- *
- * @type {number}
- */
-goog.dom.pattern.callback.Counter.prototype.count = 0;
-
-
-/**
- * The callback function.  Suitable as a callback for
- * {@link goog.dom.pattern.Matcher}.
- * @type {Function}
- * @private
- */
-goog.dom.pattern.callback.Counter.prototype.callback_ = null;
 
 
 /**

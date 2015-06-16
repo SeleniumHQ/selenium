@@ -434,10 +434,7 @@ WebChannelBase.Error = {
   BAD_DATA: 10,
 
   /** An error due to a response that is not parsable. */
-  BAD_RESPONSE: 11,
-
-  /** ActiveX is blocked by the machine's admin settings. */
-  ACTIVE_X_BLOCKED: 12
+  BAD_RESPONSE: 11
 };
 
 
@@ -558,7 +555,7 @@ WebChannelBase.prototype.disconnect = function() {
 
     var request = ChannelRequest.createChannelRequest(
         this, this.channelDebug_, this.sid_, rid);
-    request.sendUsingImgTag(uri);
+    request.sendCloseRequest(uri);
   }
 
   this.onClose_();
@@ -1222,14 +1219,10 @@ WebChannelBase.prototype.startBackChannel_ = function() {
   // Add the reconnect parameters.
   this.addAdditionalParams_(uri);
 
-  if (!ChannelRequest.supportsXhrStreaming()) {
-    uri.setParameterValue('TYPE', 'html');
-    this.backChannelRequest_.tridentGet(uri, Boolean(this.hostPrefix_));
-  } else {
-    uri.setParameterValue('TYPE', 'xmlhttp');
-    this.backChannelRequest_.xmlHttpGet(uri, true /* decodeChunks */,
-        this.hostPrefix_, false /* opt_noClose */);
-  }
+  uri.setParameterValue('TYPE', 'xmlhttp');
+  this.backChannelRequest_.xmlHttpGet(uri, true /* decodeChunks */,
+      this.hostPrefix_, false /* opt_noClose */);
+
   this.channelDebug_.debug('New Request created');
 };
 
@@ -1468,7 +1461,6 @@ WebChannelBase.prototype.clearDeadBackchannelTimer_ = function() {
  */
 WebChannelBase.isFatalError_ = function(error, statusCode) {
   return error == ChannelRequest.Error.UNKNOWN_SESSION_ID ||
-      error == ChannelRequest.Error.ACTIVE_X_BLOCKED ||
       (error == ChannelRequest.Error.STATUS &&
        statusCode > 0);
 };
@@ -1549,9 +1541,6 @@ WebChannelBase.prototype.onRequestComplete = function(request) {
       break;
     case ChannelRequest.Error.UNKNOWN_SESSION_ID:
       this.signalError_(WebChannelBase.Error.UNKNOWN_SESSION_ID);
-      break;
-    case ChannelRequest.Error.ACTIVE_X_BLOCKED:
-      this.signalError_(WebChannelBase.Error.ACTIVE_X_BLOCKED);
       break;
     default:
       this.signalError_(WebChannelBase.Error.REQUEST_FAILED);
@@ -1806,7 +1795,7 @@ WebChannelBase.prototype.createDataUri =
 
     uri.setPort(opt_overridePort || uri.getPort());
   } else {
-    var locationPage = window.location;
+    var locationPage = goog.global.location;
     var hostName;
     if (hostPrefix) {
       hostName = hostPrefix + '.' + locationPage.hostname;
@@ -1860,8 +1849,7 @@ WebChannelBase.prototype.isActive = function() {
  * @override
  */
 WebChannelBase.prototype.shouldUseSecondaryDomains = function() {
-  return this.supportsCrossDomainXhrs_ ||
-      !ChannelRequest.supportsXhrStreaming();
+  return this.supportsCrossDomainXhrs_;
 };
 
 
@@ -2045,8 +2033,7 @@ WebChannelBase.Handler.prototype.channelClosed =
  * Gets any parameters that should be added at the time another connection is
  * made to the server.
  * @param {WebChannelBase} channel The channel.
- * @return {!Object} Extra parameter keys and values to add to the
- *                  requests.
+ * @return {!Object} Extra parameter keys and values to add to the requests.
  */
 WebChannelBase.Handler.prototype.getAdditionalParams = function(channel) {
   return {};

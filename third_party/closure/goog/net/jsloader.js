@@ -293,7 +293,7 @@ goog.net.jsloader.cancel_ = function() {
   var request = this;
   if (request && request.script_) {
     var scriptNode = request.script_;
-    if (scriptNode && scriptNode.tagName == 'SCRIPT') {
+    if (scriptNode && scriptNode.tagName == goog.dom.TagName.SCRIPT) {
       goog.net.jsloader.cleanup_(scriptNode, true, request.timeout_);
     }
   }

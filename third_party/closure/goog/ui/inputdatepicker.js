@@ -24,9 +24,13 @@ goog.provide('goog.ui.InputDatePicker');
 
 goog.require('goog.date.DateTime');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.DatePicker');
+/** @suppress {extraRequire} */
+goog.require('goog.ui.LabelInput');
 goog.require('goog.ui.PopupBase');
 goog.require('goog.ui.PopupDatePicker');
 
@@ -118,7 +122,7 @@ goog.ui.InputDatePicker.prototype.getPopupDatePicker = function() {
 /**
  * Returns the selected date, if any.  Compares the dates from the date picker
  * and the input field, causing them to be synced if different.
- * @return {goog.date.Date?} The selected date, if any.
+ * @return {goog.date.DateTime} The selected date, if any.
  */
 goog.ui.InputDatePicker.prototype.getDate = function() {
 
@@ -142,7 +146,7 @@ goog.ui.InputDatePicker.prototype.getDate = function() {
 
 /**
  * Sets the selected date.  See goog.ui.PopupDatePicker.setDate().
- * @param {goog.date.Date?} date The date to set.
+ * @param {goog.date.Date} date The date to set.
  */
 goog.ui.InputDatePicker.prototype.setDate = function(date) {
   this.popupDatePicker_.setDate(date);
@@ -197,7 +201,7 @@ goog.ui.InputDatePicker.prototype.setInputValueAsDate_ = function(date) {
 /**
  * Gets the input element value and attempts to parse it as a date.
  *
- * @return {goog.date.Date?} The date object is returned if the parse
+ * @return {goog.date.DateTime} The date object is returned if the parse
  *      is successful, null is returned on failure.
  * @private
  */
@@ -228,8 +232,8 @@ goog.ui.InputDatePicker.prototype.getInputValueAsDate_ = function() {
  * @override
  */
 goog.ui.InputDatePicker.prototype.createDom = function() {
-  this.setElementInternal(
-      this.getDomHelper().createDom('input', {'type': 'text'}));
+  this.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
   this.popupDatePicker_.createDom();
 };
 

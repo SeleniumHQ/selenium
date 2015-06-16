@@ -32,6 +32,7 @@ goog.require('goog.math.Coordinate');
  * @param {number} y0 Y coordinate of the start point.
  * @param {number} x1 X coordinate of the end point.
  * @param {number} y1 Y coordinate of the end point.
+ * @struct
  * @constructor
  * @final
  */

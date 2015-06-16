@@ -31,6 +31,7 @@ goog.require('goog.storage.mechanism.Mechanism');
  * Interface for all iterable storage mechanisms.
  *
  * @constructor
+ * @struct
  * @extends {goog.storage.mechanism.Mechanism}
  */
 goog.storage.mechanism.IterableMechanism = function() {
