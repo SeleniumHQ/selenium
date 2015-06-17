@@ -160,8 +160,8 @@ Recorder.prototype.findClickableElement = function(e) {
 	if (!e.tagName) return null;
 	var tagName = e.tagName.toLowerCase();
 	var type = e.type;
-	if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" ||
-		(tagName == "input" && 
+	if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" || tagName == "a" ||
+		(tagName == "input" &&
 		 (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox" || type == "reset"))) {
 		return e;
 	} else {
