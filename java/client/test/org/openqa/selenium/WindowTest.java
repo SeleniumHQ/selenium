@@ -62,6 +62,7 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeBy(-20, -20);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -69,14 +70,11 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
-    try {
-      // resize relative to the initial size, since we don't know what it is
-      changeSizeBy(-20, -20);
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    // resize relative to the initial size, since we don't know what it is
+    changeSizeBy(-20, -20);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -84,12 +82,8 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
-    try {
-      // resize relative to the initial size, since we don't know what it is
-      changeSizeBy(-20, -20);
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    // resize relative to the initial size, since we don't know what it is
+    changeSizeBy(-20, -20);
   }
 
   @Test
@@ -142,6 +136,7 @@ public class WindowTest extends JUnit4TestBase {
     maximize();
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
@@ -154,14 +149,11 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeTo(new Dimension(450, 275));
 
     driver.switchTo().frame("fourth");
-    try {
-      maximize();
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    maximize();
   }
 
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -173,11 +165,7 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeTo(new Dimension(450, 275));
 
     driver.switchTo().frame("iframe1-name");
-    try {
-      maximize();
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    maximize();
   }
 
   private void changeSizeBy(int deltaX, int deltaY) {

@@ -86,6 +86,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
@@ -100,6 +101,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
