@@ -208,6 +208,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {CHROME, PHANTOMJS, SAFARI})
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));

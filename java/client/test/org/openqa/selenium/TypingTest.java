@@ -669,6 +669,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {SAFARI, MARIONETTE},
       reason = "Safari: cannot type on contentEditable with synthetic events")
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
@@ -691,6 +692,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, MARIONETTE}, issues = {6711})
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
@@ -756,6 +758,7 @@ public class TypingTest extends JUnit4TestBase {
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));

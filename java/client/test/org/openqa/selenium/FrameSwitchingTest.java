@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -514,6 +515,37 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         }
         assertEquals(baseUrl + "bug4876_iframe.html", url);
       }
+    }
+  }
+
+  @Ignore(MARIONETTE) // Marionette not tested.
+  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
+  @Test
+  public void testGetShouldSwitchToDefaultContext() {
+    // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1106
+    assumeFalse(
+        "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
+        && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
+
+    driver.get(pages.iframePage);
+    try {
+      driver.findElement(By.id("iframe1"));
+    } catch (NoSuchElementException e) {
+      fail("Expected to be on iframes.html, but " + e.getMessage());
+    }
+
+    driver.switchTo().frame(driver.findElement(By.id("iframe1")));
+    try {
+      driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.
+    } catch (NoSuchElementException e) {
+      fail("Expected to be on formPage.html, but " + e.getMessage());
+    }
+
+    driver.get(pages.iframePage); // This must effectively switchTo().defaultContent(), too.
+    try {
+      driver.findElement(By.id("iframe1"));
+    } catch (NoSuchElementException e) {
+      fail("Expected to be on iframes.html, but " + e.getMessage());
     }
   }
 

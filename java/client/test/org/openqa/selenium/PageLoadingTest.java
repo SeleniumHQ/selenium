@@ -238,6 +238,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Ignore({MARIONETTE})
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
@@ -418,6 +419,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+    // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1125
+    assumeFalse(
+        "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
+        && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
 
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 
