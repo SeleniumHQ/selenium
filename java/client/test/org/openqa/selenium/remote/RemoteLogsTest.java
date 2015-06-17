@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -74,6 +75,24 @@ public class RemoteLogsTest {
     assertEquals(2, allLogEntries.size());
     assertEquals("hello", allLogEntries.get(0).getMessage());
     assertEquals("world", allLogEntries.get(1).getMessage());
+  }
+
+  @Test
+  public void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
+    List<LogEntry> entries = new ArrayList<LogEntry>();
+    entries.add(new LogEntry(Level.INFO, 0, "hello"));
+    when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
+
+    when(
+        executeMethod.execute(
+            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+        .thenThrow(
+            new WebDriverException("IGNORE THIS LOG MESSAGE AND STACKTRACE; IT IS EXPECTED."));
+
+    LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
+    List<LogEntry> allLogEntries = logEntries.getAll();
+    assertEquals(1, allLogEntries.size());
+    assertEquals("hello", allLogEntries.get(0).getMessage());
   }
 
   @Test
