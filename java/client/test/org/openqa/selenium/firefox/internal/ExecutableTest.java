@@ -23,8 +23,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
