@@ -17,7 +17,6 @@
 
 goog.provide('webdriver.testing.Client');
 
-goog.require('goog.json');
 goog.require('goog.net.XmlHttp');
 
 
@@ -166,7 +165,7 @@ webdriver.testing.Client.prototype.sendScreenshotEvent = function(data,
 * @private
 */
 webdriver.testing.Client.prototype.sendEvent_ = function(type, opt_data) {
-  var payload = goog.json.serialize({
+  var payload = JSON.stringify({
     'id': this.id_,
     'type': type,
     'data': opt_data || {}

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.jsunit');
 goog.require('webdriver.By');
 goog.require('webdriver.Locator');

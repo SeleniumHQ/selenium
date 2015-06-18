@@ -108,6 +108,7 @@ function Context(opt_configureForTesting) {
       return true;
     },
     CLOSURE_NO_DEPS: !isDevMode(),
+    CLOSURE_UNCOMPILED_DEFINES: {'goog.json.USE_NATIVE_JSON': true},
     goog: {}
   });
   closure.window = closure.top = closure;
