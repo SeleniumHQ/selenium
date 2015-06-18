@@ -37,7 +37,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import com.google.common.base.Throwables;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
@@ -59,7 +58,6 @@ import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
