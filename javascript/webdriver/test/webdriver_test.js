@@ -18,7 +18,6 @@
 goog.require('bot.ErrorCode');
 goog.require('goog.Promise');
 goog.require('goog.functions');
-goog.require('goog.json');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
@@ -139,11 +138,11 @@ function createCommandMatcher(commandName, parameters) {
         parameters, actual.getParameters());
     assertNull(
         'Wrong parameters for "' + commandName + '"' +
-            '\n    Expected: ' + goog.json.serialize(parameters) +
-            '\n    Actual: ' + goog.json.serialize(actual.getParameters()),
+            '\n    Expected: ' + JSON.stringify(parameters) +
+            '\n    Actual: ' + JSON.stringify(actual.getParameters()),
         differences);
     return true;
-  }, commandName + '(' + goog.json.serialize(parameters) + ')');
+  }, commandName + '(' + JSON.stringify(parameters) + ')');
 }
 
 
