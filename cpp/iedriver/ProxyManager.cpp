@@ -21,16 +21,7 @@
 #include "json.h"
 #include "logging.h"
 #include "messages.h"
-
-// Define a shared data segment.  Variables in this segment can be
-// shared across processes that load this DLL.
-#pragma data_seg("PROCSHARED")
-HHOOK window_proc_hook = NULL;
-int proxy_string_buffer_size;
-wchar_t proxy_string[512];
-#pragma data_seg()
-
-#pragma comment(linker, "/section:PROCSHARED,RWS")
+#include "HookProcessor.h"
 
 #define WD_PROXY_TYPE_DIRECT "direct"
 #define WD_PROXY_TYPE_SYSTEM "system"
@@ -39,28 +30,6 @@ wchar_t proxy_string[512];
 #define WD_PROXY_TYPE_AUTODETECT "autodetect"
 
 namespace webdriver {
-
-class CopyDataHolderWindow : public CWindowImpl<CopyDataHolderWindow> {
- public:
-  DECLARE_WND_CLASS(L"CopyDataHolderWindow")
-  BEGIN_MSG_MAP(CopyDataHolderWindow)
-  END_MSG_MAP()
-
-  LRESULT CopyData(std::wstring data_to_copy, HWND destination_window_handle) {
-    std::vector<wchar_t> buffer;
-    StringUtilities::ToBuffer(data_to_copy, &buffer);
-
-    COPYDATASTRUCT data;
-    data.dwData = 1;
-    data.cbData = sizeof(wchar_t) * static_cast<int>(buffer.size());
-    data.lpData = &buffer[0];
-    LRESULT result = ::SendMessage(destination_window_handle,
-                                   WM_COPYDATA,
-                                   reinterpret_cast<WPARAM>(this->m_hWnd),
-                                   reinterpret_cast<LPARAM>(&data));
-    return result;
-  }
-};
 
 ProxyManager::ProxyManager(void) {
 }
@@ -226,23 +195,15 @@ void ProxyManager::RestoreProxySettings() {
 void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
   LOG(TRACE) << "ProxyManager::SetPerProcessProxySettings";
   std::wstring proxy = this->BuildProxySettingsString();
-  CopyDataHolderWindow holder;
-  holder.Create(/*HWND*/ HWND_MESSAGE,
-                /*_U_RECT rect*/ CWindow::rcDefault,
-                /*LPCTSTR szWindowName*/ NULL,
-                /*DWORD dwStyle*/ NULL,
-                /*DWORD dwExStyle*/ NULL,
-                /*_U_MENUorID MenuOrID*/ 0U,
-                /*LPVOID lpCreateParam*/ NULL);
-  bool hooked = ProxyManager::InstallWindowsHook(browser_window_handle);
-  LRESULT result = holder.CopyData(proxy, browser_window_handle);
-  result = ::SendMessage(browser_window_handle,
-                         WD_CHANGE_PROXY,
-                         NULL,
-                         NULL);
+  HookProcessor hook(browser_window_handle);
+  hook.InstallWindowsHook("SetProxyWndProc", WH_CALLWNDPROC);
+  hook.PushData(static_cast<int>(proxy.size() * sizeof(wchar_t)), &proxy[0]);
+  LRESULT result = ::SendMessage(browser_window_handle,
+                                 WD_CHANGE_PROXY,
+                                 NULL,
+                                 NULL);
   LOG(INFO) << "SendMessage result? " << result;
-  ProxyManager::UninstallWindowsHook();
-  holder.DestroyWindow();
+  hook.UninstallWindowsHook();
 }
 
 void ProxyManager::SetGlobalProxySettings() {
@@ -379,58 +340,34 @@ void ProxyManager::GetCurrentProxyType() {
   }
 }
 
-bool ProxyManager::InstallWindowsHook(HWND window_handle) {
-  LOG(TRACE) << "Entering WindowsProcedureOverride::InstallWindowsHook";
-
-  HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-
-  FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, "OverrideWndProc");
-  if (hook_procedure_address == NULL || hook_procedure_address == 0) {
-    LOGERR(WARN) << "Unable to get address of hook procedure to override main window proc";
-    return false;
-  }
-  HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
-
-  // Install the Windows hook.
-  DWORD thread_id = ::GetWindowThreadProcessId(window_handle, NULL);
-  window_proc_hook = ::SetWindowsHookEx(WH_CALLWNDPROC,
-                                        hook_procedure,
-                                        instance_handle,
-                                        thread_id);
-  if (window_proc_hook == NULL) {      
-    LOGERR(WARN) << "Unable to set windows hook to override main window proc";
-    return false;
-  }
-  return true;
-}
-
-void ProxyManager::UninstallWindowsHook() {
-  ::UnhookWindowsHookEx(window_proc_hook);
-}
-
 } // namespace webdriver
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Many thanks to sunnyandy for helping out with this approach. What we're 
-// doing here is setting up a Windows hook to see incoming messages to the
-// IEFrame's message processor. Once we find one is the message we want,
-// we inject our own message processor into the IEFrame process to handle 
-// that one message. 
-//
-// See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
-LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
   CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
   if (WM_COPYDATA == call_window_proc_struct->message) {
     COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
-    proxy_string_buffer_size = data->cbData;
-    wcscpy_s(proxy_string, data->cbData, reinterpret_cast<LPCWSTR>(data->lpData));
+    webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
   } else if (WD_CHANGE_PROXY == call_window_proc_struct->message) {
-    std::wstring proxy = proxy_string;
+    // Allocate a buffer of wchar_t the length of the data in the
+    // shared memory buffer, plus one extra wide char, so that we
+    // can null terminate.
+    int proxy_string_buffer_size = webdriver::HookProcessor::GetDataBufferSize() + sizeof(wchar_t);
+    std::vector<wchar_t> proxy_string_buffer(proxy_string_buffer_size / sizeof(wchar_t));
+
+    // Copy the data from the shared memory buffer, and force
+    // a terminating null char into the local vector, then 
+    // convert to wstring, so it's easier to work with.
+    webdriver::HookProcessor::CopyDataFromBuffer(proxy_string_buffer_size,
+                                                 &proxy_string_buffer[0]);
+    proxy_string_buffer[proxy_string_buffer.size() - 1] = L'\0';
+    std::wstring proxy = &proxy_string_buffer[0];
+
     INTERNET_PROXY_INFO proxy_info;
-    std::vector<char> multibyte_buffer(proxy_string_buffer_size * 2);
+    std::vector<char> multibyte_buffer(proxy_string_buffer_size);
     if (proxy == L"direct") {
       proxy_info.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
       proxy_info.lpszProxy = L"";
@@ -439,10 +376,12 @@ LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
       // multi-byte strings, not Unicode strings. Since the INTERNET_PROXY_INFO
       // struct hard-codes to LPCTSTR, and that translates into LPCWSTR for the
       // compiler settings we use, we must use the multi-byte version here.
+      // Note that for the count of input characters, we can use -1, since
+      // we've forced the string to be null-terminated.
       ::WideCharToMultiByte(CP_UTF8,
                             0,
-                            proxy_string,
-                            proxy_string_buffer_size / sizeof(wchar_t),
+                            proxy.c_str(),
+                            -1,
                             &multibyte_buffer[0],
                             static_cast<int>(multibyte_buffer.size()),
                             NULL,
@@ -458,7 +397,8 @@ LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
                                          0);
   }
 
-  return ::CallNextHookEx(window_proc_hook, nCode, wParam, lParam);
+  //return ::CallNextHookEx(window_proc_hook, nCode, wParam, lParam);
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 #ifdef __cplusplus

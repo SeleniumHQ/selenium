@@ -17,6 +17,7 @@
 #include <ctime>
 #include "errorcodes.h"
 #include "ElementRepository.h"
+#include "HookProcessor.h"
 #include "InputManager.h"
 #include "interactions.h"
 #include "json.h"
@@ -24,12 +25,6 @@
 #include "logging.h"
 #include "Script.h"
 #include "Generated/atoms.h"
-
-#pragma data_seg("INPUTS")
-int input_message_count = 0;
-#pragma data_seg()
-
-#pragma comment(linker, "/section:INPUTS,RWS")
 
 namespace webdriver {
 
@@ -134,6 +129,13 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
   // to be played back. So play them back.
   int sent_event_count = 0;
   if (status_code == WD_SUCCESS && this->inputs_.size() > 0) {
+    // Leverage the data buffer size member in the shared memory
+    // space. We set it to zero here, then reset it to its previous
+    // value after we're done. N.B., there's a potential race condition
+    // where multiple threads might step on each other. Use with care.
+    int original_data_buffer_size = HookProcessor::GetDataBufferSize();
+    HookProcessor::SetDataBufferSize(0);
+
     // SendInput simulates mouse and keyboard events at a very low level, so
     // low that there is no guarantee that IE will have processed the resulting
     // windows messages before this method returns. Therefore, we'll install
@@ -144,13 +146,23 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     // the requireWindowFocus capability is turned on, and since SendInput is 
     // documented to not allow other input events to be interspersed into the
     // input queue, the risk is hopefully minimized.
-    this->InstallInputEventHooks();
+    HookProcessor keyboard_hook(NULL);
+    keyboard_hook.InstallWindowsHook("KeyboardHookProc", WH_KEYBOARD);
+
+    HookProcessor mouse_hook(NULL);
+    mouse_hook.InstallWindowsHook("MouseHookProc", WH_MOUSE);
+
     sent_event_count = ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
     LOG(DEBUG) << "Sent " << sent_event_count << " events via SendInput()";
     bool wait_succeeded = this->WaitForInputEventProcessing(sent_event_count);
     std::string success = wait_succeeded ? "true" : "false";
     LOG(DEBUG) << "Wait for input event processing returned " << success;
-    this->UninstallInputEventHooks();
+
+    // We're done here, so uninstall the hooks, and reset the buffer size.
+    keyboard_hook.UninstallWindowsHook();
+    mouse_hook.UninstallWindowsHook();
+    HookProcessor::SetDataBufferSize(original_data_buffer_size);
+
     // A small sleep after all messages have been detected by an application
     // event loop is appropriate here. This value (50 milliseconds is chosen
     // as it's probably undetectable by most people observing the test running. 
@@ -165,72 +177,24 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
   return status_code;
 }
 
-void InputManager::InstallInputEventHooks() {
-  LOG(TRACE) << "Entering InputManager::InstallInputEventHooks";
-  this->keyboard_hook_handle_ = this->InstallWindowsHook("KeyboardHookProc", WH_KEYBOARD);
-  if (this->keyboard_hook_handle_ == NULL) {
-    LOG(WARN) << "Installing hook for keyboard messages failed";
-  }
-  this->mouse_hook_handle_ = this->InstallWindowsHook("MouseHookProc", WH_MOUSE);
-  if (this->mouse_hook_handle_ == NULL) {
-    LOG(WARN) << "Installing hook for mouse messages failed";
-  }
-}
-
-void InputManager::UninstallInputEventHooks() {
-  LOG(TRACE) << "Entering InputManager::UninstallInputEventHooks";
-  if (this->keyboard_hook_handle_ != NULL) {
-    ::UnhookWindowsHookEx(this->keyboard_hook_handle_);
-    this->keyboard_hook_handle_ = NULL;
-  }
-  if (this->mouse_hook_handle_ != NULL) {
-    ::UnhookWindowsHookEx(this->mouse_hook_handle_);
-    this->mouse_hook_handle_ = NULL;
-  }
-  input_message_count = 0;
-}
-
-HHOOK InputManager::InstallWindowsHook(std::string hook_procedure_name, int hook_type) {
-  LOG(TRACE) << "Entering InputManager::InstallWindowsHook";
-
-  HHOOK hook_handle = NULL;
-  HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-
-  FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, hook_procedure_name.c_str());
-  if (hook_procedure_address == NULL || hook_procedure_address == 0) {
-    LOGERR(WARN) << "Unable to get address of hook procedure to catch input events";
-    return NULL;
-  }
-  HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
-
-  // Install the Windows hook.
-  hook_handle = ::SetWindowsHookEx(hook_type,
-                                   hook_procedure,
-                                   instance_handle,
-                                   0);
-  if (hook_handle == NULL) {      
-    LOGERR(WARN) << "Unable to set windows hook to catch processing of input events.";
-  }
-  return hook_handle;
-}
-
 bool InputManager::WaitForInputEventProcessing(int input_count) {
   LOG(TRACE) << "Entering InputManager::WaitForInputEventProcessing";
   // Adaptive wait. The total wait time is the number of input messages
   // expected by the hook multiplied by a static wait time for each
-  // message to be processed (currently 50 milliseconds). We should
+  // message to be processed (currently 100 milliseconds). We should
   // exit out of this loop once the number of processed windows keyboard
   // or mouse messages processed by the system exceeds the number of
   // input events created by the call to SendInput.
   int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
   clock_t end = clock() + (total_timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
 
-  bool inputs_processed = input_message_count >= input_count;
+  bool inputs_processed = HookProcessor::GetDataBufferSize() >= input_count;
   while (!inputs_processed && clock() < end) {
     // Sleep a short amount of time to prevent starving the processor.
     ::Sleep(25);
-    inputs_processed = input_message_count >= input_count;
+    inputs_processed = HookProcessor::GetDataBufferSize() >= input_count;
   }
+  LOG(DEBUG) << "Number of inputs processed: " << HookProcessor::GetDataBufferSize();
   return inputs_processed;
 }
 
@@ -981,12 +945,24 @@ extern "C" {
 #endif
 
 LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  ++input_message_count;
+  // Yes, we could use the following one-liner:
+  // webdriver::HookProcessor::SetDataBufferSize(++webdriver::HookProcessor::GetDataBufferSize());
+  // but this construction is clearer of intent, and should be mostly
+  // inlined by the compiler anyway.
+  int message_count = webdriver::HookProcessor::GetDataBufferSize();
+  ++message_count;
+  webdriver::HookProcessor::SetDataBufferSize(message_count);
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  ++input_message_count;
+  // Yes, we could use the following one-liner:
+  // webdriver::HookProcessor::SetDataBufferSize(++webdriver::HookProcessor::GetDataBufferSize());
+  // but this construction is clearer of intent, and should be mostly
+  // inlined by the compiler anyway.
+  int message_count = webdriver::HookProcessor::GetDataBufferSize();
+  ++message_count;
+  webdriver::HookProcessor::SetDataBufferSize(message_count);
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 

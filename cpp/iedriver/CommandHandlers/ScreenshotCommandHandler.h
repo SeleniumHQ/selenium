@@ -18,22 +18,12 @@
 #define WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 
 #include "../Browser.h"
+#include "../HookProcessor.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
 #include "logging.h"
 #include <atlimage.h>
 #include <atlenc.h>
-
-// Define a shared data segment.  Variables in this segment can be
-// shared across processes that load this DLL.
-#pragma data_seg("SHARED")
-HHOOK next_hook = NULL;
-HWND ie_window_handle = NULL;
-int max_width = 0;
-int max_height = 0;
-#pragma data_seg()
-
-#pragma comment(linker, "/section:SHARED,RWS")
 
 namespace webdriver {
 
@@ -111,7 +101,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
   HRESULT CaptureBrowser(BrowserHandle browser) {
     LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureBrowser";
 
-    ie_window_handle = browser->GetTopLevelWindowHandle();
+    HWND ie_window_handle = browser->GetTopLevelWindowHandle();
     HWND content_window_handle = browser->GetContentWindowHandle();
 
     CComPtr<IHTMLDocument2> document;
@@ -139,8 +129,15 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(DEBUG) << "Initial chrome sizes are (w, h): "
                << chrome_width << ", " << chrome_height;
 
-    max_width = document_info.width + chrome_width;
-    max_height = document_info.height + chrome_height;
+    // Technically, we could use a custom structure here, and save a
+    // few bytes, but RECT is already a well-known structure, and
+    // one that is included as part of the Windows SDK, so we'll
+    // leverage it.
+    RECT max_image_dimensions;
+    max_image_dimensions.left = 0;
+    max_image_dimensions.top = 0;
+    max_image_dimensions.right = document_info.width + chrome_width;
+    max_image_dimensions.bottom = document_info.height + chrome_height;
 
     // For some reason, this technique does not allow the user to resize
     // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is pretty
@@ -148,15 +145,15 @@ class ScreenshotCommandHandler : public IECommandHandler {
     //
     // GDI+ limit after which it may report Generic error for some image types
     int SIZE_LIMIT = 65534; 
-    if (max_height > SIZE_LIMIT) {
+    if (max_image_dimensions.bottom > SIZE_LIMIT) {
       LOG(WARN) << "Required height is greater than limit. Truncating screenshot height.";
-      max_height = SIZE_LIMIT;
-      document_info.height = max_height - chrome_height;
+      max_image_dimensions.bottom = SIZE_LIMIT;
+      document_info.height = max_image_dimensions.bottom - chrome_height;
     }
-    if (max_width > SIZE_LIMIT) {
+    if (max_image_dimensions.right > SIZE_LIMIT) {
       LOG(WARN) << "Required width is greater than limit. Truncating screenshot width.";
-      max_width = SIZE_LIMIT;
-      document_info.width = max_width - chrome_width;
+      max_image_dimensions.right = SIZE_LIMIT;
+      document_info.width = max_image_dimensions.right - chrome_width;
     }
 
     long original_width = browser->GetWidth();
@@ -175,10 +172,11 @@ class ScreenshotCommandHandler : public IECommandHandler {
       ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
     }
 
-    this->InstallWindowsHook();
-
-    browser->SetWidth(max_width);
-    browser->SetHeight(max_height);
+    HookProcessor hook(ie_window_handle);
+    hook.InstallWindowsHook("ScreenshotWndProc", WH_CALLWNDPROC);
+    hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
+    browser->SetWidth(max_image_dimensions.right);
+    browser->SetHeight(max_image_dimensions.bottom);
 
     // Capture the window's canvas to a DIB.
     BOOL created = this->image_->Create(document_info.width,
@@ -196,7 +194,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
       LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
     }
 
-    this->UninstallWindowsHook();
+    hook.UninstallWindowsHook();
 
     // Restore the browser to the original dimensions.
     if (is_maximized) {
@@ -330,33 +328,6 @@ class ScreenshotCommandHandler : public IECommandHandler {
     *width = window_rect.right - window_rect.left;
     *height = window_rect.bottom - window_rect.top;
   }
-
-  void InstallWindowsHook() {
-    LOG(TRACE) << "Entering ScreenshotCommandHandler::InstallWindowsHook";
-
-    HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-
-    FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, "ScreenshotWndProc");
-    if (hook_procedure_address == NULL || hook_procedure_address == 0) {
-      LOGERR(WARN) << "Unable to get address of hook procedure to catch WM_GETMINMAXINFO";
-      return;
-    }
-    HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
-
-    // Install the Windows hook.
-    DWORD thread_id = ::GetWindowThreadProcessId(ie_window_handle, NULL);
-    next_hook = ::SetWindowsHookEx(WH_CALLWNDPROC,
-                                   hook_procedure,
-                                   instance_handle,
-                                   thread_id);
-    if (next_hook == NULL) {      
-      LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
-    }
-  }
-
-  void UninstallWindowsHook() {
-    ::UnhookWindowsHookEx(next_hook);
-  }
 };
 
 } // namespace webdriver
@@ -387,9 +358,10 @@ LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd,
 
   if (WM_GETMINMAXINFO == message) {
     MINMAXINFO* minMaxInfo = reinterpret_cast<MINMAXINFO*>(lParam);
-
-    minMaxInfo->ptMaxTrackSize.x = max_width;
-    minMaxInfo->ptMaxTrackSize.y = max_height;
+    RECT max_size;
+    webdriver::HookProcessor::CopyDataFromBuffer(sizeof(RECT), reinterpret_cast<void*>(&max_size));
+    minMaxInfo->ptMaxTrackSize.x = max_size.right;
+    minMaxInfo->ptMaxTrackSize.y = max_size.bottom;
 
     // We're not going to pass this message onto the original message
     // processor, so we should return 0, per the documentation for
@@ -417,7 +389,10 @@ LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd,
 // See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
 LRESULT CALLBACK ScreenshotWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
   CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
-  if (WM_GETMINMAXINFO == call_window_proc_struct->message) {
+  if (WM_COPYDATA == call_window_proc_struct->message) {
+    COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
+    webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
+  } else if (WM_GETMINMAXINFO == call_window_proc_struct->message) {
     // Inject our own message processor into the process so we can modify
     // the WM_GETMINMAXINFO message. It is not possible to modify the 
     // message from this hook, so the best we can do is inject a function
@@ -430,7 +405,7 @@ LRESULT CALLBACK ScreenshotWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
               reinterpret_cast<HANDLE>(proc));
   }
 
-  return ::CallNextHookEx(next_hook, nCode, wParam, lParam);
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 #ifdef __cplusplus
