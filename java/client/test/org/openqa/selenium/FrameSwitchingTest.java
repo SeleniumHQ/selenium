@@ -482,6 +482,34 @@ public class FrameSwitchingTest extends JUnit4TestBase {
       fail("Could not find element after switching frame");
     }
   }
+  
+  @Ignore(value = {PHANTOMJS})
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
+    driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
+
+    driver.switchTo().frame("iframe1");
+
+    WebElement killIframe = driver.findElement(By.id("killIframe"));
+    killIframe.click();
+    driver.switchTo().defaultContent();
+
+    WebElement frame = driver.findElement(By.id("iframe1"));
+    assertFrameNotPresent(frame);
+
+    WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
+    addIFrame.click();
+    wait.until(presenceOfElementLocated(By.id("iframe1")));
+
+    driver.switchTo().frame("iframe1");
+
+    try {
+      wait.until(presenceOfElementLocated(By.id("success")));
+    } catch (WebDriverException web) {
+      fail("Could not find element after switching frame");
+    }
+  }
 
   @Ignore(ALL)
   @JavascriptEnabled
@@ -583,8 +611,14 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
   
   private void assertFrameNotPresent(int locator) {
-	    driver.switchTo().defaultContent();
-	    wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
-	    driver.switchTo().defaultContent();
-	  }
+    driver.switchTo().defaultContent();
+    wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
+    driver.switchTo().defaultContent();
+  }
+  
+  private void assertFrameNotPresent(WebElement locator) {
+	driver.switchTo().defaultContent();
+	wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
+	driver.switchTo().defaultContent();
+  }
 }
