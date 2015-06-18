@@ -141,6 +141,7 @@ public enum Colors {
     PLUM(new Color(221, 160, 221, 1d)),
     POWDERBLUE(new Color(176, 224, 230, 1d)),
     PURPLE(new Color(128, 0, 128, 1d)),
+    REBECCAPURPLE(new Color(102, 51, 153, 1d)),
     RED(new Color(255, 0, 0, 1d)),
     ROSYBROWN(new Color(188, 143, 143, 1d)),
     ROYALBLUE(new Color(65, 105, 225, 1d)),
