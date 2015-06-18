@@ -38,6 +38,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -461,20 +462,17 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
-
-    driver.switchTo().frame("iframe1");
-
+    int iframe = 0;
+    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
+    // we should be in the frame now
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
-    driver.switchTo().defaultContent();
 
-    assertFrameNotPresent(0);
+    driver.switchTo().defaultContent();
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
-    wait.until(presenceOfElementLocated(By.id("iframe1")));
-
-    driver.switchTo().frame("iframe1");
+    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
 
     try {
       wait.until(presenceOfElementLocated(By.id("success")));
@@ -482,27 +480,25 @@ public class FrameSwitchingTest extends JUnit4TestBase {
       fail("Could not find element after switching frame");
     }
   }
-  
+
   @Ignore(value = {PHANTOMJS})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
-
-    driver.switchTo().frame("iframe1");
-
+    WebElement iframe = driver.findElement(By.id("iframe1"));
+    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
+    // we should be in the frame now
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
-    driver.switchTo().defaultContent();
 
-    WebElement frame = driver.findElement(By.id("iframe1"));
-    assertFrameNotPresent(frame);
+    driver.switchTo().defaultContent();
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
-    wait.until(presenceOfElementLocated(By.id("iframe1")));
 
-    driver.switchTo().frame("iframe1");
+    iframe = driver.findElement(By.id("iframe1"));
+    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
 
     try {
       wait.until(presenceOfElementLocated(By.id("success")));
@@ -605,18 +601,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   private void assertFrameNotPresent(String locator) {
-    driver.switchTo().defaultContent();
-    wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
-    driver.switchTo().defaultContent();
-  }
-  
-  private void assertFrameNotPresent(int locator) {
-    driver.switchTo().defaultContent();
-    wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
-    driver.switchTo().defaultContent();
-  }
-  
-  private void assertFrameNotPresent(WebElement locator) {
     driver.switchTo().defaultContent();
     wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
     driver.switchTo().defaultContent();
