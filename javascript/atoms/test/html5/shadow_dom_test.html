@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<H1>Page for Shadow DOM chromedriver tests</H1>
+The page has a shadow root that in turn contains two shadow roots. So we can
+check behaviour with both nested roots and younger/older sibling roots. The
+various sections are highlighted with colored borders to make it more obvious
+where each element comes from.
+<div id="outerDiv">
+  <div id="innerDiv" style="border-style:solid;border-color:yellow">
+    Base-level Stuff
+  </div>
+</div>
+
+<template id="parentTemplate">
+<div id="parentDiv">
+  <div style="border-style:solid;border-color:green">
+    <H3 id="parentHeading">Parent</H3>
+    <H4>Parent Contents</H4>
+    <content></content>
+  </div>
+  <div style="border-style:solid;border-color:green" class="stuffForYoungChild">
+    Stuff for for the younger child.
+  </div>
+</div>
+</template>
+<template id="olderChildTemplate">
+<div id="olderChildDiv">
+    <div style="border-style:solid;border-color:red">
+        <H3 id="olderHeading">Older Child</H3>
+        As the older child of a nested shadow root, this is the most likely
+        to go wrong bit of the page.
+        <H4>Older Child Contents</H4>
+        <content></content>
+    </div>
+</div>
+</template>
+<template id="youngerChildTemplate">
+<div id="youngerChildDiv">
+    <div style="border-style:solid;border-color:blue">
+        <H3>Younger Child</H3>
+        <div style="border-style:dotted;border-color:blue">
+            <H4>Younger Child Contents</H4>
+            <content id="youngChildContent" select=".stuffForYoungChild"></content>
+        </div>
+        <div style="border-style:dashed;border-color:blue">
+            <H4>Younger Child Shadow</H4>
+            <shadow id="youngChildShadow"></shadow>
+        </div>
+    </div>
+</div>
+</template>
+<template id="neverShownTemplate">
+<div id="neverShownDiv">
+This should never be shown. The ShadowDOM is older than the parent shadowDOM, 
+and parent doesn't have a &lt;shadow&gt; element. 
+</div>
+</template>
+<script type="text/javascript" >
+if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+  var neverShownShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
+  neverShownShadowRoot.appendChild(document.querySelector('#neverShownTemplate'
+      ).content.cloneNode(true));
+  var parentShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
+  parentShadowRoot.appendChild(document.querySelector('#parentTemplate'
+      ).content.cloneNode(true));
+  var olderShadowRoot = parentShadowRoot.querySelector("#parentDiv"
+      ).createShadowRoot();
+  olderShadowRoot.appendChild(document.querySelector('#olderChildTemplate'
+      ).content.cloneNode(true));
+  var youngerShadowRoot = parentShadowRoot.querySelector("#parentDiv"
+      ).createShadowRoot();
+  youngerShadowRoot.appendChild(document.querySelector('#youngerChildTemplate'
+      ).content.cloneNode(true));
+}
+</script>
+
+
+<script type="text/javascript" >
+
+function testGetParentNodeInComposedDom() {
+  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+    assertFalse(typeof bot.dom.getParentNodeInComposedDom === "unknown");
+  } else {
+    var youngChildContent = document.querySelector("* /deep/ #youngChildContent");
+    var stuffForYoungChild = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ .stuffForYoungChild"));
+    var youngChildShadow = document.querySelector("* /deep/ #youngChildShadow");
+    var oldChildDiv = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #olderChildDiv"));
+    var innerDiv = /** @type {!Element} */ (document.querySelector(
+      "#innerDiv"));
+    var outerDiv = document.querySelector("#outerDiv");
+  
+    // According to the logical DOM parentDiv is the parent of 
+    // stuffForYoungChild, but according to the composed DOM, 
+    // youngChildDiv is the parent.
+    // Check that content elements work.
+    assertEquals(youngChildContent,
+        bot.dom.getParentNodeInComposedDom(stuffForYoungChild));
+    // Check that shadow elements work.
+    assertEquals(youngChildShadow,
+        bot.dom.getParentNodeInComposedDom(oldChildDiv));
+    // Check that non shadow DOM elements work as expected
+    assertEquals(outerDiv,
+        bot.dom.getParentNodeInComposedDom(innerDiv));
+  }
+}
+
+
+function testGetVisibleTextInComposedDom() {
+  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+    assertFalse(typeof bot.dom.getVisibleTextInComposedDom === "unknown");
+  } else {
+    var parentDiv = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #parentDiv"));
+    var youngerChildDiv = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #youngerChildDiv"));
+    var olderChildDiv = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #olderChildDiv"));
+    var expectedOlderChildContents = "Older Child\n" +
+        "As the older child of a nested shadow root, this is the most " +
+        "likely to go wrong bit of the page.\n" +
+        "Older Child Contents\n" +
+        "Parent\n" +
+        "Parent Contents\n" +
+        "Base-level Stuff";
+  
+    var expectedYoungerChildContents = "Younger Child\n" +
+        "Younger Child Contents\n" +
+        "Stuff for for the younger child.\n" +
+        "Younger Child Shadow\n" +
+        expectedOlderChildContents;
+  
+    var expectedParentContents = expectedYoungerChildContents;
+  
+    var expectedPageContents = "Page for Shadow DOM chromedriver tests\n" + 
+        "The page has a shadow root that in turn contains two shadow roots. " +
+        "So we can check behaviour with both nested roots and younger/" +
+        "older sibling roots. The various sections are highlighted with " +
+        "colored borders to make it more obvious where each element comes " +
+        "from.\n" +
+        expectedParentContents;
+  
+    assertEquals(expectedOlderChildContents, 
+        bot.dom.getVisibleTextInComposedDom(olderChildDiv));
+    assertEquals(expectedYoungerChildContents, 
+        bot.dom.getVisibleTextInComposedDom(youngerChildDiv));
+    assertEquals(expectedParentContents, bot.dom.getVisibleTextInComposedDom(parentDiv));
+    assertEquals(expectedPageContents, 
+      bot.dom.getVisibleTextInComposedDom(/** @type {!Element} */ (document.body)));
+  }
+}
+
+function testIsShownInComposedDom() {
+  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+    assertFalse(typeof bot.dom.isShownInComposedDom === "unknown");
+  } else {
+    var parentHeading = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #parentHeading"));
+    var oldChildDiv = document.querySelector("* /deep/ #olderChildDiv");
+    var neverShownDiv = /** @type {!Element} */ (document.querySelector(
+      "* /deep/ #neverShownDiv"));
+  
+    // neverShown is in an older shadow DOM, and thus isn't displayed
+    assertFalse(bot.dom.isShownInComposedDom(neverShownDiv));
+  
+    assert(bot.dom.isShownInComposedDom(parentHeading));
+    var oldChildDivDisplay = oldChildDiv.style.display;
+    try {
+      oldChildDiv.style.display = "None";
+      // In the Logical DOM, parentHeading is displayed. But in the Composed
+      // DOM it's been pulled within oldChildDiv, and thus is no longer visible.
+      assertFalse(bot.dom.isShownInComposedDom(parentHeading));
+    } finally {
+      oldChildDiv.style.display = oldChildDivDisplay;
+    }
+  }
+}
+</script>
+</body>
+</html>
+
+
