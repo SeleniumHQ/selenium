@@ -163,6 +163,13 @@ class EventFiringWebDriverTests(unittest.TestCase):
             "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
             button)
         self.assertEqual("plainButton", value)
+    
+    def test_should_unwrap_element_args_when_switching_frames(self):
+        ef_driver = EventFiringWebDriver(self.driver, AbstractEventListener())
+        ef_driver.get(self._pageURL("iframes"))
+        frame = ef_driver.find_element_by_id("iframe1")
+        ef_driver.switch_to.frame(frame)
+        self.assertEqual("click me!", ef_driver.find_element_by_id("imageButton").get_attribute("alt"))
 
     def test_should_be_able_to_access_wrapped_instance_from_event_calls(self):
         driver = self.driver
