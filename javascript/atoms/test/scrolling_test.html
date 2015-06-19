@@ -45,9 +45,10 @@
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
-            goog.labs.userAgent.browser.isVersionOrHigher('40'),
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
         'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, apparently: ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
         'https://code.google.com/p/chromium/issues/detail?id=448404');
       expectedFailures.run(function() {
         assertNotEquals(0, getTopLevelParent().scrollLeft);
@@ -164,9 +165,10 @@
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
-            goog.labs.userAgent.browser.isVersionOrHigher('40'),
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
         'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, apparently: ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
         'https://code.google.com/p/chromium/issues/detail?id=448404');
       expectedFailures.run(function() {
         assertNotEquals(0, getTopLevelParent().scrollLeft);
