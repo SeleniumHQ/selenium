@@ -72,6 +72,13 @@ public enum Platform {
     }
   },
 
+  WIN10("windows 10", "win10") {
+    @Override
+    public Platform family() {
+      return WINDOWS;
+    }
+  },
+
   MAC("mac", "darwin", "os x") {},
 
   SNOW_LEOPARD("snow leopard", "os x 10.6") {
