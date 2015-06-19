@@ -27,6 +27,7 @@ goog.require('goog.Promise');
 goog.require('goog.async.run');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
 
@@ -38,6 +39,13 @@ var StubError = webdriver.test.testutil.StubError,
 
 
 var flow, uncaughtExceptions;
+
+
+function longStackTracesAreBroken() {
+  // Safari 8.0 is "Safari/538.35.8" in the user agent.
+  return goog.userAgent.product.SAFARI &&
+      !goog.userAgent.isVersionOrHigher(538);
+}
 
 
 function shouldRunTests() {
@@ -477,6 +485,10 @@ function testFailsParentTaskIfAsyncScheduledTaskFails() {
 
 
 function testLongStackTraces_alwaysIncludesTaskStacksInFailures() {
+  if (longStackTracesAreBroken()) {
+    return;
+  }
+
   webdriver.promise.LONG_STACK_TRACES = false;
   flow.execute(function() {
     flow.execute(function() {
@@ -503,6 +515,10 @@ function testLongStackTraces_alwaysIncludesTaskStacksInFailures() {
 
 
 function testLongStackTraces_doesNotIncludeCompletedTasks() {
+  if (longStackTracesAreBroken()) {
+    return;
+  }
+
   flow.execute(goog.nullFunction, 'succeeds');
   flow.execute(throwStubError, 'kaboom').then(fail, function(e) {
     assertIsStubError(e);
@@ -520,6 +536,10 @@ function testLongStackTraces_doesNotIncludeCompletedTasks() {
 
 
 function testLongStackTraces_doesNotIncludePromiseChainWhenDisabled() {
+  if (longStackTracesAreBroken()) {
+    return;
+  }
+
   webdriver.promise.LONG_STACK_TRACES = false;
   flow.execute(function() {
     flow.execute(function() {
@@ -548,6 +568,10 @@ function testLongStackTraces_doesNotIncludePromiseChainWhenDisabled() {
 
 
 function testLongStackTraces_includesPromiseChainWhenEnabled() {
+  if (longStackTracesAreBroken()) {
+    return;
+  }
+
   webdriver.promise.LONG_STACK_TRACES = true;
   flow.execute(function() {
     flow.execute(function() {
