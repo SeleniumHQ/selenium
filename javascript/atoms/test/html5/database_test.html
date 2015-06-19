@@ -32,7 +32,9 @@
 
         try {
           var win = bot.getWindow();
-          var db = win.openDatabase('testDB', '1.0', 'db name', 5 * 1024 * 1024);
+          // Keep the DB size below 5 MB. Above that size, Safari will prompt
+          // for permission and cause this test to hang.
+          var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
           db.transaction(function(tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
                 'PRIMARY KEY, name TEXT, owner TEXT)');
