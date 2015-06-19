@@ -28,7 +28,9 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
+goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
+goog.require('goog.userAgent.product');
 
 
 
@@ -55,7 +57,7 @@ goog.inherits(bot.Touchscreen, bot.Device);
 
 
 /** @private {boolean} */
-bot.Touchscreen.prototype.hasMovedAfterPress_ = false;
+bot.Touchscreen.prototype.fireMouseEventsOnRelease_ = true;
 
 
 /** @private {boolean} */
@@ -88,16 +90,17 @@ bot.Touchscreen.prototype.press = function(opt_press2) {
         'Cannot press touchscreen when already pressed.');
   }
 
-  this.hasMovedAfterPress_ = false;
   this.touchIdentifier_ = this.touchCounter_++;
   if (opt_press2) {
     this.touchIdentifier2_ = this.touchCounter_++;
   }
 
   if (bot.userAgent.IE_DOC_10) {
+    this.fireMouseEventsOnRelease_ = true;
     this.firePointerEvents_(bot.Touchscreen.fireSinglePressPointer_);
   } else {
-    this.fireTouchEvent_(bot.events.EventType.TOUCHSTART);
+    this.fireMouseEventsOnRelease_ = this.fireTouchEvent_(
+        bot.events.EventType.TOUCHSTART);
   }
 };
 
@@ -153,11 +156,11 @@ bot.Touchscreen.prototype.move = function(element, coords, opt_coords2) {
 
   if (this.isPressed()) {
     if (!bot.userAgent.IE_DOC_10) {
-      this.hasMovedAfterPress_ = true;
+      this.fireMouseEventsOnRelease_ = false;
       this.fireTouchEvent_(bot.events.EventType.TOUCHMOVE);
     } else if (!this.cancelled_) {
       if (element != originalElement) {
-        this.hasMovedAfterPress_ = true;
+        this.fireMouseEventsOnRelease_ = false;
       }
       if (bot.Touchscreen.hasMsTouchActionsEnabled_(element)) {
         this.firePointerEvents_(bot.Touchscreen.fireSingleMovePointer_);
@@ -189,6 +192,7 @@ bot.Touchscreen.prototype.isPressed = function() {
  * A helper function to fire touch events.
  *
  * @param {bot.events.EventType} type Event type.
+ * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
 bot.Touchscreen.prototype.fireTouchEvent_ = function(type) {
@@ -202,8 +206,8 @@ bot.Touchscreen.prototype.fireTouchEvent_ = function(type) {
     touchIdentifier2 = this.touchIdentifier2_;
     coords2 = this.clientXY2_;
   }
-  this.fireTouchEvent(type, this.touchIdentifier_, this.clientXY_,
-                      touchIdentifier2, coords2);
+  return this.fireTouchEvent(type, this.touchIdentifier_, this.clientXY_,
+                             touchIdentifier2, coords2);
 };
 
 
@@ -213,13 +217,22 @@ bot.Touchscreen.prototype.fireTouchEvent_ = function(type) {
  * @private
  */
 bot.Touchscreen.prototype.fireTouchReleaseEvents_ = function() {
-  this.fireTouchEvent_(bot.events.EventType.TOUCHEND);
+  var touchendSuccess = this.fireTouchEvent_(bot.events.EventType.TOUCHEND);
 
-  // If no movement occurred since press, TouchScreen.Release will fire the
-  // legacy mouse events: mousemove, mousedown, mouseup, and click
-  // after the touch events have been fired. The click button should be zero
-  // and only one mousemove should fire.
-  if (!this.hasMovedAfterPress_) {
+  // In general, TouchScreen.Release will fire the legacy mouse events:
+  // mousemove, mousedown, mouseup, and click after the touch events have been
+  // fired. The click button should be zero and only one mousemove should fire.
+  // Under the following cases, mouse events should not be fired:
+  // 1. Movement has occurred since press.
+  // 2. Any event handler for touchstart has called preventDefault().
+  // 3. Any event handler for touchend has called preventDefault(), and browser
+  // is Mobile Safari or Chrome.
+  var fireMouseEvents =
+      this.fireMouseEventsOnRelease_ &&
+      (touchendSuccess || !(bot.userAgent.IOS ||
+                            goog.userAgent.product.CHROME));
+
+  if (fireMouseEvents) {
     this.fireMouseEvent(bot.events.EventType.MOUSEMOVE, this.clientXY_, 0);
     var performFocus = this.fireMouseEvent(bot.events.EventType.MOUSEDOWN,
                                            this.clientXY_, 0);
@@ -331,7 +344,7 @@ bot.Touchscreen.fireSingleReleasePointer_ = function(ts, element, coords, id,
       id);
 
   // Fire a click.
-  if (!ts.hasMovedAfterPress_) {
+  if (ts.fireMouseEventsOnRelease_) {
     ts.maybeToggleOption();
     if (!(bot.userAgent.WINDOWS_PHONE &&
         bot.dom.isElement(element, goog.dom.TagName.OPTION))) {
