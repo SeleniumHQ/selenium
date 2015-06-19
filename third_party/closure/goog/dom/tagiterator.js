@@ -99,7 +99,48 @@ goog.dom.TagWalkType = {
  */
 goog.dom.TagIterator = function(opt_node, opt_reversed,
     opt_unconstrained, opt_tagType, opt_depth) {
+  /**
+   * Whether the node iterator is moving in reverse.
+   * @type {boolean}
+   */
   this.reversed = !!opt_reversed;
+
+  /**
+   * The node this position is located on.
+   * @type {Node}
+   */
+  this.node = null;
+
+  /**
+   * The type of this position.
+   * @type {goog.dom.TagWalkType}
+   */
+  this.tagType = goog.dom.TagWalkType.OTHER;
+
+  /**
+   * The tree depth of this position relative to where the iterator started.
+   * The depth is considered to be the tree depth just past the current node,
+   * so if an iterator is at position
+   * <pre>
+   *     <div>|</div>
+   * </pre>
+   * (i.e. the node is the div and the type is START_TAG) its depth will be 1.
+   * @type {number}
+   */
+  this.depth;
+
+  /**
+   * Whether iteration has started.
+   * @private {boolean}
+   */
+  this.started_ = false;
+
+  /**
+   * Whether the iterator is constrained to the starting node and its children.
+   * @type {boolean}
+   */
+  this.constrained = !opt_unconstrained;
+
   if (opt_node) {
     this.setPosition(opt_node, opt_tagType);
   }
@@ -107,57 +148,8 @@ goog.dom.TagIterator = function(opt_node, opt_reversed,
   if (this.reversed) {
     this.depth *= -1;
   }
-  this.constrained = !opt_unconstrained;
 };
 goog.inherits(goog.dom.TagIterator, goog.iter.Iterator);
-
-
-/**
- * The node this position is located on.
- * @type {Node}
- */
-goog.dom.TagIterator.prototype.node = null;
-
-
-/**
- * The type of this position.
- * @type {goog.dom.TagWalkType}
- */
-goog.dom.TagIterator.prototype.tagType = goog.dom.TagWalkType.OTHER;
-
-
-/**
- * The tree depth of this position relative to where the iterator started.  The
- * depth is considered to be the tree depth just past the current node, so if an
- * iterator is at position <pre>
- *     <div>|</div>
- * </pre>
- * (i.e. the node is the div and the type is START_TAG) its depth will be 1.
- * @type {number}
- */
-goog.dom.TagIterator.prototype.depth;
-
-
-/**
- * Whether the node iterator is moving in reverse.
- * @type {boolean}
- */
-goog.dom.TagIterator.prototype.reversed;
-
-
-/**
- * Whether the iterator is constrained to the starting node and its children.
- * @type {boolean}
- */
-goog.dom.TagIterator.prototype.constrained;
-
-
-/**
- * Whether iteration has started.
- * @type {boolean}
- * @private
- */
-goog.dom.TagIterator.prototype.started_ = false;
 
 
 /**

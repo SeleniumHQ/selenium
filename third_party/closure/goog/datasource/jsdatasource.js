@@ -24,6 +24,7 @@ goog.provide('goog.ds.JsPropertyDataSource');
 goog.require('goog.ds.BaseDataNode');
 goog.require('goog.ds.BasicNodeList');
 goog.require('goog.ds.DataManager');
+goog.require('goog.ds.DataNode');
 goog.require('goog.ds.EmptyNodeList');
 goog.require('goog.ds.LoadState');
 

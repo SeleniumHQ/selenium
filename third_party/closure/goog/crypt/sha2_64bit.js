@@ -159,7 +159,6 @@ goog.crypt.Sha2_64bit.prototype.update = function(message, opt_length) {
   // might end up with a chunk that is less than 512 bits. We store
   // such partial chunk in chunk_ and it will be filled up later
   // in digest().
-  var n = 0;
   var chunkBytes = this.chunkBytes_;
 
   // The input message could be either byte array or string.

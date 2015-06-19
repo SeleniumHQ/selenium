@@ -173,9 +173,7 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-if (!mac?)
-  task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
-end
+task :test_firefox_native => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [
@@ -705,8 +703,7 @@ namespace :copyright do
             "javascript/selenium-core/xpath/**/*.js"))
     Copyright.Update(
         FileList["py/**/*.py"],
-        :style => "#",
-        :prefix => "#!/usr/bin/python\n#\n")
+        :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"].exclude(
           "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),

@@ -320,7 +320,7 @@ goog.net.WebSocket.prototype.close = function() {
 /**
  * Sends the message over the web socket.
  *
- * @param {string} message The message to send.
+ * @param {string|!ArrayBuffer|!ArrayBufferView} message The message to send.
  */
 goog.net.WebSocket.prototype.send = function(message) {
   // Make sure the socket is ready to go before sending a message.
@@ -339,6 +339,17 @@ goog.net.WebSocket.prototype.send = function(message) {
 goog.net.WebSocket.prototype.isOpen = function() {
   return !!this.webSocket_ &&
       this.webSocket_.readyState == goog.net.WebSocket.ReadyState_.OPEN;
+};
+
+
+/**
+ * Gets the number of bytes of data that have been queued using calls to send()
+ * but not yet transmitted to the network.
+ *
+ * @return {number} Number of bytes of data that have been queued.
+ */
+goog.net.WebSocket.prototype.getBufferedAmount = function() {
+  return this.webSocket_.bufferedAmount;
 };
 
 

@@ -21,6 +21,7 @@
 goog.provide('goog.html.SafeUrl');
 
 goog.require('goog.asserts');
+goog.require('goog.fs.url');
 goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.i18n.bidi.DirectionalString');
 goog.require('goog.string.Const');
@@ -243,6 +244,33 @@ goog.html.SafeUrl.fromConstant = function(url) {
 
 
 /**
+ * A pattern that matches Blob types that can have SafeUrls created from
+ * URL.createObjectURL(blob). Only matches image types, currently.
+ * @const
+ * @private
+ */
+goog.html.SAFE_BLOB_TYPE_PATTERN_ =
+    /^image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)$/i;
+
+
+/**
+ * Creates a SafeUrl wrapping a blob URL for the given {@code blob}. The
+ * blob URL is created with {@code URL.createObjectURL}. If the MIME type
+ * for {@code blob} is not of a known safe image MIME type, then the
+ * SafeUrl will wrap {@link #INNOCUOUS_STRING}.
+ * @see http://www.w3.org/TR/FileAPI/#url
+ * @param {!Blob} blob
+ * @return {!goog.html.SafeUrl} The blob URL, or an innocuous string wrapped
+ *   as a SafeUrl.
+ */
+goog.html.SafeUrl.fromBlob = function(blob) {
+  var url = goog.html.SAFE_BLOB_TYPE_PATTERN_.test(blob.type) ?
+      goog.fs.url.createObjectUrl(blob) : goog.html.SafeUrl.INNOCUOUS_STRING;
+  return goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse(url);
+};
+
+
+/**
  * A pattern that recognizes a commonly useful subset of URLs that satisfy
  * the SafeUrl contract.
  *
@@ -250,7 +278,7 @@ goog.html.SafeUrl.fromConstant = function(url) {
  * execution if used in URL context within a HTML document. Specifically, this
  * regular expression matches if (comment from here on and regex copied from
  * Soy's EscapingConventions):
- * (1) Either a protocol in a whitelist (http, https, mailto).
+ * (1) Either a protocol in a whitelist (http, https, mailto or ftp).
  * (2) or no protocol.  A protocol must be followed by a colon. The below
  *     allows that by allowing colons only after one of the characters [/?#].
  *     A colon after a hash (#) must be in the fragment.
@@ -270,7 +298,8 @@ goog.html.SafeUrl.fromConstant = function(url) {
  * @private
  * @const {!RegExp}
  */
-goog.html.SAFE_URL_PATTERN_ = /^(?:(?:https?|mailto):|[^&:/?#]*(?:[/?#]|$))/i;
+goog.html.SAFE_URL_PATTERN_ =
+    /^(?:(?:https?|mailto|ftp):|[^&:/?#]*(?:[/?#]|$))/i;
 
 
 /**
@@ -281,7 +310,7 @@ goog.html.SAFE_URL_PATTERN_ = /^(?:(?:https?|mailto):|[^&:/?#]*(?:[/?#]|$))/i;
  * string wrapped by the created SafeUrl will thus contain only ASCII printable
  * characters.
  *
- * {@code url} may be a URL with the http, https, or mailto scheme,
+ * {@code url} may be a URL with the http, https, mailto or ftp scheme,
  * or a relative URL (i.e., a URL without a scheme; specifically, a
  * scheme-relative, absolute-path-relative, or path-relative URL).
  *

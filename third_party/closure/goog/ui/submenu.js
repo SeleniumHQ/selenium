@@ -382,8 +382,9 @@ goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
  */
 goog.ui.SubMenu.prototype.performActionInternal = function(e) {
   this.clearTimers();
-  var shouldHandleClick = this.isSupportedState(
-      goog.ui.Component.State.SELECTED);
+  var shouldHandleClick =
+      this.isSupportedState(goog.ui.Component.State.SELECTED) ||
+      this.isSupportedState(goog.ui.Component.State.CHECKED);
   if (shouldHandleClick) {
     return goog.ui.SubMenu.superClass_.performActionInternal.call(this, e);
   } else {

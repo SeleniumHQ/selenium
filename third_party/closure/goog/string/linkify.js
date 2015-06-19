@@ -199,8 +199,8 @@ goog.string.linkify.WWW_START_ = 'www\\.';
  */
 goog.string.linkify.URL_ =
     '(?:' + goog.string.linkify.PROTOCOL_START_ + '|' +
-    goog.string.linkify.WWW_START_ + ')\\w[' +
-    goog.string.linkify.ACCEPTABLE_URL_CHARS_ + ']*';
+    goog.string.linkify.WWW_START_ + ')[' +
+    goog.string.linkify.ACCEPTABLE_URL_CHARS_ + ']+';
 
 
 /**
@@ -246,7 +246,7 @@ goog.string.linkify.FIND_LINKS_RE_ = new RegExp(
     '([\\S\\s]*?)(' +
     // Match email after a word break.
     '\\b' + goog.string.linkify.EMAIL_ + '|' +
-    // Match url after a workd break.
+    // Match url after a word break.
     '\\b' + goog.string.linkify.URL_ + '|$)',
     'gi');
 

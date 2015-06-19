@@ -19,6 +19,8 @@
 
 goog.provide('goog.userAgent.product');
 
+goog.require('goog.labs.userAgent.browser');
+goog.require('goog.labs.userAgent.platform');
 goog.require('goog.userAgent');
 
 
@@ -26,12 +28,6 @@ goog.require('goog.userAgent');
  * @define {boolean} Whether the code is running on the Firefox web browser.
  */
 goog.define('goog.userAgent.product.ASSUME_FIREFOX', false);
-
-
-/**
- * @define {boolean} Whether the code is running on the Camino web browser.
- */
-goog.define('goog.userAgent.product.ASSUME_CAMINO', false);
 
 
 /**
@@ -50,13 +46,14 @@ goog.define('goog.userAgent.product.ASSUME_IPAD', false);
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
- *     Android phone.
+ *     AOSP browser or WebView inside a pre KitKat Android phone or tablet.
  */
 goog.define('goog.userAgent.product.ASSUME_ANDROID', false);
 
 
 /**
- * @define {boolean} Whether the code is running on the Chrome web browser.
+ * @define {boolean} Whether the code is running on the Chrome web browser on
+ * any platform or AOSP browser or WebView in a KitKat+ Android phone or tablet.
  */
 goog.define('goog.userAgent.product.ASSUME_CHROME', false);
 
@@ -76,104 +73,11 @@ goog.userAgent.product.PRODUCT_KNOWN_ =
     goog.userAgent.ASSUME_IE ||
     goog.userAgent.ASSUME_OPERA ||
     goog.userAgent.product.ASSUME_FIREFOX ||
-    goog.userAgent.product.ASSUME_CAMINO ||
     goog.userAgent.product.ASSUME_IPHONE ||
     goog.userAgent.product.ASSUME_IPAD ||
     goog.userAgent.product.ASSUME_ANDROID ||
     goog.userAgent.product.ASSUME_CHROME ||
     goog.userAgent.product.ASSUME_SAFARI;
-
-
-/**
- * Right now we just focus on Tier 1-3 browsers at:
- * http://wiki/Nonconf/ProductPlatformGuidelines
- * As well as the YUI grade A browsers at:
- * http://developer.yahoo.com/yui/articles/gbs/
- *
- * @private
- */
-goog.userAgent.product.init_ = function() {
-
-  /**
-   * Whether the code is running on the Firefox web browser.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedFirefox_ = false;
-
-  /**
-   * Whether the code is running on the Camino web browser.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedCamino_ = false;
-
-  /**
-   * Whether the code is running on an iPhone or iPod touch.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedIphone_ = false;
-
-  /**
-   * Whether the code is running on an iPad
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedIpad_ = false;
-
-  /**
-   * Whether the code is running on the default browser on an Android phone.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedAndroid_ = false;
-
-  /**
-   * Whether the code is running on the Chrome web browser.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedChrome_ = false;
-
-  /**
-   * Whether the code is running on the Safari web browser.
-   * @type {boolean}
-   * @private
-   */
-  goog.userAgent.product.detectedSafari_ = false;
-
-  var ua = goog.userAgent.getUserAgentString();
-  if (!ua) {
-    return;
-  }
-
-  // The order of the if-statements in the following code is important.
-  // For example, in the WebKit section, we put Chrome in front of Safari
-  // because the string 'Safari' is present on both of those browsers'
-  // userAgent strings as well as the string we are looking for.
-  // The idea is to prevent accidental detection of more than one client.
-
-  if (ua.indexOf('Firefox') != -1) {
-    goog.userAgent.product.detectedFirefox_ = true;
-  } else if (ua.indexOf('Camino') != -1) {
-    goog.userAgent.product.detectedCamino_ = true;
-  } else if (ua.indexOf('iPad') != -1) {
-    goog.userAgent.product.detectedIpad_ = true;
-  } else if (ua.indexOf('iPhone') != -1 || ua.indexOf('iPod') != -1) {
-    goog.userAgent.product.detectedIphone_ = true;
-  } else if (ua.indexOf('Chrome') != -1) {
-    goog.userAgent.product.detectedChrome_ = true;
-  } else if (ua.indexOf('Android') != -1) {
-    goog.userAgent.product.detectedAndroid_ = true;
-  } else if (ua.indexOf('Safari') != -1) {
-    goog.userAgent.product.detectedSafari_ = true;
-  }
-};
-
-if (!goog.userAgent.product.PRODUCT_KNOWN_) {
-  goog.userAgent.product.init_();
-}
 
 
 /**
@@ -196,25 +100,29 @@ goog.userAgent.product.IE = goog.userAgent.IE;
  */
 goog.userAgent.product.FIREFOX = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_FIREFOX :
-    goog.userAgent.product.detectedFirefox_;
+    goog.labs.userAgent.browser.isFirefox();
 
 
 /**
- * Whether the code is running on the Camino web browser.
- * @type {boolean}
+ * Whether the user agent is an iPhone or iPod (as in iPod touch).
+ * @return {boolean}
+ * @private
  */
-goog.userAgent.product.CAMINO = goog.userAgent.product.PRODUCT_KNOWN_ ?
-    goog.userAgent.product.ASSUME_CAMINO :
-    goog.userAgent.product.detectedCamino_;
+goog.userAgent.product.isIphoneOrIpod_ = function() {
+  return goog.labs.userAgent.platform.isIphone() ||
+      goog.labs.userAgent.platform.isIpod();
+};
 
 
 /**
  * Whether the code is running on an iPhone or iPod touch.
+ *
+ * iPod touch is considered an iPhone for legacy reasons.
  * @type {boolean}
  */
 goog.userAgent.product.IPHONE = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_IPHONE :
-    goog.userAgent.product.detectedIphone_;
+    goog.userAgent.product.isIphoneOrIpod_();
 
 
 /**
@@ -223,31 +131,45 @@ goog.userAgent.product.IPHONE = goog.userAgent.product.PRODUCT_KNOWN_ ?
  */
 goog.userAgent.product.IPAD = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_IPAD :
-    goog.userAgent.product.detectedIpad_;
+    goog.labs.userAgent.platform.isIpad();
 
 
 /**
- * Whether the code is running on the default browser on an Android phone.
+ * Whether the code is running on AOSP browser or WebView inside
+ * a pre KitKat Android phone or tablet.
  * @type {boolean}
  */
 goog.userAgent.product.ANDROID = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_ANDROID :
-    goog.userAgent.product.detectedAndroid_;
+    goog.labs.userAgent.browser.isAndroidBrowser();
 
 
 /**
- * Whether the code is running on the Chrome web browser.
+ * Whether the code is running on the Chrome web browser on any platform
+ * or AOSP browser or WebView in a KitKat+ Android phone or tablet.
  * @type {boolean}
  */
 goog.userAgent.product.CHROME = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_CHROME :
-    goog.userAgent.product.detectedChrome_;
+    goog.labs.userAgent.browser.isChrome();
 
 
 /**
- * Whether the code is running on the Safari web browser.
+ * @return {boolean} Whether the browser is Safari on desktop.
+ * @private
+ */
+goog.userAgent.product.isSafariDesktop_ = function() {
+  return goog.labs.userAgent.browser.isSafari() &&
+      !goog.labs.userAgent.platform.isIos();
+};
+
+
+/**
+ * Whether the code is running on the desktop Safari web browser.
+ * Note: the legacy behavior here is only true for Safari not running
+ * on iOS.
  * @type {boolean}
  */
 goog.userAgent.product.SAFARI = goog.userAgent.product.PRODUCT_KNOWN_ ?
     goog.userAgent.product.ASSUME_SAFARI :
-    goog.userAgent.product.detectedSafari_;
+    goog.userAgent.product.isSafariDesktop_();

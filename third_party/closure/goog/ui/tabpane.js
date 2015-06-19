@@ -26,6 +26,7 @@ goog.provide('goog.ui.TabPaneEvent');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -161,12 +162,12 @@ goog.ui.TabPane.prototype.create_ = function() {
   var nodes = this.getChildNodes_();
 
   // Create tab strip
-  this.elButtonBar_ = this.dom_.createDom('ul',
+  this.elButtonBar_ = this.dom_.createDom(goog.dom.TagName.UL,
       {'className': goog.getCssName('goog-tabpane-tabs'), 'tabIndex': '0'});
 
   // Create content area
-  this.elContent_ =
-      this.dom_.createDom('div', goog.getCssName('goog-tabpane-cont'));
+  this.elContent_ = this.dom_.createDom(goog.dom.TagName.DIV,
+                                        goog.getCssName('goog-tabpane-cont'));
   this.el_.appendChild(this.elContent_);
 
   var element = goog.asserts.assertElement(this.el_);
@@ -219,7 +220,8 @@ goog.ui.TabPane.prototype.createClear_ = function() {
   var clearFloatStyle = '.' + goog.getCssName('goog-tabpane-clear') +
       ' { clear: both; height: 0px; overflow: hidden }';
   goog.style.installStyles(clearFloatStyle);
-  return this.dom_.createDom('div', goog.getCssName('goog-tabpane-clear'));
+  return this.dom_.createDom(goog.dom.TagName.DIV,
+                             goog.getCssName('goog-tabpane-clear'));
 };
 
 
@@ -427,7 +429,7 @@ goog.ui.TabPane.prototype.onHeaderClick_ = function(event) {
 
   // Determine index if a tab (li element) was clicked.
   while (el != this.elButtonBar_) {
-    if (el.tagName == 'LI') {
+    if (el.tagName == goog.dom.TagName.LI) {
       var i;
       // {} prevents compiler warning
       for (i = 0; el = el.previousSibling; i++) {}
@@ -514,14 +516,14 @@ goog.ui.TabPane.TabPage = function(opt_el, opt_title, opt_domHelper) {
    * @type {Element}
    * @private
    */
-  this.elContent_ = el || this.dom_.createDom('div');
+  this.elContent_ = el || this.dom_.createDom(goog.dom.TagName.DIV);
 
   /**
    * Title element
    * @type {Element}
    * @private
    */
-  this.elTitle_ = this.dom_.createDom('li', null, title);
+  this.elTitle_ = this.dom_.createDom(goog.dom.TagName.LI, null, title);
 
   /**
    * Parent TabPane reference.

@@ -384,8 +384,3 @@ goog.events.BrowserEvent.prototype.preventDefault = function() {
 goog.events.BrowserEvent.prototype.getBrowserEvent = function() {
   return this.event_;
 };
-
-
-/** @override */
-goog.events.BrowserEvent.prototype.disposeInternal = function() {
-};

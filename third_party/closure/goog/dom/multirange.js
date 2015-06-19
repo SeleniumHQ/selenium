@@ -43,30 +43,32 @@ goog.require('goog.log');
  */
 goog.dom.MultiRange = function() {
   /**
+   * Logging object.
+   * @private {goog.log.Logger}
+   */
+  this.logger_ = goog.log.getLogger('goog.dom.MultiRange');
+
+  /**
    * Array of browser sub-ranges comprising this multi-range.
-   * @type {Array<Range>}
-   * @private
+   * @private {Array<Range>}
    */
   this.browserRanges_ = [];
 
   /**
    * Lazily initialized array of range objects comprising this multi-range.
-   * @type {Array<goog.dom.TextRange>}
-   * @private
+   * @private {Array<goog.dom.TextRange>}
    */
   this.ranges_ = [];
 
   /**
    * Lazily computed sorted version of ranges_, sorted by start point.
-   * @type {Array<goog.dom.TextRange>?}
-   * @private
+   * @private {Array<goog.dom.TextRange>?}
    */
   this.sortedRanges_ = null;
 
   /**
    * Lazily computed container node.
-   * @type {Node}
-   * @private
+   * @private {Node}
    */
   this.container_ = null;
 };
@@ -115,15 +117,6 @@ goog.dom.MultiRange.createFromTextRanges = function(textRanges) {
   });
   return range;
 };
-
-
-/**
- * Logging object.
- * @type {goog.log.Logger}
- * @private
- */
-goog.dom.MultiRange.prototype.logger_ =
-    goog.log.getLogger('goog.dom.MultiRange');
 
 
 // Method implementations
@@ -422,6 +415,18 @@ goog.dom.DomSavedMultiRange_.prototype.disposeInternal = function() {
  * @final
  */
 goog.dom.MultiRangeIterator = function(range) {
+  /**
+   * The list of range iterators left to traverse.
+   * @private {Array<goog.dom.RangeIterator>}
+   */
+  this.iterators_ = null;
+
+  /**
+   * The index of the current sub-iterator being traversed.
+   * @private {number}
+   */
+  this.currentIdx_ = 0;
+
   if (range) {
     this.iterators_ = goog.array.map(
         range.getSortedRanges(),
@@ -430,26 +435,10 @@ goog.dom.MultiRangeIterator = function(range) {
         });
   }
 
-  goog.dom.RangeIterator.call(
-      this, range ? this.getStartNode() : null, false);
+  goog.dom.MultiRangeIterator.base(
+      this, 'constructor', range ? this.getStartNode() : null, false);
 };
 goog.inherits(goog.dom.MultiRangeIterator, goog.dom.RangeIterator);
-
-
-/**
- * The list of range iterators left to traverse.
- * @type {Array<goog.dom.RangeIterator>?}
- * @private
- */
-goog.dom.MultiRangeIterator.prototype.iterators_ = null;
-
-
-/**
- * The index of the current sub-iterator being traversed.
- * @type {number}
- * @private
- */
-goog.dom.MultiRangeIterator.prototype.currentIdx_ = 0;
 
 
 /** @override */

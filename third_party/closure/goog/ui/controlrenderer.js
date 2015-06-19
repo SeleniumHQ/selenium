@@ -27,6 +27,7 @@ goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -155,9 +156,8 @@ goog.ui.ControlRenderer.IE6_CLASS_COMBINATIONS = [];
  * initialized on first use.
  * @type {Object<goog.ui.Component.State, goog.a11y.aria.State>}
  * @private
- * @const
  */
-goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_;
+goog.ui.ControlRenderer.ariaAttributeMap_;
 
 
 /**
@@ -198,7 +198,8 @@ goog.ui.ControlRenderer.prototype.getAriaRole = function() {
 goog.ui.ControlRenderer.prototype.createDom = function(control) {
   // Create and return DIV wrapping contents.
   var element = control.getDomHelper().createDom(
-      'div', this.getClassNames(control).join(' '), control.getContent());
+      goog.dom.TagName.DIV, this.getClassNames(control).join(' '),
+      control.getContent());
 
   return element;
 };
@@ -423,6 +424,11 @@ goog.ui.ControlRenderer.prototype.setAriaStates = function(control, element) {
   goog.asserts.assert(control);
   goog.asserts.assert(element);
 
+  var ariaLabel = control.getAriaLabel();
+  if (goog.isDefAndNotNull(ariaLabel)) {
+    this.setAriaLabel(element, ariaLabel);
+  }
+
   if (!control.isVisible()) {
     goog.a11y.aria.setState(
         element, goog.a11y.aria.State.HIDDEN, !control.isVisible());
@@ -443,6 +449,17 @@ goog.ui.ControlRenderer.prototype.setAriaStates = function(control, element) {
     this.updateAriaState(
         element, goog.ui.Component.State.OPENED, control.isOpen());
   }
+};
+
+
+/**
+ * Sets the element's ARIA label. This should be overriden by subclasses that
+ * don't apply the role directly on control.element_.
+ * @param {!Element} element Element whose ARIA label is to be updated.
+ * @param {string} ariaLabel Label to add to the element.
+ */
+goog.ui.ControlRenderer.prototype.setAriaLabel = function(element, ariaLabel) {
+  goog.a11y.aria.setLabel(element, ariaLabel);
 };
 
 
@@ -575,8 +592,8 @@ goog.ui.ControlRenderer.prototype.setState = function(control, state, enable) {
 goog.ui.ControlRenderer.prototype.updateAriaState = function(element, state,
     enable) {
   // Ensure the ARIA attribute map exists.
-  if (!goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_) {
-    goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_ = goog.object.create(
+  if (!goog.ui.ControlRenderer.ariaAttributeMap_) {
+    goog.ui.ControlRenderer.ariaAttributeMap_ = goog.object.create(
         goog.ui.Component.State.DISABLED, goog.a11y.aria.State.DISABLED,
         goog.ui.Component.State.SELECTED, goog.a11y.aria.State.SELECTED,
         goog.ui.Component.State.CHECKED, goog.a11y.aria.State.CHECKED,
@@ -585,7 +602,7 @@ goog.ui.ControlRenderer.prototype.updateAriaState = function(element, state,
   goog.asserts.assert(element,
       'The element passed as a first parameter cannot be null.');
   var ariaAttr = goog.ui.ControlRenderer.getAriaStateForAriaRole_(
-      element, goog.ui.ControlRenderer.ARIA_ATTRIBUTE_MAP_[state]);
+      element, goog.ui.ControlRenderer.ariaAttributeMap_[state]);
   if (ariaAttr) {
     goog.a11y.aria.setState(element, ariaAttr, enable);
   }

@@ -20,7 +20,6 @@ goog.provide('webdriver.test.testutil.StubError');
 
 goog.require('goog.array');
 goog.require('goog.debug.Error');
-goog.require('goog.json');
 goog.require('goog.string');
 goog.require('goog.testing.recordFunction');
 goog.require('webdriver.stacktrace');
@@ -204,7 +203,7 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
 
 webdriver.test.testutil.assertObjectEquals = function(expected, actual) {
   assertObjectEquals(
-      'Expected: ' + goog.json.serialize(expected) + '\n' +
-      'Actual:   ' + goog.json.serialize(actual),
+      'Expected: ' + JSON.stringify(expected) + '\n' +
+      'Actual:   ' + JSON.stringify(actual),
       expected, actual);
 };

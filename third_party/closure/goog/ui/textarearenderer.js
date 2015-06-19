@@ -75,7 +75,7 @@ goog.ui.TextareaRenderer.prototype.decorate = function(control, element) {
  */
 goog.ui.TextareaRenderer.prototype.createDom = function(textarea) {
   this.setUpTextarea_(textarea);
-  var element = textarea.getDomHelper().createDom('textarea', {
+  var element = textarea.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, {
     'class': this.getClassNames(textarea).join(' '),
     'disabled': !textarea.isEnabled()
   }, textarea.getContent() || '');

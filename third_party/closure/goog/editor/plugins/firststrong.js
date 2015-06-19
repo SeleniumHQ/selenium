@@ -45,6 +45,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagIterator');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.Command');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
@@ -128,6 +129,12 @@ goog.editor.plugins.FirstStrong.INPUT_ATTRIBUTE = 'fs-input';
 
 /** @override */
 goog.editor.plugins.FirstStrong.prototype.handleKeyPress = function(e) {
+  if (goog.editor.Field.SELECTION_CHANGE_KEYCODES[e.keyCode]) {
+    // Key triggered selection change event (e.g. on ENTER) is throttled and a
+    // later LTR/RTL strong keypress may come before it. Need to capture it.
+    this.isNewBlock_ = true;
+    return false;  // A selection-changing key is not LTR/RTL strong.
+  }
   if (!this.isNewBlock_) {
     return false;  // We've already determined this paragraph's direction.
   }

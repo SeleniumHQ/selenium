@@ -27,6 +27,7 @@ goog.require('goog.math');
  * Class for representing coordinates and positions.
  * @param {number=} opt_x Left, defaults to 0.
  * @param {number=} opt_y Top, defaults to 0.
+ * @struct
  * @constructor
  */
 goog.math.Coordinate = function(opt_x, opt_y) {

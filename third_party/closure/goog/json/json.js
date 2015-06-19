@@ -206,6 +206,27 @@ goog.json.Serializer.prototype.serialize = function(object) {
  * @throws Error if there are loops in the object graph.
  */
 goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
+  if (object == null) {
+    // undefined == null so this branch covers undefined as well as null
+    sb.push('null');
+    return;
+  }
+
+  if (typeof object == 'object') {
+    if (goog.isArray(object)) {
+      this.serializeArray(/** @type {!Array<?>} */ (object), sb);
+      return;
+    } else if (object instanceof String ||
+               object instanceof Number ||
+               object instanceof Boolean) {
+      object = object.valueOf();
+      // Fall through to switch below.
+    } else {
+      this.serializeObject_(/** @type {Object} */ (object), sb);
+      return;
+    }
+  }
+
   switch (typeof object) {
     case 'string':
       this.serializeString_(/** @type {string} */ (object), sb);
@@ -215,23 +236,6 @@ goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
       break;
     case 'boolean':
       sb.push(object);
-      break;
-    case 'undefined':
-      sb.push('null');
-      break;
-    case 'object':
-      if (object == null) {
-        sb.push('null');
-        break;
-      }
-      if (goog.isArray(object)) {
-        this.serializeArray(/** @type {!Array<?>} */ (object), sb);
-        break;
-      }
-      // should we allow new String, new Number and new Boolean to be treated
-      // as string, number and boolean? Most implementations do not and the
-      // need is not very big
-      this.serializeObject_(/** @type {Object} */ (object), sb);
       break;
     case 'function':
       // Skip functions.
@@ -285,20 +289,12 @@ goog.json.Serializer.prototype.serializeString_ = function(s, sb) {
   // characters.
   sb.push('"', s.replace(goog.json.Serializer.charsToReplace_, function(c) {
     // caching the result improves performance by a factor 2-3
-    if (c in goog.json.Serializer.charToJsonCharCache_) {
-      return goog.json.Serializer.charToJsonCharCache_[c];
+    var rv = goog.json.Serializer.charToJsonCharCache_[c];
+    if (!rv) {
+      rv = '\\u' + (c.charCodeAt(0) | 0x10000).toString(16).substr(1);
+      goog.json.Serializer.charToJsonCharCache_[c] = rv;
     }
-
-    var cc = c.charCodeAt(0);
-    var rv = '\\u';
-    if (cc < 16) {
-      rv += '000';
-    } else if (cc < 256) {
-      rv += '00';
-    } else if (cc < 4096) { // \u1000
-      rv += '0';
-    }
-    return goog.json.Serializer.charToJsonCharCache_[c] = rv + cc.toString(16);
+    return rv;
   }), '"');
 };
 

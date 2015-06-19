@@ -362,7 +362,10 @@ goog.testing.MockClassFactory.prototype.createProxy_ = function(namespace,
   var proxy = this.getProxyCtor_(className,
       goog.bind(this.findMockInstance_, this));
   var protoToProxy = classToMock.prototype;
+  // Preserve base() call in mocked class
+  var classToMockBase = classToMock.base;
   goog.inherits(proxy, classToMock);
+  proxy.base = classToMockBase;
 
   for (var prop in protoToProxy) {
     if (goog.isFunction(protoToProxy[prop])) {

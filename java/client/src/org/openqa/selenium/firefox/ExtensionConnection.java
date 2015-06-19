@@ -21,6 +21,7 @@ import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.CommandExecutor;
 
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Represents a connection with the FirefoxDriver browser extension.
@@ -43,4 +44,9 @@ public interface ExtensionConnection extends CommandExecutor, NeedsLocalLogs {
    * Terminates the connection.
    */
   void quit();
+
+  /**
+   * @return The address of the remote server.
+   */
+  URI getAddressOfRemoteServer();
 }

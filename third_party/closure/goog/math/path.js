@@ -34,6 +34,7 @@ goog.require('goog.math');
  * A "simple" path does not contain any arcs and may be transformed using
  * the {@code transform} method.
  *
+ * @struct
  * @constructor
  * @final
  */
@@ -57,32 +58,29 @@ goog.math.Path = function() {
    * @private
    */
   this.arguments_ = [];
+
+  /**
+   * The coordinates of the point which closes the path (the point of the
+   * last moveTo command).
+   * @type {Array<number>?}
+   * @private
+   */
+  this.closePoint_ = null;
+
+  /**
+   * The coordinates most recently added to the end of the path.
+   * @type {Array<number>?}
+   * @private
+   */
+  this.currentPoint_ = null;
+
+  /**
+   * Flag for whether this is a simple path (contains no arc segments).
+   * @type {boolean}
+   * @private
+   */
+  this.simple_ = true;
 };
-
-
-/**
- * The coordinates of the point which closes the path (the point of the
- * last moveTo command).
- * @type {Array<number>?}
- * @private
- */
-goog.math.Path.prototype.closePoint_ = null;
-
-
-/**
- * The coordinates most recently added to the end of the path.
- * @type {Array<number>?}
- * @private
- */
-goog.math.Path.prototype.currentPoint_ = null;
-
-
-/**
- * Flag for whether this is a simple path (contains no arc segments).
- * @type {boolean}
- * @private
- */
-goog.math.Path.prototype.simple_ = true;
 
 
 /**
@@ -187,9 +185,9 @@ goog.math.Path.prototype.clear = function() {
   this.segments_.length = 0;
   this.count_.length = 0;
   this.arguments_.length = 0;
-  delete this.closePoint_;
-  delete this.currentPoint_;
-  delete this.simple_;
+  this.closePoint_ = null;
+  this.currentPoint_ = null;
+  this.simple_ = true;
   return this;
 };
 

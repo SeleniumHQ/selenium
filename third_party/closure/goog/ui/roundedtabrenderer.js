@@ -21,6 +21,7 @@
 goog.provide('goog.ui.RoundedTabRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.Tab');
 goog.require('goog.ui.TabBar');
 goog.require('goog.ui.TabRenderer');
@@ -140,11 +141,11 @@ goog.ui.RoundedTabRenderer.prototype.createTab = function(dom, caption,
     rows.push(this.createEdge(dom, /* isTopEdge */ false));
   }
 
-  return dom.createDom('table', {
+  return dom.createDom(goog.dom.TagName.TABLE, {
     'cellPadding': 0,
     'cellSpacing': 0,
     'className': goog.getCssName(this.getStructuralCssClass(), 'table')
-  }, dom.createDom('tbody', null, rows));
+  }, dom.createDom(goog.dom.TagName.TBODY, null, rows));
 };
 
 
@@ -158,10 +159,10 @@ goog.ui.RoundedTabRenderer.prototype.createTab = function(dom, caption,
  */
 goog.ui.RoundedTabRenderer.prototype.createCaption = function(dom, caption) {
   var baseClass = this.getStructuralCssClass();
-  return dom.createDom('tr', null,
-      dom.createDom('td', {'noWrap': true},
-          dom.createDom('div', goog.getCssName(baseClass, 'caption'),
-              caption)));
+  return dom.createDom(goog.dom.TagName.TR, null,
+      dom.createDom(goog.dom.TagName.TD, {'noWrap': true},
+          dom.createDom(goog.dom.TagName.DIV,
+                        goog.getCssName(baseClass, 'caption'), caption)));
 };
 
 
@@ -174,10 +175,12 @@ goog.ui.RoundedTabRenderer.prototype.createCaption = function(dom, caption) {
  */
 goog.ui.RoundedTabRenderer.prototype.createEdge = function(dom, isTopEdge) {
   var baseClass = this.getStructuralCssClass();
-  var inner = dom.createDom('div', goog.getCssName(baseClass, 'inner-edge'));
-  var outer = dom.createDom('div', goog.getCssName(baseClass, 'outer-edge'));
-  return dom.createDom('tr', null,
-      dom.createDom('td', {'noWrap': true},
+  var inner = dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'inner-edge'));
+  var outer = dom.createDom(goog.dom.TagName.DIV,
+                            goog.getCssName(baseClass, 'outer-edge'));
+  return dom.createDom(goog.dom.TagName.TR, null,
+      dom.createDom(goog.dom.TagName.TD, {'noWrap': true},
           isTopEdge ? [outer, inner] : [inner, outer]));
 };
 
@@ -186,7 +189,7 @@ goog.ui.RoundedTabRenderer.prototype.createEdge = function(dom, isTopEdge) {
 goog.ui.RoundedTabRenderer.prototype.getContentElement = function(element) {
   var baseClass = this.getStructuralCssClass();
   return element && goog.dom.getElementsByTagNameAndClass(
-      'div', goog.getCssName(baseClass, 'caption'), element)[0];
+      goog.dom.TagName.DIV, goog.getCssName(baseClass, 'caption'), element)[0];
 };
 
 

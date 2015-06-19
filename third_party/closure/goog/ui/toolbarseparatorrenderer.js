@@ -21,6 +21,7 @@
 goog.provide('goog.ui.ToolbarSeparatorRenderer');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.MenuSeparatorRenderer');
@@ -58,7 +59,7 @@ goog.ui.ToolbarSeparatorRenderer.CSS_CLASS =
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
   // 00A0 is &nbsp;
-  return separator.getDomHelper().createDom('div',
+  return separator.getDomHelper().createDom(goog.dom.TagName.DIV,
       this.getClassNames(separator).join(' ') +
           ' ' + goog.ui.INLINE_BLOCK_CLASSNAME,
       '\u00A0');

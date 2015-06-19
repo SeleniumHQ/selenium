@@ -50,7 +50,7 @@ function tearDown() {
 
 function expectToSendEvent(type, data) {
   mockXhr.open('POST', '/testevent', true);
-  mockXhr.send(goog.json.serialize({
+  mockXhr.send(JSON.stringify({
     'id': '/foo/bar/baz',
     'type': type,
     'data': data

@@ -20,8 +20,6 @@
 goog.provide('goog.ui.ModalPopup');
 
 goog.require('goog.Timer');
-goog.require('goog.a11y.aria');
-goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -34,6 +32,7 @@ goog.require('goog.fx.Transition');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
+goog.require('goog.ui.ModalAriaVisibilityHelper');
 goog.require('goog.ui.PopupBase');
 goog.require('goog.userAgent');
 
@@ -168,11 +167,11 @@ goog.ui.ModalPopup.prototype.bgHideTransition_;
 
 
 /**
- * The elements set to aria-hidden when the popup was made visible.
- * @type {Array<!Element>}
+ * Helper object to control aria visibility of the rest of the page.
+ * @type {goog.ui.ModalAriaVisibilityHelper}
  * @private
  */
-goog.ui.ModalPopup.prototype.hiddenElements_;
+goog.ui.ModalPopup.prototype.modalAriaVisibilityHelper_;
 
 
 /**
@@ -244,7 +243,7 @@ goog.ui.ModalPopup.prototype.manageBackgroundDom_ = function() {
   // hidden.
   if (!this.bgEl_) {
     this.bgEl_ = this.getDomHelper().createDom(
-        'div', goog.getCssName(this.getCssClass(), 'bg'));
+        goog.dom.TagName.DIV, goog.getCssName(this.getCssClass(), 'bg'));
     goog.style.setElementShown(this.bgEl_, false);
   }
 };
@@ -257,7 +256,8 @@ goog.ui.ModalPopup.prototype.manageBackgroundDom_ = function() {
 goog.ui.ModalPopup.prototype.createTabCatcher_ = function() {
   // Creates tab catcher element.
   if (!this.tabCatcherElement_) {
-    this.tabCatcherElement_ = this.getDomHelper().createElement('span');
+    this.tabCatcherElement_ = this.getDomHelper().createElement(
+        goog.dom.TagName.SPAN);
     goog.style.setElementShown(this.tabCatcherElement_, false);
     goog.dom.setFocusableTabIndex(this.tabCatcherElement_, true);
     this.tabCatcherElement_.style.position = 'absolute';
@@ -328,7 +328,8 @@ goog.ui.ModalPopup.prototype.decorateInternal = function(element) {
   this.manageBackgroundDom_();
   this.createTabCatcher_();
 
-  // Make sure the decorated modal popup is hidden.
+  // Make sure the decorated modal popup is focusable and hidden.
+  goog.dom.setFocusableTabIndex(this.getElement(), true);
   goog.style.setElementShown(this.getElement(), false);
 };
 
@@ -402,27 +403,11 @@ goog.ui.ModalPopup.prototype.setVisible = function(visible) {
  * @protected
  */
 goog.ui.ModalPopup.prototype.setA11YDetectBackground = function(hide) {
-  if (hide) {
-    if (!this.hiddenElements_) {
-      this.hiddenElements_ = [];
-    }
-    var dom = this.getDomHelper();
-    var topLevelChildren = dom.getChildren(dom.getDocument().body);
-    for (var i = 0; i < topLevelChildren.length; i++) {
-      var child = topLevelChildren[i];
-      if (child != this.getElementStrict() &&
-          !goog.a11y.aria.getState(child, goog.a11y.aria.State.HIDDEN)) {
-        goog.a11y.aria.setState(child, goog.a11y.aria.State.HIDDEN, true);
-        this.hiddenElements_.push(child);
-      }
-    }
-  } else if (this.hiddenElements_) {
-    for (var i = 0; i < this.hiddenElements_.length; i++) {
-      goog.a11y.aria.removeState(
-          this.hiddenElements_[i], goog.a11y.aria.State.HIDDEN);
-    }
-    this.hiddenElements_ = null;
+  if (!this.modalAriaVisibilityHelper_) {
+    this.modalAriaVisibilityHelper_ = new goog.ui.ModalAriaVisibilityHelper(
+        this.getElementStrict(), this.dom_);
   }
+  this.modalAriaVisibilityHelper_.setBackgroundVisibility(hide);
 };
 
 

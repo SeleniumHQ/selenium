@@ -305,13 +305,6 @@ goog.cssom.iframe.style.makeColorRuleImportant_ = function(cssText) {
  * @private
  */
 goog.cssom.iframe.style.CssSelector_ = function(opt_selectorString) {
-  /**
-   * Array of CssSelectorPart objects representing the parts of this selector
-   * Example: for the selector 'body h1' the parts would be [body, h1].
-   * @type {Array<goog.cssom.iframe.style.CssSelectorPart_>}
-   * @private
-   */
-  this.parts_ = [];
 
   /**
    * Object to track ancestry matches to speed up repeatedly testing this
@@ -784,7 +777,6 @@ goog.cssom.iframe.style.getElementContext = function(
   // Insert a new ruleset, setting the current inheritable styles of this
   // element as the defaults for everything under in the frame.
   var defaultPropertiesRuleSet = new goog.cssom.iframe.style.CssRuleSet_();
-  var declarationParts = [];
   var computedStyle = goog.cssom.iframe.style.getComputedStyleObject_(element);
 
   // Copy inheritable styles so they are applied to everything under HTML.

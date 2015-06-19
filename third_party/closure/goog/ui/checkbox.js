@@ -146,6 +146,9 @@ goog.ui.Checkbox.prototype.setCheckedInternal = function(checked) {
  * Behaves the same way as the 'label' HTML tag. The label element has to be the
  * direct or non-direct ancestor of the checkbox element because it will get the
  * focus when keyboard support is implemented.
+ * Note: Control#enterDocument also sets aria-label on the element but
+ * Checkbox#enterDocument sets aria-labeledby on the same element which
+ * overrides the aria-label in all modern screen readers.
  *
  * @param {Element} label The label control to set. If null, only the checkbox
  *     reacts to clicks.
@@ -252,6 +255,7 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
 /** @override */
 goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
+    this.performActionInternal(e);
     this.handleClickOrSpace_(e);
   }
   return false;

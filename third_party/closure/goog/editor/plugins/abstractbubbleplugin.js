@@ -361,6 +361,9 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.disable = function(field) {
     var bubbleMap = this.getBubbleMap();
     var bubble = bubbleMap[field.id];
     if (bubble) {
+      if (field == this.getFieldObject()) {
+        this.closeBubble();
+      }
       bubble.dispose();
       delete bubbleMap[field.id];
     }

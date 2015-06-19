@@ -39,6 +39,8 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
@@ -110,7 +112,7 @@ goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
 goog.ui.LabelInput.isPlaceholderSupported_ = function() {
   if (!goog.isDefAndNotNull(goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_)) {
     goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_ = (
-        'placeholder' in document.createElement('input'));
+        'placeholder' in document.createElement(goog.dom.TagName.INPUT));
   }
   return goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
 };
@@ -135,8 +137,8 @@ goog.ui.LabelInput.prototype.hasFocus_ = false;
  * @override
  */
 goog.ui.LabelInput.prototype.createDom = function() {
-  this.setElementInternal(
-      this.getDomHelper().createDom('input', {'type': 'text'}));
+  this.setElementInternal(this.getDomHelper().createDom(
+      goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
 };
 
 

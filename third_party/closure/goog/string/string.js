@@ -253,7 +253,7 @@ goog.string.isAlphaNumeric = function(str) {
 /**
  * Checks if a character is a space character.
  * @param {string} ch Character to check.
- * @return {boolean} True if {code ch} is a space.
+ * @return {boolean} True if {@code ch} is a space.
  */
 goog.string.isSpace = function(ch) {
   return ch == ' ';
@@ -263,7 +263,7 @@ goog.string.isSpace = function(ch) {
 /**
  * Checks if a character is a valid unicode character.
  * @param {string} ch Character to check.
- * @return {boolean} True if {code ch} is a valid unicode character.
+ * @return {boolean} True if {@code ch} is a valid unicode character.
  */
 goog.string.isUnicodeChar = function(ch) {
   return ch.length == 1 && ch >= ' ' && ch <= '~' ||

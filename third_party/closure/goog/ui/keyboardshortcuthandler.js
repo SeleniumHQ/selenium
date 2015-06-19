@@ -26,6 +26,7 @@ goog.provide('goog.ui.KeyboardShortcutHandler.EventType');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -1069,8 +1070,10 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   }
   var el = /** @type {Element} */ (event.target);
   var isFormElement =
-      el.tagName == 'TEXTAREA' || el.tagName == 'INPUT' ||
-      el.tagName == 'BUTTON' || el.tagName == 'SELECT';
+      el.tagName == goog.dom.TagName.TEXTAREA ||
+      el.tagName == goog.dom.TagName.INPUT ||
+      el.tagName == goog.dom.TagName.BUTTON ||
+      el.tagName == goog.dom.TagName.SELECT;
 
   var isContentEditable = !isFormElement && (el.isContentEditable ||
       (el.ownerDocument && el.ownerDocument.designMode == 'on'));
@@ -1095,11 +1098,12 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
     return true;
   }
   // Allow ENTER to be used as shortcut for text inputs.
-  if (el.tagName == 'INPUT' && this.textInputs_[el.type]) {
+  if (el.tagName == goog.dom.TagName.INPUT && this.textInputs_[el.type]) {
     return keyCode == goog.events.KeyCodes.ENTER;
   }
   // Checkboxes, radiobuttons and buttons. Allow all but SPACE as shortcut.
-  if (el.tagName == 'INPUT' || el.tagName == 'BUTTON') {
+  if (el.tagName == goog.dom.TagName.INPUT ||
+      el.tagName == goog.dom.TagName.BUTTON) {
     // TODO(gboyer): If more flexibility is needed, create protected helper
     // methods for each case (e.g. button, input, etc).
     if (this.allowSpaceKeyOnButtons_) {

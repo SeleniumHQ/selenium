@@ -19,6 +19,7 @@
 
 goog.provide('goog.ui.emoji.ProgressiveEmojiPaletteRenderer');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('goog.ui.emoji.EmojiPaletteRenderer');
 
@@ -52,8 +53,8 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
   var x = spriteInfo.getXOffsetCssValue();
   var y = spriteInfo.getYOffsetCssValue();
   // Need this extra div for proper vertical centering.
-  var inner = dom.createDom('img', {'src': displayUrl});
-  var el = /** @type {!HTMLDivElement} */ (dom.createDom('div',
+  var inner = dom.createDom(goog.dom.TagName.IMG, {'src': displayUrl});
+  var el = /** @type {!HTMLDivElement} */ (dom.createDom(goog.dom.TagName.DIV,
       goog.getCssName('goog-palette-cell-extra'), inner));
   goog.style.setStyle(el, {
     'width': width,

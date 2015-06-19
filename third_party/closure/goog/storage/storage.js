@@ -31,6 +31,7 @@ goog.require('goog.storage.ErrorCode');
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
+ * @struct
  */
 goog.storage.Storage = function(mechanism) {
   /**

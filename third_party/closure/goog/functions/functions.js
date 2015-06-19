@@ -127,7 +127,7 @@ goog.functions.nth = function(n) {
  * and replaces it with a new one.
  * @param {Function} f A function.
  * @param {T} retValue A new return value.
- * @return {function(...[?]):T} A new function.
+ * @return {function(...?):T} A new function.
  * @template T
  */
 goog.functions.withReturnValue = function(f, retValue) {
@@ -156,9 +156,9 @@ goog.functions.equalTo = function(value, opt_useLooseComparison) {
 /**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
- * @param {function(...[?]):T} fn The final function.
+ * @param {function(...?):T} fn The final function.
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):T} The composition of all inputs.
+ * @return {function(...?):T} The composition of all inputs.
  * @template T
  */
 goog.functions.compose = function(fn, var_args) {
@@ -204,7 +204,7 @@ goog.functions.sequence = function(var_args) {
  * short-circuited as soon as a function returns false.
  * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ANDs its component
+ * @return {function(...?):boolean} A function that ANDs its component
  *      functions.
  */
 goog.functions.and = function(var_args) {
@@ -227,7 +227,7 @@ goog.functions.and = function(var_args) {
  * short-circuited as soon as a function returns true.
  * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
  * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ORs its component
+ * @return {function(...?):boolean} A function that ORs its component
  *    functions.
  */
 goog.functions.or = function(var_args) {
@@ -248,7 +248,7 @@ goog.functions.or = function(var_args) {
  * Creates a function that returns the Boolean opposite of a provided function.
  * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
  * @param {!Function} f The original function.
- * @return {function(...[?]):boolean} A function that delegates to f and returns
+ * @return {function(...?):boolean} A function that delegates to f and returns
  * opposite.
  */
 goog.functions.not = function(f) {
@@ -268,14 +268,14 @@ goog.functions.not = function(f) {
  *
  * @param {function(new:T, ...)} constructor The constructor for the Object.
  * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {!T} A new instance of the class given in {@code constructor}.
+ * @return {T} A new instance of the class given in {@code constructor}.
  * @template T
  */
 goog.functions.create = function(constructor, var_args) {
   /**
- * @constructor
- * @final
- */
+   * @constructor
+   * @final
+   */
   var temp = function() {};
   temp.prototype = constructor.prototype;
 

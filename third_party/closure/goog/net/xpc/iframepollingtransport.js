@@ -23,6 +23,7 @@ goog.provide('goog.net.xpc.IframePollingTransport.Sender');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.log');
 goog.require('goog.log.Level');
 goog.require('goog.net.xpc');
@@ -314,7 +315,7 @@ goog.net.xpc.IframePollingTransport.prototype.constructSenderFrame_ =
     function(id) {
   goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
       'constructing sender frame: ' + id);
-  var ifr = goog.dom.createElement('iframe');
+  var ifr = goog.dom.createElement(goog.dom.TagName.IFRAME);
   var s = ifr.style;
   s.position = 'absolute';
   s.top = '-10px'; s.left = '10px'; s.width = '1px'; s.height = '1px';

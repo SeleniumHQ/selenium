@@ -25,6 +25,7 @@ out
 cpp/IEDriver/sizzle.h
 third_party/gecko-*
 cpp/iedriver/Generated/atoms.h
+cpp/iedriver/sizzle.h
 chromedriver.log
 junit*.properties
 WebDriver.suo
@@ -38,6 +39,7 @@ maven/*/src
 maven/target
 maven/*/target
 java/client/build/
+java/client/log.txt
 java/server/build/
 *.pyc
 dist/

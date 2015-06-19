@@ -23,6 +23,8 @@ goog.provide('goog.graphics.VmlGraphics');
 
 
 goog.require('goog.array');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
@@ -36,9 +38,11 @@ goog.require('goog.graphics.VmlImageElement');
 goog.require('goog.graphics.VmlPathElement');
 goog.require('goog.graphics.VmlRectElement');
 goog.require('goog.graphics.VmlTextElement');
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.math');
 goog.require('goog.math.Size');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.style');
 
 
@@ -103,8 +107,9 @@ goog.graphics.VmlGraphics.VML_IMPORT_ = '#default#VML';
  * @private
  * @type {boolean}
  */
-goog.graphics.VmlGraphics.IE8_MODE_ = document.documentMode &&
-    document.documentMode >= 8;
+goog.graphics.VmlGraphics.IE8_MODE_ =
+    goog.global.document && goog.global.document.documentMode &&
+    goog.global.document.documentMode >= 8;
 
 
 /**
@@ -247,7 +252,16 @@ goog.graphics.VmlGraphics.prototype.getVmlElement = function(id) {
  */
 goog.graphics.VmlGraphics.prototype.updateGraphics_ = function() {
   if (goog.graphics.VmlGraphics.IE8_MODE_ && this.isInDocument()) {
-    this.getElement().innerHTML = this.getElement().innerHTML;
+    // There's a risk of mXSS here, as the browser is not guaranteed to
+    // return the HTML that was originally written, when innerHTML is read.
+    // However, given that this a deprecated API and affects only IE, it seems
+    // an acceptable risk.
+    var html = goog.html.uncheckedconversions
+        .safeHtmlFromStringKnownToSatisfyTypeContract(
+            goog.string.Const.from('Assign innerHTML to itself'),
+            this.getElement().innerHTML);
+    goog.dom.safe.setInnerHtml(
+        /** @type {!Element} */ (this.getElement()), html);
   }
 };
 
@@ -524,7 +538,7 @@ goog.graphics.VmlGraphics.prototype.createDom = function() {
   // All inner elements are absolutly positioned on-top of this div.
   var pixelWidth = this.width;
   var pixelHeight = this.height;
-  var divElement = this.dom_.createDom('div', {
+  var divElement = this.dom_.createDom(goog.dom.TagName.DIV, {
     'style': 'overflow:hidden;position:relative;width:' +
         goog.graphics.VmlGraphics.toCssSize(pixelWidth) + ';height:' +
         goog.graphics.VmlGraphics.toCssSize(pixelHeight)

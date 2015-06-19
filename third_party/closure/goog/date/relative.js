@@ -27,6 +27,7 @@ goog.provide('goog.date.relative.TimeDeltaFormatter');
 goog.provide('goog.date.relative.Unit');
 
 goog.require('goog.i18n.DateTimeFormat');
+goog.require('goog.i18n.DateTimePatterns');
 
 
 /**
@@ -113,8 +114,8 @@ goog.date.relative.setTimeDeltaFormatter = function(formatter) {
  */
 goog.date.relative.formatMonth_ = function(date) {
   if (!goog.date.relative.monthDateFormatter_) {
-    goog.date.relative.monthDateFormatter_ =
-        new goog.i18n.DateTimeFormat('MMM dd');
+    goog.date.relative.monthDateFormatter_ = new goog.i18n.DateTimeFormat(
+        goog.i18n.DateTimePatterns.MONTH_DAY_ABBR);
   }
   return goog.date.relative.monthDateFormatter_.format(date);
 };

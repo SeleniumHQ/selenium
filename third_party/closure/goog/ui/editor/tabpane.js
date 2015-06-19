@@ -22,6 +22,7 @@
 goog.provide('goog.ui.editor.TabPane');
 
 goog.require('goog.asserts');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
@@ -128,7 +129,7 @@ goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
   var radio = this.dom_.createDom(goog.dom.TagName.INPUT,
       {
         name: groupName,
-        type: 'radio'
+        type: goog.dom.InputType.RADIO
       });
 
   var tab = new goog.ui.Tab([radio, this.dom_.createTextNode(caption)],

@@ -383,19 +383,16 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(resultArea, expectedEvents));
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
-    try {
-      driver.switchTo().frame("source");
-      WebElement element = driver.findElement(By.id("otherframe"));
-      new Actions(driver).moveToElement(element).click().perform();
-      driver.switchTo().defaultContent()
-          .switchTo().frame("target");
-      wait.until(elementTextToEqual(By.id("span"), "An inline element"));
-    } finally {
-      driver.switchTo().defaultContent();
-    }
+    driver.switchTo().frame("source");
+    WebElement element = driver.findElement(By.id("otherframe"));
+    new Actions(driver).moveToElement(element).click().perform();
+    driver.switchTo().defaultContent()
+        .switchTo().frame("target");
+    wait.until(elementTextToEqual(By.id("span"), "An inline element"));
   }
 
   @JavascriptEnabled

@@ -27,7 +27,6 @@ goog.require('goog.dom.ControlRange');
 goog.require('goog.dom.MultiRange');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TextRange');
-goog.require('goog.userAgent');
 
 
 /**

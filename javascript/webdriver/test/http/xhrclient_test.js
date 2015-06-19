@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
@@ -64,7 +63,7 @@ function expectRequest(mockXhr) {
   for (var header in REQUEST.headers) {
     mockXhr.setRequestHeader(header, REQUEST.headers[header]);
   }
-  return mockXhr.send(goog.json.serialize(REQUEST.data));
+  return mockXhr.send(JSON.stringify(REQUEST.data));
 }
 
 function testXhrClient_whenUnableToSendARequest() {

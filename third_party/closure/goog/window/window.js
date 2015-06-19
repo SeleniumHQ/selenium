@@ -19,6 +19,8 @@
 
 goog.provide('goog.window');
 
+goog.require('goog.dom.TagName');
+goog.require('goog.labs.userAgent.platform');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
@@ -73,7 +75,10 @@ goog.window.DEFAULT_POPUP_TARGET = 'google_popup';
  *
  * @return {Window} Returns the window object that was opened. This returns
  *                  null if a popup blocker prevented the window from being
- *                  opened.
+ *                  opened. In case when a new window is opened in a different
+ *                  browser sandbox (such as iOS standalone mode), the returned
+ *                  object is a emulated Window object that functions as if
+ *                  a cross-origin window has been opened.
  */
 goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   if (!opt_options) {
@@ -108,7 +113,33 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   var optionString = sb.join(',');
 
   var newWin;
-  if (opt_options['noreferrer']) {
+  if (goog.labs.userAgent.platform.isIos() &&
+          parentWin.navigator && parentWin.navigator['standalone'] &&
+          target && target != '_self') {
+    // iOS in standalone mode disregards "target" in window.open and always
+    // opens new URL in the same window. The workout around is to create an "A"
+    // element and send a click event to it.
+    // Notice that the "A" tag does NOT have to be added to the DOM.
+    var a = parentWin.document.createElement(goog.dom.TagName.A);
+    a.setAttribute('href', href);
+    a.setAttribute('target', target);
+    if (opt_options['noreferrer']) {
+      a.setAttribute('rel', 'noreferrer');
+    }
+    var click = document.createEvent('MouseEvent');
+    click.initMouseEvent('click',
+        true,  // canBubble
+        true,  // cancelable
+        parentWin,
+        1);  // detail = mousebutton
+    a.dispatchEvent(click);
+    // New window is not available in this case. Instead, a fake Window object
+    // is returned. In particular, it will have window.document undefined. In
+    // general, it will appear to most of clients as a Window for a different
+    // origin. Since iOS standalone web apps are run in their own sandbox, this
+    // is the most appropriate return value.
+    newWin = /** @type {!Window} */ ({});
+  } else if (opt_options['noreferrer']) {
     // Use a meta-refresh to stop the referrer from being included in the
     // request headers.
     newWin = parentWin.open('', target, optionString);
@@ -172,7 +203,6 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
  *                  opened.
  */
 goog.window.openBlank = function(opt_message, opt_options, opt_parentWin) {
-
   // Open up a window with the loading message and nothing else.
   // This will be interpreted as HTML content type with a missing doctype
   // and html/body tags, but is otherwise acceptable.

@@ -152,6 +152,10 @@ goog.events.KeyCodes = {
   MAC_WK_CMD_RIGHT: 93, // WebKit Right Command key fired, different from META
   WIN_IME: 229,
 
+  // "Reserved for future use". Some programs (e.g. the SlingPlayer 2.4 ActiveX
+  // control) fire this as a hacky way to disable screensavers.
+  VK_NONAME: 252,
+
   // We've seen users whose machines fire this keycode at regular one
   // second intervals. The common thread among these users is that
   // they're all using Dell Inspiron laptops, so we suspect that this
@@ -201,6 +205,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
     case goog.events.KeyCodes.SCROLL_LOCK:
     case goog.events.KeyCodes.SHIFT:
     case goog.events.KeyCodes.UP:
+    case goog.events.KeyCodes.VK_NONAME:
     case goog.events.KeyCodes.WIN_KEY:
     case goog.events.KeyCodes.WIN_KEY_RIGHT:
       return false;

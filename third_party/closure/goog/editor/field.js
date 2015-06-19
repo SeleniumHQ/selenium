@@ -1117,9 +1117,9 @@ goog.editor.Field.prototype.handleBeforeChangeKeyEvent_ = function(e) {
 
 /**
  * Keycodes that result in a selectionchange event (e.g. the cursor moving).
- * @private {!Object<number, number>}
+ * @type {!Object<number, number>}
  */
-goog.editor.Field.SELECTION_CHANGE_KEYCODES_ = {
+goog.editor.Field.SELECTION_CHANGE_KEYCODES = {
   8: 1,  // backspace
   9: 1,  // tab
   13: 1, // enter
@@ -1140,7 +1140,7 @@ goog.editor.Field.SELECTION_CHANGE_KEYCODES_ = {
  * Ctrl key cause selection changes in the field contents. These are the keys
  * that are not handled by the basic formatting trogedit plugins. Note that
  * combinations like Ctrl-left etc are already handled in
- * SELECTION_CHANGE_KEYCODES_
+ * SELECTION_CHANGE_KEYCODES
  * @type {Object}
  * @private
  */
@@ -1155,7 +1155,7 @@ goog.editor.Field.CTRL_KEYS_CAUSING_SELECTION_CHANGES_ = {
  * Map of keyCodes (not charCodes) that might need to be handled as a keyboard
  * shortcut (even when ctrl/meta key is not pressed) by some plugin. Currently
  * it is a small list. If it grows too big we can optimize it by using ranges
- * or extending it from SELECTION_CHANGE_KEYCODES_
+ * or extending it from SELECTION_CHANGE_KEYCODES
  * @type {Object}
  * @private
  */
@@ -1340,7 +1340,7 @@ goog.editor.Field.prototype.handleKeyUp_ = function(e) {
     return;
   }
 
-  if (goog.editor.Field.SELECTION_CHANGE_KEYCODES_[e.keyCode] ||
+  if (goog.editor.Field.SELECTION_CHANGE_KEYCODES[e.keyCode] ||
       ((e.ctrlKey || e.metaKey) &&
        goog.editor.Field.CTRL_KEYS_CAUSING_SELECTION_CHANGES_[e.keyCode])) {
     this.selectionChangeTimer_.start();
@@ -1378,6 +1378,13 @@ goog.editor.Field.prototype.handleKeyboardShortcut_ = function(e) {
     }
 
     var stringKey = String.fromCharCode(key).toLowerCase();
+    // Ctrl+Cmd+Space generates a charCode for a backtick on Mac Firefox, but
+    // has the correct string key in the browser event.
+    if (goog.userAgent.MAC && goog.userAgent.GECKO &&
+        stringKey == '`' && e.getBrowserEvent().key == ' ') {
+      stringKey = ' ';
+    }
+
     if (this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.SHORTCUT,
                                       e, stringKey, isModifierPressed)) {
       e.preventDefault();
@@ -2188,7 +2195,8 @@ goog.editor.Field.prototype.setInnerHtml_ = function(html) {
     // Note:  We punt on this issue for the non iframe case since
     // we don't want to screw with the main document.
     if (this.usesIframe() && goog.editor.BrowserFeature.MOVES_STYLE_TO_HEAD) {
-      var heads = field.ownerDocument.getElementsByTagName('HEAD');
+      var heads = field.ownerDocument.getElementsByTagName(
+          goog.dom.TagName.HEAD);
       for (var i = heads.length - 1; i >= 1; --i) {
         heads[i].parentNode.removeChild(heads[i]);
       }

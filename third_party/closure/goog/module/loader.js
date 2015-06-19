@@ -25,7 +25,9 @@ goog.provide('goog.module.Loader');
 
 goog.require('goog.Timer');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 /** @suppress {extraRequire} */
 goog.require('goog.module');
 goog.require('goog.object');
@@ -338,7 +340,7 @@ goog.module.Loader.prototype.load_ = function(module) {
       return;
     }
 
-    var s = goog.dom.createDom('script',
+    var s = goog.dom.createDom(goog.dom.TagName.SCRIPT,
         {'type': 'text/javascript', 'src': url});
     document.body.appendChild(s);
   }, 0, this);

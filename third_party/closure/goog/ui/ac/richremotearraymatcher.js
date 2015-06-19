@@ -22,6 +22,8 @@
 
 goog.provide('goog.ui.ac.RichRemoteArrayMatcher');
 
+goog.require('goog.dom.safe');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.json');
 goog.require('goog.ui.ac.RemoteArrayMatcher');
 
@@ -30,6 +32,12 @@ goog.require('goog.ui.ac.RemoteArrayMatcher');
 /**
  * An array matcher that requests rich matches via ajax and converts them into
  * rich rows.
+ *
+ * This class makes use of goog.html.legacyconversions and provides no
+ * HTML-type-safe alternative. As such, it is not compatible with
+ * code that sets goog.html.legacyconversions.ALLOW_LEGACY_CONVERSIONS to
+ * false.
+ *
  * @param {string} url The Uri which generates the auto complete matches.  The
  *     search term is passed to the server as the 'token' query param.
  * @param {boolean=} opt_noSimilar If true, request that the server does not do
@@ -40,6 +48,15 @@ goog.require('goog.ui.ac.RemoteArrayMatcher');
  * @extends {goog.ui.ac.RemoteArrayMatcher}
  */
 goog.ui.ac.RichRemoteArrayMatcher = function(url, opt_noSimilar) {
+  // requestMatchingRows() sets innerHTML directly from unsanitized/unescaped
+  // server-data, with no form of type-safety. Because requestMatchingRows is
+  // used polymorphically (for example, from
+  // goog.ui.ac.AutoComplete.prototype.setToken) it is undesirable to have
+  // Conformance legacyconversions rule for it. Doing so would cause the
+  // respective check rule fire from all such places which polymorphically
+  // call requestMatchingRows(); such calls are safe as long as they're not to
+  // RichRemoteArrayMatcher.
+  goog.html.legacyconversions.throwIfConversionsDisallowed();
   goog.ui.ac.RemoteArrayMatcher.call(this, url, opt_noSimilar);
 
   /**
@@ -97,7 +114,9 @@ goog.ui.ac.RichRemoteArrayMatcher.prototype.requestMatchingRows =
           // If no render function was provided, set the node's innerHTML.
           if (typeof richRow.render == 'undefined') {
             richRow.render = function(node, token) {
-              node.innerHTML = richRow.toString();
+              goog.dom.safe.setInnerHtml(node,
+                  goog.html.legacyconversions.safeHtmlFromString(
+                      richRow.toString()));
             };
           }
 

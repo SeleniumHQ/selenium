@@ -85,6 +85,7 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
@@ -96,6 +97,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");

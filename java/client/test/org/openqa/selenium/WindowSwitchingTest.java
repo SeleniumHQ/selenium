@@ -46,7 +46,9 @@ import org.openqa.selenium.testing.drivers.Browser;
 import java.util.Set;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
+
   @Ignore({MARIONETTE})
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&

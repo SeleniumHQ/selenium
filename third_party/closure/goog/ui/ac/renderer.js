@@ -29,6 +29,7 @@ goog.require('goog.asserts');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
@@ -255,6 +256,13 @@ goog.inherits(goog.ui.ac.Renderer, goog.events.EventTarget);
  * @private
  */
 goog.ui.ac.Renderer.prototype.anchorElement_;
+
+
+/**
+ * The anchor element to position the rendered autocompleter against.
+ * @protected {Element|undefined}
+ */
+goog.ui.ac.Renderer.prototype.target_;
 
 
 /**
@@ -576,7 +584,7 @@ goog.ui.ac.Renderer.prototype.setMenuClasses_ = function(elem) {
 goog.ui.ac.Renderer.prototype.maybeCreateElement_ = function() {
   if (!this.element_) {
     // Make element and add it to the parent
-    var el = this.dom_.createDom('div', {style: 'display:none'});
+    var el = this.dom_.createDom(goog.dom.TagName.DIV, {style: 'display:none'});
     if (this.showScrollbarsIfTooLarge_) {
       // Make sure that the dropdown will get scrollbars if it isn't large
       // enough to show all rows.
@@ -734,7 +742,7 @@ goog.ui.ac.Renderer.prototype.getAutoPosition = function() {
  * @protected
  */
 goog.ui.ac.Renderer.prototype.getTarget = function() {
-  return this.target_;
+  return this.target_ || null;
 };
 
 
@@ -869,7 +877,7 @@ goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
         var idx = 2 * i;
 
         node.nodeValue = textNodes[idx];
-        var boldTag = this.dom_.createElement('b');
+        var boldTag = this.dom_.createElement(goog.dom.TagName.B);
         boldTag.className = this.highlightedClassName;
         this.dom_.appendChild(boldTag,
             this.dom_.createTextNode(textNodes[idx + 1]));
@@ -947,7 +955,8 @@ goog.ui.ac.Renderer.prototype.getTokenRegExp_ = function(tokenOrArray) {
       // For the single-match string token, we refuse to match anything if
       // the string begins with a non-word character, as matches by definition
       // can only occur at the start of a word. (This also handles the
-      // goog.string.isEmptyOrWhitespace(goog.string.makeSafe(tokenOrArray)) case.)
+      // goog.string.isEmptyOrWhitespace(goog.string.makeSafe(tokenOrArray))
+      // case.)
       if (!/^\W/.test(tokenOrArray)) {
         token = goog.string.regExpEscape(tokenOrArray);
       }
@@ -968,7 +977,7 @@ goog.ui.ac.Renderer.prototype.getTokenRegExp_ = function(tokenOrArray) {
  */
 goog.ui.ac.Renderer.prototype.renderRowHtml = function(row, token) {
   // Create and return the element.
-  var elem = this.dom_.createDom('div', {
+  var elem = this.dom_.createDom(goog.dom.TagName.DIV, {
     className: this.rowClassName,
     id: goog.ui.IdGenerator.getInstance().getNextUniqueId()
   });

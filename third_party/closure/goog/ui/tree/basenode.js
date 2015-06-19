@@ -229,9 +229,7 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
 
 /** @override */
 goog.ui.tree.BaseNode.prototype.createDom = function() {
-  // TODO(jakubvrana): Use safeHtmlToDocumentFragment() once it is ready.
-  var element = this.getDomHelper().htmlToDocumentFragment(
-      goog.html.SafeHtml.unwrap(this.toSafeHtml()));
+  var element = this.getDomHelper().safeHtmlToNode(this.toSafeHtml());
   this.setElementInternal(/** @type {!Element} */ (element));
 };
 
@@ -1440,18 +1438,6 @@ goog.ui.tree.BaseNode.prototype.onKeyDown = function(e) {
   return handled;
 };
 
-
-/**
- * Handles a key down event.
- * @param {!goog.events.BrowserEvent} e The browser event.
- * @private
- */
-goog.ui.tree.BaseNode.prototype.onKeyPress_ = function(e) {
-  if (!e.altKey && e.keyCode >= goog.events.KeyCodes.LEFT &&
-      e.keyCode <= goog.events.KeyCodes.DOWN) {
-    e.preventDefault();
-  }
-};
 
 
 /**

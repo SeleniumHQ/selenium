@@ -806,7 +806,7 @@ goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
   // Look for hours:minutes or hhmm.
   var st = pos[0];
   var value = this.parseInt_(text, pos);
-  if (value == 0 && pos[0] == st) {
+  if (value < 0) {
     return false;
   }
 
@@ -815,9 +815,8 @@ goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
     // This is the hours:minutes case
     offset = value * 60;
     pos[0]++;
-    st = pos[0];
     value = this.parseInt_(text, pos);
-    if (value == 0 && pos[0] == st) {
+    if (value < 0) {
       return false;
     }
     offset += value;
@@ -840,12 +839,13 @@ goog.i18n.DateTimeParse.prototype.parseTimeZoneOffset_ =
 
 
 /**
- * Parse a integer string and return integer value.
+ * Parse an integer string and return integer value.
  *
  * @param {string} text string being parsed.
  * @param {Array<number>} pos parse position.
  *
- * @return {number} Converted integer value.
+ * @return {number} Converted integer value or -1 if the integer cannot be
+ *     parsed.
  * @private
  */
 goog.i18n.DateTimeParse.prototype.parseInt_ = function(text, pos) {

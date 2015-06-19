@@ -60,6 +60,16 @@ testAgents.ANDROID_BROWSER_403_ALT =
     ' AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30';
 
 
+// Chromium for Android. Found in Android 4.4+ devices based on AOSP, but never
+// in the 'Google' devices (where only Google Chrome is shipped).
+// UA string matches Chromium based WebView exactly, see ANDROID_WEB_VIEW_4_4.
+/** @const {string} */
+testAgents.ANDROID_BROWSER_4_4 =
+    'Mozilla/5.0 (Linux; Android 4.4.2; S8 Build/KOT49H) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 ' +
+    'Chrome/30.0.0.0 Mobile Safari/537.36';
+
+
 // See https://developer.chrome.com/multidevice/user-agent
 /** @const {string} */
 testAgents.ANDROID_WEB_VIEW_4_1_1 =
@@ -140,6 +150,15 @@ testAgents.IE_11_COMPATIBILITY_MSIE_7 =
 testAgents.IE_11_COMPATIBILITY_MSIE_9 =
     'Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; WOW64; Trident/7.0; ' +
     'rv:11.0) like Gecko';
+
+
+/**
+ * https://msdn.microsoft.com/en-us/library/hh869301%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396#edge
+ * @const {string}
+ */
+testAgents.IE_EDGE =
+    'Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 ' +
+    '(KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0';
 
 
 /** @const {string} */
@@ -295,9 +314,22 @@ testAgents.CHROME_ANDROID =
 
 
 /** @const {string} */
+testAgents.CHROME_ANDROID_PHONE_4_4 =
+    'Mozilla/5.0 (Linux; Android 4.4.2; S8 Build/KOT49H) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.93 Mobile ' +
+    'Safari/537.36';
+
+
+/** @const {string} */
 testAgents.CHROME_ANDROID_TABLET =
     'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) ' +
     'AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/535.19';
+
+
+/** @const {string} */
+testAgents.CHROME_ANDROID_TABLET_4_4 =
+    'Mozilla/5.0 (Linux; Android 4.4.4; Nexus 7 Build/KTU84P) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.93 Safari/537.36';
 
 
 /** @const {string} */
@@ -345,4 +377,10 @@ testAgents.KINDLE_FIRE =
     'Mozilla/5.0 (Linux; U; Android 4.0.3; en-us; KFTT Build/IML74K)' +
     ' AppleWebKit/535.19 (KHTML, like Gecko) Silk/2.1 Mobile Safari/535.19' +
     ' Silk-Accelerated=true';
+
+
+/** @const {string} */
+testAgents.FIREFOX_ANDROID_TABLET =
+    'Mozilla/5.0 (Android; Tablet; rv:28.0) Gecko/28.0 Firefox/28.0';
+
 });  // goog.scope

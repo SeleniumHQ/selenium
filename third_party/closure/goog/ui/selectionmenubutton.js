@@ -26,6 +26,8 @@
 goog.provide('goog.ui.SelectionMenuButton');
 goog.provide('goog.ui.SelectionMenuButton.SelectionState');
 
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -132,7 +134,7 @@ goog.ui.SelectionMenuButton.prototype.handleMouseDown = function(e) {
  */
 goog.ui.SelectionMenuButton.prototype.getCheckboxElement = function() {
   var elements = this.getDomHelper().getElementsByTagNameAndClass(
-      'input',
+      goog.dom.TagName.INPUT,
       goog.getCssName('goog-selectionmenubutton-checkbox'),
       this.getContentElement());
   return elements[0];
@@ -238,8 +240,8 @@ goog.ui.SelectionMenuButton.prototype.createDom = function() {
  * @protected
  */
 goog.ui.SelectionMenuButton.prototype.createCheckbox = function() {
-  var checkbox = this.getDomHelper().createElement('input');
-  checkbox.type = 'checkbox';
+  var checkbox = this.getDomHelper().createElement(goog.dom.TagName.INPUT);
+  checkbox.type = goog.dom.InputType.CHECKBOX;
   checkbox.className = goog.getCssName('goog-selectionmenubutton-checkbox');
   this.setContent(checkbox);
 };

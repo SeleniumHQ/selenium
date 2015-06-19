@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -67,6 +65,7 @@ class EventFiringWebDriver(object):
         if not isinstance(event_listener, AbstractEventListener):
             raise WebDriverException("Event listener must be a subclass of AbstractEventListener")
         self._driver = driver
+        self._driver._wrap_value = self._wrap_value
         self._listener = event_listener
         
     @property
@@ -170,7 +169,12 @@ class EventFiringWebDriver(object):
             return [self._unwrap_element_args(item) for item in args]
         else:
             return args
-        
+
+    def _wrap_value(self, value):
+        if isinstance(value, EventFiringWebElement):
+            return WebDriver._wrap_value(self._driver, value.wrapped_element)
+        return WebDriver._wrap_value(self._driver, value)
+
     def __setattr__(self, item, value):
         if item.startswith("_") or not hasattr(self._driver, item):
             object.__setattr__(self, item, value)
