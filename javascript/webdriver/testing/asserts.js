@@ -376,7 +376,7 @@ webdriver.testing.Assertion.prototype.isFalse = function() {
  * @extends {webdriver.testing.Assertion}
  */
 webdriver.testing.NegatedAssertion = function(value) {
-  goog.base(this, value);
+  webdriver.testing.NegatedAssertion.base(this, 'constructor', value);
   this.value = value;
 };
 goog.inherits(
@@ -387,10 +387,9 @@ goog.inherits(
 webdriver.testing.NegatedAssertion.prototype.apply = function(
     matcher, opt_message) {
   matcher = new goog.labs.testing.IsNotMatcher(matcher);
-  return goog.base(this, 'apply', matcher, opt_message);
+  return webdriver.testing.NegatedAssertion.base(this, 'apply', matcher,
+                                                 opt_message);
 };
-
-
 
 /**
  * Creates a new assertion.
