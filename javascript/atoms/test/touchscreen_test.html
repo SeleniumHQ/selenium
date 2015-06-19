@@ -413,6 +413,51 @@
       assertThrows('Pressing when already pressed should throw an exception',
                    goog.bind(touchscreen.press, touchscreen));
     }
+
+    function testPreventDefaultOnTouchstart() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      goog.events.listen(target, goog.events.EventType.TOUCHSTART, function(e) {
+        e.preventDefault();
+      });
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+      touchscreen.release();
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerUpEventsWithClick(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1]);
+      }
+    }
+
+    function testPreventDefaultOnTouchend() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      goog.events.listen(target, goog.events.EventType.TOUCHEND, function(e) {
+        e.preventDefault();
+      });
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+      touchscreen.release();
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerUpEventsWithClick(target));
+      } else {
+        var events = [goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1];
+        if (!bot.userAgent.IOS && !goog.userAgent.product.CHROME) {
+          events.push(goog.events.EventType.MOUSEMOVE, target,
+                      goog.events.EventType.MOUSEDOWN, target,
+                      goog.events.EventType.MOUSEUP, target,
+                      goog.events.EventType.CLICK, target);
+        }
+        assertEvents(events);
+      }
+    }
   </script>
 </head>
 <body>
