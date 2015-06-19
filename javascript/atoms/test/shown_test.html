@@ -338,6 +338,15 @@
       assertFalse(isShown(target));
     }
 
+    function testOverflowHiddenWithFixedPositionChild() {
+      var target = findElement({id: 'overflowHiddenWithFixedPositionChild'});
+      var child = findElement({id: 'fixedPositionChild'});
+      child.innerHTML = '';
+      assertFalse(isShown(target));
+      child.innerHTML = 'some content';
+      assertTrue(isShown(target));
+    }
+
     function testThatElementIsShownWithZIndex() {
       assertTrue(isShown(findElement({id: 'bug5109'})));
     }
@@ -530,6 +539,13 @@
 
 <div id="bug5022" style="overflow:hidden; height:0; width:0;">
   This is a zero height/width div and overflow hidden
+</div>
+
+<div style="overflow:hidden; height:0; width:0;">
+  <div id="overflowHiddenWithFixedPositionChild">
+    This is a zero height/width div and overflow hidden
+    <div id="fixedPositionChild" style="position:fixed"></div>
+  </div>
 </div>
 
 <div style="position:relative;
