@@ -2433,7 +2433,8 @@ goog.inherits(webdriver.AlertPromise, webdriver.Alert);
  * @extends {bot.Error}
  */
 webdriver.UnhandledAlertError = function(message, text, alert) {
-  goog.base(this, bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
+  webdriver.UnhandledAlertError.base(
+      this, 'constructor', bot.ErrorCode.UNEXPECTED_ALERT_OPEN, message);
 
   /** @private {string} */
   this.text_ = text;
