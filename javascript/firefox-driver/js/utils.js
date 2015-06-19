@@ -150,9 +150,6 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
   } catch (e) {
-    goog.log.warning(Utils.LOG_,
-        'Unable to find native component: ' + componentId,
-        e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
