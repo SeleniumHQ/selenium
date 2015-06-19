@@ -663,7 +663,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   function hiddenByOverflow(e) {
     return bot.dom.getOverflowState(e) == bot.dom.OverflowState.HIDDEN &&
         goog.array.every(e.childNodes, function(n) {
-          return !bot.dom.isElement(n) || hiddenByOverflow(n);
+          return !bot.dom.isElement(n) || hiddenByOverflow(n) ||
+                 !positiveSize(n);
         });
   }
   return !hiddenByOverflow(elem);
