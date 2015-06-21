@@ -316,7 +316,7 @@ class WebElement(object):
                 val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
-            else:
+            elif val:
                 for i in range(len(val)):
                     typing.append(val[i])
         self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
