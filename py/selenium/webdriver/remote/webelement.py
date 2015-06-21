@@ -18,6 +18,7 @@
 import hashlib
 import os
 import zipfile
+from decimal import Decimal
 try:
     from StringIO import StringIO as IOStream
 except ImportError:  # 3+
@@ -311,7 +312,7 @@ class WebElement(object):
         for val in value:
             if isinstance(val, Keys):
                 typing.append(val)
-            elif isinstance(val, int):
+            elif isinstance(val, int) or isinstance(val, Decimal):
                 val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
