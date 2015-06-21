@@ -19,25 +19,55 @@
 
 namespace webdriver {
 
+enum HookCommunicationType {
+  OneWay = 0,
+  TwoWay = 1
+};
+
+struct HookSettings {
+  std::string hook_procedure_name;
+  int hook_procedure_type;
+  HookCommunicationType communication_type;
+  HWND window_handle;
+};
+
 class HookProcessor {
  public:
-  HookProcessor(HWND window_handle);
-  ~HookProcessor(void);
+  HookProcessor(void);
+  virtual ~HookProcessor(void);
 
   static int GetDataBufferSize(void);
   static void SetDataBufferSize(int size);
   static void CopyDataToBuffer(int source_data_size, void* source);
   static void CopyDataFromBuffer(int destination_data_size, void* destination);
-  
+  static void CopyWStringToBuffer(const std::wstring& data);
+  static std::wstring CopyWStringFromBuffer(void);
+
+  static void WriteDataToPipe(const int process_id, const int data_size, void* data);
+
+  void Initialize(const HookSettings& settings);
+  void Initialize(const std::string& hook_proc_name, const int hook_proc_type);
+  void Dispose(void);
+
+  bool PushData(int data_size,
+                void* pointer_to_data);
+  bool PushData(const std::wstring& data);
+
+  int PullData(std::vector<char>* data);
+  int PullData(std::wstring data);
+
+ private:
+  static void ClearBuffer(void);
+
+  void CreateReturnPipe(void);
   bool InstallWindowsHook(const std::string& hook_proc_name,
                           const int hook_proc_type);
   void UninstallWindowsHook(void);
-  bool PushData(int data_size,
-                void* pointer_to_data);
- private:
-  static void ClearBuffer(void);
+
+  HookCommunicationType communication_type_;
   HWND window_handle_;
   HHOOK hook_procedure_handle_;
+  HANDLE pipe_handle_;
 };
 
 } // namespace webdriver
