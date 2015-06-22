@@ -27,7 +27,6 @@ goog.provide('webdriver.http.Response');
 
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
-goog.require('goog.json');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.logging');
@@ -189,7 +188,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return /** @type {!bot.response.ResponseObject} */ (goog.json.parse(
+    return /** @type {!bot.response.ResponseObject} */ (JSON.parse(
         httpResponse.body));
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need
@@ -436,7 +435,7 @@ webdriver.http.Request.prototype.toString = function() {
     this.method + ' ' + this.path + ' HTTP/1.1',
     webdriver.http.headersToString_(this.headers),
     '',
-    goog.json.serialize(this.data)
+    JSON.stringify(this.data)
   ].join('\n');
 };
 

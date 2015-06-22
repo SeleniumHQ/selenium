@@ -17,7 +17,6 @@
 
 goog.provide('webdriver.http.CorsClient');
 
-goog.require('goog.json');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
 
@@ -123,7 +122,7 @@ webdriver.http.CorsClient.prototype.send = function(request, callback) {
     // optimized away by the compiler, which leaves us where we were before.
     xhr.onprogress = xhr.ontimeout = function() {};
 
-    xhr.send(goog.json.serialize({
+    xhr.send(JSON.stringify({
       'method': request.method,
       'path': request.path,
       'data': request.data

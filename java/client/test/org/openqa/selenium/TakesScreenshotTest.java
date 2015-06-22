@@ -27,6 +27,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -251,7 +254,15 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   )
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
+    wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
 
+    driver.switchTo().defaultContent();
+    wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame2")));
+    wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
+
+    driver.switchTo().defaultContent();
+    wait.until(titleIs("screen test"));
     BufferedImage screenshot = getImage();
 
     Set<String> actualColors = scanActualColors(screenshot,
@@ -298,6 +309,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(
       value = {IE, MARIONETTE},
@@ -329,6 +341,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   @Ignore(
       value = {IE, CHROME, MARIONETTE},

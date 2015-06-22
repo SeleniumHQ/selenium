@@ -278,6 +278,7 @@ Colors = {
     "PLUM": Color(221, 160, 221),
     "POWDERBLUE": Color(176, 224, 230),
     "PURPLE": Color(128, 0, 128),
+    "REBECCAPURPLE": Color(128, 51, 153),
     "RED": Color(255, 0, 0),
     "ROSYBROWN": Color(188, 143, 143),
     "ROYALBLUE": Color(65, 105, 225),

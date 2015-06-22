@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
@@ -68,7 +67,7 @@ function setXdr(opt_value) {
 
 function expectRequest(mockXhr) {
   mockXhr.open('POST', URL + '/xdrpc', true);
-  return mockXhr.send(goog.json.serialize({
+  return mockXhr.send(JSON.stringify({
     'method': REQUEST.method,
     'path': REQUEST.path,
     'data': REQUEST.data

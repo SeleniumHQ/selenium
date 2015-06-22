@@ -219,6 +219,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Ignore(MARIONETTE)
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
@@ -234,6 +235,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Ignore(MARIONETTE)
   @JavascriptEnabled
+  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
