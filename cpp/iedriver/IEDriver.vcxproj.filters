@@ -92,6 +92,12 @@
     <ClCompile Include="HookProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CookieManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BrowserCookie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -365,6 +371,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HookProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CookieManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BrowserCookie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

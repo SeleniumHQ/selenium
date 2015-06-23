@@ -24,6 +24,7 @@
 #define NAMED_PIPE_BUFFER_SIZE 1024
 #define LOW_INTEGRITY_SDDL_SACL L"S:(ML;;NW;;;LW)"
 #define PIPE_CONNECTION_TIMEOUT_IN_MILLISECONDS 5000
+#define PIPE_NAME_TEMPLATE L"\\\\.\\pipe\\IEDriverPipe%d"
 
 // Define a shared data segment.  Variables in this segment can be
 // shared across processes that load this DLL.
@@ -75,7 +76,7 @@ class CopyDataHolderWindow : public CWindowImpl<CopyDataHolderWindow> {
 HookProcessor::HookProcessor() {
   this->window_handle_ = NULL;
   this->hook_procedure_handle_ = NULL;
-  this->pipe_handle_ = NULL;
+  this->pipe_handle_ = INVALID_HANDLE_VALUE;
   this->communication_type_ = OneWay;
 }
 
@@ -85,6 +86,7 @@ HookProcessor::~HookProcessor() {
 
 void HookProcessor::Initialize(const std::string& hook_procedure_name,
                                const int hook_procedure_type) {
+  LOG(TRACE) << "Entering HookProcessor::Initialize";
   HookSettings hook_settings;
   hook_settings.hook_procedure_name = hook_procedure_name;
   hook_settings.hook_procedure_type = hook_procedure_type;
@@ -94,6 +96,7 @@ void HookProcessor::Initialize(const std::string& hook_procedure_name,
 }
 
 void HookProcessor::Initialize(const HookSettings& settings) {
+  LOG(TRACE) << "Entering HookProcessor::Initialize";
   this->window_handle_ = settings.window_handle;
   this->pipe_handle_ = INVALID_HANDLE_VALUE;
   this->communication_type_ = settings.communication_type;
@@ -102,45 +105,6 @@ void HookProcessor::Initialize(const HookSettings& settings) {
   }
   bool is_hook_installed = this->InstallWindowsHook(settings.hook_procedure_name,
                                                     settings.hook_procedure_type);
-}
-
-void HookProcessor::CreateReturnPipe() {
-  // Set security descriptor so low-integrity processes can write to it.
-  PSECURITY_DESCRIPTOR pointer_to_descriptor;
-  ::ConvertStringSecurityDescriptorToSecurityDescriptor(LOW_INTEGRITY_SDDL_SACL,
-                                                        SDDL_REVISION_1,
-                                                        &pointer_to_descriptor,
-                                                        NULL);
-  SECURITY_ATTRIBUTES security_attributes;
-  security_attributes.lpSecurityDescriptor = pointer_to_descriptor;
-  security_attributes.nLength = sizeof(security_attributes);
-  this->pipe_handle_ = ::CreateNamedPipe(L"\\\\.\\pipe\\nhsupspipe",
-                                         PIPE_ACCESS_DUPLEX,
-                                         PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-                                         PIPE_UNLIMITED_INSTANCES,
-                                         NAMED_PIPE_BUFFER_SIZE,
-                                         0,
-                                         0,
-                                         &security_attributes);
-
-  // failed to create pipe?
-  if (this->pipe_handle_ == INVALID_HANDLE_VALUE) {
-    LOG(WARN) << "Failed to create named pipe. Communication back from browser will not work.";
-  }
-}
-
-void HookProcessor::Dispose() {
-  ClearBuffer();
-
-  if (this->pipe_handle_ != NULL) {
-    ::CloseHandle(this->pipe_handle_);
-    this->pipe_handle_ = NULL;
-  }
-
-  if (this->hook_procedure_handle_ != NULL) {
-    this->UninstallWindowsHook();
-    this->hook_procedure_handle_ = NULL;
-  }
 }
 
 bool HookProcessor::InstallWindowsHook(const std::string& hook_proc_name,
@@ -178,7 +142,52 @@ void HookProcessor::UninstallWindowsHook() {
   LOG(TRACE) << "Entering HookProcessor::UninstallWindowsHook";
   if (this->hook_procedure_handle_ != NULL) {
     ::UnhookWindowsHookEx(this->hook_procedure_handle_);
-    ::CloseHandle(this->hook_procedure_handle_);
+  }
+}
+
+void HookProcessor::CreateReturnPipe() {
+  LOG(TRACE) << "Entering HookProcessor::CreateReturnPipe";
+  std::wstring pipe_name = StringUtilities::Format(PIPE_NAME_TEMPLATE,
+                                                   ::GetCurrentProcessId());
+  // Set security descriptor so low-integrity processes can write to it.
+  PSECURITY_DESCRIPTOR pointer_to_descriptor;
+  ::ConvertStringSecurityDescriptorToSecurityDescriptor(LOW_INTEGRITY_SDDL_SACL,
+                                                        SDDL_REVISION_1,
+                                                        &pointer_to_descriptor,
+                                                        NULL);
+  SECURITY_ATTRIBUTES security_attributes;
+  security_attributes.lpSecurityDescriptor = pointer_to_descriptor;
+  security_attributes.nLength = sizeof(security_attributes);
+  this->pipe_handle_ = ::CreateNamedPipe(pipe_name.c_str(),
+                                         PIPE_ACCESS_DUPLEX,
+                                         PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+                                         PIPE_UNLIMITED_INSTANCES,
+                                         0,
+                                         NAMED_PIPE_BUFFER_SIZE,
+                                         PIPE_CONNECTION_TIMEOUT_IN_MILLISECONDS,
+                                         &security_attributes);
+
+  // failed to create pipe?
+  if (this->pipe_handle_ == INVALID_HANDLE_VALUE) {
+    LOGERR(WARN) << "Failed to create named pipe. Communication back from browser will not work.";
+  } else {
+    LOG(DEBUG) << "Created named pipe " << LOGWSTRING(pipe_name);
+  }
+}
+
+void HookProcessor::Dispose() {
+  LOG(TRACE) << "Entering HookProcessor::Dispose";
+  ClearBuffer();
+
+  if (this->pipe_handle_ != INVALID_HANDLE_VALUE &&
+      this->pipe_handle_ != NULL) {
+    ::CloseHandle(this->pipe_handle_);
+    this->pipe_handle_ = INVALID_HANDLE_VALUE;
+  }
+
+  if (this->hook_procedure_handle_ != NULL) {
+    this->UninstallWindowsHook();
+    this->hook_procedure_handle_ = NULL;
   }
 }
 
@@ -200,7 +209,6 @@ bool HookProcessor::PushData(int data_size,
   LRESULT result = holder.CopyData(this->window_handle_,
                                    data_size,
                                    pointer_to_data);
-  LOG(INFO) << "SendMessage result? " << result;
   holder.DestroyWindow();
   return true;
 }
@@ -211,15 +219,24 @@ bool HookProcessor::PushData(const std::wstring& data) {
 }
 
 int HookProcessor::PullData(std::vector<char>* data) {
+  LOG(TRACE) << "Entering HookProcessor::PullData";
   std::vector<char> buffer(NAMED_PIPE_BUFFER_SIZE);
 
    // Wait for the client to connect; if it succeeds, 
    // the function returns a nonzero value. If the function
-   // returns zero, GetLastError returns ERROR_PIPE_CONNECTED. 
-  bool is_connected = ::ConnectNamedPipe(this->pipe_handle_, NULL) ? true : (::GetLastError() == ERROR_PIPE_CONNECTED);
+   // returns zero, GetLastError returns ERROR_PIPE_CONNECTED.
+  LOG(DEBUG) << "Waiting for connection from browser via named pipe";
+  bool is_connected = true;
+  if (!::ConnectNamedPipe(this->pipe_handle_, NULL)) {
+    DWORD error = ::GetLastError();
+    if (error != ERROR_PIPE_CONNECTED) {
+      is_connected = false;
+    }
+  }
   if (is_connected) {
+    LOG(DEBUG) << "Connection from browser established via named pipe";
     unsigned long bytes_read = 0;
-    bool is_read_successful = ::ReadFile(this->pipe_handle_,
+    BOOL is_read_successful = ::ReadFile(this->pipe_handle_,
                                          &buffer[0],
                                          NAMED_PIPE_BUFFER_SIZE,
                                          &bytes_read,
@@ -235,6 +252,9 @@ int HookProcessor::PullData(std::vector<char>* data) {
     if (is_read_successful) {
       data->insert(data->end(), buffer.begin(), buffer.begin() + bytes_read);
     }
+    ::DisconnectNamedPipe(this->pipe_handle_);
+  } else {
+    LOG(WARN) << "No connection received from browser via named pipe";
   }
   return static_cast<int>(data->size());
 }
@@ -259,11 +279,15 @@ void HookProcessor::CopyDataToBuffer(int source_data_size, void* source) {
            data_buffer_size);
 }
 
-void HookProcessor::CopyDataFromBuffer(int destination_data_size, void* destination) {
+void HookProcessor::CopyDataFromBuffer(int destination_data_size,
+                                       void* destination) {
   if (data_buffer_size >= destination_data_size) {
     destination_data_size = data_buffer_size;
   }
-  memcpy_s(destination, destination_data_size, data_buffer, destination_data_size); 
+  memcpy_s(destination,
+           destination_data_size,
+           data_buffer,
+           destination_data_size); 
   // clear the shared buffer after taking data out of it.
   ClearBuffer();
 }
@@ -296,21 +320,30 @@ void HookProcessor::ClearBuffer() {
   memset(data_buffer, 0, MAX_BUFFER_SIZE);
 }
 
-void HookProcessor::WriteDataToPipe(const int process_id, const int data_size, void* data) {
+void HookProcessor::WriteDataToPipe(const int process_id,
+                                    const size_t data_size,
+                                    void* data) {
+  WriteDataToPipe(process_id, static_cast<int>(data_size), data);
+}
+
+void HookProcessor::WriteDataToPipe(const int process_id,
+                                    const int data_size, 
+                                    void* data) {
+  std::wstring pipe_name = StringUtilities::Format(PIPE_NAME_TEMPLATE, process_id);
   HANDLE pipe_handle = INVALID_HANDLE_VALUE;
 
   // Create the named pipe handle. Retry up until a timeout to give
   // the driver end of the pipe time to start listening for a connection.
-  BOOL is_pipe_available = ::WaitNamedPipe(L"\\\\.\\pipe\\nhsupspipe", PIPE_CONNECTION_TIMEOUT_IN_MILLISECONDS);
+  BOOL is_pipe_available = ::WaitNamedPipe(pipe_name.c_str(),
+                                           PIPE_CONNECTION_TIMEOUT_IN_MILLISECONDS);
   if (is_pipe_available) {
-    pipe_handle = ::CreateFile(L"\\\\.\\pipe\\nhsupspipe",
+    pipe_handle = ::CreateFile(pipe_name.c_str(),
                                GENERIC_READ | GENERIC_WRITE,
                                0, 
                                NULL, 
                                OPEN_EXISTING,
                                0,
                                NULL);
-    DWORD last_error = ::GetLastError();
   }
 
   // if everything ok set mode to message mode
@@ -319,7 +352,7 @@ void HookProcessor::WriteDataToPipe(const int process_id, const int data_size, v
     // if this fails bail out
     if (::SetNamedPipeHandleState(pipe_handle, &pipe_mode, NULL, NULL)) {
       unsigned long bytes_written = 0;
-      bool is_write_successful = ::WriteFile(pipe_handle,
+      BOOL is_write_successful = ::WriteFile(pipe_handle,
                                              data,
                                              data_size,
                                              &bytes_written,
