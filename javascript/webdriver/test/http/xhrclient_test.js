@@ -18,10 +18,15 @@
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 // Alias for readability.
 var callbackHelper = webdriver.test.testutil.callbackHelper;
