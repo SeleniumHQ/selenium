@@ -284,7 +284,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldBeAbleToSetDomainToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -345,7 +344,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
+        //[IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -398,8 +397,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not return expiry info")]
-        [IgnoreBrowser(Browser.Android, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldRetainCookieExpiry()
         {
@@ -561,7 +558,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Add cookie to unrelated domain silently fails for IE.")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
