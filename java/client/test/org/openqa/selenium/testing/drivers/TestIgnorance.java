@@ -61,6 +61,7 @@ public class TestIgnorance {
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
   private Set<String> ignoreMethods = Sets.newHashSet();
+  private Set<String> ignoreClasses = Sets.newHashSet();
   private Browser browser;
 
   public TestIgnorance(Browser browser) {
@@ -74,6 +75,11 @@ public class TestIgnorance {
     String method = System.getProperty("method");
     if (method != null) {
       methods.addAll(Arrays.asList(method.split(",")));
+    }
+
+    String ignoreClass = System.getProperty("ignore_class");
+    if (ignoreClass != null) {
+      ignoreClasses.addAll(Arrays.asList(ignoreClass.split(",")));
     }
 
     String skip = System.getProperty("ignore_method");
@@ -157,6 +163,7 @@ public class TestIgnorance {
   private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {
     return (!only.isEmpty() && !only.contains(test.getClass().getSimpleName())) ||
            (!methods.isEmpty() && !methods.contains(method.getName())) ||
+           ignoreClasses.contains(test.getClass().getSimpleName()) ||
            ignoreMethods.contains(method.getName());
   }
 
