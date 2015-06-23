@@ -4,3 +4,4 @@ EXPORTS
   KeyboardHookProc @2
   MouseHookProc @3
   SetProxyWndProc @4
+  CookieWndProc @5

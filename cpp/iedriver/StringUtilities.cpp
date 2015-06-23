@@ -179,4 +179,36 @@ std::wstring StringUtilities::TrimRight(const std::wstring& input) {
     return (endpos == std::wstring::npos) ? L"" : input.substr(0, endpos + 1);
 }
 
+void StringUtilities::Split(const std::string& input,
+                            const std::string& delimiter,
+                            std::vector<std::string>* tokens) {
+  std::string input_copy = input;
+  while (input_copy.size() > 0) {
+    size_t delimiter_pos = input_copy.find(delimiter);
+    std::string token = input_copy.substr(0, delimiter_pos);
+    if (delimiter_pos == std::string::npos) {
+      input_copy = "";
+    } else {
+      input_copy = input_copy.substr(delimiter_pos + delimiter.size());
+    }
+    tokens->push_back(token);
+  }
+}
+
+void StringUtilities::Split(const std::wstring& input,
+                            const std::wstring& delimiter,
+                            std::vector<std::wstring>* tokens) {
+  std::wstring input_copy = input;
+  while (input_copy.size() > 0) {
+    size_t delimiter_pos = input_copy.find(delimiter);
+    std::wstring token = input_copy.substr(0, delimiter_pos);
+    if (delimiter_pos == std::wstring::npos) {
+      input_copy = L"";
+    } else {
+      input_copy = input_copy.substr(delimiter_pos + delimiter.size());
+    }
+    tokens->push_back(token);
+  }
+}
+
 } // namespace webdriver

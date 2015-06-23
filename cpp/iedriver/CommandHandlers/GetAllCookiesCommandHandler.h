@@ -20,6 +20,7 @@
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
+#include "../BrowserCookie.h"
 
 namespace webdriver {
 
@@ -43,15 +44,11 @@ class GetAllCookiesCommandHandler : public IECommandHandler {
       return;
     }
 
-    std::map<std::string, std::string> cookies;
+    std::vector<BrowserCookie> cookies;
     browser_wrapper->GetCookies(&cookies);
-    std::map<std::string, std::string>::const_iterator it = cookies.begin();
+    std::vector<BrowserCookie>::iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
-      Json::Value cookie;
-      cookie["name"] = it->first;
-      cookie["value"] = it->second;
-      cookie["secure"] = false;
-      response_value.append(cookie);
+      response_value.append(it->ToJson());
     }
 
     response->SetSuccessResponse(response_value);

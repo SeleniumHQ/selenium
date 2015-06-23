@@ -44,6 +44,7 @@ class HookProcessor {
   static std::wstring CopyWStringFromBuffer(void);
 
   static void WriteDataToPipe(const int process_id, const int data_size, void* data);
+  static void WriteDataToPipe(const int process_id, const size_t data_size, void* data);
 
   void Initialize(const HookSettings& settings);
   void Initialize(const std::string& hook_proc_name, const int hook_proc_type);
