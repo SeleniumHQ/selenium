@@ -38,13 +38,14 @@ class HookProcessor {
 
   static int GetDataBufferSize(void);
   static void SetDataBufferSize(int size);
+  static void* GetDataBufferAddress(void);
+
   static void CopyDataToBuffer(int source_data_size, void* source);
   static void CopyDataFromBuffer(int destination_data_size, void* destination);
   static void CopyWStringToBuffer(const std::wstring& data);
   static std::wstring CopyWStringFromBuffer(void);
 
-  static void WriteDataToPipe(const int process_id, const int data_size, void* data);
-  static void WriteDataToPipe(const int process_id, const size_t data_size, void* data);
+  static void WriteBufferToPipe(const int process_id);
 
   void Initialize(const HookSettings& settings);
   void Initialize(const std::string& hook_proc_name, const int hook_proc_type);
