@@ -300,24 +300,19 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
                                          get_cookie_flags,
                                          NULL);
     if (success) {
-      std::vector<wchar_t> cookie_buffer(buffer_size / sizeof(wchar_t));
+      webdriver::HookProcessor::SetDataBufferSize(buffer_size);
       ::InternetGetCookieEx(url.c_str(),
                             NULL,
-                            &cookie_buffer[0],
+                            reinterpret_cast<LPTSTR>(webdriver::HookProcessor::GetDataBufferAddress()),
                             &buffer_size,
                             get_cookie_flags,
                             NULL);
 
-      webdriver::HookProcessor::WriteDataToPipe(driver_process_id,
-                                                cookie_buffer.size() * sizeof(wchar_t),
-                                                &cookie_buffer[0]);
+      webdriver::HookProcessor::WriteBufferToPipe(driver_process_id);
     } else {
       if (ERROR_NO_MORE_ITEMS == ::GetLastError()) {
-        std::vector<wchar_t> no_items_buffer(1);
-        no_items_buffer[0] = L'\0';
-        webdriver::HookProcessor::WriteDataToPipe(driver_process_id,
-                                                  no_items_buffer.size() * sizeof(wchar_t),
-                                                  &no_items_buffer[0]);
+        webdriver::HookProcessor::SetDataBufferSize(sizeof(wchar_t));
+        webdriver::HookProcessor::WriteBufferToPipe(driver_process_id);
       }
     }
   } else if (WD_GET_COOKIE_CACHE_FILES == call_window_proc_struct->message) {
@@ -381,11 +376,8 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
         }
       }
     }
-    std::vector<wchar_t> file_list_data;
-    webdriver::StringUtilities::ToBuffer(file_list, &file_list_data);
-    webdriver::HookProcessor::WriteDataToPipe(driver_process_id,
-                                              file_list_data.size() * sizeof(wchar_t),
-                                              &file_list[0]);
+    webdriver::HookProcessor::CopyWStringToBuffer(file_list);
+    webdriver::HookProcessor::WriteBufferToPipe(driver_process_id);
   } else if (WD_SET_COOKIE == call_window_proc_struct->message) {
     std::wstring cookie_data = webdriver::HookProcessor::CopyWStringFromBuffer();
     size_t url_separator_pos = cookie_data.find_first_of(L"|");
@@ -402,8 +394,8 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     parsed_uri.append(L"://");
     parsed_uri.append(host_bstr);
 
-    // We are processing our own custom message here, so we shouldn't have
-    // issues returning early without calling CallNextHookEx.
+    // Leverage the shared data buffer size to return the error code
+    // back to the driver, if necessary.
     BOOL cookie_set = ::InternetSetCookie(parsed_uri.c_str(), NULL, cookie.c_str());
     if (cookie_set) {
       webdriver::HookProcessor::SetDataBufferSize(0);
