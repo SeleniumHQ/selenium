@@ -146,11 +146,11 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     // the requireWindowFocus capability is turned on, and since SendInput is 
     // documented to not allow other input events to be interspersed into the
     // input queue, the risk is hopefully minimized.
-    HookProcessor keyboard_hook(NULL);
-    keyboard_hook.InstallWindowsHook("KeyboardHookProc", WH_KEYBOARD);
+    HookProcessor keyboard_hook;
+    keyboard_hook.Initialize("KeyboardHookProc", WH_KEYBOARD);
 
-    HookProcessor mouse_hook(NULL);
-    mouse_hook.InstallWindowsHook("MouseHookProc", WH_MOUSE);
+    HookProcessor mouse_hook;
+    mouse_hook.Initialize("MouseHookProc", WH_MOUSE);
 
     sent_event_count = ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
     LOG(DEBUG) << "Sent " << sent_event_count << " events via SendInput()";
@@ -159,9 +159,8 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     LOG(DEBUG) << "Wait for input event processing returned " << success;
 
     // We're done here, so uninstall the hooks, and reset the buffer size.
-    keyboard_hook.UninstallWindowsHook();
-    mouse_hook.UninstallWindowsHook();
-    HookProcessor::SetDataBufferSize(original_data_buffer_size);
+    keyboard_hook.Dispose();
+    mouse_hook.Dispose();
 
     // A small sleep after all messages have been detected by an application
     // event loop is appropriate here. This value (50 milliseconds is chosen

@@ -19,6 +19,7 @@ goog.require('bot.ErrorCode');
 goog.require('goog.Uri');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.Command');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Executor');
@@ -30,6 +31,10 @@ var callbackHelper = webdriver.test.testutil.callbackHelper;
 
 var control = new goog.testing.MockControl();
 var mockClient, executor, onCallback, onErrback;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 function setUp() {
   mockClient = control.createStrictMock(webdriver.http.Client);

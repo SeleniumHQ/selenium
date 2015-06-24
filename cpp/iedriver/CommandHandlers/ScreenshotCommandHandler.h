@@ -172,8 +172,14 @@ class ScreenshotCommandHandler : public IECommandHandler {
       ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
     }
 
-    HookProcessor hook(ie_window_handle);
-    hook.InstallWindowsHook("ScreenshotWndProc", WH_CALLWNDPROC);
+    HookSettings hook_settings;
+    hook_settings.window_handle = ie_window_handle;
+    hook_settings.hook_procedure_name = "ScreenshotWndProc";
+    hook_settings.hook_procedure_type = WH_CALLWNDPROC;
+    hook_settings.communication_type = OneWay;
+
+    HookProcessor hook;
+    hook.Initialize(hook_settings);
     hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
     browser->SetWidth(max_image_dimensions.right);
     browser->SetHeight(max_image_dimensions.bottom);
@@ -194,7 +200,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
       LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
     }
 
-    hook.UninstallWindowsHook();
+    hook.Dispose();
 
     // Restore the browser to the original dimensions.
     if (is_maximized) {

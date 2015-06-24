@@ -27,6 +27,9 @@
 
 namespace webdriver {
 
+class BrowserCookie;
+class CookieManager;
+
 class DocumentHost {
  public:
   DocumentHost(HWND hwnd, HWND executor_handle);
@@ -63,7 +66,7 @@ class DocumentHost {
   static bool IsStandardsMode(IHTMLDocument2* doc);
   static bool GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info);
 
-  void GetCookies(std::map<std::string, std::string>* cookies);
+  void GetCookies(std::vector<BrowserCookie>* cookies);
   int AddCookie(const std::string& cookie, const bool validate_document_type);
   int DeleteCookie(const std::string& cookie_name);
   
@@ -100,6 +103,7 @@ class DocumentHost {
   bool IsHtmlPage(IHTMLDocument2* doc);
   int SetFocusedFrameByIdentifier(VARIANT frame_identifier);
 
+  CookieManager* cookie_manager_;
   CComPtr<IHTMLWindow2> focused_frame_window_;
   HWND window_handle_;
   HWND executor_handle_;

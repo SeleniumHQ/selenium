@@ -18,6 +18,7 @@
 #define WEBDRIVER_IE_DELETEALLCOOKIESCOMMANDHANDLER_H_
 
 #include "../Browser.h"
+#include "../BrowserCookie.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
 
@@ -42,11 +43,11 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
       return;
     }
 
-    std::map<std::string, std::string> cookies;
+    std::vector<BrowserCookie> cookies;
     browser_wrapper->GetCookies(&cookies);
-    std::map<std::string, std::string>::const_iterator it = cookies.begin();
+    std::vector<BrowserCookie>::const_iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
-      std::string cookie_name = it->first;
+      std::string cookie_name = it->name();
       status_code = browser_wrapper->DeleteCookie(cookie_name);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,

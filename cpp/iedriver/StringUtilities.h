@@ -42,6 +42,13 @@ class StringUtilities {
 
   static void ToBuffer(const std::string& input, std::vector<char>* buffer);
   static void ToBuffer(const std::wstring& input, std::vector<wchar_t>* buffer);
+
+  static void Split(const std::string& input,
+                    const std::string& delimiter,
+                    std::vector<std::string>* tokens);
+  static void Split(const std::wstring& input,
+                    const std::wstring& delimiter,
+                    std::vector<std::wstring>* tokens);
 };
 
 } // namespace webdriver

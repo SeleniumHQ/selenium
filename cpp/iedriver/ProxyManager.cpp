@@ -195,15 +195,21 @@ void ProxyManager::RestoreProxySettings() {
 void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
   LOG(TRACE) << "ProxyManager::SetPerProcessProxySettings";
   std::wstring proxy = this->BuildProxySettingsString();
-  HookProcessor hook(browser_window_handle);
-  hook.InstallWindowsHook("SetProxyWndProc", WH_CALLWNDPROC);
-  hook.PushData(static_cast<int>(proxy.size() * sizeof(wchar_t)), &proxy[0]);
+
+  HookSettings hook_settings;
+  hook_settings.window_handle = browser_window_handle;
+  hook_settings.hook_procedure_name = "SetProxyWndProc";
+  hook_settings.hook_procedure_type = WH_CALLWNDPROC;
+  hook_settings.communication_type = OneWay;
+
+  HookProcessor hook;
+  hook.Initialize(hook_settings);
+  hook.PushData(proxy);
   LRESULT result = ::SendMessage(browser_window_handle,
                                  WD_CHANGE_PROXY,
                                  NULL,
                                  NULL);
   LOG(INFO) << "SendMessage result? " << result;
-  hook.UninstallWindowsHook();
 }
 
 void ProxyManager::SetGlobalProxySettings() {
@@ -352,22 +358,13 @@ LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
     webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
   } else if (WD_CHANGE_PROXY == call_window_proc_struct->message) {
-    // Allocate a buffer of wchar_t the length of the data in the
-    // shared memory buffer, plus one extra wide char, so that we
-    // can null terminate.
-    int proxy_string_buffer_size = webdriver::HookProcessor::GetDataBufferSize() + sizeof(wchar_t);
-    std::vector<wchar_t> proxy_string_buffer(proxy_string_buffer_size / sizeof(wchar_t));
-
-    // Copy the data from the shared memory buffer, and force
-    // a terminating null char into the local vector, then 
-    // convert to wstring, so it's easier to work with.
-    webdriver::HookProcessor::CopyDataFromBuffer(proxy_string_buffer_size,
-                                                 &proxy_string_buffer[0]);
-    proxy_string_buffer[proxy_string_buffer.size() - 1] = L'\0';
-    std::wstring proxy = &proxy_string_buffer[0];
+    // Allocate a buffer of the length of the data in the shared memory buffer,
+    // plus one extra wide char, to account for the null terminator.
+    int multibyte_buffer_size = webdriver::HookProcessor::GetDataBufferSize() + sizeof(wchar_t);
+    std::vector<char> multibyte_buffer(multibyte_buffer_size);
+    std::wstring proxy = webdriver::HookProcessor::CopyWStringFromBuffer();
 
     INTERNET_PROXY_INFO proxy_info;
-    std::vector<char> multibyte_buffer(proxy_string_buffer_size);
     if (proxy == L"direct") {
       proxy_info.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
       proxy_info.lpszProxy = L"";
@@ -397,7 +394,6 @@ LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
                                          0);
   }
 
-  //return ::CallNextHookEx(window_proc_hook, nCode, wParam, lParam);
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 

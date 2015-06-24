@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactoring Windows Hooks. Windows hooks are now wrapped in a single class,
+   eliminating a fair amount of duplicate code.
+ * Rewrote cookie handling for IE. The IE driver should now be able to return
+   full information for most cookies, including expiration date and secure
+   status. Additionally, the driver will now return HTTP-only cookies from
+   IE. Note that some specific cookie information will still be incomplete.
+   In particular, session cookies that may have been set with domain, path,
+   or secure tokens in the cookie string will not have those tokens set in
+   the returned cookie, as that information is not available via any API.
+   Also note that this change introduces additional use of Windows APIs that
+   are not supported when run from a service process, making that more
+   completely unsupported. Fixes issue #391.
+
 v2.46.0.1
 =========
  * Handles issue with alert text controls conatining no accText property in IE.
