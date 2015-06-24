@@ -572,4 +572,35 @@ public class CookieImplementationTest extends JUnit4TestBase {
     }
     driver.get(url.toString());
   }
+
+  @Test
+  public void deleteAllCookies() throws Exception {
+    Cookie cookie1 = new Cookie.Builder("fish1", "cod")
+        .domain(appServer.getHostName()).build();
+    Cookie cookie2 = new Cookie.Builder("fish2", "tune")
+        .domain(appServer.getAlternateHostName()).build();
+
+    String url1 = domainHelper.getUrlForFirstValidHostname("/common");
+    String url2 = domainHelper.getUrlForSecondValidHostname("/common");
+
+    WebDriver.Options options = driver.manage();
+
+    options.addCookie(cookie1);
+    assertCookieIsPresentWithName(cookie1.getName());
+
+    driver.get(url2);
+    options.addCookie(cookie2);
+    assertCookieIsNotPresentWithName(cookie1.getName());
+    assertCookieIsPresentWithName(cookie2.getName());
+
+    driver.get(url1);
+    assertCookieIsPresentWithName(cookie1.getName());
+    assertCookieIsNotPresentWithName(cookie2.getName());
+
+    options.deleteAllCookies();
+    assertCookieIsNotPresentWithName(cookie1.getName());
+
+    driver.get(url2);
+    assertCookieIsPresentWithName(cookie2.getName());
+  }
 }
