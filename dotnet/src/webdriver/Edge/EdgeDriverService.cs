@@ -78,5 +78,17 @@ namespace OpenQA.Selenium.Edge
         {
             return new EdgeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
         }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
+        /// <param name="port">The port number on which the driver will listen</param>
+        /// <returns></returns>
+        public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
+        {
+            return new EdgeDriverService(driverPath, driverExecutableFileName, port);
+        }
     }
 }

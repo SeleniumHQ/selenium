@@ -109,6 +109,12 @@ namespace OpenQA.Selenium.Remote
                 Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
+
+                // Petruc Remove - Debug only---------------------
+                Console.WriteLine("Request Uri: " + request.RequestUri);
+                Console.WriteLine("Request Method: " + request.Method);
+                Console.WriteLine("Request Body: " + payload);
+                //-----------------------------------------------
             }
 
             return this.CreateResponse(request);
@@ -135,7 +141,6 @@ namespace OpenQA.Selenium.Remote
         private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();
-
             HttpWebResponse webResponse = null;
             try
             {
@@ -163,6 +168,11 @@ namespace OpenQA.Selenium.Remote
             else
             {
                 string responseString = GetTextOfWebResponse(webResponse);
+
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("Response: " + responseString);
+                Console.WriteLine("-----------------------");
+
 
                 if (webResponse.ContentType != null && webResponse.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
                 {
