@@ -1501,7 +1501,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public void deleteAllCookies() {
-      getWebClient().getCookieManager().clearCookies();
+      CookieManager cookieManager = getWebClient().getCookieManager();
+
+      URL url = getRawUrl();
+      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
+      for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
+          cookieManager.removeCookie(cookie);
+      }
     }
 
     @Override
