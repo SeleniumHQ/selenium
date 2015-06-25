@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -344,7 +346,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -422,6 +423,50 @@ namespace OpenQA.Selenium
             Cookie retrieved = options.Cookies.GetCookieNamed("fish");
             Assert.IsNotNull(retrieved);
             Assert.AreEqual(addCookie.Expiry, retrieved.Expiry, "Cookies are not equal");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Browser requires additional TLS settings to get secure cookies")]
+        [IgnoreBrowser(Browser.PhantomJS, "Untested browser")]
+        [IgnoreBrowser(Browser.Safari, "Untested browser")]
+        public void ShouldRetainCookieSecure()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
+
+            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false);
+
+            driver.Manage().Cookies.AddCookie(addedCookie);
+
+            driver.Navigate().Refresh();
+
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+            Assert.IsTrue(retrieved.Secure);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Chrome, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Firefox, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.PhantomJS, "Test web server does not set HttpOnly cookies")]
+        [IgnoreBrowser(Browser.Safari, "Test web server does not set HttpOnly cookies")]
+        public void ShouldRetainHttpOnlyFlag()
+        {
+            StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereElseIs("cookie"));
+            url.Append("?action=add");
+            url.Append("&name=").Append("fish");
+            url.Append("&value=").Append("cod");
+            url.Append("&path=").Append("/common/animals");
+            url.Append("&httpOnly=").Append("true");
+
+            driver.Url = url.ToString();
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
+
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+            Assert.IsTrue(retrieved.IsHttpOnly);
         }
 
         [Test]
