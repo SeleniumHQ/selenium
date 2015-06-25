@@ -246,7 +246,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME, IE}, reason = "Untested browsers.")
+  @Ignore(value = {CHROME}, reason = "Untested browsers.")
   @Test
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
@@ -271,7 +271,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore({REMOTE, IE})
+  @Ignore({REMOTE,})
   @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
@@ -285,7 +285,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(IE)
   @Test
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     URI url = new URI(driver.getCurrentUrl());
@@ -327,7 +326,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @Ignore(IE)
   @Test
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
     URI uri = new URI(driver.getCurrentUrl());
@@ -369,8 +367,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
-  @Ignore(value = {IE}, reason =
-      "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info")
   @Test
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
@@ -385,7 +381,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {PHANTOMJS, SAFARI})
   @Test
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -404,7 +400,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, HTMLUNIT, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
@@ -451,7 +447,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, FIREFOX, PHANTOMJS, SAFARI})
   @Test
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
