@@ -1,3 +1,6 @@
+Selenium 2.47.0 (in development)
+* Adding ability to make remote call for webelement screenshots in accordance to the W3C spec
+
 Selenium 2.46.0
 * Firefox support up to 38
 * BlackBerry browser support
