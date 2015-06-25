@@ -271,7 +271,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore({REMOTE,})
+  @Ignore({REMOTE})
   @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
@@ -381,7 +381,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -400,7 +400,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, FIREFOX, IE, HTMLUNIT, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
@@ -447,7 +447,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
