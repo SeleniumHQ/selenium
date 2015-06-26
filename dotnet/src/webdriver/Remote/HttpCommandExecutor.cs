@@ -116,7 +116,12 @@ namespace OpenQA.Selenium.Remote
                 Console.WriteLine("Request Body: " + payload);
                 //-----------------------------------------------
             }
-
+            else
+            {
+                Console.WriteLine("Request Uri: " + request.RequestUri);
+                Console.WriteLine("Request Method: " + request.Method);
+            }
+        
             return this.CreateResponse(request);
         }
 

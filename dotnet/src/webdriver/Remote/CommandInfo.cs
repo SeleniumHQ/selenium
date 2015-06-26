@@ -135,6 +135,7 @@ namespace OpenQA.Selenium.Remote
                     {
                         propertyValue = commandToExecute.Parameters[propertyName].ToString();
                         commandToExecute.Parameters.Remove(propertyName);
+                        Console.WriteLine("Property Added: " + propertyValue);
                     }
                 }
             }
