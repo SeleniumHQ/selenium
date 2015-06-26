@@ -19,10 +19,13 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -47,7 +50,8 @@ import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
-                                         FindsByXPath, WrapsDriver, Locatable, HasIdentity {
+                                         FindsByXPath, WrapsDriver, Locatable, HasIdentity,
+                                         TakesScreenshot {
 
   private String foundBy;
   protected String id;
@@ -360,6 +364,23 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
         return getId();
       }
     };
+  }
+
+  @Beta
+  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Response response = execute(DriverCommand.ELEMENT_SCREENSHOT, ImmutableMap.of("id", id));
+    Object result = response.getValue();
+    if (result instanceof String) {
+      String base64EncodedPng = (String) result;
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else if (result instanceof byte[]) {
+      String base64EncodedPng = new String((byte[]) result);
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else {
+      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
+                                               DriverCommand.ELEMENT_SCREENSHOT,
+                                               result == null ? "null" : result.getClass().getName() + " instance"));
+    }
   }
 
   public String toString() {

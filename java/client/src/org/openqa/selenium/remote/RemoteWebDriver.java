@@ -316,7 +316,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return execute(DriverCommand.GET_CURRENT_URL).getValue().toString();
   }
 
-  @Override
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     Response response = execute(DriverCommand.SCREENSHOT);
     Object result = response.getValue();
