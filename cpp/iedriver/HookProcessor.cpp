@@ -149,15 +149,25 @@ void HookProcessor::CreateReturnPipe() {
   LOG(TRACE) << "Entering HookProcessor::CreateReturnPipe";
   std::wstring pipe_name = StringUtilities::Format(PIPE_NAME_TEMPLATE,
                                                    ::GetCurrentProcessId());
+  PSECURITY_ATTRIBUTES security_attributes_pointer = NULL;
+
   // Set security descriptor so low-integrity processes can write to it.
   PSECURITY_DESCRIPTOR pointer_to_descriptor;
-  ::ConvertStringSecurityDescriptorToSecurityDescriptor(LOW_INTEGRITY_SDDL_SACL,
-                                                        SDDL_REVISION_1,
-                                                        &pointer_to_descriptor,
-                                                        NULL);
-  SECURITY_ATTRIBUTES security_attributes;
-  security_attributes.lpSecurityDescriptor = pointer_to_descriptor;
-  security_attributes.nLength = sizeof(security_attributes);
+  BOOL descriptor_created = ::ConvertStringSecurityDescriptorToSecurityDescriptor(
+      LOW_INTEGRITY_SDDL_SACL,
+      SDDL_REVISION_1,
+      &pointer_to_descriptor,
+      NULL);
+
+  if (!descriptor_created) {
+    LOGERR(DEBUG) << "Could not create security descriptor. "
+                  << "Assuming OS does not support low-integrity processes.";
+  } else { 
+    SECURITY_ATTRIBUTES security_attributes;
+    security_attributes.lpSecurityDescriptor = pointer_to_descriptor;
+    security_attributes.nLength = sizeof(security_attributes);
+    security_attributes_pointer = &security_attributes;
+  }
   this->pipe_handle_ = ::CreateNamedPipe(pipe_name.c_str(),
                                          PIPE_ACCESS_DUPLEX,
                                          PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
@@ -165,11 +175,11 @@ void HookProcessor::CreateReturnPipe() {
                                          0,
                                          NAMED_PIPE_BUFFER_SIZE,
                                          PIPE_CONNECTION_TIMEOUT_IN_MILLISECONDS,
-                                         &security_attributes);
+                                         security_attributes_pointer);
 
   // failed to create pipe?
   if (this->pipe_handle_ == INVALID_HANDLE_VALUE) {
-    LOGERR(WARN) << "Failed to create named pipe. Communication back from browser will not work.";
+    LOG(WARN) << "Failed to create named pipe. Communication back from browser will not work.";
   } else {
     LOG(DEBUG) << "Created named pipe " << LOGWSTRING(pipe_name);
   }
@@ -267,6 +277,10 @@ void HookProcessor::SetDataBufferSize(int size) {
   data_buffer_size = size;
 }
 
+void* HookProcessor::GetDataBufferAddress() {
+  return &data_buffer;
+}
+
 void HookProcessor::CopyDataToBuffer(int source_data_size, void* source) {
   // clear the shared buffer before putting data into it
   ClearBuffer();
@@ -293,9 +307,10 @@ void HookProcessor::CopyDataFromBuffer(int destination_data_size,
 }
 
 void HookProcessor::CopyWStringToBuffer(const std::wstring& data) {
-  std::wstring mutable_data = data;
-  int mutable_data_size = static_cast<int>(mutable_data.size() * sizeof(wchar_t));
-  CopyDataToBuffer(mutable_data_size, &mutable_data[0]);
+  std::vector<wchar_t> local_buffer(0);
+  StringUtilities::ToBuffer(data, &local_buffer);
+  int local_size = static_cast<int>(local_buffer.size() * sizeof(wchar_t));
+  CopyDataToBuffer(local_size, &local_buffer[0]);
 }
 
 std::wstring HookProcessor::CopyWStringFromBuffer() {
@@ -320,15 +335,7 @@ void HookProcessor::ClearBuffer() {
   memset(data_buffer, 0, MAX_BUFFER_SIZE);
 }
 
-void HookProcessor::WriteDataToPipe(const int process_id,
-                                    const size_t data_size,
-                                    void* data) {
-  WriteDataToPipe(process_id, static_cast<int>(data_size), data);
-}
-
-void HookProcessor::WriteDataToPipe(const int process_id,
-                                    const int data_size, 
-                                    void* data) {
+void HookProcessor::WriteBufferToPipe(const int process_id) {
   std::wstring pipe_name = StringUtilities::Format(PIPE_NAME_TEMPLATE, process_id);
   HANDLE pipe_handle = INVALID_HANDLE_VALUE;
 
@@ -353,10 +360,12 @@ void HookProcessor::WriteDataToPipe(const int process_id,
     if (::SetNamedPipeHandleState(pipe_handle, &pipe_mode, NULL, NULL)) {
       unsigned long bytes_written = 0;
       BOOL is_write_successful = ::WriteFile(pipe_handle,
-                                             data,
-                                             data_size,
+                                             GetDataBufferAddress(),
+                                             GetDataBufferSize(),
                                              &bytes_written,
                                              NULL);
+      ::FlushFileBuffers(pipe_handle);
+      ClearBuffer();
     }
     ::CloseHandle(pipe_handle); 
   }

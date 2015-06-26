@@ -370,6 +370,7 @@ js_library(name = 'files',
   ],
   deps = [
     ':error',
+    '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
 )

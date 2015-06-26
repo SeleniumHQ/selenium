@@ -74,10 +74,16 @@ WdCertOverrideService = function() {
   goog.log.info(WdCertOverrideService.LOG_,
                 'Accept untrusted certificates: ' + acceptCerts);
 
+  // Firefox ignores certificate overrides for domains that use HSTS or HPKP:
+  // https://hg.mozilla.org/mozilla-central/file/48a77f828d59/security/manager/ssl/SSLServerCertVerification.cpp#l509
+  //
   // If capabilities are configured to accept all SSL certs, we need to disable
-  // Firefox's HSTS (HTTP Strict Transport Security) or WebDriver will not be
-  // able to accept any self-signed certs for domains on the HSTS list (e.g.
-  // a test is intentionally using a man-in-the-middle proxy to access a site).
+  // those features, or else WebDriver will not be able accept self-signed certs
+  // for those domains (which is useful for, e.g., tests that intentionally use
+  // a man-in-the-middle proxy to access a site).
+  //
+  // Disabling HPKP is a pretty straightforward preference change.
+  //
   // Unfortunately, the only way to disable HSTS is to rely on an undocumented
   // test preference:
   // http://mxr.mozilla.org/mozilla-release/source/security/manager/boot/src/nsSiteSecurityService.cpp#423
@@ -93,6 +99,9 @@ WdCertOverrideService = function() {
     CC['@mozilla.org/preferences-service;1'].
         getService(CI['nsIPrefBranch']).
         setIntPref('test.currentTimeOffsetSeconds', offsetSeconds);
+    CC['@mozilla.org/preferences-service;1'].
+        getService(CI['nsIPrefBranch']).
+        setIntPref('security.cert_pinning.enforcement_level', 0);
   }
 
   // UUID of the original implementor of this service.

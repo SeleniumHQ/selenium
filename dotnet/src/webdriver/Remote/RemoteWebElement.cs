@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot
     {
         #region Private members
         private RemoteWebDriver driver;
@@ -749,6 +749,24 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
             return this.FindElements("css selector", cssSelector);
+        }
+        #endregion
+
+        #region ITakesScreenshot
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetScreenshot()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            // Get the screenshot as base64.
+            Response screenshotResponse = this.Execute(DriverCommand.ElementScreenshot, parameters);
+            string base64 = screenshotResponse.Value.ToString();
+
+            // ... and convert it.
+            return new Screenshot(base64);
         }
         #endregion
 

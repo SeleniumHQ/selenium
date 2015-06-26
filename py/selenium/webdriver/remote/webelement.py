@@ -365,6 +365,48 @@ class WebElement(object):
         return self._execute(Command.GET_ELEMENT_RECT)['value']
 
     @property
+    def screenshot_as_base64(self):
+        """
+        Gets the screenshot of the current element as a base64 encoded string.
+
+        :Usage:
+            img_b64 = element.screenshot_as_base64
+        """
+        retrun self._exceute(Command.ELEMENT_SCREENSHOT)['value']
+
+    @property
+    def screenshot_as_png(self):
+        """
+        Gets the screenshot of the current element as a binary data.
+
+        :Usage:
+            element_png = element.screenshot_as_png
+        """
+        return base64.b64decode(self.screenshot_as_base64.encode('ascii'))
+
+    def screenshot(self, filename):
+        """
+        Gets the screenshot of the current element. Returns False if there is
+           any IOError, else returns True. Use full paths in your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to.
+
+        :Usage:
+            element.screenshot('/Screenshots/foo.png')
+        """
+        png = self.screenshot_as_png
+        try:
+            with open(filename, 'wb') as f:
+                f.write(png)
+        except IOError:
+            return False
+        finally:
+            del png
+        return True
+
+
+    @property
     def parent(self):
         """Internal reference to the WebDriver instance this element was found from."""
         return self._parent
