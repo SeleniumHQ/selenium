@@ -381,6 +381,24 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
+  @Ignore(value = {PHANTOMJS, SAFARI})
+  @Test
+  public void canHandleSecureCookie() {
+    driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
+
+    Cookie addedCookie =
+      new Cookie.Builder("fish", "cod")
+        .path("/common/animals")
+        .isSecure(true)
+        .build();
+    driver.manage().addCookie(addedCookie);
+
+    driver.navigate().refresh();
+
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+  }
+
   @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testRetainsCookieSecure() {
@@ -400,7 +418,23 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, HTMLUNIT, PHANTOMJS, SAFARI})
+  @Ignore(value = {HTMLUNIT, SAFARI})
+  @Test
+  public void canHandleHttpOnlyCookie() {
+    Cookie addedCookie =
+      new Cookie.Builder("fish", "cod")
+        .path("/common/animals")
+        .isHttpOnly(true)
+        .build();
+
+    addCookieOnServerSide(addedCookie);
+
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+  }
+
+  @Ignore(reason = "Needs jetty upgrade (servlet api 3)")
   @Test
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
@@ -411,6 +445,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     addCookieOnServerSide(addedCookie);
 
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     Cookie retrieved = driver.manage().getCookieNamed("fish");
     assertNotNull(retrieved);
     assertTrue(retrieved.isHttpOnly());
@@ -424,7 +459,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     cookie = driver.manage().getCookieNamed("fish");
     assertNull(
-        "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
+      "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
   }
 
   @Test
