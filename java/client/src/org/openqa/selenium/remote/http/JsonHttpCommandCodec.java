@@ -103,6 +103,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
 
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
+    defineCommand(ELEMENT_SCREENSHOT, get("/session/:sessionId/screenshot/:id"));
     defineCommand(GET_PAGE_SOURCE, get("/session/:sessionId/source"));
     defineCommand(GET_TITLE, get("/session/:sessionId/title"));
 

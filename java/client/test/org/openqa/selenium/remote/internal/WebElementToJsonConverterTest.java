@@ -30,7 +30,9 @@ import com.google.common.collect.Lists;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -330,6 +332,10 @@ public class WebElementToJsonConverterTest {
     }
 
     public String getCssValue(String propertyName) {
+      throw new UnsupportedOperationException();
+    }
+
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
       throw new UnsupportedOperationException();
     }
   }
