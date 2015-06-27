@@ -44,6 +44,10 @@ import java.util.List;
  * </code>
  */
 public abstract class By {
+  static {
+    WebDriverException.scheduleIpHostResolving();
+  }
+
   /**
    * @param id The value of the "id" attribute to search for
    * @return a By which locates elements by the value of the "id" attribute.

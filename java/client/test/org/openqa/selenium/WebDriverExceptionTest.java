@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -63,4 +64,10 @@ public class WebDriverExceptionTest {
     assertEquals("unknown", gotName);
   }
 
+  @Test
+  public void systemInformationIncludesHostIpOperatingSystemAndJavaVersion() {
+    String systemInformation = new WebDriverException().getSystemInformation();
+    assertTrue("Actual value: " + systemInformation + " does not matches expected pattern", systemInformation.matches(
+      "System info: host: '.+', ip: '.+', os\\.name: '.+', os\\.arch: '.+', os\\.version: '.+', java\\.version: '.+'"));
+  }
 }

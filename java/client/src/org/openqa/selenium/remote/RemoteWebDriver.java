@@ -79,6 +79,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities, TakesScreenshot {
 
+  static {
+    WebDriverException.scheduleIpHostResolving();
+  }
+
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
   private Level level = Level.FINE;
