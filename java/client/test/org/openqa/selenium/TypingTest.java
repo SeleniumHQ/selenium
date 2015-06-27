@@ -46,12 +46,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
 public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({MARIONETTE})
+  @Ignore(MARIONETTE)
   @Test
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
@@ -162,7 +163,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore(value = {HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -275,7 +277,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, PHANTOMJS, MARIONETTE})
+  @Ignore(value = {IE, PHANTOMJS, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -303,8 +306,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE},
+  @Ignore(value = MARIONETTE,
           reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -350,7 +354,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agent")
+  @Ignore(value = MARIONETTE, reason = "untested user agent")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -380,7 +385,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -396,7 +402,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
@@ -413,7 +420,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
@@ -426,7 +434,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -443,7 +452,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
@@ -461,7 +471,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
@@ -473,8 +484,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE},
+  @Ignore(value = MARIONETTE,
           reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
@@ -503,9 +515,10 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "untested user agents; Safari: issue 4221",
           issues = {4221})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -521,7 +534,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -543,7 +557,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -576,7 +591,8 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "untested user agents")
+  @Ignore(value = MARIONETTE, reason = "untested user agents")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -651,8 +667,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {PHANTOMJS, HTMLUNIT},
+  @Ignore(value = PHANTOMJS,
           reason = "HtmlUnit: failure, others: not tested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
@@ -691,7 +708,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, issues = {6711})
+  @Ignore(value = MARIONETTE, issues = {6711})
+  @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
@@ -719,8 +737,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(HTMLUNIT)
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
@@ -728,9 +746,10 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE}, reason = "Untested browsers;" +
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Untested browsers;" +
       " Safari: cannot type on contentEditable with synthetic events",
       issues = {3127})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
@@ -754,10 +773,11 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI, MARIONETTE},
+  @Ignore(value = {IE, SAFARI, MARIONETTE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
+  @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldBeAbleToTypeIntoTinyMCE() {
@@ -773,7 +793,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "Untested")
+  @Ignore(value = SAFARI, reason = "Untested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));

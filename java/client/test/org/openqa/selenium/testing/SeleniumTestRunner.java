@@ -19,7 +19,8 @@ package org.openqa.selenium.testing;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Throwables;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.internal.runners.statements.Fail;
@@ -31,14 +32,16 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.testing.Ignore.Driver;
 import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.TestIgnorance;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import com.google.common.base.Throwables;
 
 public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
 
+  private Browser browser;
   private TestIgnorance ignorance;
 
   /**
@@ -51,7 +54,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
 
-    Browser browser = Browser.detect();
+    browser = Browser.detect();
     if (browser == null && isInDevMode()) {
       browser = Browser.ff;
     }
@@ -95,6 +98,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
       statement = withFreshDriver(method, base, statement);
       statement = coveringUpSauceErrors(statement);
     }
+    statement = withNotYetImplemented(method, statement);
     return statement;
   }
 
@@ -180,5 +184,85 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     } catch (IllegalAccessException e) {
       throw Throwables.propagate(e);
     }
+  }
+
+  protected Statement withNotYetImplemented(final FrameworkMethod method, final Statement statement) {
+    if (!isNotYetImplemented(method)) {
+      return statement;
+    }
+
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        Exception toBeThrown = null;
+        try {
+          statement.evaluate();
+          toBeThrown = new Exception(method.getDeclaringClass().getSimpleName() + '.' + method.getName()
+              + " is marked as not yet implemented with " + browser + " but already works!");
+        }
+        catch (final Throwable e) {
+          // expected
+        }
+        if (toBeThrown != null) {
+          throw toBeThrown;
+        }
+      }
+    };
+  }
+
+  protected boolean isNotYetImplemented(final FrameworkMethod method) {
+    final NotYetImplemented notYetImplementedBrowsers = method.getAnnotation(NotYetImplemented.class);
+    boolean isNotYetImplemented = false;
+    if (notYetImplementedBrowsers != null) {
+      for (Driver driver : notYetImplementedBrowsers.value()) {
+        if (!isNotYetImplemented) {
+          switch (driver) {
+          case ALL:
+            isNotYetImplemented = true;
+            break;
+
+          case CHROME:
+            isNotYetImplemented = browser == Browser.chrome;
+            break;
+
+          case FIREFOX:
+            if (!Boolean.getBoolean("webdriver.firefox.marionette")) {
+              isNotYetImplemented = browser == Browser.ff;
+            }
+            break;
+
+          case HTMLUNIT:
+            isNotYetImplemented = browser == Browser.htmlunit || browser == Browser.htmlunit_js;
+            break;
+
+          case IE:
+            isNotYetImplemented = browser == Browser.ie;
+            break;
+
+          case MARIONETTE:
+            if (Boolean.getBoolean("webdriver.firefox.marionette")) {
+              isNotYetImplemented = browser == Browser.ff;
+            }
+            break;
+
+          case PHANTOMJS:
+            isNotYetImplemented = browser == Browser.phantomjs;
+            break;
+
+          case REMOTE:
+            isNotYetImplemented = Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce();
+            break;
+
+          case SAFARI:
+            isNotYetImplemented = browser == Browser.safari;
+            break;
+
+          default:
+            throw new RuntimeException("Cannot determine driver");
+          }
+        }
+      }
+    }
+    return isNotYetImplemented;
   }
 }
