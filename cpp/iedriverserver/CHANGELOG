@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.4
+=========
+ * Corrected logic for http-only and secure cookies. Cookies now behave
+   in IE as expected. The driver will properly return 'secure' or
+   'httpOnly' flags as set on the cookie itself. Note carefully that
+   'secure' cookies will only be retrieved when browsing a page using
+   SSL (https), as this is the only environment where the cookies are
+   used by the browser. This behavior is consistent with the behavior
+   of the Chrome driver, and with the W3C specification behavior for
+   cookies. Firefox, it should be noted, returns secure cookies regardless
+   of whether the page in question is being browsed via SSL or not.
+   This is a bug in the Firefox driver.
+
 v2.46.0.3
 =========
  * Fixed IE cookie handling for down-level operating systems.

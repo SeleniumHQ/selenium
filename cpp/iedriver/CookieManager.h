@@ -45,6 +45,7 @@ class CookieManager {
                          std::map<std::string, std::string>* cookies);
   BrowserCookie ParsePersistentCookieInfo(const std::string& cookie);
   void ReadPersistentCookieFile(const std::wstring& file_name,
+                                const bool include_secure_cookies,
                                 std::map<std::string, BrowserCookie>* cookies);
 
   HWND window_handle_;
