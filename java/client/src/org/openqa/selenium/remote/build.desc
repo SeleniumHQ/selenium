@@ -114,6 +114,6 @@ java_library(name = "remote",
     "//java/client/src/org/openqa/selenium/logging",
     "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/net",
-    "//third_party/java/apache-httpclient",
+    "//third_party/java/httpcomponents:httpclient",
     "//third_party/java/guava-libraries",
   ])
