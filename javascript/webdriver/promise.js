@@ -410,8 +410,10 @@ promise.Promise.prototype.resolve_ = function(newState, newValue) {
     // 2.3.2
     newValue = /** @type {!promise.Thenable} */(newValue);
     newValue.then(
-        this.unblockAndResolve_.bind(this, PromiseState.FULFILLED),
-        this.unblockAndResolve_.bind(this, PromiseState.REJECTED));
+        goog.bind(
+            this.unblockAndResolve_, this, promise.Promise.State_.FULFILLED),
+        goog.bind(
+            this.unblockAndResolve_, this, promise.Promise.State_.REJECTED));
     return;
 
   } else if (goog.isObject(newValue)) {
