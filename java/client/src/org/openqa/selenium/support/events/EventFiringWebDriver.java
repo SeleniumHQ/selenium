@@ -451,6 +451,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public Coordinates getCoordinates() {
       return ((Locatable) underlyingElement).getCoordinates();
     }
+
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+      return element.getScreenshotAs(outputType);
+    }
   }
 
   private class EventFiringNavigation implements Navigation {

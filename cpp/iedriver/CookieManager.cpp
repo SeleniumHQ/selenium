@@ -64,8 +64,16 @@ bool CookieManager::SetCookie(std::string url, std::string cookie_data) {
   return true;
 }
 
-int CookieManager::GetCookies(std::string url, std::vector<BrowserCookie>* all_cookies) {
+int CookieManager::GetCookies(std::string url,
+                              std::vector<BrowserCookie>* all_cookies) {
   LOG(TRACE) << "Entering CookieManager::GetCookies";
+  std::wstring wide_url = StringUtilities::ToWString(url);
+  CComPtr<IUri> parsed_url;
+  ::CreateUri(wide_url.c_str(), Uri_CREATE_ALLOW_RELATIVE, 0, &parsed_url);
+  DWORD url_scheme = 0;
+  parsed_url->GetScheme(&url_scheme);
+  bool is_secure_url = URL_SCHEME_HTTPS == url_scheme;
+
   HookSettings hook_settings;
   hook_settings.hook_procedure_name = "CookieWndProc";
   hook_settings.hook_procedure_type = WH_CALLWNDPROC;
@@ -77,24 +85,34 @@ int CookieManager::GetCookies(std::string url, std::vector<BrowserCookie>* all_c
 
   // Get all cookies for the current URL visible to JavaScript.
   std::wstring scriptable_cookie_string = 
-      this->SendGetCookieMessage(StringUtilities::ToWString(url),
-      WD_GET_SCRIPTABLE_COOKIES,
-      &hook);
+      this->SendGetCookieMessage(wide_url,
+                                 WD_GET_SCRIPTABLE_COOKIES,
+                                 &hook);
   std::map<std::string, std::string> scriptable_cookies;
   this->ParseCookieString(scriptable_cookie_string, &scriptable_cookies);
 
-  // Get all cookies for the current URL, including HttpOnly cookies.
-  std::wstring httponly_cookie_string = 
-      this->SendGetCookieMessage(StringUtilities::ToWString(url),
+  // Get all cookies for the insecure version of the current URL,
+  // which will include HttpOnly cookies.
+  std::wstring insecure_cookie_string = 
+      this->SendGetCookieMessage(wide_url,
                                  WD_GET_HTTPONLY_COOKIES,
                                  &hook);
-  std::map<std::string, std::string> httponly_cookies;  
-  this->ParseCookieString(httponly_cookie_string, &httponly_cookies);
+  std::map<std::string, std::string> insecure_cookies;  
+  this->ParseCookieString(insecure_cookie_string, &insecure_cookies);
+
+  // Get all cookies for the current secure URL. This will include
+  // HttpOnly cookies.
+  std::wstring secure_cookie_string = 
+      this->SendGetCookieMessage(wide_url,
+                                 WD_GET_SECURE_COOKIES,
+                                 &hook);
+  std::map<std::string, std::string> secure_cookies;  
+  this->ParseCookieString(secure_cookie_string, &secure_cookies);
 
   // Get all of the persistent cookie files in the cache for the 
   // URL currently being browsed.
   std::wstring file_list = this->SendGetCookieMessage(
-      StringUtilities::ToWString(url),
+      wide_url,
       WD_GET_COOKIE_CACHE_FILES,
       &hook);
   std::vector<std::wstring> files;
@@ -106,28 +124,35 @@ int CookieManager::GetCookies(std::string url, std::vector<BrowserCookie>* all_c
   for (std::vector<std::wstring>::const_iterator file_iterator = files.begin();
        file_iterator != files.end();
        ++file_iterator) {
-    this->ReadPersistentCookieFile(*file_iterator, &persistent_cookies);
+    this->ReadPersistentCookieFile(*file_iterator,
+                                   is_secure_url,
+                                   &persistent_cookies);
   }
 
-  // Loop through the entire list of cookies, including HttpOnly cookies.
-  // If the cookie exists as a persistent cookie, use its data from the
-  // cache. If the cookie is found in the list of cookies visible to 
-  // JavaScript, set the HttpOnly property of the cookie to false.
-  std::map<std::string, std::string>::const_iterator it = httponly_cookies.begin();
-  for (; it != httponly_cookies.end(); ++it) {
+  // Loop through the entire list of cookies, including HttpOnly and secure
+  // cookies. If the cookie exists as a persistent cookie, use its data from
+  // the cache. If the cookie is found in the list of cookies visible to 
+  // JavaScript, set the HttpOnly property of the cookie to false. If the
+  // cookie is found in the list of cookies set on the insecure version of
+  // the URL, set the Secure property of the cookie to false.
+  std::map<std::string, std::string>::const_iterator it = secure_cookies.begin();
+  for (; it != secure_cookies.end(); ++it) {
     BrowserCookie browser_cookie;
     if (persistent_cookies.find(it->first) != persistent_cookies.end()) {
       browser_cookie = persistent_cookies[it->first];
+    } else {
+      browser_cookie.set_name(it->first);
+      browser_cookie.set_value(it->second);
+      browser_cookie.set_is_httponly(scriptable_cookies.find(it->first) == scriptable_cookies.end());
+      browser_cookie.set_is_secure(insecure_cookies.find(it->first) == insecure_cookies.end());
     }
-    browser_cookie.set_name(it->first);
-    browser_cookie.set_value(it->second);
-    browser_cookie.set_is_httponly(scriptable_cookies.find(it->first) == scriptable_cookies.end());
     all_cookies->push_back(browser_cookie);
   }
   return 0;
 }
 
 void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
+                                             const bool include_secure_cookies,
                                              std::map<std::string, BrowserCookie>* cookies) {
   LOG(TRACE) << "Entering CookieManager::ReadPersistentCookieFile";
   HANDLE file_handle = ::CreateFile(file_name.c_str(),
@@ -153,11 +178,22 @@ void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
   // a line containing a single asterisk ('*'). Split the file 
   // content on this delimiter, and parse each record.
   std::vector<std::string> persistent_cookie_strings;
-  StringUtilities::Split(cookie_file_contents, "\n*\n", &persistent_cookie_strings);
+  StringUtilities::Split(cookie_file_contents,
+                         "\n*\n",
+                         &persistent_cookie_strings);
   std::vector<std::string>::const_iterator cookie_string_iterator = persistent_cookie_strings.begin();
-  for (; cookie_string_iterator != persistent_cookie_strings.end(); ++cookie_string_iterator) {
-    BrowserCookie persistent_cookie = this->ParsePersistentCookieInfo(*cookie_string_iterator);
-    cookies->insert(std::pair<std::string, BrowserCookie>(persistent_cookie.name(), persistent_cookie));
+  for (;
+       cookie_string_iterator != persistent_cookie_strings.end();
+       ++cookie_string_iterator) {
+    BrowserCookie persistent_cookie = 
+        this->ParsePersistentCookieInfo(*cookie_string_iterator);
+    if (include_secure_cookies || !persistent_cookie.is_secure()) {
+      // Omit the cookie if it's 'secure' flag is set and we are *not*
+      // browsing using SSL.
+      cookies->insert(
+          std::pair<std::string, BrowserCookie>(persistent_cookie.name(),
+          persistent_cookie));
+    }
   }
 }
 
@@ -281,19 +317,46 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
     webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
   } else if (WD_GET_HTTPONLY_COOKIES == call_window_proc_struct->message ||
-             WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message) {
+             WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message ||
+             WD_GET_SECURE_COOKIES == call_window_proc_struct->message) {
     std::wstring url = webdriver::HookProcessor::CopyWStringFromBuffer();
     int driver_process_id = static_cast<int>(call_window_proc_struct->wParam);
-    DWORD get_cookie_error = 0;
+
     DWORD get_cookie_flags = 0;
-    if (WD_GET_HTTPONLY_COOKIES == call_window_proc_struct->message) {
+    if (WD_GET_HTTPONLY_COOKIES == call_window_proc_struct->message ||
+        WD_GET_SECURE_COOKIES == call_window_proc_struct->message) {
       get_cookie_flags = INTERNET_COOKIE_HTTPONLY;
     }
+
+    CComPtr<IUri> uri_pointer;
+    HRESULT hr = ::CreateUri(url.c_str(), Uri_CREATE_ALLOW_RELATIVE, 0, &uri_pointer);
+    DWORD scheme = 0;
+    uri_pointer->GetScheme(&scheme);
+    CComBSTR scheme_bstr;
+    uri_pointer->GetSchemeName(&scheme_bstr);
+    CComBSTR host_bstr;
+    uri_pointer->GetHost(&host_bstr);
+    CComBSTR path_bstr;
+    uri_pointer->GetPath(&path_bstr);
+    
+    // Get only the cookies for the base URL, omitting port, if there is one.
+    // N.B., we only return cookies secure cookies when browsing a site using
+    // SSL. The browser won't see cookies with the 'secure' flag for sites
+    // visited using plain http.
+    std::wstring parsed_uri = L"http";
+    if ((WD_GET_SECURE_COOKIES == call_window_proc_struct->message ||
+         WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message) && 
+        URL_SCHEME_HTTPS == scheme) {
+      parsed_uri.append(L"s");
+    }
+    parsed_uri.append(L"://");
+    parsed_uri.append(host_bstr);
+    parsed_uri.append(path_bstr);
 
     // Call InternetGetCookieEx once to get the size of the buffer needed,
     // then call again with the appropriately sized buffer allocated.
     DWORD buffer_size = 0;
-    BOOL success = ::InternetGetCookieEx(url.c_str(),
+    BOOL success = ::InternetGetCookieEx(parsed_uri.c_str(),
                                          NULL,
                                          NULL,
                                          &buffer_size,
@@ -301,7 +364,7 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
                                          NULL);
     if (success) {
       webdriver::HookProcessor::SetDataBufferSize(buffer_size);
-      ::InternetGetCookieEx(url.c_str(),
+      ::InternetGetCookieEx(parsed_uri.c_str(),
                             NULL,
                             reinterpret_cast<LPTSTR>(webdriver::HookProcessor::GetDataBufferAddress()),
                             &buffer_size,

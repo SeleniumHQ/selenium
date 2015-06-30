@@ -33,6 +33,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -959,5 +960,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
         return getElement();
       }
     };
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    throw new UnsupportedOperationException(
+      "Screenshots are not enabled for HtmlUnitDriver");
   }
 }

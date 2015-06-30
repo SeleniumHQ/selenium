@@ -28,7 +28,7 @@ import java.util.List;
  * fails, then an {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and all
  * future calls to this instance will fail.
  */
-public interface WebElement extends SearchContext {
+public interface WebElement extends SearchContext, TakesScreenshot {
   /**
    * Click this element. If this causes a new page to load, you
    * should discard all references to this element and any further
