@@ -37,7 +37,7 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
-    def __init__(self, firefox_profile=None, firefox_binary='/Users/dburns/development/mozilla/mozilla-inbound/obj-ff-dbg/dist/Nightly.app/Contents/MacOS/firefox', timeout=30,
+    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
                  capabilities=None, proxy=None, executable_path='wires'):
 
         self.binary = firefox_binary
@@ -49,22 +49,36 @@ class WebDriver(RemoteWebDriver):
         self.profile.native_events_enabled = (
             self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
 
-        if self.binary is None:
-            self.binary = FirefoxBinary()
-
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX
 
-        if proxy is not None:
-            proxy.add_to_capabilities(capabilities)
+        if "marionette" in capabilities and capabilities['marionette'] is True:
+            # Let's use Marionette! WOOOOHOOOOO!
+            if "binary" in capabilities:
+                self.binary = capabilities["binary"]
+            self.service = Service(executable_path, firefox_binary=self.binary)
+            self.service.start()
 
-        self.service = Service(executable_path, firefox_binary=self.binary)
-        self.service.start()
+            RemoteWebDriver.__init__(self,
+                command_executor=self.service.service_url,
+                desired_capabilities=capabilities,
+                keep_alive=True)
 
-        RemoteWebDriver.__init__(self,
-            command_executor=self.service.service_url,
+        else:
+            # Oh well... sometimes the old way is the best way.
+            if self.binary is None:
+                self.binary = FirefoxBinary()
+
+            if proxy is not None:
+                proxy.add_to_capabilities(capabilities)
+
+            RemoteWebDriver.__init__(self,
+            command_executor=ExtensionConnection("127.0.0.1", self.profile,
+            self.binary, timeout),
             desired_capabilities=capabilities,
             keep_alive=True)
+
+
         self._is_remote = False
 
     def quit(self):
