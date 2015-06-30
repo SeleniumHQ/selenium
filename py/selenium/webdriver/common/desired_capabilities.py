@@ -23,7 +23,7 @@ class DesiredCapabilities(object):
     """
     Set of default supported desired capabilities.
 
-    Use this as a starting point for creating a desired capabilities object for 
+    Use this as a starting point for creating a desired capabilities object for
     requesting remote webdrivers for connecting to selenium server or selenium grid.
 
 
@@ -39,7 +39,7 @@ class DesiredCapabilities(object):
         capabilities['version'] = "10"
 
         # Instantiate an instance of Remote WebDriver with the desired capabilities.
-        driver = webdriver.Remote(desired_capabilities=capabilities, 
+        driver = webdriver.Remote(desired_capabilities=capabilities,
                                   command_executor=selenium_grid_url)
 
     Note: Always use '.copy()' on the DesiredCapabilities object to avoid the side
@@ -52,6 +52,7 @@ class DesiredCapabilities(object):
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
+        "marionette": False,
     }
 
     INTERNETEXPLORER = {
@@ -122,4 +123,3 @@ class DesiredCapabilities(object):
         "platform": "ANY",
         "javascriptEnabled": True,
     }
-
