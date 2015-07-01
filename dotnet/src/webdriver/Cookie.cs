@@ -239,8 +239,8 @@ namespace OpenQA.Selenium
             DateTime? expires = null;
             if (rawCookie.ContainsKey("expiry") && rawCookie["expiry"] != null)
             {
-                long seconds = 0;
-                if (long.TryParse(rawCookie["expiry"].ToString(), out seconds))
+                double seconds = 0;
+                if (double.TryParse(rawCookie["expiry"].ToString(), NumberStyles.Number, CultureInfo.InvariantCulture,  out seconds))
                 {
                     try
                     {
