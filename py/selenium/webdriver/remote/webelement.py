@@ -18,6 +18,7 @@
 import hashlib
 import os
 import zipfile
+from decimal import Decimal
 try:
     from StringIO import StringIO as IOStream
 except ImportError:  # 3+
@@ -309,15 +310,19 @@ class WebElement(object):
 
         typing = []
         for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = val.__str__()
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
+            if val:
+                if isinstance(val, Keys):
+                    typing.append(val)
+                elif (
+                    not isinstance(val, unicode) and
+                    hasattr(val, '__str__')
+                ):
+                    val = val.__str__()
+                    for i in range(len(val)):
+                        typing.append(val[i])
+                else:
+                    for i in range(len(val)):
+                        typing.append(val[i])
         self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
 
     # RenderedWebElement Items
