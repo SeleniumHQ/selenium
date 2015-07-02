@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
@@ -129,9 +130,10 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX},
+  @Ignore(value = {IE, CHROME, FIREFOX},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
@@ -179,9 +181,10 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, HTMLUNIT},
+  @Ignore(value = {IE, CHROME},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",

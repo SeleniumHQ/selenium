@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeFalse;
@@ -30,12 +31,12 @@ import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-@Ignore(value = {HTMLUNIT, SAFARI},
-        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers;"
-                 + "Safari: SafariDriver cannot manipulate SVG documents")
+@Ignore(value = SAFARI,
+        reason = "Safari: SafariDriver cannot manipulate SVG documents")
 public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   @Ignore(value = CHROME, reason = "chromedriver needs to update atoms for latest SVG support")
   public void testClickOnSvgElement() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
@@ -50,6 +51,7 @@ public class SvgDocumentTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testExecuteScriptInSvgDocument() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 

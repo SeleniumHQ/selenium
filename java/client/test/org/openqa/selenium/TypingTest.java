@@ -737,8 +737,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
+  @Ignore(value = HTMLUNIT, reason = "inconsistent test")
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));

@@ -23,6 +23,7 @@ import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.net.URI;
 import java.util.Date;
@@ -418,7 +419,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
