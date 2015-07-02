@@ -1,4 +1,0 @@
-java_library(name = "mime",
-  deps = [
-    "httpmime-4.4.1.jar",
-  ])
