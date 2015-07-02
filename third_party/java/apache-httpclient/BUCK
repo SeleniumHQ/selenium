@@ -1,7 +1,0 @@
-prebuilt_jar(name = 'mime',
-  binary_jar = 'httpmime-4.4.1.jar',
-  source_jar = 'httpmime-4.4.1-sources.jar',
-  visibility = [
-    '//third_party/java/httpcomponents/...',
-  ],
-)

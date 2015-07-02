@@ -3,13 +3,13 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.4.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.4.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpclient-4.4.1-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpcore-4.4.1-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.4.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/httpcomponents/httpmime-4.4.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

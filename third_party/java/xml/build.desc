@@ -1,6 +1,6 @@
 java_library(name = "xml",
   deps = [
-    "xalan-2.7.2.jar",
-    "xercesImpl-2.11.0.jar",
-    "xml-apis-1.4.01.jar"
+    "xml-apis-1.4.01.jar",
+    "//third_party/java/xalan",
+    "//third_party/java/xerces",
   ])
