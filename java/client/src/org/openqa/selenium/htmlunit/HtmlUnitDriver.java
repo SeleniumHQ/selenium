@@ -150,6 +150,35 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
   /**
+   * Constructs a new instance with JavaScript disabled,
+   * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
+   */
+  public HtmlUnitDriver() {
+    this(false);
+  }
+
+  /**
+   * Constructs a new instance, specify JavaScript support
+   * and using the {@link BrowserVersion#getDefault() default} BrowserVersion.
+   *
+   * @param enableJavascript whether to enable JavaScript support or not
+   */
+  public HtmlUnitDriver(boolean enableJavascript) {
+    this(BrowserVersion.getDefault(), enableJavascript);
+  }
+
+  /**
+   * Constructs a new instance with the specified {@link BrowserVersion} and the JavaScript support.
+   *
+   * @param version the browser version to use
+   * @param enableJavascript whether to enable JavaScript support or not
+   */
+  public HtmlUnitDriver(BrowserVersion version, boolean enableJavascript) {
+    this(version);
+    setJavascriptEnabled(enableJavascript);
+  }
+
+  /**
    * Constructs a new instance with the specified {@link BrowserVersion}.
    *
    * @param version the browser version to use
@@ -195,25 +224,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     get(webClient.getOptions().getHomePage());
     gotPage = false;
     resetKeyboardAndMouseState();
-  }
-
-  /**
-   * Constructs a new instance with JavaScript disabled,
-   * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
-   */
-  public HtmlUnitDriver() {
-    this(false);
-  }
-
-  /**
-   * Constructs a new instance, specify JavaScript support
-   * and using the {@link BrowserVersion#getDefault() default} BrowserVersion.
-   *
-   * @param enableJavascript whether to enable JavaScript support or not
-   */
-  public HtmlUnitDriver(boolean enableJavascript) {
-    this(BrowserVersion.getDefault());
-    setJavascriptEnabled(enableJavascript);
   }
 
   /**
