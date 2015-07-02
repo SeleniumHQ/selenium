@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -124,8 +124,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   @JavascriptEnabled
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);

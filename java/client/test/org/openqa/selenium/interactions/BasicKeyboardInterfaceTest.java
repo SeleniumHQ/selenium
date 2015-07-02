@@ -39,6 +39,7 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
@@ -115,7 +116,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
@@ -173,7 +174,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT}, reason = "untested")
+  @Ignore(value = {IE, SAFARI}, reason = "untested")
+  @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
@@ -201,7 +203,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 
@@ -222,7 +224,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectByWord() {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",
@@ -251,7 +254,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectAll() {
     assumeTrue(
         "Test fails with native events enabled, likely due to issue 4385",

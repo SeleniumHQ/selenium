@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -32,7 +33,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -49,7 +51,8 @@ public class CssValueTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
@@ -65,7 +68,7 @@ public class CssValueTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);

@@ -50,6 +50,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.webbitserver.HttpControl;
 import org.webbitserver.HttpHandler;
@@ -91,8 +92,8 @@ import java.util.concurrent.TimeUnit;
  * not be served by the same server.
  */
 @Ignore(
-    value = {HTMLUNIT, PHANTOMJS, SAFARI},
-    reason = "HtmlUnit/Opera/PhantomJS - not tested, " +
+    value = {PHANTOMJS, SAFARI},
+    reason = "Opera/PhantomJS - not tested, " +
              "Safari - not implemented")
 public class ReferrerTest extends JUnit4TestBase {
 
@@ -118,6 +119,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * does not have a proxy configured.
    */
   @Test
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
@@ -141,6 +143,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
 
@@ -171,6 +174,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -200,6 +204,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * permits direct access to those domains.
    */
   @Test
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -234,6 +239,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * redirects the second domain to another host.
    */
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
@@ -275,6 +281,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * to connect directly to the target server.
    */
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
@@ -316,6 +323,7 @@ public class ReferrerTest extends JUnit4TestBase {
       value = {IE, MARIONETTE},
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
       issues = 6629)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {

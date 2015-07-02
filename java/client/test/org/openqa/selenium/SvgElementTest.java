@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
@@ -32,10 +33,9 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-@Ignore(value = {HTMLUNIT},
-    reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends JUnit4TestBase {
 
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
@@ -71,6 +71,7 @@ public class SvgElementTest extends JUnit4TestBase {
     return null;
   }
 
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
