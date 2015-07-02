@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import static org.hamcrest.Matchers.containsString;
@@ -394,7 +395,8 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), containsString("hello world"));
   }
 
-  @Ignore({HTMLUNIT, IE, MARIONETTE, SAFARI})
+  @Ignore({IE, MARIONETTE, SAFARI})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);

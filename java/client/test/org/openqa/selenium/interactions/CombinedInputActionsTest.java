@@ -51,6 +51,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
@@ -122,7 +123,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS})
+  @Ignore({CHROME, IE, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   public void testControlClickingOnMultiSelectionList() {
     assumeTrue("Only works with native events on Linux",
                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
@@ -218,9 +220,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     navigateToClicksPageAndClickLink();
   }
 
-  @Ignore(
-      value = {HTMLUNIT},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
@@ -236,9 +236,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(
-      value = {HTMLUNIT},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
@@ -278,7 +276,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
@@ -292,7 +290,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore({HTMLUNIT})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
@@ -335,7 +333,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
-  @Ignore({HTMLUNIT, IE})
+  @Ignore(IE)
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
     assumeFalse("Does not works with native events on Windows",
@@ -358,7 +357,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({IE, HTMLUNIT})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     assumeFalse("Does not works with native events on Windows",

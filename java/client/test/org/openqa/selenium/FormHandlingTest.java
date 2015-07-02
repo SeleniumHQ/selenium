@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.TestUtilities.isIe7;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -263,8 +264,9 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, PHANTOMJS, SAFARI, MARIONETTE},
+  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
           reason = "untested")
+  @NotYetImplemented(HTMLUNIT)
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -290,15 +292,17 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-          reason = "IE, HtmlUnit: failed; Others: untested")
+  @Ignore(value = {IE, SAFARI},
+          reason = "IE: failed; Others: untested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-      reason = "IE, HtmlUnit: failed; Others: untested")
+  @Ignore(value = {IE, SAFARI},
+      reason = "IE: failed; Others: untested")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");

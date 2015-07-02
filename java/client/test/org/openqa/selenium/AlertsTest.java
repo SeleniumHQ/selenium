@@ -45,7 +45,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -465,7 +465,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT, MARIONETTE})
+  @Ignore(value = {CHROME, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
