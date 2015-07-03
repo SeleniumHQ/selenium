@@ -770,13 +770,20 @@ function getVisibleCookies(location) {
     return currentPath.indexOf(aPath) != -1;
   };
   var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager2');
-  var hostname = location.hostname;
-  var e = cm.getCookiesFromHost(hostname);
+  var e = cm.getCookiesFromHost(location.hostname);
   while (e.hasMoreElements()) {
     var cookie = e.getNext().QueryInterface(Components.interfaces['nsICookie2']);
-    if (isForCurrentPath(cookie.path)) {
-      results.push(cookie);
-    }
+
+    // Take the hostname and progressively shorten it
+    var hostname = location.hostname;
+    do {
+      if ((cookie.host == '.' + hostname || cookie.host == hostname)
+          && isForCurrentPath(cookie.path)) {
+        results.push(cookie);
+        break;
+      }
+      hostname = hostname.replace(/^.*?\./, '');
+    } while (hostname.indexOf('.') != -1);
   }
 
   return results;
