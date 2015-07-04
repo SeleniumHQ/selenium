@@ -52,8 +52,12 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->http_proxy_ = settings.http_proxy;
   this->ftp_proxy_ = settings.ftp_proxy;
   this->ssl_proxy_ = settings.ssl_proxy;
+  this->socks_proxy_ = settings.socks_proxy;
+  this->socks_user_name_ = settings.socks_user_name;
+  this->socks_password_ = settings.socks_password;
   this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
   this->is_proxy_modified_ = false;
+  this->is_proxy_authorization_modified_ = false;
   if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
       this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
       this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
@@ -67,6 +71,8 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->current_autoconfig_url_ = L"";
   this->current_proxy_auto_detect_flags_ = 0;
   this->current_proxy_server_ = L"";
+  this->current_socks_user_name_ = L"";
+  this->current_socks_password_ = L"";
   this->current_proxy_type_ = 0;
   this->current_proxy_bypass_list_ = L"";
 }
@@ -106,6 +112,15 @@ Json::Value ProxyManager::GetProxyAsJson() {
     if (this->ssl_proxy_.size() > 0) {
       proxy_value["sslProxy"] = this->ssl_proxy_;
     }
+    if (this->socks_proxy_.size() > 0) {
+      proxy_value["socksProxy"] = this->socks_proxy_;
+      if (this->socks_user_name_.size() > 0) {
+        proxy_value["socksUsername"] = this->socks_user_name_;
+      }
+      if (this->socks_password_.size() > 0) {
+        proxy_value["socksPassword"] = this->socks_password_;
+      }
+    }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_value["proxyAutoconfigUrl"] = this->proxy_autoconfigure_url_;
   }
@@ -131,6 +146,12 @@ std::wstring ProxyManager::BuildProxySettingsString() {
       }
       proxy_string.append("https=").append(this->ssl_proxy_);
     }
+    if (this->socks_proxy_.size() > 0) {
+      if (proxy_string.size() > 0) {
+        proxy_string.append(" ");
+      }
+      proxy_string.append("socks=").append(this->socks_proxy_);
+    }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_string = this->proxy_autoconfigure_url_;
   } else {
@@ -142,6 +163,7 @@ std::wstring ProxyManager::BuildProxySettingsString() {
 
 void ProxyManager::RestoreProxySettings() {
   LOG(TRACE) << "ProxyManager::RestoreProxySettings";
+  bool settings_restored = (!this->use_per_process_proxy_ && this->is_proxy_modified_) || this->is_proxy_authorization_modified_;
   if (!this->use_per_process_proxy_ && this->is_proxy_modified_) {
     INTERNET_PER_CONN_OPTION_LIST option_list;
     std::vector<INTERNET_PER_CONN_OPTION> restore_options(5);
@@ -181,12 +203,18 @@ void ProxyManager::RestoreProxySettings() {
     if (!success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
     }
-    success = ::InternetSetOption(NULL,
-                                  INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
-                                  NULL,
-                                  0);
     this->is_proxy_modified_ = false;
-    if (!success) {
+  }
+  if (this->is_proxy_authorization_modified_) {
+    this->SetProxyAuthentication(this->current_socks_user_name_, this->current_socks_password_);
+    this->is_proxy_authorization_modified_ = false;
+  }
+  if (settings_restored) {
+    BOOL notify_success = ::InternetSetOption(NULL,
+                                              INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                              NULL,
+                                              0);
+    if (!notify_success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
     }
   }
@@ -209,7 +237,25 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
                                  WD_CHANGE_PROXY,
                                  NULL,
                                  NULL);
-  LOG(INFO) << "SendMessage result? " << result;
+
+  if (this->socks_proxy_.size() > 0 && 
+      (this->socks_user_name_.size() > 0 || this->socks_password_.size() > 0)) {
+    LOG(WARN) << "Windows APIs provide no way to set proxy user name and "
+              << "password on a per-process basis. Setting global setting.";
+
+    this->SetProxyAuthentication(StringUtilities::ToWString(this->socks_user_name_),
+                                 StringUtilities::ToWString(this->socks_password_));
+    this->is_proxy_authorization_modified_ = true;
+    
+    // Notify WinINet clients that the proxy options have changed.
+    BOOL success = ::InternetSetOption(NULL,
+                                       INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                       NULL,
+                                       0);
+    if (!success) {
+      LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+    }
+  }
 }
 
 void ProxyManager::SetGlobalProxySettings() {
@@ -257,12 +303,41 @@ void ProxyManager::SetGlobalProxySettings() {
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
   }
+
+  // Only set proxy authentication for SOCKS proxies, and
+  // where the user name and password have been specified.
+  if (this->socks_proxy_.size() > 0 &&
+      (this->socks_user_name_.size() > 0 || this->socks_password_.size() > 0)) {
+    this->SetProxyAuthentication(StringUtilities::ToWString(this->socks_user_name_),
+                                 StringUtilities::ToWString(this->socks_password_));
+    this->is_proxy_authorization_modified_ = true;
+  }
+
   success = ::InternetSetOption(NULL,
                                 INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
                                 NULL,
                                 0);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+  }
+}
+
+void ProxyManager::SetProxyAuthentication(const std::wstring& user_name, const std::wstring& password) {
+  LOG(TRACE) << "ProxyManager::SetProxyAuthentication";
+  BOOL success = ::InternetSetOption(NULL,
+                                     INTERNET_OPTION_PROXY_USERNAME,
+                                     const_cast<wchar_t*>(user_name.c_str()),
+                                     user_name.size() + 1);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_USERNAME";
+  }
+
+  success = ::InternetSetOption(NULL,
+                                INTERNET_OPTION_PROXY_PASSWORD,
+                                const_cast<wchar_t*>(password.c_str()),
+                                password.size() + 1);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_PASSWORD";
   }
 }
 
@@ -308,6 +383,24 @@ void ProxyManager::GetCurrentProxySettings() {
     this->current_proxy_server_ = options_to_get[3].Value.pszValue;
     ::GlobalFree(options_to_get[3].Value.pszValue);
   }
+
+  this->GetCurrentProxyAuthentication();
+}
+
+void ProxyManager::GetCurrentProxyAuthentication() {
+  LOG(TRACE) << "ProxyManager::GetCurrentProxyAuthentication";
+
+  DWORD user_name_length = 0;
+  BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, NULL, &user_name_length);
+  std::vector<wchar_t> user_name(user_name_length);
+  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, &user_name[0], &user_name_length);
+  this->current_socks_user_name_ = &user_name[0];
+
+  DWORD password_length = 0;
+  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, NULL, &password_length);
+  std::vector<wchar_t> password(password_length);
+  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, &password[0], &password_length);
+  this->current_socks_password_ = &password[0];
 }
 
 void ProxyManager::GetCurrentProxyType() {

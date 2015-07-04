@@ -83,7 +83,7 @@ class NewSessionCommandHandler : public IECommandHandler {
       } else {
         mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
       }
-      ProxySettings proxy_settings = { false, "", "", "", "" };
+      ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {
         // TODO(JimEvans): Validate the members of the proxy JSON object.
@@ -95,6 +95,16 @@ class NewSessionCommandHandler : public IECommandHandler {
         proxy_settings.ftp_proxy = ftp_proxy;
         std::string ssl_proxy = proxy.get("sslProxy", "").asString();
         proxy_settings.ssl_proxy = ssl_proxy;
+        std::string socks_proxy = proxy.get("socksProxy", "").asString();
+        proxy_settings.socks_proxy = socks_proxy;
+        if (socks_proxy.length() > 0) {
+          // SOCKS proxy user name and password capabilities are ignored if the
+          // SOCKS proxy is unset.
+          std::string socks_user_name = proxy.get("socksUsername", "").asString();
+          proxy_settings.socks_user_name = socks_user_name;
+          std::string socks_password = proxy.get("socksPassword", "").asString();
+          proxy_settings.socks_password = socks_password;
+        }
         std::string autoconfig_url = proxy.get("proxyAutoconfigUrl", "").asString();
         proxy_settings.proxy_autoconfig_url = autoconfig_url;
         Json::Value use_per_process_proxy = this->GetCapability(it->second, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
