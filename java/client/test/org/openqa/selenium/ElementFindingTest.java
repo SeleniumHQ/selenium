@@ -404,6 +404,15 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), is("Test Chart"));
   }
 
+  @Ignore({IE, MARIONETTE, SAFARI, CHROME})
+  @NotYetImplemented(HTMLUNIT)
+  @Test
+  public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
+    driver.get(pages.simpleXmlDocument);
+    WebElement element = driver.findElement(By.xpath("//foo"));
+    assertThat(element.getText(), is("baz"));
+  }
+
   // By.xpath negative
 
   @Test(expected = NoSuchElementException.class)
