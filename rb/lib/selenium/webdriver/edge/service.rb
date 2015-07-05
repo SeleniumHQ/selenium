@@ -24,6 +24,7 @@ module Selenium
       #
       # @api private
       #
+
       class Service
         START_TIMEOUT       = 20
         SOCKET_LOCK_TIMEOUT = 45
@@ -103,9 +104,9 @@ module Selenium
         end
 
         def connect_until_stable
-          @socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
+          socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
 
-          unless @socket_poller.connected?
+          unless socket_poller.connected?
             raise Error::WebDriverError, "unable to connect to MicrosoftWebDriver #{@host}:#{@port}"
           end
         end

@@ -26,12 +26,11 @@ module Selenium
       #
 
       class Service
-        START_TIMEOUT = 20
-        STOP_TIMEOUT  = 5
-        DEFAULT_PORT  = 8910
-        MISSING_TEXT  = "Unable to find phantomjs executable."
-
-        attr_reader :uri
+        START_TIMEOUT       = 20
+        SOCKET_LOCK_TIMEOUT = 45
+        STOP_TIMEOUT        = 5
+        DEFAULT_PORT        = 8910
+        MISSING_TEXT        = "Unable to find phantomjs executable."
 
         def self.executable_path
           @executable_path ||= (
@@ -44,35 +43,32 @@ module Selenium
         end
 
         def self.default_service(port = nil)
-          new executable_path, port || PortProber.above(DEFAULT_PORT)
+          new executable_path, DEFAULT_PORT
         end
 
         def initialize(executable_path, port)
-          @uri        = URI.parse "http://#{Platform.localhost}:#{port}"
+          @host       = Platform.localhost
           @executable = executable_path
         end
 
         def start(args = [])
           if @process && @process.alive?
-            raise "already started: #{@uri.inspect} #{@executable.inspect}"
-          end
-
-          @process = create_process(args)
-          @process.start
-
-          socket_poller = SocketPoller.new Platform.localhost, @uri.port, START_TIMEOUT
-
-          unless socket_poller.connected?
-            raise Error::WebDriverError, "unable to connect to phantomjs @ #{@uri} after #{START_TIMEOUT} seconds"
+            raise "already started: #{uri.inspect} #{@executable.inspect}"
           end
 
           Platform.exit_hook { stop } # make sure we don't leave the server running
+
+          socket_lock.locked do
+            find_free_port
+            start_process(args)
+            connect_until_stable
+          end
         end
 
         def stop
           return if @process.nil? || @process.exited?
 
-          Net::HTTP.start(uri.host, uri.port) do |http|
+          Net::HTTP.start(@host, @port) do |http|
             http.open_timeout = STOP_TIMEOUT / 2
             http.read_timeout = STOP_TIMEOUT / 2
 
@@ -89,9 +85,19 @@ module Selenium
           end
         end
 
-        def create_process(args)
-          server_command = [@executable, "--webdriver=#{@uri.port}", *args]
-          process = ChildProcess.build(*server_command.compact)
+        def find_free_port
+          @port = PortProber.above @port
+        end
+
+        def uri
+          URI.parse "http://#{@host}:#{@port}"
+        end
+
+        private
+
+        def start_process(args)
+          server_command = [@executable, "--webdriver=#{@port}", *args]
+          @process = ChildProcess.build(*server_command.compact)
 
           if $DEBUG == true
             process.io.inherit!
@@ -100,7 +106,19 @@ module Selenium
             process.io.stdout = process.io.stderr = File.new(Platform.null_device, 'w')
           end
 
-          process
+          @process.start
+        end
+
+        def connect_until_stable
+          socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
+
+          unless socket_poller.connected?
+            raise Error::WebDriverError, "unable to connect to phantomjs @ #{uri} after #{START_TIMEOUT} seconds"
+          end
+        end
+
+        def socket_lock
+          @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
         end
 
       end # Service

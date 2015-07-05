@@ -19,6 +19,11 @@
 
 module Selenium
   module WebDriver
+
+    #
+    # @api private
+    #
+
     class SocketLock
 
       def initialize(port, timeout)

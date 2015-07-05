@@ -103,7 +103,6 @@ module Selenium
                                   'extensions' => data['extensions']
           end
 
-
           chrome_options['binary']                   = Chrome.path if Chrome.path
           chrome_options['nativeEvents']             = true if native_events
           chrome_options['verbose']                  = true if verbose
