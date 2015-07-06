@@ -343,7 +343,6 @@
     <ClInclude Include="CommandHandlers\SwitchToFrameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
     <ClInclude Include="Generated\atoms.h" />
-    <ClInclude Include="Generated\cookies.h" />
     <ClInclude Include="Generated\sizzle.h" />
     <ClInclude Include="ProxyManager.h" />
   </ItemGroup>
