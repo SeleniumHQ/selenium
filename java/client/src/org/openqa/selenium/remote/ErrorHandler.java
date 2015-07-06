@@ -227,7 +227,7 @@ public class ErrorHandler {
 
     Throwable toReturn = null;
     String message = (String) rawErrorData.get(MESSAGE);
-    Class clazz = null;
+    Class<?> clazz = null;
 
     // First: allow Remote Driver to specify the Selenium Server internal exception
     if (rawErrorData.containsKey(CLASS)) {

@@ -162,8 +162,7 @@ public class SafariOptions {
    * @throws IOException If an error occurred while writing the safari extensions to a
    *    temporary directory.
    */
-  @SuppressWarnings("unchecked")
-  private static SafariOptions fromJsonMap(Map options) throws IOException {
+  private static SafariOptions fromJsonMap(Map<?, ?> options) throws IOException {
     SafariOptions safariOptions = new SafariOptions();
 
     Number port = (Number) options.get(Option.PORT);
