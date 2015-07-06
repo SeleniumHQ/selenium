@@ -325,6 +325,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
+   * Get the simulated {@code BrowserVersion}.
+   * @return the used {@code BrowserVersion}
+   */
+  public BrowserVersion getBrowserVersion() {
+    return webClient.getBrowserVersion();
+  }
+
+  /**
    * Create the underlying WebClient, but don't set any fields on it.
    *
    * @param version Which browser to emulate
