@@ -322,12 +322,13 @@ void ProxyManager::SetGlobalProxySettings() {
   }
 }
 
-void ProxyManager::SetProxyAuthentication(const std::wstring& user_name, const std::wstring& password) {
+void ProxyManager::SetProxyAuthentication(const std::wstring& user_name,
+                                          const std::wstring& password) {
   LOG(TRACE) << "ProxyManager::SetProxyAuthentication";
   BOOL success = ::InternetSetOption(NULL,
                                      INTERNET_OPTION_PROXY_USERNAME,
                                      const_cast<wchar_t*>(user_name.c_str()),
-                                     user_name.size() + 1);
+                                     static_cast<int>(user_name.size()) + 1);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_USERNAME";
   }
@@ -335,7 +336,7 @@ void ProxyManager::SetProxyAuthentication(const std::wstring& user_name, const s
   success = ::InternetSetOption(NULL,
                                 INTERNET_OPTION_PROXY_PASSWORD,
                                 const_cast<wchar_t*>(password.c_str()),
-                                password.size() + 1);
+                                static_cast<int>(password.size()) + 1);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_PASSWORD";
   }

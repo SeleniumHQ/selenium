@@ -51,7 +51,7 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
       status_code = browser_wrapper->DeleteCookie(cookie_name);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
-                                   "Unable to delete cookie with name '" + cookie_name + "'");
+                                   "Unable to delete cookie with name '" + it->name() + "'");
         return;
       }
     }

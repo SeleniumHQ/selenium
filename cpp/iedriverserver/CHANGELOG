@@ -9,6 +9,21 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.5
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated delete cookie logic to no longer rely on JavaScript. This allows
+   HTTP-only cookies to be deleted by the driver.
+ * Added support for SOCKS proxy in the IE driver. Using a SOCKS proxy is not
+   quite as straightforward for IE as it is for other browser drivers. While
+   the driver is now able to set the proxy settings for a SOCKS proxy, using
+   the ie.usePerProcessProxy capability with a user name and password for a
+   SOCKS proxy is problematic for the driver. The Windows API does not provide
+   any ability to set the user name and password for a SOCKS proxy on a
+   per-process basis. The driver attempts to work around this limitation, but
+   this combination will be largely unsupported. Using the driver to temporarily
+   set the global proxy settings on the machine should work as normal.
+
 v2.46.0.4
 =========
  * Corrected logic for http-only and secure cookies. Cookies now behave
