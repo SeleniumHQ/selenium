@@ -38,6 +38,9 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
+    if (driver instanceof HtmlUnitDriver) {
+      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
+    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
@@ -52,14 +55,12 @@ public class TestUtilities {
   }
 
   public static boolean isFirefox(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Firefox");
+    return getUserAgent(driver).contains("Firefox");
   }
 
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
-    return !(driver instanceof HtmlUnitDriver)
-        && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
+    return userAgent.contains("MSIE") || userAgent.contains("Trident");
   }
 
   public static boolean isIe6(WebDriver driver) {
@@ -75,6 +76,10 @@ public class TestUtilities {
   public static boolean isOldIe(WebDriver driver) {
     if (!isInternetExplorer(driver)) {
       return false;
+    }
+    if (driver instanceof HtmlUnitDriver) {
+      String applicationVersion = ((HtmlUnitDriver) driver).getBrowserVersion().getApplicationVersion();
+      return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
     }
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
@@ -101,8 +106,7 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Chrome");
+    return getUserAgent(driver).contains("Chrome");
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {
