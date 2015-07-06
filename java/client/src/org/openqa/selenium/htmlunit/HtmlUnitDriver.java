@@ -772,7 +772,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  protected void assertElementNotStale(HtmlElement element) {
+  protected void assertElementNotStale(DomElement element) {
     SgmlPage elementPage = element.getPage();
     Page currentPage = lastPage();
 
@@ -955,7 +955,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     throw new NoSuchElementException("No link found with text: " + expectedText);
   }
 
-  protected WebElement newHtmlUnitWebElement(HtmlElement element) {
+  protected WebElement newHtmlUnitWebElement(DomElement element) {
     return new HtmlUnitWebElement(this, element);
   }
 
@@ -1026,11 +1026,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element using css", ex);
     }
 
-    if (node instanceof HtmlElement) {
-      return newHtmlUnitWebElement((HtmlElement) node);
+    if (node instanceof DomElement) {
+      return newHtmlUnitWebElement((DomElement) node);
     }
 
-    throw new NoSuchElementException("Returned node was not an HTML element");
+    throw new NoSuchElementException("Returned node was not a DOM element");
   }
 
   @Override
@@ -1050,10 +1050,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     List<WebElement> toReturn = new ArrayList<>();
 
     for (DomNode node : allNodes) {
-      if (node instanceof HtmlElement) {
-        toReturn.add(newHtmlUnitWebElement((HtmlElement) node));
+      if (node instanceof DomElement) {
+        toReturn.add(newHtmlUnitWebElement((DomElement) node));
       } else {
-        throw new NoSuchElementException("Returned node was not an HTML element");
+        throw new NoSuchElementException("Returned node was not a DOM element");
       }
     }
 
@@ -1232,7 +1232,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         HtmlUnitWebElement element =
             (HtmlUnitWebElement) HtmlUnitDriver.this.findElementById(nameOrId);
-        HtmlElement domElement = element.getElement();
+        DomElement domElement = element.getElement();
         if (domElement instanceof BaseFrameElement) {
           currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
           return HtmlUnitDriver.this;
@@ -1252,7 +1252,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       HtmlUnitWebElement webElement = (HtmlUnitWebElement) frameElement;
       webElement.assertElementNotStale();
 
-      HtmlElement domElement = webElement.getElement();
+      DomElement domElement = webElement.getElement();
       if (!(domElement instanceof BaseFrameElement)) {
         throw new NoSuchFrameException(webElement.getTagName() + " is not a frame element.");
       }
