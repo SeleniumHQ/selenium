@@ -36,6 +36,7 @@ class CookieManager {
   int GetCookies(const std::string& url,
                  std::vector<BrowserCookie>* all_cookies);
   bool SetCookie(const std::string& url, const std::string& cookie_data);
+  bool DeleteCookie(const std::string& url, const BrowserCookie& cookie);
   bool DeleteCookie(const std::string& url, const std::string& cookie_name);
 
  private:
@@ -52,19 +53,26 @@ class CookieManager {
   bool RecursivelyDeleteCookie(const std::string& url,
                                const std::string& name,
                                const std::string& domain,
-                               const std::string& path);
+                               const std::string& path,
+                               const bool is_httponly);
   bool RecurseCookiePath(const std::string& url,
                          const std::string& name,
                          const std::string& domain,
-                         const std::string& path);
+                         const std::string& path,
+                         const bool is_httponly);
   bool RecurseCookieDomain(const std::string& url,
                            const std::string& name,
                            const std::string& domain,
-                           const std::string& path);
+                           const std::string& path,
+                           const bool is_httponly);
   bool DeleteCookie(const std::string& url,
                     const std::string& name,
                     const std::string& domain,
-                    const std::string& path);
+                    const std::string& path,
+                    const bool is_httponly);
+  bool SetCookie(const std::string& url,
+                 const std::string& cookie_data,
+                 const bool is_httponly);
 
   HWND window_handle_;
 };

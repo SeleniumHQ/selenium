@@ -250,11 +250,19 @@ int DocumentHost::AddCookie(const std::string& cookie,
   return WD_SUCCESS;
 }
 
-int DocumentHost::DeleteCookie(const std::string& cookie_name) {
+//int DocumentHost::DeleteCookie(const std::string& cookie_name) {
+//  LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
+//  // TODO: Optimize and return legitimate error conditions.
+//  bool deletesucceeded = this->cookie_manager_->DeleteCookie(this->GetCurrentUrl(),
+//                                                             cookie_name);
+//  return WD_SUCCESS;
+//}
+
+int DocumentHost::DeleteCookie(const BrowserCookie& cookie) {
   LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
   // TODO: Optimize and return legitimate error conditions.
   bool deletesucceeded = this->cookie_manager_->DeleteCookie(this->GetCurrentUrl(),
-                                                             cookie_name);
+                                                             cookie);
   return WD_SUCCESS;
 }
 
