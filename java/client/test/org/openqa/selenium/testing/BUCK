@@ -4,6 +4,7 @@ java_library(name = 'annotations',
     'JavascriptEnabled.java',
     'NativeEventsRequired.java',
     'NeedsLocalEnvironment.java',
+    'NotYetImplemented.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:platform',
