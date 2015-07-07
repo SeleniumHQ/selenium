@@ -246,23 +246,21 @@ bool CookieManager::RecurseCookieDomain(const std::string& url,
                                         const std::string& path,
                                         const bool is_httponly) {
   bool deleted = this->DeleteCookie(url, name, domain, path, is_httponly);
-  if (!deleted) {
-    size_t dot_index = domain.find_first_of('.');
-    if (dot_index == 0) {
-      return this->RecurseCookieDomain(url,
-                                       name,
-                                       domain.substr(1),
-                                       path,
-                                       is_httponly);
-    } else if (dot_index != std::string::npos) {
-      return this->RecurseCookieDomain(url,
-                                       name,
-                                       domain.substr(dot_index),
-                                       path,
-                                       is_httponly);
-    }
-    deleted = this->DeleteCookie(url, name, "", path, is_httponly);
+  size_t dot_index = domain.find_first_of('.');
+  if (dot_index == 0) {
+    return this->RecurseCookieDomain(url,
+                                      name,
+                                      domain.substr(1),
+                                      path,
+                                      is_httponly);
+  } else if (dot_index != std::string::npos) {
+    return this->RecurseCookieDomain(url,
+                                      name,
+                                      domain.substr(dot_index),
+                                      path,
+                                      is_httponly);
   }
+  deleted = this->DeleteCookie(url, name, "", path, is_httponly);
   return deleted;
 }
 

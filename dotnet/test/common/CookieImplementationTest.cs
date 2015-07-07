@@ -218,12 +218,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Cannot run without creating subdomains in test environment")]
         public void ShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             AssertCookieIsNotPresentWithName("name");
@@ -277,7 +285,7 @@ namespace OpenQA.Selenium
 
             // Replace the first part of the name with a period
             Regex replaceRegex = new Regex(".*?\\.");
-            string shorter = replaceRegex.Replace(this.hostname, ".");
+            string shorter = replaceRegex.Replace(this.hostname, ".", 1);
             Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
             driver.Manage().Cookies.AddCookie(cookie);

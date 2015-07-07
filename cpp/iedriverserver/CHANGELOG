@@ -9,7 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v2.46.0.5
+v2.46.0.7
+=========
+ * Fixed cookie delete bug for related domains.
+
+v2.46.0.6
 =========
  * Corrected cookie add/delete logic with respect to HTTP-only cookies.
 
