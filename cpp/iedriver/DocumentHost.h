@@ -68,7 +68,6 @@ class DocumentHost {
 
   void GetCookies(std::vector<BrowserCookie>* cookies);
   int AddCookie(const std::string& cookie, const bool validate_document_type);
-  //int DeleteCookie(const std::string& cookie_name);
   int DeleteCookie(const BrowserCookie& cookie);
   
   int SetFocusedFrameByIndex(const int frame_index);

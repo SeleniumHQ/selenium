@@ -186,26 +186,6 @@ bool CookieManager::DeleteCookie(const std::string& url,
                                        cookie.is_httponly());
 }
 
-//bool CookieManager::DeleteCookie(const std::string& url,
-//                                 const std::string& cookie_name) {
-//  
-//  std::wstring wide_url = StringUtilities::ToWString(url);
-//  CComPtr<IUri> uri_pointer;
-//  ::CreateUri(wide_url.c_str(), Uri_CREATE_ALLOW_RELATIVE, 0, &uri_pointer);
-//
-//  CComBSTR host_bstr;
-//  uri_pointer->GetHost(&host_bstr);
-//  std::wstring wide_domain = host_bstr;
-//  
-//  CComBSTR path_bstr;
-//  uri_pointer->GetPath(&path_bstr);
-//  std::wstring wide_path = path_bstr;
-//
-//  std::string domain = StringUtilities::ToString(wide_domain);
-//  std::string path = StringUtilities::ToString(wide_path);
-//  return this->RecursivelyDeleteCookie(url, cookie_name, domain, path, false);
-//}
-
 bool CookieManager::RecursivelyDeleteCookie(const std::string& url,
                                             const std::string& name,
                                             const std::string& domain,
