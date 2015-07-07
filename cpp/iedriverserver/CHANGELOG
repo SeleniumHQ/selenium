@@ -11,6 +11,10 @@ not made generally available on the downloads page.
 
 v2.46.0.5
 =========
+ * Corrected cookie add/delete logic with respect to HTTP-only cookies.
+
+v2.46.0.5
+=========
  * Updates to JavaScript automation atoms.
  * Updated delete cookie logic to no longer rely on JavaScript. This allows
    HTTP-only cookies to be deleted by the driver.
