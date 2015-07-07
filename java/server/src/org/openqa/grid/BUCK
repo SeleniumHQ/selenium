@@ -30,7 +30,7 @@ prebuilt_jar(name = 'images',
   binary_jar = ':images-zip',
 )
 
-zip(name = 'images-zip',
+zip_file(name = 'images-zip',
   srcs = glob(['images/*']),
   out = 'images.jar',
 )
