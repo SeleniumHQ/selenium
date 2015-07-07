@@ -19,7 +19,7 @@ prebuilt_jar(name = 'defaults',
   binary_jar = ':defaults-zip',
 )
 
-zip(name = 'defaults-zip',
+zip_file(name = 'defaults-zip',
   srcs = glob(['defaults/*']),
   out = 'defaults.jar',
 )
