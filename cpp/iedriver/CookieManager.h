@@ -37,7 +37,6 @@ class CookieManager {
                  std::vector<BrowserCookie>* all_cookies);
   bool SetCookie(const std::string& url, const std::string& cookie_data);
   bool DeleteCookie(const std::string& url, const BrowserCookie& cookie);
-  bool DeleteCookie(const std::string& url, const std::string& cookie_name);
 
  private:
   std::wstring SendGetCookieMessage(const std::wstring& url,

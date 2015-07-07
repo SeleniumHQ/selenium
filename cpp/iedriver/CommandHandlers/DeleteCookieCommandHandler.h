@@ -48,7 +48,6 @@ class DeleteCookieCommandHandler : public IECommandHandler {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
-    //status_code = browser_wrapper->DeleteCookie(cookie_name);
     BrowserCookie cookie;
     cookie.set_name(cookie_name);
     status_code = browser_wrapper->DeleteCookie(cookie);

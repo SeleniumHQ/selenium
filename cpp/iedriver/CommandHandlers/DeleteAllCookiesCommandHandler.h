@@ -47,8 +47,6 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
     browser_wrapper->GetCookies(&cookies);
     std::vector<BrowserCookie>::const_iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
-      //std::string cookie_name = it->name();
-      //status_code = browser_wrapper->DeleteCookie(cookie_name);
       status_code = browser_wrapper->DeleteCookie(*it);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
