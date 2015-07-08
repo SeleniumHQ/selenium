@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.9
+=========
+ * Fixed bug in SOCKS proxy authentication settings retrieval.
+
 v2.46.0.8
 =========
  * Fixed bug in screenshot handling due to Windows hook refactor.
