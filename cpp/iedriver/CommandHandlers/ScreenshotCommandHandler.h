@@ -180,8 +180,13 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     HookProcessor hook;
     hook.Initialize(hook_settings);
+
     hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
     browser->SetWidth(max_image_dimensions.right);
+    
+    // Must re-push data because the resize causes a message to the
+    // IE window, and reading the data clears the buffer.
+    hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
     browser->SetHeight(max_image_dimensions.bottom);
 
     // Capture the window's canvas to a DIB.
