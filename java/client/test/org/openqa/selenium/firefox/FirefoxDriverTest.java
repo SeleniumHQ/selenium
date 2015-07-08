@@ -505,7 +505,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
     final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
-    List<Worker> workers = new ArrayList<Worker>(numThreads);
+    List<Worker> workers = new ArrayList<>(numThreads);
     try {
       for (int i = 0; i < numThreads; ++i) {
         final WebDriver driver = (i == 0 ? super.driver : newFirefoxDriver());

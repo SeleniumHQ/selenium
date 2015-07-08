@@ -51,9 +51,9 @@ public class ThreadGuard {
                           invocationHandler);
   }
 
-  private static Class[] getInterfaces(Object target) {
-    Class base = target.getClass();
-    Set<Class> interfaces = new HashSet<Class>();
+  private static Class<?>[] getInterfaces(Object target) {
+    Class<?> base = target.getClass();
+    Set<Class<?>> interfaces = new HashSet<>();
     if (base.isInterface()) {
       interfaces.add(base);
     }

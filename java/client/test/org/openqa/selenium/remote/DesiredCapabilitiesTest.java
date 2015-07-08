@@ -39,7 +39,7 @@ public class DesiredCapabilitiesTest {
   @Test
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-        new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
+        new ConcurrentHashMap<>();
 
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);

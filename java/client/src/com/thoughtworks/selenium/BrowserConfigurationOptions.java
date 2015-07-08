@@ -43,7 +43,7 @@ public class BrowserConfigurationOptions {
   public static final int DEFAULT_TIMEOUT_IN_SECONDS = 30 * 60; // identical to
                                                                 // RemoteControlConfiguration;
 
-  private Map<String, String> options = new HashMap<String, String>();
+  private Map<String, String> options = new HashMap<>();
 
   /**
    * Instantiate a blank BrowserConfigurationOptions instance.

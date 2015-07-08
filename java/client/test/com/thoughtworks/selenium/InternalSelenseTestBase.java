@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
-  private static final ThreadLocal<Selenium> instance = new ThreadLocal<Selenium>();
+  private static final ThreadLocal<Selenium> instance = new ThreadLocal<>();
   private static String seleniumServerUrl;
 
   private static final AtomicBoolean mustBuild = new AtomicBoolean(true);

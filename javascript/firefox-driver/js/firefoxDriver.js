@@ -756,7 +756,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
       fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager2');
 
   cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
-      cookie.secure, false, inSession, cookie.expiry);
+      cookie.secure, cookie.httpOnly, inSession, cookie.expiry);
 
   respond.send();
 };
@@ -769,10 +769,10 @@ function getVisibleCookies(location) {
   var isForCurrentPath = function(aPath) {
     return currentPath.indexOf(aPath) != -1;
   };
-  var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
-  var e = cm.enumerator;
+  var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager2');
+  var e = cm.getCookiesFromHost(location.hostname);
   while (e.hasMoreElements()) {
-    var cookie = e.getNext().QueryInterface(Components.interfaces['nsICookie']);
+    var cookie = e.getNext().QueryInterface(Components.interfaces['nsICookie2']);
 
     // Take the hostname and progressively shorten it
     var hostname = location.hostname;
@@ -806,6 +806,7 @@ FirefoxDriver.prototype.getCookies = function(respond) {
       'path': cookie.path,
       'domain': cookie.host,
       'secure': cookie.isSecure,
+      'httpOnly': cookie.isHttpOnly,
       'expiry': expires
     });
   }

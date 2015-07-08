@@ -35,8 +35,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SmokeTest {
   private static Registry registry;
 
-  private static Map<String, Object> ie = new HashMap<String, Object>();
-  private static Map<String, Object> ff = new HashMap<String, Object>();
+  private static Map<String, Object> ie = new HashMap<>();
+  private static Map<String, Object> ff = new HashMap<>();
 
   private static RemoteProxy p1;
   private static RemoteProxy p2;

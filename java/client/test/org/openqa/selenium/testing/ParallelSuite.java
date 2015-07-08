@@ -81,11 +81,11 @@ public class ParallelSuite extends Suite {
    */
   private static class ThreadPool {
     private final List<Thread> threads;
-    private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<Runnable>();
+    private final ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
     private volatile boolean isStopped = false;
 
     public ThreadPool(int threadCount, final Runnable perThreadCleanup) {
-      threads = new ArrayList<Thread>(threadCount);
+      threads = new ArrayList<>(threadCount);
       for (int i = 0; i < threadCount; ++i) {
         Thread thread = new Thread() {
           @Override

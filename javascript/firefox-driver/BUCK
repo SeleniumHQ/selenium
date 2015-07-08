@@ -56,7 +56,7 @@ mozilla_extension(name = 'webdriver',
 )
 
 # There has to be less attractive way of creating a zip. Ho hum.
-zip(name = 'js-resources',
+zip_file(name = 'js-resources',
   out = 'js-resources.src.zip',
   srcs = [
     ':evaluate.js',

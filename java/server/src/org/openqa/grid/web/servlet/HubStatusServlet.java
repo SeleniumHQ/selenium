@@ -112,7 +112,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
         if (requestJSON == null || keys.size() == 0) {
           paramsToReturn = allParams.keySet();
         } else {
-          paramsToReturn = new HashSet<String>();
+          paramsToReturn = new HashSet<>();
           for (int i = 0; i < keys.size(); i++) {
             paramsToReturn.add(keys.get(i).getAsString());
           }

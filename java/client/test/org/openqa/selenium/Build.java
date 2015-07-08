@@ -65,7 +65,7 @@ public class Build {
   }
 
   private ProcessBuilder prepareBuild() {
-    List<String> command = new ArrayList<String>();
+    List<String> command = new ArrayList<>();
     if (Platform.getCurrent().is(WINDOWS)) {
       command.add("cmd.exe");
       command.add("/c");

@@ -40,7 +40,7 @@ prebuilt_jar(name = 'resources',
   binary_jar = ':resources-zip',
 )
 
-zip(name = 'resources-zip',
+zip_file(name = 'resources-zip',
   out = 'resources.jar',
   srcs = [
     'VERSION.txt',

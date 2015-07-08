@@ -17,7 +17,6 @@
 #include "DocumentHost.h"
 #include "BrowserCookie.h"
 #include "BrowserFactory.h"
-#include "Generated/cookies.h"
 #include "CookieManager.h"
 #include "logging.h"
 #include "messages.h"
@@ -243,28 +242,20 @@ void DocumentHost::GetCookies(std::vector<BrowserCookie>* cookies) {
 int DocumentHost::AddCookie(const std::string& cookie,
                             const bool validate_document_type) {
   LOG(TRACE) << "Entering DocumentHost::AddCookie";
-  bool set_cookie_succeeded = this->cookie_manager_->SetCookie(this->GetCurrentUrl(), cookie);
-  if (!set_cookie_succeeded) {
+  bool add_succeeded = this->cookie_manager_->SetCookie(this->GetCurrentUrl(),
+                                                        cookie);
+  if (!add_succeeded) {
     return EINVALIDCOOKIEDOMAIN;
   }
   return WD_SUCCESS;
 }
 
-int DocumentHost::DeleteCookie(const std::string& cookie_name) {
+int DocumentHost::DeleteCookie(const BrowserCookie& cookie) {
   LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
-
-  // Construct the delete cookie script
-  std::wstring script_source;
-  for (int i = 0; DELETECOOKIES[i]; i++) {
-    script_source += DELETECOOKIES[i];
-  }
-
-  CComPtr<IHTMLDocument2> doc;
-  this->GetDocument(&doc);
-  Script script_wrapper(doc, script_source, 1);
-  script_wrapper.AddArgument(cookie_name);
-  int status_code = script_wrapper.Execute();
-  return status_code;
+  // TODO: Optimize and return legitimate error conditions.
+  bool deletesucceeded = this->cookie_manager_->DeleteCookie(this->GetCurrentUrl(),
+                                                             cookie);
+  return WD_SUCCESS;
 }
 
 void DocumentHost::PostQuitMessage() {

@@ -126,7 +126,7 @@ public class MacProxyManager {
     // sometimes Tiger on PPC looks different from Tiger on Intel, so we'll leave it in,
     // just in case
 
-    Set<String> candidates = new HashSet<String>();
+    Set<String> candidates = new HashSet<>();
     for (String file : files) {
       if (file.startsWith("networksetup-")) {
         candidates.add(file);

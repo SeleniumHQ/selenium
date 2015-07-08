@@ -269,7 +269,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -295,7 +295,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -326,7 +326,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -359,7 +359,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                /* stepX in pixels */ 5,
                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = new HashSet<String>();
+    Set<String> expectedColors = new HashSet<>();
     expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
                                              /* color step*/ 1000,
                                              /* grid X size */ 6,
@@ -406,7 +406,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    */
   private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
                                              final int nX, final int nY) {
-    Set<String> colors = new TreeSet<String>();
+    Set<String> colors = new TreeSet<>();
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
@@ -431,7 +431,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @return set of colors in string hex presentation
    */
   private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
-    Set<String> colors = new TreeSet<String>();
+    Set<String> colors = new TreeSet<>();
 
     try {
       int height = image.getHeight();

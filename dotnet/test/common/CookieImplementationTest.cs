@@ -218,12 +218,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Cannot run without creating subdomains in test environment")]
         public void ShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             AssertCookieIsNotPresentWithName("name");
@@ -277,7 +285,7 @@ namespace OpenQA.Selenium
 
             // Replace the first part of the name with a period
             Regex replaceRegex = new Regex(".*?\\.");
-            string shorter = replaceRegex.Replace(this.hostname, ".");
+            string shorter = replaceRegex.Replace(this.hostname, ".", 1);
             Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
             driver.Manage().Cookies.AddCookie(cookie);
@@ -291,6 +299,15 @@ namespace OpenQA.Selenium
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             Uri url = new Uri(driver.Url);
@@ -351,6 +368,15 @@ namespace OpenQA.Selenium
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
+            }
+
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
             Uri uri = new Uri(driver.Url);
@@ -426,7 +452,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Browser requires additional TLS settings to get secure cookies")]
+        [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
         [IgnoreBrowser(Browser.PhantomJS, "Untested browser")]
         [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void ShouldRetainCookieSecure()
@@ -627,6 +653,15 @@ namespace OpenQA.Selenium
                 return;
             }
 
+            // Cookies cannot be set on domain names with less than 2 dots, so
+            // localhost is out. If we are in that boat, bail the test.
+            string hostName = EnvironmentManager.Instance.UrlBuilder.HostName;
+            string[] hostNameParts = hostName.Split(new char[] { '.' });
+            if (hostNameParts.Length < 3)
+            {
+                Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
+            }
+
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, "/" + EnvironmentManager.Instance.UrlBuilder.Path + "IDoNotExist", null);
@@ -767,7 +802,13 @@ namespace OpenQA.Selenium
             // Reenable this when we have a better solution per DanielWagnerHall.
             // ChromeDriver2 has trouble with localhost. IE and Firefox don't.
             // return !IsIpv4Address(hostname) && "localhost" != hostname;
-            return !IsIpv4Address(hostname) && ("localhost" != hostname && TestUtilities.IsChrome(driver));
+            bool isLocalHostOkay = true;
+            if ("localhost" == hostname && TestUtilities.IsChrome(driver))
+            {
+                isLocalHostOkay = false;
+            }
+
+            return !IsIpv4Address(hostname) && isLocalHostOkay;
         }
 
         private static bool IsIpv4Address(string addrString)

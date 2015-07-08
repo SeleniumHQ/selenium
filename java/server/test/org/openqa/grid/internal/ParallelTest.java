@@ -41,8 +41,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ParallelTest {
 
   static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
-  static Map<String, Object> app2 = new HashMap<String, Object>();
+  static Map<String, Object> app1 = new HashMap<>();
+  static Map<String, Object> app2 = new HashMap<>();
 
   /**
    * a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at the same
@@ -51,7 +51,7 @@ public class ParallelTest {
   @BeforeClass
   public static void prepareReqRequest() {
 
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     app1.put(MAX_INSTANCES, 5);
 
@@ -213,9 +213,9 @@ public class ParallelTest {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = null;
     RegistrationRequest req = null;
-    Map<String, Object> app1 = new HashMap<String, Object>();
-    Map<String, Object> app2 = new HashMap<String, Object>();
-    Map<String, Object> config = new HashMap<String, Object>();
+    Map<String, Object> app1 = new HashMap<>();
+    Map<String, Object> app2 = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
     app1.put(APP, "app1");
     app1.put(MAX_INSTANCES, 5);
 
@@ -237,7 +237,7 @@ public class ParallelTest {
       registry.add(p1);
 
       // reserve 5 app1
-      List<TestSession> used = new ArrayList<TestSession>();
+      List<TestSession> used = new ArrayList<>();
       for (int i = 0; i < 5; i++) {
         RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();

@@ -250,7 +250,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
     protected PrefNode(boolean isLeaf) {
       if (!isLeaf) {
-        prefs = new HashMap<String, PrefNode>();
+        prefs = new HashMap<>();
       }
     }
 

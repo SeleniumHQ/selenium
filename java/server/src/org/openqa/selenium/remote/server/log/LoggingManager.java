@@ -38,7 +38,7 @@ public class LoggingManager {
   private static Handler[] originalHandlers;
   private static Map<Handler, Formatter> originalFormatters;
   private static Map<Handler, Level> originalLogLevels;
-  private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
+  private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<>();
   private static ShortTermMemoryHandler shortTermMemoryHandler;
   private static PerSessionLogHandler perSessionLogHandler = new NoOpSessionLogHandler();
 
@@ -187,8 +187,8 @@ public class LoggingManager {
 
   protected static void saveOriginalHandlersFormattersAndLevels(Logger logger) {
     originalHandlers = logger.getHandlers();
-    originalFormatters = new HashMap<Handler, Formatter>();
-    originalLogLevels = new HashMap<Handler, Level>();
+    originalFormatters = new HashMap<>();
+    originalLogLevels = new HashMap<>();
     for (Handler handler : originalHandlers) {
       originalFormatters.put(handler, handler.getFormatter());
       originalLogLevels.put(handler, handler.getLevel());

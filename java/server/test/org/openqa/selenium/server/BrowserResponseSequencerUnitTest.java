@@ -43,7 +43,7 @@ public class BrowserResponseSequencerUnitTest {
   @Before
   public void setUp() {
     seq = new BrowserResponseSequencer(name.getMethodName());
-    numbers = Collections.synchronizedList( new ArrayList<Integer>());
+    numbers = Collections.synchronizedList(new ArrayList<Integer>());
   }
 
   @Test

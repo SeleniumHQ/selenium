@@ -1,4 +1,4 @@
-java_library(name = "apache-httpclient",
+java_library(name = "httpclient",
   exported_deps = [
     ':client',
     ':core',

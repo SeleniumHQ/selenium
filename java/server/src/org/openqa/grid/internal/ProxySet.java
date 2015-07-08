@@ -94,7 +94,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
   }
 
   public List<RemoteProxy> getBusyProxies() {
-    List<RemoteProxy> res = new ArrayList<RemoteProxy>();
+    List<RemoteProxy> res = new ArrayList<>();
     for (RemoteProxy proxy : proxies) {
       if (proxy.isBusy()) {
         res.add(proxy);
@@ -121,7 +121,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
   }
 
   private List<RemoteProxy> getSorted() {
-    List<RemoteProxy> sorted = new ArrayList<RemoteProxy>(proxies);
+    List<RemoteProxy> sorted = new ArrayList<>(proxies);
     Collections.sort(sorted);
     return sorted;
   }

@@ -47,6 +47,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.webbitserver.HttpControl;
@@ -100,7 +101,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+  @Ignore(value = {PHANTOMJS, SAFARI},
           reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
@@ -126,7 +127,7 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
+  @Ignore(value = {PHANTOMJS, SAFARI},
           reason = "PhantomJS - not tested, Safari - not implemented")
   @NeedsLocalEnvironment
   @Test
@@ -161,7 +162,8 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, REMOTE, SAFARI})
+  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyWithRequiredCapability() {
@@ -176,7 +178,8 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, REMOTE, SAFARI})
+  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void requiredProxyCapabilityShouldHavePriority() {

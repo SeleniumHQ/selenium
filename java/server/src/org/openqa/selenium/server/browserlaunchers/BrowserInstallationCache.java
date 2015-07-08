@@ -25,14 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Cache browser installation corresponding to a spefic browser string and launcher location.
+ * Cache browser installation corresponding to a specific browser string and launcher location.
  */
 public class BrowserInstallationCache {
 
   private final Map<String, BrowserInstallation> cache;
 
   public BrowserInstallationCache() {
-    this.cache = new HashMap<String, BrowserInstallation>(5);
+    this.cache = new HashMap<>(5);
   }
 
   public BrowserInstallation locateBrowserInstallation(String browserName,

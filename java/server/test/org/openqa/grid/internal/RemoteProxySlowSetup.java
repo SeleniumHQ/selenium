@@ -44,13 +44,13 @@ public class RemoteProxySlowSetup {
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
     RegistrationRequest req1 = new RegistrationRequest();
-    Map<String, Object> config1 = new HashMap<String, Object>();
+    Map<String, Object> config1 = new HashMap<>();
     config1.put(ID, "abc");
     req1.setConfiguration(config1);
     p1 = new SlowRemoteSetup(req1,registry);
 
     RegistrationRequest req2 = new RegistrationRequest();
-    Map<String, Object> config2 = new HashMap<String, Object>();
+    Map<String, Object> config2 = new HashMap<>();
     config2.put(ID, "abc2");
     req2.setConfiguration(config2);
     p2 = new SlowRemoteSetup(req2,registry);

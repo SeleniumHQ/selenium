@@ -61,6 +61,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -79,7 +80,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 
-  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -97,7 +99,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -119,7 +122,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -140,7 +143,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {IE, CHROME, SAFARI, MARIONETTE, PHANTOMJS})
   @NeedsLocalEnvironment
   @Test
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
@@ -252,8 +255,9 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {SAFARI, HTMLUNIT, MARIONETTE}, issues = {3771},
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {3771},
           reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
@@ -327,7 +331,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
@@ -378,9 +383,9 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   // Note: If this test ever fixed/enabled on Firefox, check if it also needs @NoDriverAfterTest OR
   // if @NoDriverAfterTest can be removed from some other tests in this class.
-  @Ignore(value = {HTMLUNIT, FIREFOX, MARIONETTE, SAFARI, PHANTOMJS},
+  @Ignore(value = {FIREFOX, HTMLUNIT, MARIONETTE, SAFARI, PHANTOMJS},
           reason = "Firefox: fails; Marionette: Not implemented; Safari: see issue 687, comment 41;"
-              + "PHANTOMJS, HTMLUNIT: not tested",
+              + "PHANTOMJS: not tested",
           issues = {687})
   @NeedsLocalEnvironment
   @Test
@@ -411,9 +416,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
@@ -485,9 +491,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, SAFARI, MARIONETTE},
+  @Ignore(value = {CHROME, SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
+  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test

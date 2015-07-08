@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Ionic.Zip;
 using OpenQA.Selenium.Internal;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -83,10 +83,15 @@ namespace OpenQA.Selenium.Firefox
             // First, expand the .xpi archive into a temporary location.
             Directory.CreateDirectory(tempFileName);
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
-            using (ZipFile extensionZipFile = ZipFile.Read(zipFileStream))
+            using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
             {
-                extensionZipFile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                extensionZipFile.ExtractAll(tempFileName);
+                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDir();
+                foreach (ZipStorer.ZipFileEntry entry in entryList)
+                {
+                    string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
+                    string destinationFile = Path.Combine(tempFileName, localFileName);
+                    extensionZipFile.ExtractFile(entry, destinationFile);
+                }
             }
 
             // Then, copy the contents of the temporarly location into the
@@ -103,7 +108,7 @@ namespace OpenQA.Selenium.Firefox
 
             // By deleting the staging directory, we also delete the temporarily
             // expanded extension, which we copied into the profile.
-            Directory.Delete(stagingDirectoryName, true);
+            FileUtilities.DeleteDirectory(stagingDirectoryName);
         }
 
         private static string ReadIdFromInstallRdf(string root)

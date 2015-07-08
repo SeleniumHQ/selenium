@@ -13,7 +13,7 @@ java_test(name = "common-tests",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/test/org/openqa/selenium:tests",
-    "//third_party/java/apache-httpclient",
+    "//third_party/java/httpcomponents:httpclient",
     "//third_party/java/junit",
   ])
 

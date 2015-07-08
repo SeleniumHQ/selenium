@@ -35,12 +35,13 @@ public class CircularOutputStreamTest {
     String expected = "foo";
     int maxSize = expected.getBytes().length;
 
-    CircularOutputStream os = new CircularOutputStream(maxSize);
-    os.write(expected.getBytes());
+    try (CircularOutputStream os = new CircularOutputStream(maxSize)) {
+      os.write(expected.getBytes());
 
-    String seen = os.toString();
+      String seen = os.toString();
 
-    assertEquals(expected, seen);
+      assertEquals(expected, seen);
+    }
   }
 
   @Test
@@ -49,12 +50,13 @@ public class CircularOutputStreamTest {
     // Note, this makes the buffer larger than what we write to it
     int maxSize = expected.getBytes().length + 1;
 
-    CircularOutputStream os = new CircularOutputStream(maxSize);
-    os.write(expected.getBytes());
+    try (CircularOutputStream os = new CircularOutputStream(maxSize)) {
+      os.write(expected.getBytes());
 
-    String seen = os.toString();
+      String seen = os.toString();
 
-    assertEquals(expected, seen);
+      assertEquals(expected, seen);
+    }
   }
 
   @Test
@@ -62,12 +64,13 @@ public class CircularOutputStreamTest {
     String expected = "oo";
     int maxSize = expected.getBytes().length;
 
-    CircularOutputStream os = new CircularOutputStream(maxSize);
-    os.write("foo".getBytes());
+    try (CircularOutputStream os = new CircularOutputStream(maxSize)) {
+      os.write("foo".getBytes());
 
-    String seen = os.toString();
+      String seen = os.toString();
 
-    assertEquals(expected, seen);
+      assertEquals(expected, seen);
+    }
   }
 
   @Test
@@ -75,12 +78,13 @@ public class CircularOutputStreamTest {
     String expected = "234";
     int maxSize = expected.getBytes().length;
 
-    CircularOutputStream os = new CircularOutputStream(maxSize);
-    os.write("1234".getBytes());
+    try (CircularOutputStream os = new CircularOutputStream(maxSize)) {
+      os.write("1234".getBytes());
 
-    String seen = os.toString();
+      String seen = os.toString();
 
-    assertEquals(expected, seen);
+      assertEquals(expected, seen);
+    }
   }
 
   @Test
@@ -107,18 +111,19 @@ public class CircularOutputStreamTest {
   @Test
   public void testCircularness() {
     CircularOutputStream os = new CircularOutputStream(5);
-    PrintWriter pw = new PrintWriter(os, true);
+    try (PrintWriter pw = new PrintWriter(os, true)) {
 
-    pw.write("12345");
-    pw.flush();
-    assertEquals("12345", os.toString());
+      pw.write("12345");
+      pw.flush();
+      assertEquals("12345", os.toString());
 
-    pw.write("6");
-    pw.flush();
-    assertEquals("23456", os.toString());
+      pw.write("6");
+      pw.flush();
+      assertEquals("23456", os.toString());
 
-    pw.write("789");
-    pw.flush();
-    assertEquals("56789", os.toString());
+      pw.write("789");
+      pw.flush();
+      assertEquals("56789", os.toString());
+    }
   }
 }

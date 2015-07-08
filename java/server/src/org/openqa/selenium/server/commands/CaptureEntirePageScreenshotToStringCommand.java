@@ -82,7 +82,7 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
     final SeleniumCoreCommand pageScreenshotCommand;
     final List<String> args;
 
-    args = new ArrayList<String>(2);
+    args = new ArrayList<>(2);
     args.add(filePath);
     args.add(kwargs);
 

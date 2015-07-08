@@ -44,8 +44,8 @@ public class SingleEntryAsyncQueue<T> {
 
   public SingleEntryAsyncQueue(long timeoutInSecs) {
     timeoutInSeconds = timeoutInSecs;
-    holder = new ArrayBlockingQueue<T>(1);
-    poisonData = new AtomicReference<T>();
+    holder = new ArrayBlockingQueue<>(1);
+    poisonData = new AtomicReference<>();
   }
 
   public long getTimeoutInSeconds() {

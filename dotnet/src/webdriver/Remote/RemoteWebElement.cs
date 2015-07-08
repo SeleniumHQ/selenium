@@ -22,9 +22,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using Ionic.Zip;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.IO.Compression;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -873,14 +873,15 @@ namespace OpenQA.Selenium.Remote
             string base64zip = string.Empty;
             try
             {
-                using (ZipFile profileZipFile = new ZipFile())
+                using (MemoryStream profileMemoryStream = new MemoryStream())
                 {
-                    profileZipFile.AddFile(localFile, "/");
-                    using (MemoryStream profileMemoryStream = new MemoryStream())
+                    using (ZipStorer zipArchive = ZipStorer.Create(profileMemoryStream, string.Empty))
                     {
-                        profileZipFile.Save(profileMemoryStream);
-                        base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+                        string fileName = Path.GetFileName(localFile);
+                        zipArchive.AddFile(ZipStorer.Compression.Deflate, localFile, fileName, string.Empty);
                     }
+
+                    base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();

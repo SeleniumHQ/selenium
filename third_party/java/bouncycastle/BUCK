@@ -12,7 +12,8 @@ java_library(name = 'bouncycastle',
 #JARS = ['bcpkix-jdk15on-1.48.jar', 'bcprov-jdk15on-1.48.jar',]
 
 genrule(name = 'repack-bcpkix',
-  cmd = 'jar xf bcpkix-jdk15on-1.48.jar && rm META-INF/BCKEY* && jar cf $OUT *',
+  bash = 'jar xf bcpkix-jdk15on-1.48.jar && rm META-INF/BCKEY* && jar cf $OUT *',
+  cmd_exe = 'jar xf bcpkix-jdk15on-1.48.jar && del META-INF\BCKEY* && jar cf $OUT *',
   srcs = [ 'bcpkix-jdk15on-1.48.jar', ],
   out = 'bouncycastle-pkix-jdk15on-1.48.jar',
 )
@@ -22,7 +23,8 @@ prebuilt_jar(name = 'pkix',
 )
 
 genrule(name = 'repack-bcprov',
-  cmd = 'jar xf bcprov-jdk15on-1.48.jar && rm META-INF/BCKEY* && jar cf $OUT *',
+  bash = 'jar xf bcprov-jdk15on-1.48.jar && rm META-INF/BCKEY* && jar cf $OUT *',
+  cmd_exe = 'jar xf bcprov-jdk15on-1.48.jar && del META-INF\BCKEY* && jar cf $OUT *',
   srcs = [ 'bcprov-jdk15on-1.48.jar', ],
   out = 'bouncycastle-prov-jdk15on-1.48.jar',
 )

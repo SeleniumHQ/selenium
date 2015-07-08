@@ -39,7 +39,7 @@ public class GridShutdownTest {
   @Test(timeout = 5000)
   public void shutdown() throws InterruptedException {
 
-    final Map<String, Object> ff = new HashMap<String, Object>();
+    final Map<String, Object> ff = new HashMap<>();
     ff.put(APP, "FF");
     ff.put(MAX_INSTANCES, 1);
 
@@ -55,7 +55,7 @@ public class GridShutdownTest {
 
     final int before = getCurrentThreadCount();
     final CountDownLatch latch = new CountDownLatch(numRequests());
-    List<Thread> threads = new ArrayList<Thread>();
+    List<Thread> threads = new ArrayList<>();
     for (int i = 0; i < numRequests(); i++) {
       final Thread thread = new Thread(new Runnable() { // Thread safety reviewed
             public void run() {

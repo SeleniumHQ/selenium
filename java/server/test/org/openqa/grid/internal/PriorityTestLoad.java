@@ -52,9 +52,9 @@ public class PriorityTestLoad {
     }
   };
 
-  static Map<String, Object> ff = new HashMap<String, Object>();
+  static Map<String, Object> ff = new HashMap<>();
   static RemoteProxy p1;
-  static List<RequestHandler> requests = new ArrayList<RequestHandler>();
+  static List<RequestHandler> requests = new ArrayList<>();
 
   /**
    * create a hub with 1 FF
@@ -70,7 +70,7 @@ public class PriorityTestLoad {
     registry.add(p1);
 
     for (int i = 1; i <= MAX; i++) {
-      Map<String, Object> cap = new HashMap<String, Object>();
+      Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
       RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);

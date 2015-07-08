@@ -76,7 +76,7 @@ public class GetLogsTest extends JUnit4TestBase {
   public void differentLogsShouldNotContainTheSameLogEntries() {
     assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
     driver.get(pages.simpleTestPage);
-    Map<String, LogEntries> logTypeToEntriesMap = new HashMap<String, LogEntries>();
+    Map<String, LogEntries> logTypeToEntriesMap = new HashMap<>();
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       logTypeToEntriesMap.put(logType, driver.manage().logs().get(logType));
