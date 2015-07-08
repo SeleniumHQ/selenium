@@ -53,6 +53,43 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <!-- See http://maven.apache.org/plugins/maven-jar-plugin -->
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+		<!-- http://felix.apache.org/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.html -->
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.5.0</version>
+                <configuration>
+                    <instructions>
+                        <!-- fix the version number range for some imports since we are not compiling against the version
+                             of that artifact that is packaged as an OSGi bundle (i.e. htmlunit-osgi). 
+                             The exported package version numbers are not auto-discovered for those imports, but we can correct that here. -->
+                        <Import-Package>org.w3c.css.sac;version="[1.3,2)",com.gargoylesoftware.htmlunit.*;version="[2.17,3)",*</Import-Package>
+                        <Export-Package>*;version=${version}</Export-Package>
+                    </instructions>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

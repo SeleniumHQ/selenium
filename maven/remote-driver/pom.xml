@@ -79,6 +79,58 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <!-- See http://maven.apache.org/plugins/maven-jar-plugin -->
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+		<!-- http://felix.apache.org/documentation/subprojects/apache-felix-maven-bundle-plugin-bnd.html -->
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.5.0</version>
+                <configuration>
+                    <instructions>
+                        <!-- specify jna as a required bundle to make the package containing the jnidispatch native library 
+                             visible to the classloader of this bundle.  Used by ProcessUtils#killWinProcess to stop the browser
+                             process in windows.  -->
+			<Require-Bundle>com.sun.jna;bundle-version="4.1.0"</Require-Bundle>
+                        <!-- fix the version number range for the some imports since we are not compiling against the version
+                             of that artifact that is packaged as an OSGi bundle (i.e. httpclient-osgi). 
+                             The exported package version numbers are not auto-discovered for those imports, but we can correct that here. -->
+                        <Import-Package>org.apache.http.*;version="[4.3,5)",*</Import-Package>
+                        <Export-Package>*;version=${version}</Export-Package>
+
+                        <!-- 
+                           NOTE: There is a split package in these selenium bundles:
+                              1. org.seleniumhq.selenium.api
+                              2. org.seleniumhq.selenium.remote.driver
+                           As they both export this package:
+                              1. org.openqa.selenium.remote
+
+                           Workaround that split package problem by making this a fragment bundle of the selenium-api host bundle
+                           so those two bundles will share the same classloader.
+                        -->
+                        <Fragment-Host>org.seleniumhq.selenium.api</Fragment-Host>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
