@@ -138,14 +138,27 @@ class RemoteConnection(object):
 
     @classmethod
     def get_timeout(cls):
+        """
+        :Returns:
+        Timeout value in seconds for all http requests made to the Remote Connection
+        """
         return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT or cls._timeout
 
     @classmethod
     def set_timeout(cls, timeout):
+        """
+        Override the default timeout
+
+        :Args:
+        - timeout - timeout value for http requests in seconds
+        """
         cls._timeout = timeout
 
     @classmethod
     def reset_timeout(cls):
+        """
+        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
+        """
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
     def __init__(self, remote_server_addr, keep_alive=False):
