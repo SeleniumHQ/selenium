@@ -28,20 +28,109 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium.Edge
 {
     /// <summary>
+    /// Specifies the behavior of waiting for page loads in the Edge driver.
+    /// </summary>
+    public enum EdgePageLoadStrategy
+    {
+        /// <summary>
+        /// Indicates the behavior is not set.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Waits for pages to load and ready state to be 'complete'.
+        /// </summary>
+        Normal,
+
+        /// <summary>
+        /// Waits for pages to load and for ready state to be 'interactive' or 'complete'.
+        /// </summary>
+        Eager,
+
+        /// <summary>
+        /// Does not wait for pages to load, returning immediately.
+        /// </summary>
+        None
+    }
+
+    /// <summary>
     /// Class to manage options specific to <see cref="EdgeDriver"/>
     /// </summary>
     public class EdgeOptions
     {
+        private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
+        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+
         /// <summary>
-        /// This is temporary until the MicrosoftWebDriver capabilities are defined
-        /// Returns DesiredCapabilities for Chrome with these options included as
-        /// capabilities. This does not copy the options. Further changes will be
+        /// Gets or sets the value for describing how the browser is to wait for pages to load in the IE driver.
+        /// Defaults to <see cref="EdgePageLoadStrategy.Default"/>.
+        /// </summary>
+        public EdgePageLoadStrategy PageLoadStrategy
+        {
+            get { return this.pageLoadStrategy; }
+            set { this.pageLoadStrategy = value; }
+        }
+
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// for the Edge driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+            if (capabilityName == CapabilityType.PageLoadStrategy)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            this.additionalCapabilities[capabilityName] = capabilityValue;
+        }
+
+        /// <summary>
+        /// Returns DesiredCapabilities for Edge with these options included as
+        /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
         /// </summary>
-        /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
+        /// <returns>The DesiredCapabilities for Edge with these options.</returns>
         public ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
+            DesiredCapabilities capabilities = DesiredCapabilities.Edge();
+            if (this.pageLoadStrategy != EdgePageLoadStrategy.Default)
+            {
+                string pageLoadStrategySetting = "normal";
+                switch (this.pageLoadStrategy)
+                {
+                    case EdgePageLoadStrategy.Eager:
+                        pageLoadStrategySetting = "eager";
+                        break;
+
+                    case EdgePageLoadStrategy.None:
+                        pageLoadStrategySetting = "none";
+                        break;
+                }
+
+                capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
+            }
+
             return capabilities;
         }
     }

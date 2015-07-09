@@ -212,6 +212,15 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>
+        /// <returns>New instance of DesiredCapabilities for use with Microsoft Edge</returns>
+        public static DesiredCapabilities Edge()
+        {
+            return new DesiredCapabilities("MicrosoftEdge", string.Empty, new Platform(PlatformType.Windows));
+        }
+
+        /// <summary>
+        /// Method to return a new DesiredCapabilities using defaults
+        /// </summary>
         /// <returns>New instance of DesiredCapabilities for use with HTMLUnit</returns>
         public static DesiredCapabilities HtmlUnit()
         {
