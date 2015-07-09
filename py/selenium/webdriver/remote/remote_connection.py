@@ -133,6 +133,34 @@ class RemoteConnection(object):
 
     Communicates with the server using the WebDriver wire protocol:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
+
+    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    @classmethod
+    def get_timeout(cls):
+        """
+        :Returns:
+        Timeout value in seconds for all http requests made to the Remote Connection
+        """
+        return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT or cls._timeout
+
+    @classmethod
+    def set_timeout(cls, timeout):
+        """
+        Override the default timeout
+
+        :Args:
+        - timeout - timeout value for http requests in seconds
+        """
+        cls._timeout = timeout
+
+    @classmethod
+    def reset_timeout(cls):
+        """
+        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
+        """
+        cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
     def __init__(self, remote_server_addr, keep_alive=False):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
@@ -157,7 +185,9 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
+            self._conn = httplib.HTTPConnection(
+                str(addr), str(parsed_url.port), timeout=self._timeout)
+
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -386,7 +416,7 @@ class RemoteConnection(object):
             try:
                 self._conn.request(method, parsed_url.path, body, headers)
                 resp = self._conn.getresponse()
-            except httplib.HTTPException:
+            except (httplib.HTTPException, socket.error):
                 self._conn.close()
                 raise
 
@@ -422,7 +452,7 @@ class RemoteConnection(object):
             else:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                                   HttpErrorHandler())
-            resp = opener.open(request)
+            resp = opener.open(request, timeout=self._timeout)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
                 if hasattr(resp.headers, 'getheader'):

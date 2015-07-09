@@ -393,15 +393,19 @@ void ProxyManager::GetCurrentProxyAuthentication() {
 
   DWORD user_name_length = 0;
   BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, NULL, &user_name_length);
-  std::vector<wchar_t> user_name(user_name_length);
-  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, &user_name[0], &user_name_length);
-  this->current_socks_user_name_ = &user_name[0];
+  if (user_name_length > 0) {
+    std::vector<wchar_t> user_name(user_name_length);
+    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, &user_name[0], &user_name_length);
+    this->current_socks_user_name_ = &user_name[0];
+  }
 
   DWORD password_length = 0;
   success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, NULL, &password_length);
-  std::vector<wchar_t> password(password_length);
-  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, &password[0], &password_length);
-  this->current_socks_password_ = &password[0];
+  if (password_length > 0) {
+    std::vector<wchar_t> password(password_length);
+    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, &password[0], &password_length);
+    this->current_socks_password_ = &password[0];
+  }
 }
 
 void ProxyManager::GetCurrentProxyType() {

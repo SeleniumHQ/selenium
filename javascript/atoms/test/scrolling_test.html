@@ -140,7 +140,7 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID && 
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID &&
           !bot.userAgent.isProductVersion(4.1),
           'Android pre-Jellybean doesn\'t provide scrolling information');
       expectedFailures.run(function() {
@@ -209,6 +209,10 @@
       bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
       var rectAfter = bot.dom.getClientRect(elem);
 
+      // Seems like chrome on MacOs is stealing a pixel
+      var expected = goog.labs.userAgent.browser.isChrome() && goog.labs.userAgent.platform.isMacintosh() ?
+                     25 : 26;
+
       // If the scrollbar isn't taken into account, the minimum scrolling
       // needed would be 26 pixels, to bring the full pixel into view.
       // This should fail on mobile and tablet since the scrollbars aren't shown.
@@ -218,8 +222,8 @@
           goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
           (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
       expectedFailures.run(function() {
-        assertTrue('horizontal scroll did not account for scrollbar',
-            rectBefore.left - rectAfter.left > 26);
+        assertTrue('horizontal scroll did not account for scrollbar' + (rectBefore.left - rectAfter.left),
+            rectBefore.left - rectAfter.left > expected);
         assertTrue('vertical scroll did not account for scrollbar',
             rectBefore.top - rectAfter.top > 26);
       });
