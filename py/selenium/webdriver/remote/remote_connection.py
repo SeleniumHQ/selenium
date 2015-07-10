@@ -142,7 +142,10 @@ class RemoteConnection(object):
         :Returns:
         Timeout value in seconds for all http requests made to the Remote Connection
         """
-        return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT or cls._timeout
+        if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT:
+          return None
+        else:
+          return cls._timeout
 
     @classmethod
     def set_timeout(cls, timeout):

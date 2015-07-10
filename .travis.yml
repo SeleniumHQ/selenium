@@ -1,3 +1,9 @@
 language: java
-script: ./go clean build
 sudo: false
+
+env:
+  - PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
+
+script: 
+  - ./go clean build
+  - [[ $PY_FILES_CHANGED == py/* ]] && ./go //py:phantomjs_test:run || echo no python files changed skipping python test suite
