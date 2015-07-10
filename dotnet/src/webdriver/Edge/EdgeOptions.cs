@@ -56,13 +56,30 @@ namespace OpenQA.Selenium.Edge
     /// <summary>
     /// Class to manage options specific to <see cref="EdgeDriver"/>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// EdgeOptions options = new EdgeOptions();
+    /// </code>
+    /// <para></para>
+    /// <para>For use with EdgeDriver:</para>
+    /// <para></para>
+    /// <code>
+    /// EdgeDriver driver = new EdgeDriver(options);
+    /// </code>
+    /// <para></para>
+    /// <para>For use with RemoteWebDriver:</para>
+    /// <para></para>
+    /// <code>
+    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
+    /// </code>
+    /// </example>
     public class EdgeOptions
     {
         private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets the value for describing how the browser is to wait for pages to load in the IE driver.
+        /// Gets or sets the value for describing how the browser is to wait for pages to load in the Edge driver.
         /// Defaults to <see cref="EdgePageLoadStrategy.Default"/>.
         /// </summary>
         public EdgePageLoadStrategy PageLoadStrategy
