@@ -39,8 +39,8 @@ def load_json(s):
 
 
 def handle_find_element_exception(e):
-    if ("Unable to find" in e.response["value"]["message"] or
-        "Unable to locate" in e.response["value"]["message"]):
+    message = e.response["value"]["message"]
+    if "Unable to find" in message or "Unable to locate" in message:
         raise NoSuchElementException("Unable to locate element:")
     else:
         raise e
