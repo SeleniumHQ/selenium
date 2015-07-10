@@ -220,6 +220,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return capabilities;
   }
 
+  public static DesiredCapabilities edge() {
+    return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
+  }
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);
