@@ -89,13 +89,15 @@ class WebDriver(RemoteWebDriver):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
-        self.service.stop()
-        '''try:
-            shutil.rmtree(self.profile.path)
-            if self.profile.tempfolder is not None:
-                shutil.rmtree(self.profile.tempfolder)
-        except Exception as e:
-            print(str(e))'''
+        if "marionette" in self.capabilities and self.capabilities['marionette'] is True:
+            self.service.stop()
+        else:
+            try:
+                shutil.rmtree(self.profile.path)
+                if self.profile.tempfolder is not None:
+                    shutil.rmtree(self.profile.tempfolder)
+            except Exception as e:
+                print(str(e))
 
     @property
     def firefox_profile(self):
