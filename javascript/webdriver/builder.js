@@ -201,8 +201,7 @@ webdriver.Builder.prototype.build = function() {
     if (this.sessionId_) {
       return webdriver.WebDriver.attachToSession(executor, this.sessionId_);
     } else {
-      throw new Error('Unable to create a new client for this browser. The ' +
-          'WebDriver session ID has not been defined.');
+      return webdriver.WebDriver.createSession(executor, this.capabilities_);
     }
   }
 };
