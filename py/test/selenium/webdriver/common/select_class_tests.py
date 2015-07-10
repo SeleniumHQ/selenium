@@ -95,6 +95,8 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 
     def testSelectByVisibleTextShouldNormalizeSpaces(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs does not normalize spaces in text");
         self._loadPage("formPage")
 
         for select in [singleSelectValuesWithSpaces]:

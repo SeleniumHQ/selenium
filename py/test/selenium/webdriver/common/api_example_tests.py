@@ -240,6 +240,8 @@ class ApiExampleTest (unittest.TestCase):
         self.assertFalse(not_visible, "Should not be visible")
 
     def testMoveWindowPosition(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support moving the window position")
         self._loadPage("blank")
         loc = self.driver.get_window_position()
         # note can't test 0,0 since some OS's dont allow that location
@@ -277,7 +279,6 @@ class ApiExampleTest (unittest.TestCase):
         for log_type in self.driver.log_types:
             log = self.driver.get_log(log_type)
             self.assertTrue(isinstance(log, list))
-            self.assertTrue(log)
 
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')
