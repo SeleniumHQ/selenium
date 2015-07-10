@@ -372,7 +372,7 @@ class WebElement(object):
         :Usage:
             img_b64 = element.screenshot_as_base64
         """
-        retrun self._exceute(Command.ELEMENT_SCREENSHOT)['value']
+        return self._exceute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
     def screenshot_as_png(self):
