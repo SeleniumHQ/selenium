@@ -18,7 +18,9 @@
 from .command import Command
 from selenium.webdriver.common.alert import Alert
 
-class SwitchTo:
+
+class SwitchTo(object):
+
     def __init__(self, driver):
         self._driver = driver
 
