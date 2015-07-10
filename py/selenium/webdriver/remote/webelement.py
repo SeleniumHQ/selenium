@@ -252,7 +252,6 @@ class WebElement(object):
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
-
     def find_elements_by_class_name(self, name):
         """Finds a list of elements within this element's children by class name.
 
@@ -349,7 +348,7 @@ class WebElement(object):
     def value_of_css_property(self, property_name):
         """The value of a CSS property."""
         return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                        {'propertyName': property_name})['value']
+                             {'propertyName': property_name})['value']
 
     @property
     def location(self):
@@ -372,7 +371,7 @@ class WebElement(object):
         :Usage:
             img_b64 = element.screenshot_as_base64
         """
-        retrun self._exceute(Command.ELEMENT_SCREENSHOT)['value']
+        return self._exceute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
     def screenshot_as_png(self):
@@ -404,7 +403,6 @@ class WebElement(object):
         finally:
             del png
         return True
-
 
     @property
     def parent(self):
@@ -470,7 +468,7 @@ class WebElement(object):
             content = content.decode('utf-8')
         try:
             return self._execute(Command.UPLOAD_FILE,
-                            {'file': content})['value']
+                                 {'file': content})['value']
         except WebDriverException as e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename

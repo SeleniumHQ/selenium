@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class Command(object):
     """
     Defines constants for the standard WebDriver commands.
@@ -142,7 +143,7 @@ class Command(object):
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
     CLEAR_SESSION_STORAGE = "clearSessionStorage"
     GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"
-    
+
     # Mobile
     GET_NETWORK_CONNECTION = "getNetworkConnection"
     SET_NETWORK_CONNECTION = "setNetworkConnection"
