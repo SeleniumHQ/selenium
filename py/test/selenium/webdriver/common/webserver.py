@@ -25,11 +25,11 @@ import threading
 from io import open
 try:
     from urllib import request as urllib_request
-except ImportError:
+except (ImportError, AttributeError):
     import urllib as urllib_request
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
-except ImportError:
+except (ImportError, AttributeError):
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 def updir():

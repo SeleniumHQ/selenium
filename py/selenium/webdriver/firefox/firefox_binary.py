@@ -110,7 +110,7 @@ class FirefoxBinary(object):
     def _find_exe_in_registry(self):
         try:
             from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
-        except ImportError:
+        except (ImportError, AttributeError):
             from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex
         keys = (

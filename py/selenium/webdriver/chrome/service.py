@@ -105,7 +105,7 @@ class Service(object):
         #Tell the Server to die!
         try:
             from urllib import request as url_request
-        except ImportError:
+        except (ImportError, AttributeError):
             import urllib2 as url_request
 
         url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)

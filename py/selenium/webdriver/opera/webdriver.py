@@ -17,7 +17,7 @@
 
 try:
     import http.client as http_client
-except ImportError:
+except (ImportError, AttributeError):
     import httplib as http_client
 
 import os

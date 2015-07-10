@@ -28,7 +28,7 @@ import zipfile
 
 try:
     from cStringIO import StringIO as BytesIO
-except ImportError:
+except (ImportError, AttributeError):
     from io import BytesIO
 
 from xml.dom import minidom

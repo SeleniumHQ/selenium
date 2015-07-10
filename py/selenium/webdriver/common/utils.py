@@ -60,7 +60,7 @@ def is_url_connectable(port):
     """
     try:
         from urllib import request as url_request
-    except ImportError:
+    except (ImportError, AttributeError):
         import urllib2 as url_request
 
     try:

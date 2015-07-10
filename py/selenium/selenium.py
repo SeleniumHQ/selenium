@@ -21,12 +21,12 @@ __docformat__ = "restructuredtext en"
 
 try:
     import http.client as http_client
-except ImportError:
+except (ImportError, AttributeError):
     import httplib as http_client
 
 try:
     import urllib.parse as urllib_parse
-except ImportError:
+except (ImportError, AttributeError):
     import urllib as urllib_parse
 
 class selenium(object):

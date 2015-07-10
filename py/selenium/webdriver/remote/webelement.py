@@ -20,7 +20,7 @@ import os
 import zipfile
 try:
     from StringIO import StringIO as IOStream
-except ImportError:  # 3+
+except (ImportError, AttributeError):  # 3+
     from io import BytesIO as IOStream
 import base64
 

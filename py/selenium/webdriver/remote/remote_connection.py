@@ -24,7 +24,7 @@ try:
     import http.client as httplib
     from urllib import request as url_request
     from urllib import parse
-except ImportError: # above is available in py3+, below is py2.7
+except (ImportError, AttributeError): # above is available in py3+, below is py2.7
     import httplib as httplib
     import urllib2 as url_request
     import urlparse as parse

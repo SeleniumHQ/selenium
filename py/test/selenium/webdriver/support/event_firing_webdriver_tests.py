@@ -18,7 +18,7 @@
 import unittest
 try:
     from io import BytesIO
-except ImportError:
+except (ImportError, AttributeError):
     from cStringIO import StringIO as BytesIO
 
 from selenium.common.exceptions import NoSuchElementException
