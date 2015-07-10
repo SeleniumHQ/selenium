@@ -39,6 +39,8 @@ class RenderedWebElementTests(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     def testShouldAllowInheritedStylesToBeUsed(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs has an issue with getting the right value for background-color")
         self._loadPage("javascriptPage")
 
         element = self.driver.find_element(by=By.ID, value="green-item")
@@ -56,6 +58,8 @@ class RenderedWebElementTests(unittest.TestCase):
         self.assertTrue(size["height"] > 0, "Height expected to be greater than 0")
 
     def testShouldBeAbleToDetermineTheRectOfAnElement(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not support rect command")
         self._loadPage("xhtmlTest")
 
         element = self.driver.find_element(By.ID, "username")

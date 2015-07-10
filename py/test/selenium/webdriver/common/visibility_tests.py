@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 import unittest
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
@@ -90,6 +91,8 @@ class VisibilityTests(unittest.TestCase):
             pass
 
     def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver throws the wrong exception")
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="unclickable")
 
