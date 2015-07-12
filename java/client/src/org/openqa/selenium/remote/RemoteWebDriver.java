@@ -462,6 +462,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public void quit() {
     try {
       execute(DriverCommand.QUIT);
+    } catch (UnreachableBrowserException e) {
+      // Ignore.  It was already logged as WebDriverException in execute().
     } finally {
       sessionId = null;
       stopClient();
