@@ -35,6 +35,8 @@ class DocumentHost {
   DocumentHost(HWND hwnd, HWND executor_handle);
   virtual ~DocumentHost(void);
 
+  virtual void GetDocument(const bool force_top_level_document,
+                           IHTMLDocument2** doc) = 0;
   virtual void GetDocument(IHTMLDocument2** doc) = 0;
   virtual void Close(void) = 0;
   virtual bool Wait(const std::string& page_load_strategy) = 0;

@@ -105,7 +105,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     HWND content_window_handle = browser->GetContentWindowHandle();
 
     CComPtr<IHTMLDocument2> document;
-    browser->GetDocument(&document);
+    browser->GetDocument(true, &document);
     if (!document) {
       LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
       return E_ABORT;

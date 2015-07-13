@@ -112,10 +112,15 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
 }
 
 void Browser::GetDocument(IHTMLDocument2** doc) {
+  this->GetDocument(false, doc);
+}
+
+void Browser::GetDocument(const bool force_top_level_document,
+                          IHTMLDocument2** doc) {
   LOG(TRACE) << "Entering Browser::GetDocument";
   CComPtr<IHTMLWindow2> window;
 
-  if (this->focused_frame_window() == NULL) {
+  if (this->focused_frame_window() == NULL || force_top_level_document) {
     LOG(INFO) << "No child frame focus. Focus is on top-level frame";
 
     CComPtr<IDispatch> dispatch;
