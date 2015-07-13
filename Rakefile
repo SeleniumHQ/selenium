@@ -559,8 +559,6 @@ end
 
 namespace :node do
   task :deploy => [
-    "//cpp:noblur",
-    "//cpp:noblur64",
     "//javascript/firefox-driver:webdriver",
     "//javascript/safari-driver:client",
     "//javascript/webdriver:asserts_lib",
