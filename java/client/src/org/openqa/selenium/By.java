@@ -427,7 +427,7 @@ public abstract class By {
       }
 
       throw new WebDriverException(
-          "Driver does not support finding an element by selector: " + cssSelector);
+          "Driver does not support finding an element by css selector: " + cssSelector);
     }
 
     @Override
@@ -438,7 +438,7 @@ public abstract class By {
       }
 
       throw new WebDriverException(
-          "Driver does not support finding elements by selector: " + cssSelector);
+          "Driver does not support finding elements by css selector: " + cssSelector);
     }
 
     @Override
