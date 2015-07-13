@@ -49,10 +49,6 @@ public abstract class By {
    * @return a By which locates elements by the value of the "id" attribute.
    */
   public static By id(final String id) {
-    if (id == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements with a null id attribute.");
-
     return new ById(id);
   }
 
@@ -61,10 +57,6 @@ public abstract class By {
    * @return a By which locates A elements by the exact text it displays
    */
   public static By linkText(final String linkText) {
-    if (linkText == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when link text is null.");
-
     return new ByLinkText(linkText);
   }
 
@@ -73,10 +65,6 @@ public abstract class By {
    * @return a By which locates A elements that contain the given link text
    */
   public static By partialLinkText(final String linkText) {
-    if (linkText == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when link text is null.");
-
     return new ByPartialLinkText(linkText);
   }
 
@@ -85,10 +73,6 @@ public abstract class By {
    * @return a By which locates elements by the value of the "name" attribute.
    */
   public static By name(final String name) {
-    if (name == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when name text is null.");
-
     return new ByName(name);
   }
 
@@ -97,10 +81,6 @@ public abstract class By {
    * @return a By which locates elements by their tag name
    */
   public static By tagName(final String name) {
-    if (name == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when name tag name is null.");
-
     return new ByTagName(name);
   }
 
@@ -109,10 +89,6 @@ public abstract class By {
    * @return a By which locates elements via XPath
    */
   public static By xpath(final String xpathExpression) {
-    if (xpathExpression == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the XPath expression is null.");
-
     return new ByXPath(xpathExpression);
   }
 
@@ -125,10 +101,6 @@ public abstract class By {
    * @return a By which locates elements by the value of the "class" attribute.
    */
   public static By className(final String className) {
-    if (className == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the class name expression is null.");
-
     return new ByClassName(className);
   }
 
@@ -138,12 +110,7 @@ public abstract class By {
    * for at least CSS2 support, but offer no guarantees.
    */
   public static By cssSelector(final String selector) {
-    if (selector == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the selector is null");
-
     return new ByCssSelector(selector);
-
   }
 
   /**
@@ -198,6 +165,10 @@ public abstract class By {
     private final String id;
 
     public ById(String id) {
+      if (id == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements with a null id attribute.");
+
       this.id = id;
     }
 
@@ -230,6 +201,10 @@ public abstract class By {
     private final String linkText;
 
     public ByLinkText(String linkText) {
+      if (linkText == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when link text is null.");
+
       this.linkText = linkText;
     }
 
@@ -256,6 +231,10 @@ public abstract class By {
     private final String linkText;
 
     public ByPartialLinkText(String linkText) {
+      if (linkText == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when link text is null.");
+
       this.linkText = linkText;
     }
 
@@ -283,6 +262,10 @@ public abstract class By {
     private final String name;
 
     public ByName(String name) {
+      if (name == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when name text is null.");
+
       this.name = name;
     }
 
@@ -315,6 +298,10 @@ public abstract class By {
     private final String name;
 
     public ByTagName(String name) {
+      if (name == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when name tag name is null.");
+
       this.name = name;
     }
 
@@ -345,6 +332,10 @@ public abstract class By {
     private final String xpathExpression;
 
     public ByXPath(String xpathExpression) {
+      if (xpathExpression == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when the XPath expression is null.");
+
       this.xpathExpression = xpathExpression;
     }
 
@@ -371,6 +362,10 @@ public abstract class By {
     private final String className;
 
     public ByClassName(String className) {
+      if (className == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when the class name expression is null.");
+
       this.className = className;
     }
 
@@ -417,6 +412,10 @@ public abstract class By {
     private final String selector;
 
     public ByCssSelector(String selector) {
+      if (selector == null)
+        throw new IllegalArgumentException(
+          "Cannot find elements when the selector is null");
+
       this.selector = selector;
     }
 
