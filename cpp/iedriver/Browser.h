@@ -90,6 +90,8 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool Wait(const std::string& page_load_strategy);
   void Close(void);
   bool IsBusy(void);
+  void GetDocument(const bool force_top_level_document,
+                   IHTMLDocument2** doc);
   void GetDocument(IHTMLDocument2** doc);
   std::string GetWindowName(void);
   std::string GetTitle(void);
