@@ -49,6 +49,6 @@ public class SetScriptTimeout extends WebDriverHandler<Void> implements JsonPara
 
   @Override
   public String toString() {
-    return String.format("[set script timeoutt: %s]", millis);
+    return String.format("[set script timeout: %s]", millis);
   }
 }

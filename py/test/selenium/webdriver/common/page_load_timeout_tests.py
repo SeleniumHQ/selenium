@@ -16,6 +16,7 @@
 # under the License.
 
 import unittest
+import pytest
 from selenium.common.exceptions import TimeoutException
 
 
@@ -31,6 +32,8 @@ def not_available_on_remote(func):
 class PageLoadTimeoutTest(unittest.TestCase):
 
     def testShouldTimeoutOnPageLoadTakingTooLong(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not implement page load timeouts")
         self.driver.set_page_load_timeout(0.01)
         try:
             self._loadSimplePage()
@@ -39,6 +42,8 @@ class PageLoadTimeoutTest(unittest.TestCase):
             pass
 
     def testClickShouldTimeout(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not implement page load timeouts")
         self._loadSimplePage()
         self.driver.set_page_load_timeout(0.01)
         try:

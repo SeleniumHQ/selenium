@@ -1,3 +1,13 @@
+
 language: java
-script: ./go clean build
 sudo: false
+
+before_install:
+  - pip install --user virtualenv
+  - export PATH=$PATH:$HOME/.local/bin
+
+script:
+  - ./go clean build
+  - "export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`"
+  - "if [[ $PY_FILES_CHANGED == py/* ]]; then ./go py_prep_for_install_release; ./go //py:phantomjs_test:run; else echo no python files changed skipping python test suite; fi"
+

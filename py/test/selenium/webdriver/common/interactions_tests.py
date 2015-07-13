@@ -114,6 +114,8 @@ class AdvancedUserInteractionTest(unittest.TestCase):
     def testContextClick(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
         self._loadPage("javascriptPage")
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver has an issue here")
         toContextClick = self.driver.find_element_by_id("doubleClickField")
 
         contextClick = ActionChains(self.driver) \
@@ -173,6 +175,8 @@ class AdvancedUserInteractionTest(unittest.TestCase):
     def testSelectingMultipleItems(self):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         self._loadPage("selectableItems")
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not seem to select all the elements")
         reportingElement = self.driver.find_element_by_id("infodiv")
         self.assertEqual("no info", reportingElement.text)
 
@@ -194,6 +198,8 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     def testMovingMouseBackAndForthPastViewPort(self):
+        if self.driver.capabilities['browserName'] == 'phantomjs':
+            pytest.xfail("phantomjs driver does not seem to trigger the events")
         self._before()
         self._loadPage("veryLargeCanvas")
 
