@@ -26,11 +26,11 @@ class Alert(object):
     """
     Allows to work with alerts.
 
-    Use this class to interact with alert prompts.  It contains methods for dismissing, 
+    Use this class to interact with alert prompts.  It contains methods for dismissing,
     accepting, inputting, and getting text from alert prompts.
 
     Accepting / Dismissing alert prompts::
-    
+
         Alert(driver).accept()
         Alert(driver).dismiss()
 
@@ -86,6 +86,19 @@ class Alert(object):
         :Args:
          - keysToSend: The text to be sent to Alert.
 
-        
+
         """
         self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
+
+    def authenticate(self, username, password):
+        """
+        Send the username / password to an Authenticated dialog (like with Basic HTTP Auth)
+
+        Usage::
+        driver.switch_to.alert.authenticate('cheese', 'secretGouda')
+
+        :Args:
+         -username: string to be set in the username section of the dialog
+         -password: string to be set in the password section of the dialog
+        """
+        self.driver.execute(Command.SET_ALERT_AUTHENTICATION, {'username':username, 'password':password})
