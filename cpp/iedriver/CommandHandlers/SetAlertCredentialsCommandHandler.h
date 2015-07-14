@@ -14,31 +14,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_DISMISSALERTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_DISMISSALERTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_SETALERTCREDENTIALSCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_SETALERTCREDENTIALSCOMMANDHANDLER_H_
 
+#include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
+class SetAlertCredentialsCommandHandler : public IECommandHandler {
  public:
-  DismissAlertCommandHandler(void) {
+  SetAlertCredentialsCommandHandler(void) {
   }
 
-  virtual ~DismissAlertCommandHandler(void) {
+  virtual ~SetAlertCredentialsCommandHandler(void) {
   }
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
                        Response* response) {
+    ParametersMap::const_iterator username_parameter_iterator = command_parameters.find("username");
+    if (username_parameter_iterator == command_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter: username");
+      return;
+    }
+    std::string username = username_parameter_iterator->second.asString();
+
+    ParametersMap::const_iterator password_parameter_iterator = command_parameters.find("password");
+    if (password_parameter_iterator == command_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter: password");
+      return;
+    }
+    std::string password = password_parameter_iterator->second.asString();
+
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
+      response->SetErrorResponse(status_code, "Unable to get current browser");
       return;
     }
     // This sleep is required to give IE time to draw the dialog.
@@ -48,20 +63,24 @@ class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
       response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
     } else {
       Alert dialog(browser_wrapper, alert_handle);
-      status_code = dialog.Dismiss();
+      status_code = dialog.SetUserName(username);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
-                                   "Could not find Cancel button");
+                                   "Could not set user name");
+        return;
       }
-
-      // Add sleep to give IE time to close dialog and start Navigation if it's necessary
-      ::Sleep(100);
-
+      status_code = dialog.SetPassword(password);
+      if (status_code != WD_SUCCESS) {
+        response->SetErrorResponse(status_code,
+                                   "Could not set password");
+        return;
+      }
       response->SetSuccessResponse(Json::Value::null);
     }
   }
+
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_DISMISSALERTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SETALERTCREDENTIALSCOMMANDHANDLER_H_
