@@ -20,8 +20,8 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.junit.Test;
-import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -35,7 +35,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     Alert alert = wait.until(alertIsPresent());
 
-    UserAndPassword user = new UserAndPassword("test", "test");
+    UsernamePasswordCredentials user = new UsernamePasswordCredentials("test", "test");
 
     alert.authenticateUsing(user);
 
