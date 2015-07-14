@@ -101,4 +101,4 @@ class Alert(object):
          -username: string to be set in the username section of the dialog
          -password: string to be set in the password section of the dialog
         """
-        self.driver.execute(Command.SET_ALERT_AUTHENTICATION, {'username':username, 'password':password})
+        self.driver.execute(Command.SET_ALERT_CREDENTIALS, {'username':username, 'password':password})

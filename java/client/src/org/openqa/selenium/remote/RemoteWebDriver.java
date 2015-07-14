@@ -943,7 +943,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
      */
     @Beta
     public void authenticateUsing(Credentials credentials) {
-      execute(DriverCommand.SET_ALERT_AUTHENTICATION, ImmutableMap
+      execute(DriverCommand.SET_ALERT_CREDENTIALS, ImmutableMap
         .of("username", credentials.getUserPrincipal().getName(), "password",
             credentials.getPassword()));
     }
