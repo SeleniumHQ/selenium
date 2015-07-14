@@ -427,6 +427,9 @@ class WebElement(object):
     def __eq__(self, element):
         return self._id == element.id
 
+    def __ne__(self, element):
+        return not self.__eq__(element)
+
     # Private Methods
     def _execute(self, command, params=None):
         """Executes a command against the underlying HTML element.
