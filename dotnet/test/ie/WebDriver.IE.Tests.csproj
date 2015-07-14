@@ -84,6 +84,7 @@
   <ItemGroup>
     <None Include="WebDriver.IE.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="WebDriver.IE.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
