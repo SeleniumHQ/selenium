@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.security.Credentials;
+import org.apache.http.auth.Credentials;
 
 public interface Alert {
   void dismiss();
