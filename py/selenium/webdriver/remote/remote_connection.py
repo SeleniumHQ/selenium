@@ -276,7 +276,7 @@ class RemoteConnection(object):
             Command.GET_ALERT_TEXT:
                 ('GET', '/session/$sessionId/alert_text'),
             Command.SET_ALERT_CREDENTIALS:
-                ('POST', '/session/$sessionId/alert_credentials'),
+                ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
                 ('POST', '/session/$sessionId/click'),
             Command.DOUBLE_CLICK:
