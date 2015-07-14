@@ -40,6 +40,7 @@ maven/target
 maven/*/target
 java/client/build/
 java/client/log.txt
+java/client/iedriver.log
 java/server/build/
 *.pyc
 dist/
