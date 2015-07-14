@@ -93,6 +93,7 @@ public interface DriverCommand {
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";
   String SET_ALERT_VALUE = "setAlertValue";
+  String SET_ALERT_AUTHENTICATION = "setAuthentication";
 
   String SET_TIMEOUT = "setTimeout";
   String IMPLICITLY_WAIT = "implicitlyWait";

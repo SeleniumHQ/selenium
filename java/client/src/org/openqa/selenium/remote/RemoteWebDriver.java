@@ -24,6 +24,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import org.apache.http.auth.Credentials;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -38,7 +39,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -60,7 +60,6 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
-import org.openqa.selenium.security.Credentials;
 
 import java.net.URL;
 import java.util.Date;
@@ -935,8 +934,18 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 
+    /**
+     * Authenticate an HTTP Basic Auth dialog.
+     *
+     * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
+     *        "secretGouda"));
+     * @param credentials
+     */
+    @Beta
     public void authenticateUsing(Credentials credentials) {
-      throw new UnsupportedCommandException("Not implemented yet");
+      execute(DriverCommand.SET_ALERT_AUTHENTICATION, ImmutableMap
+        .of("username", credentials.getUserPrincipal().getName(), "password",
+            credentials.getPassword()));
     }
   }
 
