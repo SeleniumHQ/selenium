@@ -97,7 +97,7 @@ class Command(object):
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
     GET_ALERT_TEXT = "getAlertText"
-    SET_ALERT_AUTHENTICATION = "setAuthentication"
+    SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
     CLICK = "mouseClick"
