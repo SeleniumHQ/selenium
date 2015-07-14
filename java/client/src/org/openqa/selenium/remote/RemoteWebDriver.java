@@ -936,6 +936,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     /**
      * Authenticate an HTTP Basic Auth dialog.
+     * Implicitly 'clicks ok'
      *
      * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
      *        "secretGouda"));
@@ -946,6 +947,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_CREDENTIALS, ImmutableMap
         .of("username", credentials.getUserPrincipal().getName(), "password",
             credentials.getPassword()));
+      this.accept();
     }
   }
 
