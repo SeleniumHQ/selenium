@@ -658,6 +658,7 @@ void Server::PopulateCommandRepository() {
   this->AddCommand("/session/:sessionid/dismiss_alert", "POST",  webdriver::CommandType::DismissAlert);
   this->AddCommand("/session/:sessionid/alert_text", "GET",  webdriver::CommandType::GetAlertText);
   this->AddCommand("/session/:sessionid/alert_text", "POST",  webdriver::CommandType::SendKeysToAlert);
+  this->AddCommand("/session/:sessionid/alert/credentials", "POST",  webdriver::CommandType::SetAlertCredentials);
 
   this->AddCommand("/session/:sessionid/keys", "POST",  webdriver::CommandType::SendKeysToActiveElement);
   this->AddCommand("/session/:sessionid/moveto", "POST",  webdriver::CommandType::MouseMoveTo);

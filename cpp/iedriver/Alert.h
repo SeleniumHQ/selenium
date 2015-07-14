@@ -33,10 +33,13 @@ class Alert {
 
   int Accept(void);
   int Dismiss(void);
-  int SendKeys(std::string keys);
+  int SendKeys(const std::string& keys);
   std::string GetText(void);
+  int SetUserName(const std::string& username);
+  int SetPassword(const std::string& password);
 
   bool is_standard_alert(void) const { return this->is_standard_alert_; }
+  bool is_security_alert(void) const { return this->is_security_alert_; }
 
  private:
   typedef bool (__cdecl *ISBUTTONMATCHPROC)(HWND); 
@@ -59,10 +62,17 @@ class Alert {
     int excluded_control_id;
   };
 
+  struct TextBoxFindInfo {
+    HWND textbox_handle;
+    long style_match;
+  };
+
   enum BUTTON_TYPE {
     OK,
     CANCEL
   };
+
+  int SendKeysInternal(const std::string& keys, const long text_box_style);
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
   int ClickAlertButton(DialogButtonInfo button_info);
@@ -77,10 +87,12 @@ class Alert {
   static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDirectUIChild(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindTextBoxes(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
   BrowserHandle browser_;
   bool is_standard_alert_;
+  bool is_security_alert_;
 };
 
 
