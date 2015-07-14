@@ -718,6 +718,77 @@ namespace OpenQA.Selenium
             Assert.AreEqual("Testing Alerts", driver.Title);
         }
 
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldBeAbleToHandleAuthenticationDialog()
+        {
+            driver.Url = authenticationPage;
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            alert.SetAuthenticationCredentials("test", "test");
+            alert.Accept();
+            Assert.IsTrue(driver.FindElement(By.TagName("h1")).Text.Contains("authorized"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldBeAbleToDismissAuthenticationDialog()
+        {
+            driver.Url = authenticationPage;
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            alert.Dismiss();
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
+        public void ShouldThrowAuthenticatingOnStandardAlert()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.Id("alert")).Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            try
+            {
+                alert.SetAuthenticationCredentials("test", "test");
+                Assert.Fail("Should not be able to Authenticate");
+            }
+            catch (UnhandledAlertException)
+            {
+                // this is an expected exception
+            }
+
+            // but the next call should be good.
+            alert.Dismiss();
+        }
+
         private IAlert AlertToBePresent()
         {
             return driver.SwitchTo().Alert();
