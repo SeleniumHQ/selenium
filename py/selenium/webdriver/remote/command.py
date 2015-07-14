@@ -97,6 +97,7 @@ class Command(object):
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    SET_ALERT_AUTHENTICATION = "setAuthentication"
 
     # Advanced user interactions
     CLICK = "mouseClick"
@@ -142,7 +143,7 @@ class Command(object):
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
     CLEAR_SESSION_STORAGE = "clearSessionStorage"
     GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"
-    
+
     # Mobile
     GET_NETWORK_CONNECTION = "getNetworkConnection"
     SET_NETWORK_CONNECTION = "setNetworkConnection"
