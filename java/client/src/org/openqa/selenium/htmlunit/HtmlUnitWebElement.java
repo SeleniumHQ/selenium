@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
@@ -263,7 +262,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlTextArea.setText("");
-    } else if (element.getAttribute("contenteditable") != HtmlElement.ATTRIBUTE_NOT_DEFINED) {
+    } else if (element.getAttribute("contenteditable") != DomElement.ATTRIBUTE_NOT_DEFINED) {
       element.setTextContent("");
     }
   }
