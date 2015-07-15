@@ -151,8 +151,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     element.clear();
     element.sendKeys("some text");
 
-    element = driver.findElement(By
-                                     .xpath("//form[@name='someForm']/input[@id='username']"));
+    element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String newFormValue = element.getAttribute("value");
     assertThat(newFormValue, equalTo("some text"));
   }
@@ -264,9 +263,8 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
-          reason = "untested")
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE, HTMLUNIT},
+          reason = "HtmlUnit: error; others: untested")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
