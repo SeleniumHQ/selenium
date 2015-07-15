@@ -28,6 +28,9 @@ public interface Alert {
 
   void sendKeys(String keysToSend);
 
+  @Beta
+  void setCredentials(Credentials credentials);
+
   /**
    * Authenticate an HTTP Basic Auth dialog.
    *

@@ -934,6 +934,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 
+    @Beta
+    public void setCredentials(Credentials credentials) {
+      execute(DriverCommand.SET_ALERT_CREDENTIALS, ImmutableMap
+        .of("username", credentials.getUserPrincipal().getName(), "password",
+            credentials.getPassword()));
+    }
+
     /**
      * Authenticate an HTTP Basic Auth dialog.
      * Implicitly 'clicks ok'
@@ -944,9 +951,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
      */
     @Beta
     public void authenticateUsing(Credentials credentials) {
-      execute(DriverCommand.SET_ALERT_CREDENTIALS, ImmutableMap
-        .of("username", credentials.getUserPrincipal().getName(), "password",
-            credentials.getPassword()));
+      this.setCredentials(credentials);
       this.accept();
     }
   }
