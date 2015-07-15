@@ -43,6 +43,7 @@ class Alert {
 
  private:
   typedef bool (__cdecl *ISBUTTONMATCHPROC)(HWND); 
+  typedef bool (__cdecl *ISEDITMATCHPROC)(HWND); 
 
   struct DialogButtonInfo {
     HWND button_handle;
@@ -64,7 +65,7 @@ class Alert {
 
   struct TextBoxFindInfo {
     HWND textbox_handle;
-    long style_match;
+    ISEDITMATCHPROC match_proc;
   };
 
   enum BUTTON_TYPE {
@@ -72,7 +73,8 @@ class Alert {
     CANCEL
   };
 
-  int SendKeysInternal(const std::string& keys, const long text_box_style);
+  int SendKeysInternal(const std::string& keys,
+                       TextBoxFindInfo* text_box_find_info);
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
   int ClickAlertButton(DialogButtonInfo button_info);
@@ -83,6 +85,8 @@ class Alert {
 
   static bool IsOKButton(HWND button_handle);
   static bool IsCancelButton(HWND button_handle);
+  static bool IsSimpleEdit(HWND edit_handle);
+  static bool IsPasswordEdit(HWND edit_handle);
   static BOOL CALLBACK FindDialogButton(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg);

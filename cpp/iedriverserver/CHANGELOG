@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.46.0.12
+==========
+ * Fixed handling of authentication dialogs for different Windows versions.
+
 v2.46.0.11
 ==========
  * Enabling handling of authentication dialogs in IE driver.
