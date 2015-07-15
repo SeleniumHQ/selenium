@@ -792,7 +792,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     // We need to walk the DOM to determine if the element is actually attached
     DomNode parentElement = element;
-    while (parentElement != null && !(parentElement instanceof HtmlHtml)) {
+    while (parentElement != null && !(parentElement instanceof SgmlPage)) {
       parentElement = parentElement.getParentNode();
     }
 
@@ -1125,13 +1125,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByXPath(String selector) {
-    if (!(lastPage() instanceof HtmlPage)) {
+    if (!(lastPage() instanceof SgmlPage)) {
       throw new IllegalStateException("Unable to locate element by xpath for " + lastPage());
     }
 
     Object node;
     try {
-      node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
+      node = ((SgmlPage) lastPage()).getFirstByXPath(selector);
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
@@ -1141,8 +1141,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (node == null) {
       throw new NoSuchElementException("Unable to locate a node using " + selector);
     }
-    if (node instanceof HtmlElement) {
-      return newHtmlUnitWebElement((HtmlElement) node);
+    if (node instanceof DomElement) {
+      return newHtmlUnitWebElement((DomElement) node);
     }
     // The xpath expression selected something different than a WebElement.
     // The selector is therefore invalid
