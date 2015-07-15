@@ -75,6 +75,11 @@ class HtmlUnitAlert implements Alert, AlertHandler {
   }
 
   @Override
+  public void setCredentials(Credentials credentials) {
+  }
+
+
+  @Override
   public void handleAlert(Page page, String message) {
     Queue<String> queue = queues.get(page);
     if (queue == null) {
