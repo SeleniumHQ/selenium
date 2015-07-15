@@ -76,7 +76,10 @@ int Alert::Dismiss() {
 
 int Alert::SendKeys(const std::string& keys) {
   LOG(TRACE) << "Entering Alert::SendKeys";
-  return this->SendKeysInternal(keys, 0);
+  TextBoxFindInfo text_box_find_info;
+  text_box_find_info.textbox_handle = NULL;
+  text_box_find_info.match_proc = &Alert::IsSimpleEdit;
+  return this->SendKeysInternal(keys, &text_box_find_info);
 }
 
 int Alert::SetUserName(const std::string& username) {
@@ -85,7 +88,7 @@ int Alert::SetUserName(const std::string& username) {
   if (!this->is_security_alert_) {
     return EUNEXPECTEDALERTOPEN;
   }
-  return this->SendKeysInternal(username, 0);
+  return this->SendKeys(username);
 }
 
 int Alert::SetPassword(const std::string& password) {
@@ -94,33 +97,34 @@ int Alert::SetPassword(const std::string& password) {
   if (!this->is_security_alert_) {
     return EUNEXPECTEDALERTOPEN;
   }
-  return this->SendKeysInternal(password, ES_PASSWORD);
-}
-
-int Alert::SendKeysInternal(const std::string& keys, const long text_box_style) {
-  LOG(TRACE) << "Entering Alert::SendKeysInternal";
   TextBoxFindInfo text_box_find_info;
   text_box_find_info.textbox_handle = NULL;
-  text_box_find_info.style_match = text_box_style;
+  text_box_find_info.match_proc = &Alert::IsPasswordEdit;
+  return this->SendKeysInternal(password, &text_box_find_info);
+}
+
+int Alert::SendKeysInternal(const std::string& keys,
+                            TextBoxFindInfo* text_box_find_info) {
+  LOG(TRACE) << "Entering Alert::SendKeysInternal";
   // Alert present, find the text box.
   // Retry up to 10 times to find the dialog.
   int max_wait = 10;
-  while ((text_box_find_info.textbox_handle == NULL) && --max_wait) {
+  while ((text_box_find_info->textbox_handle == NULL) && --max_wait) {
     ::EnumChildWindows(this->alert_handle_,
                        &Alert::FindTextBox,
-                       reinterpret_cast<LPARAM>(&text_box_find_info));
-    if (text_box_find_info.textbox_handle == NULL) {
+                       reinterpret_cast<LPARAM>(text_box_find_info));
+    if (text_box_find_info->textbox_handle == NULL) {
       ::Sleep(50);
     }
   }
 
-  if (text_box_find_info.textbox_handle == NULL) {
+  if (text_box_find_info->textbox_handle == NULL) {
     LOG(WARN) << "Text box not found on alert";
     return EELEMENTNOTDISPLAYED;
   } else {
     LOG(DEBUG) << "Sending keystrokes to alert using SendMessage";
     std::wstring text = StringUtilities::ToWString(keys);
-    ::SendMessage(text_box_find_info.textbox_handle,
+    ::SendMessage(text_box_find_info->textbox_handle,
                   WM_SETTEXT,
                   NULL,
                   reinterpret_cast<LPARAM>(text.c_str()));
@@ -168,7 +172,7 @@ std::string Alert::GetStandardDialogText() {
   // all other controls on the alert are fully drawn too.
   TextBoxFindInfo textbox_find_info;
   textbox_find_info.textbox_handle = NULL;
-  textbox_find_info.style_match = 0;
+  textbox_find_info.match_proc = &Alert::IsSimpleEdit;
   ::EnumChildWindows(this->alert_handle_,
                      &Alert::FindTextBox,
                      reinterpret_cast<LPARAM>(&textbox_find_info));
@@ -425,6 +429,31 @@ bool Alert::IsCancelButton(HWND button_handle) {
   return false;
 }
 
+bool Alert::IsSimpleEdit(HWND edit_handle) {
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(edit_handle, &child_window_class[0], 100);
+
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
+    long window_long = ::GetWindowLong(edit_handle, GWL_STYLE);
+    bool is_read_only = (window_long & ES_READONLY) == ES_READONLY;
+    bool is_password = (window_long & ES_PASSWORD) == ES_PASSWORD;
+    return !is_read_only && !is_password;
+  }
+  return false;
+}
+
+bool Alert::IsPasswordEdit(HWND edit_handle) {
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(edit_handle, &child_window_class[0], 100);
+
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
+    long window_long = ::GetWindowLong(edit_handle, GWL_STYLE);
+    bool is_password = (window_long & ES_PASSWORD) == ES_PASSWORD;
+    return is_password;
+  }
+  return false;
+}
+
 BOOL CALLBACK Alert::FindDialogButton(HWND hwnd, LPARAM arg) {
   Alert::DialogButtonFindInfo* button_info = reinterpret_cast<Alert::DialogButtonFindInfo*>(arg);
   int control_id = ::GetDlgCtrlID(hwnd);
@@ -438,21 +467,9 @@ BOOL CALLBACK Alert::FindDialogButton(HWND hwnd, LPARAM arg) {
 
 BOOL CALLBACK Alert::FindTextBox(HWND hwnd, LPARAM arg) {
   TextBoxFindInfo* find_info = reinterpret_cast<TextBoxFindInfo*>(arg);
-  std::vector<wchar_t> child_window_class(100);
-  ::GetClassName(hwnd, &child_window_class[0], 100);
-
-  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
-    if (find_info->style_match == 0) {
-      find_info->textbox_handle = hwnd;;;
-      return FALSE;
-    } else {
-      long window_long = ::GetWindowLong(hwnd, GWL_STYLE);
-      long edit_style = window_long & find_info->style_match;
-      if (edit_style == find_info->style_match) {
-        find_info->textbox_handle = hwnd;
-        return FALSE;
-      }
-    }
+  if (find_info->match_proc(hwnd)) {
+    find_info->textbox_handle = hwnd;
+    return FALSE;
   }
   return TRUE;
 }
