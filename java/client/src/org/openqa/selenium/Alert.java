@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.security.Credentials;
+import org.apache.http.auth.Credentials;
 
 public interface Alert {
   void dismiss();
@@ -28,6 +28,16 @@ public interface Alert {
 
   void sendKeys(String keysToSend);
 
+  @Beta
+  void setCredentials(Credentials credentials);
+
+  /**
+   * Authenticate an HTTP Basic Auth dialog.
+   *
+   * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
+   *        "secretGouda"));
+   * @param credentials
+   */
   @Beta
   void authenticateUsing(Credentials credentials);
 }

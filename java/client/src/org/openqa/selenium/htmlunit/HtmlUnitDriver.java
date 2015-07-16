@@ -33,15 +33,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
-import net.sourceforge.htmlunit.corejs.javascript.Function;
-import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
-import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
-import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -51,6 +42,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -61,6 +53,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -121,6 +114,15 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import net.sourceforge.htmlunit.corejs.javascript.Context;
+import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
+import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
+import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
+import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
+
 /**
  * An implementation of {@link WebDriver} that drives <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>,
  * which is a headless (GUI-less) browser simulator.
@@ -132,6 +134,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private WebClient webClient;
   private WebWindow currentWindow;
+  private HtmlUnitAlert alert;
 
   // Fictive position just to implement the API
   private Point windowPosition = new Point(0, 0);
@@ -185,6 +188,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    */
   public HtmlUnitDriver(BrowserVersion version) {
     webClient = createWebClient(version);
+    alert = new HtmlUnitAlert(this);
     currentWindow = webClient.getCurrentWindow();
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
 
@@ -573,6 +577,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public String getTitle() {
+    if (alert.getCurrentQueue() != null && alert.getCurrentQueue().peek() != null) {
+      throw new UnhandledAlertException("Alert found", alert.getCurrentQueue().peek());
+    }
     Page page = lastPage();
     if (page == null || !(page instanceof HtmlPage)) {
       return null; // no page so there is no title
@@ -618,6 +625,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     } else {
       if (thisWindow != null) {
+        alert.close();
         ((TopLevelWindow) thisWindow.getTopWindow()).close();
       }
       if (getWebClient().getWebWindows().size() == 0) {
@@ -629,6 +637,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public void quit() {
     if (webClient != null) {
+      alert.close();
       webClient.close();
       webClient = null;
     }
@@ -792,7 +801,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     // We need to walk the DOM to determine if the element is actually attached
     DomNode parentElement = element;
-    while (parentElement != null && !(parentElement instanceof HtmlHtml)) {
+    while (parentElement != null && !(parentElement instanceof SgmlPage)) {
       parentElement = parentElement.getParentNode();
     }
 
@@ -1125,13 +1134,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByXPath(String selector) {
-    if (!(lastPage() instanceof HtmlPage)) {
+    if (!(lastPage() instanceof SgmlPage)) {
       throw new IllegalStateException("Unable to locate element by xpath for " + lastPage());
     }
 
     Object node;
     try {
-      node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
+      node = ((SgmlPage) lastPage()).getFirstByXPath(selector);
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
@@ -1141,8 +1150,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (node == null) {
       throw new NoSuchElementException("Unable to locate a node using " + selector);
     }
-    if (node instanceof HtmlElement) {
-      return newHtmlUnitWebElement((HtmlElement) node);
+    if (node instanceof DomElement) {
+      return newHtmlUnitWebElement((DomElement) node);
     }
     // The xpath expression selected something different than a WebElement.
     // The selector is therefore invalid
@@ -1310,7 +1319,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Page page = lastPage();
       if (page instanceof HtmlPage) {
-        HtmlElement element = ((HtmlPage) page).getFocusedElement();
+        DomElement element = ((HtmlPage) page).getFocusedElement();
         if (element == null || element instanceof HtmlHtml) {
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
@@ -1327,7 +1336,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public Alert alert() {
-      throw new UnsupportedOperationException("alert()");
+      if (alert.getCurrentQueue() == null) {
+        throw new NoAlertPresentException();
+      }
+      return alert;
     }
   }
 

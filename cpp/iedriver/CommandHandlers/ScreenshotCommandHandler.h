@@ -105,7 +105,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     HWND content_window_handle = browser->GetContentWindowHandle();
 
     CComPtr<IHTMLDocument2> document;
-    browser->GetDocument(&document);
+    browser->GetDocument(true, &document);
     if (!document) {
       LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
       return E_ABORT;
@@ -161,6 +161,9 @@ class ScreenshotCommandHandler : public IECommandHandler {
     LOG(DEBUG) << "Initial browser window sizes are (w, h): "
                << original_width << ", " << original_height;
 
+    bool requires_rezise = original_width <= max_image_dimensions.right ||
+                           original_height <= max_image_dimensions.bottom;
+
     // The resize message is being ignored if the window appears to be
     // maximized.  There's likely a way to bypass that. The kludgy way 
     // is to unmaximize the window, then move on with setting the window
@@ -189,6 +192,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
     hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
     browser->SetHeight(max_image_dimensions.bottom);
 
+    hook.Dispose();
+
     // Capture the window's canvas to a DIB.
     BOOL created = this->image_->Create(document_info.width,
                                         document_info.height,
@@ -204,8 +209,6 @@ class ScreenshotCommandHandler : public IECommandHandler {
     if (!print_result) {
       LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
     }
-
-    hook.Dispose();
 
     // Restore the browser to the original dimensions.
     if (is_maximized) {

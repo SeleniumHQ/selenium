@@ -97,6 +97,7 @@ public class JsonHttpCommandCodec implements CommandCodec<HttpRequest> {
     defineCommand(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"));
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert_text"));
+    defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
 
     defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute"));
     defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute_async"));

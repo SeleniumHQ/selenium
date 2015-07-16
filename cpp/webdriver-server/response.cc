@@ -117,7 +117,7 @@ int Response::ConvertStatusToCode(const std::string& status_string) {
   }
 
   if (status_string == "no such alert") {
-    return EMODALDIALOGOPEN;
+    return ENOSUCHALERT;
   }
 
   if (status_string == "no such element") {
@@ -149,7 +149,7 @@ int Response::ConvertStatusToCode(const std::string& status_string) {
   }
 
   if (status_string == "unexpected alert open") {
-    return EMODALDIALOGOPENED;
+    return EUNEXPECTEDALERTOPEN;
   }
 
   if (status_string == "unknown command") {

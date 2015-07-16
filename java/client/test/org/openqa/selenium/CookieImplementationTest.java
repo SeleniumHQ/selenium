@@ -382,7 +382,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));

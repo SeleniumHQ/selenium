@@ -319,6 +319,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SetAlertValue = "setAlertValue";
 
         /// <summary>
+        /// Represents the Authenticate command
+        /// </summary>
+        public static readonly string SetAlertCredentials = "setAlertCredentials";
+
+        /// <summary>
         /// Represents the ImplicitlyWait command
         /// </summary>
         public static readonly string ImplicitlyWait = "implicitlyWait";

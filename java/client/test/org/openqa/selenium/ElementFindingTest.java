@@ -405,7 +405,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({IE, MARIONETTE, SAFARI, CHROME})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

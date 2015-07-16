@@ -86,6 +86,7 @@ namespace CommandType {
   const std::string DismissAlert = "dismiss";
   const std::string GetAlertText = "getText";
   const std::string SendKeysToAlert = "sendKeysToAlert";
+  const std::string SetAlertCredentials = "setAlertCredentials";
 
   const std::string SendKeysToActiveElement = "sendKeysToActiveElement";
   const std::string MouseMoveTo = "moveTo";

@@ -49,6 +49,8 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   STDMETHOD_(void, OnBeforeUnload)(IHTMLEventObj* pEvtObj);
   STDMETHOD_(void, OnLoad)(IHTMLEventObj* pEvtObj);
 
+  void GetDocument(const bool force_top_level_document,
+                   IHTMLDocument2** doc);
   void GetDocument(IHTMLDocument2** doc);
   void Close(void);
   bool Wait(const std::string& page_load_strategy);

@@ -26,6 +26,12 @@ Alert::Alert(BrowserHandle browser, HWND handle) {
 
   HWND direct_ui_child = this->GetDirectUIChild();
   this->is_standard_alert_ = direct_ui_child == NULL;
+
+  std::vector<HWND> text_boxes;
+  ::EnumChildWindows(this->alert_handle_,
+                    &Alert::FindTextBoxes,
+                    reinterpret_cast<LPARAM>(&text_boxes));
+  this->is_security_alert_ = text_boxes.size() > 1;
 }
 
 
@@ -68,28 +74,57 @@ int Alert::Dismiss() {
   return WD_SUCCESS;
 }
 
-int Alert::SendKeys(std::string keys) {
+int Alert::SendKeys(const std::string& keys) {
   LOG(TRACE) << "Entering Alert::SendKeys";
-  HWND text_box_handle = NULL;
-  // Alert present, find the OK button.
+  TextBoxFindInfo text_box_find_info;
+  text_box_find_info.textbox_handle = NULL;
+  text_box_find_info.match_proc = &Alert::IsSimpleEdit;
+  return this->SendKeysInternal(keys, &text_box_find_info);
+}
+
+int Alert::SetUserName(const std::string& username) {
+  LOG(TRACE) << "Entering Alert::SetUserName";
+  // If this isn't a security alert, return an error.
+  if (!this->is_security_alert_) {
+    return EUNEXPECTEDALERTOPEN;
+  }
+  return this->SendKeys(username);
+}
+
+int Alert::SetPassword(const std::string& password) {
+  LOG(TRACE) << "Entering Alert::SetPassword";
+  // If this isn't a security alert, return an error.
+  if (!this->is_security_alert_) {
+    return EUNEXPECTEDALERTOPEN;
+  }
+  TextBoxFindInfo text_box_find_info;
+  text_box_find_info.textbox_handle = NULL;
+  text_box_find_info.match_proc = &Alert::IsPasswordEdit;
+  return this->SendKeysInternal(password, &text_box_find_info);
+}
+
+int Alert::SendKeysInternal(const std::string& keys,
+                            TextBoxFindInfo* text_box_find_info) {
+  LOG(TRACE) << "Entering Alert::SendKeysInternal";
+  // Alert present, find the text box.
   // Retry up to 10 times to find the dialog.
   int max_wait = 10;
-  while ((text_box_handle == NULL) && --max_wait) {
+  while ((text_box_find_info->textbox_handle == NULL) && --max_wait) {
     ::EnumChildWindows(this->alert_handle_,
                        &Alert::FindTextBox,
-                       reinterpret_cast<LPARAM>(&text_box_handle));
-    if (text_box_handle == NULL) {
+                       reinterpret_cast<LPARAM>(text_box_find_info));
+    if (text_box_find_info->textbox_handle == NULL) {
       ::Sleep(50);
     }
   }
 
-  if (text_box_handle == NULL) {
+  if (text_box_find_info->textbox_handle == NULL) {
     LOG(WARN) << "Text box not found on alert";
     return EELEMENTNOTDISPLAYED;
   } else {
     LOG(DEBUG) << "Sending keystrokes to alert using SendMessage";
     std::wstring text = StringUtilities::ToWString(keys);
-    ::SendMessage(text_box_handle,
+    ::SendMessage(text_box_find_info->textbox_handle,
                   WM_SETTEXT,
                   NULL,
                   reinterpret_cast<LPARAM>(text.c_str()));
@@ -104,9 +139,11 @@ std::string Alert::GetText() {
     alert_text_value = this->GetStandardDialogText();
   } else {
     std::string alert_text = this->GetDirectUIDialogText();
-    size_t first_crlf = alert_text.find("\r\n\r\n");
-    if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
-      alert_text_value = alert_text.substr(first_crlf + 4);
+    if (!this->is_security_alert_) {
+      size_t first_crlf = alert_text.find("\r\n\r\n");
+      if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
+        alert_text_value = alert_text.substr(first_crlf + 4);
+      }
     }
   }
   return alert_text_value;
@@ -133,11 +170,13 @@ std::string Alert::GetStandardDialogText() {
 
   // BIG ASSUMPTION HERE! If we found the text label, assume that
   // all other controls on the alert are fully drawn too.
-  HWND text_box_handle = NULL;
+  TextBoxFindInfo textbox_find_info;
+  textbox_find_info.textbox_handle = NULL;
+  textbox_find_info.match_proc = &Alert::IsSimpleEdit;
   ::EnumChildWindows(this->alert_handle_,
                      &Alert::FindTextBox,
-                     reinterpret_cast<LPARAM>(&text_box_handle));
-  if (text_box_handle) {
+                     reinterpret_cast<LPARAM>(&textbox_find_info));
+  if (textbox_find_info.textbox_handle) {
     // There's a text box on the alert. That means the first
     // label found is the system-provided label. Ignore that
     // one and return the next one.
@@ -367,7 +406,8 @@ bool Alert::IsOKButton(HWND button_handle) {
   ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
   if (wcscmp(&button_window_class[0], L"Button") == 0) {
     long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
-    return (window_long & BS_DEFCOMMANDLINK) == BS_DEFCOMMANDLINK;
+    long button_style = window_long & BS_TYPEMASK;
+    return button_style == BS_DEFCOMMANDLINK || button_style == BS_DEFPUSHBUTTON;
   }
   return false;
 }
@@ -381,9 +421,35 @@ bool Alert::IsCancelButton(HWND button_handle) {
   ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
   if (wcscmp(&button_window_class[0], L"Button") == 0) {
     long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
+    long button_style = window_long & BS_TYPEMASK;
     // The BS_DEFCOMMANDLINK mask includes BS_COMMANDLINK, but we
     // want only to match those without the default bits set.
-    return (window_long & BS_DEFCOMMANDLINK) == BS_COMMANDLINK;
+    return button_style == BS_COMMANDLINK || button_style == BS_PUSHBUTTON;
+  }
+  return false;
+}
+
+bool Alert::IsSimpleEdit(HWND edit_handle) {
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(edit_handle, &child_window_class[0], 100);
+
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
+    long window_long = ::GetWindowLong(edit_handle, GWL_STYLE);
+    bool is_read_only = (window_long & ES_READONLY) == ES_READONLY;
+    bool is_password = (window_long & ES_PASSWORD) == ES_PASSWORD;
+    return !is_read_only && !is_password;
+  }
+  return false;
+}
+
+bool Alert::IsPasswordEdit(HWND edit_handle) {
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(edit_handle, &child_window_class[0], 100);
+
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
+    long window_long = ::GetWindowLong(edit_handle, GWL_STYLE);
+    bool is_password = (window_long & ES_PASSWORD) == ES_PASSWORD;
+    return is_password;
   }
   return false;
 }
@@ -400,12 +466,9 @@ BOOL CALLBACK Alert::FindDialogButton(HWND hwnd, LPARAM arg) {
 }
 
 BOOL CALLBACK Alert::FindTextBox(HWND hwnd, LPARAM arg) {
-  HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
-  std::vector<wchar_t> child_window_class(100);
-  ::GetClassName(hwnd, &child_window_class[0], 100);
-
-  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
-    *dialog_handle = hwnd;
+  TextBoxFindInfo* find_info = reinterpret_cast<TextBoxFindInfo*>(arg);
+  if (find_info->match_proc(hwnd)) {
+    find_info->textbox_handle = hwnd;
     return FALSE;
   }
   return TRUE;
@@ -443,6 +506,17 @@ BOOL CALLBACK Alert::FindDirectUIChild(HWND hwnd, LPARAM arg){
   }
   *dialog_handle = hwnd;
   return FALSE;
+}
+
+BOOL CALLBACK Alert::FindTextBoxes(HWND hwnd, LPARAM arg) {
+  std::vector<HWND>* dialog_handles = reinterpret_cast<std::vector<HWND>*>(arg);
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(hwnd, &child_window_class[0], 100);
+
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
+    dialog_handles->push_back(hwnd);
+  }
+  return TRUE;
 }
 
 } // namespace webdriver

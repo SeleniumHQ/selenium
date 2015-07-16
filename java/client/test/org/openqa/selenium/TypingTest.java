@@ -38,16 +38,15 @@ import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
-import com.google.common.base.Joiner;
-
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
+
+import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -673,7 +672,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
-    assumeTrue(((RemoteWebDriver)driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS));
+    assumeTrue(((HasCapabilities)driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS));
     driver.get(pages.javascriptPage);
 
     WebElement silent = driver.findElement(By.name("suppress"));

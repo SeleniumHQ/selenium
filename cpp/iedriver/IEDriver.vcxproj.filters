@@ -376,6 +376,9 @@
     <ClInclude Include="BrowserCookie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def">
