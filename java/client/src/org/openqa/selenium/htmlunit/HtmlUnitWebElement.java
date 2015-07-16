@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -45,6 +47,8 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
@@ -68,8 +72,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 
 public class HtmlUnitWebElement implements WrapsDriver,
@@ -156,7 +158,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
         new HtmlUnitWebElement(parent, referencedElement).click();
       }
     }
-
   }
 
   @Override
@@ -864,7 +865,33 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public String getCssValue(String propertyName) {
     assertElementNotStale();
 
-    return getEffectiveStyle((HtmlElement) element, propertyName);
+    String style = getEffectiveStyle((HtmlElement) element, propertyName);
+    return getColor(style);
+  }
+
+  private static String getColor(String name) {
+    if ("null".equals(name)) {
+      return "transparent";
+    }
+    if (name.startsWith("rgb(")) {
+      return Color.fromString(name).asRgba();
+    }
+
+    Colors colors = getColorsOf(name);
+    if (colors != null) {
+      return colors.getColorValue().asRgba();
+    }
+    return name;
+  }
+
+  private static Colors getColorsOf(String name) {
+    name = name.toUpperCase();
+    for (Colors colors : Colors.values()) {
+      if (colors.name().equals(name)) {
+        return colors;
+      }
+    }
+    return null;
   }
 
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
