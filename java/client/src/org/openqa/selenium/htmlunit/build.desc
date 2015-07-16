@@ -5,5 +5,6 @@ java_library(name = "htmlunit",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/remote:common",
+    "//java/client/src/org/openqa/selenium/support:support",
     "//third_party/java/htmlunit",
   ])
