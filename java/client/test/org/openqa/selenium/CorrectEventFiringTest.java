@@ -34,17 +34,16 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
@@ -126,7 +125,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Ignore(MARIONETTE)
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
