@@ -61,7 +61,7 @@ public class EdgeDriverService extends DriverService{
 	@Override
 	protected File findDefaultExecutable() {
 	  return findExecutable("MicrosoftWebDriver", EDGE_DRIVER_EXE_PROPERTY,
-	     "https://github.com/SeleniumHQ/selenium/wiki/MicrsoftWebDriver",
+	     "https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver",
 	     "http://www.microsoft.com");
 	}
 
