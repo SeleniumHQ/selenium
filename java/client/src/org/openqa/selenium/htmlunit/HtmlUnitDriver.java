@@ -554,7 +554,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private void resetKeyboardAndMouseState() {
     keyboard = new HtmlUnitKeyboard(this);
-    mouse = new HtmlUnitMouse(this, keyboard);
+    mouse = new HtmlUnitMouse(keyboard);
   }
 
   protected void pickWindow() {
