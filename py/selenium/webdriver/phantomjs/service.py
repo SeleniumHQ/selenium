@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import platform
-import signal
 import subprocess
 import time
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
+
 
 class Service(object):
     """
