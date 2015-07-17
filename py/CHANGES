@@ -1,12 +1,23 @@
 Selenium 2.47.0 (in development)
 * Adding ability to make remote call for webelement screenshots in accordance to the W3C spec
 * Adding api to authenticate HTTP Auth modal dialogs via driver.switch_to.alert (beta)
+* Add rebeccapurple to Color Object
+* Add element screenshot
+* Add service handler and minimal update to driver to use service for Marionette
+* Add the ability to start FirefoxDriver backed with Marionette via a capability
+* support socket timeout for connections
+* free_port checks if port is available on all interfaces
+* Allow error handling to handle both current errors and w3c errors
+* Update find_elements to match spec
+* phantomjs: service: remove unused import of signal
+* phantomjs: add port information to WebDriverException
+* Issues fixed (Github): 478, 612, 734, 780
 
 Selenium 2.46.0
 * Firefox support up to 38
 * BlackBerry browser support
 * remove Presto-Opera support
-* firefox extension extraction fixes 
+* firefox extension extraction fixes
 * process management fixes with phantomjs
 * Comparing remote web element for equality does not require a remote command
 * Issues Fixed: (gcode) 8493, 8521, 8498, 8274, 8497, 5923
@@ -331,5 +342,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-
-
