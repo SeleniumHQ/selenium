@@ -143,7 +143,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeThereIsAWindowManager();
 
     changeSizeTo(new Dimension(450, 275));
     maximize();
@@ -156,7 +155,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeThereIsAWindowManager();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(450, 275));
@@ -172,7 +170,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeThereIsAWindowManager();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(450, 275));
@@ -270,10 +267,4 @@ public class WindowTest extends JUnit4TestBase {
       }
     };
   }
-
-  private void assumeThereIsAWindowManager() {
-    assumeFalse("This test requires a window manager on Linux, and Sauce currently doesn't have one",
-                SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX));
-  }
-
 }
