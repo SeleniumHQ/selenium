@@ -65,7 +65,7 @@ class Service(object):
 
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+           or when it can't connect to the service.
         """
         try:
             self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
@@ -79,7 +79,8 @@ class Service(object):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to GhostDriver")
+                 raise WebDriverException(
+                     "Can not connect to GhostDriver on port {}".format(self.port))
 
     @property
     def service_url(self):
