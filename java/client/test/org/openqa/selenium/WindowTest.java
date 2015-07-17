@@ -143,8 +143,9 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    assumeNotLinuxAtSauce();
 
-    changeSizeTo(new Dimension(450, 275));
+    changeSizeTo(new Dimension(450, 273));
     maximize();
   }
 
@@ -155,9 +156,10 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    assumeNotLinuxAtSauce();
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(450, 275));
+    changeSizeTo(new Dimension(450, 274));
 
     driver.switchTo().frame("fourth");
     maximize();
@@ -170,6 +172,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    assumeNotLinuxAtSauce();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(450, 275));
@@ -267,4 +270,14 @@ public class WindowTest extends JUnit4TestBase {
       }
     };
   }
+
+  private void assumeNotLinuxAtSauce() {
+    // Tests that maximize browser window used to fail when Sauce didn't run a window manager
+    // on Linux. 2015-07-16, they still fail although Sauce reportedly runs metacity.
+    // Chrome/Linux: simply fail.
+    // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
+    // the maximize command, but video never shows the maximized window.
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
+  }
+
 }
