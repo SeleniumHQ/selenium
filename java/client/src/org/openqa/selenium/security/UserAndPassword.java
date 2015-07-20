@@ -15,29 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.security;
 
-import org.openqa.selenium.security.Credentials;
+import org.openqa.selenium.Beta;
 
-public interface Alert {
-  void dismiss();
+/**
+ * Represents the authentication credentials for a user with username and password
+ */
+@Beta
+public class UserAndPassword implements Credentials {
 
-  void accept();
+  private final String username;
+  private final String password;
 
-  String getText();
+  public UserAndPassword(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
 
-  void sendKeys(String keysToSend);
+  public String getUsername() {
+    return username;
+  }
 
-  @Beta
-  void setCredentials(Credentials credentials);
-
-  /**
-   * Authenticate an HTTP Basic Auth dialog.
-   *
-   * Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
-   *        "secretGouda"));
-   * @param credentials
-   */
-  @Beta
-  void authenticateUsing(Credentials credentials);
+  public String getPassword() {
+    return password;
+  }
 }

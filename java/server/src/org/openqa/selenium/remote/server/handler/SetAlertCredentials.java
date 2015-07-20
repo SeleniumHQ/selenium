@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.security.Credentials;
+import org.openqa.selenium.security.UserAndPassword;
 
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class SetAlertCredentials extends WebDriverHandler<Void> implements JsonP
 
   @Override
   public Void call() throws Exception {
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+    Credentials credentials = new UserAndPassword(username, password);
     getDriver().switchTo().alert().setCredentials(credentials);
     return null;
   }

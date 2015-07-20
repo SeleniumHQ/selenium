@@ -22,13 +22,13 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.junit.Test;
+import org.openqa.selenium.security.Credentials;
+import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -42,7 +42,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     Alert alert = wait.until(alertIsPresent());
 
-    UsernamePasswordCredentials user = new UsernamePasswordCredentials("test", "test");
+    Credentials user = new UserAndPassword("test", "test");
 
     alert.authenticateUsing(user);
 

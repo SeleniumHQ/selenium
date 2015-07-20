@@ -22,10 +22,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.http.auth.Credentials;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.security.Credentials;
 
 import com.gargoylesoftware.htmlunit.AlertHandler;
 import com.gargoylesoftware.htmlunit.Page;

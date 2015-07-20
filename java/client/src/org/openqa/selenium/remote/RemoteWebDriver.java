@@ -24,7 +24,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import org.apache.http.auth.Credentials;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -60,6 +59,8 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.security.Credentials;
+import org.openqa.selenium.security.UserAndPassword;
 
 import java.net.URL;
 import java.util.Date;
@@ -936,9 +937,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     @Beta
     public void setCredentials(Credentials credentials) {
-      execute(DriverCommand.SET_ALERT_CREDENTIALS, ImmutableMap
-        .of("username", credentials.getUserPrincipal().getName(), "password",
-            credentials.getPassword()));
+      if (!(credentials instanceof UserAndPassword)) {
+        throw new RuntimeException("Unsupported credentials: " + credentials);
+      }
+
+      UserAndPassword userAndPassword = (UserAndPassword) credentials;
+      execute(
+        DriverCommand.SET_ALERT_CREDENTIALS,
+        ImmutableMap.of(
+          "username", userAndPassword.getUsername(),
+          "password", userAndPassword.getPassword()));
     }
 
     /**
