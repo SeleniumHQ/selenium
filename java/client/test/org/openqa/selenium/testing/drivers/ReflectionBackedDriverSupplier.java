@@ -75,7 +75,14 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
             Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
       }
 
-      //TODO: Call constructor with two Capabilities arguments for all driver classes
+      try {
+          return driverClass.getConstructor(Capabilities.class,
+             Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
+      } catch (NoSuchMethodException e) {
+          // ignore
+      }
+
+      //TODO: All driver classes to have two Capabilities arguments
       return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
     } catch (InvocationTargetException e) {
       throw Throwables.propagate(e.getTargetException());
