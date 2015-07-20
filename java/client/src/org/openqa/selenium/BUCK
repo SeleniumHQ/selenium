@@ -8,6 +8,7 @@ java_library(name = 'webdriver-api',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = ['PUBLIC'],
 )
