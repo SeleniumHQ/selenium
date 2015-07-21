@@ -484,8 +484,6 @@ class RemoteConnection(object):
 
                 assert type(data) is dict, (
                     'Invalid server response body: %s' % body)
-                assert 'status' in data, (
-                    'Invalid server response; no status: %s' % body)
                 # Some of the drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if 'value' not in data:
