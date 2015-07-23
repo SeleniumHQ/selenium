@@ -314,7 +314,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
   }
 
-  protected static Lock obtainLock(FirefoxProfile profile) {
+  protected Lock obtainLock(FirefoxProfile profile) {
     return new SocketLock();
   }
 
