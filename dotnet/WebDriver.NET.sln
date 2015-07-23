@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.IE.Tests", "test\ie\WebDriver.IE.Tests.csproj", "{ECF3B49F-68B0-4A2A-8559-6D7FB906AA88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Edge.Tests", "test\WebDriver.Edge.Tests\WebDriver.Edge.Tests.csproj", "{FF2AD0AE-C786-485B-A7E0-99E93E0D602B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Edge.Tests", "test\edge\WebDriver.Edge.Tests.csproj", "{FF2AD0AE-C786-485B-A7E0-99E93E0D602B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
