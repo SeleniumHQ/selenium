@@ -4,7 +4,8 @@ namespace OpenQA.Selenium
     {
         All, 
         HtmlUnit, 
-        IE, 
+        IE,
+        Edge,
         Firefox, 
         Safari, 
         Chrome,
