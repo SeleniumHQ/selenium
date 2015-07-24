@@ -99,12 +99,12 @@
                     <instructions>
                         <!-- specify jna as a required bundle to make the package containing the jnidispatch native library 
                              visible to the classloader of this bundle.  Used by ProcessUtils#killWinProcess to stop the browser
-                             process in windows.  -->
-			<Require-Bundle>com.sun.jna;bundle-version="4.1.0"</Require-Bundle>
+                             process in windows.  Optional as jna is not used for non win32 platforms -->
+			<Require-Bundle>com.sun.jna;bundle-version="4.1.0";resolution:=optional</Require-Bundle>
                         <!-- fix the version number range for the some imports since we are not compiling against the version
                              of that artifact that is packaged as an OSGi bundle (i.e. httpclient-osgi). 
                              The exported package version numbers are not auto-discovered for those imports, but we can correct that here. -->
-                        <Import-Package>org.apache.http.*;version="[4.3,5)",*</Import-Package>
+                        <Import-Package>!com.sun.jna.*,org.apache.http.*;version="[4.3,5)",*</Import-Package>
                         <Export-Package>*;version=${version}</Export-Package>
 
                         <!-- 
