@@ -24,8 +24,8 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -122,27 +122,21 @@ public class ProxySet implements Iterable<RemoteProxy> {
   }
 
   private List<RemoteProxy> getSorted() {
-    List<RemoteProxy> sortedProxyList = new ArrayList<RemoteProxy>();
-    Map<Integer, ArrayList<RemoteProxy>> sorter = new HashMap<Integer, ArrayList<RemoteProxy>>();
-
-    for (RemoteProxy currentProxy : proxies){
-      int testsRunning = currentProxy.getTotalUsed();
-      if(!sorter.containsKey(testsRunning)){
-        sorter.put(testsRunning, new ArrayList<RemoteProxy>());
-      }
-      sorter.get(testsRunning).add(currentProxy);
-    }
-
-    Integer[] sortedKeys = (Integer[]) sorter.keySet().toArray();
-    Arrays.sort(sortedKeys);
-
-    for (Integer currentKey : sortedKeys){
-      for(RemoteProxy p : sorter.get(currentKey)){
-        sortedProxyList.add(p);
-      }
-    }
-    return sortedProxyList;
+    List<RemoteProxy> sorted = new ArrayList<>(proxies);
+    Collections.sort(sorted, proxyComparator);
+    return sorted;
   }
+
+  private Comparator<RemoteProxy> proxyComparator = new Comparator<RemoteProxy>() {
+    @Override
+    public int compare(RemoteProxy o1, RemoteProxy o2) {
+      double p1used = (o1.getTotalUsed() * 1.0) / o1.getTestSlots().size();
+      double p2used = (o2.getTotalUsed() * 1.0) / o2.getTestSlots().size();
+
+      if (p1used == p2used) return 0;
+      return p1used < p2used? -1 : 1;
+    }
+  };
 
   public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
     // sort the proxies first, by default by total number of
