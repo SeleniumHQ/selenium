@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Edge
     public sealed class EdgeDriverService : DriverService
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
-        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("http://download.microsoft.com/download/6/D/7/6D7B7A44-B792-4CB4-AEC3-4C190EB99F85/MicrosoftWebDriver.msi");
+        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("http://go.microsoft.com/fwlink/?LinkId=619687");
         private string logPath = string.Empty;
         private string urlPathPrefix = string.Empty;
         private string portServerAddress = string.Empty;
