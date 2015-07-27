@@ -138,6 +138,8 @@ class WebDriver(object):
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
+        self.capabilities["marionette"] = desired_capabilities.get("marionette", False)
+
     def _wrap_value(self, value):
         if isinstance(value, dict):
             converted = {}
@@ -500,7 +502,10 @@ class WebDriver(object):
         """
         Maximizes the current window that webdriver is using
         """
-        self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
+        command = Command.MAXIMIZE_WINDOW
+        if self.capabilities['marionette'] == True:
+            command = Command.W3C_MAXIMIZE_WINDOW
+        self.execute(command, {"windowHandle": "current"})
 
     @property
     def switch_to(self):
@@ -777,7 +782,10 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        self.execute(Command.SET_WINDOW_SIZE, {'width': int(width), 'height': int(height),
+        command = Command.SET_WINDOW_SIZE
+        if self.capabilities["marionette"] == True:
+            command = Command.W3C_SET_WINDOW_SIZE
+        self.execute(command, {'width': int(width), 'height': int(height),
           'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
@@ -787,8 +795,16 @@ class WebDriver(object):
         :Usage:
             driver.get_window_size()
         """
-        return self.execute(Command.GET_WINDOW_SIZE,
-            {'windowHandle': windowHandle})['value']
+        command = Command.GET_WINDOW_SIZE
+        if self.capabilities['marionette'] == True:
+            command = Command.W3C_GET_WINDOW_SIZE
+        size = self.execute(command,
+            {'windowHandle': windowHandle})
+
+        if size.get('value', None) != None:
+            return size['value']
+        else:
+            return size
 
     def set_window_position(self, x, y, windowHandle='current'):
         """

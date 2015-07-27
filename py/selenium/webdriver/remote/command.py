@@ -57,8 +57,10 @@ class Command(object):
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
+    W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
+    W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
     SET_WINDOW_POSITION = "setWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
@@ -89,6 +91,7 @@ class Command(object):
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
+    W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 

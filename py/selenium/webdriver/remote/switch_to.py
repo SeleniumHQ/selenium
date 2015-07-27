@@ -86,4 +86,7 @@ class SwitchTo:
         :Usage:
             driver.switch_to.window('main')
         """
-        self._driver.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
+        data = {'name': window_name}
+        if self._driver.capabilities['marionette'] == True:
+            data = {'handle': window_name}
+        self._driver.execute(Command.SWITCH_TO_WINDOW, data)
