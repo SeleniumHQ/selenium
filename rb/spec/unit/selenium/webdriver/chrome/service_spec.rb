@@ -56,7 +56,7 @@ module Selenium
         it "raises a nice error if the server binary can't be found" do
           Platform.stub(:find_binary).and_return(nil)
 
-          lambda { Service.executable_path }.should raise_error(Error::WebDriverError, /code\.google\.com/)
+          lambda { Service.executable_path }.should raise_error(Error::WebDriverError, /github.com\/SeleniumHQ/)
         end
 
       end
