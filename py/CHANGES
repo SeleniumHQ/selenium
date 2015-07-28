@@ -1,3 +1,8 @@
+Selenium 2.47.0
+* Add in support for when communicating with a Spec compliant browsers
+* Initial support for Edge using EdgeDriver
+* Issues fixed: 818
+
 Selenium 2.46.1
 * Adding ability to make remote call for webelement screenshots in accordance to the W3C spec
 * Adding api to authenticate HTTP Auth modal dialogs via driver.switch_to.alert (beta)
