@@ -138,7 +138,7 @@ class WebDriver(object):
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
-        self.capabilities["marionette"] = desired_capabilities.get("marionette", False)
+        self.capabilities["w3c"] = desired_capabilities.get("marionette", False)
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -157,7 +157,7 @@ class WebDriver(object):
         """
         Creates a web element with the specified element_id.
         """
-        return WebElement(self, element_id)
+        return WebElement(self, element_id, w3c=self.capabilities['w3c'])
 
     def _unwrap_value(self, value):
         if isinstance(value, dict) and ('ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value):
@@ -503,7 +503,7 @@ class WebDriver(object):
         Maximizes the current window that webdriver is using
         """
         command = Command.MAXIMIZE_WINDOW
-        if self.capabilities['marionette'] == True:
+        if self.capabilities['w3c'] == True:
             command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, {"windowHandle": "current"})
 
@@ -641,7 +641,7 @@ class WebDriver(object):
         :Usage:
             driver.implicitly_wait(30)
         """
-        if self.capabilities["marionette"] == True:
+        if self.capabilities["w3c"] == True:
             self.execute(Command.SET_TIMEOUTS,
                          {'ms': float(time_to_wait) * 1000, 'type':'implicit'})
         else:
@@ -658,7 +658,7 @@ class WebDriver(object):
         :Usage:
             driver.set_script_timeout(30)
         """
-        if self.capabilities["marionette"] == True:
+        if self.capabilities["w3c"] == True:
             self.execute(Command.SET_TIMEOUTS,
                          {'ms': float(time_to_wait) * 1000, 'type':'script'})
         else:
@@ -690,17 +690,18 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        if self.capabilities['w3c'] == True:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
@@ -715,18 +716,18 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        if self.capabilities['w3c'] == True:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
 
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
@@ -791,7 +792,7 @@ class WebDriver(object):
             driver.set_window_size(800,600)
         """
         command = Command.SET_WINDOW_SIZE
-        if self.capabilities["marionette"] == True:
+        if self.capabilities["w3c"] == True:
             command = Command.W3C_SET_WINDOW_SIZE
         self.execute(command, {'width': int(width), 'height': int(height),
           'windowHandle': windowHandle})
@@ -804,7 +805,7 @@ class WebDriver(object):
             driver.get_window_size()
         """
         command = Command.GET_WINDOW_SIZE
-        if self.capabilities['marionette'] == True:
+        if self.capabilities['w3c'] == True:
             command = Command.W3C_GET_WINDOW_SIZE
         size = self.execute(command,
             {'windowHandle': windowHandle})
