@@ -32,7 +32,7 @@ class Service(object):
         :Args:
          - executable_path : Path to the EdgeDriver
          - port : Port the service is running on
-        """x    
+        """    
 
         self.path = executable_path
 
