@@ -35,6 +35,16 @@ BROWSERS = {
     :browser_name => "internet explorer",
     :available => windows?
   },
+  "edge" => {
+    :python => {
+      :ignore => "edge",
+      :dir => "edge",
+      :file_string => "edge",
+      :class => "Edge"
+    },
+    :browser_name => "MicrosoftEdge",
+    :available => windows?
+  },
   "chrome" => {
     :python => {
       :ignore => "chrome",
