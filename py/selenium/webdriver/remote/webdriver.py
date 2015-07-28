@@ -138,7 +138,8 @@ class WebDriver(object):
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
-        self.capabilities["w3c"] = desired_capabilities.get("marionette", False)
+        # Quick check to see if we have a W3C Compliant browser
+        self.w3c = "takesElementScreenshot" in self.capabilities
 
     def _wrap_value(self, value):
         if isinstance(value, dict):
@@ -157,7 +158,7 @@ class WebDriver(object):
         """
         Creates a web element with the specified element_id.
         """
-        return WebElement(self, element_id, w3c=self.capabilities['w3c'])
+        return WebElement(self, element_id, w3c=self.w3c)
 
     def _unwrap_value(self, value):
         if isinstance(value, dict) and ('ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value):
@@ -503,7 +504,7 @@ class WebDriver(object):
         Maximizes the current window that webdriver is using
         """
         command = Command.MAXIMIZE_WINDOW
-        if self.capabilities['w3c'] == True:
+        if self.w3c:
             command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, {"windowHandle": "current"})
 
@@ -641,7 +642,7 @@ class WebDriver(object):
         :Usage:
             driver.implicitly_wait(30)
         """
-        if self.capabilities["w3c"] == True:
+        if self.w3c:
             self.execute(Command.SET_TIMEOUTS,
                          {'ms': float(time_to_wait) * 1000, 'type':'implicit'})
         else:
@@ -658,7 +659,7 @@ class WebDriver(object):
         :Usage:
             driver.set_script_timeout(30)
         """
-        if self.capabilities["w3c"] == True:
+        if self.w3c:
             self.execute(Command.SET_TIMEOUTS,
                          {'ms': float(time_to_wait) * 1000, 'type':'script'})
         else:
@@ -690,7 +691,7 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        if self.capabilities['w3c'] == True:
+        if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
                 value = '[id="%s"]' % value
@@ -716,7 +717,7 @@ class WebDriver(object):
         """
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        if self.capabilities['w3c'] == True:
+        if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
                 value = '[id="%s"]' % value
@@ -792,7 +793,7 @@ class WebDriver(object):
             driver.set_window_size(800,600)
         """
         command = Command.SET_WINDOW_SIZE
-        if self.capabilities["w3c"] == True:
+        if self.w3c:
             command = Command.W3C_SET_WINDOW_SIZE
         self.execute(command, {'width': int(width), 'height': int(height),
           'windowHandle': windowHandle})
@@ -805,7 +806,7 @@ class WebDriver(object):
             driver.get_window_size()
         """
         command = Command.GET_WINDOW_SIZE
-        if self.capabilities['w3c'] == True:
+        if self.w3c:
             command = Command.W3C_GET_WINDOW_SIZE
         size = self.execute(command,
             {'windowHandle': windowHandle})
