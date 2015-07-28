@@ -90,7 +90,6 @@ describe "Selenium::WebDriver::TargetLocator" do
       }.should raise_error(RuntimeError, "foo")
 
       driver.title.should == "XHTML Test Page"
-
     end
 
     it "should switch to a window" do
@@ -100,8 +99,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       wait.until { driver.title == "XHTML Test Page" }
 
       driver.switch_to.window("result")
-      wait.until { driver.title == "We Arrive Here" }
-
+      driver.title.should == "We Arrive Here"
     end
 
     it "should use the original window if the block closes the popup" do
@@ -124,7 +122,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      expect(driver.window_handles.size).to eq 3
+      wait.until { driver.window_handles.size == 3 }
 
       driver.switch_to.window(driver.window_handle) {driver.close}
       expect(driver.window_handles.size).to eq 2
@@ -135,11 +133,11 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      expect(driver.window_handles.size).to eq 3
+      wait.until { driver.window_handles.size == 3 }
 
       window_to_close = driver.window_handles.last
 
-      driver.switch_to.window(window_to_close) {driver.close}
+      driver.switch_to.window(window_to_close) { driver.close }
       expect(driver.window_handles.size).to eq 2
     end
 
@@ -175,6 +173,8 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.find_element(:link, "Open new window").click
 
+      wait.until { driver.window_handles.size == 2 }
+
       driver.switch_to.window("result")
       wait.until { driver.title == "We Arrive Here" }
 
@@ -205,7 +205,8 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
-        driver.switch_to.alert.accept
+        alert = wait_for_alert
+        alert.accept
 
         driver.title.should == "Testing Alerts"
       end
