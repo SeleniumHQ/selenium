@@ -62,6 +62,12 @@ class DesiredCapabilities(object):
         "javascriptEnabled": True,
     }
 
+    EDGE = {
+        "browserName": "MicrosoftEdge",
+        "version": "",
+        "platform": "WINDOWS"
+    }
+
     CHROME = {
         "browserName": "chrome",
         "version": "",
