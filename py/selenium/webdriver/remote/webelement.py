@@ -49,9 +49,10 @@ class WebElement(object):
     ``StaleElementReferenceException`` is thrown, and all future calls to this
     instance will fail."""
 
-    def __init__(self, parent, id_):
+    def __init__(self, parent, id_, w3c=False):
         self._parent = parent
         self._id = id_
+        self._w3c = w3c
 
     @property
     def tag_name(self):
@@ -450,17 +451,18 @@ class WebElement(object):
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        if self._w3c:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
@@ -469,17 +471,18 @@ class WebElement(object):
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        if self._w3c:
+            if by == By.ID:
+                by = By.CSS_SELECTOR
+                value = '[id="%s"]' % value
+            elif by == By.TAG_NAME:
+                by = By.CSS_SELECTOR
+            elif by == By.CLASS_NAME:
+                by = By.CSS_SELECTOR
+                value = ".%s" % value
+            elif by == By.NAME:
+                by = By.CSS_SELECTOR
+                value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
