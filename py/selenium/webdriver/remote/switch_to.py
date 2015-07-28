@@ -87,6 +87,6 @@ class SwitchTo:
             driver.switch_to.window('main')
         """
         data = {'name': window_name}
-        if self._driver.capabilities['marionette'] == True:
+        if self._driver.capabilities['w3c'] == True:
             data = {'handle': window_name}
         self._driver.execute(Command.SWITCH_TO_WINDOW, data)
