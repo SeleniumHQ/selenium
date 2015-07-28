@@ -41,8 +41,7 @@ module Selenium
             mock_process
           end
 
-
-          Service.default_service
+          Service.default_service.start_process
         end
 
         it "finds the Chrome server binary by searching PATH" do
