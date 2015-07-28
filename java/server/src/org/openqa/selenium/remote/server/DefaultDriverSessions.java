@@ -52,6 +52,8 @@ public class DefaultDriverSessions implements DriverSessions {
                                      "org.openqa.selenium.firefox.FirefoxDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
                                      "org.openqa.selenium.ie.InternetExplorerDriver"))
+      .add(new DefaultDriverProvider(DesiredCapabilities.edge(),
+                                     "org.openqa.selenium.edge.EdgeDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.opera(),
                                      "com.opera.core.systems.OperaDriver"))
       .add(new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
