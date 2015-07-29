@@ -1,3 +1,29 @@
+v2.47.0
+=======
+ * Supports native events for Firefox version 31 (immediately previous ESR).
+   Native event support has been discontinued for versions of Firefox later
+   than 33. Synthetic events tested on Firefox versions 31 (immediately
+   previous ESR), 38 (immediately previous release and current ESR), and 39
+   (current release).
+ * (provided by Microsoft) Added language bindings for Microsoft Edge browser.
+ * Added support for authentication dialogs in the .NET bindings.
+ * Replaced DotNetZip with ZipStorer library. Adds the ability to use the .NET
+   bindings with Firefox on Linux and OS X via Mono. The replacement library
+   uses the internal System.IO.Compression classes along with custom code for
+   reading and writing the central director structure of .zip files. The
+   resulting .zip files created may be slightly larger than those produced via
+   DotNetZip, but we will sacrifice that small size difference in exchange for
+   cross-platform usability.
+ * Fixing cookie parsing error in .NET bindings. The JSON response for cookie
+   expiration date is a number, not an integer. The .NET bindings were not
+   handling the fact that a floating point number could be included in the JSON
+   object as an expiration time.
+ * Added support to .NET bindings for HTTP-only cookies.
+ * Added ITakesScreenshot to .NET RemoteWebElement for spec compatibility Note
+   that no driver implements this at present, so attempting to use this within
+   any test will result in a NotImplementedException.
+ * Fixed dynamic assembly generation for .NET PageFactory for .NET 3.5.
+
 v2.46.0
 =======
  * Supports native events for Firefox version 31 (immediately previous ESR).
