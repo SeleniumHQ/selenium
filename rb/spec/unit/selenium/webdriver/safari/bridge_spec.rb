@@ -26,11 +26,6 @@ module Selenium
         let(:caps)    { {} }
         let(:server)  { double(Server, receive: response).as_null_object }
         let(:browser) { double(Browser).as_null_object }
-        let(:extensions) { double(Extensions).as_null_object }
-
-        let :bridge_options do
-          { skip_extension_installation: true }
-        end
 
         let :response do
           {
@@ -48,7 +43,6 @@ module Selenium
           Remote::Capabilities.stub(:safari).and_return(caps)
           Server.stub(:new).and_return(server)
           Browser.stub(:new).and_return(browser)
-          Extensions.stub(:new).and_return(extensions)
         end
 
 
@@ -60,7 +54,7 @@ module Selenium
             payload[:command][:parameters][:desiredCapabilities]['foo'].should == 'bar'
           end
 
-          Bridge.new(bridge_options.merge(desired_capabilities: custom_caps))
+          Bridge.new(desired_capabilities: custom_caps)
         end
 
         it 'lets direct arguments take presedence over capabilities' do
@@ -71,7 +65,7 @@ module Selenium
             payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession'].should == true
           end
 
-          Bridge.new(bridge_options.merge(:clean_session => true))
+          Bridge.new(:clean_session => true)
         end
 
       end
