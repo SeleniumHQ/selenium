@@ -106,7 +106,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      driver.title.should == "XHTML Test Page"
+      wait.until { driver.title == "XHTML Test Page" }
 
       driver.switch_to.window("result") do
         wait.until { driver.title == "We Arrive Here" }
@@ -146,7 +146,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
-      wait.until { driver.window_handles.size == 2 }
+      wait.until { driver.window_handles.size == 3 }
 
       new_window = driver.window_handles.find do |wh|
         driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
@@ -160,6 +160,8 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
+
+      wait.until { driver.window_handles.size == 3 }
 
       driver.close
 
