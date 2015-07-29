@@ -46,7 +46,8 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:android, :iphone, :safari] do
+  # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
+  not_compliant_on({:browser => [:android, :iphone, :safari]}, {:browser => :phantomjs, :platform => :windows}) do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
