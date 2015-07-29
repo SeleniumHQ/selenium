@@ -88,7 +88,7 @@ class RubyMappings
   class RubyTest < Tasks
     def handle(fun, dir, args)
       desc "Run ruby tests for #{args[:name]}"
-      task task_name(dir, "#{args[:name]}-test") do
+      task task_name(dir, "#{args[:name]}-test") => %W[//#{dir}:bundle] do
         STDOUT.sync = true
         puts "Running: #{args[:name]} ruby tests"
 
