@@ -228,6 +228,11 @@ describe Selenium::Client::Base do
       client.chrome_backend?.should be true
     end
 
+    it "returns true when the browser string is *edge" do
+      client = BaseClient.new :host, 24, "*edge", :url
+      client.chrome_backend?.should be true
+    end
+
     it "returns true when the browser string is *firefox2" do
       client = BaseClient.new :host, 24, "*firefox2", :url
       client.chrome_backend?.should be true

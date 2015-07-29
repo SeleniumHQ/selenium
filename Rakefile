@@ -252,8 +252,9 @@ task :test_rb => [
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
+ ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test",
+ ("//rb:safari-test" if mac?),
   "//rb:phantomjs-test"
 ].compact
 

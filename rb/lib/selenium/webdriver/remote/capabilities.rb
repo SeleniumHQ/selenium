@@ -78,6 +78,13 @@ module Selenium
             }.merge(opts))
           end
 
+          def edge(opts = {})
+            new({
+              :browser_name => "edge",
+              :platform     => :windows
+            }.merge(opts))
+          end
+
           def firefox(opts = {})
             new({
               :browser_name          => "firefox",
