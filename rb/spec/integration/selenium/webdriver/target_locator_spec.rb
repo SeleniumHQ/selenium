@@ -146,6 +146,8 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:link, "Create a new anonymous window").click
       driver.find_element(:link, "Open new window").click
 
+      wait.until { driver.window_handles.size == 2 }
+
       new_window = driver.window_handles.find do |wh|
         driver.switch_to.window(wh) { driver.title == "We Arrive Here" }
       end
