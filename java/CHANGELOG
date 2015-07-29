@@ -1,7 +1,67 @@
-v2.47.0 in development
-======================
+v2.47.0
+=======
+WebDriver:
+* Supports native events for Firefox version 31 (immediately previous
+  ESR). Native event support has been discontinued for versions of
+  Firefox later than 33. Synthetic events tested on Firefox versions 31
+  (immediately previous ESR), 38 (immediately previous release and current
+  ESR), and 39 (current release).
+* Beta Alert.AuthenticateUsing api implementation added, beta testing with IE.
+* Added TakesScreenshot to WebElement.
+* (provided by Microsoft) Added language bindings for Microsoft Edge browser
+* Make it possible for users to override how the Lock is obtained with Firefox.
+* (provided by Ahmed Ashour) Added implementation of Alert for HtmlUnit driver.
+* (provided by Ahmed Ashour) Fixed findElementByXPath for HtmlUnit driver to
+  work for XML pages.
+* (provided by Ahmed Ashour) Fixed HtmlUnit driver to allow for manipulating
+  elements in SVG documents.
+* (provided by Ahmed Ashour) Fixed HtmlUnit driver so that deleteAllCookies
+  deletes cookies only for the current domain, matching other implementations.
+* (provided by Tamás Buka) Created an overload to
+  ExpectedConditions.frameToBeAvailableAndSwitchToIt support to index and
+  WebElement so that WebDriverWait can use this mode to switch frames.
+* (provided by Joshua Bruning) Allow access to local profiler logs. An
+  exception may be thrown if the WebDriver server does not recognize profiler
+  logs. In this case, the user should be able to see the local profiler logs.
+* (provided by Sergey Tikhomirov) Changed visibility of isDecoratableList
+  method of DefaultFieldDecorator to protected for use with custom PageFactory
+  implementations.
+* Froze javascript.enabled property in Firefox profiles
+* FIXED #426: (provided by Anand Jayaram) Default the hub port to 4444, if no
+  port was provided.
+* FIXED #638: Disabled HTTP Public Key Pinning (HPKP) when the
+  webdriver_accept_untrusted_certs capability is set. As of Firefox 39, Firefox
+  ignores certificate overrides if the domain's certificate is pinned.
+* FIXED #644: (provided by Brett Randall) Modified ErrorHandler to tolerate
+  non-Number lineNumber, and also attempts to safely parse a non-Number Object
+  if it receives a non-Number. If absent or non-numeric it now continues to
+  build the StackTraceElement (instead of aborting that frame) and uses the
+  conventional -1 for lineNumber.
+* FIXED #658: Disable reading list info panel in Firefox.
 
-* Beta Alert.AuthenticateUsing api implementation added, beta testing with IE. 
+Server:
+* Added a guard that prevents starting "IE instead of Opera" (or some other
+  unwanted browser that obviously does not match the desired capabilities).
+  Previously if a new session request is forwarded to a node it results in a
+  driver instance creation in any case. For example, let's suppose a user
+  starts a node with -browser browserName=opera option, and there is no
+  operadriver in the classpath. Then the user requests a new remote driver with
+  browserName=opera. The hub forwards the request to the node, and the node
+  attempts to find the "best matching" driver provider. As far as opera is not
+  available, it can start any other browser. Because "best matching" does not
+  imply matching. The new guard prevents this unwanted behavior.
+
+Grid:
+* Added support to grid for Microsoft Edge driver
+* (provided by Dima Kovalenko) Sort Grid Proxies in order of least busy to
+  busiest. This should prevent situation where one node is running multiple
+  sessions while several nodes are completely idle.
+
+RC:
+* Removed start of Firefox with -silent option to prevent crash in Firefox.
+
+IDE:
+* FIXED #570: Add ability to record elements that do not have href attributes.
 
 v2.46.0
 =======
