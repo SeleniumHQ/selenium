@@ -1,3 +1,9 @@
+2.47.0 (2015-07-29)
+===================
+
+Safari:
+  * Remove support for installing additional extensions due to architectural changes introduced with Safari 7
+
 2.46.2 (2015-06-05)
 ===================
 * Fix encoding issue which prevents Element#send_keys to work on Ruby < 2.0 (#621)
