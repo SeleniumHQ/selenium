@@ -60,7 +60,6 @@ end # Selenium
 
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
-require 'selenium/webdriver/safari/extensions'
 require 'selenium/webdriver/safari/options'
 require 'selenium/webdriver/safari/bridge'
 
