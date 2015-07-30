@@ -1,0 +1,18 @@
+# The jna packages are only required on win32 don't try to provision on other platforms
+requires.0.namespace=osgi.bundle
+requires.0.name=com.sun.jna
+requires.0.greedy=false
+requires.0.optional=true
+requires.1.namespace=java.package
+requires.1.name=com.sun.jna
+requires.1.greedy=false
+requires.1.optional=true
+requires.2.namespace=java.package
+requires.2.name=com.sun.jna.platform.win32
+requires.2.greedy=false
+requires.2.optional=true
+requires.3.namespace=java.package
+requires.3.name=com.sun.jna.win32
+requires.3.greedy=false
+requires.3.optional=true
+

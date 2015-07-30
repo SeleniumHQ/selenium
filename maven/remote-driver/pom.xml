@@ -71,6 +71,13 @@
                                         <not><present targetdir="../api/src/main/java" /></not>
                                     </fileset>
                                 </copy>
+                                <!-- copy the META-INF/p2.inf file to the right place so it gets included in the jar -->
+                                <delete dir="src/main/resources" />
+                                <copy todir="src/main/resources/META-INF" includeEmptyDirs="false">
+                                    <fileset dir=".">
+                                        <include name="p2.inf" />
+                                    </fileset>
+                                </copy>
                             </tasks>
                         </configuration>
                         <goals>
@@ -103,8 +110,9 @@
                         <Require-Bundle>com.sun.jna;bundle-version="4.1.0";resolution:=optional</Require-Bundle>
                         <!-- fix the version number range for the some imports since we are not compiling against the version
                              of that artifact that is packaged as an OSGi bundle (i.e. httpclient-osgi). 
-                             The exported package version numbers are not auto-discovered for those imports, but we can correct that here. -->
-                        <Import-Package>!com.sun.jna.*,org.apache.http.*;version="[4.3,5)",*</Import-Package>
+                             The exported package version numbers are not auto-discovered for those imports, but we can correct that here. 
+                             The jna packages are only required on win32 so marked as optional here. -->
+                        <Import-Package>com.sun.jna.*;resolution:=optional,org.apache.http.*;version="[4.3,5)",*</Import-Package>
                         <Export-Package>*;version=${version}</Export-Package>
 
                         <!-- 
