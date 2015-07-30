@@ -119,6 +119,7 @@
     <modules>
         <module>api</module>
         <module>chrome-driver</module>
+        <module>edge-driver</module>
         <module>firefox-driver</module>
         <module>htmlunit-driver</module>
         <module>ie-driver</module>

@@ -57,6 +57,7 @@
                                                 <present targetdir="../iphone-driver/src/main/java" />
                                                 <present targetdir="../remote-driver/src/main/java" />
                                                 <present targetdir="../safari-driver/src/main/java" />
+                                                <present targetdir="../edge-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
                                             </or>
                                         </not>
