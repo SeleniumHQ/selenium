@@ -236,7 +236,7 @@ class WebDriver(object):
          - id\_ - The id of the elements to be found.
 
         :Usage:
-            driver.find_element_by_id('foo')
+            driver.find_elements_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
 
