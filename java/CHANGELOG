@@ -1,5 +1,9 @@
 v2.47.0
 =======
+
+** Java 7 is now requried, but you really should be on 8, since 7 is EOL **
+
+
 WebDriver:
 * Supports native events for Firefox version 31 (immediately previous
   ESR). Native event support has been discontinued for versions of
