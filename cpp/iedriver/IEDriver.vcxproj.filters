@@ -98,6 +98,9 @@
     <ClCompile Include="BrowserCookie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -378,6 +381,9 @@
     </ClInclude>
     <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtilities.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
