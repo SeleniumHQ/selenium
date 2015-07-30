@@ -109,6 +109,7 @@
                                         <not>
                                             <or>
                                                 <present targetdir="../chrome-driver/target/classes" />
+                                                <present targetdir="../edge-driver/target/classes" />
                                                 <present targetdir="../firefox-driver/target/classes" />
                                                 <present targetdir="../ie-driver/target/classes" />
                                                 <present targetdir="../java/target/classes" />
