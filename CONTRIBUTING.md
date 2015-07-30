@@ -1,53 +1,50 @@
 # Contributing to Selenium
 
-The Selenium project welcomes contributions from everyone. There are a
-number of ways you can help:
+Selenium is a collaborative project open to all. To contribute to Selenium, 
+please adhere to the following:
 
 ## Bug Reports
 
-When opening new issues or commenting on existing issues please make
-sure discussions are related to concrete technical issues with the
-Selenium software.
+When reporting a new issue or commenting on an existing issue, please ensure all
+comments are technically-oriented and directly related to the
+project.
 
-It's imperative that issue reports outline the steps to reproduce
-the defect. If the issue can't be reproduced it will be closed.
-Please provide [concise reproducible test cases](http://sscce.org/)
-and describe what results you are seeing and what results you expect.
+Documenting steps to reproduce a bug is a vital part of reporting an issue. If 
+a bug or error can't be replicated, the issue will be closed. Please provide [concise, replicable test cases](http://sscce.org/)
+and note your expected and actual results.
 
-Issues shouldn't be used for support.  Please address questions to the
-[`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
-Discussion of high level project ideas or non-technical topics should
-move to the
-[`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
-instead.
+Please refrain from reporting an issue if you require support. Direct
+your questions and help requests to the [`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
 
-We also need help with triaging
-[issues that needs investigation](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
-This means asking the right questions, procuring the right information
-to properly debug and verify the issue, and bisecting a commit range if
-the issue is a regression.
+Non-technical topics or discussion of project ideas should be directed to the
+[`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
+
+As well as submitting an issue, please consider assisting with [issue triage](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
+
+Issue triage consists of asking questions and procuring information to accurately
+debug and verify the validity of an issue. Bisecting a commit is sometimes necessary
+if the issue is a regression.
 
 ## Documentation
 
-Selenium is a big software project and documentation is key to
-understanding how things work and learning effective ways to exploit
-its potential.
-
-The official documentation of Selenium is still served from our
+Selenium's official documentation is still served from our
 [**www.seleniumhq.org** repository](https://github.com/SeleniumHQ/www.seleniumhq.org).
-We are however phasing out this documentation which focuses too much
-on Selenium RC and other antiquated pieces, in favour of a rewrite.
 
-The new documentation is a project started to rewrite Selenium's
-documentation from scratch. This is an ongoing effort (not targetted
-at any specific release) to provide an updated handbook on how to use
-Selenium effectively. We hope to bring over the pieces of the old
-documentation that makes sense.
+Selenium is a large collaborative project and documentation is key to educating
+the community and effectively harnessing the software's full power and potential.
 
-Contributions toward the new docs follow the same process described in
-the next section about code contributions. You should spend some time
-familiarising yourself with the documentation by reading
-[more about it](https://seleniumhq.github.io/docs/intro.html#about_this_documentation).
+While extensive, current documentation focuses on Selenium RC and other legacy 
+components. The current document library is being phased out in favor of a 
+rewrite.
+
+New documentation is being written with the goal of populating a concise and expansive 
+handbook on Selenium's workflow and features. While no specific release date is
+targeted, we hope to merge old and new documentation as part of an ongoing rewrite 
+project.
+
+Contributions to the rewrite project follow the same procedures as the code 
+contribution workflow outlined below. In the meantime, please feel free to familiarize
+yourself with [existing documentation.](https://seleniumhq.github.io/docs/intro.html#about_this_documentation)
 
 ## Code Contributions
 
@@ -55,11 +52,10 @@ The Selenium project welcomes new contributors. Individuals making
 significant and valuable contributions over time are made _Committers_
 and given commit-access to the project.
 
-If you're looking for easy bugs, have a look at
-[issues labelled E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy)
+If you're looking for easy bugs to fix, view issues [marked as E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy) 
 on Github.
 
-This document will guide you through the contribution process.
+The following guidelines will guide you through the contribution process:
 
 ### Step 1: Fork
 
