@@ -80,8 +80,9 @@ module Selenium
 
           def edge(opts = {})
             new({
-              :browser_name => "edge",
-              :platform     => :windows
+              :browser_name       => "edge",
+              :platform           => :windows,
+              :javascript_enabled => true
             }.merge(opts))
           end
 
