@@ -49,7 +49,6 @@ module Selenium
           }
 
           remote_opts.merge!(:http_client => http_client) if http_client
-
           super(remote_opts)
         end
 
@@ -84,8 +83,6 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          edge_options = caps['edgeOptions'] || {}
-          caps['edgeOptions'] = edge_options
           caps['page_load_strategy'] = page_load_strategy
 
           caps
