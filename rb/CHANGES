@@ -1,3 +1,10 @@
+2.47.1 (2015-07-31)
+===================
+
+Edge:
+  * Initial implementation of Microsoft's EdgeDriver
+
+
 2.47.0 (2015-07-29)
 ===================
 
