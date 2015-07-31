@@ -59,19 +59,24 @@ module Selenium
           cookies.first[:value].should == "bar"
         end
 
-        it "should delete one" do
-          driver.navigate.to url_for("xhtmlTest.html")
+        not_compliant_on :browser => :edge do
+          it "should delete one" do
+            driver.navigate.to url_for("xhtmlTest.html")
 
-          driver.manage.add_cookie :name => "foo", :value => "bar"
-          driver.manage.delete_cookie("foo")
+            driver.manage.add_cookie :name => "foo", :value => "bar"
+            driver.manage.delete_cookie("foo")
+          end
         end
 
-        it "should delete all" do
-          driver.navigate.to url_for("xhtmlTest.html")
+        # Edge does not yet support xpath
+        not_compliant_on :browser => :edge do
+          it "should delete all" do
+            driver.navigate.to url_for("xhtmlTest.html")
 
-          driver.manage.add_cookie :name => "foo", :value => "bar"
-          driver.manage.delete_all_cookies
-          driver.manage.all_cookies.should be_empty
+            driver.manage.add_cookie :name => "foo", :value => "bar"
+            driver.manage.delete_all_cookies
+            driver.manage.all_cookies.should be_empty
+          end
         end
 
         not_compliant_on :browser => [:ie, :android, :iphone, :safari] do

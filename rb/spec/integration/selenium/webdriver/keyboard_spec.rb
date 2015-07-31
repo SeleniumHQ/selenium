@@ -23,7 +23,8 @@ module Selenium
   module WebDriver
     describe Keyboard do
 
-      not_compliant_on :browser => [:chrome, :android, :iphone, :safari] do
+      # Edge does not yet support session/:session_id/keys
+      not_compliant_on :browser => [:chrome, :android, :iphone, :safari, :edge] do
         it "sends keys to the active element" do
           driver.navigate.to url_for("bodyTypingTest.html")
 
@@ -35,39 +36,46 @@ module Selenium
           driver.find_element(:id => "result").text.strip.should be_empty
         end
 
-        it "can send keys with shift pressed" do
-          driver.navigate.to url_for("javascriptPage.html")
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger   = driver.find_element(:id => "result")
+        # Edge does not yet support /session/:sessionId/click
+        not_compliant_on :browser => :edge do
+          it "can send keys with shift pressed" do
+            driver.navigate.to url_for("javascriptPage.html")
 
-          driver.mouse.click event_input
+            event_input = driver.find_element(:id => "theworks")
+            keylogger = driver.find_element(:id => "result")
 
-          driver.keyboard.press :shift
-          driver.keyboard.send_keys "ab"
-          driver.keyboard.release :shift
+            driver.mouse.click event_input
 
-          event_input.attribute(:value).should == "AB"
-          keylogger.text.strip.should =~ /^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/
+            driver.keyboard.press :shift
+            driver.keyboard.send_keys "ab"
+            driver.keyboard.release :shift
+
+            event_input.attribute(:value).should == "AB"
+            keylogger.text.strip.should =~ /^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/
+          end
         end
 
         it "raises an ArgumentError if the pressed key is not a modifier key" do
           lambda { driver.keyboard.press :return }.should raise_error(ArgumentError)
         end
 
-        it "can press and release modifier keys" do
-          driver.navigate.to url_for("javascriptPage.html")
+        # Edge does not yet support /session/:sessionId/click
+        not_compliant_on :browser => :edge do
+          it "can press and release modifier keys" do
+            driver.navigate.to url_for("javascriptPage.html")
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger   = driver.find_element(:id => "result")
+            event_input = driver.find_element(:id => "theworks")
+            keylogger = driver.find_element(:id => "result")
 
-          driver.mouse.click event_input
+            driver.mouse.click event_input
 
-          driver.keyboard.press :shift
-          keylogger.text.should =~ /keydown$/
+            driver.keyboard.press :shift
+            keylogger.text.should =~ /keydown$/
 
-          driver.keyboard.release :shift
-          keylogger.text.should =~ /keyup$/
+            driver.keyboard.release :shift
+            keylogger.text.should =~ /keyup$/
+          end
         end
       end
 
