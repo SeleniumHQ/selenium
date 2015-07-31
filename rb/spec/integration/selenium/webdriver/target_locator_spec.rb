@@ -22,12 +22,16 @@ require File.expand_path("../spec_helper", __FILE__)
 describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
 
-  it "should find the active element" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
+  # Edge does not yet support session/:session_id/element/active
+  not_compliant_on :browser => :edge do
+    it "should find the active element" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
+    end
   end
 
-  not_compliant_on :browser => [:iphone] do
+  # Edge does not yet support /session/:sessionId/frame
+  not_compliant_on :browser => [:iphone, :edge] do
     it "should switch to a frame" do
       driver.navigate.to url_for("iframes.html")
       driver.switch_to.frame("iframe1")
@@ -35,17 +39,21 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
     end
 
-    it "should switch to a frame by Element" do
-      driver.navigate.to url_for("iframes.html")
+    # Edge does not yet support /session/:sessionId/frame
+    not_compliant_on :browser => :edge do
+      it "should switch to a frame by Element" do
+        driver.navigate.to url_for("iframes.html")
 
-      iframe = driver.find_element(:tag_name => "iframe")
-      driver.switch_to.frame(iframe)
+        iframe = driver.find_element(:tag_name => "iframe")
+        driver.switch_to.frame(iframe)
 
-      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
+        driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
+      end
     end
   end
 
-  not_compliant_on :browser => [:safari, :phantomjs] do
+  # Edge does not yet support /session/:sessionId/frame/parent
+  not_compliant_on :browser => [:safari, :phantomjs, :edge] do
     it "should switch to parent frame" do
       driver.navigate.to url_for("iframes.html")
 
@@ -59,8 +67,10 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
+  # Edge implements switching with w3c specs, not json
+  # Edge also appears to have issues closing windows
   # switching by name not yet supported by safari
-  not_compliant_on :browser => [:ie, :iphone, :safari] do
+  not_compliant_on :browser => [:ie, :iphone, :safari, :edge] do
     after do
       reset_driver!
     end
@@ -96,7 +106,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      wait.until { driver.title == "XHTML Test Page" }
+      driver.title.should == "XHTML Test Page"
 
       driver.switch_to.window("result")
       driver.title.should == "We Arrive Here"
@@ -106,7 +116,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      wait.until { driver.title == "XHTML Test Page" }
+      driver.title.should == "XHTML Test Page"
 
       driver.switch_to.window("result") do
         wait.until { driver.title == "We Arrive Here" }
@@ -192,7 +202,8 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:android, :iphone, :safari] do
+  # Edge does not yet support /session/:sessionId/frame
+  not_compliant_on :browser => [:android, :iphone, :safari, :edge] do
     it "should switch to default content" do
       driver.navigate.to url_for("iframes.html")
 
@@ -227,11 +238,14 @@ describe "Selenium::WebDriver::TargetLocator" do
         alert = wait_for_alert
         alert.dismiss
 
+        wait_for_no_alert
+
         driver.title.should == "Testing Alerts"
       end
     end
 
-    not_compliant_on :browser => [:iphone, :safari, :phantomjs] do
+    # Edge does not yet support session/:session_id/alert_text
+    not_compliant_on :browser => [:iphone, :safari, :phantomjs, :edge] do
       it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
@@ -244,25 +258,31 @@ describe "Selenium::WebDriver::TargetLocator" do
         text.should == "cheese"
       end
 
-      it "allows the user to get the text of an alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+      # Edge does not yet support session/:session_id/alert_text
+      not_compliant_on :browser => :edge do
+        it "allows the user to get the text of an alert" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "alert").click
 
-        alert = wait_for_alert
-        text = alert.text
-        alert.accept
+          alert = wait_for_alert
+          text = alert.text
+          alert.accept
 
-        text.should == "cheese"
+          text.should == "cheese"
+        end
       end
 
-      it "raises when calling #text on a closed alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+      # Edge does not yet support session/:session_id/alert_text
+      not_compliant_on :browser => :edge do
+        it "raises when calling #text on a closed alert" do
+          driver.navigate.to url_for("alerts.html")
+          driver.find_element(:id => "alert").click
 
-        alert = wait_for_alert
-        alert.accept
+          alert = wait_for_alert
+          alert.accept
 
-        expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoAlertPresentError)
+          expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoAlertPresentError)
+        end
       end
 
     end

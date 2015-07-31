@@ -32,7 +32,7 @@ describe "Navigation" do
       driver.navigate.to form_url
       driver.title.should == form_title
 
-      driver.find_element(:id, 'imageButton').submit
+      driver.find_element(:id, 'imageButton').click
       wait.until { driver.title != form_title }
 
       driver.current_url.should include(result_url)
