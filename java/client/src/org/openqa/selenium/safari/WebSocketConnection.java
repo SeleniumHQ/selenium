@@ -136,7 +136,7 @@ class WebSocketConnection {
       public void run() {
         pendingResponse.compareAndSet(response, null);
       }
-    }, MoreExecutors.sameThreadExecutor());
+    }, MoreExecutors.directExecutor());
 
     if (pendingResponse.compareAndSet(null, response)) {
       TextWebSocketFrame frame = new TextWebSocketFrame(data);
