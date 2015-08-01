@@ -182,6 +182,7 @@ class RubyMappings
       desc 'Install gem dependencies for the current Ruby'
       task "//#{dir}:bundle" do
         ENV['BUNDLE_GEMFILE'] = 'rb/Gemfile'
+        sh "gem install bundler"
         sh "bundle", "install"
       end
     end
