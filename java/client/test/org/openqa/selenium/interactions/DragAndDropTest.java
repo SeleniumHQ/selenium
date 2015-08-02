@@ -116,7 +116,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
   @Test
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
@@ -230,7 +229,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({IE, PHANTOMJS, SAFARI})
+  @Ignore({PHANTOMJS, SAFARI})
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

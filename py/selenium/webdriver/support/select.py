@@ -135,7 +135,7 @@ class Select:
                         return
                     matched = True
 
-        if matched != True:
+        if not matched:
             raise NoSuchElementException("Could not locate element with visible text: %s" % text)
 
     def deselect_all(self):
