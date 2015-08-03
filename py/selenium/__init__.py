@@ -18,4 +18,4 @@
 from selenium import selenium
 
 
-__version__ = "2.47.0"
+__version__ = "2.47.1"
