@@ -92,6 +92,7 @@ class WebDriver(RemoteWebDriver):
         if "marionette" in self.capabilities and self.capabilities['marionette'] is True:
             self.service.stop()
         else:
+            self.binary.kill()
             try:
                 shutil.rmtree(self.profile.path)
                 if self.profile.tempfolder is not None:
