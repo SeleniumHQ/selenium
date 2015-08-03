@@ -608,6 +608,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void deleteAllCookies() throws Exception {
+    assumeTrue(domainHelper.checkHasValidAlternateHostname());
+
     Cookie cookie1 = new Cookie.Builder("fish1", "cod")
         .domain(appServer.getHostName()).build();
     Cookie cookie2 = new Cookie.Builder("fish2", "tune")

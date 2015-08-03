@@ -5,6 +5,7 @@ rubygem(
     "//rb:chrome",
     "//rb:common",
     "//rb:support",
+    "//rb:edge",
     "//rb:firefox",
     "//rb:ie",
     "//rb:iphone",
@@ -88,6 +89,26 @@ ruby_test(name = "chrome",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":chrome"  ]
+)
+
+ruby_library(name = "edge",
+  srcs = [
+    "lib/selenium/webdriver/edge/**/*.rb",
+    "lib/selenium/webdriver/edge.rb"
+  ],
+  deps = [
+    ":common",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [ ":edge"  ]
 )
 
 ruby_library(name = "firefox",
@@ -245,6 +266,7 @@ ruby_test(name = "unit",
     ":android",
     ":chrome",
     ":common",
+    ":edge",
     ":firefox",
     ":ie",
     ":iphone",

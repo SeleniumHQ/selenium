@@ -31,7 +31,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "2.46.1",
+    'version': "2.47.1",
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "py", "README")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
@@ -72,6 +72,7 @@ setup_args = {
                  'selenium.webdriver.support',
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
+                 'selenium.webdriver.edge',
                  'selenium.webdriver.opera',
                  'selenium.webdriver.phantomjs',
                  'selenium.webdriver.remote',

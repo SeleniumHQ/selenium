@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-edge-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-htmlunit-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -73,6 +78,7 @@
                                             <or>
                                                 <present targetdir="../api/src/main/java" />
                                                 <present targetdir="../chrome-driver/src/main/java" />
+                                                <present targetdir="../edge-driver/src/main/java" />
                                                 <present targetdir="../firefox-driver/src/main/java" />
                                                 <present targetdir="../htmlunit-driver/src/main/java" />
                                                 <present targetdir="../ie-driver/src/main/java" />

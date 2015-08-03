@@ -50,7 +50,7 @@ end
 verbose($DEBUG)
 
 def version
-  "2.46.0"
+  "2.47.1"
 end
 ide_version = "2.8.0"
 
@@ -126,7 +126,13 @@ task :common_core => [ "//common:core" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
+task :firefox => [
+  "//cpp:noblur",
+  "//cpp:noblur64",
+  "//cpp:imehandler",
+  "//cpp:imehandler64",
+  "//java/client/src/org/openqa/selenium/firefox"
+]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:WebServer:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
@@ -246,8 +252,9 @@ task :test_rb => [
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
+ ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test",
+ ("//rb:safari-test" if mac?),
   "//rb:phantomjs-test"
 ].compact
 
@@ -265,7 +272,7 @@ if (python?)
   task :test => [ :test_py ]
 end
 
-task :build => [:all, :remote, :selenium, :tests]
+task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -465,6 +472,7 @@ task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
 
 task :release => [
     :clean,
+    :build,
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
@@ -559,6 +567,8 @@ end
 
 namespace :node do
   task :deploy => [
+    "//cpp:noblur",
+    "//cpp:noblur64",
     "//javascript/firefox-driver:webdriver",
     "//javascript/safari-driver:client",
     "//javascript/webdriver:asserts_lib",

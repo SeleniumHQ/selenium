@@ -106,6 +106,7 @@ class Service(object):
                 self.process.stdin.close()
                 self.process.kill()
                 self.process.wait()
+                self.process = None
         except OSError:
             # kill may not be available under windows environment
             pass

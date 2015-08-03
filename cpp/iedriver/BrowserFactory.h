@@ -30,9 +30,6 @@
 #define ALERT_WINDOW_CLASS "#32770"
 #define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"
 
-#define FILE_LANGUAGE_INFO L"\\VarFileInfo\\Translation"
-#define FILE_VERSION_INFO L"\\StringFileInfo\\%04x%04x\\FileVersion"
-
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
 #define IE_TABPROCGROWTH_REGISTRY_KEY L"Software\\Microsoft\\Internet Explorer\\Main"
@@ -126,8 +123,6 @@ class BrowserFactory {
   }
 
   int browser_version(void) const { return this->ie_major_version_; }
-  int windows_major_version(void) const { return this->windows_major_version_; }
-  int windows_minor_version(void) const { return this->windows_minor_version_; }
 
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
@@ -150,7 +145,6 @@ class BrowserFactory {
 
   void GetExecutableLocation(void);
   void GetIEVersion(void);
-  void GetOSVersion(void);
   bool ProtectedModeSettingsAreValid(void);
   int GetZoneProtectedModeSetting(const HKEY key_handle,
                                   const std::wstring& zone_subkey_name);
@@ -176,8 +170,6 @@ class BrowserFactory {
   int browser_attach_timeout_;
 
   int ie_major_version_;
-  int windows_major_version_;
-  int windows_minor_version_;
   std::wstring ie_executable_location_;
 };
 

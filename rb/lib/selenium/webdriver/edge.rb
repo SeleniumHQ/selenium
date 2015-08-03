@@ -17,8 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-unless '1.9'.respond_to?(:bytesize)
-  class String
-    alias :bytesize :size
-  end
-end
+require 'net/http'
+
+require 'selenium/webdriver/edge/service'
+require 'selenium/webdriver/edge/bridge'
+
+module Selenium
+  module WebDriver
+
+    module Edge
+      def self.driver_path=(path)
+        Service.executable_path = path
+      end
+
+      def self.path=(path)
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
+      end
+
+    end # Edge
+  end # WebDriver
+end # Selenium

@@ -31,9 +31,6 @@ module Selenium
 
           @command_id ||= 0
 
-          @extensions = Extensions.new(safari_options)
-          @extensions.install
-
           # TODO: handle safari_opts['cleanSession']
           @server = Server.new(safari_options.port, command_timeout)
           @server.start
@@ -51,7 +48,6 @@ module Selenium
 
           @server.stop
           @safari.stop
-          @extensions.uninstall
         end
 
         def driver_extensions

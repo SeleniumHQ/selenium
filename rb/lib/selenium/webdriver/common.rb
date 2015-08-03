@@ -18,7 +18,6 @@
 # under the License.
 
 require 'selenium/webdriver/common/core_ext/dir'
-require 'selenium/webdriver/common/core_ext/string'
 require 'selenium/webdriver/common/core_ext/base64'
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/platform'

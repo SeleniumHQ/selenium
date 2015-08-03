@@ -213,7 +213,7 @@ bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
     }
     ::SetForegroundWindow(browser_wrapper->GetTopLevelWindowHandle());
     if (current_thread_id != thread_id) {
-      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (PVOID)lock_timeout, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, reinterpret_cast<void*>(lock_timeout), SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
       ::AttachThreadInput(current_thread_id, thread_id, FALSE);
     }
   }

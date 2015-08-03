@@ -25,7 +25,8 @@ describe "Screenshot" do
     page.get_html_source.should =~ /<head>/
   end
 
-  it "captures PNG screenshot OS viewport as a file on Selenium RC local filesystem" do
+  # Raising Java Error on Windows
+  xit "captures PNG screenshot OS viewport as a file on Selenium RC local filesystem" do
     tempfile = File.join(Dir.tmpdir, "selenium_screenshot.png")
 
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_click_page1.html"
@@ -38,7 +39,8 @@ describe "Screenshot" do
     end
   end
 
-  it "captures PNG screenshot OS viewport as a Base64 encoded PNG image" do
+  # Raising Java Error on Windows
+  xit "captures PNG screenshot OS viewport as a Base64 encoded PNG image" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_click_page1.html"
     encodedImage = page.capture_screenshot_to_string
     pngImage = Base64.decode64(encodedImage)

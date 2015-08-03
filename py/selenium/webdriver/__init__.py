@@ -20,6 +20,7 @@ from .firefox.firefox_profile import FirefoxProfile
 from .chrome.webdriver import WebDriver as Chrome
 from .chrome.options import Options as ChromeOptions
 from .ie.webdriver import WebDriver as Ie
+from .edge.webdriver import WebDriver as Edge
 from .opera.webdriver import WebDriver as Opera
 from .safari.webdriver import WebDriver as Safari
 from .blackberry.webdriver import WebDriver as BlackBerry
@@ -31,4 +32,4 @@ from .common.action_chains import ActionChains
 from .common.touch_actions import TouchActions
 from .common.proxy import Proxy
 
-__version__ = '2.46.1'
+__version__ = '2.47.1'
