@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.firefox.internal;
 
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
+import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
+
 import com.google.common.base.Optional;
 
 import org.openqa.selenium.WebDriverException;
@@ -42,9 +45,6 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
-import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
 
@@ -154,7 +154,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
   private static Optional<Extension> loadCustomExtension() {
     String xpiProperty = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY);
-    if (xpiProperty != null) {
+    if (xpiProperty != null && !xpiProperty.equals("")) {
       File xpi = new File(xpiProperty);
       return Optional.of((Extension) new FileExtension(xpi));
     }
