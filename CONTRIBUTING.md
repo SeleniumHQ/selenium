@@ -123,7 +123,7 @@ Create a feature branch and start hacking:
 % git checkout -b my-feature-branch
 ```
 
-We practice HEAD-based development, which means all changes are aplied
+We practice HEAD-based development, which means all changes are applied
 directly on top of master.
 
 ### Step 3: Commit
