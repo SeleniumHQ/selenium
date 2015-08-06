@@ -28,8 +28,6 @@ cpp/iedriver/Generated/atoms.h
 cpp/iedriver/sizzle.h
 chromedriver.log
 junit*.properties
-WebDriver.suo
-WebDriver.sln.cache
 *.rbc
 .rbx
 .yardoc
@@ -56,6 +54,7 @@ obj/
 *.opensdf
 *.suo
 *.sdf
+*.vs
 Generated/
 ipch/
 /iedriver.log
