@@ -453,7 +453,7 @@ class RemoteConnection(object):
 
             request.add_header('Accept', 'application/json')
             request.add_header('Content-Type', 'application/json;charset=UTF-8')
-            request.add_header('Host:', self._hostname)
+            request.add_header('Host', self._hostname)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
