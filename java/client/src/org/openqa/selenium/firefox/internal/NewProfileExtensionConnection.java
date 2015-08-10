@@ -30,6 +30,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
@@ -45,6 +47,8 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
+import java.util.logging.Level;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
 
@@ -149,16 +153,29 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     if (profile.containsWebDriverExtension()) {
       return;
     }
-    profile.addExtension("webdriver", loadCustomExtension().or(loadDefaultExtension()));
+    //try to load custom extension first
+    //if the path to the custom extension is not found,
+    //use the default extension that comes with Selenium
+    Extension customExtension = loadCustomExtension();
+    if (customExtension != null) {
+      profile.addExtension("webdriver", customExtension);
+    } else {
+      logs.addEntry(LogType.DRIVER,
+        new LogEntry(Level.WARNING, new Date().getTime(),
+                     "Custom extension path was not found, using default webdriver.xpi Firefox driver."));
+      profile.addExtension("webdriver", loadDefaultExtension());
+    }
   }
 
-  private static Optional<Extension> loadCustomExtension() {
+  private static Extension loadCustomExtension() {
     String xpiProperty = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY);
-    if (xpiProperty != null && !xpiProperty.equals("")) {
+    if (xpiProperty != null) {
       File xpi = new File(xpiProperty);
-      return Optional.of((Extension) new FileExtension(xpi));
+      if (xpi.exists()) {
+        return new FileExtension(xpi);
+      }
     }
-    return Optional.absent();
+    return null;
   }
 
   private static Extension loadDefaultExtension() {
