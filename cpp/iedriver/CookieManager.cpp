@@ -19,6 +19,7 @@
 #include <UrlMon.h>
 #include <wininet.h>
 #include "BrowserCookie.h"
+#include "errorcodes.h"
 #include "HookProcessor.h"
 #include "logging.h"
 #include "messages.h"
@@ -45,17 +46,11 @@ void CookieManager::Initialize(HWND window_handle) {
   this->window_handle_ = window_handle;
 }
 
-bool CookieManager::SetCookie(const std::string& url, 
-                              const std::string& cookie_data) {
-  return this->SetCookie(url, cookie_data, false);
-}
-
-bool CookieManager::SetCookie(const std::string& url, 
-                              const std::string& cookie_data,
-                              const bool is_httponly) {
-  std::string full_data = url + "|" + cookie_data;
+int CookieManager::SetCookie(const std::string& url, 
+                             const BrowserCookie& cookie) {
+  std::string full_data = url + "|" + cookie.ToString();
   WPARAM set_flags = 0;
-  if (is_httponly) {
+  if (cookie.is_httponly()) {
     set_flags = INTERNET_COOKIE_HTTPONLY;
   }
 
@@ -66,14 +61,20 @@ bool CookieManager::SetCookie(const std::string& url,
   hook_settings.communication_type = OneWay;
 
   HookProcessor hook;
+  if (!hook.CanSetWindowsHook(this->window_handle_)) {
+    LOG(WARN) << "Cannot set cookie because driver and browser are not the "
+              << "same bit-ness.";
+    return EUNHANDLEDERROR;
+  }
   hook.Initialize(hook_settings);
   hook.PushData(StringUtilities::ToWString(full_data));
   ::SendMessage(this->window_handle_, WD_SET_COOKIE, set_flags, NULL);
   int status = HookProcessor::GetDataBufferSize();
   if (status != 0) {
-    return false;
+    LOG(WARN) << "Setting cookie encountered error " << status;
+    return EINVALIDCOOKIEDOMAIN;
   }
-  return true;
+  return WD_SUCCESS;
 }
 
 int CookieManager::GetCookies(const std::string& url,
@@ -93,6 +94,11 @@ int CookieManager::GetCookies(const std::string& url,
   hook_settings.communication_type = TwoWay;
 
   HookProcessor hook;
+  if (!hook.CanSetWindowsHook(this->window_handle_)) {
+    LOG(WARN) << "Cannot get cookies because driver and browser are not the "
+              << "same bit-ness.";
+    return EUNHANDLEDERROR;
+  }
   hook.Initialize(hook_settings);
 
   // Get all cookies for the current URL visible to JavaScript.
@@ -160,7 +166,7 @@ int CookieManager::GetCookies(const std::string& url,
     }
     all_cookies->push_back(browser_cookie);
   }
-  return 0;
+  return WD_SUCCESS;
 }
 
 bool CookieManager::DeleteCookie(const std::string& url,
@@ -179,90 +185,67 @@ bool CookieManager::DeleteCookie(const std::string& url,
 
   std::string domain = StringUtilities::ToString(wide_domain);
   std::string path = StringUtilities::ToString(wide_path);
-  return this->RecursivelyDeleteCookie(url,
-                                       cookie.name(),
-                                       domain,
-                                       path,
-                                       cookie.is_httponly());
+
+  // N.B., We can hard-code the value and expiration time, since
+  // we are deleting the cookie. So the value will be "deleted",
+  // and the expiration time will be 1000 milliseconds after the
+  // zero date (or Thu 1 Jan 1970 00:00:01 GMT).
+  BrowserCookie recursive_cookie = cookie.Copy();
+  recursive_cookie.set_domain(domain);
+  recursive_cookie.set_path(path);
+  recursive_cookie.set_value("deleted");
+  recursive_cookie.set_expiration_time(1000);
+  return this->RecursivelyDeleteCookie(url, recursive_cookie);
 }
 
 bool CookieManager::RecursivelyDeleteCookie(const std::string& url,
-                                            const std::string& name,
-                                            const std::string& domain,
-                                            const std::string& path,
-                                            const bool is_httponly) {
+                                            const BrowserCookie& cookie) {
   // TODO: Optimize this path from the recursive to only
   // call setting the cookie as often as needed.
-  return this->RecurseCookiePath(url, name, "." + domain, path, is_httponly);
+  BrowserCookie recursive_cookie = cookie.Copy();
+  recursive_cookie.set_domain("." + cookie.domain());
+  return this->RecurseCookiePath(url, recursive_cookie);
 }
 
 bool CookieManager::RecurseCookiePath(const std::string& url,
-                                      const std::string& name,
-                                      const std::string& domain,
-                                      const std::string& path,
-                                      const bool is_httponly) {
+                                      const BrowserCookie& cookie) {
   size_t number_of_characters = 0;
-  size_t slash_index = path.find_last_of('/');
-  size_t final_index = path.size() - 1;
+  size_t slash_index = cookie.path().find_last_of('/');
+  size_t final_index = cookie.path().size() - 1;
   if (slash_index == final_index) {
     number_of_characters = slash_index;
-  } else {
+  }
+  else {
     number_of_characters = slash_index + 1;
   }
 
   if (slash_index != std::string::npos) {
-    bool deleted = this->RecurseCookiePath(url,
-                                           name,
-                                           domain,
-                                           path.substr(0, number_of_characters),
-                                           is_httponly);
+    BrowserCookie path_cookie = cookie.Copy();
+    path_cookie.set_path(cookie.path().substr(0, number_of_characters));
+    bool deleted = this->RecurseCookiePath(url, path_cookie);
   }
-  return this->RecurseCookieDomain(url, name, domain, path, is_httponly);
+  return this->RecurseCookieDomain(url, cookie);
 }
 
 bool CookieManager::RecurseCookieDomain(const std::string& url,
-                                        const std::string& name,
-                                        const std::string& domain,
-                                        const std::string& path,
-                                        const bool is_httponly) {
-  bool deleted = this->DeleteCookie(url, name, domain, path, is_httponly);
-  size_t dot_index = domain.find_first_of('.');
-  if (dot_index == 0) {
-    return this->RecurseCookieDomain(url,
-                                      name,
-                                      domain.substr(1),
-                                      path,
-                                      is_httponly);
-  } else if (dot_index != std::string::npos) {
-    return this->RecurseCookieDomain(url,
-                                      name,
-                                      domain.substr(dot_index),
-                                      path,
-                                      is_httponly);
-  }
-  deleted = this->DeleteCookie(url, name, "", path, is_httponly);
-  return deleted;
-}
+                                        const BrowserCookie& cookie) {
+  int status = this->SetCookie(url, cookie);
 
-bool CookieManager::DeleteCookie(const std::string& url,
-                                 const std::string& name,
-                                 const std::string& domain,
-                                 const std::string& path,
-                                 const bool is_httponly) {
-  // N.B., We can hard-code the value and expiration time, since
-  // we are deleting the cookie.
-  std::string cookie_data = name;
-  cookie_data.append("=deleted");
-  if (domain.size() > 0) {
-    cookie_data.append("; domain=");
-    cookie_data.append(domain);
+  size_t dot_index = cookie.domain().find_first_of('.');
+  if (dot_index == 0) {
+    BrowserCookie first_dot_cookie = cookie.Copy();
+    first_dot_cookie.set_domain(cookie.domain().substr(1));
+    return this->RecurseCookieDomain(url, first_dot_cookie);
+  } else if (dot_index != std::string::npos) {
+    BrowserCookie no_dot_cookie = cookie.Copy();
+    no_dot_cookie.set_domain(cookie.domain().substr(dot_index));
+    return this->RecurseCookieDomain(url, no_dot_cookie);
   }
-  if (path.size() > 0) {
-    cookie_data.append("; path=");
-    cookie_data.append(path);
-  }
-  cookie_data.append("; expires=Thu 1 Jan 1970 00:00:01 GMT");
-  return this->SetCookie(url, cookie_data, is_httponly);
+
+  BrowserCookie no_domain_cookie = cookie.Copy();
+  no_domain_cookie.set_domain("");
+  status = this->SetCookie(url, no_domain_cookie);
+  return status == WD_SUCCESS;
 }
 
 void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,

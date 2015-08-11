@@ -234,30 +234,6 @@ int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
   return WD_SUCCESS;
 }
 
-void DocumentHost::GetCookies(std::vector<BrowserCookie>* cookies) {
-  LOG(TRACE) << "Entering DocumentHost::GetCookies";
-  this->cookie_manager_->GetCookies(this->GetCurrentUrl(), cookies);
-}
-
-int DocumentHost::AddCookie(const std::string& cookie,
-                            const bool validate_document_type) {
-  LOG(TRACE) << "Entering DocumentHost::AddCookie";
-  bool add_succeeded = this->cookie_manager_->SetCookie(this->GetCurrentUrl(),
-                                                        cookie);
-  if (!add_succeeded) {
-    return EINVALIDCOOKIEDOMAIN;
-  }
-  return WD_SUCCESS;
-}
-
-int DocumentHost::DeleteCookie(const BrowserCookie& cookie) {
-  LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
-  // TODO: Optimize and return legitimate error conditions.
-  bool deletesucceeded = this->cookie_manager_->DeleteCookie(this->GetCurrentUrl(),
-                                                             cookie);
-  return WD_SUCCESS;
-}
-
 void DocumentHost::PostQuitMessage() {
   LOG(TRACE) << "Entering DocumentHost::PostQuitMessage";
 
@@ -269,60 +245,6 @@ void DocumentHost::PostQuitMessage() {
                 WD_BROWSER_QUIT,
                 NULL,
                 reinterpret_cast<LPARAM>(message_payload));
-}
-
-bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
-  LOG(TRACE) << "Entering DocumentHost::IsHtmlPage";
-
-  CComBSTR type;
-  HRESULT hr = doc->get_mimeType(&type);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
-    return false;
-  }
-
-  // Call once to get the required buffer size, then again to fill
-  // the buffer.
-  DWORD mime_type_name_buffer_size = 0;
-  hr = ::AssocQueryString(0,
-                          ASSOCSTR_FRIENDLYDOCNAME,
-                          L".htm",
-                          NULL,
-                          NULL,
-                          &mime_type_name_buffer_size);
-
-  std::vector<wchar_t> mime_type_name_buffer(mime_type_name_buffer_size);
-  hr = ::AssocQueryString(0,
-                          ASSOCSTR_FRIENDLYDOCNAME,
-                          L".htm",
-                          NULL,
-                          &mime_type_name_buffer[0],
-                          &mime_type_name_buffer_size);
-
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to AssocQueryString failed in getting friendly name of .htm documents";
-    return false;
-  }
-
-  std::wstring mime_type_name = &mime_type_name_buffer[0];
-  std::wstring type_string = type;
-  if (type_string == mime_type_name) {
-    return true;
-  }
-
-  // If the user set Firefox as a default browser at any point, the MIME type
-  // appears to be "sticky". This isn't elegant, but it appears to alleviate
-  // the worst symptoms. Tested by using both Safari and Opera as the default
-  // browser, even after setting IE as the default after Firefox (so the chain
-  // of defaults looks like (IE -> Firefox -> IE -> Opera)
-
-  if (L"Firefox HTML Document" == mime_type_name) {
-    LOG(INFO) << "It looks like Firefox was once the default browser. " 
-              << "Guessing the page type from mime type alone";
-    return true;
-  }
-
-  return false;
 }
 
 HWND DocumentHost::FindContentWindowHandle(HWND top_level_window_handle) {
