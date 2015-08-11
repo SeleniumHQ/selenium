@@ -415,7 +415,8 @@ class RemoteConnection(object):
             headers = {"Connection": 'keep-alive', method: parsed_url.path,
                        "User-Agent": "Python http auth",
                        "Content-type": "application/json;charset=\"UTF-8\"",
-                       "Accept": "application/json"}
+                       "Accept": "application/json",
+                       "Host": self._hostname}
             if parsed_url.username:
                 auth = base64.standard_b64encode('%s:%s' %
                        (parsed_url.username, parsed_url.password)).replace('\n', '')
