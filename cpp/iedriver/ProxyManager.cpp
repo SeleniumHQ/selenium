@@ -231,6 +231,13 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
   hook_settings.communication_type = OneWay;
 
   HookProcessor hook;
+  if (!hook.CanSetWindowsHook(browser_window_handle)) {
+    LOG(WARN) << "Proxy will not be set! There is a mismatch in the "
+              << "bitness between the driver and browser. In particular, "
+              << "be sure you are not attempting to use a 64-bit "
+              << "IEDriverServer.exe against IE 10 or 11, even on 64-bit "
+              << "Windows.";
+  }
   hook.Initialize(hook_settings);
   hook.PushData(proxy);
   LRESULT result = ::SendMessage(browser_window_handle,

@@ -182,6 +182,12 @@ class ScreenshotCommandHandler : public IECommandHandler {
     hook_settings.communication_type = OneWay;
 
     HookProcessor hook;
+    if (!hook.CanSetWindowsHook(ie_window_handle)) {
+      LOG(WARN) << "Screenshot will be truncated! There is a mismatch "
+                << "in the bitness between the driver and browser. In "
+                << "particular, you are likely using a 32-bit "
+                << "IEDriverServer.exe and a 64-bit version of IE.";
+    }
     hook.Initialize(hook_settings);
 
     hook.PushData(sizeof(max_image_dimensions), &max_image_dimensions);
