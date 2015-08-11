@@ -68,10 +68,6 @@ class DocumentHost {
   static bool IsStandardsMode(IHTMLDocument2* doc);
   static bool GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info);
 
-  void GetCookies(std::vector<BrowserCookie>* cookies);
-  int AddCookie(const std::string& cookie, const bool validate_document_type);
-  int DeleteCookie(const BrowserCookie& cookie);
-  
   int SetFocusedFrameByIndex(const int frame_index);
   int SetFocusedFrameByName(const std::string& frame_name);
   int SetFocusedFrameByElement(IHTMLElement* frame_element);
@@ -84,6 +80,7 @@ class DocumentHost {
 
   std::string browser_id(void) const { return this->browser_id_; }
   HWND window_handle(void) const { return this->window_handle_; }
+  CookieManager* cookie_manager(void) { return this->cookie_manager_; }
 
  protected:
   void PostQuitMessage(void);
@@ -102,7 +99,6 @@ class DocumentHost {
   }
 
  private:
-  bool IsHtmlPage(IHTMLDocument2* doc);
   int SetFocusedFrameByIdentifier(VARIANT frame_identifier);
 
   CookieManager* cookie_manager_;

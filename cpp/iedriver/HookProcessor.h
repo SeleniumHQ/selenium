@@ -47,6 +47,7 @@ class HookProcessor {
 
   static void WriteBufferToPipe(const int process_id);
 
+  bool CanSetWindowsHook(HWND window_handle);
   void Initialize(const HookSettings& settings);
   void Initialize(const std::string& hook_proc_name, const int hook_proc_type);
   void Dispose(void);
@@ -65,6 +66,7 @@ class HookProcessor {
   bool InstallWindowsHook(const std::string& hook_proc_name,
                           const int hook_proc_type);
   void UninstallWindowsHook(void);
+  bool Is64BitProcess(HANDLE process_handle);
 
   HookCommunicationType communication_type_;
   HWND window_handle_;
