@@ -199,7 +199,7 @@ bool InputManager::WaitForInputEventProcessing(int input_count) {
 
 bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::SetFocusToBrowser";
-  DWORD lock_timeout = 0;
+  UINT_PTR lock_timeout = 0;
   DWORD process_id = 0;
   DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(), &process_id);
   DWORD current_thread_id = ::GetCurrentThreadId();
