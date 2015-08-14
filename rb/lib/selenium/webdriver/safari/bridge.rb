@@ -31,12 +31,14 @@ module Selenium
 
           @command_id ||= 0
 
-          # TODO: handle safari_opts['cleanSession']
           @server = Server.new(safari_options.port, command_timeout)
           @server.start
 
+          safari_args = [prepare_connect_file]
+          safari_args << '--resetSafari' if safari_options.clean_session?
+
           @safari = Browser.new
-          @safari.start(prepare_connect_file)
+          @safari.start(*safari_args)
 
           @server.wait_for_connection
 
