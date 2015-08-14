@@ -209,23 +209,30 @@
       bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
       var rectAfter = bot.dom.getClientRect(elem);
 
-      // Seems like chrome on MacOs is stealing a pixel
-      var expected = goog.labs.userAgent.browser.isChrome() && goog.labs.userAgent.platform.isMacintosh() ?
-                     25 : 26;
+      var horizontalScroll = rectBefore.left - rectAfter.left;
+      var verticalScroll = rectBefore.top - rectAfter.top;
 
-      // If the scrollbar isn't taken into account, the minimum scrolling
-      // needed would be 26 pixels, to bring the full pixel into view.
+      // In the absence of a scrollbar, the minimum scrolling needed to bring
+      // the full pixel into view would be 26 pixels. There is a scrollbar,
+      // however; scrollIntoView should scroll 26px plus the scrollbar
+      // width/height.
+      
       // This should fail on mobile and tablet since the scrollbars aren't shown.
       // This should also fail on IE6 since scrolling only happens to
       // exactly the scrollbar width, which is 17 by default on Windows XP.
       expectedFailures.expectFailureFor(
           goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
-          (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+            (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+
       expectedFailures.run(function() {
-        assertTrue('horizontal scroll did not account for scrollbar' + (rectBefore.left - rectAfter.left),
-            rectBefore.left - rectAfter.left > expected);
-        assertTrue('vertical scroll did not account for scrollbar',
-            rectBefore.top - rectAfter.top > 26);
+        assertTrue('Horizontal scroll did not account for scrollbar. ' +
+            'It scrolled ' + horizontalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar width.',
+            horizontalScroll > 26);
+        assertTrue('Vertical scroll did not account for scrollbar. ' +
+            'It scrolled ' + verticalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar height.',
+            verticalScroll > 26);
       });
     }
   </script>
