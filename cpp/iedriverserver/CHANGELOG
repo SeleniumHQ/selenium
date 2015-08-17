@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.47.0.2
+=========
+ * Corrected build process to create executables runnable on Windows XP.
+
 v2.47.0.1
 =========
  * Added logging messages for IE driver for bitness mismatches. This commit
