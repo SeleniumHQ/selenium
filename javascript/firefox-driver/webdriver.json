@@ -52,7 +52,8 @@
     "toolkit.networkmanager.disable": true,
     "toolkit.telemetry.prompted": 2,
     "toolkit.telemetry.enabled": false,
-    "toolkit.telemetry.rejected": true
+    "toolkit.telemetry.rejected": true,
+    "xpinstall.signatures.required": false
   },
   "mutable": {
     "browser.dom.window.dump.enabled": true,
