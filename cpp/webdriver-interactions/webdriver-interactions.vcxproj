@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}</ProjectGuid>
     <RootNamespace>webdriverinteractions</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -29,14 +30,14 @@
     <UseOfAtl>Static</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <UseOfAtl>Static</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -44,14 +45,14 @@
     <UseOfAtl>Static</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <UseOfAtl>Static</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
