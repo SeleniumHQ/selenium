@@ -165,6 +165,7 @@ class RemoteConnection(object):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
+        self._hostname = parsed_url.hostname
         addr = ""
         if parsed_url.hostname:
             try:
@@ -414,7 +415,8 @@ class RemoteConnection(object):
             headers = {"Connection": 'keep-alive', method: parsed_url.path,
                        "User-Agent": "Python http auth",
                        "Content-type": "application/json;charset=\"UTF-8\"",
-                       "Accept": "application/json"}
+                       "Accept": "application/json",
+                       "Host": self._hostname}
             if parsed_url.username:
                 auth = base64.standard_b64encode('%s:%s' %
                        (parsed_url.username, parsed_url.password)).replace('\n', '')
@@ -452,6 +454,7 @@ class RemoteConnection(object):
 
             request.add_header('Accept', 'application/json')
             request.add_header('Content-Type', 'application/json;charset=UTF-8')
+            request.add_header('Host', self._hostname)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),

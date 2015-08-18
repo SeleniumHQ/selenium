@@ -127,8 +127,13 @@ class BrowserFactory {
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
+  static bool IsWindowsVistaOrGreater(void);
+
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
+  static bool IsWindowsVersionOrGreater(unsigned short major_version,
+                                        unsigned short minor_version,
+                                        unsigned short service_pack);
 
   UINT html_getobject_msg_;
   HINSTANCE oleacc_instance_handle_;

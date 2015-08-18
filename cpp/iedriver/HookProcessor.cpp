@@ -107,6 +107,56 @@ void HookProcessor::Initialize(const HookSettings& settings) {
                                                     settings.hook_procedure_type);
 }
 
+bool HookProcessor::CanSetWindowsHook(HWND window_handle) {
+  int driver_bitness = 32;
+  HANDLE driver_process_handle = ::GetCurrentProcess();
+  if (Is64BitProcess(driver_process_handle)) {
+    driver_bitness = 64;
+  }
+  ::CloseHandle(driver_process_handle);
+
+  DWORD process_id;
+  DWORD thread_id = ::GetWindowThreadProcessId(window_handle, &process_id);
+  HANDLE browser_process_handle = ::OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, process_id);
+  int browser_bitness = 32;
+  if (Is64BitProcess(browser_process_handle)) {
+    browser_bitness = 64;
+  }
+
+  if (driver_bitness != browser_bitness) {
+    LOG(WARN) << "Unable to set Windows hook procedure. Driver is a "
+              << driver_bitness << "-bit process, but browser is a "
+              << browser_bitness << "-bit process.";
+  }
+  return driver_bitness == browser_bitness;
+}
+
+bool HookProcessor::Is64BitProcess(HANDLE process_handle) {
+  bool is_64_bit = false;
+  SYSTEM_INFO system_info;
+  ::GetNativeSystemInfo(&system_info);
+  if (system_info.wProcessorArchitecture == 0) {
+    // wProcessorArchitecture == 0 means processor architecture
+    // is "x86", and therefore 32-bit. A 64-bit process can
+    // never run on the 32-bit OS, so the process must be 32-bit.
+    return false;
+  }
+
+  // If the processor architecture is not x86, the process could
+  // be 64-bit, or it could be 32-bit. We still need to determine
+  // that.
+  BOOL is_emulated;
+  ::IsWow64Process(process_handle, &is_emulated);
+  if (!is_emulated) {
+    return true;
+  }
+
+  // The OS is 64-bit, but the process is running in the 
+  // Windows-on-Windows (Wow64) subsystem, so it must be a 64-bit
+  // process.
+  return false;
+}
+
 bool HookProcessor::InstallWindowsHook(const std::string& hook_proc_name,
                                        const int hook_proc_type) {
   LOG(TRACE) << "Entering HookProcessor::InstallWindowsHook";

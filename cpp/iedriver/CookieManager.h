@@ -35,7 +35,7 @@ class CookieManager {
   void Initialize(HWND window_handle);
   int GetCookies(const std::string& url,
                  std::vector<BrowserCookie>* all_cookies);
-  bool SetCookie(const std::string& url, const std::string& cookie_data);
+  int SetCookie(const std::string& url, const BrowserCookie& cookie);
   bool DeleteCookie(const std::string& url, const BrowserCookie& cookie);
 
  private:
@@ -49,29 +49,9 @@ class CookieManager {
                                 const bool include_secure_cookies,
                                 std::map<std::string, BrowserCookie>* cookies);
 
-  bool RecursivelyDeleteCookie(const std::string& url,
-                               const std::string& name,
-                               const std::string& domain,
-                               const std::string& path,
-                               const bool is_httponly);
-  bool RecurseCookiePath(const std::string& url,
-                         const std::string& name,
-                         const std::string& domain,
-                         const std::string& path,
-                         const bool is_httponly);
-  bool RecurseCookieDomain(const std::string& url,
-                           const std::string& name,
-                           const std::string& domain,
-                           const std::string& path,
-                           const bool is_httponly);
-  bool DeleteCookie(const std::string& url,
-                    const std::string& name,
-                    const std::string& domain,
-                    const std::string& path,
-                    const bool is_httponly);
-  bool SetCookie(const std::string& url,
-                 const std::string& cookie_data,
-                 const bool is_httponly);
+  bool RecursivelyDeleteCookie(const std::string& url, const BrowserCookie& cookie);
+  bool RecurseCookiePath(const std::string& url, const BrowserCookie& cookie);
+  bool RecurseCookieDomain(const std::string& url, const BrowserCookie& cookie);
 
   HWND window_handle_;
 };

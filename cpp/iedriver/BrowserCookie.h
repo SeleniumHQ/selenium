@@ -29,7 +29,11 @@ class BrowserCookie
   BrowserCookie(void);
   virtual ~BrowserCookie(void);
 
+  static BrowserCookie FromJson(const Json::Value& json_cookie);
+
   Json::Value ToJson(void);
+  std::string ToString(void) const;
+  BrowserCookie Copy(void) const;
 
   std::string name(void) const { return this->name_; }
   void set_name(const std::string& name) { this->name_ = name; }
@@ -51,8 +55,8 @@ class BrowserCookie
     this->is_httponly_ = is_httponly;
   }
 
-  long expiration_time(void) const { return this->expiration_time_; }
-  void set_expiration_time(const long expiration_time) {
+  double expiration_time(void) const { return this->expiration_time_; }
+  void set_expiration_time(const double expiration_time) {
     this->expiration_time_ = expiration_time;
   }
 
@@ -61,7 +65,7 @@ class BrowserCookie
   std::string value_;
   std::string domain_;
   std::string path_;
-  long expiration_time_;
+  double expiration_time_;
   bool is_secure_;
   bool is_httponly_;
 };

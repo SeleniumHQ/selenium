@@ -23,7 +23,6 @@
 #include <sddl.h>
 #include <shlguid.h>
 #include <shlobj.h>
-#include <VersionHelpers.h>
 #include <WinInet.h>
 #include "FileUtilities.h"
 #include "logging.h"
@@ -64,7 +63,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
 void BrowserFactory::ClearCache() {
   LOG(TRACE) << "Entering BrowserFactory::ClearCache";
   if (this->clear_cache_) {
-    if (::IsWindowsVistaOrGreater()) {
+    if (IsWindowsVistaOrGreater()) {
       LOG(DEBUG) << "Clearing cache with low mandatory integrity level as required on Windows Vista or later.";
       this->InvokeClearCacheUtility(true);
     }
@@ -635,7 +634,7 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
 
   IWebBrowser2* browser = NULL;
   DWORD context = CLSCTX_LOCAL_SERVER;
-  if (this->ie_major_version_ == 7 && ::IsWindowsVistaOrGreater()) {
+  if (this->ie_major_version_ == 7 && IsWindowsVistaOrGreater()) {
     // ONLY for IE 7 on Windows Vista. XP and below do not have Protected Mode;
     // Windows 7 shipped with IE8.
     context = context | CLSCTX_ENABLE_CLOAKING;
@@ -995,14 +994,14 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
   bool settings_are_valid = true;
   LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
              << ", Windows version supports Protected Mode: "
-	         << ::IsWindowsVistaOrGreater() ? "true" : "false";
+	           << IsWindowsVistaOrGreater() ? "true" : "false";
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
   // Documentation of registry settings can be found at the following
   // Microsoft KnowledgeBase article:
   // http://support.microsoft.com/kb/182569
-  if (this->ie_major_version_ >= 7 && ::IsWindowsVistaOrGreater()) {
+  if (this->ie_major_version_ >= 7 && IsWindowsVistaOrGreater()) {
     HKEY key_handle;
     if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER,
                                         IE_SECURITY_ZONES_REGISTRY_KEY,
@@ -1112,5 +1111,30 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
   }
   return protected_mode_value;
 }
+
+bool BrowserFactory::IsWindowsVersionOrGreater(unsigned short major_version,
+                                               unsigned short minor_version,
+                                               unsigned short service_pack) {
+  OSVERSIONINFOEXW osvi = { sizeof(osvi), 0, 0, 0, 0,{ 0 }, 0, 0 };
+  DWORDLONG        const dwlConditionMask = VerSetConditionMask(
+    VerSetConditionMask(
+      VerSetConditionMask(
+        0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+      VER_MINORVERSION, VER_GREATER_EQUAL),
+    VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+
+  osvi.dwMajorVersion = major_version;
+  osvi.dwMinorVersion = minor_version;
+  osvi.wServicePackMajor = service_pack;
+
+  return VerifyVersionInfoW(&osvi,
+                            VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR,
+                            dwlConditionMask) != FALSE;
+}
+ 
+bool BrowserFactory::IsWindowsVistaOrGreater() {
+  return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
+}
+
 
 } // namespace webdriver
