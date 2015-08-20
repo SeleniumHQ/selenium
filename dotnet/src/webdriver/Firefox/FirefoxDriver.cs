@@ -313,8 +313,8 @@ namespace OpenQA.Selenium.Firefox
         private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
         {
             DesiredCapabilities caps = capabilities as DesiredCapabilities;
-            caps.Capabilities.Remove(FirefoxDriver.ProfileCapabilityName);
-            caps.Capabilities.Remove(FirefoxDriver.BinaryCapabilityName);
+            caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
+            caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
             return caps;
         }
         #endregion
