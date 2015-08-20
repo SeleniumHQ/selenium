@@ -195,40 +195,49 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
 
         private static byte[] ConstructFrame(byte[] payload, FrameType frameType)
         {
-            var memoryStream = new MemoryStream();
-            byte op = Convert.ToByte(Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128, CultureInfo.InvariantCulture);
-
-            memoryStream.WriteByte(op);
-
-            if (payload.Length > ushort.MaxValue)
+            byte[] frame = { 0 };
+            using (var memoryStream = new MemoryStream())
             {
-                memoryStream.WriteByte(127);
-                var lengthBytes = Convert.ToUInt64(payload.Length).ToBigEndianByteArray();
-                memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
-            }
-            else if (payload.Length > 125)
-            {
-                memoryStream.WriteByte(126);
-                var lengthBytes = Convert.ToUInt16(payload.Length).ToBigEndianByteArray();
-                memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
-            }
-            else
-            {
-                memoryStream.WriteByte(Convert.ToByte(payload.Length, CultureInfo.InvariantCulture));
+                byte op = Convert.ToByte(Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128, CultureInfo.InvariantCulture);
+
+                memoryStream.WriteByte(op);
+
+                if (payload.Length > ushort.MaxValue)
+                {
+                    memoryStream.WriteByte(127);
+                    var lengthBytes = Convert.ToUInt64(payload.Length).ToBigEndianByteArray();
+                    memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
+                }
+                else if (payload.Length > 125)
+                {
+                    memoryStream.WriteByte(126);
+                    var lengthBytes = Convert.ToUInt16(payload.Length).ToBigEndianByteArray();
+                    memoryStream.Write(lengthBytes, 0, lengthBytes.Length);
+                }
+                else
+                {
+                    memoryStream.WriteByte(Convert.ToByte(payload.Length, CultureInfo.InvariantCulture));
+                }
+
+                memoryStream.Write(payload, 0, payload.Length);
+
+                frame = memoryStream.ToArray();
             }
 
-            memoryStream.Write(payload, 0, payload.Length);
-
-            return memoryStream.ToArray();
+            return frame;
         }
 
         private static string CreateResponseKey(string requestKey)
         {
+            byte[] responseKeyBytes = { 0 };
             var combined = requestKey + WebSocketResponseGuid;
 
-            var bytes = SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(combined));
+            using (SHA1 hashAlgorithm = SHA1.Create())
+            {
+                responseKeyBytes = hashAlgorithm.ComputeHash(Encoding.ASCII.GetBytes(combined));
+            }
 
-            return Convert.ToBase64String(bytes);
+            return Convert.ToBase64String(responseKeyBytes);
         }
 
         private static string ReadUTF8PayloadData(byte[] bytes)

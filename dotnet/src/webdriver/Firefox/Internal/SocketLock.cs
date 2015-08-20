@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             while (DateTime.Now < maxWait);
 
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", this.lockPort, timeout.TotalMilliseconds));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} milliseconds", this.lockPort, timeout.TotalMilliseconds));
         }
 
         /// <summary>

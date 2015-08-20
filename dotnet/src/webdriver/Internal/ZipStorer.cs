@@ -181,7 +181,7 @@ namespace System.IO.Compression
         public void AddFile(Compression _method, string _pathname, string _filenameInZip, string _comment)
         {
             if (Access == FileAccess.Read)
-                throw new InvalidOperationException("Writing is not alowed");
+                throw new InvalidOperationException("Writing is not allowed");
 
             FileStream stream = new FileStream(_pathname, FileMode.Open, FileAccess.Read);
             AddStream(_method, _filenameInZip, stream, File.GetLastWriteTime(_pathname), _comment);
@@ -198,7 +198,7 @@ namespace System.IO.Compression
         public void AddStream(Compression _method, string _filenameInZip, Stream _source, DateTime _modTime, string _comment)
         {
             if (Access == FileAccess.Read)
-                throw new InvalidOperationException("Writing is not alowed");
+                throw new InvalidOperationException("Writing is not allowed");
 
             long offset;
             if (this.Files.Count==0)
@@ -399,7 +399,7 @@ namespace System.IO.Compression
         public static bool RemoveEntries(ref ZipStorer _zip, List<ZipFileEntry> _zfes)
         {
             if (!(_zip.ZipFileStream is FileStream))
-                throw new InvalidOperationException("RemoveEntries is allowed just over streams of type FileStream");
+                throw new InvalidOperationException("Removing entries is only allowed for file streams");
 
 
             //Get full list of entries
@@ -411,20 +411,20 @@ namespace System.IO.Compression
 
             try
             {
-                ZipStorer tempZip = ZipStorer.Create(tempZipName, string.Empty);
-
-                foreach (ZipFileEntry zfe in fullList)
+                using (ZipStorer tempZip = ZipStorer.Create(tempZipName, string.Empty))
                 {
-                    if (!_zfes.Contains(zfe))
+                    foreach (ZipFileEntry zfe in fullList)
                     {
-                        if (_zip.ExtractFile(zfe, tempEntryName))
+                        if (!_zfes.Contains(zfe))
                         {
-                            tempZip.AddFile(zfe.Method, tempEntryName, zfe.FilenameInZip, zfe.Comment);
+                            if (_zip.ExtractFile(zfe, tempEntryName))
+                            {
+                                tempZip.AddFile(zfe.Method, tempEntryName, zfe.FilenameInZip, zfe.Comment);
+                            }
                         }
                     }
+                    _zip.Close();
                 }
-                _zip.Close();
-                tempZip.Close();
 
                 File.Delete(_zip.FileName);
                 File.Move(tempZipName, _zip.FileName);

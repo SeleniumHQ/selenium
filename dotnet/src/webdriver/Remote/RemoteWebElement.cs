@@ -873,15 +873,14 @@ namespace OpenQA.Selenium.Remote
             string base64zip = string.Empty;
             try
             {
-                using (MemoryStream profileMemoryStream = new MemoryStream())
+                using (MemoryStream fileUploadMemoryStream = new MemoryStream())
                 {
-                    using (ZipStorer zipArchive = ZipStorer.Create(profileMemoryStream, string.Empty))
+                    using (ZipStorer zipArchive = ZipStorer.Create(fileUploadMemoryStream, string.Empty))
                     {
                         string fileName = Path.GetFileName(localFile);
                         zipArchive.AddFile(ZipStorer.Compression.Deflate, localFile, fileName, string.Empty);
+                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
-
-                    base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
