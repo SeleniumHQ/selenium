@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -73,18 +73,7 @@ namespace OpenQA.Selenium.Remote
                         Platform rawAsPlatform = raw as Platform;
                         if (rawAsString != null)
                         {
-                            PlatformType platformInfo = PlatformType.Any;
-                            try
-                            {
-                                platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
-                            }
-                            catch (ArgumentException)
-                            {
-                                // If the server does not pass back a valid platform type, ignore it and
-                                // use PlatformType.Any.
-                            }
-
-                            this.capabilities[CapabilityType.Platform] = new Platform(platformInfo);
+                            this.SetCapability(CapabilityType.Platform, Platform.FromString(rawAsString));
                         }
                         else if (rawAsPlatform != null)
                         {
@@ -173,11 +162,10 @@ namespace OpenQA.Selenium.Remote
                 this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
             }
         }
-
         /// <summary>
         /// Gets the internal capabilities dictionary.
         /// </summary>
-        internal Dictionary<string, object> Capabilities
+        internal Dictionary<string, object> CapabilitiesDictionary
         {
             get { return this.capabilities; }
         }
@@ -317,6 +305,11 @@ namespace OpenQA.Selenium.Remote
             if (this.capabilities.ContainsKey(capability))
             {
                 capabilityValue = this.capabilities[capability];
+                string capabilityValueString = capabilityValue as string;
+                if (capability == CapabilityType.Platform && capabilityValueString != null)
+                {
+                    capabilityValue = Platform.FromString(capabilityValue.ToString());
+                }
             }
 
             return capabilityValue;
@@ -329,7 +322,29 @@ namespace OpenQA.Selenium.Remote
         /// <param name="capabilityValue">The value for the capability.</param>
         public void SetCapability(string capability, object capabilityValue)
         {
-            this.capabilities[capability] = capabilityValue;
+            // Handle the special case of Platform objects. These should
+            // be stored in the underlying dictionary as their protocol
+            // string representation.
+            Platform platformCapabilityValue = capabilityValue as Platform;
+            if (platformCapabilityValue != null)
+            {
+                this.capabilities[capability] = platformCapabilityValue.ProtocolPlatformType;
+            }
+            else
+            {
+                this.capabilities[capability] = capabilityValue;
+            }
+        }
+
+        /// <summary>
+        /// Converts the <see cref="ICapabilities"/> object to a <see cref="Dictionary{TKey, TValue}"/>.
+        /// </summary>
+        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> containing the capabilities.</returns>
+        public Dictionary<string, object> ToDictionary()
+        {
+            // CONSIDER: Instead of returning the raw internal member,
+            // we might want to copy/clone it instead.
+            return this.capabilities;
         }
 
         /// <summary>
