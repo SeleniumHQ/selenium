@@ -72,29 +72,32 @@ public class DefaultToFIFOPriorityTest {
       requests.add(req);
     }
 
-
     // use all the spots ( so 1 ) of the grid so that a queue buils up
     MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
     session = newSessionRequest.getSession();
 
+    assertEquals(registry.getNewSessionRequestCount(), 0);
+    int i = 0;
     // fill the queue with MAX requests.
     for (MockedRequestHandler h : requests) {
+      i++;
       final MockedRequestHandler req = h;
       new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           req.process();
         }
       }).start();
+      while (registry.getNewSessionRequestCount() != i) {
+        Thread.sleep(250);
+      }
+      assertEquals(registry.getNewSessionRequestCount(), i);
     }
-
 
     // free the grid : the queue is consumed, and the test with the highest
     // priority should be processed.
-    while (requests.size() != MAX) {
-      Thread.sleep(250);
-    }
     registry.terminateSynchronousFOR_TEST_ONLY(session);
+
   }
 
 
@@ -110,6 +113,7 @@ public class DefaultToFIFOPriorityTest {
       }
       Thread.sleep(250);
     }
+
     assertNotNull(requests.get(0).getSession());
     assertEquals(1, requests.get(0).getRequest().getDesiredCapabilities().get("_priority"));
   }
