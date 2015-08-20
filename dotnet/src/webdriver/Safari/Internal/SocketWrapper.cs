@@ -43,6 +43,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="socket">The <see cref="Socket"/> to wrap.</param>
         public SocketWrapper(Socket socket)
         {
+            if (socket == null)
+            {
+                throw new ArgumentNullException("socket", "Socket to wrap must not be null");
+            }
+
             this.underlyingSocket = socket;
             if (this.underlyingSocket.Connected)
             {
@@ -132,6 +137,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="buffer">The data to be sent.</param>
         public void Send(byte[] buffer)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer", "Buffer to send must not be null");
+            }
+
             this.stream.BeginWrite(buffer, 0, buffer.Length, this.OnDataSend, null);
         }
 
@@ -142,6 +152,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="offset">The offset into the buffer at which the data will be read.</param>
         public void Receive(byte[] buffer, int offset)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer", "Buffer to receive must not be null");
+            }
+
             this.stream.BeginRead(buffer, offset, buffer.Length, this.OnDataReceive, buffer);
         }
 

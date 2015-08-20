@@ -266,9 +266,9 @@ namespace OpenQA.Selenium.Safari.Internal
             this.Socket.Receive(buffer, 0);
         }
 
-        private void CreateHandler(IEnumerable<byte> data)
+        private void CreateHandler(IEnumerable<byte> dataToParse)
         {
-            var request = this.parser.Parse(data.ToArray(), this.scheme);
+            var request = this.parser.Parse(dataToParse.ToArray(), this.scheme);
             if (request == null)
             {
                 return;

@@ -423,7 +423,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (this.profilePort == 0)
             {
-                throw new WebDriverException("You must set the port to listen on before updating user.js");
+                throw new WebDriverException("You must set the port to listen on before updating user preferences file");
             }
 
             string userPrefs = Path.Combine(this.profileDir, UserPreferencesFileName);
