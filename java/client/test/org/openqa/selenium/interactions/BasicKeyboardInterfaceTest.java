@@ -116,7 +116,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, HTMLUNIT})
   @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
