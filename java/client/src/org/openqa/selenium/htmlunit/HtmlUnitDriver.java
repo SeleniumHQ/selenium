@@ -249,6 +249,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setProxySettings(Proxy.extractFrom(capabilities));
   }
 
+  public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
+  }
+
   // Package visibility for testing
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
     String browserName = null;
