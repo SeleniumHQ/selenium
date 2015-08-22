@@ -354,7 +354,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = MARIONETTE, reason = "untested user agent")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -385,7 +384,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = MARIONETTE, reason = "untested user agents")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -402,7 +400,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = MARIONETTE, reason = "untested user agents")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
@@ -745,10 +742,9 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Untested browsers;" +
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, reason = "Untested browsers;" +
       " Safari: cannot type on contentEditable with synthetic events",
       issues = {3127})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
@@ -772,11 +768,10 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, MARIONETTE},
+  @Ignore(value = {IE, SAFARI, MARIONETTE, HTMLUNIT},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
-  @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldBeAbleToTypeIntoTinyMCE() {
@@ -793,7 +788,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = SAFARI, reason = "Untested")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
