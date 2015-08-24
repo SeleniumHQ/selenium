@@ -17,64 +17,81 @@
 
 package org.openqa.selenium.firefox;
 
+import com.google.common.base.Throwables;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.MarionetteConnection;
-import org.openqa.selenium.interactions.ActionChainExecutor;
-import org.openqa.selenium.interactions.CanPerformActionChain;
-import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.remote.RemoteActionChainExecutor;
-import org.openqa.selenium.remote.RemoteExecuteMethod;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.FileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox using Marionette interface.
  */
 @Beta
-public class MarionetteDriver extends FirefoxDriver implements CanPerformActionChain {
+public class MarionetteDriver extends RemoteWebDriver {
+
+  /**
+   * Port which is used by default.
+   */
+  private final static int DEFAULT_PORT = 0;
 
   public MarionetteDriver() {
-    this(new FirefoxBinary(), null);
+    this(null, null, DEFAULT_PORT);
   }
 
-  public MarionetteDriver(FirefoxProfile profile) {
-    super(profile);
+  public MarionetteDriver(Capabilities capabilities) {
+    this(null, capabilities, DEFAULT_PORT);
   }
 
-  public MarionetteDriver(Capabilities desiredCapabilities) {
-    super(desiredCapabilities);
+  public MarionetteDriver(int port) {
+    this(null, null, port);
   }
 
-  public MarionetteDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    super(desiredCapabilities, requiredCapabilities);
+  public MarionetteDriver(GeckoDriverService service) {
+    this(service, null, DEFAULT_PORT);
   }
 
-  public MarionetteDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    super(binary, profile);
+  public MarionetteDriver(GeckoDriverService service, Capabilities capabilities) {
+    this(service, capabilities, DEFAULT_PORT);
   }
 
-  public MarionetteDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    super(binary, profile, capabilities);
-  }
-
-  public MarionetteDriver(FirefoxBinary binary, FirefoxProfile profile,
-                          Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    super(binary, profile, desiredCapabilities, requiredCapabilities);
-  }
-
-  protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
-      String host) {
-    Lock lock = obtainLock(profile);
-    try {
-      FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
-
-      return new MarionetteConnection(lock, bin, profile, host);
-    } catch (Exception e) {
-      throw new WebDriverException(e);
+  public MarionetteDriver(GeckoDriverService service, Capabilities capabilities,
+                                int port) {
+    if (capabilities == null) {
+      capabilities = DesiredCapabilities.internetExplorer();
     }
+
+    if (service == null) {
+      service = setupService(capabilities, port);
+    }
+    run(service, capabilities);
   }
 
-  public ActionChainExecutor getActionChainExecutor() {
-    return new RemoteActionChainExecutor(new RemoteExecuteMethod(this));
+  private void run(GeckoDriverService service, Capabilities capabilities) {
+    setCommandExecutor(new DriverCommandExecutor(service));
+
+    startSession(capabilities);
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+      "Setting the file detector only works on remote webdriver instances obtained " +
+      "via RemoteWebDriver");
+  }
+
+  private GeckoDriverService setupService(Capabilities caps, int port) {
+    try {
+      GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
+      builder.usingPort(port);
+
+      return builder.build();
+
+    } catch (IllegalStateException ex) {
+      throw Throwables.propagate(ex);
+    }
   }
 }
