@@ -71,8 +71,13 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         profile.setEnableNativeEvents(enableNativeEvents);
         desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
 
-        return driverClass.getConstructor(Capabilities.class,
-            Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
+        try {
+          return driverClass.getConstructor(Capabilities.class,
+                                            Capabilities.class)
+            .newInstance(desiredCapsToUse, requiredCapabilities);
+        } catch (NoSuchMethodException ex) {
+          return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
+        }
       }
 
       try {
