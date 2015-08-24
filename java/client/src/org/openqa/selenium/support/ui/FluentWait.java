@@ -19,6 +19,7 @@ package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -75,7 +76,7 @@ public class FluentWait<T> implements Wait<T> {
 
   private Duration timeout = FIVE_HUNDRED_MILLIS;
   private Duration interval = FIVE_HUNDRED_MILLIS;
-  private String message = null;
+  private Supplier<String> messageSupplier = () -> null;
 
   private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
 
@@ -117,7 +118,18 @@ public class FluentWait<T> implements Wait<T> {
    * @return A self reference.
    */
   public FluentWait<T> withMessage(String message) {
-    this.message = message;
+    this.messageSupplier = () -> message;
+    return this;
+  }
+
+  /**
+   * Sets the message to be evaluated and displayed when time expires.
+   *
+   * @param messageSupplier to be evaluated on failure and appended to default.
+   * @return A self reference.
+   */
+  public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
+    this.messageSupplier = messageSupplier;
     return this;
   }
 
@@ -221,6 +233,9 @@ public class FluentWait<T> implements Wait<T> {
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
       if (!clock.isNowBefore(end)) {
+        String message = messageSupplier != null ? 
+            messageSupplier.get() : null;
+
         String toAppend = message == null ?
             " waiting for " + isTrue.toString() : ": " + message;
 
