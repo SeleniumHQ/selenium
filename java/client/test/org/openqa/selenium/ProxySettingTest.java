@@ -163,7 +163,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyWithRequiredCapability() {
@@ -179,7 +178,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void requiredProxyCapabilityShouldHavePriority() {

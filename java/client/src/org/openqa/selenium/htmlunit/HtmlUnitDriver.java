@@ -79,6 +79,7 @@ import org.w3c.dom.NodeList;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.InteractivePage;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -247,6 +248,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
     setProxySettings(Proxy.extractFrom(capabilities));
+  }
+
+  public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
   }
 
   // Package visibility for testing
@@ -554,7 +559,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private void resetKeyboardAndMouseState() {
     keyboard = new HtmlUnitKeyboard(this);
-    mouse = new HtmlUnitMouse(this, keyboard);
+    mouse = new HtmlUnitMouse(keyboard);
   }
 
   protected void pickWindow() {
@@ -1319,7 +1324,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Page page = lastPage();
       if (page instanceof HtmlPage) {
-        DomElement element = ((HtmlPage) page).getFocusedElement();
+        DomElement element = ((InteractivePage) page).getFocusedElement();
         if (element == null || element instanceof HtmlHtml) {
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");

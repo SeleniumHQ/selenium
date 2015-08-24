@@ -12,21 +12,21 @@ java_library(name = 'jetty-websocket',
 )
 
 prebuilt_jar(name = 'websocket-api',
-  binary_jar = 'websocket-api-9.2.11.v20150529.jar',
+  binary_jar = 'websocket-api-9.2.12.v20150709.jar',
 )
 
 prebuilt_jar(name = 'websocket-client',
-  binary_jar = 'websocket-client-9.2.11.v20150529.jar',
+  binary_jar = 'websocket-client-9.2.12.v20150709.jar',
 )
 
 prebuilt_jar(name = 'websocket-common',
-  binary_jar = 'websocket-common-9.2.11.v20150529.jar',
+  binary_jar = 'websocket-common-9.2.12.v20150709.jar',
 )
 
 prebuilt_jar(name = 'jetty-util',
-  binary_jar = 'jetty-util-9.2.11.v20150529.jar',
+  binary_jar = 'jetty-util-9.2.12.v20150709.jar',
 )
 
 prebuilt_jar(name = 'jetty-io',
-  binary_jar = 'jetty-io-9.2.11.v20150529.jar',
+  binary_jar = 'jetty-io-9.2.12.v20150709.jar',
 )

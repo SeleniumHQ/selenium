@@ -1,6 +1,6 @@
 java_library(name = "htmlunit",
   deps = [
-    "htmlunit-2.17.jar",
+    "htmlunit-2.18.jar",
     "htmlunit-core-js-2.17.jar",
     "//third_party/java/commons:commons-lang",
     "//third_party/java/commons-collections",
