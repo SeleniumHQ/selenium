@@ -237,6 +237,35 @@ function testUntilElementLocated() {
       });
 }
 
+function runNoElementFoundTest(locator, locatorStr) {
+  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
+    callback(null, bot.response.createResponse([]));
+  });
+
+  function expectedFailure() {
+    fail('expected condition to timeout');
+  }
+
+  return driver.wait(until.elementLocated(locator), 100)
+      .then(expectedFailure, function(error) {
+        var expected = 'Waiting for element to be located ' + locatorStr;
+        var lines = error.message.split(/\n/, 2);
+        assertEquals(expected, lines[0]);
+        assertRegExp(/^Wait timed out after \d+ms$/, lines[1]);
+      });
+}
+
+function testUntilElementLocated_elementNeverFound_byLocator() {
+  return runNoElementFoundTest(By.id('quux'), 'By.id("quux")');
+}
+
+function testUntilElementLocated_elementNeverFound_byHash() {
+  return runNoElementFoundTest({id: 'quux'}, 'By.id("quux")');
+}
+
+function testUntilElementLocated_elementNeverFound_byFunction() {
+  return runNoElementFoundTest(goog.nullFunction, 'by function()');
+}
 
 function testUntilElementsLocated() {
   var responses = [[], [{ELEMENT: 'abc123'}, {ELEMENT: 'foo'}], ['end']];
@@ -257,6 +286,36 @@ function testUntilElementsLocated() {
       });
 }
 
+function runNoElementsFoundTest(locator, locatorStr) {
+  executor.on(CommandName.FIND_ELEMENTS, function(cmd, callback) {
+    callback(null, bot.response.createResponse([]));
+  });
+
+  function expectedFailure() {
+    fail('expected condition to timeout');
+  }
+
+  return driver.wait(until.elementsLocated(locator), 100)
+      .then(expectedFailure, function(error) {
+        var expected =
+            'Waiting for at least one element to be located ' + locatorStr;
+        var lines = error.message.split(/\n/, 2);
+        assertEquals(expected, lines[0]);
+        assertRegExp(/^Wait timed out after \d+ms$/, lines[1]);
+      });
+}
+
+function testUntilElementsLocated_noElementsEverFound_byLocator() {
+  return runNoElementsFoundTest(By.id('quux'), 'By.id("quux")');
+}
+
+function testUntilElementsLocated_noElementsEverFound_byHash() {
+  return runNoElementsFoundTest({id: 'quux'}, 'By.id("quux")');
+}
+
+function testUntilElementsLocated_noElementsEverFound_byFunction() {
+  return runNoElementsFoundTest(goog.nullFunction, 'by function()');
+}
 
 function testUntilStalenessOf() {
   var responses = [
