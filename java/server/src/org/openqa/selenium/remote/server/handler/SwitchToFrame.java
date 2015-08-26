@@ -59,6 +59,6 @@ public class SwitchToFrame extends WebDriverHandler<Void> implements JsonParamet
 
   @Override
   public String toString() {
-    return String.format("[switch to frame: %s]", id);
+    return String.format("[switch to frame: %s]", (id == null ? "default" : id));
   }
 }
