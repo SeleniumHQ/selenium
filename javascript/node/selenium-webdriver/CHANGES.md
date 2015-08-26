@@ -1,6 +1,8 @@
 ## v2.46.1
 
 * Fixed internal module loading on Windows.
+* Fixed error message format on timeouts for `until.elementLocated()`
+    and `until.elementsLocated()`.
 
 ## v2.46.0
 
