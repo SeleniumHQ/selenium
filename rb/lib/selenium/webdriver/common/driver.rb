@@ -54,6 +54,8 @@ module Selenium
                      IE::Bridge.new(opts)
                    when :chrome
                      Chrome::Bridge.new(opts)
+                   when :edge
+                     Edge::Bridge.new(opts)
                    when :android
                      Android::Bridge.new(opts)
                    when :iphone

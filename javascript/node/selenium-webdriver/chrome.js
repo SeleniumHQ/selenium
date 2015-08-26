@@ -119,6 +119,7 @@ var fs = require('fs'),
 
 var webdriver = require('./index'),
     executors = require('./executors'),
+    http = require('./http'),
     io = require('./io'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -131,6 +132,32 @@ var webdriver = require('./index'),
  */
 var CHROMEDRIVER_EXE =
     process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver';
+
+
+/**
+ * Custom command names supported by ChromeDriver.
+ * @enum {string}
+ */
+var Command = {
+  LAUNCH_APP: 'launchApp'
+};
+
+
+/**
+ * Creates a command executor with support for ChromeDriver's custom commands.
+ * @param {!webdriver.promise.Promise<string>} url The server's URL.
+ * @return {!webdriver.CommandExecutor} The new command executor.
+ */
+function createExecutor(url) {
+  return new executors.DeferredExecutor(url.then(function(url) {
+    var client = new http.HttpClient(url);
+    var executor = new http.Executor(client);
+    executor.defineCommand(
+        Command.LAUNCH_APP,
+        'POST', '/session/:sessionId/chromium/launch_app');
+    return executor;
+  }));
+}
 
 
 /**
@@ -774,7 +801,7 @@ Options.prototype.serialize = function() {
  */
 var Driver = function(opt_config, opt_service, opt_flow) {
   var service = opt_service || getDefaultService();
-  var executor = executors.createExecutor(service.start());
+  var executor = createExecutor(service.start());
 
   var capabilities =
       opt_config instanceof Options ? opt_config.toCapabilities() :
@@ -795,6 +822,19 @@ util.inherits(Driver, webdriver.WebDriver);
  * @override
  */
 Driver.prototype.setFileDetector = function() {
+};
+
+
+/**
+ * Schedules a command to launch Chrome App with given ID.
+ * @param {string} id ID of the App to launch.
+ * @return {!webdriver.promise.Promise<void>} A promise that will be resolved
+ *     when app is launched.
+ */
+Driver.prototype.launchApp = function(id) {
+  return this.schedule(
+      new webdriver.Command(Command.LAUNCH_APP).setParameter('id', id),
+      'Driver.launchApp()');
 };
 
 

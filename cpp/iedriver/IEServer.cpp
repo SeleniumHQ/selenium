@@ -16,7 +16,6 @@
 
 #include "IEServer.h"
 #include "IESession.h"
-#include <VersionHelpers.h>
 #include "FileUtilities.h"
 #include "logging.h"
 

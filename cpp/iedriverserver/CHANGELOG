@@ -9,6 +9,33 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.47.0.2
+=========
+ * Corrected build process to create executables runnable on Windows XP.
+
+v2.47.0.1
+=========
+ * Added logging messages for IE driver for bitness mismatches. This commit
+   adds logging messages at the warning level whenever a mismatch in bitness
+   is detected between the browser and driver. This is a particularly bad
+   problem in cases where users have 64-bit Windows, and (incorrectly) assume
+   they automatically should use the 64-bit IEDriverServer.exe when running
+   with IE 10 or 11. Since the process that actually renders content in IE 10
+   and 11 is almost always 32-bit, even on 64-bit Windows, it is almost always
+   the proper decision to use the 32-bit IE driver. It is now very clear from
+   log messages when this state of affairs exists.
+ * Enabled fast failure for cookie manipulation in IE. The refactor of cookie
+   handling for the IE driver introduces an incompatibility with the 64-bit IE
+   driver and IE 10 and 11 running on 64-bit Windows. As is the case with
+   sending keystrokes and creating screenshots, a Windows hook procedure is now
+   used for getting and settingcookies in IE. That means that in IE 10 and 11
+   on 64-bit Windows, where the content rendering process is still 32-bit, you
+   **must** use the 32-bit IEDriverServer.exe in order to manipulate cookies.
+   This commit will now cause exceptions to be thrown if you attempt to set
+   or get cookies using the 64-bit driver against a 32-bit version of IE (or
+   vice versa), but in particular, this will affect users who mistakenly try
+   to use the 64-bit executable with IE 10 or 11 in 64-bit Windows.
+
 v2.47.0.0
 =========
  * Release to synchronize with release of Selenium project.

@@ -94,9 +94,6 @@ class InputManager {
   void AddMouseInput(HWND window_handle, long flag, int x, int y);
   void AddKeyboardInput(HWND window_handle, wchar_t character);
   
-  //void InstallInputEventHooks(void);
-  //void UninstallInputEventHooks(void);
-  //HHOOK InstallWindowsHook(std::string hook_procedure_name, int hook_type);
   bool WaitForInputEventProcessing(int input_count);
 
   bool use_native_events_;

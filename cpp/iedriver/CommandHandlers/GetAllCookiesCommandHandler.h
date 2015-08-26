@@ -45,7 +45,18 @@ class GetAllCookiesCommandHandler : public IECommandHandler {
     }
 
     std::vector<BrowserCookie> cookies;
-    browser_wrapper->GetCookies(&cookies);
+    status_code = browser_wrapper->cookie_manager()->GetCookies(
+        browser_wrapper->GetCurrentUrl(),
+        &cookies);
+    if (status_code == EUNHANDLEDERROR) {
+      std::string error = "Could not retrieve cookies. The most common cause ";
+      error.append("of this error is a mismatch in the bitness between the ");
+      error.append("driver and browser. In particular, be sure you are not ");
+      error.append("attempting to use a 64-bit IEDriverServer.exe against ");
+      error.append("IE 10 or 11, even on 64-bit Windows.");
+      response->SetErrorResponse(status_code, error);
+      return;
+    }
     std::vector<BrowserCookie>::iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
       response_value.append(it->ToJson());

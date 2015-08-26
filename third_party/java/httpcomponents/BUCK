@@ -11,8 +11,8 @@ java_library(name = "httpclient",
 )
 
 prebuilt_jar(name = 'client',
-  binary_jar = 'httpclient-4.4.1.jar',
-  source_jar = 'httpclient-4.4.1-sources.jar',
+  binary_jar = 'httpclient-4.5.jar',
+  source_jar = 'httpclient-4.5-sources.jar',
 )
 
 prebuilt_jar(name = 'core',
@@ -21,6 +21,6 @@ prebuilt_jar(name = 'core',
 )
 
 prebuilt_jar(name = 'mime',
-  binary_jar = 'httpmime-4.4.1.jar',
-  source_jar = 'httpmime-4.4.1-sources.jar',
+  binary_jar = 'httpmime-4.5.jar',
+  source_jar = 'httpmime-4.5-sources.jar',
 )

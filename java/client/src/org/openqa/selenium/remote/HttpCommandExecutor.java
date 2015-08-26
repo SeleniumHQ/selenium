@@ -58,6 +58,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     this(ImmutableMap.<String, CommandInfo>of(), addressOfRemoteServer);
   }
 
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports non-standard
+   * {@code additionalCommands} in addition to the standard.
+   */
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
     this(additionalCommands, addressOfRemoteServer, getDefaultClientFactory());

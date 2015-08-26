@@ -252,8 +252,9 @@ task :test_rb => [
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
+ ("//rb:edge-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test",
+ ("//rb:safari-test" if mac?),
   "//rb:phantomjs-test"
 ].compact
 
@@ -404,6 +405,7 @@ task :py_install =>  "//py:install"
 task :py_release => :py_prep_for_install_release do
     sh "grep -v test setup.py > setup_release.py; mv setup_release.py setup.py"
     sh "python setup.py sdist upload"
+    sh "python setup.py bdist_wheel upload"
     sh "git checkout setup.py"
 end
 

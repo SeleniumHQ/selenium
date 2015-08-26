@@ -426,7 +426,7 @@ class WebElement(object):
         return self._id
 
     def __eq__(self, element):
-        return self._id == element.id
+        return hasattr(element, 'id') and self._id == element.id
 
     def __ne__(self, element):
         return not self.__eq__(element)

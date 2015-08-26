@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,8 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-unless '1.9'.respond_to?(:bytesize)
-  class String
-    alias :bytesize :size
-  end
-end
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+
+class ChromeRemoteConnection(RemoteConnection):
+
+    def __init__(self, remote_server_addr, keep_alive=True):
+        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
+        self._commands["launchApp"] = ('POST',
+            '/session/$sessionId/chromium/launch_app')

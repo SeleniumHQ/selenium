@@ -1,3 +1,8 @@
+Selenium 2.47.1
+* Fix the issue of deleting the profile when shutting down Firefox
+* WebElement __eq__ compares against more types
+* Issues fixed: 850
+
 Selenium 2.47.0
 * Add in support for when communicating with a Spec compliant browsers
 * Initial support for Edge using EdgeDriver

@@ -21,12 +21,14 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.Map;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link DriverService} that lives
@@ -45,6 +47,16 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    */
   public DriverCommandExecutor(DriverService service) {
     super(service.getUrl());
+    this.service = service;
+  }
+
+  /**
+   * Creates an {@link DriverCommandExecutor} that supports non-standard
+   * {@code additionalCommands} in addition to the standard.
+   */
+  protected DriverCommandExecutor(
+      DriverService service, Map<String, CommandInfo> additionalCommands) {
+    super(additionalCommands, service.getUrl());
     this.service = service;
   }
 

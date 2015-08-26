@@ -26,9 +26,13 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
-  it "should submit" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "submitButton").submit
+  # Edge does not yet support /session/:sessionId/element/:id/submit
+  #   http://dev.modern.ie/platform/status/webdriver/details/
+  not_compliant_on :browser => :edge do
+    it "should submit" do
+      driver.navigate.to url_for("formPage.html")
+      driver.find_element(:id, "submitButton").submit
+    end
   end
 
   it "should send string keys" do
@@ -47,7 +51,7 @@ describe "Element" do
   end
 
   # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-  not_compliant_on({:browser => [:android, :iphone, :safari]}, {:browser => :phantomjs, :platform => :windows}) do
+  not_compliant_on({:browser => [:android, :iphone, :safari, :edge]}, {:browser => :phantomjs, :platform => :windows}) do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -69,9 +73,11 @@ describe "Element" do
     driver.find_element(:id, "withText").attribute("rows").should == "5"
   end
 
-  it "should return nil for non-existent attributes" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "withText").attribute("nonexistent").should be_nil
+  not_compliant_on :browser => :edge do
+    it "should return nil for non-existent attributes" do
+      driver.navigate.to url_for("formPage.html")
+      driver.find_element(:id, "withText").attribute("nonexistent").should be_nil
+    end
   end
 
   it "should clear" do
@@ -113,15 +119,21 @@ describe "Element" do
     driver.find_element(:class, "header").should be_displayed
   end
 
-  it "should get location" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    loc = driver.find_element(:class, "header").location
+  # Edge does not yet support /session/:sessionId/element/:id/location
+  #   http://dev.modern.ie/platform/status/webdriver/details/
+  not_compliant_on :browser => :edge do
+    it "should get location" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      loc = driver.find_element(:class, "header").location
 
-    loc.x.should >= 1
-    loc.y.should >= 1
+      loc.x.should >= 1
+      loc.y.should >= 1
+    end
   end
 
-  not_compliant_on :browser => [:iphone] do
+  # Edge does not yet support /session/:sessionId/element/:id/location_in_view
+  #   http://dev.modern.ie/platform/status/webdriver/details/
+  not_compliant_on :browser => [:iphone, :edge] do
     it "should get location once scrolled into view" do
       driver.navigate.to url_for("javascriptPage.html")
       loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
@@ -131,12 +143,16 @@ describe "Element" do
     end
   end
 
-  it "should get size" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    size = driver.find_element(:class, "header").size
+  # Edge does not yet support /session/:sessionId/element/:id/size
+  #   http://dev.modern.ie/platform/status/webdriver/details/
+  not_compliant_on :browser => :edge do
+    it "should get size" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      size = driver.find_element(:class, "header").size
 
-    size.width.should > 0
-    size.height.should > 0
+      size.width.should > 0
+      size.height.should > 0
+    end
   end
 
   compliant_on :driver => [:ie, :chrome] do # Firefox w/native events: issue 1771
@@ -167,14 +183,17 @@ describe "Element" do
     end
   end
 
-  it "should know when two elements are equal" do
-    driver.navigate.to url_for("simpleTest.html")
+  # Edge does not yet support xpath
+  not_compliant_on :browser => :edge do
+    it "should know when two elements are equal" do
+      driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_element(:tag_name, 'body')
-    xbody = driver.find_element(:xpath, "//body")
+      body = driver.find_element(:tag_name, 'body')
+      xbody = driver.find_element(:xpath, "//body")
 
-    body.should == xbody
-    body.should eql(xbody)
+      body.should == xbody
+      body.should eql(xbody)
+    end
   end
 
   not_compliant_on :browser => :phantomjs do
@@ -190,22 +209,28 @@ describe "Element" do
     end
   end
 
-  it "should return the same #hash for equal elements when found by Driver#find_element" do
-    driver.navigate.to url_for("simpleTest.html")
+  # Edge does not yet support xpath
+  not_compliant_on :browser => :edge do
+    it "should return the same #hash for equal elements when found by Driver#find_element" do
+      driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_element(:tag_name, 'body')
-    xbody = driver.find_element(:xpath, "//body")
+      body = driver.find_element(:tag_name, 'body')
+      xbody = driver.find_element(:xpath, "//body")
 
-    body.hash.should == xbody.hash
+      body.hash.should == xbody.hash
+    end
   end
 
-  it "should return the same #hash for equal elements when found by Driver#find_elements" do
-    driver.navigate.to url_for("simpleTest.html")
+  # Edge does not yet support xpath
+  not_compliant_on :browser => :edge do
+    it "should return the same #hash for equal elements when found by Driver#find_elements" do
+      driver.navigate.to url_for("simpleTest.html")
 
-    body  = driver.find_elements(:tag_name, 'body').fetch(0)
-    xbody = driver.find_elements(:xpath, "//body").fetch(0)
+      body = driver.find_elements(:tag_name, 'body').fetch(0)
+      xbody = driver.find_elements(:xpath, "//body").fetch(0)
 
-    body.hash.should == xbody.hash
+      body.hash.should == xbody.hash
+    end
   end
 
 end

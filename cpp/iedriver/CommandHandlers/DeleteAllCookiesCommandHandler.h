@@ -44,10 +44,14 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
     }
 
     std::vector<BrowserCookie> cookies;
-    browser_wrapper->GetCookies(&cookies);
+    browser_wrapper->cookie_manager()->GetCookies(
+        browser_wrapper->GetCurrentUrl(),
+        &cookies);
     std::vector<BrowserCookie>::const_iterator it = cookies.begin();
     for (; it != cookies.end(); ++it) {
-      status_code = browser_wrapper->DeleteCookie(*it);
+      browser_wrapper->cookie_manager()->DeleteCookie(
+          browser_wrapper->GetCurrentUrl(),
+          *it);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Unable to delete cookie with name '" + it->name() + "'");

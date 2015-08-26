@@ -18,6 +18,7 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -30,7 +31,6 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -167,7 +167,7 @@ public class ChromeDriver extends RemoteWebDriver
    * @param capabilities The capabilities required from the ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new DriverCommandExecutor(service), capabilities);
+    super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new  RemoteWebStorage(getExecuteMethod());
   }
@@ -197,5 +197,12 @@ public class ChromeDriver extends RemoteWebDriver
   @Override
   public void setLocation(Location location) {
     locationContext.setLocation(location);
+  }
+
+  /**
+   * Launches Chome app specified by id.
+   */
+  public void launchApp(String id) {
+    execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
 }

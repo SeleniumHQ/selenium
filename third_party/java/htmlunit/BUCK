@@ -1,6 +1,6 @@
 prebuilt_jar(name = 'htmlunit',
-  binary_jar = 'htmlunit-2.17.jar',
-  source_jar = 'htmlunit-2.17-sources.jar',
+  binary_jar = 'htmlunit-2.18.jar',
+  source_jar = 'htmlunit-2.18-sources.jar',
   deps = [
     ':js-core',
     '//third_party/java/httpcomponents:httpclient',
