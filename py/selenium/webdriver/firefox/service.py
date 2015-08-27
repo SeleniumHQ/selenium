@@ -56,12 +56,13 @@ class Service(object):
            or when it can't connect to the service
         """
         env = self.env or os.environ
+        self.log_file = file("geckodriver.log", "w")
         try:
             #import pdb; pdb.set_trace()
             self.process = subprocess.Popen([
               self.path,
               "-b", self.firefox_binary, '--webdriver-port', "%d" % self.port],
-              env=env, stdout=PIPE)
+              env=env, stdout=self.log_file, stderr=self.log_file)
         except Exception as e:
             raise WebDriverException(
                 "'" + os.path.basename(self.path) + "' executable needs to be \

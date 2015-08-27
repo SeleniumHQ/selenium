@@ -59,6 +59,7 @@ Generated/
 ipch/
 /iedriver.log
 /phantomjsdriver.log
+geckodriver.log
 .tags
 .ruby-version
 GPATH
