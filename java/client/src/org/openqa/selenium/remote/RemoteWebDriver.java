@@ -488,7 +488,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   // Misc
 
   public String getPageSource() {
-    return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
+    if (getW3CStandardComplianceLevel() == 0) {
+      return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
+    } else {
+      String script = "var source = document.documentElement.outerHTML; \n"
+                      + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
+                      + "return source;";
+      return (String) executeScript(script);
+    }
   }
 
   public void close() {
@@ -807,14 +814,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     protected class RemoteTimeouts implements Timeouts {
 
       public Timeouts implicitlyWait(long time, TimeUnit unit) {
-        execute(DriverCommand.IMPLICITLY_WAIT, ImmutableMap.of("ms",
-            TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
+        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
+            "type", "implicit",
+            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
 
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_SCRIPT_TIMEOUT,
-            ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
+            "type", "script",
+            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
 
