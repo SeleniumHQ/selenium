@@ -110,7 +110,7 @@ public class ErrorCodes {
       .put(SUCCESS, "success")
       .put(TIMEOUT, "timeout")
       .put(UNABLE_TO_SET_COOKIE, "unable to set cookie")
-      .put(UNEXPECTED_ALERT_PRESENT, "no such alert") // @Beta: not sure if this is the right name
+      .put(NO_ALERT_PRESENT, "no such alert")
       .put(UNHANDLED_ERROR, "unhandled error")
       .put(UNKNOWN_COMMAND, "unknown command")
       .put(XPATH_LOOKUP_ERROR, "invalid selector")
