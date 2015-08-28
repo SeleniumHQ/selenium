@@ -206,11 +206,19 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementById(String using) {
-    return findElement("id", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElement("id", using);
+    } else {
+      return findElementByCssSelector("#" + using);
+    }
   }
 
   public List<WebElement> findElementsById(String using) {
-    return findElements("id", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElements("id", using);
+    } else {
+      return findElementsByCssSelector("#" + using);
+    }
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -222,19 +230,35 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByName(String using) {
-    return findElement("name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElement("name", using);
+    } else {
+      return findElementByCssSelector("*[name=" + using + "]");
+    }
   }
 
   public List<WebElement> findElementsByName(String using) {
-    return findElements("name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElements("name", using);
+    } else {
+      return findElementsByCssSelector("*[name=" + using + "]");
+    }
   }
 
   public WebElement findElementByClassName(String using) {
-    return findElement("class name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElement("class name", using);
+    } else {
+      return findElementByCssSelector("." + using);
+    }
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    return findElements("class name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElements("class name", using);
+    } else {
+      return findElementsByCssSelector("." + using);
+    }
   }
 
   public WebElement findElementByCssSelector(String using) {
@@ -262,11 +286,19 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByTagName(String using) {
-    return findElement("tag name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElement("tag name", using);
+    } else {
+      return findElementByCssSelector(using);
+    }
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return findElements("tag name", using);
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      return findElements("tag name", using);
+    } else {
+      return findElementsByCssSelector(using);
+    }
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {
