@@ -354,8 +354,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Point getLocation() {
-    Response response =
-        execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+    Response response = parent.getW3CStandardComplianceLevel() == 0
+                      ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
+                      : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
     int x = ((Number) rawPoint.get("x")).intValue();
     int y = ((Number) rawPoint.get("y")).intValue();
@@ -364,7 +365,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
-    Response response = execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+    Response response = parent.getW3CStandardComplianceLevel() == 0
+                        ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
+                        : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
     int height = ((Number) rawSize.get("height")).intValue();

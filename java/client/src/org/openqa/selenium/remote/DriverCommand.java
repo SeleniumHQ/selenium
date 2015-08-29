@@ -79,6 +79,7 @@ public interface DriverCommand {
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
   String IS_ELEMENT_DISPLAYED = "isElementDisplayed";
+  String GET_ELEMENT_RECT = "getElementRect";
   String GET_ELEMENT_LOCATION = "getElementLocation";
   String GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView";
   String GET_ELEMENT_SIZE = "getElementSize";
