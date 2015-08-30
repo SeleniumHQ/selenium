@@ -137,7 +137,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindAnElementThatDoesNotSupportTheNameProperty() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -415,7 +414,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), is("Test Chart"));
   }
 
-  @Ignore({IE, MARIONETTE, SAFARI, CHROME})
+  @Ignore({IE, SAFARI, CHROME})
   @Test
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

@@ -78,7 +78,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -154,7 +153,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({IE, PHANTOMJS, SAFARI})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
@@ -208,7 +207,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI, MARIONETTE})
+  @Ignore({IE, SAFARI})
   @Test
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{

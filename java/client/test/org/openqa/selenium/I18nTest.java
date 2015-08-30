@@ -58,7 +58,6 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
-  @Ignore({MARIONETTE})
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
@@ -117,7 +116,6 @@ public class I18nTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
