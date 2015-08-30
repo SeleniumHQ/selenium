@@ -98,7 +98,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
     tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
@@ -258,7 +257,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {IE, MARIONETTE},
+      value = {IE},
       reason = " IE: v9 shows strange border which broke color comparison"
   )
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
@@ -297,7 +296,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, MARIONETTE},
+  @Ignore(value = {CHROME},
           reason = " CHROME: Unknown actual colors are presented at screenshot")
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));

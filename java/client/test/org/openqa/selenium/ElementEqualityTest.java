@@ -28,7 +28,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 public class ElementEqualityTest extends JUnit4TestBase {
 
@@ -43,7 +42,6 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "Marionette does not recognize the packet type elementEquals")
   public void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
 
