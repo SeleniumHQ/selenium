@@ -17,7 +17,10 @@
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 /**
@@ -46,6 +49,7 @@ public class ObjectStateAssumptionsTest extends JUnit4TestBase {
    * WebDriver with an initial call to get(). It also should not fail.
    */
   @Test
+  @Ignore(MARIONETTE)
   public void testInitializedWebDriverDoesNotThrowNPE() {
     driver.get(pages.simpleTestPage);
     try {

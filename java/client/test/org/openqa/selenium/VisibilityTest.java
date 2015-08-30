@@ -116,6 +116,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -131,7 +132,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
-  @Ignore({IE})
+  @Ignore({IE, MARIONETTE})
   @Test
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);

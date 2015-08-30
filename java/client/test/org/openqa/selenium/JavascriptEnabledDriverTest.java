@@ -98,6 +98,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
@@ -110,6 +111,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -162,6 +164,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
@@ -173,6 +176,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 

@@ -73,6 +73,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSubmitForms() {
     driver.get(pages.formPage);
     driver.findElement(By.name("login")).submit();
@@ -80,6 +81,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.id("checky")).submit();
@@ -87,6 +89,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
@@ -94,13 +97,14 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = {PHANTOMJS, SAFARI})
+  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     driver.findElement(By.name("SearchableText")).submit();
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
@@ -110,6 +114,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -142,6 +147,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
@@ -195,7 +201,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
@@ -220,6 +226,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -277,20 +284,20 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals("Tasty cheese", text);
   }
 
-  @Ignore(value = {SAFARI}, reason = "untested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "untested")
   @Test
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
-  @Ignore(value = {SAFARI}, reason = "untested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI},
+  @Ignore(value = {IE, SAFARI, MARIONETTE},
           reason = "IE: failed; Others: untested")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -298,7 +305,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI},
+  @Ignore(value = {IE, SAFARI, MARIONETTE},
       reason = "IE: failed; Others: untested")
   @NotYetImplemented(HTMLUNIT)
   @Test

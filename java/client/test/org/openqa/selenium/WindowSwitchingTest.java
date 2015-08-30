@@ -49,7 +49,7 @@ import java.util.Set;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({MARIONETTE})
+  //@Ignore({MARIONETTE})
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
@@ -80,6 +80,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -178,7 +179,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, REMOTE})
+  @Ignore({IE, MARIONETTE, REMOTE})
   @Test
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
@@ -293,6 +294,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -312,6 +314,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
+  @Ignore(MARIONETTE)
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -334,6 +337,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
+  @Ignore(MARIONETTE)
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -359,6 +363,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
+  @Ignore(MARIONETTE)
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();

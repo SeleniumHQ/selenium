@@ -94,7 +94,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore({CHROME, MARIONETTE})
+  @Ignore(CHROME)
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
