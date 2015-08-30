@@ -303,6 +303,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   // ----------------------------------------------------------------------------------------------
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(pages.framesetPage);
 

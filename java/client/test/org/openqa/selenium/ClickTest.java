@@ -87,6 +87,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -99,6 +100,7 @@ public class ClickTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -113,6 +115,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -131,6 +134,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {MARIONETTE}, reason = "sendKeys is not standard compliant yet")
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
@@ -171,7 +175,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {SAFARI}, reason = "issue 3693")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

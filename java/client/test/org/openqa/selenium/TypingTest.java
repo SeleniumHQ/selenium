@@ -48,10 +48,10 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import com.google.common.base.Joiner;
 
+@Ignore(MARIONETTE)
 public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
@@ -65,7 +65,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -78,7 +77,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldFireKeyUpEvents() {
     driver.get(pages.javascriptPage);
 
@@ -90,7 +88,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -101,7 +98,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -112,7 +108,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -123,7 +118,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -140,7 +134,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -151,7 +144,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({MARIONETTE})
   @Test
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
@@ -162,7 +154,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToUseArrowKeys() {
@@ -255,7 +246,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, IE, MARIONETTE},
+  @Ignore(value = {FIREFOX, IE},
           reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the "
                    + "focus on the window already.")
   @Test
@@ -276,7 +267,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, PHANTOMJS, MARIONETTE})
+  @Ignore(value = {IE, PHANTOMJS})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
@@ -305,8 +296,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE,
-          reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
@@ -339,7 +328,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE}, reason = "untested user agent")
   @Test
   public void testNumericNonShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -353,7 +341,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agent")
   @Test
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -369,7 +356,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE}, reason = "untested user agent")
   @Test
   public void testLowerCaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -383,7 +369,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @Test
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -399,7 +384,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @Test
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
@@ -416,7 +400,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testArrowKeysAndPageUpAndDown() {
@@ -430,7 +413,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
@@ -448,7 +430,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testDeleteAndBackspaceKeys() {
@@ -467,7 +448,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testSpecialSpaceKeys() {
@@ -480,8 +460,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE,
-          reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testNumberpadKeys() {
@@ -497,8 +475,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, MARIONETTE},
-          reason = "untested user agents, IE: F4 triggers address bar")
+  @Ignore(value = {IE}, reason = "IE: F4 triggers address bar")
   @Test
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
@@ -511,9 +488,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "untested user agents; Safari: issue 4221",
-          issues = {4221})
+  @Ignore(value = {SAFARI}, reason = "Safari: issue 4221", issues = {4221})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShiftSelectionDeletes() {
@@ -530,7 +505,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlHomeShiftEndDelete() {
@@ -553,7 +527,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
@@ -587,7 +560,6 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, reason = "untested user agents")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlCutAndPaste() {
@@ -651,7 +623,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE}, reason = "untested user agents")
   @Test
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
@@ -663,8 +634,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = PHANTOMJS,
-          reason = "HtmlUnit: failure, others: not tested")
+  @Ignore(value = PHANTOMJS)
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
@@ -680,8 +650,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
-      reason = "Safari: cannot type on contentEditable with synthetic events")
+  @Ignore(value = {SAFARI}, reason = "Safari: cannot type on contentEditable with synthetic events")
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
@@ -704,7 +673,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = MARIONETTE, issues = {6711})
   @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
@@ -742,7 +710,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, reason = "Untested browsers;" +
+  @Ignore(value = {SAFARI, HTMLUNIT}, reason = "Untested browsers;" +
       " Safari: cannot type on contentEditable with synthetic events",
       issues = {3127})
   @Test
@@ -768,7 +736,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, MARIONETTE, HTMLUNIT},
+  @Ignore(value = {IE, SAFARI, HTMLUNIT},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})

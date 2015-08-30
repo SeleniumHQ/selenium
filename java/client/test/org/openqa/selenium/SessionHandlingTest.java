@@ -49,7 +49,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS})
+  @Ignore(value = {PHANTOMJS, MARIONETTE})
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 

@@ -47,7 +47,7 @@ import java.io.IOException;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {SAFARI}, issues = {4220})
+@Ignore(value = {SAFARI, MARIONETTE}, issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";

@@ -61,6 +61,7 @@ public class MiscTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
 

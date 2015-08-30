@@ -190,7 +190,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {IE}, reason = "IE: inserts \r\n instead of \n")
+  @Ignore(value = {IE, MARIONETTE}, reason = "IE: inserts \r\n instead of \n")
   @Test
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
@@ -354,7 +354,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE},
+  @Ignore(value = {IE, MARIONETTE},
           reason = "IE: failed, other: untested")
   @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
