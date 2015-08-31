@@ -228,7 +228,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("id", using);
     } else {
-      return findElementByCssSelector("#" + using);
+      return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -236,7 +236,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("id", using);
     } else {
-      return findElementsByCssSelector("#" + using);
+      return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -252,7 +252,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("name", using);
     } else {
-      return findElementByCssSelector("*[name=" + using + "]");
+      return findElementByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -260,7 +260,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("name", using);
     } else {
-      return findElementsByCssSelector("*[name=" + using + "]");
+      return findElementsByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -268,7 +268,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("class name", using);
     } else {
-      return findElementByCssSelector("." + using);
+      return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -276,7 +276,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("class name", using);
     } else {
-      return findElementsByCssSelector("." + using);
+      return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
   }
 

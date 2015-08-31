@@ -389,11 +389,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return allElements;
   }
 
+  static String cssEscape(String using) {
+    using = using.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\$1");
+    if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+    }
+    return using;
+  }
+
   public WebElement findElementById(String using) {
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("id", using);
     } else {
-      return findElementByCssSelector("#" + using);
+      return findElementByCssSelector("#" + cssEscape(using));
     }
   }
 
@@ -401,7 +409,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("id", using);
     } else {
-      return findElementsByCssSelector("#" + using);
+      return findElementsByCssSelector("#" + cssEscape(using));
     }
   }
 
@@ -441,7 +449,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("name", using);
     } else {
-      return findElementByCssSelector("*[name=" + using + "]");
+      return findElementByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -449,7 +457,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("name", using);
     } else {
-      return findElementsByCssSelector("*[name=" + using + "]");
+      return findElementsByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -457,7 +465,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("class name", using);
     } else {
-      return findElementByCssSelector("." + using);
+      return findElementByCssSelector("." + cssEscape(using));
     }
   }
 
@@ -465,7 +473,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("class name", using);
     } else {
-      return findElementsByCssSelector("." + using);
+      return findElementsByCssSelector("." + cssEscape(using));
     }
   }
 
