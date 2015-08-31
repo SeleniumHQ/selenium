@@ -542,7 +542,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected]"));

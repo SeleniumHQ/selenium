@@ -73,7 +73,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSubmitForms() {
     driver.get(pages.formPage);
     driver.findElement(By.name("login")).submit();
@@ -81,7 +80,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.id("checky")).submit();
@@ -89,7 +87,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
@@ -97,7 +94,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {PHANTOMJS, SAFARI})
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     driver.findElement(By.name("SearchableText")).submit();
@@ -197,7 +194,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
@@ -265,7 +262,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE, HTMLUNIT},
+  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
           reason = "HtmlUnit: error; others: untested")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
