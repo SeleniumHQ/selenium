@@ -273,7 +273,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("Cleared"));
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
@@ -287,7 +286,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("blur");
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
