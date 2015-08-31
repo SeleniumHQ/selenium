@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
+            <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
