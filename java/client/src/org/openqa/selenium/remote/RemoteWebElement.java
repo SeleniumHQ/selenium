@@ -374,7 +374,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
     Response response = parent.getW3CStandardComplianceLevel() == 0
-                        ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
+                        ? execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id))
                         : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
