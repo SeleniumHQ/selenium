@@ -73,7 +73,7 @@ public class DefaultToFIFOPriorityTest {
     }
 
 
-    // use all the spots ( so 1 ) of the grid so that a queue buils up
+    // use all the spots ( so 1 ) of the grid so that a queue builds up
     MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
     session = newSessionRequest.getSession();
