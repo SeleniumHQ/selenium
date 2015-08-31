@@ -307,7 +307,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("nameB"));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);

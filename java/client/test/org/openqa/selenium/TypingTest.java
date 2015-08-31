@@ -48,7 +48,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import com.google.common.base.Joiner;
 
-@Ignore(MARIONETTE)
 public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
@@ -370,6 +369,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -385,6 +385,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -450,6 +451,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -462,6 +464,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -507,6 +510,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -529,6 +533,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -562,6 +567,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -634,7 +640,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = PHANTOMJS)
+  @Ignore(value = {PHANTOMJS})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
@@ -650,7 +656,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = "Safari: cannot type on contentEditable with synthetic events")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: cannot type on contentEditable with synthetic events")
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
@@ -676,6 +682,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
+  @Ignore(MARIONETTE)
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
@@ -701,7 +708,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test")
+  @Ignore(value = {HTMLUNIT}, reason = "inconsistent test")
   @Test
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
@@ -736,7 +743,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT},
+  @Ignore(value = {IE, SAFARI, HTMLUNIT, MARIONETTE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
@@ -755,7 +762,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = SAFARI, reason = "Untested")
+  @Ignore(value = {SAFARI}, reason = "Untested")
   @Test
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));

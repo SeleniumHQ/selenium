@@ -104,7 +104,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
@@ -114,7 +113,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -135,7 +133,6 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
@@ -147,7 +144,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
@@ -226,7 +222,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -284,20 +279,20 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals("Tasty cheese", text);
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "untested")
+  @Ignore(value = {SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "untested")
+  @Ignore(value = {SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI, MARIONETTE},
+  @Ignore(value = {IE, SAFARI},
           reason = "IE: failed; Others: untested")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -305,7 +300,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI, MARIONETTE},
+  @Ignore(value = {IE, SAFARI},
       reason = "IE: failed; Others: untested")
   @NotYetImplemented(HTMLUNIT)
   @Test

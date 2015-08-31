@@ -303,7 +303,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "sendKeys issue")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -313,7 +312,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "sendKeys issue")
   public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
@@ -323,7 +321,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "sendKeys issue")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));

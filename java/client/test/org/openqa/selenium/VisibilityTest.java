@@ -115,8 +115,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
-  public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
+  public void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 

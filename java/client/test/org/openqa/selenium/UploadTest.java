@@ -26,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -47,7 +46,7 @@ import java.io.IOException;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {SAFARI, MARIONETTE}, issues = {4220})
+@Ignore(value = {SAFARI}, issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -83,7 +82,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE, PHANTOMJS, SAFARI})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
