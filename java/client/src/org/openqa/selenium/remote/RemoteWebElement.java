@@ -85,7 +85,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void submit() {
-    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    } else {
+      WebElement form = findElement(By.xpath("./ancestor-or-self::form"));
+      parent.executeScript("arguments[0].submit()", form);
+    }
   }
 
   public void sendKeys(CharSequence... keysToSend) {
