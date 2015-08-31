@@ -95,14 +95,20 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       keysToSend = new CharSequence[]{remotePath};
     }
 
-    StringBuilder sb = new StringBuilder();
-    for (CharSequence s : keysToSend) {
-      sb.append(s);
-    }
+    CharSequence[] keys;
 
-    CharSequence[] keys = new CharSequence[sb.length()];
-    for (int i = 0; i < sb.length(); i++) {
-      keys[i] = Character.toString(sb.charAt(i));
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      keys = keysToSend;
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (CharSequence s : keysToSend) {
+        sb.append(s);
+      }
+
+      keys = new CharSequence[sb.length()];
+      for (int i = 0; i < sb.length(); i++) {
+        keys[i] = Character.toString(sb.charAt(i));
+      }
     }
 
     execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keys));
