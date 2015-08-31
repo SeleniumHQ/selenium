@@ -78,7 +78,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -116,7 +115,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
+  public void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
@@ -131,7 +130,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
-  @Ignore({IE})
+  @Ignore({IE, MARIONETTE})
   @Test
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
@@ -153,7 +152,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({IE, PHANTOMJS, SAFARI})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
@@ -207,7 +206,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI, MARIONETTE})
+  @Ignore({IE, SAFARI})
   @Test
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{

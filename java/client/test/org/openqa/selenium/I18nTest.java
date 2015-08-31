@@ -58,14 +58,12 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
-  @Ignore({MARIONETTE})
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
@@ -76,7 +74,6 @@ public class I18nTest extends JUnit4TestBase {
     assertEquals(shalom, input.getAttribute("value"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
@@ -90,8 +87,7 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(
       value = {MARIONETTE, CHROME},
-      reason = "MARIONETTE: not checked, "
-               + "CHROME: ChromeDriver only supports characters in the BMP")
+      reason = "CHROME: ChromeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -117,7 +113,6 @@ public class I18nTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
@@ -131,8 +126,7 @@ public class I18nTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Ignore(value = {IE, CHROME, FIREFOX},
-      reason = "Not implemented on anything other than"
-          + "Firefox/Linux at the moment.")
+          reason = "Not implemented on anything other than Firefox/Linux at the moment.")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {

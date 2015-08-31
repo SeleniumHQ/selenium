@@ -561,13 +561,13 @@ public class TestSession {
     } catch (Throwable e) {
       ok = false;
       // corrupted or the something else already sent the DELETE.
-      log.severe("Error releasing. Server corrupted ?");
-    }finally{
-        try {
-            EntityUtils.consume(responseBody);
-         } catch (IOException e) {
-          log.warning("Consuming the response body when DELETE to the node" + e.getMessage());
-        }
+      log.severe("Unable to send DELETE request for the current session " + e.getMessage());
+    } finally {
+      try {
+        EntityUtils.consume(responseBody);
+      } catch (IOException e) {
+        log.warning("Consuming the response body when DELETE to the node " + e.getMessage());
+      }
     }
     return ok;
   }

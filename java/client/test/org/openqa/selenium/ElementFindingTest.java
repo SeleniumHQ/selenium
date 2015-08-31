@@ -55,6 +55,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindASingleElementByNumericId() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("2"));
@@ -69,6 +70,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindMultipleElementsByNumericId() {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("2"));
@@ -91,12 +93,14 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
+  @Ignore(MARIONETTE)
   public void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.id(""));
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id(""));
@@ -155,26 +159,30 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
+  @Ignore(MARIONETTE)
   public void testFindingASingleElementByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.name(""));
   }
 
   @Test
-  public void testFindingMultipleElementsByEmptyNameShouldThrow() {
+  @Ignore(MARIONETTE)
+  public void testFindingMultipleElementsByEmptyNameShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name(""));
     assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
+  @Ignore(MARIONETTE)
   public void testFindingASingleElementByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.name("nonexistent button"));
   }
 
   @Test
-  public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
+  @Ignore(MARIONETTE)
+  public void testFindingMultipleElementsByNameWithSpaceShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
     assertThat(elements.size(), is(0));
@@ -212,13 +220,15 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
+  @Ignore(MARIONETTE)
   public void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.tagName(""));
   }
 
   @Test
-  public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
+  @Ignore(MARIONETTE)
+  public void testFindingMultipleElementsByEmptyTagNameShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.tagName(""));
     assertThat(elements.size(), is(0));
@@ -231,7 +241,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
+  public void testFindingMultipleElementsByTagNameWithSpaceShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.tagName("nonexistent button"));
     assertThat(elements.size(), is(0));
@@ -297,7 +307,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("nameB"));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -325,7 +335,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws InvalidElementStateException")
+  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -404,7 +414,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), is("Test Chart"));
   }
 
-  @Ignore({IE, MARIONETTE, SAFARI, CHROME})
+  @Ignore({IE, SAFARI, CHROME})
   @Test
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

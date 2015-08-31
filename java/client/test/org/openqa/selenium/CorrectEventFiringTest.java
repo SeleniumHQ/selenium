@@ -47,7 +47,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @Ignore(value = {MARIONETTE})
   @JavascriptEnabled
   @Test
   public void testShouldFireFocusEventWhenClicking() {
@@ -102,7 +101,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   // while doing down, up, click
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -123,7 +121,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testShouldFireEventsInTheRightOrder() {
@@ -276,7 +273,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("Cleared"));
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
@@ -290,7 +286,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("blur");
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
@@ -302,7 +297,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("focus");
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {

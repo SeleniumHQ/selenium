@@ -303,6 +303,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   // ----------------------------------------------------------------------------------------------
 
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(pages.framesetPage);
 
@@ -569,7 +570,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(MARIONETTE) // Marionette not tested.
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testGetShouldSwitchToDefaultContext() {
