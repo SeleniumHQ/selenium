@@ -185,7 +185,8 @@ class FirefoxBinary(object):
         built_path = ""
         for path in paths:
             library_path = os.path.join(profile.path, path)
-            os.makedirs(library_path)
+            if not os.path.exists(library_path):
+                os.makedirs(library_path)
             import shutil
             shutil.copy(os.path.join(os.path.dirname(__file__), path,
               self.NO_FOCUS_LIBRARY_NAME),
