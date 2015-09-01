@@ -420,7 +420,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Ignore(SAFARI)
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
