@@ -926,50 +926,7 @@ bot.dom.getClientRect = function(elem) {
       rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
     }
 
-    // On Gecko < 12, getBoundingClientRect does not account for CSS transforms.
-    // TODO: Remove this when we drop support for FF3.6 and FF10.
-    if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(12)) {
-      transformLegacyFirefoxClientRect(elem);
-    }
-
     return rect;
-  }
-
-  function transformLegacyFirefoxClientRect(container) {
-    var win = goog.dom.getWindow(goog.dom.getOwnerDocument(container));
-    var transform = win.getComputedStyle(container, null)['MozTransform'];
-    var matches = transform.match(bot.dom.CSS_TRANSFORM_MATRIX_REGEX_);
-
-    if (matches) {
-      var a = parseFloat(matches[1]), b = parseFloat(matches[2]),
-          c = parseFloat(matches[3]), d = parseFloat(matches[4]),
-          x = parseFloat(matches[5]), y = parseFloat(matches[6]);
-      var right = rect.left + rect.width, bottom = rect.top + rect.height;
-      var leftXa = rect.left * a, rightXa = right * a,
-          leftXb = rect.left * b, rightXb = right * b,
-          topXc = rect.top * c, bottomXc = bottom * c,
-          topXd = rect.top * d, bottomXd = bottom * d;
-      var topLeftX = leftXa + topXc + x,
-          topLeftY = leftXb + topXd + y,
-          topRightX = rightXa + topXc + x,
-          topRightY = rightXb + topXd + y,
-          bottomLeftX = leftXa + bottomXc + x,
-          bottomLeftY = leftXb + bottomXd + y,
-          bottomRightX = rightXa + bottomXc + x,
-          bottomRightY = rightXb + bottomXd + y;
-      rect.left = Math.min(topLeftX, topRightX, bottomLeftX, bottomRightX);
-      rect.top = Math.min(topLeftY, topRightY, bottomLeftY, bottomRightY);
-      var newRight = Math.max(topLeftX, topRightX, bottomLeftX, bottomRightX);
-      var newBottom = Math.max(topLeftY, topRightY, bottomLeftY, bottomRightY);
-      rect.width = newRight - rect.left;
-      rect.height = newBottom - rect.top;
-    }
-
-    // The computed transform style not not take into account parent transforms.
-    var parentContainer = bot.dom.getParentElement(container);
-    if (parentContainer) {
-      transformLegacyFirefoxClientRect(parentContainer);
-    }
   }
 };
 
