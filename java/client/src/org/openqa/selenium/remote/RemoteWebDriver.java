@@ -847,9 +847,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     protected class RemoteWindow implements Window {
 
       public void setSize(Dimension targetSize) {
-        execute(DriverCommand.SET_WINDOW_SIZE,
-            ImmutableMap.of("windowHandle", "current",
-                "width", targetSize.width, "height", targetSize.height));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.SET_WINDOW_SIZE,
+                  ImmutableMap.of("windowHandle", "current",
+                                  "width", targetSize.width, "height", targetSize.height));
+        } else {
+          execute(DriverCommand.SET_CURRENT_WINDOW_SIZE,
+                  ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+        }
       }
 
       public void setPosition(Point targetPosition) {
@@ -860,8 +865,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       @SuppressWarnings({"unchecked"})
       public Dimension getSize() {
-        Response response = execute(DriverCommand.GET_WINDOW_SIZE,
-            ImmutableMap.of("windowHandle", "current"));
+        Response response = getW3CStandardComplianceLevel() == 0
+            ? execute(DriverCommand.GET_WINDOW_SIZE, ImmutableMap.of("windowHandle", "current"))
+            : execute(DriverCommand.GET_CURRENT_WINDOW_SIZE);
+
         Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
 
         int width = ((Number) rawSize.get("width")).intValue();
@@ -883,8 +890,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       public void maximize() {
-        execute(DriverCommand.MAXIMIZE_WINDOW,
-            ImmutableMap.of("windowHandle", "current"));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.MAXIMIZE_WINDOW,
+                  ImmutableMap.of("windowHandle", "current"));
+        } else {
+          execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
+        }
       }
     }
   }
