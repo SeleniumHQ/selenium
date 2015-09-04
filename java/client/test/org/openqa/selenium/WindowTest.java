@@ -37,7 +37,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.logging.Logger;
 
-@Ignore(value = {MARIONETTE}, reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 
   private static Logger log = Logger.getLogger(WindowTest.class.getName());
@@ -97,6 +96,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testGetsThePositionOfTheCurrentWindow() {
     // Window position is undefined on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -108,7 +108,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI, PHANTOMJS},
+  @Ignore(value = {SAFARI, PHANTOMJS, MARIONETTE},
       reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
