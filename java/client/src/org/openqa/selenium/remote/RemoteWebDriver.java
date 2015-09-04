@@ -859,9 +859,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       public void setPosition(Point targetPosition) {
-        execute(DriverCommand.SET_WINDOW_POSITION,
-            ImmutableMap
-                .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.SET_WINDOW_POSITION,
+                  ImmutableMap
+                    .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+        } else {
+          executeScript("window.screenX = arguments[0]; window.screenY = arguments[1]",
+                        targetPosition.x, targetPosition.y);
+        }
       }
 
       @SuppressWarnings({"unchecked"})
@@ -879,10 +884,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       @SuppressWarnings({"unchecked"})
+      Map<String, Object> rawPoint;
       public Point getPosition() {
-        Response response = execute(DriverCommand.GET_WINDOW_POSITION,
-            ImmutableMap.of("windowHandle", "current"));
-        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+        if (getW3CStandardComplianceLevel() == 0) {
+          Response response = execute(DriverCommand.GET_WINDOW_POSITION,
+                                      ImmutableMap.of("windowHandle", "current"));
+          rawPoint = (Map<String, Object>) response.getValue();
+        } else {
+          rawPoint = (Map<String, Object>) executeScript(
+              "return {x: window.screenX, y: window.screenY}");
+        }
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();

@@ -24,7 +24,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -96,7 +95,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testGetsThePositionOfTheCurrentWindow() {
     // Window position is undefined on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -108,7 +106,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI, PHANTOMJS, MARIONETTE},
+  @Ignore(value = {SAFARI, PHANTOMJS},
       reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
