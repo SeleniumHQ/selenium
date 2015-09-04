@@ -80,7 +80,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -296,7 +295,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();

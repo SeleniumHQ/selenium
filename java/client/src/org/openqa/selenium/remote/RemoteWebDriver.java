@@ -33,6 +33,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -955,9 +956,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       return RemoteWebDriver.this;
     }
 
-    public WebDriver window(String windowName) {
-      execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowName, "handle", windowName));
-      return RemoteWebDriver.this;
+    public WebDriver window(String windowHandleOrName) {
+      if (getW3CStandardComplianceLevel() == 0) {
+        execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowHandleOrName));
+        return RemoteWebDriver.this;
+      } else {
+        try {
+          execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
+          return RemoteWebDriver.this;
+        } catch (NoSuchWindowException nsw) {
+          // simulate search by name
+          String original = getWindowHandle();
+          for (String handle : getWindowHandles()) {
+            switchTo().window(handle);
+            if (windowHandleOrName.equals(executeScript("return window.name"))) {
+              return RemoteWebDriver.this; // found by name
+            }
+          }
+          switchTo().window(original);
+          throw nsw;
+        }
+      }
     }
 
     public WebDriver defaultContent() {
