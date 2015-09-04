@@ -99,19 +99,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
-  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.id("username"));
-    Point location = element.getLocation();
-
-    assertThat(location.getX() > 0, is(true));
-    assertThat(location.getY() > 0, is(true));
-  }
-
-  @JavascriptEnabled
-  @Test
-  @Ignore(MARIONETTE)
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -224,8 +211,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     assertNotNull(text);
   }
 
-  @JavascriptEnabled
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);

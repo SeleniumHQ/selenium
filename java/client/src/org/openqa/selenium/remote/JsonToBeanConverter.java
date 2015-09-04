@@ -133,7 +133,11 @@ public class JsonToBeanConverter {
         response.setSessionId(json.get("sessionId").getAsString());
       }
 
-      response.setValue(convert(Object.class, json.get("value")));
+      if (json.has("value")) {
+        response.setValue(convert(Object.class, json.get("value")));
+      } else {
+        response.setValue(convert(Object.class, json));
+      }
 
       return (T) response;
     }

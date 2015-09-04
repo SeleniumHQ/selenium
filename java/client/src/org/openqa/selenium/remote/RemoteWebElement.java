@@ -401,13 +401,22 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       }
 
       public Point inViewPort() {
-        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-            ImmutableMap.of("id", getId()));
+        if (parent.getW3CStandardComplianceLevel() == 0) {
+          Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+                                      ImmutableMap.of("id", getId()));
 
-        @SuppressWarnings("unchecked")
-        Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+          @SuppressWarnings("unchecked")
+          Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
 
-        return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+        } else {
+          @SuppressWarnings("unchecked")
+          Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
+            "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
+
+          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+        }
+
       }
 
       public Point onPage() {
