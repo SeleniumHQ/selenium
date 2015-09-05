@@ -101,6 +101,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   // while doing down, up, click
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
