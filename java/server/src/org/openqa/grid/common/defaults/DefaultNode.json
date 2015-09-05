@@ -30,11 +30,20 @@
           "browserName": "internet explorer",
           "maxInstances": 1,
           "seleniumProtocol": "WebDriver"
+        },       
+        {
+          "browserName": "MicrosoftEdge",
+          "platform": "WINDOWS",
+          "maxInstances": 5,
+          "seleniumProtocol": "WebDriver"
         }
       ],
   "configuration":
   {
     "proxy": "org.openqa.grid.selenium.proxy.DefaultRemoteProxy",
+    "Dwebdriver.ie.driver=C://Selenium/Node/IEDriverServer32.exe": "",
+    "Dwebdriver.chrome.driver=C://Selenium/Node/chromedriver.exe":"",
+    "Dwebdriver.edge.driver=C://Program Files (x86)/Microsoft Web Driver/MicrosoftWebDriver.exe":"",
     "maxSession": 5,
     "port": 5555,
     "host": ip,
