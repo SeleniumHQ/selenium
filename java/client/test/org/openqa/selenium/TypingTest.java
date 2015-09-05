@@ -341,6 +341,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
