@@ -34,6 +34,7 @@ import org.junit.runners.JUnit4;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
@@ -107,6 +108,21 @@ public class CrossDomainRpcLoaderTest {
       @Override
       public int read() throws IOException {
         return stream.read();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return false;
+      }
+
+      @Override
+      public boolean isReady() {
+        return true;
+      }
+
+      @Override
+      public void setReadListener(ReadListener readListener) {
+        throw new UnsupportedOperationException();
       }
     });
 

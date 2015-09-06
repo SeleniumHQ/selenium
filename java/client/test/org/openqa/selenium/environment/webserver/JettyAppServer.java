@@ -20,20 +20,31 @@ package org.openqa.selenium.environment.webserver;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.ContextHandlerCollection;
-import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
-import org.seleniumhq.jetty7.server.ssl.SslSocketConnector;
-import org.seleniumhq.jetty7.servlet.DefaultServlet;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
-import org.seleniumhq.jetty7.servlet.ServletHolder;
-import org.seleniumhq.jetty7.servlets.MultiPartFilter;
-import org.seleniumhq.jetty7.util.ssl.SslContextFactory;
+import org.seleniumhq.jetty9.http.HttpVersion;
+import org.seleniumhq.jetty9.server.Connector;
+import org.seleniumhq.jetty9.server.HttpConfiguration;
+import org.seleniumhq.jetty9.server.HttpConnectionFactory;
+import org.seleniumhq.jetty9.server.SecureRequestCustomizer;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.SslConnectionFactory;
+import org.seleniumhq.jetty9.server.handler.AllowSymLinkAliasChecker;
+import org.seleniumhq.jetty9.server.handler.ContextHandler.ApproveAliases;
+import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
+import org.seleniumhq.jetty9.servlet.DefaultServlet;
+import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.servlets.MultiPartFilter;
+import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
+import java.util.EnumSet;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
@@ -106,7 +117,7 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
 
-    addFilter(defaultContext, MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
+    addFilter(defaultContext, MultiPartFilter.class, "/upload", DispatcherType.REQUEST);
 
     listenOn(getHttpPort());
     listenSecurelyOn(getHttpsPort());
@@ -167,26 +178,36 @@ public class JettyAppServer implements AppServer {
 
   @Override
   public void start() {
-    SelectChannelConnector connector = new SelectChannelConnector();
-    connector.setPort(port);
-    server.addConnector(connector);
+    HttpConfiguration httpConfig = new HttpConfiguration();
+    httpConfig.setSecureScheme("https");
+    httpConfig.setSecurePort(securePort);
 
-    File keyStore = getKeyStore();
-    if (!keyStore.exists()) {
+    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    http.setPort(port);
+    http.setIdleTimeout(500000);
+
+    File keystore = getKeyStore();
+    if (!keystore.exists()) {
       throw new RuntimeException(
-          "Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
+        "Cannot find keystore for SSL cert: " + keystore.getAbsolutePath());
     }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
-    sslContextFactory.setKeyStorePath(keyStore.getAbsolutePath());
+    sslContextFactory.setKeyStorePath(keystore.getAbsolutePath());
     sslContextFactory.setKeyStorePassword("password");
     sslContextFactory.setKeyManagerPassword("password");
-    sslContextFactory.setTrustStore(keyStore.getAbsolutePath());
-    sslContextFactory.setTrustStorePassword("password");
 
-    SslSocketConnector secureSocket = new SslSocketConnector(sslContextFactory);
-    secureSocket.setPort(securePort);
-    server.addConnector(secureSocket);
+    HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+    httpsConfig.addCustomizer(new SecureRequestCustomizer());
+
+    ServerConnector https = new ServerConnector(
+      server,
+      new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+      new HttpConnectionFactory(httpsConfig));
+    https.setPort(securePort);
+    https.setIdleTimeout(500000);
+
+    server.setConnectors(new Connector[]{http, https});
 
     try {
       server.start();
@@ -219,7 +240,9 @@ public class JettyAppServer implements AppServer {
   }
 
   public void addServlet(
-      ServletContextHandler context, String url, Class<? extends Servlet> servletClass) {
+      ServletContextHandler context,
+      String url,
+      Class<? extends Servlet> servletClass) {
     try {
       context.addServlet(new ServletHolder(servletClass), url);
     } catch (Exception e) {
@@ -228,8 +251,11 @@ public class JettyAppServer implements AppServer {
   }
 
   public void addFilter(
-      ServletContextHandler context, Class<? extends Filter> filter, String path, int dispatches) {
-    context.addFilter(filter, path, dispatches);
+      ServletContextHandler context,
+      Class<? extends Filter> filter,
+      String path,
+      DispatcherType dispatches) {
+    context.addFilter(filter, path, EnumSet.of(dispatches));
   }
 
   protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
@@ -240,7 +266,7 @@ public class JettyAppServer implements AppServer {
 
     context.setContextPath(contextPath);
     context.setResourceBase(resourceBase.getAbsolutePath());
-    context.setAliases(true);
+    context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
     context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
 
     handlers.addHandler(context);

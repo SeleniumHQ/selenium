@@ -17,11 +17,11 @@
 
 package com.thoughtworks.selenium.testing;
 
-import java.io.File;
-
 import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.testing.InProject;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+
+import java.io.File;
 
 public class SeleniumAppServer extends JettyAppServer {
 

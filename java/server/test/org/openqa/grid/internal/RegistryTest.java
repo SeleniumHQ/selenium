@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
@@ -89,12 +89,12 @@ public class RegistryTest {
     }
   }
 
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<>();
-  static Map<String, Object> app2 = new HashMap<>();
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
+  private Map<String, Object> app2 = new HashMap<>();
 
-  @BeforeClass
-  public static void prepareReqRequest() {
+  @Before
+  public void prepareReqRequest() {
     Map<String, Object> config = new HashMap<>();
     app1.put(CapabilityType.BROWSER_NAME, "app1");
     app2.put(CapabilityType.BROWSER_NAME, "app2");
@@ -118,7 +118,7 @@ public class RegistryTest {
     }
   }
 
-  // @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
+  @Test(timeout=2000) //excepted timeout here.How to specify that in junit ?
   public void emptyRegistryParam() {
     Registry registry = Registry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
@@ -148,7 +148,7 @@ public class RegistryTest {
     }
   }
 
-  // @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
+  @Test(timeout = 2000)
   public void CapabilityNotPresentRegistryParam() {
     Registry registry = Registry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
