@@ -43,7 +43,7 @@ import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.remote.server.testing.UrlInfo;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.seleniumhq.jetty7.server.handler.ContextHandler;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
 import java.util.logging.Logger;
