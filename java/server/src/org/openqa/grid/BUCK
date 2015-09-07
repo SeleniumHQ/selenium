@@ -3,8 +3,14 @@ java_library(name = 'grid',
     'internal/**/*.java',
     'web/**/*.java',
   ]),
+  resources = glob([
+    'images/*.css',
+    'images/*.gif',
+    'images/*.ico',
+    'images/*.js',
+    'images/*.png',
+  ]),
   deps = [
-    ':images',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
@@ -24,13 +30,4 @@ java_library(name = 'grid',
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
   ],
-)
-
-prebuilt_jar(name = 'images',
-  binary_jar = ':images-zip',
-)
-
-zip_file(name = 'images-zip',
-  srcs = glob(['images/*']),
-  out = 'images.jar',
 )
