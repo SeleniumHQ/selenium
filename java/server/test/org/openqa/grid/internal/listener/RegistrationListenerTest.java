@@ -57,7 +57,7 @@ public class RegistrationListenerTest {
     }
   }
 
-  private RegistrationRequest req = null;
+  private RegistrationRequest req;
   private Map<String, Object> app1 = new HashMap<>();
 
   @Before

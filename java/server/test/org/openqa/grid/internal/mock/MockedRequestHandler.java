@@ -30,9 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MockedRequestHandler extends RequestHandler {
 
-
-  public MockedRequestHandler(SeleniumBasedRequest request, HttpServletResponse response,
-      Registry registry) {
+  public MockedRequestHandler(
+    SeleniumBasedRequest request,
+    HttpServletResponse response,
+    Registry registry) {
     super(request, response, registry);
   }
 

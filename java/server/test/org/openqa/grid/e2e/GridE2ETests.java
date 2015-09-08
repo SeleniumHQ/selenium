@@ -60,5 +60,4 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     ExtraServletUtilTest.class,
 })
 public class GridE2ETests {
-
 }

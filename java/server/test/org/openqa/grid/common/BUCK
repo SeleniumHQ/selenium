@@ -1,0 +1,18 @@
+SUITES = glob(['*Tests.java'])
+
+java_test(name = 'common',
+  srcs = SUITES,
+  deps = [
+    ':tests',
+    '//third_party/java/junit:junit',
+  ],
+)
+
+java_library(name = 'tests',
+  srcs = glob(['*.java'], excludes = SUITES),
+  deps = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/grid/common:common',
+    '//third_party/java/junit:junit',
+  ],
+)
