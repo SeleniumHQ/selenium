@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -153,5 +154,29 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     } catch (ElementNotVisibleException e) {
       fail("Element should have been visible");
     }
+  }
+
+
+  @Test
+  @JavascriptEnabled
+  @Ignore({IE, PHANTOMJS, SAFARI, MARIONETTE})
+  public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
+    driver.manage().timeouts().implicitlyWait(1, SECONDS);
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.name("windowOne")).click();
+    String handle = (String)driver.getWindowHandles().toArray()[1];
+
+    WebDriver newWindow = driver.switchTo().window(handle);
+
+    long start = System.currentTimeMillis();
+
+    newWindow.findElements(By.id("This crazy thing doesn't exist"));
+
+    long end = System.currentTimeMillis();
+
+    long time = end - start;
+
+    assertTrue(time >= 1000);
+
   }
 }
