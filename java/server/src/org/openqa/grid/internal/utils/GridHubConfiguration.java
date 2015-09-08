@@ -106,10 +106,6 @@ public class GridHubConfiguration {
    * max number of thread for Jetty. Default is normally 255.
    */
   private int jettyMaxThreads = -1;
-  /**
-   * to specify that logging level should be set to Level.DEBUG
-   */
-  private boolean isDebug = false;
 
   private Map<String, Object> allParams = new HashMap<>();
 
@@ -219,10 +215,6 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-log")) {
       logFilename = helper.getParamValue("-log");
     }
-    if (helper.isParamPresent("-debug")) {
-      isDebug = true;
-    }
-
   }
 
   /**
@@ -381,10 +373,6 @@ public class GridHubConfiguration {
 
   public String getLogFilename() {
     return logFilename;
-  }
-
-  public boolean isDebug() {
-    return isDebug;
   }
 
   public Map<String, String> getGrid1Mapping() {
