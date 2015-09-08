@@ -37,7 +37,7 @@ module Selenium
 
         it "has default capabilities for Edge" do
           caps = Capabilities.edge
-          caps.browser_name.should == "edge"
+          caps.browser_name.should == "MicrosoftEdge"
         end
 
         it "has default capabilities for Firefox" do
