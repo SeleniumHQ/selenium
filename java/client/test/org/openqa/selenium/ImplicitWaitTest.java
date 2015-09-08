@@ -163,13 +163,14 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(3, SECONDS);
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.name("sameWindow")).click();
+    driver.findElement(By.name("windowOne")).click();
+    String handle = (String)driver.getWindowHandles().toArray()[1];
 
-    WebDriver frameDriver = driver.switchTo().frame("iframe1");
+    WebDriver newWindow = driver.switchTo().window(handle);
 
     long start = System.currentTimeMillis();
 
-    frameDriver.findElements(By.id("This crazy thing doesn't exist"));
+    newWindow.findElements(By.id("This crazy thing doesn't exist"));
 
     long end = System.currentTimeMillis();
 
