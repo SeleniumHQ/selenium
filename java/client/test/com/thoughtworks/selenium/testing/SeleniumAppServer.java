@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.testing;
 
 import java.io.File;
 
-import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty7.servlet.ServletContextHandler;
 
-public class SeleniumAppServer extends Jetty7AppServer {
+public class SeleniumAppServer extends JettyAppServer {
 
   private static final String RC_CONTEXT_PATH = "/selenium-server";
 
@@ -45,7 +45,7 @@ public class SeleniumAppServer extends Jetty7AppServer {
   }
 
   public static void main(String[] args) {
-    Jetty7AppServer server = new SeleniumAppServer();
+    JettyAppServer server = new SeleniumAppServer();
 
     server.listenOn(getHttpPortFromEnv());
     System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));

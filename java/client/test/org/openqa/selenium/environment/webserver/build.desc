@@ -3,12 +3,11 @@ java_library(
   srcs = [ 
     "AppServer.java",
 
-    "Jetty7AppServer.java",
     "BasicAuth.java",
     "CookieServlet.java",
     "EncodingServlet.java",
     "GeneratedJsTestServlet.java",
-    "Jetty7AppServer.java",
+    "JettyAppServer.java",
     "KillSwitchServlet.java",
     "ManifestServlet.java",
     "Utf8Servlet.java",
@@ -44,7 +43,7 @@ java_library(
 
 java_binary(name = "WebServer",
   deps = [":webserver"],
-  main_class = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
+  main_class = "org.openqa.selenium.environment.webserver.JettyAppServer")
 
 java_test(name = "webserver_test",
   srcs = [
