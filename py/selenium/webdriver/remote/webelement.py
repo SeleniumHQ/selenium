@@ -55,7 +55,7 @@ class WebElement(object):
         self._w3c = w3c
 
     def __repr__(self):
-        return "WebElement(parent=%r, id_=\"%s\", w3c=%s)" % (self._parent, self._id, self._w3c)
+        return "%s (session=\"%s\", element=\"%s\")" % (type(self), self._parent.session_id, self._id)
 
     @property
     def tag_name(self):
