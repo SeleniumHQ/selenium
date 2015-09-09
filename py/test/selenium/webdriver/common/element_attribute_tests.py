@@ -22,6 +22,15 @@ import pytest
 
 class ElementAttributeTests(unittest.TestCase):
 
+    def testShouldImplementReprForWebElement(self):
+        self._loadSimplePage()
+        elem = self.driver.find_element_by_id("validImgTag")
+        elem_repr = repr(elem)
+        self.assertTrue( "WebElement" in elem_repr)
+        self.assertTrue( "parent=" in elem_repr)
+        self.assertTrue( "id_=" in elem_repr)
+        self.assertTrue( "w3c=" in elem_repr)
+
     def testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed(self):
         self._loadSimplePage()
         head = self.driver.find_element_by_xpath("/html")
