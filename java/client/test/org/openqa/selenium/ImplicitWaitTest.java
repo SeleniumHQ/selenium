@@ -161,7 +161,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore({IE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
-    driver.manage().timeouts().implicitlyWait(3, SECONDS);
+    driver.manage().timeouts().implicitlyWait(1, SECONDS);
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
     String handle = (String)driver.getWindowHandles().toArray()[1];
@@ -176,7 +176,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
     long time = end - start;
 
-    assertTrue(time >= 3000);
+    assertTrue(time >= 1000);
 
   }
 }
