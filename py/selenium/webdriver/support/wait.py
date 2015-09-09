@@ -55,6 +55,10 @@ class WebDriverWait(object):
                 exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
 
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self._driver.session_id)
+
     def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \
         return value is not False."""
