@@ -17,6 +17,7 @@
 
 from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .service import Service
 
@@ -37,7 +38,8 @@ class WebDriver(RemoteWebDriver):
 
         RemoteWebDriver.__init__(
             self,
-            command_executor='http://localhost:%d' % self.port,
+            command_executor=RemoteConnection('http://localhost:%d' % self.port,
+                                              resolve_ip=False),
             desired_capabilities=capabilities)
         self._is_remote = False
 
