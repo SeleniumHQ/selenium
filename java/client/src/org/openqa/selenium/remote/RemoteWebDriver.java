@@ -33,6 +33,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -389,11 +390,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return allElements;
   }
 
+  static String cssEscape(String using) {
+    using = using.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+    if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+    }
+    return using;
+  }
+
   public WebElement findElementById(String using) {
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("id", using);
     } else {
-      return findElementByCssSelector("#" + using);
+      return findElementByCssSelector("#" + cssEscape(using));
     }
   }
 
@@ -401,7 +410,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("id", using);
     } else {
-      return findElementsByCssSelector("#" + using);
+      return findElementsByCssSelector("#" + cssEscape(using));
     }
   }
 
@@ -441,7 +450,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("name", using);
     } else {
-      return findElementByCssSelector("*[name=" + using + "]");
+      return findElementByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -449,7 +458,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("name", using);
     } else {
-      return findElementsByCssSelector("*[name=" + using + "]");
+      return findElementsByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -457,7 +466,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElement("class name", using);
     } else {
-      return findElementByCssSelector("." + using);
+      return findElementByCssSelector("." + cssEscape(using));
     }
   }
 
@@ -465,7 +474,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (getW3CStandardComplianceLevel() == 0) {
       return findElements("class name", using);
     } else {
-      return findElementsByCssSelector("." + using);
+      return findElementsByCssSelector("." + cssEscape(using));
     }
   }
 
@@ -839,21 +848,33 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     protected class RemoteWindow implements Window {
 
       public void setSize(Dimension targetSize) {
-        execute(DriverCommand.SET_WINDOW_SIZE,
-            ImmutableMap.of("windowHandle", "current",
-                "width", targetSize.width, "height", targetSize.height));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.SET_WINDOW_SIZE,
+                  ImmutableMap.of("windowHandle", "current",
+                                  "width", targetSize.width, "height", targetSize.height));
+        } else {
+          execute(DriverCommand.SET_CURRENT_WINDOW_SIZE,
+                  ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+        }
       }
 
       public void setPosition(Point targetPosition) {
-        execute(DriverCommand.SET_WINDOW_POSITION,
-            ImmutableMap
-                .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.SET_WINDOW_POSITION,
+                  ImmutableMap
+                    .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+        } else {
+          executeScript("window.screenX = arguments[0]; window.screenY = arguments[1]",
+                        targetPosition.x, targetPosition.y);
+        }
       }
 
       @SuppressWarnings({"unchecked"})
       public Dimension getSize() {
-        Response response = execute(DriverCommand.GET_WINDOW_SIZE,
-            ImmutableMap.of("windowHandle", "current"));
+        Response response = getW3CStandardComplianceLevel() == 0
+            ? execute(DriverCommand.GET_WINDOW_SIZE, ImmutableMap.of("windowHandle", "current"))
+            : execute(DriverCommand.GET_CURRENT_WINDOW_SIZE);
+
         Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
 
         int width = ((Number) rawSize.get("width")).intValue();
@@ -863,10 +884,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       @SuppressWarnings({"unchecked"})
+      Map<String, Object> rawPoint;
       public Point getPosition() {
-        Response response = execute(DriverCommand.GET_WINDOW_POSITION,
-            ImmutableMap.of("windowHandle", "current"));
-        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+        if (getW3CStandardComplianceLevel() == 0) {
+          Response response = execute(DriverCommand.GET_WINDOW_POSITION,
+                                      ImmutableMap.of("windowHandle", "current"));
+          rawPoint = (Map<String, Object>) response.getValue();
+        } else {
+          rawPoint = (Map<String, Object>) executeScript(
+              "return {x: window.screenX, y: window.screenY}");
+        }
 
         int x = ((Number) rawPoint.get("x")).intValue();
         int y = ((Number) rawPoint.get("y")).intValue();
@@ -875,8 +902,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       public void maximize() {
-        execute(DriverCommand.MAXIMIZE_WINDOW,
-            ImmutableMap.of("windowHandle", "current"));
+        if (getW3CStandardComplianceLevel() == 0) {
+          execute(DriverCommand.MAXIMIZE_WINDOW,
+                  ImmutableMap.of("windowHandle", "current"));
+        } else {
+          execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
+        }
       }
     }
   }
@@ -936,9 +967,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       return RemoteWebDriver.this;
     }
 
-    public WebDriver window(String windowName) {
-      execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowName, "handle", windowName));
-      return RemoteWebDriver.this;
+    public WebDriver window(String windowHandleOrName) {
+      if (getW3CStandardComplianceLevel() == 0) {
+        execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("name", windowHandleOrName));
+        return RemoteWebDriver.this;
+      } else {
+        try {
+          execute(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
+          return RemoteWebDriver.this;
+        } catch (NoSuchWindowException nsw) {
+          // simulate search by name
+          String original = getWindowHandle();
+          for (String handle : getWindowHandles()) {
+            switchTo().window(handle);
+            if (windowHandleOrName.equals(executeScript("return window.name"))) {
+              return RemoteWebDriver.this; // found by name
+            }
+          }
+          switchTo().window(original);
+          throw nsw;
+        }
+      }
     }
 
     public WebDriver defaultContent() {

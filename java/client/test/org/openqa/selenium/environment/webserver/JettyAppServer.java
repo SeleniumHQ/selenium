@@ -37,7 +37,7 @@ import java.io.File;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
-public class Jetty7AppServer implements AppServer {
+public class JettyAppServer implements AppServer {
 
   private static final String HOSTNAME_FOR_TEST_ENV_NAME = "HOSTNAME";
   private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
@@ -60,7 +60,7 @@ public class Jetty7AppServer implements AppServer {
   private ContextHandlerCollection handlers;
   private final String hostName;
 
-  public Jetty7AppServer() {
+  public JettyAppServer() {
     this(detectHostname());
   }
 
@@ -69,7 +69,7 @@ public class Jetty7AppServer implements AppServer {
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
 
-  public Jetty7AppServer(String hostName) {
+  public JettyAppServer(String hostName) {
     this.hostName = hostName;
     // Be quiet. Unless we want things to be chatty
     if (!Boolean.getBoolean("webdriver.debug")) {
@@ -258,7 +258,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    Jetty7AppServer server = new Jetty7AppServer(detectHostname());
+    JettyAppServer server = new JettyAppServer(detectHostname());
 
     server.listenOn(getHttpPortFromEnv());
     System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));

@@ -94,7 +94,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(CHROME)
+  @Ignore({CHROME, MARIONETTE})
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
@@ -346,7 +346,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, MARIONETTE})
+  @Ignore({CHROME})
   public void testShouldHandleAlertOnPageLoad() {
     driver.findElement(By.id("open-page-with-onload-alert")).click();
 

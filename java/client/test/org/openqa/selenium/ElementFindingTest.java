@@ -55,7 +55,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindASingleElementByNumericId() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("2"));
@@ -70,7 +69,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindMultipleElementsByNumericId() {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("2"));
@@ -542,7 +540,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected]"));

@@ -89,6 +89,11 @@ class WebDriver(object):
         self._mobile = Mobile(self)
         self.file_detector = LocalFileDetector()
 
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self.session_id)
+
+
     @property
     def mobile(self):
         return self._mobile

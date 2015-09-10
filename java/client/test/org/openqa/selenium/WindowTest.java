@@ -24,7 +24,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -37,7 +36,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.logging.Logger;
 
-@Ignore(value = {MARIONETTE}, reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 
   private static Logger log = Logger.getLogger(WindowTest.class.getName());

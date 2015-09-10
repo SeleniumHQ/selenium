@@ -6,5 +6,5 @@ java_binary(name = "server",
     "//java/server/src/org/openqa/selenium/remote/server",
     "//java/server/src/org/openqa/selenium/remote/server:server_very_core",
     "//third_party/java/jetty",
-    "//third_party/java/servlet-api",
+    "//third_party/java/servlet:servlet-api",
   ])

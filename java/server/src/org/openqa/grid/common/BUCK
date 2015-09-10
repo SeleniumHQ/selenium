@@ -1,7 +1,7 @@
 java_library(name = 'common',
   srcs = glob(['**/*.java']),
+  resources = glob(['defaults/*.json']),
   deps = [
-    ':defaults',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/remote:remote',
@@ -13,13 +13,4 @@ java_library(name = 'common',
     '//java/server/src/org/openqa/grid:grid',
     '//java/server/src/org/openqa/grid/selenium:classes',
   ],
-)
-
-prebuilt_jar(name = 'defaults',
-  binary_jar = ':defaults-zip',
-)
-
-zip_file(name = 'defaults-zip',
-  srcs = glob(['defaults/*']),
-  out = 'defaults.jar',
 )

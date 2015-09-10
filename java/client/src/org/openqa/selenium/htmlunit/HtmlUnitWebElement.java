@@ -167,7 +167,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         submitForm((HtmlForm) element);
         return;
       } else if ((element instanceof HtmlSubmitInput) || (element instanceof HtmlImageInput)) {
-        ((HtmlElement) element).click();
+        element.click();
         return;
       } else if (element instanceof HtmlInput) {
         HtmlForm form = ((HtmlElement) element).getEnclosingForm();
@@ -263,7 +263,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlTextArea.setText("");
-    } else if (element.getAttribute("contenteditable") != DomElement.ATTRIBUTE_NOT_DEFINED) {
+    } else if (!element.getAttribute("contenteditable").equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
       element.setTextContent("");
     }
   }
@@ -278,7 +278,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
     });
 
-    if (displayed == null || !displayed.booleanValue()) {
+    if (displayed == null || !displayed) {
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
 
@@ -298,12 +298,12 @@ public class HtmlUnitWebElement implements WrapsDriver,
       if (jsEnabled &&
           !oldActiveEqualsCurrent &&
           !isBody) {
-        ((HtmlElement) oldActiveElement.element).blur();
+        oldActiveElement.element.blur();
       }
     } catch (StaleElementReferenceException ex) {
       // old element has gone, do nothing
     }
-    ((HtmlElement) element).focus();
+    element.focus();
   }
 
   void sendKeyDownEvent(CharSequence modifierKey) {
@@ -683,7 +683,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   private List<WebElement> findChildNodes(List<WebElement> allElements) {
-    List<WebElement> toReturn = new LinkedList<WebElement>();
+    List<WebElement> toReturn = new LinkedList<>();
 
     for (WebElement current : allElements) {
       DomElement candidate = ((HtmlUnitWebElement) current).element;
@@ -766,7 +766,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     String expectedText = linkText.trim();
-    List<? extends DomElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
+    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
     List<WebElement> webElements = new ArrayList<>();
     for (DomElement e : htmlElements) {
       if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {

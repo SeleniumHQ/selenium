@@ -10,7 +10,7 @@ java_library(name = 'environment',
     '//third_party/java/guava-libraries:guava-libraries',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/jetty:jetty',
-    '//third_party/java/servlet-api:servlet-api',
+    '//third_party/java/servlet:servlet-api',
     '//third_party/java/webbit:webbit',
   ],
   visibility = [

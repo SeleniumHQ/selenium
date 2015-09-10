@@ -96,6 +96,8 @@ public class BrowserNameUtils {
       ret = BrowserType.CHROME;
     } else if (browserString.startsWith("opera")) {
       ret = BrowserType.OPERA;
+    } else if (browserString.toLowerCase().contains("edge")) {
+      ret = BrowserType.EDGE;
     }
 
     return ret.replace(" ", "_");

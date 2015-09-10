@@ -85,7 +85,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void submit() {
-    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    if (parent.getW3CStandardComplianceLevel() == 0) {
+      execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    } else {
+      WebElement form = findElement(By.xpath("./ancestor-or-self::form"));
+      parent.executeScript("arguments[0].submit()", form);
+    }
   }
 
   public void sendKeys(CharSequence... keysToSend) {
@@ -223,7 +228,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("id", using);
     } else {
-      return findElementByCssSelector("#" + using);
+      return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -231,7 +236,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("id", using);
     } else {
-      return findElementsByCssSelector("#" + using);
+      return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -247,7 +252,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("name", using);
     } else {
-      return findElementByCssSelector("*[name=" + using + "]");
+      return findElementByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -255,7 +260,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("name", using);
     } else {
-      return findElementsByCssSelector("*[name=" + using + "]");
+      return findElementsByCssSelector("*[name='" + using + "']");
     }
   }
 
@@ -263,7 +268,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElement("class name", using);
     } else {
-      return findElementByCssSelector("." + using);
+      return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -271,7 +276,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (parent.getW3CStandardComplianceLevel() == 0) {
       return findElements("class name", using);
     } else {
-      return findElementsByCssSelector("." + using);
+      return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
     }
   }
 
@@ -396,13 +401,22 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       }
 
       public Point inViewPort() {
-        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-            ImmutableMap.of("id", getId()));
+        if (parent.getW3CStandardComplianceLevel() == 0) {
+          Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+                                      ImmutableMap.of("id", getId()));
 
-        @SuppressWarnings("unchecked")
-        Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+          @SuppressWarnings("unchecked")
+          Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
 
-        return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+        } else {
+          @SuppressWarnings("unchecked")
+          Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
+            "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
+
+          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+        }
+
       }
 
       public Point onPage() {

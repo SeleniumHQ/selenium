@@ -18,14 +18,14 @@
 package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.environment.webserver.JettyAppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
 
   private AppServer appServer;
 
   public InProcessTestEnvironment() {
-    appServer = new Jetty7AppServer();
+    appServer = new JettyAppServer();
     appServer.start();
   }
 

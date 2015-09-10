@@ -41,9 +41,20 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
-@Ignore(value = {HTMLUNIT, MARIONETTE},
+@Ignore(value = {HTMLUNIT},
         reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
 public class PositionAndSizeTest extends JUnit4TestBase {
+
+  @Test
+  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
+    driver.get(pages.xhtmlTestPage);
+
+    WebElement element = driver.findElement(By.id("username"));
+    Point location = element.getLocation();
+
+    assertThat(location.getX() > 0, is(true));
+    assertThat(location.getY() > 0, is(true));
+  }
 
   @Test
   public void testShouldGetCoordinatesOfAnElement() {
@@ -81,7 +92,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
   }
 
-  @Ignore(value = {SAFARI})
+  @Ignore(value = {SAFARI, MARIONETTE})
   @Test
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
@@ -107,7 +118,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI})
+  @Ignore({SAFARI, MARIONETTE})
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
@@ -117,7 +128,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI})
+  @Ignore({SAFARI, MARIONETTE})
   @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
   @Test
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
