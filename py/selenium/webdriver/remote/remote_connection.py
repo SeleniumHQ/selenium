@@ -161,13 +161,13 @@ class RemoteConnection(object):
         """
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
-    def __init__(self, remote_server_addr, keep_alive=False):
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
         self._hostname = parsed_url.hostname
         addr = ""
-        if parsed_url.hostname:
+        if parsed_url.hostname and resolve_ip:
             try:
                 netloc = socket.gethostbyname(parsed_url.hostname)
                 addr = netloc

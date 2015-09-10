@@ -59,7 +59,7 @@ class Service(object):
                 "The EdgeDriver executable needs to be available in the path. "
                 "Please download from http://go.microsoft.com/fwlink/?LinkId=619687 ")
         count = 0
-        while not utils.is_url_connectable(self.port):
+        while not utils.is_connectable(self.port):
             count += 1
             time.sleep(1)
             if count == 30:
