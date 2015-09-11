@@ -67,7 +67,7 @@ public class DefaultToFIFOPriorityTest {
       Map<String, Object> cap = new HashMap<>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
-      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, cap);
+      MockedRequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
     }
 
@@ -97,7 +97,8 @@ public class DefaultToFIFOPriorityTest {
   }
 
 
-  @Test
+  // 20 second timeout in case we hang
+  @Test(timeout = 20000)
   public void validateRequestAreHandledFIFO() throws InterruptedException {
     int cpt = 0;
     while (cpt < 8) {
@@ -116,6 +117,7 @@ public class DefaultToFIFOPriorityTest {
   @After
   public void teardown() {
     registry.stop();
+    requests.clear();  // Because it's static
   }
 
 }

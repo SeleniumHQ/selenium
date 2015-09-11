@@ -49,6 +49,5 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
     UserDefinedCapabilityMatcherTests.class,
     GridShutdownTest.class
 })
-public class GridInternalTestSuite {
-// 186 sec
+public class GridInternalTests {
 }

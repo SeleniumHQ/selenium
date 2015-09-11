@@ -22,4 +22,4 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(RegistrationRequestTest.class)
-public class CommonTestSuite {}
+public class CommonTests {}

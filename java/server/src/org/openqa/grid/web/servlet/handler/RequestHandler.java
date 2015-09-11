@@ -260,7 +260,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   @Override
   public String toString() {
     StringBuilder b = new StringBuilder();
-    b.append("session :").append(session).append(" , ");
+    b.append("session:").append(session).append(", ");
+    b.append("caps: ").append(request.getDesiredCapabilities());
     b.append("\n");
     return b.toString();
   }
