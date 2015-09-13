@@ -64,6 +64,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NoDriverAfterTest
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     ((JavascriptExecutor) driver).executeScript(
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
@@ -154,11 +155,11 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
+  @NotYetImplemented(value = {HTMLUNIT},
+    reason = "HtmlUnit: click()/prompt need to run in different threads")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -169,7 +170,8 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore({CHROME, MARIONETTE})
+  @Ignore(value = {CHROME, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
   public void testSettingTheValueOfAnAlertThrows() {
@@ -491,8 +493,9 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, MARIONETTE})
+  @Ignore(value = {CHROME})
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/21")
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());

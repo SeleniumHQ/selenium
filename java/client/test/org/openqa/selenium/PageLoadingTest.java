@@ -388,6 +388,7 @@ public class PageLoadingTest extends JUnit4TestBase {
               + "PHANTOMJS: not tested",
           issues = {687})
   @NeedsLocalEnvironment
+  @NoDriverAfterTest
   @Test
   public void testPageLoadTimeoutCanBeChanged() {
     try {
