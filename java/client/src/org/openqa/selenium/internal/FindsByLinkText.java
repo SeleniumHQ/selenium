@@ -22,11 +22,11 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByLinkText {
-  WebElement findElementByLinkText(String using);
+  <T extends WebElement> T findElementByLinkText(String using);
 
-  List<WebElement> findElementsByLinkText(String using);
+  <T extends WebElement> List<T> findElementsByLinkText(String using);
 
-  WebElement findElementByPartialLinkText(String using);
+  <T extends WebElement> T findElementByPartialLinkText(String using);
 
-  List<WebElement> findElementsByPartialLinkText(String using);
+  <T extends WebElement> List<T> findElementsByPartialLinkText(String using);
 }

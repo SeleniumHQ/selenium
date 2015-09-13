@@ -22,7 +22,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByName {
-  WebElement findElementByName(String using);
+  <T extends WebElement> T findElementByName(String using);
 
-  List<WebElement> findElementsByName(String using);
+  <T extends WebElement> List<T> findElementsByName(String using);
 }

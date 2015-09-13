@@ -73,7 +73,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
-
+@SuppressWarnings({"unchecked"})
 public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
     FindsByCssSelector, Locatable, WebElement {

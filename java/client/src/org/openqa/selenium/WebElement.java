@@ -147,10 +147,17 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    *
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches.
+   * 
+   * @throws ClassCastException The WebElement interface is generic. 
+   * It allows an end user to develop a WebElement implementation that can find&return 
+   * a list of instances of the desired WebElement subclass. But it is strongly recommended to use WebElement
+   * as the type of a list parameter when there are used common {@link WebDriver} implementations of 
+   * the Selenium project. 
+   * 
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  List<WebElement> findElements(By by);
+  <T extends WebElement> List<T> findElements(By by);
 
   /**
    * Find the first {@link WebElement} using the given method. See the note in
@@ -164,11 +171,19 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    *
    * @param by The locating mechanism
    * @return The first matching element on the current context.
+   * 
    * @throws NoSuchElementException If no matching elements are found
+   * 
+   * @throws ClassCastException The WebElement interface is generic. 
+   * It allows an end user to develop a WebElement implementation that can find&return an instance of the desired 
+   * WebElement subclass. But it is strongly recommended to use WebElement
+   * as the type of the returned element when there are used common {@link WebDriver} implementations of 
+   * the Selenium project.
+   * 
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  WebElement findElement(By by);
+  <T extends WebElement> T findElement(By by);
 
   /**
    * Is this element displayed or not? This method avoids the problem of having to parse an

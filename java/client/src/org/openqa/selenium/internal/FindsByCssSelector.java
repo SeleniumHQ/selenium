@@ -22,7 +22,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByCssSelector {
-  WebElement findElementByCssSelector(String using);
+  <T extends WebElement> T findElementByCssSelector(String using);
 
-  List<WebElement> findElementsByCssSelector(String using);
+  <T extends WebElement> List<T> findElementsByCssSelector(String using);
 }

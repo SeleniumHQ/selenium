@@ -47,7 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
+@SuppressWarnings({"unchecked"})
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
                                          FindsByXPath, WrapsDriver, Locatable, HasIdentity,
@@ -206,7 +206,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return element;
   }
 
-  @SuppressWarnings("unchecked")
+
   protected List<WebElement> findElements(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
@@ -371,7 +371,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
   }
 
-  @SuppressWarnings({"unchecked"})
+
   public Point getLocation() {
     Response response = parent.getW3CStandardComplianceLevel() == 0
                       ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
@@ -382,7 +382,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Point(x, y);
   }
 
-  @SuppressWarnings({"unchecked"})
+
   public Dimension getSize() {
     Response response = parent.getW3CStandardComplianceLevel() == 0
                         ? execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id))
@@ -405,12 +405,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
           Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
                                       ImmutableMap.of("id", getId()));
 
-          @SuppressWarnings("unchecked")
+
           Map<String, Number> mapped = (Map<String, Number>) response.getValue();
           return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
 
         } else {
-          @SuppressWarnings("unchecked")
+
           Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
             "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
 

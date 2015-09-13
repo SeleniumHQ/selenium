@@ -91,11 +91,19 @@ public interface WebDriver extends SearchContext {
    * found collection, or will return an empty list if the timeout is reached.
    *
    * @param by The locating mechanism to use
+   * 
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches
+   * 
+   * @throws ClassCastException The WebDriver interface is generic. 
+   * It allows an end user to develop a WebDriver implementation that can find&return 
+   * a list of instances of the desired {@link WebElement} subclass. But it is strongly recommended 
+   * to use WebElement as the type of a list parameter when there are used 
+   * common WebDriver implementations of the Selenium project. 
+   *  
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  List<WebElement> findElements(By by);
+  <T extends WebElement> List<T> findElements(By by) throws ClassCastException;
 
 
   /**
@@ -109,11 +117,19 @@ public interface WebDriver extends SearchContext {
    *
    * @param by The locating mechanism
    * @return The first matching element on the current page
+   * 
    * @throws NoSuchElementException If no matching elements are found
+   * 
+   * @throws ClassCastException The WebDriver interface is generic. 
+   * It allows an end user to develop a WebDriver implementation that can find&return an 
+   * instance of the desired {@link WebElement} subclass. But it is strongly recommended 
+   * to use WebElement as the type of the returned element when there are used 
+   * common WebDriver implementations of the Selenium project. 
+   * 
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
-  WebElement findElement(By by);
+  <T extends WebElement> T findElement(By by) throws NoSuchElementException, ClassCastException;
 
   // Misc
 

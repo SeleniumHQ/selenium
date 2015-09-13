@@ -74,7 +74,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Augmentable
+@Augmentable @SuppressWarnings({"unchecked"})
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
@@ -232,7 +232,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     startSession(desiredCapabilities, null);
   }
 
-  @SuppressWarnings({"unchecked"})
+  
   protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
 
@@ -369,7 +369,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  @SuppressWarnings("unchecked")
+
   protected List<WebElement> findElements(String by, String using) {
     if (using == null) {
       throw new IllegalArgumentException("Cannot find elements when the selector is null.");
@@ -520,7 +520,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  @SuppressWarnings({"unchecked"})
+
   public Set<String> getWindowHandles() {
     Response response = execute(DriverCommand.GET_WINDOW_HANDLES);
     Object value = response.getValue();
@@ -741,7 +741,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.DELETE_ALL_COOKIES);
     }
 
-    @SuppressWarnings({"unchecked"})
+
     public Set<Cookie> getCookies() {
       Object returned = execute(DriverCommand.GET_ALL_COOKIES).getValue();
 
@@ -795,7 +795,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
 
-      @SuppressWarnings("unchecked")
+
       public List<String> getAvailableEngines() {
         Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
         return (List<String>) response.getValue();
@@ -869,7 +869,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         }
       }
 
-      @SuppressWarnings({"unchecked"})
+
       public Dimension getSize() {
         Response response = getW3CStandardComplianceLevel() == 0
             ? execute(DriverCommand.GET_WINDOW_SIZE, ImmutableMap.of("windowHandle", "current"))
@@ -883,7 +883,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         return new Dimension(width, height);
       }
 
-      @SuppressWarnings({"unchecked"})
+
       Map<String, Object> rawPoint;
       public Point getPosition() {
         if (getW3CStandardComplianceLevel() == 0) {

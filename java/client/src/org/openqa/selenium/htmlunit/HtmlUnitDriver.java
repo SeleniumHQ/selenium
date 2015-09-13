@@ -129,6 +129,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
  * which is a headless (GUI-less) browser simulator.
  * <p>The main supported browsers are Chrome, Firefox and Internet Explorer. 
  */
+@SuppressWarnings({"unchecked"})
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {

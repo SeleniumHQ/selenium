@@ -88,7 +88,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     WindowSwitchingTest.class,
     ContextSwitchingTest.class,
     WindowTest.class,
-
+    SearchContextTest.class,
     Html5Tests.class,
     InteractionTests.class
 })
