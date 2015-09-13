@@ -424,7 +424,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
   }
 
-  @Ignore({CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI})
+  @Ignore({CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
