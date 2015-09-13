@@ -129,6 +129,27 @@ until.ableToSwitchToFrame = function(frame) {
   }
 };
 
+/**
+ * Creates a condition that waits for a new window to be present.
+ * Once successful, a promise will be fulfilled with the handle
+ * for the new window.
+ *
+ * @return {!until.Condition.<!webdriver.Window>} New Condition
+ */
+until.newWindowAvailable = function() {
+  var numHandles;
+  return new until.Condition('for the number of handles to change', function(driver) {
+    return driver.getAllWindowHandles().then(function(handles) {
+      if(numHandles && handles.length > numHandles) {
+        return handles[handles.length - 1];
+      }
+      else {
+        numHandles = handles.length;
+        return false;
+      }
+    });
+  });
+};
 
 /**
  * Creates a condition that waits for an alert to be opened. Upon success, the
