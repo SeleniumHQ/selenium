@@ -830,6 +830,24 @@ public class ExpectedConditions {
     };
   }
 
+  public static ExpectedCondition<Boolean> numberOfwindowsToBe(final int expectedNumberOfWindows) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        try {
+          return driver.getWindowHandles().size() == expectedNumberOfWindows;
+        } catch (WebDriverException e) {
+          return null;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return "number of open windows to be " + expectedNumberOfWindows;
+      }
+    };
+  }
+
   /**
    * An expectation with the logical opposite condition of the given condition.
    *
