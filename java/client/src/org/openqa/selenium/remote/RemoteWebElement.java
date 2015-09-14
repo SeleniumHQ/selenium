@@ -89,7 +89,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
     } else {
       WebElement form = findElement(By.xpath("./ancestor-or-self::form"));
-      parent.executeScript("arguments[0].submit()", form);
+      parent.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
+                           "e.initEvent('submit', true, true);" +
+                           "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form);
     }
   }
 
