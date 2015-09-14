@@ -261,7 +261,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/22")
   @Test
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
@@ -270,7 +271,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/22")
   @Test
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
@@ -280,7 +282,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/22")
   @Test
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
@@ -288,7 +291,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals(driver.getTitle(), "XHTML Test Page");
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE},
+    reason = "Marionette: https://github.com/jgraham/wires/issues/22")
   @Test
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
