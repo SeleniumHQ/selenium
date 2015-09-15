@@ -31,7 +31,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -417,7 +416,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertNotNull(element);
   }
 
-  @Ignore({CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
@@ -427,13 +426,13 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
   }
 
-  @Ignore({CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
 
-    driver.switchTo().frame("second");
+    driver.switchTo().frame("iframe1");
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
   }
 
