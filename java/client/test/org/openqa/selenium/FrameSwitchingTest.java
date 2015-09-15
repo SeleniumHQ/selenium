@@ -513,7 +513,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(ALL)
+  @Ignore(value = {CHROME, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI}, reason = "not tested")
   @JavascriptEnabled
   @Test
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
