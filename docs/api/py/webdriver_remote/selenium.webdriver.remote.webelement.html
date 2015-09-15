@@ -48,7 +48,7 @@
 <span id="selenium-webdriver-remote-webelement"></span><h1>selenium.webdriver.remote.webelement<a class="headerlink" href="#module-selenium.webdriver.remote.webelement" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="selenium.webdriver.remote.webelement.WebElement">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webelement.</tt><tt class="descname">WebElement</tt><big>(</big><em>parent</em>, <em>id_</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webelement.</tt><tt class="descname">WebElement</tt><big>(</big><em>parent</em>, <em>id_</em>, <em>w3c=False</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a DOM element.</p>
 <p>Generally, all interesting operations that interact with a document will be
 performed through this interface.</p>
@@ -453,6 +453,57 @@ the element is not visible.</p>
 <dt id="selenium.webdriver.remote.webelement.WebElement.rect">
 <tt class="descname">rect</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.rect" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dictionary with the size and location of the element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.screenshot">
+<tt class="descname">screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Gets the screenshot of the current element. Returns False if there is</dt>
+<dd>any IOError, else returns True. Use full paths in your filename.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element.screenshot(&#8216;/Screenshots/foo.png&#8217;)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.screenshot_as_base64">
+<tt class="descname">screenshot_as_base64</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.screenshot_as_base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current element as a base64 encoded string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">img_b64 = element.screenshot_as_base64</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.screenshot_as_png">
+<tt class="descname">screenshot_as_png</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.screenshot_as_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot_as_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current element as a binary data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">element_png = element.screenshot_as_png</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.phantomjs.service</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -66,12 +64,12 @@
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
+
 
 <div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -116,7 +114,7 @@
 
 <span class="sd">        :Exceptions:</span>
 <span class="sd">         - WebDriverException : Raised either when it can&#39;t start the service</span>
-<span class="sd">           or when it can&#39;t connect to the service</span>
+<span class="sd">           or when it can&#39;t connect to the service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
@@ -130,7 +128,8 @@
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
-                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can not connect to GhostDriver&quot;</span><span class="p">)</span>
+                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                     <span class="s">&quot;Can not connect to GhostDriver on port {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Service.service_url"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.service_url">[docs]</a>    <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -156,6 +155,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="c"># kill may not be available under windows environment</span>
             <span class="k">pass</span></div></div>

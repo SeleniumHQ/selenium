@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.common.alert</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -77,11 +75,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows to work with alerts.</span>
 
-<span class="sd">    Use this class to interact with alert prompts.  It contains methods for dismissing, </span>
+<span class="sd">    Use this class to interact with alert prompts.  It contains methods for dismissing,</span>
 <span class="sd">    accepting, inputting, and getting text from alert prompts.</span>
 
 <span class="sd">    Accepting / Dismissing alert prompts::</span>
-<span class="sd">    </span>
+
 <span class="sd">        Alert(driver).accept()</span>
 <span class="sd">        Alert(driver).dismiss()</span>
 
@@ -137,9 +135,24 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - keysToSend: The text to be sent to Alert.</span>
 
-<span class="sd">        </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_VALUE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">keysToSend</span><span class="p">})</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_VALUE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="n">keysToSend</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="Alert.authenticate"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send the username / password to an Authenticated dialog (like with Basic HTTP Auth).</span>
+<span class="sd">        Implicitly &#39;clicks ok&#39;</span>
+
+<span class="sd">        Usage::</span>
+<span class="sd">        driver.switch_to.alert.authenticate(&#39;cheese&#39;, &#39;secretGouda&#39;)</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         -username: string to be set in the username section of the dialog</span>
+<span class="sd">         -password: string to be set in the password section of the dialog</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_CREDENTIALS</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;username&#39;</span><span class="p">:</span><span class="n">username</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">:</span><span class="n">password</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

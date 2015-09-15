@@ -51,7 +51,7 @@
 <dt id="selenium.webdriver.common.alert.Alert">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.alert.</tt><tt class="descname">Alert</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows to work with alerts.</p>
-<p>Use this class to interact with alert prompts.  It contains methods for dismissing, 
+<p>Use this class to interact with alert prompts.  It contains methods for dismissing,
 accepting, inputting, and getting text from alert prompts.</p>
 <p>Accepting / Dismissing alert prompts:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
@@ -85,6 +85,24 @@ self.assertEqual(&#8220;Do you wish to quit?&#8221;, alert_text)</div></blockquo
 <dd><p>Accepts the alert available.</p>
 <p>Usage::
 Alert(driver).accept() # Confirm a alert dialog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.alert.Alert.authenticate">
+<tt class="descname">authenticate</tt><big>(</big><em>username</em>, <em>password</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the username / password to an Authenticated dialog (like with Basic HTTP Auth).
+Implicitly &#8216;clicks ok&#8217;</p>
+<p>Usage::
+driver.switch_to.alert.authenticate(&#8216;cheese&#8217;, &#8216;secretGouda&#8217;)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">-username: string to be set in the username section of the dialog
+-password: string to be set in the password section of the dialog</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

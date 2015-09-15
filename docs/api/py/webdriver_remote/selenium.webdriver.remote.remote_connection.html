@@ -85,7 +85,7 @@
 
 <dl class="class">
 <dt id="selenium.webdriver.remote.remote_connection.RemoteConnection">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">RemoteConnection</tt><big>(</big><em>remote_server_addr</em>, <em>keep_alive=False</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">RemoteConnection</tt><big>(</big><em>remote_server_addr</em>, <em>keep_alive=False</em>, <em>resolve_ip=True</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A connection with the Remote WebDriver server.</p>
 <p>Communicates with the server using the WebDriver wire protocol:
 <a class="reference external" href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</a></p>
@@ -108,6 +108,43 @@ its JSON payload.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">
+<em class="property">classmethod </em><tt class="descname">get_timeout</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection.get_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Timeout value in seconds for all http requests made to the Remote Connection</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.remote.remote_connection.RemoteConnection.reset_timeout">
+<em class="property">classmethod </em><tt class="descname">reset_timeout</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection.reset_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection.reset_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.remote.remote_connection.RemoteConnection.set_timeout">
+<em class="property">classmethod </em><tt class="descname">set_timeout</tt><big>(</big><em>timeout</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection.set_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection.set_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the default timeout</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li>timeout - timeout value for http requests in seconds</li>
+</ul>
 </dd></dl>
 
 </dd></dl>

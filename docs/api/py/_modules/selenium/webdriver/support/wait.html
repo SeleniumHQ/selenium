@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.support.wait</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -105,6 +103,10 @@
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c"># ignored_exceptions is not iterable</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">exceptions</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;{0.__module__}.{0.__name__} (session=&quot;{1}&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>

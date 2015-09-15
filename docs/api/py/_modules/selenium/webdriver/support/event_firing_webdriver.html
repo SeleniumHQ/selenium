@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.support.event_firing_webdriver</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -116,6 +114,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_listener</span><span class="p">,</span> <span class="n">AbstractEventListener</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Event listener must be a subclass of AbstractEventListener&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">_wrap_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span> <span class="o">=</span> <span class="n">event_listener</span>
         
     <span class="nd">@property</span>
@@ -219,7 +218,12 @@
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_element_args</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">args</span>
-        
+
+    <span class="k">def</span> <span class="nf">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">EventFiringWebElement</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">WebDriver</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">wrapped_element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">WebDriver</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>

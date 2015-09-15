@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webelement</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -100,9 +98,15 @@
 <span class="sd">    ``StaleElementReferenceException`` is thrown, and all future calls to this</span>
 <span class="sd">    instance will fail.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">w3c</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span> <span class="o">=</span> <span class="n">w3c</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;{0.__module__}.{0.__name__} (session=&quot;{1}&quot;, element=&quot;{2}&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
+
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.tag_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -416,6 +420,48 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_RECT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
+<div class="viewcode-block" id="WebElement.screenshot_as_base64"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the screenshot of the current element as a base64 encoded string.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            img_b64 = element.screenshot_as_base64</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebElement.screenshot_as_png"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.screenshot_as_png">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the screenshot of the current element as a binary data.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element_png = element.screenshot_as_png</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_base64</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="WebElement.screenshot"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the screenshot of the current element. Returns False if there is</span>
+<span class="sd">           any IOError, else returns True. Use full paths in your filename.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - filename: The full path you wish to save your screenshot to.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element.screenshot(&#39;/Screenshots/foo.png&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_png</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">png</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">png</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+    <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.parent"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.parent">[docs]</a>    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Internal reference to the WebDriver instance this element was found from.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
@@ -434,7 +480,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 </div>
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
     <span class="c"># Private Methods</span>
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -456,12 +505,38 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">&quot;Invalid locator values passed in&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;[id=&quot;</span><span class="si">%s</span><span class="s">&quot;]&#39;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;[name=&quot;</span><span class="si">%s</span><span class="s">&quot;]&#39;</span> <span class="o">%</span> <span class="n">value</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span>
                              <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="WebElement.find_elements"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">By</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">&quot;Invalid locator values passed in&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;[id=&quot;</span><span class="si">%s</span><span class="s">&quot;]&#39;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span>
+                <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;[name=&quot;</span><span class="si">%s</span><span class="s">&quot;]&#39;</span> <span class="o">%</span> <span class="n">value</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>
                              <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>

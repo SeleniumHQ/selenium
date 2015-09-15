@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.common.utils</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -77,7 +75,7 @@
 <span class="sd">    Determines a free port using sockets.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-    <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="n">free_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

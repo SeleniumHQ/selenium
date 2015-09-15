@@ -47,8 +47,6 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.remote_connection</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
 <span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
 <span class="c"># or more contributor license agreements.  See the NOTICE file</span>
 <span class="c"># distributed with this work for additional information</span>
@@ -184,12 +182,40 @@
 
 <span class="sd">    Communicates with the server using the WebDriver wire protocol:</span>
 <span class="sd">    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+    <span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.get_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeout</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :Returns:</span>
+<span class="sd">        Timeout value in seconds for all http requests made to the Remote Connection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span> <span class="k">else</span> <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.set_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.set_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_timeout</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the default timeout</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">        - timeout - timeout value for http requests in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.reset_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.reset_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">reset_timeout</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span>
+</div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">resolve_ip</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="c"># Attempt to resolve the hostname and get an IP address.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">remote_server_addr</span><span class="p">)</span>
         <span class="n">addr</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">and</span> <span class="n">resolve_ip</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">netloc</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
                 <span class="n">addr</span> <span class="o">=</span> <span class="n">netloc</span>
@@ -208,7 +234,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">remote_server_addr</span>
         <span class="k">if</span> <span class="n">keep_alive</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">STATUS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/status&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session&#39;</span><span class="p">),</span>
@@ -227,6 +255,7 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/title&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_PAGE_SOURCE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/source&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/screenshot&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/screenshot/$id&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/elements&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ACTIVE_ELEMENT</span><span class="p">:</span>
@@ -295,6 +324,8 @@
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert_text&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ALERT_TEXT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert_text&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_CREDENTIALS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/credentials&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">CLICK</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/click&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">DOUBLE_CLICK</span><span class="p">:</span>
@@ -307,14 +338,20 @@
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/moveto&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_SIZE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/size&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_SIZE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_SET_WINDOW_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/size&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/maximize&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_MAXIMIZE_WINDOW</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/maximize&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">:</span>
@@ -436,7 +473,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
                 <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
-            <span class="k">except</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">:</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">httplib</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">raise</span>
 
@@ -472,7 +509,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">opener</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>
                                                   <span class="n">HttpErrorHandler</span><span class="p">())</span>
-            <span class="n">resp</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
             <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">code</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s">&#39;getheader&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="s">&#39;getheader&#39;</span><span class="p">):</span>
@@ -502,8 +539,6 @@
 
                 <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">,</span> <span class="p">(</span>
                     <span class="s">&#39;Invalid server response body: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">body</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="s">&#39;status&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">,</span> <span class="p">(</span>
-                    <span class="s">&#39;Invalid server response; no status: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">body</span><span class="p">)</span>
                 <span class="c"># Some of the drivers incorrectly return a response</span>
                 <span class="c"># with no &#39;value&#39; field when they should return null.</span>
                 <span class="k">if</span> <span class="s">&#39;value&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
