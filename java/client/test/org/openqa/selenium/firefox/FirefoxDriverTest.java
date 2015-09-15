@@ -102,10 +102,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldGetMeaningfulExceptionOnBrowserDeath() {
-    assumeFalse("This test does not work on firefox 3.0, 3.5 on linux",
-                TestUtilities.getEffectivePlatform().is(Platform.LINUX) &&
-                (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver)));
-
     ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
     driver2.get(pages.formPage);
 

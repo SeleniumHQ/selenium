@@ -146,10 +146,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSendingKeysToActiveElement() {
-    assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
-                "https://bugzilla.mozilla.org/show_bug.cgi?id=696020",
-                TestUtilities.isFirefox9(driver));
-
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();

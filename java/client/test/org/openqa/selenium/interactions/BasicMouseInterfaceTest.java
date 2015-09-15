@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -35,8 +34,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox35;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.Test;
@@ -273,8 +270,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
-    assumeFalse("No way to compensate for accessibility-provided offsets on Firefox 3.0 or 3.5",
-                isFirefox30(driver) || isFirefox35(driver));
     assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.linkedImage);
