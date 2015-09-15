@@ -110,7 +110,9 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Alert.html#authenticateUsing(org.openqa.selenium.security.Credentials)">authenticateUsing</a></strong>(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Alert.html#authenticateUsing(org.openqa.selenium.security.Credentials)">authenticateUsing</a></strong>(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</code>
+<div class="block">Authenticate an HTTP Basic Auth dialog.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -123,6 +125,10 @@
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Alert.html#sendKeys(java.lang.String)">sendKeys</a></strong>(java.lang.String&nbsp;keysToSend)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Alert.html#setCredentials(org.openqa.selenium.security.Credentials)">setCredentials</a></strong>(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -175,6 +181,16 @@
 <pre>void&nbsp;sendKeys(java.lang.String&nbsp;keysToSend)</pre>
 </li>
 </ul>
+<a name="setCredentials(org.openqa.selenium.security.Credentials)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCredentials</h4>
+<pre><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+void&nbsp;setCredentials(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</pre>
+</li>
+</ul>
 <a name="authenticateUsing(org.openqa.selenium.security.Credentials)">
 <!--   -->
 </a>
@@ -183,6 +199,11 @@
 <h4>authenticateUsing</h4>
 <pre><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 void&nbsp;authenticateUsing(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</pre>
+<div class="block">Authenticate an HTTP Basic Auth dialog.
+
+ Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
+        "secretGouda"));</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>credentials</code> - </dd></dl>
 </li>
 </ul>
 </li>

@@ -144,20 +144,24 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#execute(org.openqa.selenium.remote.Command)">execute</a></strong>(<a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.net.URI</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#getAddressOfRemoteServer()">getAddressOfRemoteServer</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#isConnected()">isConnected</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#quit()">quit</a></strong>()</code>
 <div class="block">Terminates the connection.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</a></strong>(<a href="../../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/firefox/internal/MarionetteConnection.html#start()">start</a></strong>()</code>
 <div class="block">Establishes a connection to the extension.</div>
@@ -271,7 +275,7 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <a name="setLocalLogs(org.openqa.selenium.logging.LocalLogs)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setLocalLogs</h4>
 <pre>public&nbsp;void&nbsp;setLocalLogs(<a href="../../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;logs)</pre>
@@ -279,6 +283,19 @@ implements <a href="../../../../../org/openqa/selenium/firefox/ExtensionConnecti
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code></dd>
 </dl>
+</li>
+</ul>
+<a name="getAddressOfRemoteServer()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAddressOfRemoteServer</h4>
+<pre>public&nbsp;java.net.URI&nbsp;getAddressOfRemoteServer()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html#getAddressOfRemoteServer()">getAddressOfRemoteServer</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The address of the remote server.</dd></dl>
 </li>
 </ul>
 </li>

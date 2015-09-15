@@ -191,6 +191,12 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion,%20boolean)">HtmlUnitDriver</a></strong>(com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;version,
+              boolean&nbsp;enableJavascript)</code>
+<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code> and the JavaScript support.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(org.openqa.selenium.Capabilities)">HtmlUnitDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
 <div class="block">Note: There are two configuration modes for the HtmlUnitDriver using this constructor.</div>
 </td>
@@ -212,7 +218,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#assertElementNotStale(com.gargoylesoftware.htmlunit.html.HtmlElement)">assertElementNotStale</a></strong>(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#assertElementNotStale(com.gargoylesoftware.htmlunit.html.DomElement)">assertElementNotStale</a></strong>(com.gargoylesoftware.htmlunit.html.DomElement&nbsp;element)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -325,115 +331,121 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>com.gargoylesoftware.htmlunit.BrowserVersion</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getBrowserVersion()">getBrowserVersion</a></strong>()</code>
+<div class="block">Get the simulated <code>BrowserVersion</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getCapabilities()">getCapabilities</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getCurrentUrl()">getCurrentUrl</a></strong>()</code>
 <div class="block">Get a string representing the current URL that the browser is looking at.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected com.gargoylesoftware.htmlunit.WebWindow</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getCurrentWindow()">getCurrentWindow</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getKeyboard()">getKeyboard</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getMouse()">getMouse</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getPageSource()">getPageSource</a></strong>()</code>
 <div class="block">Get the source of the last loaded page.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getTitle()">getTitle</a></strong>()</code>
 <div class="block">The title of the current page.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected com.gargoylesoftware.htmlunit.WebClient</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getWebClient()">getWebClient</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getWindowHandle()">getWindowHandle</a></strong>()</code>
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getWindowHandles()">getWindowHandles</a></strong>()</code>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="../../../../org/openqa/selenium/WebDriver.html#switchTo()"><code>WebDriver.switchTo()</code></a>.<a href="../../../../org/openqa/selenium/WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a></div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected &lt;X&gt;&nbsp;X</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#implicitlyWaitFor(java.util.concurrent.Callable)">implicitlyWaitFor</a></strong>(java.util.concurrent.Callable&lt;X&gt;&nbsp;condition)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#isJavascriptEnabled()">isJavascriptEnabled</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected com.gargoylesoftware.htmlunit.Page</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#lastPage()">lastPage</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#manage()">manage</a></strong>()</code>
 <div class="block">Gets the Option interface</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected com.gargoylesoftware.htmlunit.WebClient</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#modifyWebClient(com.gargoylesoftware.htmlunit.WebClient)">modifyWebClient</a></strong>(com.gargoylesoftware.htmlunit.WebClient&nbsp;client)</code>
 <div class="block">Child classes can override this method to customize the WebClient that the HtmlUnit driver
  uses.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#navigate()">navigate</a></strong>()</code>
 <div class="block">An abstraction allowing the driver to access the browser's history and to navigate to a given
  URL.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.HtmlElement)">newHtmlUnitWebElement</a></strong>(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element)</code>&nbsp;</td>
-</tr>
 <tr class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.DomElement)">newHtmlUnitWebElement</a></strong>(com.gargoylesoftware.htmlunit.html.DomElement&nbsp;element)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected com.gargoylesoftware.htmlunit.WebClient</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#newWebClient(com.gargoylesoftware.htmlunit.BrowserVersion)">newWebClient</a></strong>(com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;version)</code>
 <div class="block">Create the underlying WebClient, but don't set any fields on it.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#pickWindow()">pickWindow</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#quit()">quit</a></strong>()</code>
 <div class="block">Quits this driver, closing every associated window.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setAutoProxy(java.lang.String)">setAutoProxy</a></strong>(java.lang.String&nbsp;autoProxyUrl)</code>
 <div class="block">Sets Proxy Autoconfiguration URL for WebClient</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setHTTPProxy(java.lang.String,%20int,%20java.util.ArrayList)">setHTTPProxy</a></strong>(java.lang.String&nbsp;host,
             int&nbsp;port,
@@ -441,31 +453,31 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <div class="block">Sets HTTP proxy for WebClient with bypass proxy hosts</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setJavascriptEnabled(boolean)">setJavascriptEnabled</a></strong>(boolean&nbsp;enableJavascript)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setProxy(java.lang.String,%20int)">setProxy</a></strong>(java.lang.String&nbsp;host,
         int&nbsp;port)</code>
 <div class="block">Sets HTTP proxy for WebClient</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setProxySettings(org.openqa.selenium.Proxy)">setProxySettings</a></strong>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>
 <div class="block">Set proxy for WebClient using Proxy.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setSocksProxy(java.lang.String,%20int)">setSocksProxy</a></strong>(java.lang.String&nbsp;host,
              int&nbsp;port)</code>
 <div class="block">Sets SOCKS proxy for WebClient</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setSocksProxy(java.lang.String,%20int,%20java.util.ArrayList)">setSocksProxy</a></strong>(java.lang.String&nbsp;host,
              int&nbsp;port,
@@ -473,7 +485,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <div class="block">Sets SOCKS proxy for WebClient with bypass proxy hosts</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#switchTo()">switchTo</a></strong>()</code>
 <div class="block">Send future commands to a different frame or window.</div>
@@ -529,17 +541,6 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HtmlUnitDriver</h4>
-<pre>public&nbsp;HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;version)</pre>
-<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code>.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - the browser version to use</dd></dl>
-</li>
-</ul>
 <a name="HtmlUnitDriver()">
 <!--   -->
 </a>
@@ -561,6 +562,29 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <div class="block">Constructs a new instance, specify JavaScript support
  and using the <code>default</code> BrowserVersion.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>enableJavascript</code> - whether to enable JavaScript support or not</dd></dl>
+</li>
+</ul>
+<a name="HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HtmlUnitDriver</h4>
+<pre>public&nbsp;HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;version,
+              boolean&nbsp;enableJavascript)</pre>
+<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code> and the JavaScript support.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - the browser version to use</dd><dd><code>enableJavascript</code> - whether to enable JavaScript support or not</dd></dl>
+</li>
+</ul>
+<a name="HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HtmlUnitDriver</h4>
+<pre>public&nbsp;HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;version)</pre>
+<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>version</code> - the browser version to use</dd></dl>
 </li>
 </ul>
 <a name="HtmlUnitDriver(org.openqa.selenium.Capabilities)">
@@ -589,6 +613,17 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getBrowserVersion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getBrowserVersion</h4>
+<pre>public&nbsp;com.gargoylesoftware.htmlunit.BrowserVersion&nbsp;getBrowserVersion()</pre>
+<div class="block">Get the simulated <code>BrowserVersion</code>.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the used <code>BrowserVersion</code></dd></dl>
+</li>
+</ul>
 <a name="newWebClient(com.gargoylesoftware.htmlunit.BrowserVersion)">
 <!--   -->
 </a>
@@ -1027,13 +1062,13 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <dt><span class="strong">Returns:</span></dt><dd>One of Boolean, Long, String, List, WebElement, or null.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,%20java.util.concurrent.TimeUnit)"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a></dd></dl>
 </li>
 </ul>
-<a name="assertElementNotStale(com.gargoylesoftware.htmlunit.html.HtmlElement)">
+<a name="assertElementNotStale(com.gargoylesoftware.htmlunit.html.DomElement)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>assertElementNotStale</h4>
-<pre>protected&nbsp;void&nbsp;assertElementNotStale(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element)</pre>
+<pre>protected&nbsp;void&nbsp;assertElementNotStale(com.gargoylesoftware.htmlunit.html.DomElement&nbsp;element)</pre>
 </li>
 </ul>
 <a name="getKeyboard()">
@@ -1116,13 +1151,13 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.HtmlElement)">
+<a name="newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.DomElement)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>newHtmlUnitWebElement</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element)</pre>
+<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.DomElement&nbsp;element)</pre>
 </li>
 </ul>
 <a name="findElementsByLinkText(java.lang.String)">

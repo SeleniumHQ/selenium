@@ -166,11 +166,15 @@ implements <a href="../../../../../org/openqa/selenium/support/pagefactory/Field
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#isDecoratableList(java.lang.reflect.Field)">isDecoratableList</a></strong>(java.lang.reflect.Field&nbsp;field)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForListLocator(java.lang.ClassLoader,%20org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForListLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
                    <a href="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</a>&nbsp;locator)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#proxyForLocator(java.lang.ClassLoader,%20org.openqa.selenium.support.pagefactory.ElementLocator)">proxyForLocator</a></strong>(java.lang.ClassLoader&nbsp;loader,
                <a href="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</a>&nbsp;locator)</code>&nbsp;</td>
@@ -247,6 +251,15 @@ implements <a href="../../../../../org/openqa/selenium/support/pagefactory/Field
 <dt><span class="strong">Parameters:</span></dt><dd><code>loader</code> - The class loader that was used for the page object</dd><dd><code>field</code> - The field that may be decorated.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Value to decorate the field with or null if it shouldn't be decorated. If non-null,
          must be assignable to the field.</dd></dl>
+</li>
+</ul>
+<a name="isDecoratableList(java.lang.reflect.Field)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isDecoratableList</h4>
+<pre>protected&nbsp;boolean&nbsp;isDecoratableList(java.lang.reflect.Field&nbsp;field)</pre>
 </li>
 </ul>
 <a name="proxyForLocator(java.lang.ClassLoader, org.openqa.selenium.support.pagefactory.ElementLocator)">

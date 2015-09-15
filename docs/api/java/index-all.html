@@ -501,7 +501,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html#assertDriverSupportsJavascript(org.openqa.selenium.WebDriver)">assertDriverSupportsJavascript(WebDriver)</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#assertElementNotStale(com.gargoylesoftware.htmlunit.html.HtmlElement)">assertElementNotStale(HtmlElement)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#assertElementNotStale(com.gargoylesoftware.htmlunit.html.DomElement)">assertElementNotStale(DomElement)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#assertElementNotStale()">assertElementNotStale()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
 <dd>&nbsp;</dd>
@@ -690,7 +690,9 @@
  <a href="./org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><code>Augmenter</code></a>.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Alert.html#authenticateUsing(org.openqa.selenium.security.Credentials)">authenticateUsing(Credentials)</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium">Alert</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Authenticate an HTTP Basic Auth dialog.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.ForSeleniumServer.html#AVOIDING_PROXY">AVOIDING_PROXY</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.ForSeleniumServer.html" title="interface in org.openqa.selenium.remote">CapabilityType.ForSeleniumServer</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -1014,6 +1016,11 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeOptions.html#CAPABILITY">CAPABILITY</a></span> - Static variable in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></dt>
 <dd>
 <div class="block">Key used to store a set of ChromeOptions in a <a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a>
+ object.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeOptions.html#CAPABILITY">CAPABILITY</a></span> - Static variable in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a></dt>
+<dd>
+<div class="block">Key used to store a set of EdgeOptions in a <a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a>
  object.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/opera/OperaOptions.html#CAPABILITY">CAPABILITY</a></span> - Static variable in class org.openqa.selenium.opera.<a href="./org/openqa/selenium/opera/OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></dt>
@@ -1684,6 +1691,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html#createArgs()">createArgs()</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html#createArgs()">createArgs()</a></span> - Method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#createArgs()">createArgs()</a></span> - Method in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/opera/OperaDriverService.Builder.html#createArgs()">createArgs()</a></span> - Method in class org.openqa.selenium.opera.<a href="./org/openqa/selenium/opera/OperaDriverService.Builder.html" title="class in org.openqa.selenium.opera">OperaDriverService.Builder</a></dt>
@@ -1712,6 +1721,10 @@
 <dd>
 <div class="block">Configures and returns a new <a href="./org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the default configuration.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.html#createDefaultService()">createDefaultService()</a></span> - Static method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></dt>
+<dd>
+<div class="block">Configures and returns a new <a href="./org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge"><code>EdgeDriverService</code></a> using the default configuration.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriverService.html#createDefaultService()">createDefaultService()</a></span> - Static method in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></dt>
 <dd>
 <div class="block">Configures and returns a new <a href="./org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default configuration.</div>
@@ -1725,6 +1738,8 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/lift/HamcrestWebDriverTestCase.html#createDriver()">createDriver()</a></span> - Method in class org.openqa.selenium.lift.<a href="./org/openqa/selenium/lift/HamcrestWebDriverTestCase.html" title="class in org.openqa.selenium.lift">HamcrestWebDriverTestCase</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html#createDriverService(java.io.File,%20int,%20com.google.common.collect.ImmutableList,%20com.google.common.collect.ImmutableMap)">createDriverService(File, int, ImmutableList&lt;String&gt;, ImmutableMap&lt;String, String&gt;)</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html#createDriverService(java.io.File,%20int,%20com.google.common.collect.ImmutableList,%20com.google.common.collect.ImmutableMap)">createDriverService(File, int, ImmutableList&lt;String&gt;, ImmutableMap&lt;String, String&gt;)</a></span> - Method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#createDriverService(java.io.File,%20int,%20com.google.common.collect.ImmutableList,%20com.google.common.collect.ImmutableMap)">createDriverService(File, int, ImmutableList&lt;String&gt;, ImmutableMap&lt;String, String&gt;)</a></span> - Method in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -2286,6 +2301,60 @@
 </a>
 <h2 class="title">E</h2>
 <dl>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/BrowserType.html#EDGE">EDGE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DesiredCapabilities.html#edge()">edge()</a></span> - Static method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.html#EDGE_DRIVER_EXE_PROPERTY">EDGE_DRIVER_EXE_PROPERTY</a></span> - Static variable in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></dt>
+<dd>
+<div class="block">System property that defines the location of the MicrosoftWebDriver executable that will be used by
+ the <a href="./org/openqa/selenium/edge/EdgeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
+</dd>
+<dt><a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge"><span class="strong">EdgeDriver</span></a> - Class in <a href="./org/openqa/selenium/edge/package-summary.html">org.openqa.selenium.edge</a></dt>
+<dd>
+<div class="block">A <a href="./org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Edge browser running on the local machine.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver()">EdgeDriver()</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver using the <a href="./org/openqa/selenium/edge/EdgeDriverService.html#createDefaultService()"><code>default</code></a>
+ server configuration.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver(org.openqa.selenium.edge.EdgeDriverService)">EdgeDriver(EdgeDriverService)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver instance.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver(org.openqa.selenium.Capabilities)">EdgeDriver(Capabilities)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver instance.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver(org.openqa.selenium.edge.EdgeOptions)">EdgeDriver(EdgeOptions)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver instance with the specified options.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver(org.openqa.selenium.edge.EdgeDriverService,%20org.openqa.selenium.edge.EdgeOptions)">EdgeDriver(EdgeDriverService, EdgeOptions)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver instance with the specified options.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver(org.openqa.selenium.edge.EdgeDriverService,%20org.openqa.selenium.Capabilities)">EdgeDriver(EdgeDriverService, Capabilities)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge">EdgeDriver</a></dt>
+<dd>
+<div class="block">Creates a new EdgeDriver instance.</div>
+</dd>
+<dt><a href="./org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge"><span class="strong">EdgeDriverService</span></a> - Class in <a href="./org/openqa/selenium/edge/package-summary.html">org.openqa.selenium.edge</a></dt>
+<dd>
+<div class="block">Manages the life and death of a MicrosoftWebDriver server.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.html#EdgeDriverService(java.io.File,%20int,%20com.google.common.collect.ImmutableList,%20com.google.common.collect.ImmutableMap)">EdgeDriverService(File, int, ImmutableList&lt;String&gt;, ImmutableMap&lt;String, String&gt;)</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge"><span class="strong">EdgeDriverService.Builder</span></a> - Class in <a href="./org/openqa/selenium/edge/package-summary.html">org.openqa.selenium.edge</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html#EdgeDriverService.Builder()">EdgeDriverService.Builder()</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge"><span class="strong">EdgeOptions</span></a> - Class in <a href="./org/openqa/selenium/edge/package-summary.html">org.openqa.selenium.edge</a></dt>
+<dd>
+<div class="block">Class to manage options specific to <a href="./org/openqa/selenium/edge/EdgeDriver.html" title="class in org.openqa.selenium.edge"><code>EdgeDriver</code></a>.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeOptions.html#EdgeOptions()">EdgeOptions()</a></span> - Constructor for class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/condition/ConditionRunner.Context.html#elapsed()">elapsed()</a></span> - Method in interface com.thoughtworks.selenium.condition.<a href="./com/thoughtworks/selenium/condition/ConditionRunner.Context.html" title="interface in com.thoughtworks.selenium.condition">ConditionRunner.Context</a></dt>
 <dd>
 <div class="block">Returns the amount of time elapsed since the <a href="./com/thoughtworks/selenium/condition/ConditionRunner.html#waitFor(com.thoughtworks.selenium.condition.Condition)"><code>ConditionRunner.waitFor(Condition)</code></a> method for this
@@ -2298,6 +2367,8 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#ELEMENT_NOT_SELECTABLE">ELEMENT_NOT_SELECTABLE</a></span> - Static variable in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#ELEMENT_NOT_VISIBLE">ELEMENT_NOT_VISIBLE</a></span> - Static variable in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#ELEMENT_SCREENSHOT">ELEMENT_SCREENSHOT</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#ELEMENT_SCROLL_BEHAVIOR">ELEMENT_SCROLL_BEHAVIOR</a></span> - Static variable in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>
@@ -2484,6 +2555,8 @@
 <div class="block">Wrapper around our runtime environment requirements.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/Executable.html#Executable(java.io.File)">Executable(File)</a></span> - Constructor for class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/Executable.html" title="class in org.openqa.selenium.firefox.internal">Executable</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute(Command)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html#execute(org.openqa.selenium.remote.Command)">execute(Command)</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html" title="class in org.openqa.selenium.firefox.internal">MarionetteConnection</a></dt>
 <dd>&nbsp;</dd>
@@ -2715,6 +2788,8 @@
  It can be used on a types as well, but will not be processed by default.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html#findDefaultExecutable()">findDefaultExecutable()</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html#findDefaultExecutable()">findDefaultExecutable()</a></span> - Method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#findDefaultExecutable()">findDefaultExecutable()</a></span> - Method in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -3117,6 +3192,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver(org.openqa.selenium.firefox.FirefoxBinary,%20org.openqa.selenium.firefox.FirefoxProfile,%20org.openqa.selenium.Capabilities,%20org.openqa.selenium.Capabilities)">FirefoxDriver(FirefoxBinary, FirefoxProfile, Capabilities, Capabilities)</a></span> - Constructor for class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox"><span class="strong">FirefoxDriver.LazyCommandExecutor</span></a> - Class in <a href="./org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox"><span class="strong">FirefoxDriver.SystemProperty</span></a> - Class in <a href="./org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html#FirefoxDriver.SystemProperty()">FirefoxDriver.SystemProperty()</a></span> - Constructor for class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.SystemProperty</a></dt>
@@ -3239,6 +3316,16 @@
  to.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.By)">frameToBeAvailableAndSwitchToIt(By)</a></span> - Static method in class org.openqa.selenium.support.ui.<a href="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</a></dt>
+<dd>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(int)">frameToBeAvailableAndSwitchToIt(int)</a></span> - Static method in class org.openqa.selenium.support.ui.<a href="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</a></dt>
+<dd>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)">frameToBeAvailableAndSwitchToIt(WebElement)</a></span> - Static method in class org.openqa.selenium.support.ui.<a href="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</a></dt>
 <dd>
 <div class="block">An expectation for checking whether the given frame is available to switch
  to.</div>
@@ -3401,6 +3488,14 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/WebDriverException.html#getAdditionalInformation()">getAdditionalInformation()</a></span> - Method in exception org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxProfile.html#getAdditionalPreferences()">getAdditionalPreferences()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/ExtensionConnection.html#getAddressOfRemoteServer()">getAddressOfRemoteServer()</a></span> - Method in interface org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html#getAddressOfRemoteServer()">getAddressOfRemoteServer()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html#getAddressOfRemoteServer()">getAddressOfRemoteServer()</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html" title="class in org.openqa.selenium.firefox.internal">MarionetteConnection</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#getAddressOfRemoteServer()">getAddressOfRemoteServer()</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html" title="class in org.openqa.selenium.firefox.internal">NewProfileExtensionConnection</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/HttpCommandExecutor.html#getAddressOfRemoteServer()">getAddressOfRemoteServer()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></dt>
 <dd>&nbsp;</dd>
@@ -3601,6 +3696,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DesiredCapabilities.html#getBrowserName()">getBrowserName()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getBrowserVersion()">getBrowserVersion()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
+<dd>
+<div class="block">Get the simulated <code>BrowserVersion</code>.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation()</a></span> - Method in exception org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/BuildInfo.html#getBuildRevision()">getBuildRevision()</a></span> - Method in class org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/BuildInfo.html" title="class in org.openqa.selenium.internal">BuildInfo</a></dt>
@@ -4370,21 +4469,19 @@
 &nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html#getRemoteControlServerLocation()">getRemoteControlServerLocation()</a></span> - Method in class com.thoughtworks.selenium.webdriven.<a href="./com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebDriver.html#getRemoteStatus()">getRemoteStatus()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
-<dd>
-<div class="block"><span class="strong">Deprecated.</span>
-<div class="block"><i>The status command is not included in the WebDriver standard</i></div>
-</div>
-</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/HttpCommandProcessor.html#getResponseCode(java.net.HttpURLConnection)">getResponseCode(HttpURLConnection)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">HttpCommandProcessor</a></dt>
 <dd>
 <div class="block"><span class="strong">Deprecated.</span></div>
 &nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebElement.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/safari/SafariDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs(OutputType&lt;X&gt;)</a></span> - Method in class org.openqa.selenium.safari.<a href="./org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></dt>
 <dd>&nbsp;</dd>
@@ -5158,10 +5255,6 @@
 <div class="block">An implementation of <a href="./org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> that drives <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>,
  which is a headless (GUI-less) browser simulator.</div>
 </dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion)">HtmlUnitDriver(BrowserVersion)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
-<dd>
-<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code>.</div>
-</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver()">HtmlUnitDriver()</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
 <dd>
 <div class="block">Constructs a new instance with JavaScript disabled,
@@ -5171,6 +5264,14 @@
 <dd>
 <div class="block">Constructs a new instance, specify JavaScript support
  and using the <code>default</code> BrowserVersion.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion,%20boolean)">HtmlUnitDriver(BrowserVersion, boolean)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
+<dd>
+<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code> and the JavaScript support.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(com.gargoylesoftware.htmlunit.BrowserVersion)">HtmlUnitDriver(BrowserVersion)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
+<dd>
+<div class="block">Constructs a new instance with the specified <code>BrowserVersion</code>.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#HtmlUnitDriver(org.openqa.selenium.Capabilities)">HtmlUnitDriver(Capabilities)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
 <dd>
@@ -5194,7 +5295,7 @@
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">HtmlUnitWebElement</span></a> - Class in <a href="./org/openqa/selenium/htmlunit/package-summary.html">org.openqa.selenium.htmlunit</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#HtmlUnitWebElement(org.openqa.selenium.htmlunit.HtmlUnitDriver,%20com.gargoylesoftware.htmlunit.html.HtmlElement)">HtmlUnitWebElement(HtmlUnitDriver, HtmlElement)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#HtmlUnitWebElement(org.openqa.selenium.htmlunit.HtmlUnitDriver,%20com.gargoylesoftware.htmlunit.html.DomElement)">HtmlUnitWebElement(HtmlUnitDriver, DomElement)</a></span> - Constructor for class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DesiredCapabilities.html#htmlUnitWithJs()">htmlUnitWithJs()</a></span> - Static method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
 <dd>&nbsp;</dd>
@@ -5705,6 +5806,8 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#isCtrlPressed()">isCtrlPressed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitKeyboard</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html#isDataEnabled()">isDataEnabled()</a></span> - Method in class org.openqa.selenium.mobile.<a href="./org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html#isDecoratableList(java.lang.reflect.Field)">isDecoratableList(Field)</a></span> - Method in class org.openqa.selenium.support.pagefactory.<a href="./org/openqa/selenium/support/pagefactory/DefaultFieldDecorator.html" title="class in org.openqa.selenium.support.pagefactory">DefaultFieldDecorator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#isDisplayed()">isDisplayed()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
 <dd>&nbsp;</dd>
@@ -6848,7 +6951,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#NEW_SESSION">NEW_SESSION</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.HtmlElement)">newHtmlUnitWebElement(HtmlElement)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#newHtmlUnitWebElement(com.gargoylesoftware.htmlunit.html.DomElement)">newHtmlUnitWebElement(DomElement)</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/ProfilesIni.html#newProfile(java.lang.String,%20java.io.File,%20java.lang.String,%20boolean)">newProfile(String, File, String, boolean)</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/ProfilesIni.html" title="class in org.openqa.selenium.firefox.internal">ProfilesIni</a></dt>
 <dd>&nbsp;</dd>
@@ -6968,7 +7071,7 @@
 </a>
 <h2 class="title">O</h2>
 <dl>
-<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.html#obtainLock(org.openqa.selenium.firefox.FirefoxProfile)">obtainLock(FirefoxProfile)</a></span> - Static method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.html#obtainLock(org.openqa.selenium.firefox.FirefoxProfile)">obtainLock(FirefoxProfile)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/net/NetworkUtils.html#obtainLoopbackIp4Address()">obtainLoopbackIp4Address()</a></span> - Method in class org.openqa.selenium.net.<a href="./org/openqa/selenium/net/NetworkUtils.html" title="class in org.openqa.selenium.net">NetworkUtils</a></dt>
 <dd>
@@ -7144,6 +7247,8 @@
 <dt><a href="./org/openqa/selenium/browserlaunchers/locators/package-summary.html">org.openqa.selenium.browserlaunchers.locators</a> - package org.openqa.selenium.browserlaunchers.locators</dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/chrome/package-summary.html">org.openqa.selenium.chrome</a> - package org.openqa.selenium.chrome</dt>
+<dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/edge/package-summary.html">org.openqa.selenium.edge</a> - package org.openqa.selenium.edge</dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</a> - package org.openqa.selenium.firefox</dt>
 <dd>&nbsp;</dd>
@@ -7492,6 +7597,8 @@
 <div class="block">Terminates the connection.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxBinary.html#quit()">quit()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html#quit()">quit()</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html#quit()">quit()</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html" title="class in org.openqa.selenium.firefox.internal">MarionetteConnection</a></dt>
 <dd>&nbsp;</dd>
@@ -8230,6 +8337,8 @@
 <dd>
 <div class="block">Sets the given key to the given value unless the value is null.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_ALERT_CREDENTIALS">SET_ALERT_CREDENTIALS</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_ALERT_VALUE">SET_ALERT_VALUE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DriverCommand.html#SET_BROWSER_ONLINE">SET_BROWSER_ONLINE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</a></dt>
@@ -8332,6 +8441,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/BrowserConfigurationOptions.html#setCommandLineFlags(java.lang.String)">setCommandLineFlags(String)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/BrowserConfigurationOptions.html" title="class in com.thoughtworks.selenium">BrowserConfigurationOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html#setConnection(org.openqa.selenium.firefox.ExtensionConnection)">setConnection(ExtensionConnection)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#setContext(java.lang.String)">setContext(String)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>
 <div class="block"><span class="strong">Deprecated.</span></div>
@@ -8341,6 +8452,8 @@
 <div class="block"><span class="strong">Deprecated.</span></div>
 <div class="block">Writes a message to the status bar and adds a note to the browser-side log.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Alert.html#setCredentials(org.openqa.selenium.security.Credentials)">setCredentials(Credentials)</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium">Alert</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#setCursorPosition(java.lang.String,%20java.lang.String)">setCursorPosition(String, String)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>
 <div class="block"><span class="strong">Deprecated.</span></div>
@@ -8463,6 +8576,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/Executable.html#setLibraryPath(org.openqa.selenium.os.CommandLine,%20java.util.Map)">setLibraryPath(CommandLine, Map&lt;String, String&gt;)</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/Executable.html" title="class in org.openqa.selenium.firefox.internal">Executable</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs(LocalLogs)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs(LocalLogs)</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/MarionetteConnection.html" title="class in org.openqa.selenium.firefox.internal">MarionetteConnection</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs(LocalLogs)</a></span> - Method in class org.openqa.selenium.firefox.internal.<a href="./org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html" title="class in org.openqa.selenium.firefox.internal">NewProfileExtensionConnection</a></dt>
@@ -8518,6 +8633,12 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/firefox/FirefoxBinary.html#setOutputWatcher(java.io.OutputStream)">setOutputWatcher(OutputStream)</a></span> - Method in class org.openqa.selenium.firefox.<a href="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeOptions.html#setPageLoadStrategy(java.lang.String)">setPageLoadStrategy(String)</a></span> - Method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a></dt>
+<dd>
+<div class="block">Sets the page load strategy for  Edge
+ 
+ Supported values are "normal", "eager" and "none"</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebElement.html#setParent(org.openqa.selenium.remote.RemoteWebDriver)">setParent(RemoteWebDriver)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DesiredCapabilities.html#setPlatform(org.openqa.selenium.Platform)">setPlatform(Platform)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
@@ -9348,6 +9469,10 @@
 <div class="block">Overloaded version of <a href="./org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><code>WebDriver.Navigation.to(String)</code></a> that makes it easy to pass in a URL.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeOptions.html#toJson()">toJson()</a></span> - Method in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></dt>
+<dd>
+<div class="block">Converts this instance to its JSON representation.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/edge/EdgeOptions.html#toJson()">toJson()</a></span> - Method in class org.openqa.selenium.edge.<a href="./org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a></dt>
 <dd>
 <div class="block">Converts this instance to its JSON representation.</div>
 </dd>

@@ -5,6 +5,7 @@ com.thoughtworks.selenium.webdriven.commands
 org.openqa.selenium
 org.openqa.selenium.browserlaunchers.locators
 org.openqa.selenium.chrome
+org.openqa.selenium.edge
 org.openqa.selenium.firefox
 org.openqa.selenium.firefox.internal
 org.openqa.selenium.html5

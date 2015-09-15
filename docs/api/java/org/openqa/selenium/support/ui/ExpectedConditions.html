@@ -164,7 +164,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(int)">frameToBeAvailableAndSwitchToIt</a></strong>(int&nbsp;frameLocator)</code>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(java.lang.String)">frameToBeAvailableAndSwitchToIt</a></strong>(java.lang.String&nbsp;frameLocator)</code>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)">frameToBeAvailableAndSwitchToIt</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</code>
 <div class="block">An expectation for checking whether the given frame is available to switch
  to.</div>
 </td>
@@ -576,6 +590,32 @@ public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/Expect
  to. <p> If the frame is available it switches the given driver to the
  specified frame.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - used to find the frame</dd></dl>
+</li>
+</ul>
+<a name="frameToBeAvailableAndSwitchToIt(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>frameToBeAvailableAndSwitchToIt</h4>
+<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt(int&nbsp;frameLocator)</pre>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to. <p> If the frame is available it switches the given driver to the
+ specified frameIndex.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>frameLocator</code> - used to find the frame (index)</dd></dl>
+</li>
+</ul>
+<a name="frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>frameToBeAvailableAndSwitchToIt</h4>
+<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;frameToBeAvailableAndSwitchToIt(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</pre>
+<div class="block">An expectation for checking whether the given frame is available to switch
+ to. <p> If the frame is available it switches the given driver to the
+ specified webelement.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>frameLocator</code> - used to find the frame (webelement)</dd></dl>
 </li>
 </ul>
 <a name="invisibilityOfElementLocated(org.openqa.selenium.By)">
