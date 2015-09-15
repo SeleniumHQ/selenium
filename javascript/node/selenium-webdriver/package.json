@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "2.46.1",
+  "version": "2.47.0-dev",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "keywords": [
     "automation",
@@ -19,7 +19,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 0.12.x"
   },
   "dependencies": {
     "adm-zip": "0.4.4",
