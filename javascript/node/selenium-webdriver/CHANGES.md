@@ -1,3 +1,8 @@
+## v2.47.0-dev
+
+* Updated `ws` dependency from `^0.7.1` to `^0.8.0`
+
+
 ## v2.46.1
 
 * Fixed internal module loading on Windows.
