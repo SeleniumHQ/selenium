@@ -466,7 +466,7 @@ wgxpath.FunctionCall.Func = {
         var str2 = expr2.asString(ctx);
         var str3 = expr3.asString(ctx);
 
-        var map = [];
+        var map = {};
         for (var i = 0; i < str2.length; i++) {
           var ch = str2.charAt(i);
           if (!(ch in map)) {
