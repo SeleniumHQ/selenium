@@ -384,6 +384,12 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
     return;
   }
 
+  if (win.document.contentType == "text/plain") {
+    respond.value = win.document.documentElement.textContent;
+    respond.send();
+    return;
+  }
+
   // Don't pollute the response with annotations we place on the DOM.
   docElement.removeAttribute('webdriver');
   docElement.removeAttribute('command');
