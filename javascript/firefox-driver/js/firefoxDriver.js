@@ -914,18 +914,6 @@ FirefoxDriver.prototype.screenshot = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getAlert = function(respond) {
-  fxdriver.modals.isModalPresent(
-      function(present) {
-        if (!present) {
-          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
-          respond.value = { message: 'No alert is present' };
-        }
-        respond.send();
-      }, this.alertTimeout);
-};
-
-
 FirefoxDriver.prototype.dismissAlert = function(respond) {
   var self = this;
   fxdriver.modals.isModalPresent(
