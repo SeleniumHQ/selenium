@@ -39,8 +39,6 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
-                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
@@ -75,8 +73,6 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-    assumeFalse("Firefox 3.0 with native events doesn't support SVG",
-                isFirefox30(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
