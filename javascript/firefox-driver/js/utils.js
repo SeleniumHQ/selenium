@@ -277,25 +277,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
         Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey = false, shiftKey, altKey, metaKey, false);
+                       controlKey = false, shiftKey, altKey, metaKey);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
         Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey = false, altKey, metaKey, false);
+                       controlKey, shiftKey = false, altKey, metaKey);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
         Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey, altKey = false, metaKey, false);
+                       controlKey, shiftKey, altKey = false, metaKey);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
         Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-            controlKey, shiftKey, altKey, metaKey = false, false);
+                       controlKey, shiftKey, altKey, metaKey = false);
       }
 
       continue;
@@ -475,7 +475,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     if (modifierEvent) {
       Utils.keyEvent(doc, element, modifierEvent, keyCode, 0,
-          controlKey, shiftKey, altKey, metaKey, false);
+                     controlKey, shiftKey, altKey, metaKey);
       continue;
     }
 
@@ -489,7 +489,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(doc, element, 'keydown', kCode, 0,
-          controlKey, true, altKey, metaKey, false);
+                     controlKey, true, altKey, metaKey);
       Utils.shiftCount += 1;
     }
 
@@ -509,7 +509,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
           var mapTo = '~!@#$%^&*()_+{}|:"<>?';
 
           var value = String.fromCharCode(charCode).
-              replace(/([\[\\\.])/g, '\\$1');
+            replace(/([\[\\\.])/g, '\\$1');
           var index = mapFrom.search(value);
           if (index >= 0) {
             charCode = mapTo.charCodeAt(index);
@@ -519,21 +519,23 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     }
 
     var accepted =
-        Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
-            controlKey, needsShift || shiftKey, altKey, metaKey, false);
+      Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
+                     controlKey, needsShift || shiftKey, altKey, metaKey);
 
-    Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
-        controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
+    if (accepted) {
+      Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
+                     controlKey, needsShift || shiftKey, altKey, metaKey);
+    }
 
     Utils.keyEvent(doc, element, 'keyup', keyCode, 0,
-        controlKey, needsShift || shiftKey, altKey, metaKey, false);
+                   controlKey, needsShift || shiftKey, altKey, metaKey);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-          controlKey, false, altKey, metaKey, false);
+                     controlKey, false, altKey, metaKey);
     }
   }
 
@@ -542,25 +544,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
     Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey = false, shiftKey, altKey, metaKey, false);
+                   controlKey = false, shiftKey, altKey, metaKey);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
     Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey = false, altKey, metaKey, false);
+                   controlKey, shiftKey = false, altKey, metaKey);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
     Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey, altKey = false, metaKey, false);
+                   controlKey, shiftKey, altKey = false, metaKey);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
     Utils.keyEvent(doc, element, 'keyup', kCode, 0,
-        controlKey, shiftKey, altKey, metaKey = false, false);
+                   controlKey, shiftKey, altKey, metaKey = false);
   }
 
   if (opt_keysState) {
@@ -573,8 +575,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
 
 Utils.keyEvent = function(doc, element, type, keyCode, charCode,
-                          controlState, shiftState, altState, metaState,
-                          shouldPreventDefault) {
+                          controlState, shiftState, altState, metaState) {
   // Silently bail out if the element is no longer attached to the DOM.
   var isAttachedToDom = goog.dom.getAncestor(element, function(node) {
     return node === element.ownerDocument.documentElement;
@@ -602,12 +603,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     modifiers += windowUtils.MODIFIER_META;
   }
 
-  var additionalFlags = 0;
-  if (shouldPreventDefault) {
-    additionalFlags += windowUtils.KEY_FLAG_PREVENT_DEFAULT;
-  }
-
-  return windowUtils.sendKeyEvent(type, keyCode, charCode, modifiers, additionalFlags);
+  return windowUtils.sendKeyEvent(type, keyCode, charCode, modifiers, 0);
 };
 
 

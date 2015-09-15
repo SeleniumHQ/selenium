@@ -60,6 +60,11 @@ fxdriver.cache.addElement = function(element) {
   var toCompareWith = isFrame ? element : new XPCNativeWrapper(element);
 
   var ownerWindow = fxdriver.moz.unwrap(goog.dom.getWindow(owner));
+  if (!ownerWindow) {
+    throw new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME,
+                             'The frame that contains this element was removed');
+  }
+
   var ownerWindowId = ownerWindow.fxdriver_id;
   if (!ownerWindowId) {
     ownerWindow.fxdriver_id = fxdriver.utils.getUniqueId();

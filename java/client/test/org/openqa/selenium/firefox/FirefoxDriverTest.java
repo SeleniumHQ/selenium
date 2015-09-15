@@ -31,7 +31,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import com.google.common.base.Throwables;
@@ -203,7 +202,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
   public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
 
@@ -219,7 +217,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 

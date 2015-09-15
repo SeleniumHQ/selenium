@@ -175,7 +175,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
+  @Ignore(value = {SAFARI}, reason = "Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

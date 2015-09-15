@@ -98,15 +98,7 @@ FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
 
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var window = respond.session.getWindow();
-  var url;
-  if (window) {
-    url = window.location;
-  }
-  if (!url) {
-    url = respond.session.getBrowser().contentWindow.location;
-  }
-  respond.value = '' + url;
+  respond.value = '' + respond.session.getBrowser().contentWindow.location;
   respond.send();
 };
 
@@ -380,6 +372,12 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   if (!docElement) {
     // empty string means no DOM element available (the page is probably rebuilding at the moment)
     respond.value = '';
+    respond.send();
+    return;
+  }
+
+  if (win.document.contentType == "text/plain") {
+    respond.value = win.document.documentElement.textContent;
     respond.send();
     return;
   }
@@ -913,18 +911,6 @@ FirefoxDriver.prototype.screenshot = function(respond) {
       'Could not convert screenshot to base64 - ' + e ) ;
   }
   respond.send();
-};
-
-
-FirefoxDriver.prototype.getAlert = function(respond) {
-  fxdriver.modals.isModalPresent(
-      function(present) {
-        if (!present) {
-          respond.status = bot.ErrorCode.NO_SUCH_ALERT;
-          respond.value = { message: 'No alert is present' };
-        }
-        respond.send();
-      }, this.alertTimeout);
 };
 
 
