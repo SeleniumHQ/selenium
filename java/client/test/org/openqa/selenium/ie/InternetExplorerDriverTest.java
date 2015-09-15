@@ -17,13 +17,26 @@
 
 package org.openqa.selenium.ie;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
+
 import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import static org.junit.Assert.assertEquals;
+import java.awt.*;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
@@ -48,6 +61,51 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     } finally {
       firstDriver.quit();
       secondDriver.quit();
+    }
+  }
+
+  @JavascriptEnabled
+  @NoDriverAfterTest
+  @NeedsLocalEnvironment
+  @Test
+  public void testPersistentHoverCanBeTurnedOff() throws Exception {
+    assumeTrue(TestUtilities.isInternetExplorer(driver));
+    // Destroy the previous driver to make sure the hovering thread is
+    // stopped.
+    driver.quit();
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(ENABLE_PERSISTENT_HOVERING, false);
+    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
+    driver = builder.get();
+
+    try {
+      driver.get(pages.javascriptPage);
+      // Move to a different element to make sure the mouse is not over the
+      // element with id 'item1' (from a previous test).
+      new Actions(driver).moveToElement(driver.findElement(By.id("keyUp"))).build().perform();
+      WebElement element = driver.findElement(By.id("menu1"));
+
+      final WebElement item = driver.findElement(By.id("item1"));
+      assertEquals("", item.getText());
+
+      ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+      new Actions(driver).moveToElement(element).build().perform();
+
+      // Move the mouse somewhere - to make sure that the thread firing the events making
+      // hover persistent is not active.
+      Robot robot = new Robot();
+      robot.mouseMove(50, 50);
+
+      // Intentionally wait to make sure hover DOES NOT persist.
+      Thread.sleep(1000);
+
+      wait.until(elementTextToEqual(item, ""));
+
+      assertEquals("", item.getText());
+
+    } finally {
+      driver.quit();
     }
   }
 
