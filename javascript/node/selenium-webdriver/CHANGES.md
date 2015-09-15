@@ -1,7 +1,8 @@
 ## v2.47.0-dev
 
-* Updated `ws` dependency from `^0.7.1` to `^0.8.0`
-
+* Updated `ws` dependency from `0.7.1` to `0.8.0`
+* Bumped minimum supported version of Node from `0.10.x` to `0.12.x`. This is
+  in accordance with the Node support policy established in `v2.45.0`.
 
 ## v2.46.1
 
