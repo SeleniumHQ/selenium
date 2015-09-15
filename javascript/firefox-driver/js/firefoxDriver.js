@@ -98,15 +98,7 @@ FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
 
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var window = respond.session.getWindow();
-  var url;
-  if (window) {
-    url = window.location;
-  }
-  if (!url) {
-    url = respond.session.getBrowser().contentWindow.location;
-  }
-  respond.value = '' + url;
+  respond.value = '' + respond.session.getBrowser().contentWindow.location;
   respond.send();
 };
 
