@@ -47,6 +47,7 @@ import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -311,43 +312,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {IE, CHROME},
-          reason = "Not implemented yet.")
-  @NotYetImplemented(HTMLUNIT)
-  @Test
-  public void testMovingMousePastViewPort() {
-    assumeTrue(isNativeEventsEnabled(driver));
-
-    driver.get(pages.javascriptPage);
-
-    WebElement keyUpArea = driver.findElement(By.id("keyPressArea"));
-    new Actions(driver).moveToElement(keyUpArea).click().perform();
-
-    Map<String, Object> keyUpSize = getElementSize(keyUpArea);
-
-    // When moving to an element using the interactions API, the element is not scrolled
-    // using scrollElementIntoView so the top of the element may not end at 0.
-    // Estimate the mouse position based on the distance of the element from the top plus
-    // half its size (the mouse is moved to the middle of the element by default).
-    int assumedMouseY = getHeight(keyUpSize) / 2 + getFieldValue(keyUpSize, "top");
-
-    // Calculate the scroll offset by figuring out the distance of the 'parent' element from
-    // the top (adding half it's height), then substracting the current mouse position.
-    // Regarding width, the event attached to this element will only be triggered if the mouse
-    // hovers over the text in this element. Use a simple negative offset for this.
-    Map<String, Object> parentSize = getElementSize(driver.findElement(By.id("parent")));
-
-    int verticalMove = getFieldValue(parentSize, "top") + getHeight(parentSize) / 2 -
-                       assumedMouseY;
-
-    // Move by verticalMove pixels down and -50 pixels left:
-    // we should be hitting the element with id 'parent'
-    new Actions(driver).moveByOffset(-50, verticalMove).perform();
-
-    WebElement resultArea = driver.findElement(By.id("result"));
-    wait.until(elementTextToContain(resultArea, "parent matches"));
-  }
-
   @Ignore(value = {IE, CHROME}, reason = "Not implemented yet.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -526,11 +490,46 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {SAFARI, MARIONETTE},
+    reason = "Advanced mouse actions only implemented in rendered browsers",
+    issues = {4136})
+  @NotYetImplemented(HTMLUNIT)
+  //@NoDriverAfterTest
+  public void testMoveMouseByOffsetOverAndOutOfAnElement() {
+    driver.get(pages.mouseOverPage);
+
+    WebElement greenbox = driver.findElement(By.id("greenbox"));
+    WebElement redbox = driver.findElement(By.id("redbox"));
+    Dimension size = redbox.getSize();
+    Point greenboxPosition = greenbox.getLocation();
+    Point redboxPosition = redbox.getLocation();
+    int shiftX = redboxPosition.getX() - greenboxPosition.getX();
+    int shiftY = redboxPosition.getY() - greenboxPosition.getY();
+
+    new Actions(driver).moveToElement(greenbox, 2, 2).perform();
+
+    assertEquals(
+      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    new Actions(driver).moveToElement(greenbox, 2, 2)
+      .moveByOffset(shiftX, shiftY).perform();
+    assertEquals(
+      Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    new Actions(driver).moveToElement(greenbox, 2, 2)
+      .moveByOffset(shiftX, shiftY)
+      .moveByOffset(-shiftX, -shiftY).perform();
+    assertEquals(
+      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @NotYetImplemented(HTMLUNIT)
   @NoDriverAfterTest
-  public void canMouseOverAndOutOfAnElement() {
+  public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));
