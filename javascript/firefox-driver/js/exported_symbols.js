@@ -27,8 +27,6 @@ var EXPORTED_SYMBOLS = [
   'bot',
   'fxdriver',
   'goog',
-  'notifyOfCloseWindow',
-  'notifyOfSwitchToWindow',
   'webdriver'
 ];
 

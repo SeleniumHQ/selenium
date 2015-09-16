@@ -31,26 +31,6 @@ goog.require('goog.string');
 goog.require('goog.style');
 
 
-function notifyOfCloseWindow(windowId) {
-  windowId = windowId || 0;
-  if (Utils.useNativeEvents()) {
-    var events = Utils.getNativeEvents();
-    if (events) {
-      events.notifyOfCloseWindow(windowId);
-    }
-  }
-}
-
-function notifyOfSwitchToWindow(windowId) {
-  if (Utils.useNativeEvents()) {
-    var events = Utils.getNativeEvents();
-    if (events) {
-      events.notifyOfSwitchToWindow(windowId);
-    }
-  }
-}
-
-
 /**
  * @private {goog.log.Logger}
  * @const
@@ -150,52 +130,12 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
   } catch (e) {
-    // Unable to retrieve native events. No biggie, because we fall back to
-    // synthesis later
     return undefined;
   }
-};
-
-Utils.getNativeEvents = function() {
-  return Utils.getNativeComponent('@openqa.org/nativeevents;1', Components.interfaces.nsINativeEvents);
-};
-
-Utils.getNativeMouse = function() {
-  return Utils.getNativeComponent('@openqa.org/nativemouse;1', Components.interfaces.nsINativeMouse);
-};
-
-Utils.getNativeKeyboard = function() {
-  return Utils.getNativeComponent('@openqa.org/nativekeyboard;1', Components.interfaces.nsINativeKeyboard);
 };
 
 Utils.getNativeIME = function() {
   return Utils.getNativeComponent('@openqa.org/nativeime;1', Components.interfaces.nsINativeIME);
-};
-
-Utils.getNodeForNativeEvents = function(element) {
-  try {
-    // This stuff changes between releases.
-    // Do as much up-front work in JS as possible
-    var retrieval = Utils.newInstance(
-        '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
-    var accessible = retrieval.getAccessibleFor(element.ownerDocument);
-    var accessibleDoc =
-        accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
-    return accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
-  } catch (e) {
-    // Unable to retrieve the accessible doc
-    return undefined;
-  }
-};
-
-Utils.useNativeEvents = function() {
-  var prefs =
-    fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
-  var enableNativeEvents =
-    prefs.prefHasUserValue('webdriver_enable_native_events') ?
-    prefs.getBoolPref('webdriver_enable_native_events') : false;
-
-  return !!(enableNativeEvents && Utils.getNativeEvents());
 };
 
 Utils.getPageLoadStrategy = function() {
@@ -227,7 +167,7 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   }, respond.session.getPageLoadTimeout(), window);
 };
 
-Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
+Utils.type = function(doc, element, text, jsTimer, releaseModifiers,
     opt_keysState) {
 
   // For consistency between native and synthesized events, convert common
@@ -236,23 +176,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
       replace(/\t/g, '\uE004').                           // DOM_VK_TAB
       replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
 
-  var obj = Utils.getNativeKeyboard();
-  var node = Utils.getNodeForNativeEvents(element);
-  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
-  var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
-
-  if (isUsingNativeEvents) {
-    var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
-
-    // Now do the native thing.
-    obj.sendKeys(node, text, releaseModifiers);
-
-    Utils.waitForNativeEventsProcessing(element, Utils.getNativeEvents(), pageUnloadedIndicator, jsTimer);
-
-    return;
-  }
-
-  goog.log.info(Utils.LOG_, 'Doing sendKeys in a non-native way...');
+  goog.log.info(Utils.LOG_, 'Doing sendKeys...');
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -970,82 +894,6 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   contentWindow.setTimeout(checkForLoad, 50);
 };
 
-Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData, jsTimer) {
-  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
-  var node = Utils.getNodeForNativeEvents(element);
-
-  var hasEvents = {};
-  var threadmgr =
-      thmgr_cls.getService(Components.interfaces.nsIThreadManager);
-  var thread = threadmgr.currentThread;
-
-  do {
-
-    // This sleep is needed so that Firefox on Linux will manage to process
-    // all of the keyboard events before returning control to the caller
-    // code (otherwise the caller may not find all of the keystrokes it
-    // has entered).
-    var doneNativeEventWait = false;
-
-    var callback = function() {
-      goog.log.info(Utils.LOG_, 'Done native event wait.');
-      doneNativeEventWait = true;
-    };
-
-    jsTimer.setTimeout(callback, 100);
-
-    nativeEvents.hasUnhandledEvents(node, hasEvents);
-
-    goog.log.info(Utils.LOG_, 'Pending native events: ' + hasEvents.value);
-    var numEventsProcessed = 0;
-    // Do it as long as the timeout function has not been called and the
-    // page has not been unloaded. If the page has been unloaded, there is no
-    // point in waiting for other native events to be processed in this page
-    // as they "belong" to the next page.
-    while ((!doneNativeEventWait) && (hasEvents.value) &&
-           (!pageUnloadedData.wasUnloaded) && (numEventsProcessed < 350)) {
-      thread.processNextEvent(true);
-      numEventsProcessed += 1;
-    }
-    goog.log.info(Utils.LOG_,
-        'Extra events processed: ' + numEventsProcessed +
-        ' Page Unloaded: ' + pageUnloadedData.wasUnloaded);
-
-  } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
-  goog.log.info(Utils.LOG_, 'Done main loop.');
-
-  if (pageUnloadedData.wasUnloaded) {
-    goog.log.info(Utils.LOG_,
-        'Page has been reloaded while waiting for native events to ' +
-        'be processed. Remaining events? ' + hasEvents.value);
-  } else {
-    Utils.removePageUnloadEventListener(element, pageUnloadedData);
-  }
-
-  // It is possible that, even though the native code reports all of the
-  // keyboard events are out of the GDK event queue, the process is not done.
-  // These keyboard events are converted into Javascript events - and not all
-  // of them may have been processed. In fact, this is the common case when
-  // the sleep timeout above is less than 500 msec.
-  // The appropriate thing to do is process all the remaining JS events.
-  // Only existing events in the queue should be processed - hence the call
-  // to processNextEvent with false.
-
-  var numExtraEventsProcessed = 0;
-  var hasMoreEvents = thread.processNextEvent(false);
-  // A safety net to prevent the code from endlessly staying in this loop,
-  // in case there is some source of events that's constantly generating them.
-  var MAX_EXTRA_EVENTS_TO_PROCESS = 200;
-
-  while ((hasMoreEvents) &&
-      (numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
-    hasMoreEvents = thread.processNextEvent(false);
-    numExtraEventsProcessed += 1;
-  }
-
-  goog.log.info(Utils.LOG_,
-      'Done extra event loop, ' + numExtraEventsProcessed);
-};
 
 Utils.getPageUnloadedIndicator = function(element) {
   var toReturn = {
