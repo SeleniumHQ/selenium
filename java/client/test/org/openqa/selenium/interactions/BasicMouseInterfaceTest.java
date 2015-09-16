@@ -20,8 +20,6 @@ package org.openqa.selenium.interactions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -33,8 +31,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -43,7 +39,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -54,7 +49,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Map;
 
@@ -270,8 +264,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
-    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
-
     driver.get(pages.linkedImage);
 
     // Note: For some reason, the Accessibility API in Firefox will not be available before we
@@ -307,12 +299,10 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {IE, CHROME}, reason = "Not implemented yet.")
+  @Ignore(value = {IE, CHROME, FIREFOX}, reason = "Not implemented yet.")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
-    assumeTrue(!isFirefox(driver) || isNativeEventsEnabled(driver));
-
     driver.get(pages.veryLargeCanvas);
 
     WebElement firstTarget = driver.findElement(By.id("r1"));
@@ -376,13 +366,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       issues = {4136})
   @Test
   public void testHoverPersists() throws Exception {
-    // This test passes on IE. When running in Firefox on Windows, the test
-    // will fail if the mouse cursor is not in the window. Solution: Maximize.
-    if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
-      driver.manage().window().maximize();
-    }
-
     driver.get(pages.javascriptPage);
     // Move to a different element to make sure the mouse is not over the
     // element with id 'item1' (from a previous test).

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -34,12 +33,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +45,8 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.Set;
 
 @Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
@@ -275,11 +272,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
-    assumeFalse("This test does not fail on itself, but it causes the subsequent tests to fail",
-                isFirefox(driver) &&
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
-
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
@@ -465,12 +457,6 @@ public class AlertsTest extends JUnit4TestBase {
   @NotYetImplemented(value = HTMLUNIT,
     reason = "HtmlUnit: runs on the same test thread.")
   public void testShouldHandleAlertOnWindowClose() {
-    if (isFirefox(driver) &&
-        isNativeEventsEnabled(driver) &&
-        getEffectivePlatform().is(Platform.LINUX)) {
-      System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
-      assumeTrue(false);
-    }
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
     String mainWindow = driver.getWindowHandle();

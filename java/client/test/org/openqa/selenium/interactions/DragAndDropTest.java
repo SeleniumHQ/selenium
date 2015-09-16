@@ -25,6 +25,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -121,9 +122,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(value = {IE}, reason = "IE fails this test if requireWindowFocus=true")
   @Test
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
-    assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
-                                  TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
     WebElement el = driver.findElement(By.id("test1"));
@@ -147,11 +145,9 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, PHANTOMJS})
+  @Ignore({CHROME, IE, PHANTOMJS, FIREFOX})
   @Test
   public void testDragTooFar() {
-    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 

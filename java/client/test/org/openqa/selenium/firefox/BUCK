@@ -14,23 +14,6 @@ java_test(name = 'test-synthesized',
   ],
 )
 
-java_test(name = 'test-native',
-  srcs = [
-    'SynthesizedFirefoxDriverTests.java'
-  ],
-  vm_args = [
-    '-Dselenium.browser=ff',
-    '-D"selenium.browser.native_events=true',
-  ],
-  deps = [
-    ':tests',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
-    '//java/client/test/org/openqa/selenium:large-tests',
-    '//third_party/java/junit:junit',
-  ],
-)
-
 java_library(name = 'tests',
   srcs = glob(['*Test.java', 'internal/*.java']) + [
     'FirefoxSpecificTests.java',

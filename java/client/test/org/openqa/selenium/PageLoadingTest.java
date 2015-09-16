@@ -48,9 +48,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isLocal;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.After;
 import org.junit.Test;
@@ -423,7 +421,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
-    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
     // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1125
     assumeFalse(
         "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
