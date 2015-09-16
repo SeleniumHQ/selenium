@@ -35,7 +35,6 @@ WebDriverServer = function() {
   Components.classes['@mozilla.org/network/server-socket;1'].
       createInstance(Components.interfaces.nsIServerSocket);
   this.generator = fxdriver.moz.getService('@mozilla.org/uuid-generator;1', 'nsIUUIDGenerator');
-  this.enableNativeEvents = null;
 
   // Force our cert override service to be loaded - otherwise, it will not be
   // loaded and cause a "too deep recursion" error.
@@ -66,12 +65,7 @@ WebDriverServer.LOG_ = fxdriver.logging.getLogger('fxdriver.WebDriverServer');
 
 
 WebDriverServer.prototype.newDriver = function(window) {
-  if (!this.enableNativeEvents) {
-    this.enableNativeEvents = Utils.useNativeEvents();
-    goog.log.info(WebDriverServer.LOG_,
-        'Using native events: ' + this.enableNativeEvents);
-  }
-  window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
+  window.fxdriver = new FirefoxDriver(this, window);
   return window.fxdriver;
 };
 

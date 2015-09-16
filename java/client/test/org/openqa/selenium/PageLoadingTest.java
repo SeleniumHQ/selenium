@@ -40,6 +40,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -382,7 +383,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   // Note: If this test ever fixed/enabled on Firefox, check if it also needs @NoDriverAfterTest OR
   // if @NoDriverAfterTest can be removed from some other tests in this class.
-  @Ignore(value = {HTMLUNIT, SAFARI, PHANTOMJS},
+  @Ignore(value = {HTMLUNIT, SAFARI, PHANTOMJS, FIREFOX},
           reason = "Safari: see issue 687, comment 41; PHANTOMJS: not tested", issues = {687})
   @NeedsLocalEnvironment
   @NoDriverAfterTest

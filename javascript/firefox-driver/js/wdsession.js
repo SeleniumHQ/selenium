@@ -448,9 +448,6 @@ wdSession.prototype.setMouseViewportOffset = function(x, y) {
 wdSession.quitBrowser = function(timeDelay) {
   // Use an nsITimer to give the response time to go out.
   var event = function(timer) {
-      // Create a switch file so the native events library will
-      // let all events through in case of a close.
-      notifyOfCloseWindow();
       Components.classes['@mozilla.org/toolkit/app-startup;1'].
           getService(Components.interfaces.nsIAppStartup).
           quit(Components.interfaces.nsIAppStartup.eForceQuit);
