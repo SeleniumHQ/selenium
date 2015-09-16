@@ -268,17 +268,6 @@ SyntheticMouse.prototype.down = function(coordinates) {
   var doc = goog.dom.getOwnerDocument(element);
   this.viewPortOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
 
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is right.
-  //this.buttonDown = bot.Mouse.Button.LEFT;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': bot.Mouse.Button.LEFT
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
-
   this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
@@ -291,21 +280,6 @@ SyntheticMouse.prototype.up = function(coordinates) {
   var element = this.getElement_(coordinates);
 
   this.getMouse_().releaseButton();
-
-  //var doc = goog.dom.getOwnerDocument(element);
-  //var pos = goog.style.getClientPosition(element);
-
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is the correct one.
-  //var button = this.buttonDown;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': button
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
   this.isButtonPressed = false;
