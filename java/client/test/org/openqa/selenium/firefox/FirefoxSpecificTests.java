@@ -32,7 +32,6 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
     FirefoxDriverTest.class,
     // FirefoxDriverUtilitiesTest.class, // TODO: Fix these tests
     FirefoxProfileTest.class,
-    NativeEventsTest.class,
     NewProfileExtensionConnectionTest.class,
     PreferencesTest.class,
     SocketLockTest.class,

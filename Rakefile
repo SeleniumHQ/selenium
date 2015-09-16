@@ -109,7 +109,6 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:test_basic",
   "//java/client/test/org/openqa/selenium/htmlunit:test_js",
   "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-  "//java/client/test/org/openqa/selenium/firefox:test_native",
   "//java/client/test/org/openqa/selenium/ie:test",
   "//java/client/test/org/openqa/selenium/chrome:test",
   "//java/client/test/org/openqa/selenium/opera:test_blink",
@@ -179,7 +178,6 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run" ]
-task :test_firefox_native => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test_blink:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:small-tests:run' ]
 task :test_remote => [

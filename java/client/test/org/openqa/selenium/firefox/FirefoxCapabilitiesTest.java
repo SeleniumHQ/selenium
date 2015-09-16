@@ -104,20 +104,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  public void enableNativeEventCapability() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    configureCapability(CapabilityType.HAS_NATIVE_EVENTS, true);
-  }
-
-  @Test
-  public void disableNativeEventCapability() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    configureCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
-  }
-
   private void configureCapability(String capability, boolean isEnabled) {
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(capability, isEnabled);
@@ -129,25 +115,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
         "for the session", capability), caps.getCapability(capability) != null);
     assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
         isEnabled == (Boolean) caps.getCapability(capability));
-  }
-
-  @Test
-  public void requiredNativeEventCapabilityShouldHavePriority() {
-    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(HAS_NATIVE_EVENTS, false);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(HAS_NATIVE_EVENTS, true);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps);
-    localDriver = builder.get();
-
-    Capabilities caps = ((HasCapabilities)localDriver).getCapabilities();
-    assertTrue("The native events capability should be included in " +
-        "capabilities for the session", caps.getCapability(HAS_NATIVE_EVENTS) != null);
-    assertTrue("Native events capability should be set enabled",
-        (Boolean) caps.getCapability(HAS_NATIVE_EVENTS));
   }
 
   @After
