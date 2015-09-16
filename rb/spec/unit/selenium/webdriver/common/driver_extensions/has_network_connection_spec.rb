@@ -31,13 +31,13 @@ module Selenium
 
         describe "#network_connection" do
           it "returns the correct connection type" do
-            @bridge.stub(:getNetworkConnection) { 1 }
+            allow(@bridge).to receive(:getNetworkConnection) { 1 }
 
             expect(driver.network_connection_type).to eq :airplane_mode
           end
 
           it "returns an unknown connection value" do
-            @bridge.stub(:getNetworkConnection) { 5 }
+            allow(@bridge).to receive(:getNetworkConnection) { 5 }
 
             expect(driver.network_connection_type).to eq 5
           end

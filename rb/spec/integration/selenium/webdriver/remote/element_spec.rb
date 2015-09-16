@@ -37,7 +37,7 @@ module Selenium
 
           driver.switch_to.frame("upload_target")
           body = driver.find_element(:xpath => "//body")
-          body.text.should include("uses the set file detector")
+          expect(body.text).to include("uses the set file detector")
         end
       end
     end

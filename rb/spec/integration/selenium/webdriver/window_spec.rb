@@ -28,10 +28,10 @@ module Selenium
         it "gets the size of the current window" do
           size = window.size
 
-          size.should be_kind_of(Dimension)
+          expect(size).to be_kind_of(Dimension)
 
-          size.width.should > 0
-          size.height.should > 0
+          expect(size.width).to be > 0
+          expect(size.height).to be > 0
         end
 
         it "sets the size of the current window" do
@@ -43,17 +43,17 @@ module Selenium
           window.size = Dimension.new(target_width, target_height)
 
           new_size = window.size
-          new_size.width.should == target_width
-          new_size.height.should == target_height
+          expect(new_size.width).to eq(target_width)
+          expect(new_size.height).to eq(target_height)
         end
 
         it "gets the position of the current window" do
           pos = driver.manage.window.position
 
-          pos.should be_kind_of(Point)
+          expect(pos).to be_kind_of(Point)
 
-          pos.x.should >= 0
-          pos.y.should >= 0
+          expect(pos.x).to be >= 0
+          expect(pos.y).to be >= 0
         end
 
         it "sets the position of the current window" do
@@ -65,8 +65,8 @@ module Selenium
           window.position = Point.new(target_x, target_y)
 
           new_pos = window.position
-          new_pos.x.should == target_x
-          new_pos.y.should == target_y
+          expect(new_pos.x).to eq(target_x)
+          expect(new_pos.y).to eq(target_y)
         end
       end
 
@@ -79,8 +79,8 @@ module Selenium
           window.maximize
 
           new_size = window.size
-          new_size.width.should > old_size.width
-          new_size.height.should > old_size.height
+          expect(new_size.width).to be > old_size.width
+          expect(new_size.height).to be > old_size.height
         end
       end
 

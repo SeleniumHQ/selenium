@@ -38,9 +38,9 @@ module Selenium::WebDriver::DriverExtensions
         driver.location = location
         loc = driver.location
 
-        loc.latitude.should be_within(0.000001).of(lat)
-        loc.longitude.should be_within(0.000001).of(lon)
-        loc.altitude.should be_within(0.000001).of(alt)
+        expect(loc.latitude).to be_within(0.000001).of(lat)
+        expect(loc.longitude).to be_within(0.000001).of(lon)
+        expect(loc.altitude).to be_within(0.000001).of(alt)
       end
     end
 

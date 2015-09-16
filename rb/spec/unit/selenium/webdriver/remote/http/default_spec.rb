@@ -35,26 +35,26 @@ module Selenium
             client.timeout = 10
             http = client.send :http
 
-            http.open_timeout.should == 10
-            http.read_timeout.should == 10
+            expect(http.open_timeout).to eq(10)
+            expect(http.read_timeout).to eq(10)
           end
 
           it "uses the specified proxy" do
             client.proxy = Proxy.new(:http => "http://foo:bar@proxy.org:8080")
             http = client.send :http
 
-            http.should be_proxy
-            http.proxy_address.should == "proxy.org"
-            http.proxy_port.should == 8080
-            http.proxy_user.should == "foo"
-            http.proxy_pass.should == "bar"
+            expect(http).to be_proxy
+            expect(http.proxy_address).to eq("proxy.org")
+            expect(http.proxy_port).to eq(8080)
+            expect(http.proxy_user).to eq("foo")
+            expect(http.proxy_pass).to eq("bar")
 
-            http.address.should == "example.com"
+            expect(http.address).to eq("example.com")
           end
 
           it "raises an error if the proxy is not an HTTP proxy" do
             client.proxy = Proxy.new(:ftp => "ftp://example.com")
-            lambda { client.send :http }.should raise_error(Error::WebDriverError)
+            expect { client.send :http }.to raise_error(Error::WebDriverError)
           end
 
           ["http_proxy", "HTTP_PROXY"].each { |proxy_var|
@@ -62,9 +62,9 @@ module Selenium
               with_env(proxy_var => "http://proxy.org:8080") do
                 http = client.send :http
 
-                http.should be_proxy
-                http.proxy_address.should == "proxy.org"
-                http.proxy_port.should == 8080
+                expect(http).to be_proxy
+                expect(http.proxy_address).to eq("proxy.org")
+                expect(http.proxy_port).to eq(8080)
               end
             end
 
@@ -72,9 +72,9 @@ module Selenium
               with_env(proxy_var => "proxy.org:8080") do
                 http = client.send :http
 
-                http.should be_proxy
-                http.proxy_address.should == "proxy.org"
-                http.proxy_port.should == 8080
+                expect(http).to be_proxy
+                expect(http.proxy_address).to eq("proxy.org")
+                expect(http.proxy_port).to eq(8080)
               end
             end
           }
@@ -83,7 +83,7 @@ module Selenium
             it "honors the #{no_proxy_var} environment variable when matching" do
               with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com") do
                 http = client.send :http
-                http.should_not be_proxy
+                expect(http).not_to be_proxy
               end
             end
 
@@ -91,16 +91,16 @@ module Selenium
               with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "foo.com") do
                 http = client.send :http
 
-                http.should be_proxy
-                http.proxy_address.should == "proxy.org"
-                http.proxy_port.should == 8080
+                expect(http).to be_proxy
+                expect(http.proxy_address).to eq("proxy.org")
+                expect(http.proxy_port).to eq(8080)
               end
             end
 
               it "understands a comma separated list of domains in #{no_proxy_var}" do
                 with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com,foo.com") do
                   http = client.send :http
-                  http.should_not be_proxy
+                  expect(http).not_to be_proxy
                 end
               end
 
@@ -108,7 +108,7 @@ module Selenium
               it "understands an asterisk in #{no_proxy_var}" do
                 with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "*") do
                   http = client.send :http
-                  http.should_not be_proxy
+                  expect(http).not_to be_proxy
                 end
               end
             end
@@ -118,7 +118,7 @@ module Selenium
                 client.server_url = URI.parse("http://127.0.0.1:4444/wd/hub")
 
                 http = client.send :http
-                http.should_not be_proxy
+                expect(http).not_to be_proxy
               end
             end
           end
@@ -126,11 +126,11 @@ module Selenium
           it "raises a sane error if a proxy is refusing connections" do
             with_env("http_proxy" => "http://localhost:1234") do
               http = client.send :http
-              http.should_receive(:request).and_raise Errno::ECONNREFUSED.new("Connection refused")
+              expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new("Connection refused")
 
-              lambda {
+              expect {
                 client.call :post, 'http://example.com/foo/bar', {}
-              }.should raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
+              }.to raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
             end
           end
 

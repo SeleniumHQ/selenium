@@ -32,19 +32,19 @@ module Selenium
 
         before do
           @default_capabilities = Remote::Capabilities.firefox.as_json
-          Remote::Capabilities.stub(:firefox).and_return(caps)
-          Launcher.stub(:new).and_return(launcher)
+          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+          allow(Launcher).to receive(:new).and_return(launcher)
         end
 
         it "sets the proxy capability" do
           proxy = Proxy.new(:http => "localhost:9090")
-          caps.should_receive(:proxy=).with proxy
+          expect(caps).to receive(:proxy=).with proxy
 
           Bridge.new(:http_client => http, :proxy => proxy)
         end
 
         it "raises ArgumentError if passed invalid options" do
-          lambda { Bridge.new(:foo => 'bar') }.should raise_error(ArgumentError)
+          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
         end
 
         it 'takes desired capabilities' do
@@ -52,7 +52,7 @@ module Selenium
           custom_caps['foo'] = 'bar'
 
           expect(http).to receive(:call) do |_, _, payload|
-            payload[:desiredCapabilities]['foo'].should == 'bar'
+            expect(payload[:desiredCapabilities]['foo']).to eq('bar')
             resp
           end
 

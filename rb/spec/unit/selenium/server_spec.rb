@@ -25,47 +25,47 @@ describe Selenium::Server do
   let(:mock_poller)  { double("SocketPoller", :connected? => true, :closed? => true)}
 
   it "raises an error if the jar file does not exist" do
-    lambda {
+    expect {
       Selenium::Server.new("doesnt-exist.jar")
-    }.should raise_error(Errno::ENOENT)
+    }.to raise_error(Errno::ENOENT)
   end
 
   it "uses the given jar file and port" do
-    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
-    ChildProcess.should_receive(:build).
+    expect(ChildProcess).to receive(:build).
                  with("java", "-jar", "selenium-server-test.jar", "-port", "1234").
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", :port => 1234, :background => true)
-    server.stub(:socket).and_return(mock_poller)
+    allow(server).to receive(:socket).and_return(mock_poller)
 
     server.start
   end
 
   it "waits for the server process by default" do
-    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
-    ChildProcess.should_receive(:build).
+    expect(ChildProcess).to receive(:build).
                  with("java", "-jar", "selenium-server-test.jar", "-port", "4444").
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar")
-    server.stub(:socket).and_return(mock_poller)
+    allow(server).to receive(:socket).and_return(mock_poller)
 
-    mock_process.should_receive(:wait)
+    expect(mock_process).to receive(:wait)
     server.start
   end
 
   it "adds additional args" do
-    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
-    ChildProcess.should_receive(:build).
+    expect(ChildProcess).to receive(:build).
                  with("java", "-jar", "selenium-server-test.jar", "-port", "4444", "foo", "bar").
                  and_return(mock_process)
 
     server = Selenium::Server.new("selenium-server-test.jar", :background => true)
-    server.stub(:socket).and_return(mock_poller)
+    allow(server).to receive(:socket).and_return(mock_poller)
 
     server << ["foo", "bar"]
 
@@ -80,8 +80,8 @@ describe Selenium::Server do
 
     begin
       actual_download_file_name = Selenium::Server.download(required_version)
-      actual_download_file_name.should == expected_download_file_name
-      File.should exist(expected_download_file_name)
+      expect(actual_download_file_name).to eq(expected_download_file_name)
+      expect(File).to exist(expected_download_file_name)
     ensure
       FileUtils.rm_rf expected_download_file_name
     end
@@ -93,19 +93,19 @@ describe Selenium::Server do
     expected_options = {:port => 5555}
     fake_server = Object.new
 
-    Selenium::Server.should_receive(:download).with(required_version).and_return(expected_download_file_name)
-    Selenium::Server.should_receive(:new).with(expected_download_file_name, expected_options).and_return(fake_server)
+    expect(Selenium::Server).to receive(:download).with(required_version).and_return(expected_download_file_name)
+    expect(Selenium::Server).to receive(:new).with(expected_download_file_name, expected_options).and_return(fake_server)
     server = Selenium::Server.get required_version, expected_options
-    server.should == fake_server
+    expect(server).to eq(fake_server)
   end
 
   it "automatically repairs http_proxy settings that do not start with http://" do
     with_env("http_proxy" => "proxy.com") do
-      Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+      expect(Selenium::Server.net_http.proxy_address).to eq('proxy.com')
     end
 
     with_env("HTTP_PROXY" => "proxy.com") do
-      Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+      expect(Selenium::Server.net_http.proxy_address).to eq('proxy.com')
     end
   end
 
@@ -113,7 +113,7 @@ describe Selenium::Server do
     required_version = '10.2.0'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-    File.should_receive(:exists?).with(expected_download_file_name).and_return true
+    expect(File).to receive(:exists?).with(expected_download_file_name).and_return true
 
     Selenium::Server.download required_version
   end
@@ -123,44 +123,44 @@ describe Selenium::Server do
     example_xml ="<?xml version='1.0' encoding='UTF-8'?><ListBucketResult xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>selenium-release</Name><Contents><Key>2.39/selenium-server-2.39.0.zip</Key></Contents><Contents><Key>2.42/selenium-server-standalone-#{latest_version}.jar</Key></Contents></ListBucketResult>"
     stub_request(:get, "http://selenium-release.storage.googleapis.com/").to_return(:body => example_xml)
 
-    Selenium::Server.latest.should == latest_version
+    expect(Selenium::Server.latest).to eq(latest_version)
   end
 
   it "should download the latest version if that has been specified" do
     required_version, minor_version = '2.42.2', '2.42'
     expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
-    Selenium::Server.should_receive(:latest).and_return required_version
+    expect(Selenium::Server).to receive(:latest).and_return required_version
     stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
 
     begin
       actual_download_file_name = Selenium::Server.download(:latest)
-      actual_download_file_name.should == expected_download_file_name
-      File.should exist(expected_download_file_name)
+      expect(actual_download_file_name).to eq(expected_download_file_name)
+      expect(File).to exist(expected_download_file_name)
     ensure
       FileUtils.rm_rf expected_download_file_name
     end
   end
 
   it "raises Selenium::Server::Error if the server is not launched within the timeout" do
-    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
 
     poller = double('SocketPoller')
-    poller.should_receive(:connected?).and_return(false)
+    expect(poller).to receive(:connected?).and_return(false)
 
     server = Selenium::Server.new("selenium-server-test.jar", :background => true)
-    server.stub(:socket).and_return(poller)
+    allow(server).to receive(:socket).and_return(poller)
 
-    lambda { server.start }.should raise_error(Selenium::Server::Error)
+    expect { server.start }.to raise_error(Selenium::Server::Error)
   end
 
   it "sets options after instantiation" do
-    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    expect(File).to receive(:exist?).with("selenium-server-test.jar").and_return(true)
     server = Selenium::Server.new("selenium-server-test.jar")
-    server.port.should == 4444
-    server.timeout.should == 30
-    server.background.should be false
-    server.log.should be_nil
+    expect(server.port).to eq(4444)
+    expect(server.timeout).to eq(30)
+    expect(server.background).to be false
+    expect(server.log).to be_nil
 
     server.port = 1234
     server.timeout = 5

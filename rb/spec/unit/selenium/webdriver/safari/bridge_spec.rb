@@ -40,9 +40,9 @@ module Selenium
         before do
           @default_capabilities = Remote::Capabilities.safari.as_json
 
-          Remote::Capabilities.stub(:safari).and_return(caps)
-          Server.stub(:new).and_return(server)
-          Browser.stub(:new).and_return(browser)
+          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
+          allow(Server).to receive(:new).and_return(server)
+          allow(Browser).to receive(:new).and_return(browser)
         end
 
 
@@ -51,7 +51,7 @@ module Selenium
           custom_caps['foo'] = 'bar'
 
           expect(server).to receive(:send) do |payload|
-            payload[:command][:parameters][:desiredCapabilities]['foo'].should == 'bar'
+            expect(payload[:command][:parameters][:desiredCapabilities]['foo']).to eq('bar')
           end
 
           Bridge.new(desired_capabilities: custom_caps)
@@ -62,7 +62,7 @@ module Selenium
           custom_caps['cleanSession'] = false
 
           expect(server).to receive(:send) do |payload|
-            payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession'].should == true
+            expect(payload[:command][:parameters][:desiredCapabilities]['safari.options']['cleanSession']).to eq(true)
           end
 
           Bridge.new(:clean_session => true)
