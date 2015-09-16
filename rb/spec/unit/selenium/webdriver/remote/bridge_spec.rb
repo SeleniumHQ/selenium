@@ -25,7 +25,7 @@ module Selenium
 
       describe Bridge do
         it "raises ArgumentError if passed invalid options" do
-          lambda { Bridge.new(:foo => 'bar') }.should raise_error(ArgumentError)
+          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
         end
 
         it "raises WebDriverError if uploading non-files" do
@@ -35,7 +35,7 @@ module Selenium
             :status => 200, :body => request_body, :headers => headers)
 
           bridge = Bridge.new
-          lambda { bridge.upload("NotAFile")}.should raise_error(Error::WebDriverError)
+          expect { bridge.upload("NotAFile")}.to raise_error(Error::WebDriverError)
         end
       end
 

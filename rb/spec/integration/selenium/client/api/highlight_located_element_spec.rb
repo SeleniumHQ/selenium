@@ -25,12 +25,12 @@ describe "Highlight Located Element" do
     page.execution_delay = 1000
     page.highlight_located_element = true
     begin
-      page.text("calculator-result").should be_empty
+      expect(page.text("calculator-result")).to be_empty
 
       page.type "calculator-expression", "2 + 2"
       page.click "calculator-button" , :wait_for => :ajax, :javascript_framework => :jquery
 
-      page.value("calculator-result").should eql("4")
+      expect(page.value("calculator-result")).to eql("4")
     ensure
       page.highlight_located_element = false
     end

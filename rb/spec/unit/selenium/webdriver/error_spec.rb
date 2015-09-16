@@ -25,33 +25,33 @@ module Selenium
 
       context "backwards compatibility" do
         it "aliases StaleElementReferenceError as ObsoleteElementError" do
-          lambda {
+          expect {
             raise Error::StaleElementReferenceError
-          }.should raise_error(Error::ObsoleteElementError)
+          }.to raise_error(Error::ObsoleteElementError)
         end
 
         it "aliases UnknownError as UnhandledError" do
-          lambda {
+          expect {
             raise Error::UnknownError
-          }.should raise_error(Error::UnhandledError)
+          }.to raise_error(Error::UnhandledError)
         end
 
         it "aliases JavascriptError as UnexpectedJavascriptError" do
-          lambda {
+          expect {
             raise Error::JavascriptError
-          }.should raise_error(Error::UnexpectedJavascriptError)
+          }.to raise_error(Error::UnexpectedJavascriptError)
         end
 
         it "aliases NoAlertPresentError as NoAlertOpenError" do
-          lambda {
+          expect {
             raise Error::NoAlertPresentError
-          }.should raise_error(Error::NoAlertOpenError)
+          }.to raise_error(Error::NoAlertOpenError)
         end
 
         it "aliases ElementNotVisibleError as ElementNotDisplayedError" do
-          lambda {
+          expect {
             raise Error::ElementNotVisibleError
-          }.should raise_error(Error::ElementNotDisplayedError)
+          }.to raise_error(Error::ElementNotDisplayedError)
         end
       end
 

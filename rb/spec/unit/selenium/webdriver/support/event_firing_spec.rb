@@ -34,25 +34,25 @@ module Selenium
           it "fires events for navigate.to" do
             url = "http://example.com"
 
-            listener.should_receive(:before_navigate_to).with(url, instance_of(Driver))
-            bridge.should_receive(:get).with(url)
-            listener.should_receive(:after_navigate_to).with(url, instance_of(Driver))
+            expect(listener).to receive(:before_navigate_to).with(url, instance_of(Driver))
+            expect(bridge).to receive(:get).with(url)
+            expect(listener).to receive(:after_navigate_to).with(url, instance_of(Driver))
 
             driver.navigate.to(url)
           end
 
           it "fires events for navigate.back" do
-            listener.should_receive(:before_navigate_back).with instance_of(Driver)
-            bridge.should_receive(:goBack)
-            listener.should_receive(:after_navigate_back).with instance_of(Driver)
+            expect(listener).to receive(:before_navigate_back).with instance_of(Driver)
+            expect(bridge).to receive(:goBack)
+            expect(listener).to receive(:after_navigate_back).with instance_of(Driver)
 
             driver.navigate.back
           end
 
           it "fires events for navigate.forward" do
-            listener.should_receive(:before_navigate_forward).with instance_of(Driver)
-            bridge.should_receive(:goForward)
-            listener.should_receive(:after_navigate_forward).with instance_of(Driver)
+            expect(listener).to receive(:before_navigate_forward).with instance_of(Driver)
+            expect(bridge).to receive(:goForward)
+            expect(listener).to receive(:after_navigate_forward).with instance_of(Driver)
 
             driver.navigate.forward
           end
@@ -60,17 +60,17 @@ module Selenium
 
         context "finding elements" do
           it "fires events for find_element" do
-            listener.should_receive(:before_find).with('id', "foo", instance_of(Driver))
-            bridge.should_receive(:find_element_by).with('id', "foo", nil).and_return(element)
-            listener.should_receive(:after_find).with('id', "foo", instance_of(Driver))
+            expect(listener).to receive(:before_find).with('id', "foo", instance_of(Driver))
+            expect(bridge).to receive(:find_element_by).with('id', "foo", nil).and_return(element)
+            expect(listener).to receive(:after_find).with('id', "foo", instance_of(Driver))
 
             driver.find_element(:id => "foo")
           end
 
           it "fires events for find_elements" do
-            listener.should_receive(:before_find).with('class name', "foo", instance_of(Driver))
-            bridge.should_receive(:find_elements_by).with('class name', "foo", nil).and_return([element])
-            listener.should_receive(:after_find).with('class name', "foo", instance_of(Driver))
+            expect(listener).to receive(:before_find).with('class name', "foo", instance_of(Driver))
+            expect(bridge).to receive(:find_elements_by).with('class name', "foo", nil).and_return([element])
+            expect(listener).to receive(:after_find).with('class name', "foo", instance_of(Driver))
 
             driver.find_elements(:class => "foo")
           end
@@ -78,17 +78,17 @@ module Selenium
 
         context "changing elements" do
           it "fires events for send_keys" do
-            listener.should_receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
-            bridge.should_receive(:sendKeysToElement).with("ref", ["cheese"])
-            listener.should_receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
+            expect(listener).to receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
+            expect(bridge).to receive(:sendKeysToElement).with("ref", ["cheese"])
+            expect(listener).to receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
 
             element.send_keys "cheese"
           end
 
           it "fires events for clear" do
-            listener.should_receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
-            bridge.should_receive(:clearElement).with("ref")
-            listener.should_receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
+            expect(listener).to receive(:before_change_value_of).with(instance_of(Element), instance_of(Driver))
+            expect(bridge).to receive(:clearElement).with("ref")
+            expect(listener).to receive(:after_change_value_of).with(instance_of(Element), instance_of(Driver))
 
             element.clear
           end
@@ -98,9 +98,9 @@ module Selenium
           it "fires events for execute_script" do
             script, arg = 'script', 'arg'
 
-            listener.should_receive(:before_execute_script).with(script, instance_of(Driver))
-            bridge.should_receive(:executeScript).with(script, arg)
-            listener.should_receive(:after_execute_script).with(script, instance_of(Driver))
+            expect(listener).to receive(:before_execute_script).with(script, instance_of(Driver))
+            expect(bridge).to receive(:executeScript).with(script, arg)
+            expect(listener).to receive(:after_execute_script).with(script, instance_of(Driver))
 
             driver.execute_script script, arg
           end
@@ -108,17 +108,17 @@ module Selenium
 
         context "closing and quitting" do
           it "fires events for close" do
-            listener.should_receive(:before_close).with instance_of(Driver)
-            bridge.should_receive(:close)
-            listener.should_receive(:after_close).with instance_of(Driver)
+            expect(listener).to receive(:before_close).with instance_of(Driver)
+            expect(bridge).to receive(:close)
+            expect(listener).to receive(:after_close).with instance_of(Driver)
 
             driver.close
           end
 
           it "fires events for quit" do
-            listener.should_receive(:before_quit).with instance_of(Driver)
-            bridge.should_receive(:quit)
-            listener.should_receive(:after_quit).with instance_of(Driver)
+            expect(listener).to receive(:before_quit).with instance_of(Driver)
+            expect(bridge).to receive(:quit)
+            expect(listener).to receive(:after_quit).with instance_of(Driver)
 
             driver.quit
           end

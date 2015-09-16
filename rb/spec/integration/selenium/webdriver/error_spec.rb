@@ -24,9 +24,9 @@ describe Selenium::WebDriver::Error do
   it "should raise an appropriate error" do
     driver.navigate.to url_for("xhtmlTest.html")
 
-    lambda {
+    expect {
       driver.find_element(:id, "nonexistant")
-    }.should raise_error(WebDriver::Error::NoSuchElementError)
+    }.to raise_error(WebDriver::Error::NoSuchElementError)
   end
 
   compliant_on :driver => [:remote, :firefox] do
@@ -42,8 +42,8 @@ describe Selenium::WebDriver::Error do
         rescued = true
       end
 
-      rescued.should be true
-      ex.backtrace.first.should include("[remote server]")
+      expect(rescued).to be true
+      expect(ex.backtrace.first).to include("[remote server]")
     end
   end
 end

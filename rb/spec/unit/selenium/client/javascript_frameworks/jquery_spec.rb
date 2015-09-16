@@ -23,7 +23,7 @@ describe Selenium::Client::JavascriptFrameworks::JQuery do
 
   it "returns 'jQuery.active'" do
     art = Selenium::Client::JavascriptFrameworks::JQuery.ajax_request_tracker
-    art.should == "jQuery.active"
+    expect(art).to eq("jQuery.active")
   end
 
 end

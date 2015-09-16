@@ -26,23 +26,23 @@ module Selenium
       describe 'logs' do
         compliant_on :driver => [:firefox] do
           it 'can fetch available log types' do
-            driver.manage.logs.available_types.should == [:browser, :driver]
+            expect(driver.manage.logs.available_types).to eq([:browser, :driver])
           end
 
           it 'can get the browser log' do
             driver.navigate.to url_for("simpleTest.html")
 
             entries = driver.manage.logs.get(:browser)
-            entries.should_not be_empty
-            entries.first.should be_kind_of(LogEntry)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_kind_of(LogEntry)
           end
 
           it 'can get the driver log' do
             driver.navigate.to url_for("simpleTest.html")
 
             entries = driver.manage.logs.get(:driver)
-            entries.should_not be_empty
-            entries.first.should be_kind_of(LogEntry)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_kind_of(LogEntry)
           end
         end
       end
@@ -56,8 +56,8 @@ module Selenium
             cookies = driver.manage.all_cookies
 
             expect(cookies.size).to eq(1)
-            cookies.first[:name].should == "foo"
-            cookies.first[:value].should == "bar"
+            expect(cookies.first[:name]).to eq("foo")
+            expect(cookies.first[:value]).to eq("bar")
           end
 
           not_compliant_on :browser => :edge do
@@ -76,7 +76,7 @@ module Selenium
 
               driver.manage.add_cookie :name => "foo", :value => "bar"
               driver.manage.delete_all_cookies
-              driver.manage.all_cookies.should be_empty
+              expect(driver.manage.all_cookies).to be_empty
             end
           end
 
@@ -90,8 +90,8 @@ module Selenium
                                        :expires => expected
 
               actual = driver.manage.cookie_named("foo")[:expires]
-              actual.should be_kind_of(DateTime)
-              actual.should == expected
+              expect(actual).to be_kind_of(DateTime)
+              expect(actual).to eq(expected)
             end
           end
         end

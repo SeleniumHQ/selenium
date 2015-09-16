@@ -24,12 +24,12 @@ describe "Cookie Handling" do
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path1/cookie1.html"
     page.delete_all_visible_cookies
 
-    page.cookies.should be_empty
+    expect(page.cookies).to be_empty
 
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path2/cookie2.html"
     page.delete_all_visible_cookies
 
-    page.cookies.should be_empty
+    expect(page.cookies).to be_empty
   end
 
   it "can set cookies" do
@@ -37,22 +37,22 @@ describe "Cookie Handling" do
     page.create_cookie "addedCookieForPath1=new value1"
     page.create_cookie "addedCookieForPath2=new value2", :path => "/selenium-server/org/openqa/selenium/tests/html/path2/", :max_age => 60
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path1/cookie1.html"
-    page.cookies.should =~ /addedCookieForPath1=new value1/
+    expect(page.cookies).to match(/addedCookieForPath1=new value1/)
 
-    page.cookie?("addedCookieForPath1").should be true
-    page.cookie("addedCookieForPath1").should eql("new value1")
-    page.cookie?("testCookie").should be false
-    page.cookie?("addedCookieForPath2").should be false
+    expect(page.cookie?("addedCookieForPath1")).to be true
+    expect(page.cookie("addedCookieForPath1")).to eql("new value1")
+    expect(page.cookie?("testCookie")).to be false
+    expect(page.cookie?("addedCookieForPath2")).to be false
 
     page.delete_cookie "addedCookieForPath1", "/selenium-server/org/openqa/selenium/tests/html/path1/"
-    page.cookies.should be_empty
+    expect(page.cookies).to be_empty
 
     page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/path2/cookie2.html"
-    page.cookie("addedCookieForPath2").should eql("new value2")
-    page.cookie?("addedCookieForPath1").should be false
+    expect(page.cookie("addedCookieForPath2")).to eql("new value2")
+    expect(page.cookie?("addedCookieForPath1")).to be false
 
     page.delete_cookie "addedCookieForPath2", "/selenium-server/org/openqa/selenium/tests/html/path2/"
     page.delete_cookie "addedCookieForPath2"
-    page.cookies.should be_empty
+    expect(page.cookies).to be_empty
   end
 end

@@ -40,14 +40,14 @@ describe "Timeouts" do
 
       it "should still fail to find an element with implicit waits enabled" do
         driver.manage.timeouts.implicit_wait = 0.5
-        lambda { driver.find_element(:id => "box0") }.should raise_error(WebDriver::Error::NoSuchElementError)
+        expect { driver.find_element(:id => "box0") }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
 
       it "should return after first attempt to find one after disabling implicit waits" do
         driver.manage.timeouts.implicit_wait = 3
         driver.manage.timeouts.implicit_wait = 0
 
-        lambda { driver.find_element(:id => "box0") }.should raise_error(WebDriver::Error::NoSuchElementError)
+        expect { driver.find_element(:id => "box0") }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
 
       it "should implicitly wait until at least one element is found when searching for many" do
@@ -57,12 +57,12 @@ describe "Timeouts" do
         add.click
         add.click
 
-        driver.find_elements(:class_name => "redbox").should_not be_empty
+        expect(driver.find_elements(:class_name => "redbox")).not_to be_empty
       end
 
       it "should still fail to find elements when implicit waits are enabled" do
         driver.manage.timeouts.implicit_wait = 0.5
-        driver.find_elements(:class_name => "redbox").should be_empty
+        expect(driver.find_elements(:class_name => "redbox")).to be_empty
       end
 
       it "should return after first attempt to find many after disabling implicit waits" do
@@ -72,7 +72,7 @@ describe "Timeouts" do
         driver.manage.timeouts.implicit_wait = 0
         add.click
 
-        driver.find_elements(:class_name => "redbox").should be_empty
+        expect(driver.find_elements(:class_name => "redbox")).to be_empty
       end
     end
   end

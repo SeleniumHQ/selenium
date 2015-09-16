@@ -31,9 +31,9 @@ module Selenium
           driver.keyboard.send_keys "ab"
 
           text = driver.find_element(:id => "body_result").text.strip
-          text.should == "keypress keypress"
+          expect(text).to eq("keypress keypress")
 
-          driver.find_element(:id => "result").text.strip.should be_empty
+          expect(driver.find_element(:id => "result").text.strip).to be_empty
         end
 
 
@@ -51,13 +51,13 @@ module Selenium
             driver.keyboard.send_keys "ab"
             driver.keyboard.release :shift
 
-            event_input.attribute(:value).should == "AB"
-            keylogger.text.strip.should =~ /^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/
+            expect(event_input.attribute(:value)).to eq("AB")
+            expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
           end
         end
 
         it "raises an ArgumentError if the pressed key is not a modifier key" do
-          lambda { driver.keyboard.press :return }.should raise_error(ArgumentError)
+          expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
         # Edge does not yet support /session/:sessionId/click
@@ -71,10 +71,10 @@ module Selenium
             driver.mouse.click event_input
 
             driver.keyboard.press :shift
-            keylogger.text.should =~ /keydown$/
+            expect(keylogger.text).to match(/keydown$/)
 
             driver.keyboard.release :shift
-            keylogger.text.should =~ /keyup$/
+            expect(keylogger.text).to match(/keyup$/)
           end
         end
       end

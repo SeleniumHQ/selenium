@@ -29,7 +29,7 @@ module Selenium
             common = Common.new
             common.server_url = URI.parse("http://server")
 
-            common.should_receive(:request).
+            expect(common).to receive(:request).
                   with(:post, URI.parse("http://server/clear"),
                         hash_including("Content-Length" => "2"), "{}")
 

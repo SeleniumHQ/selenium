@@ -45,7 +45,7 @@ module Selenium
             driver.mouse.up droppable
 
             text = droppable.find_element(:tag_name => "p").text
-            text.should == "Dropped!"
+            expect(text).to eq("Dropped!")
           end
 
           it "double clicks an element" do
