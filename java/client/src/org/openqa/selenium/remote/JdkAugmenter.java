@@ -104,7 +104,7 @@ public class JdkAugmenter extends BaseAugmenter {
       return objectToAugment;
     }
 
-    InvocationHandler proxyHandler = new JdkHandler<>((RemoteWebDriver) driver,
+    InvocationHandler proxyHandler = new JdkHandler<>(driver,
         objectToAugment, augmentationHandlers);
     X augmentedProxy = (X) Proxy.newProxyInstance(
         getClass().getClassLoader(),
