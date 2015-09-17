@@ -170,7 +170,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
     long start = System.currentTimeMillis();
 
-    newWindow.findElements(By.id("This crazy thing doesn't exist"));
+    newWindow.findElements(By.id("this-crazy-thing-does-not-exist"));
 
     long end = System.currentTimeMillis();
 
