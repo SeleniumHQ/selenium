@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
@@ -153,7 +154,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
+  @NotYetImplemented(value = {MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
   public void testFindElementsByLinkTest() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -204,7 +205,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(2, elements.size());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
@@ -215,7 +215,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals("2", element.getAttribute("id"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByCss3Selector() {
     driver.get(pages.nestedPage);
@@ -226,7 +225,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals("2", element.getAttribute("id"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindElementsByCssSelector() {
     driver.get(pages.nestedPage);
@@ -291,7 +289,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals("child", child.getAttribute("id"));
   }
 
-  @Ignore(value = {REMOTE, MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
+  @Ignore({REMOTE})
+  @NotYetImplemented(value = {MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
   @Test
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
@@ -324,7 +323,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
