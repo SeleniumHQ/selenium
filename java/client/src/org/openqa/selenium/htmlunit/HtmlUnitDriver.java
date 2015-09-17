@@ -127,7 +127,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 /**
  * An implementation of {@link WebDriver} that drives <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>,
  * which is a headless (GUI-less) browser simulator.
- * <p>The main supported browsers are Chrome, Firefox and Internet Explorer. 
+ * <p>The main supported browsers are Chrome, Firefox and Internet Explorer.
  */
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
@@ -571,12 +571,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public String getCurrentUrl() {
-    // TODO(simon): Blech. I can see this being baaad
-    URL url = getRawUrl();
+    getWebClient(); // check that session is active
+    Page page = getCurrentWindow().getTopWindow().getEnclosedPage();
+    if (page == null) {
+      return null;
+    }
+    URL url = page.getUrl();
     if (url == null) {
       return null;
     }
-
     return url.toString();
   }
 
