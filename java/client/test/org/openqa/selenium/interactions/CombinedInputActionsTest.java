@@ -63,7 +63,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS, HTMLUNIT})
+  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
+  @NotYetImplemented(HTMLUNIT)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -85,10 +86,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
                  resultElement.getText());
   }
 
-  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX})
+  @NotYetImplemented(HTMLUNIT)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -111,7 +112,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         resultElement.getText());
   }
 
-  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
