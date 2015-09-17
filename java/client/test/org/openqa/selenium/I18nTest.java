@@ -169,10 +169,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX},
-      reason = "Not implemented on anything other than"
-          + "Firefox/Linux at the moment.")
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = {IE, CHROME, FIREFOX})
   @Test
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
