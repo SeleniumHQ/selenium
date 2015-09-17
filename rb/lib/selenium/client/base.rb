@@ -20,7 +20,7 @@
 module Selenium
   module Client
 
-		# Driver constructor and session management commands
+    # Driver constructor and session management commands
     module Base
       include Selenium::Client::Protocol
       include Selenium::Client::GeneratedDriver
@@ -133,7 +133,7 @@ module Selenium
       end
 
       def stop
-	      close_current_browser_session
+        close_current_browser_session
       end
 
       def chrome_backend?
@@ -143,7 +143,7 @@ module Selenium
       def javascript_extension=(new_javascript_extension)
         @extension_js = new_javascript_extension
       end
-	    alias :set_extension_js :javascript_extension=
+      alias :set_extension_js :javascript_extension=
 
     end
 
