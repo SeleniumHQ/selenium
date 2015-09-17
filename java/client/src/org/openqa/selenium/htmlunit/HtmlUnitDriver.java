@@ -593,7 +593,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return null; // no page so there is no title
     }
     if (getCurrentWindow() instanceof FrameWindow) {
-      page = ((FrameWindow) getCurrentWindow()).getTopWindow().getEnclosedPage();
+      page = getCurrentWindow().getTopWindow().getEnclosedPage();
     }
 
     return ((HtmlPage) page).getTitleText();
@@ -1093,7 +1093,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
     if (!allElements.isEmpty()) {
-      return newHtmlUnitWebElement((HtmlElement) allElements.get(0));
+      return newHtmlUnitWebElement(allElements.get(0));
     }
 
     throw new NoSuchElementException("Unable to locate element with name: " + name);
