@@ -63,7 +63,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
+  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS, HTMLUNIT})
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
