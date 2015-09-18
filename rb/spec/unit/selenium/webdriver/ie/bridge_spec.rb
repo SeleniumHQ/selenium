@@ -31,9 +31,9 @@ module Selenium
         let(:http)    { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         before do
-          allow(Server).to receive_messages(:get => server)
+          Server.stub(:get => server)
           @default_capabilities = Remote::Capabilities.internet_explorer
-          allow(Remote::Capabilities).to receive_messages(:internet_explorer => caps)
+          Remote::Capabilities.stub(:internet_explorer => caps)
         end
 
         it "raises ArgumentError if passed invalid options" do

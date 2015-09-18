@@ -225,7 +225,7 @@ module Selenium
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
           first_option = double(Element, :selected? => false, :text => 'foo bar')
-          allow(first_option).to receive_messages(:to_a => [first_option])
+          first_option.stub(:to_a => [first_option])
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'
           xpath2 = './/option[contains(., "foo")]'

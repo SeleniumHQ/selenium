@@ -25,7 +25,7 @@ module Selenium
 
       describe Extension do
         before do
-          allow(File).to receive_messages(:exist? => true)
+          File.stub(:exist? => true)
         end
 
         let(:extension) {
