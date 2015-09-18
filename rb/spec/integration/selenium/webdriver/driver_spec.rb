@@ -25,7 +25,7 @@ describe "Driver" do
     expect(driver.title).to eq("XHTML Test Page")
   end
 
-  # Edge does not yet support session/:sessionId/source http://dev.modern.ie/platform/status/webdriver/details/
+  # Edge does not yet support {GET} /session/{sessionId}/Source
   not_compliant_on :browser => :edge do
     it "should get the page source" do
       driver.navigate.to url_for("xhtmlTest.html")
@@ -93,12 +93,9 @@ describe "Driver" do
       expect(driver.find_element(:link, "Foo").text).to eq("Foo")
     end
 
-    # Edge does not yet support xpath
-    not_compliant_on :browser => :edge do
-      it "should find by xpath" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        expect(driver.find_element(:xpath, "//h1").text).to eq("XHTML Might Be The Future")
-      end
+    it "should find by xpath" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      expect(driver.find_element(:xpath, "//h1").text).to eq("XHTML Might Be The Future")
     end
 
     it "should find by css selector" do
@@ -111,8 +108,7 @@ describe "Driver" do
       expect(driver.find_element(:tag_name, 'div').attribute("class")).to eq("navigation")
     end
 
-    # Edge does not yet support session/:sessionId/element/:id/element
-    #   http://dev.modern.ie/platform/status/webdriver/details/
+    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/element
     not_compliant_on :browser => :edge do
       it "should find child element" do
         driver.navigate.to url_for("nestedElements.html")
@@ -124,8 +120,7 @@ describe "Driver" do
       end
     end
 
-    # Edge does not yet support session/:sessionId/element/:id/element
-    #   http://dev.modern.ie/platform/status/webdriver/details/
+    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/elements
     not_compliant_on :browser => :edge do
       it "should find child element by tag name" do
         driver.navigate.to url_for("nestedElements.html")
@@ -147,14 +142,11 @@ describe "Driver" do
       expect(driver.find_element(:class => "header").text).to eq("XHTML Might Be The Future")
     end
 
-    # Edge does not yet support xpath
-    not_compliant_on :browser => :edge do
-      it "should find elements with the shortcut syntax" do
-        driver.navigate.to url_for("xhtmlTest.html")
+    it "should find elements with the shortcut syntax" do
+      driver.navigate.to url_for("xhtmlTest.html")
 
-        expect(driver[:id1]).to be_kind_of(WebDriver::Element)
-        expect(driver[:xpath => "//h1"]).to be_kind_of(WebDriver::Element)
-      end
+      expect(driver[:id1]).to be_kind_of(WebDriver::Element)
+      expect(driver[:xpath => "//h1"]).to be_kind_of(WebDriver::Element)
     end
   end
 
@@ -169,8 +161,7 @@ describe "Driver" do
       driver.find_elements(:css, 'p')
     end
 
-    # Edge does not yet support session/:sessionId/element/:id/element
-    #   http://dev.modern.ie/platform/status/webdriver/details/
+    # Edge does not yet support {POST} /session/{sessionId}/element/{elementId}/elements
     not_compliant_on :browser => :edge do
       it "should find children by field name" do
         driver.navigate.to url_for("nestedElements.html")
@@ -181,8 +172,6 @@ describe "Driver" do
     end
   end
 
-  # Microsoft Edge does not return javascriptEnabled when passed in as desired capabilities
-  not_compliant_on :browser => :edge do
     describe "execute script" do
       it "should return strings" do
         driver.navigate.to url_for("xhtmlTest.html")
@@ -275,11 +264,9 @@ describe "Driver" do
         driver.navigate.to url_for("javascriptPage.html")
         expect(driver.execute_script("return arguments[0] + arguments[1];", "one", "two")).to eq("onetwo")
       end
-    end
   end
 
-  # Microsoft Edge does not return javascriptEnabled when passed in as desired capabilities
-  not_compliant_on :browser => [:iphone, :android, :phantomjs, :edge] do
+  not_compliant_on :browser => [:iphone, :android, :phantomjs] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0
@@ -296,6 +283,7 @@ describe "Driver" do
         expect(result).to eq(3)
       end
 
+      # TODO - File bug with Microsoft; this command returns status 21, should return status 28
       it "times out if the callback is not invoked" do
         expect {
           # Script is expected to be async and explicitly callback, so this should timeout.

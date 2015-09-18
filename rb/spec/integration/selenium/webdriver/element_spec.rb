@@ -26,13 +26,11 @@ describe "Element" do
     driver.find_element(:id, "imageButton").click
   end
 
-  # Edge does not yet support /session/:sessionId/element/:id/submit
-  #   http://dev.modern.ie/platform/status/webdriver/details/
-  not_compliant_on :browser => :edge do
-    it "should submit" do
-      driver.navigate.to url_for("formPage.html")
-      driver.find_element(:id, "submitButton").submit
-    end
+  # TODO: File bug with Microsoft Edge documentation says this isn't supported, but it is
+  # {POST} /session/{sessionId}/element/{id}/submit
+  it "should submit" do
+    driver.navigate.to url_for("formPage.html")
+    driver.find_element(:id, "submitButton").submit
   end
 
   it "should send string keys" do
@@ -73,11 +71,11 @@ describe "Element" do
     expect(driver.find_element(:id, "withText").attribute("rows")).to eq("5")
   end
 
-  not_compliant_on :browser => :edge do
-    it "should return nil for non-existent attributes" do
-      driver.navigate.to url_for("formPage.html")
-      expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
-    end
+  # TODO - File bug with Microsoft, this should return nil, but throws an error
+  # Selenium::WebDriver::Error::UnknownError: unknown error
+  it "should return nil for non-existent attributes" do
+    driver.navigate.to url_for("formPage.html")
+    expect(driver.find_element(:id, "withText").attribute("nonexistent")).to be_nil
   end
 
   it "should clear" do
@@ -119,21 +117,15 @@ describe "Element" do
     expect(driver.find_element(:class, "header")).to be_displayed
   end
 
-  # Edge does not yet support /session/:sessionId/element/:id/location
-  #   http://dev.modern.ie/platform/status/webdriver/details/
-  not_compliant_on :browser => :edge do
-    it "should get location" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      loc = driver.find_element(:class, "header").location
+  it "should get location" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    loc = driver.find_element(:class, "header").location
 
-      expect(loc.x).to be >= 1
-      expect(loc.y).to be >= 1
-    end
+    expect(loc.x).to be >= 1
+    expect(loc.y).to be >= 1
   end
 
-  # Edge does not yet support /session/:sessionId/element/:id/location_in_view
-  #   http://dev.modern.ie/platform/status/webdriver/details/
-  not_compliant_on :browser => [:iphone, :edge] do
+  not_compliant_on :browser => [:iphone] do
     it "should get location once scrolled into view" do
       driver.navigate.to url_for("javascriptPage.html")
       loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
@@ -143,8 +135,8 @@ describe "Element" do
     end
   end
 
-  # Edge does not yet support /session/:sessionId/element/:id/size
-  #   http://dev.modern.ie/platform/status/webdriver/details/
+  # TODO - File bug with Microsoft, this command hangs
+  # GET session/22A56752-2F60-45FB-B721-0CEB42CA77DF/element/4c3ee8d6-4ed4-492d-98c7-d8538366f7be/size
   not_compliant_on :browser => :edge do
     it "should get size" do
       driver.navigate.to url_for("xhtmlTest.html")
@@ -183,17 +175,14 @@ describe "Element" do
     end
   end
 
-  # Edge does not yet support xpath
-  not_compliant_on :browser => :edge do
-    it "should know when two elements are equal" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should know when two elements are equal" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      body = driver.find_element(:tag_name, 'body')
-      xbody = driver.find_element(:xpath, "//body")
+    body = driver.find_element(:tag_name, 'body')
+    xbody = driver.find_element(:xpath, "//body")
 
-      expect(body).to eq(xbody)
-      expect(body).to eql(xbody)
-    end
+    expect(body).to eq(xbody)
+    expect(body).to eql(xbody)
   end
 
   not_compliant_on :browser => :phantomjs do
@@ -209,19 +198,16 @@ describe "Element" do
     end
   end
 
-  # Edge does not yet support xpath
-  not_compliant_on :browser => :edge do
-    it "should return the same #hash for equal elements when found by Driver#find_element" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should return the same #hash for equal elements when found by Driver#find_element" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      body = driver.find_element(:tag_name, 'body')
-      xbody = driver.find_element(:xpath, "//body")
+    body = driver.find_element(:tag_name, 'body')
+    xbody = driver.find_element(:xpath, "//body")
 
-      expect(body.hash).to eq(xbody.hash)
-    end
+    expect(body.hash).to eq(xbody.hash)
   end
 
-  # Edge does not yet support xpath
+  # Edge does not yet support xpath location for {POST} /session/{sessionId}/elements
   not_compliant_on :browser => :edge do
     it "should return the same #hash for equal elements when found by Driver#find_elements" do
       driver.navigate.to url_for("simpleTest.html")
