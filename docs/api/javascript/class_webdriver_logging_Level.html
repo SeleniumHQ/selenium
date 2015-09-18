@@ -1,0 +1,55 @@
+<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Level</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><div><form><div><input type="search" placeholder="Search" tabindex="1"></div></form></div></header><main><article><div class="parentlink"><b>Namespace:</b> <a href="namespace_webdriver_logging.html">webdriver.logging</a></div><div class="codelink"><a href="source/lib/webdriver/logging.js.src.html#l86">View Source</a></div><h1>class Level</h1><p>The Level class defines a set of standard logging levels that
+can be used to control logging output.  The logging Level objects
+are ordered and are specified by ordered integers.  Enabling logging
+at a given level also enables logging at all higher levels.</p>
+<p>
+Clients should normally use the predefined Level constants such
+as Level.SEVERE.
+</p><p>
+The levels in descending order are:
+</p><ul><li>SEVERE (highest value)
+</li><li>WARNING
+</li><li>INFO
+</li><li>CONFIG
+</li><li>FINE
+</li><li>FINER
+</li><li>FINEST  (lowest value)
+</li></ul>
+In addition there is a level OFF that can be used to turn
+off logging, and a level ALL that can be used to enable
+logging of all messages.
+<h3>new Level(<wbr>name, value)</h3><div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>name<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The name of the level.</p>
+<dt>value<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code><dd><p>The numeric value of the level.</p>
+</dl></div></div><h2>Instance Methods</h2><div id="toString" class="function"><div><h3>toString()<span class="codelink"><a href="source/lib/goog/debug/logger.js.src.html#l176">code »</a></span></h3><div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>String representation of the logger level.</p>
+</dl></div></div></div></div><h2>Instance Properties</h2><div id="name" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l162">name</a><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The name of the level</p>
+</dl></div><div id="value" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l168">value</a><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code><dd><p>The numeric value of the level</p>
+</dl></div><h2>Static Functions</h2><div id="Level.getPredefinedLevel" class="function"><div><h3>Level.getPredefinedLevel(<wbr>name)<span class="codelink"><a href="source/lib/goog/debug/logger.js.src.html#l308">code »</a></span></h3><p>Gets the predefined level with the given name.</p>
+<div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>name<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code><dd><p>The name of the level.</p>
+</dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>The level, or null if none found.</p>
+</dl></div></div></div></div><hr class="fn-sep"><div id="Level.getPredefinedLevelByValue" class="function"><div><h3>Level.getPredefinedLevelByValue(<wbr>value)<span class="codelink"><a href="source/lib/goog/debug/logger.js.src.html#l322">code »</a></span></h3><p>Gets the highest predefined level &lt;&#61; #value.</p>
+<div><div class="fn-details"><div><b>Parameters</b></div><dl><dt>value<code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code><dd><p>Level value.</p>
+</dl></div><div class="fn-details"><div><b>Returns</b></div><dl><dt><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>The level, or null if none found.</p>
+</dl></div></div></div></div><h2>Static Properties</h2><div id="Level.ALL" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l259">Level.ALL</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>ALL indicates that all messages should be logged.
+This level is initialized to <code>0</code>.</p>
+</dl></div><div id="Level.CONFIG" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l227">Level.CONFIG</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>CONFIG is a message level for static configuration messages.
+This level is initialized to <code>700</code>.</p>
+</dl></div><div id="Level.DEBUG" class="property"><dl><dt><a href="source/lib/webdriver/logging.js.src.html#l94">Level.DEBUG</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>DEBUG is a message level for debugging messages and has the same log level
+as the <a href="class_webdriver_logging_Level.html#Level.CONFIG"><code>Logger.Level.CONFIG</code></a> message level.</p>
+</dl></div><div id="Level.FINE" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l235">Level.FINE</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>FINE is a message level providing tracing information.
+This level is initialized to <code>500</code>.</p>
+</dl></div><div id="Level.FINER" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l243">Level.FINER</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>FINER indicates a fairly detailed tracing message.
+This level is initialized to <code>400</code>.</p>
+</dl></div><div id="Level.FINEST" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l251">Level.FINEST</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>FINEST indicates a highly detailed tracing message.
+This level is initialized to <code>300</code>.</p>
+</dl></div><div id="Level.INFO" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l219">Level.INFO</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>INFO is a message level for informational messages.
+This level is initialized to <code>800</code>.</p>
+</dl></div><div id="Level.OFF" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l186">Level.OFF</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>OFF is a special level that can be used to turn off logging.
+This level is initialized to <code>Infinity</code>.</p>
+</dl></div><div id="Level.PREDEFINED_LEVELS" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l267">Level.PREDEFINED_LEVELS</a><code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&lt;<a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a>&gt;</code><dd><p>The predefined levels.</p>
+</dl></div><div id="Level.SEVERE" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l203">Level.SEVERE</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>SEVERE is a message level indicating a serious failure.
+This level is initialized to <code>1000</code>.</p>
+</dl></div><div id="Level.SHOUT" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l195">Level.SHOUT</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>SHOUT is a message level for extra debugging loudness.
+This level is initialized to <code>1200</code>.</p>
+</dl></div><div id="Level.WARNING" class="property"><dl><dt><a href="source/lib/goog/debug/logger.js.src.html#l211">Level.WARNING</a><code><a href="class_webdriver_logging_Level.html">webdriver.logging.Level</a></code><dd><p>WARNING is a message level indicating a potential problem.
+This level is initialized to <code>900</code>.</p>
+</dl></div></article><nav><h3><a href="index.html" tabindex="2">Overview</a></h3><div><input type="checkbox" id="nav-modules" checked/><label for="nav-modules"><h3><span class="selectable" tabindex="2">Modules</span></h3></label><div id="nav-modules-view"></div></div><div><input type="checkbox" id="nav-types" checked/><label for="nav-types"><h3><span class="selectable" tabindex="2">Types</span></h3></label><div id="nav-types-view"></div></div><h3><a href="Changes.html" tabindex="2">Changes</a></h3></nav></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer><script src="types.js"></script><script src="dossier.js"></script>
