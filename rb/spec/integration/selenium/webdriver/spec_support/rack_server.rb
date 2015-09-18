@@ -50,7 +50,7 @@ module Selenium
         end
 
         def run
-          handler.run @app, run_options_for(handler)
+          handler.run @app, :Host => @host, :Port => @port
         end
 
         def where_is(file)
@@ -88,16 +88,6 @@ module Selenium
           true
         rescue LoadError
           false
-        end
-
-        def run_options_for(handler)
-          run_opts = {:Host => @host, :Port => @port}
-
-          if handler == Rack::Handler::WEBrick
-            run_opts.merge!(:Logger => WEBrick::Log.new("/dev/null"), :AccessLog => [])
-          end
-
-          run_opts
         end
 
         def start_forked
