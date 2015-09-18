@@ -60,16 +60,16 @@ module Selenium
             expect(cookies.first[:value]).to eq("bar")
           end
 
-          not_compliant_on :browser => :edge do
-            it "should delete one" do
-              driver.navigate.to url_for("xhtmlTest.html")
+          # TODO - File bug with Microsoft; This command returns unknown error:
+          # DELETE session/EC3D38BB-BF62-4224-BB6D-E6820EF7C519/cookie/foo
+          it "should delete one" do
+            driver.navigate.to url_for("xhtmlTest.html")
+            driver.manage.add_cookie :name => "foo", :value => "bar"
 
-              driver.manage.add_cookie :name => "foo", :value => "bar"
-              driver.manage.delete_cookie("foo")
-            end
+            driver.manage.delete_cookie("foo")
           end
 
-          # Edge does not yet support xpath
+          # This is not a w3c supported spec
           not_compliant_on :browser => :edge do
             it "should delete all" do
               driver.navigate.to url_for("xhtmlTest.html")

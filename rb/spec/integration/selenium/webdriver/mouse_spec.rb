@@ -22,6 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
 
+    # Edge does not yet support {GET} /session/{sessionId}/moveTo
     not_compliant_on :browser => :edge do
       describe Mouse do
 

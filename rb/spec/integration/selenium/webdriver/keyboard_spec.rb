@@ -23,8 +23,7 @@ module Selenium
   module WebDriver
     describe Keyboard do
 
-      # Edge does not yet support session/:session_id/keys
-      not_compliant_on :browser => [:chrome, :android, :iphone, :safari, :edge] do
+      not_compliant_on :browser => [:chrome, :android, :iphone, :safari] do
         it "sends keys to the active element" do
           driver.navigate.to url_for("bodyTypingTest.html")
 
@@ -37,7 +36,7 @@ module Selenium
         end
 
 
-        # Edge does not yet support /session/:sessionId/click
+        # Edge does not yet support {GET} /session/{sessionId}/moveTo
         not_compliant_on :browser => :edge do
           it "can send keys with shift pressed" do
             driver.navigate.to url_for("javascriptPage.html")
@@ -60,7 +59,7 @@ module Selenium
           expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
-        # Edge does not yet support /session/:sessionId/click
+        # Edge does not yet support {GET} /session/{sessionId}/moveTo
         not_compliant_on :browser => :edge do
           it "can press and release modifier keys" do
             driver.navigate.to url_for("javascriptPage.html")
