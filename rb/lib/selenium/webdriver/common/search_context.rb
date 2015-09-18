@@ -59,6 +59,9 @@ module Selenium
         end
 
         bridge.find_element_by by, what.to_s, ref
+      rescue Selenium::WebDriver::Error::TimeOutError
+        # Implicit Wait times out in Edge
+        raise Selenium::WebDriver::Error::NoSuchElementError
       end
 
       #
@@ -79,6 +82,9 @@ module Selenium
         end
 
         bridge.find_elements_by by, what.to_s, ref
+      rescue Selenium::WebDriver::Error::TimeOutError
+        # Implicit Wait times out in Edge
+        []
       end
 
       private

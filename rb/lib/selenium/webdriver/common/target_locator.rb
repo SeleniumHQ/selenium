@@ -63,6 +63,10 @@ module Selenium
             nil
           end
 
+          unless @bridge.getWindowHandles.include? id
+            raise Error::NoSuchWindowError, "The specified identifier '#{id}' is not found in the window handle list"
+          end
+
           @bridge.switchToWindow id
 
           begin
