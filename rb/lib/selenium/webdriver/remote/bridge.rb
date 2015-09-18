@@ -619,7 +619,7 @@ module Selenium
         private
 
         def assert_javascript_enabled
-          return if capabilities.browser_name == 'MicrosoftEdge' || !capabilities.javascript_enabled?
+          return if capabilities.browser_name == 'MicrosoftEdge' || capabilities.javascript_enabled?
           raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
         end
 
