@@ -305,6 +305,24 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
 
 
 /**
+ * Double-clicks on the given {@code element} with a virtual mouse.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.doubleClick2 = function(element, opt_coords, opt_mouse) {
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT, 2);
+  mouse.releaseButton(true, 2);
+};
+
+
+/**
  * Scrolls the mouse wheel on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to scroll the mouse wheel on.

@@ -243,8 +243,8 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   }
 
   goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.doubleClick on ' + element);
-  bot.action.doubleClick(element, this.lastMousePosition);
+      'About to do a bot.action.doubleClick2 on ' + element);
+  bot.action.doubleClick2(element, this.lastMousePosition, this.getMouse_());
 
   this.lastElement = element;
 
@@ -388,7 +388,7 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   goog.log.info(SyntheticMouse.LOG_,
       'Calling fireMouseEvent ' + type + ' ' + args.clientX +
       ', ' + args.clientY + ', ' + target);
-  if (type == 'click') {
+  if (type == 'click' || type == 'dblclick') {
     // A click event will be automatically fired as a result of a mousedown and mouseup in sequence
     return true;
   }
@@ -398,10 +398,12 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   var modifiers = this._parseModifiers(args);
   if (utils.sendMouseEventToWindow) {
     // Firefox 4+
-    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY),
+                                 args.button, args.count, modifiers);
   } else {
     // Firefox 3
-    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY),
+                         args.button, args.count, modifiers);
   }
   goog.log.info(SyntheticMouse.LOG_,
       'Called fireMouseEvent ' + type + ' ' + args.clientX +
