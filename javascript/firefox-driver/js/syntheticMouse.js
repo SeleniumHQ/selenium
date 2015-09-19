@@ -199,7 +199,7 @@ SyntheticMouse.prototype.click = function(target) {
 
   } else {
     goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
-    bot.action.click(element, this.lastMousePosition, this.getMouse_());
+    bot.action.click(element, this.lastMousePosition, this.getMouse_(), true);
   }
 
   if (bot.dom.isEditable(element) && element.value !== undefined) {
