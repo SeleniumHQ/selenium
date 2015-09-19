@@ -31,15 +31,11 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -47,6 +43,10 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
@@ -414,7 +414,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
+  @Ignore(value = {CHROME, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickOverlappingElements() {
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
@@ -430,7 +430,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, MARIONETTE, SAFARI, HTMLUNIT})
+  @Ignore(value = {MARIONETTE, SAFARI, HTMLUNIT})
   @Test
   public void testClickAnElementThatDisappear() {
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));

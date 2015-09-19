@@ -277,8 +277,10 @@ bot.Mouse.prototype.pressButton = function(button) {
 /**
  * Releases the pressed mouse button. Throws exception if no button pressed.
  *
+ * @param {boolean=} opt_force Whether the event should be fired even if the
+ *     element is not interactable.
  */
-bot.Mouse.prototype.releaseButton = function() {
+bot.Mouse.prototype.releaseButton = function(opt_force) {
   if (goog.isNull(this.buttonPressed_)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot release a button when no button is pressed.');
@@ -291,7 +293,7 @@ bot.Mouse.prototype.releaseButton = function() {
   // element becomes non-interactable after the mouseup.
   var elementInteractableBeforeMouseup =
       bot.dom.isInteractable(this.getElement());
-  this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
+  this.fireMouseEvent_(bot.events.EventType.MOUSEUP, null, null, opt_force);
 
   // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
