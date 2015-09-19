@@ -259,7 +259,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {IE, REMOTE},
+  @Ignore(value = {FIREFOX, IE, REMOTE},
           reason = "Behaviour not finalized yet regarding linked images.")
   @NotYetImplemented(HTMLUNIT)
   @Test

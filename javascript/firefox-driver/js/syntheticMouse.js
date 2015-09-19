@@ -193,19 +193,14 @@ SyntheticMouse.prototype.click = function(target) {
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
       bot.action.click(parent, undefined /* coords */);
     }
-  }
 
-  goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.click on ' + element);
-  var keyboardState = new bot.Device.ModifiersState();
-  if (this.modifierKeys !== undefined) {
-    keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
-    keyboardState.setPressed(bot.Device.Modifier.CONTROL, this.modifierKeys.isControlPressed());
-    keyboardState.setPressed(bot.Device.Modifier.ALT, this.modifierKeys.isAltPressed());
-    keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
-  }
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, this.modifierKeys));
 
-  bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, keyboardState));
+  } else {
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, this.lastMousePosition, this.getMouse_());
+  }
 
   if (bot.dom.isEditable(element) && element.value !== undefined) {
     goog.dom.selection.setCursorPosition(

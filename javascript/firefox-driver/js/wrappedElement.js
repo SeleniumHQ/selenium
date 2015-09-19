@@ -66,14 +66,12 @@ WebElement.clickElement = function(respond, parameters) {
 
   var unwrapped = fxdriver.moz.unwrapFor4(element);
 
-  var location = Utils.getLocation(unwrapped, unwrapped.tagName == 'A');
-  var elementHalfWidth = (location.width ? Math.floor(location.width / 2) : 0);
-  var elementHalfHeight = (location.height ? Math.floor(location.height / 2) : 0);
+  var offset = Utils.getClickablePoint(unwrapped);
 
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
-  var res = this.mouse.move(element, elementHalfWidth, elementHalfHeight);
+  var res = this.mouse.move(element, offset.x, offset.y);
   if (res.status != bot.ErrorCode.SUCCESS) {
     respond.status = res.status;
     respond.value = res.message;

@@ -649,6 +649,30 @@ Utils.getLocationOnceScrolledIntoView = function(element, opt_elementScrollBehav
 };
 
 
+Utils.getClickablePoint = function(element) {
+  element = element.wrappedJSObject ? element.wrappedJSObject : element;
+  var rect = bot.dom.getClientRect(element);
+
+  if (element.getClientRects().length > 1) {
+    for (var i = 0; i < element.getClientRects().length; i++) {
+      var candidate = element.getClientRects()[i];
+      if (candidate.width != 0 && candidate.height != 0) {
+        return {
+          x: (candidate.left - rect.left + Math.floor(candidate.width / 2)),
+          y: (candidate.top - rect.top + Math.floor(candidate.height / 2))
+        };
+      }
+    }
+  }
+
+  // Fallback to the main rect
+  return {
+    x: (rect.width ? Math.floor(rect.width / 2) : 0),
+    y: (rect.height ? Math.floor(rect.height / 2) : 0)
+  };
+};
+
+
 Utils.unwrapParameters = function(wrappedParameters, doc) {
   switch (typeof wrappedParameters) {
     case 'number':
