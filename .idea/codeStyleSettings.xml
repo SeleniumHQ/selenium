@@ -418,6 +418,7 @@
           <option name="PARENT_SETTINGS_INSTALLED" value="true" />
         </codeStyleSettings>
         <codeStyleSettings language="JavaScript">
+          <option name="RIGHT_MARGIN" value="80" />
           <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
           <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
