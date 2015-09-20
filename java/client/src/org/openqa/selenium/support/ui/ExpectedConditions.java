@@ -853,6 +853,92 @@ public class ExpectedConditions {
   }
 
   /**
+   * An expectation for checking that the given locator finds exactly {@code expectedNumElementsFound} elements.
+   *
+   * @param expectedNumElementsFound the expected number of elements that should be found
+   * @param locator
+   * @return true when the number of elements matches, false otherwise
+   */
+  public static ExpectedCondition<Boolean> exactlyNElementsToBeFound(final By locator, final int expectedNumElementsFound) {
+    if(expectedNumElementsFound < 0) {
+      throw new IllegalArgumentException("expectedNumElementsFound should be >= 0");
+    }
+    return new ExpectedCondition<Boolean>() {
+      private int actualNumElementsFound;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        actualNumElementsFound = driver.findElements(locator).size();
+        log.log(Level.FINE, "actual num elements found: " + actualNumElementsFound);
+        return actualNumElementsFound == expectedNumElementsFound;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("number of elements located by " + locator + " to be \"%s\". Found: \"%s\"", expectedNumElementsFound, actualNumElementsFound);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking that the given locator finds at least (i.e. greater than or equal to)
+   * {@code minNumElementsFound} elements.
+   *
+   * @param minNumElementsFound the minium number of elements that should be found
+   * @param locator
+   * @return true when the number of elements matches, false otherwise
+   */
+  public static ExpectedCondition<Boolean> atLeastNElementsToBeFound(final By locator, final int minNumElementsFound) {
+    if(minNumElementsFound < 0) {
+      throw new IllegalArgumentException("minNumElementsFound should be >= 0");
+    }
+    return new ExpectedCondition<Boolean>() {
+      private int actualNumElementsFound;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        actualNumElementsFound = driver.findElements(locator).size();
+        log.log(Level.FINE, "actual num elements found: " + actualNumElementsFound);
+        return actualNumElementsFound >= minNumElementsFound;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("number of elements located by " + locator + " to be at least \"%s\". Found: \"%s\"", minNumElementsFound, actualNumElementsFound);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking that the given locator finds at most (i.e. less than or equal to)
+   * {@code maxNumElementsFound} elements.
+   *
+   * @param maxNumElementsFound the maximum number of elements that should be found
+   * @param locator
+   * @return true when the number of elements matches, false otherwise
+   */
+  public static ExpectedCondition<Boolean> atMostNElementsToBeFound(final By locator, final int maxNumElementsFound) {
+    if(maxNumElementsFound < 0) {
+      throw new IllegalArgumentException("maxNumElementsFound should be >= 0");
+    }
+    return new ExpectedCondition<Boolean>() {
+      private int actualNumElementsFound;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        actualNumElementsFound = driver.findElements(locator).size();
+        log.log(Level.FINE, "actual num elements found: " + actualNumElementsFound);
+        return actualNumElementsFound <= maxNumElementsFound;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("number of elements located by " + locator + " to be at most \"%s\". Found: \"%s\"", maxNumElementsFound, actualNumElementsFound);
+      }
+    };
+  }
+
+  /**
    * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/>
    * Method exists to gather data for http://code.google.com/p/selenium/issues/detail?id=1800
    */
