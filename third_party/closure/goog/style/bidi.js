@@ -86,6 +86,7 @@ goog.style.bidi.getScrollLeft = function(element) {
  * @return {number} The offsetStart for that element.
  */
 goog.style.bidi.getOffsetStart = function(element) {
+  element = /** @type {!HTMLElement} */ (element);
   var offsetLeftForReal = element.offsetLeft;
 
   // The element might not have an offsetParent.

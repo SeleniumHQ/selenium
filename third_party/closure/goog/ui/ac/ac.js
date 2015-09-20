@@ -15,6 +15,7 @@
 /**
  * @fileoverview Utility methods supporting the autocomplete package.
  *
+ * @author adamwos@google.com (Adam Wos)
  * @see ../../demos/autocomplete-basic.html
  */
 

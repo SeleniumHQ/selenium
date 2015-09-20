@@ -71,7 +71,7 @@ goog.inherits(goog.ui.HsvaPalette, goog.ui.HsvPalette);
 
 /**
  * DOM element representing the alpha background image.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvaPalette.prototype.aImageEl_;
@@ -79,7 +79,7 @@ goog.ui.HsvaPalette.prototype.aImageEl_;
 
 /**
  * DOM element representing the alpha handle.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvaPalette.prototype.aHandleEl_;
@@ -170,10 +170,10 @@ goog.ui.HsvaPalette.prototype.createDom = function() {
   goog.ui.HsvaPalette.base(this, 'createDom');
 
   var dom = this.getDomHelper();
-  this.aImageEl_ = dom.createDom(
-      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-image'));
-  this.aHandleEl_ = dom.createDom(
-      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-handle'));
+  this.aImageEl_ = /** @type {!HTMLElement} */ (dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-image')));
+  this.aHandleEl_ = /** @type {!HTMLElement} */ (dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-handle')));
   this.swatchBackdropEl_ = dom.createDom(
       goog.dom.TagName.DIV, goog.getCssName(this.className, 'swatch-backdrop'));
   var element = this.getElement();

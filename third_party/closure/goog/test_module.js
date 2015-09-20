@@ -20,7 +20,11 @@ goog.module('goog.test_module');
 goog.setTestOnly('goog.test_module');
 goog.module.declareLegacyNamespace();
 
+
+/** @suppress {extraRequire} */
 var dep = goog.require('goog.test_module_dep');
+
+
 
 /** @constructor */
 exports = function() {};

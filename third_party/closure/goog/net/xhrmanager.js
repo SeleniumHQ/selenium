@@ -51,7 +51,7 @@ goog.require('goog.structs.Map');
  * @param {number=} opt_maxRetries Max. number of retries (Default: 1).
  * @param {goog.structs.Map=} opt_headers Map of default headers to add to every
  *     request.
- * @param {number=} opt_minCount Min. number of objects (Default: 1).
+ * @param {number=} opt_minCount Min. number of objects (Default: 0).
  * @param {number=} opt_maxCount Max. number of objects (Default: 10).
  * @param {number=} opt_timeoutInterval Timeout (in ms) before aborting an
  *     attempt (Default: 0ms).
@@ -164,11 +164,13 @@ goog.net.XhrManager.prototype.getOutstandingRequestIds = function() {
 /**
  * Registers the given request to be sent. Throws an error if a request
  * already exists with the given ID.
- * NOTE: It is not sent immediately. It is queued and will be sent when an
+ * NOTE: It is not sent immediately. It is buffered and will be sent when an
  * XhrIo object becomes available, taking into account the request's
- * priority.
+ * priority. Note also that requests of equal priority are sent in an
+ * implementation specific order - to get FIFO queue semantics use a
+ * monotonically increasing priority for successive requests.
  * @param {string} id The id of the request.
- * @param {string} url Uri to make the request too.
+ * @param {string} url Uri to make the request to.
  * @param {string=} opt_method Send method, default: GET.
  * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
  *     opt_content Post data.

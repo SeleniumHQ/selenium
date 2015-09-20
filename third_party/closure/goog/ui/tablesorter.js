@@ -194,7 +194,7 @@ goog.ui.TableSorter.prototype.setSortFunction = function(column, sortFunction) {
 goog.ui.TableSorter.prototype.sort_ = function(e) {
   // Determine what column was clicked.
   // TODO(robbyw): If this table cell contains another table, this could break.
-  var target = /** @type {Node} */ (e.target);
+  var target = e.target;
   var th = goog.dom.getAncestorByTagNameAndClass(target,
       goog.dom.TagName.TH);
 
@@ -263,7 +263,8 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
   });
 
   // Mark this as the last sorted column.
-  this.header_ = table.tHead.rows[this.sortableHeaderRowIndex_].cells[column];
+  this.header_ = /** @type {!HTMLTableCellElement} */
+      (table.tHead.rows[this.sortableHeaderRowIndex_].cells[column]);
 
   // Update the header class.
   goog.dom.classlist.add(this.header_, this.reversed_ ?

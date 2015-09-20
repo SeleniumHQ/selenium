@@ -36,7 +36,6 @@ goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
-goog.require('goog.uri.utils.StandardQueryParam');
 goog.require('goog.userAgent');
 
 
@@ -429,27 +428,15 @@ ChannelRequest.prototype.xmlHttpPost = function(uri, postData, decodeChunks) {
  *     won't cause it to be added to the URL.
  * @param {boolean=} opt_noClose   Whether to request that the tcp/ip connection
  *     should be closed.
- * @param {boolean=} opt_duplicateRandom   Whether to duplicate the randomness
- *     parameter which is only required for the initial handshake. This allows
- *     a server to break compatibility with old version clients.
  */
 ChannelRequest.prototype.xmlHttpGet = function(uri, decodeChunks,
-    hostPrefix, opt_noClose, opt_duplicateRandom) {
+    hostPrefix, opt_noClose) {
   this.type_ = ChannelRequest.Type_.XML_HTTP;
   this.baseUri_ = uri.clone().makeUnique();
   this.postData_ = null;
   this.decodeChunks_ = decodeChunks;
   if (opt_noClose) {
     this.sendClose_ = false;
-  }
-
-  // TODO(user): clean this up once we phase out all BrowserChannel clients,
-  if (opt_duplicateRandom) {
-    var randomParam = this.baseUri_.getParameterValue(
-        goog.uri.utils.StandardQueryParam.RANDOM);
-    this.baseUri_.setParameterValue(  // baseUri_ reusable for future requests
-        goog.uri.utils.StandardQueryParam.RANDOM + '1',  // 'zx1'
-        randomParam);
   }
 
   this.sendXmlHttp_(hostPrefix);

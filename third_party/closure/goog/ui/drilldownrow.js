@@ -420,7 +420,8 @@ goog.ui.DrilldownRow.decorate = function(selfObj) {
   var html = '<div style="float: left; width: ' + depth +
       'em;"><div class=toggle style="width: 1em; float: right;">' +
       '&nbsp;</div></div>';
-  var fragment = selfObj.getDomHelper().htmlToDocumentFragment(html);
+  var fragment = /** @type {!Element} */ (
+      selfObj.getDomHelper().htmlToDocumentFragment(html));
   cell.insertBefore(fragment, cell.firstChild);
   goog.dom.classlist.add(row, selfObj.isExpanded() ?
       goog.getCssName('goog-drilldown-expanded') :

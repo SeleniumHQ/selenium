@@ -83,7 +83,7 @@ goog.dom.TextRangeIterator = function(startNode, startOffset, endNode,
     // Skip to the offset nodes - being careful to special case BRs since these
     // have no children but still can appear as the startContainer of a range.
     if (startNode.nodeType == goog.dom.NodeType.ELEMENT &&
-        startNode.tagName != goog.dom.TagName.BR) {
+        /** @type {!Element} */ (startNode).tagName != goog.dom.TagName.BR) {
       var startChildren = startNode.childNodes;
       var candidate = startChildren[startOffset];
       if (candidate) {

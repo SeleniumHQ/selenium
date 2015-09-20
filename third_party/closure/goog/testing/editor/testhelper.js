@@ -142,10 +142,10 @@ goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
 
 
 /**
- * Select from the given from offset in the given from node to the given
- * to offset in the optionally given to node. If nodes are passed in, uses them,
- * otherwise uses findTextNode to find the nodes to select. Selects a caret
- * if opt_to and opt_toOffset are not given.
+ * Select from the given {@code fromOffset} in the given {@code from} node to
+ * the given {@code toOffset} in the optionally given {@code to} node. If nodes
+ * are passed in, uses them, otherwise uses findTextNode to find the nodes to
+ * select. Selects a caret if opt_to and opt_toOffset are not given.
  * @param {Node|string} from Node or text of the node to start the selection at.
  * @param {number} fromOffset Offset within the above node to start the
  *     selection at.
@@ -153,6 +153,7 @@ goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
  *     at.
  * @param {number=} opt_toOffset Offset within the above node to end the
  *     selection at.
+ * @return {!goog.dom.AbstractRange}
  */
 goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
     opt_to, opt_toOffset) {
@@ -166,7 +167,10 @@ goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
     endOffset = opt_toOffset;
   }
 
-  goog.dom.Range.createFromNodes(start, startOffset, end, endOffset).select();
+  var range = goog.dom.Range.createFromNodes(
+      start, startOffset, end, endOffset);
+  range.select();
+  return range;
 };
 
 

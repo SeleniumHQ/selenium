@@ -1462,6 +1462,8 @@ goog.ui.registry.setDecoratorByClassName(goog.ui.ControlRenderer.CSS_CLASS,
  * @private
  */
 goog.ui.Control.IeMouseEventSequenceSimulator_ = function(control) {
+  goog.ui.Control.IeMouseEventSequenceSimulator_.base(this, 'constructor');
+
   /** @private {goog.ui.Control}*/
   this.control_ = control;
 

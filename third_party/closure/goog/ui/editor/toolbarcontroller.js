@@ -139,7 +139,7 @@ goog.ui.editor.ToolbarController.prototype.getCommand = function(id) {
  * that extend {@code goog.ui.editor.ToolbarController}.
  * @return {!goog.events.EventHandler<T>} The event handler object.
  * @protected
- * @this T
+ * @this {T}
  * @template T
  */
 goog.ui.editor.ToolbarController.prototype.getHandler = function() {

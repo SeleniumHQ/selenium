@@ -243,7 +243,7 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   var d = new Date(year, month, date);
 
   // Default to Thursday for cut off as per ISO 8601.
-  var cutoff = opt_weekDay || goog.date.weekDay.THU;
+  var cutoff = goog.isDef(opt_weekDay) ? opt_weekDay : goog.date.weekDay.THU;
 
   // Default to Monday for first day of the week as per ISO 8601.
   var firstday = opt_firstDayOfWeek || goog.date.weekDay.MON;
@@ -765,10 +765,15 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
     this.maybeFixDst_(opt_year.getDate());
   } else {
     this.date = new Date(goog.now());
+    var expectedDate = this.date.getDate();
     this.date.setHours(0);
     this.date.setMinutes(0);
     this.date.setSeconds(0);
     this.date.setMilliseconds(0);
+    // In some time zones there is no "0" hour on certain days during DST.
+    // Adjust here, if necessary. See:
+    // https://github.com/google/closure-library/issues/34.
+    this.maybeFixDst_(expectedDate);
   }
 };
 
@@ -836,7 +841,7 @@ goog.date.Date.prototype.getFullYear = function() {
  * Alias for getFullYear.
  *
  * @return {number} The four digit year of date.
- * @see #getFullyear
+ * @see #getFullYear
  */
 goog.date.Date.prototype.getYear = function() {
   return this.getFullYear();
@@ -1493,7 +1498,7 @@ goog.date.DateTime.prototype.setSeconds = function(seconds) {
 
 
 /**
- * Sets the seconds part of the datetime.
+ * Sets the milliseconds part of the datetime.
  *
  * @param {number} ms Integer between 0 and 999, representing the milliseconds.
  */

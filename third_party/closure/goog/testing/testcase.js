@@ -124,6 +124,13 @@ goog.testing.TestCase = function(opt_name) {
    * @suppress {underscore|visibility}
    */
   this.result_ = new goog.testing.TestCase.Result(this);
+
+  /**
+   * The maximum time in milliseconds a promise returned from a test function
+   * may remain pending before the test fails due to timeout.
+   * @type {number}
+   */
+  this.promiseTimeout = 1000; // 1s
 };
 
 
@@ -171,7 +178,7 @@ goog.testing.TestCase.maxRunTime = 200;
  * techniques like tail cail optimization can affect the exact depth.
  * @private @const
  */
-goog.testing.TestCase.MAX_STACK_DEPTH_ = 100;
+goog.testing.TestCase.MAX_STACK_DEPTH_ = 50;
 
 
 /**
@@ -652,7 +659,7 @@ goog.testing.TestCase.prototype.runTests = function() {
 /**
  * Executes each of the tests, returning a promise that resolves with the
  * test results once they are done running.
- * @return {!IThenable.<!goog.testing.TestCase.Result>}
+ * @return {!IThenable<!goog.testing.TestCase.Result>}
  * @final
  * @package
  */
@@ -705,7 +712,8 @@ goog.testing.TestCase.prototype.runNextTest_ = function() {
   }
   goog.testing.TestCase.currentTestName = this.curTest_.name;
   this.invokeTestFunction_(
-      this.setUp, this.safeRunTest_, this.safeTearDown_);
+      this.setUp, this.safeRunTest_, this.safeTearDown_,
+      'setUp');
 };
 
 
@@ -717,7 +725,8 @@ goog.testing.TestCase.prototype.safeRunTest_ = function() {
   this.invokeTestFunction_(
       goog.bind(this.curTest_.ref, this.curTest_.scope),
       this.safeTearDown_,
-      this.safeTearDown_);
+      this.safeTearDown_,
+      this.curTest_.name);
 };
 
 
@@ -731,7 +740,8 @@ goog.testing.TestCase.prototype.safeTearDown_ = function(opt_error) {
     this.doError(this.curTest_, opt_error);
   }
   this.invokeTestFunction_(
-      this.tearDown, this.finishTestInvocation_, this.finishTestInvocation_);
+      this.tearDown, this.finishTestInvocation_, this.finishTestInvocation_,
+      'tearDown');
 };
 
 
@@ -756,15 +766,21 @@ goog.testing.TestCase.prototype.safeTearDown_ = function(opt_error) {
  * @param {function()} fn The function to call.
  * @param {function()} onSuccess Success callback.
  * @param {function(*)} onFailure Failure callback.
+ * @param {string} fnName Name of the function being invoked e.g. 'setUp'.
  * @private
  */
 goog.testing.TestCase.prototype.invokeTestFunction_ = function(
-    fn, onSuccess, onFailure) {
+    fn, onSuccess, onFailure, fnName) {
   try {
     var retval = fn.call(this);
     if (goog.Thenable.isImplementedBy(retval) ||
         goog.isFunction(retval && retval['then'])) {
       var self = this;
+      retval = this.rejectIfPromiseTimesOut_(
+          retval, self.promiseTimeout,
+          'Timed out while waiting for a promise returned from ' + fnName +
+          ' to resolve. Set goog.testing.TestCase.getActiveTestCase()' +
+          '.promiseTimeout to adjust the timeout.');
       retval.then(
           function() {
             self.resetBatchTimeAfterPromise_();
@@ -908,6 +924,20 @@ goog.testing.TestCase.getGlobals = function(opt_prefix) {
   return typeof goog.global['RuntimeObject'] != 'undefined' ?
       [goog.global['RuntimeObject']((opt_prefix || '') + '*'), goog.global] :
       [goog.global];
+};
+
+
+/**
+ * @return {?goog.testing.TestCase} currently active test case or null if not
+ *     test is currently running.
+ */
+goog.testing.TestCase.getActiveTestCase = function() {
+  var gTestRunner = goog.global['G_testRunner'];
+  if (gTestRunner && gTestRunner.testCase) {
+    return gTestRunner.testCase;
+  } else {
+    return null;
+  }
 };
 
 
@@ -1093,8 +1123,8 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
 goog.testing.TestCase.prototype.maybeFailTestEarly = function(testCase) {
   if (this.exceptionBeforeTest) {
     // We just use the first error to report an error on a failed test.
-    this.curTest_.name = 'setUpPage for ' + this.curTest_.name;
-    this.doError(this.curTest_, this.exceptionBeforeTest);
+    testCase.name = 'setUpPage for ' + testCase.name;
+    this.doError(testCase, this.exceptionBeforeTest);
     return true;
   }
   return false;
@@ -1510,6 +1540,35 @@ goog.testing.TestCase.parseRunTests_ = function(search) {
     }
   }
   return testsToRun;
+};
+
+
+/**
+ * Wraps provided promise and returns a new promise which will be rejected
+ * if the original promise does not settle within the given timeout.
+ * @param {!IThenable<T>} promise
+ * @param {number} timeoutInMs Number of milliseconds to wait for the promise to
+ *     settle before failing it with a timeout error.
+ * @param {string} errorMsg Error message to use if the promise times out.
+ * @return {!goog.Promise<T>} A promise that will settle with the original
+       promise unless the timeout is exceeded.
+ *     errror.
+ * @template T
+ * @private
+ */
+goog.testing.TestCase.prototype.rejectIfPromiseTimesOut_ =
+    function(promise, timeoutInMs, errorMsg) {
+  var self = this;
+  var start = this.now();
+  return new goog.Promise(function(resolve, reject) {
+    var timeoutId = self.timeout(function() {
+      var elapsed = self.now() - start;
+      reject(new Error(errorMsg + '\nElapsed time: ' + elapsed + 'ms.'));
+    }, timeoutInMs);
+    promise.then(resolve, reject);
+    var clearTimeout = goog.bind(self.clearTimeout, self, timeoutId);
+    promise.then(clearTimeout, clearTimeout);
+  });
 };
 
 

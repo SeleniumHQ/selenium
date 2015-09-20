@@ -16,6 +16,7 @@
  * @fileoverview Utility for making the browser submit a hidden form, which can
  * be used to effect a POST from JavaScript.
  *
+ * @author dpb@google.com (David P. Baker)
  */
 
 goog.provide('goog.ui.FormPost');

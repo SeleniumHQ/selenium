@@ -62,7 +62,7 @@ goog.tagUnsealableClass(goog.ui.AttachableMenu);
 
 /**
  * The currently selected element (mouse was moved over it or keyboard arrows)
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.AttachableMenu.prototype.selectedElement_ = null;
@@ -155,7 +155,7 @@ goog.ui.AttachableMenu.prototype.getSelectedItem = function() {
 
 /** @override */
 goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
-  var elt = /** @type {Element} */ (obj);
+  var elt = /** @type {HTMLElement} */ (obj);
   if (this.selectedElement_) {
     goog.dom.classlist.remove(this.selectedElement_,
         this.selectedItemClassName_);
@@ -163,7 +163,7 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(obj) {
 
   this.selectedElement_ = elt;
 
-  var el = this.getElement();
+  var el = /** @type {HTMLElement} */ (this.getElement());
   goog.asserts.assert(el, 'The attachable menu DOM element cannot be null.');
   if (this.selectedElement_) {
     goog.dom.classlist.add(this.selectedElement_, this.selectedItemClassName_);

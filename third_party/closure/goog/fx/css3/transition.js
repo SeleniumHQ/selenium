@@ -65,10 +65,17 @@ goog.require('goog.style.transition');
  *     transition property or an array of it.
  * @extends {goog.fx.TransitionBase}
  * @constructor
+ * @struct
  */
 goog.fx.css3.Transition = function(
     element, duration, initialStyle, finalStyle, transitions) {
   goog.fx.css3.Transition.base(this, 'constructor');
+
+  /**
+   * Timer id to be used to cancel animation part-way.
+   * @private {number}
+   */
+  this.timerId_;
 
   /**
    * @type {Element}
@@ -101,14 +108,6 @@ goog.fx.css3.Transition = function(
   this.transitions_ = goog.isArray(transitions) ? transitions : [transitions];
 };
 goog.inherits(goog.fx.css3.Transition, goog.fx.TransitionBase);
-
-
-/**
- * Timer id to be used to cancel animation part-way.
- * @type {number}
- * @private
- */
-goog.fx.css3.Transition.prototype.timerId_;
 
 
 /** @override */

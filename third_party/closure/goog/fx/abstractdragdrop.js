@@ -56,32 +56,109 @@ goog.require('goog.style');
  *
  * @extends {goog.events.EventTarget}
  * @constructor
+ * @struct
  */
 goog.fx.AbstractDragDrop = function() {
   goog.fx.AbstractDragDrop.base(this, 'constructor');
 
   /**
    * List of items that makes up the drag source or drop target.
-   * @type {Array<goog.fx.DragDropItem>}
-   * @protected
+   * @protected {Array<goog.fx.DragDropItem>}
    * @suppress {underscore|visibility}
    */
   this.items_ = [];
 
   /**
    * List of associated drop targets.
-   * @type {Array<goog.fx.AbstractDragDrop>}
-   * @private
+   * @private {Array<goog.fx.AbstractDragDrop>}
    */
   this.targets_ = [];
 
   /**
    * Scrollable containers to account for during drag
-   * @type {Array<goog.fx.ScrollableContainer_>}
-   * @private
+   * @private {Array<goog.fx.ScrollableContainer_>}
    */
   this.scrollableContainers_ = [];
 
+  /**
+   * Flag indicating if it's a drag source, set by addTarget.
+   * @private {boolean}
+   */
+  this.isSource_ = false;
+
+  /**
+   * Flag indicating if it's a drop target, set when added as target to another
+   * DragDrop object.
+   * @private {boolean}
+   */
+  this.isTarget_ = false;
+
+  /**
+   * Subtargeting function accepting args:
+   * (goog.fx.DragDropItem, goog.math.Box, number, number)
+   * @private {?Function}
+   */
+  this.subtargetFunction_;
+
+  /**
+   * Last active subtarget.
+   * @private {?Object}
+   */
+  this.activeSubtarget_;
+
+  /**
+   * Class name to add to source elements being dragged. Set by setDragClass.
+   * @private {?string}
+   */
+  this.dragClass_;
+
+  /**
+   * Class name to add to source elements. Set by setSourceClass.
+   * @private {?string}
+   */
+  this.sourceClass_;
+
+  /**
+   * Class name to add to target elements. Set by setTargetClass.
+   * @private {?string}
+   */
+  this.targetClass_;
+
+  /**
+   * The SCROLL event target used to make drag element follow scrolling.
+   * @private {?EventTarget}
+   */
+  this.scrollTarget_;
+
+  /**
+   * Dummy target, {@see maybeCreateDummyTargetForPosition_}.
+   * @private {?goog.fx.ActiveDropTarget_}
+   */
+  this.dummyTarget_;
+
+  /**
+   * Whether the object has been initialized.
+   * @private {boolean}
+   */
+  this.initialized_ = false;
+
+  /** @private {?Element} */
+  this.dragEl_;
+
+  /** @private {?Array<!goog.fx.ActiveDropTarget_>} */
+  this.targetList_;
+
+  /** @private {?goog.math.Box} */
+  this.targetBox_;
+
+  /** @private {?goog.fx.ActiveDropTarget_} */
+  this.activeTarget_;
+
+  /** @private {?goog.fx.DragDropItem} */
+  this.dragItem_;
+
+  /** @private {?goog.fx.Dragger} */
+  this.dragger_;
 };
 goog.inherits(goog.fx.AbstractDragDrop, goog.events.EventTarget);
 
@@ -93,88 +170,6 @@ goog.inherits(goog.fx.AbstractDragDrop, goog.events.EventTarget);
  * @private
  */
 goog.fx.AbstractDragDrop.DUMMY_TARGET_MIN_SIZE_ = 10;
-
-
-/**
- * Flag indicating if it's a drag source, set by addTarget.
- * @type {boolean}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.isSource_ = false;
-
-
-/**
- * Flag indicating if it's a drop target, set when added as target to another
- * DragDrop object.
- * @type {boolean}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.isTarget_ = false;
-
-
-/**
- * Subtargeting function accepting args:
- * (goog.fx.DragDropItem, goog.math.Box, number, number)
- * @type {Function}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.subtargetFunction_;
-
-
-/**
- * Last active subtarget.
- * @type {Object}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.activeSubtarget_;
-
-
-/**
- * Class name to add to source elements being dragged. Set by setDragClass.
- * @type {?string}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.dragClass_;
-
-
-/**
- * Class name to add to source elements. Set by setSourceClass.
- * @type {?string}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.sourceClass_;
-
-
-/**
- * Class name to add to target elements. Set by setTargetClass.
- * @type {?string}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.targetClass_;
-
-
-/**
- * The SCROLL event target used to make drag element follow scrolling.
- * @type {EventTarget}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.scrollTarget_;
-
-
-/**
- * Dummy target, {@see maybeCreateDummyTargetForPosition_}.
- * @type {goog.fx.ActiveDropTarget_}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.dummyTarget_;
-
-
-/**
- * Whether the object has been initialized.
- * @type {boolean}
- * @private
- */
-goog.fx.AbstractDragDrop.prototype.initialized_ = false;
 
 
 /**
@@ -580,10 +575,17 @@ goog.fx.AbstractDragDrop.prototype.moveDrag_ = function(event) {
   var x = position.x;
   var y = position.y;
 
-  // Check if we're still inside the bounds of the active target, if not fire
-  // a dragout event and proceed to find a new target.
   var activeTarget = this.activeTarget_;
 
+  this.dispatchEvent(new goog.fx.DragDropEvent(
+      goog.fx.AbstractDragDrop.EventType.DRAG, this, this.dragItem_,
+      activeTarget ? activeTarget.target_ : undefined,
+      activeTarget ? activeTarget.item_ : undefined,
+      activeTarget ? activeTarget.element_ : undefined,
+      event.clientX, event.clientY, x, y));
+
+  // Check if we're still inside the bounds of the active target, if not fire
+  // a dragout event and proceed to find a new target.
   var subtarget;
   if (activeTarget) {
     // If a subtargeting function is enabled get the current subtarget
@@ -720,7 +722,8 @@ goog.fx.AbstractDragDrop.prototype.removeAllScrollableContainers = function() {
 
 /**
  * Event handler for containers scrolling.
- * @param {goog.events.Event} e The event.
+ * @param {goog.events.BrowserEvent} e The event.
+ * @suppress {visibility} TODO(martone): update dependent projects.
  * @private
  */
 goog.fx.AbstractDragDrop.prototype.containerScrollHandler_ = function(e) {
@@ -872,14 +875,13 @@ goog.fx.AbstractDragDrop.prototype.addDragTarget_ = function(target, item) {
 
   // Get all the draggable elements and add each one.
   var draggableElements = item.getDraggableElements();
-  var targetList = this.targetList_;
   for (var i = 0; i < draggableElements.length; i++) {
     var draggableElement = draggableElements[i];
 
     // Determine target position and dimension
     var box = this.getElementBox(item, draggableElement);
 
-    targetList.push(
+    this.targetList_.push(
         new goog.fx.ActiveDropTarget_(box, target, item, draggableElement));
 
     this.calculateTargetBox_(box);
@@ -1079,8 +1081,8 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
  * Returns the target for a given cursor position.
  *
  * @param {goog.math.Coordinate} position Cursor position.
- * @return {Object} Target for position or null if no target was defined
- *     for the given position.
+ * @return {goog.fx.ActiveDropTarget_} Target for position or null if no target
+ *     was defined for the given position.
  * @private
  */
 goog.fx.AbstractDragDrop.prototype.getTargetFromPosition_ = function(position) {
@@ -1169,6 +1171,7 @@ goog.fx.AbstractDragDrop.prototype.disposeInternal = function() {
  * @param {Object=} opt_subtarget The currently active subtarget.
  * @extends {goog.events.Event}
  * @constructor
+ * @struct
  */
 goog.fx.DragDropEvent = function(type, source, sourceItem,
                                  opt_target, opt_targetItem, opt_targetElement,
@@ -1252,6 +1255,7 @@ goog.inherits(goog.fx.DragDropEvent, goog.events.Event);
  * @throws Error If no element argument is provided or if the type is invalid
  * @extends {goog.events.EventTarget}
  * @constructor
+ * @struct
  */
 goog.fx.DragDropItem = function(element, opt_data) {
   goog.fx.DragDropItem.base(this, 'constructor');
@@ -1283,20 +1287,21 @@ goog.fx.DragDropItem = function(element, opt_data) {
   this.eventHandler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.eventHandler_);
 
+  /**
+   * The current element being dragged. This is needed because a DragDropItem
+   * can have multiple elements that can be dragged.
+   * @private {?Element}
+   */
+  this.currentDragElement_ = null;
+
+  /** @private {?goog.math.Coordinate} */
+  this.startPosition_;
+
   if (!this.element) {
     throw Error('Invalid argument');
   }
 };
 goog.inherits(goog.fx.DragDropItem, goog.events.EventTarget);
-
-
-/**
- * The current element being dragged. This is needed because a DragDropItem can
- * have multiple elements that can be dragged.
- * @type {Element}
- * @private
- */
-goog.fx.DragDropItem.prototype.currentDragElement_ = null;
 
 
 /**
@@ -1452,6 +1457,7 @@ goog.fx.DragDropItem.prototype.mouseUp_ = function(event) {
  * @param {goog.fx.DragDropItem=} opt_item Item associated with position.
  * @param {Element=} opt_element Element of item associated with position.
  * @constructor
+ * @struct
  * @private
  */
 goog.fx.ActiveDropTarget_ = function(box, opt_target, opt_item, opt_element) {
@@ -1479,19 +1485,17 @@ goog.fx.ActiveDropTarget_ = function(box, opt_target, opt_item, opt_element) {
 
   /**
    * The draggable element of the item associated with position.
-   * @type {Element|undefined}
+   * @type {Element}
    * @private
    */
-  this.element_ = opt_element;
+  this.element_ = opt_element || null;
+
+  /**
+   * If this target is in a scrollable container this is it.
+   * @private {?goog.fx.ScrollableContainer_}
+   */
+  this.scrollableContainer_ = null;
 };
-
-
-/**
- * If this target is in a scrollable container this is it.
- * @type {goog.fx.ScrollableContainer_}
- * @private
- */
-goog.fx.ActiveDropTarget_.prototype.scrollableContainer_ = null;
 
 
 

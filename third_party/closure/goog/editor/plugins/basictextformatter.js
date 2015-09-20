@@ -78,6 +78,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.logger =
  */
 goog.editor.plugins.BasicTextFormatter.COMMAND = {
   LINK: '+link',
+  CREATE_LINK: '+createLink',
   FORMAT_BLOCK: '+formatBlock',
   INDENT: '+indent',
   OUTDENT: '+outdent',
@@ -125,6 +126,27 @@ goog.editor.plugins.BasicTextFormatter.prototype.isSupportedCommand = function(
   // TODO(user): restore this to simple check once table editing
   // is moved out into its own plugin
   return command in goog.editor.plugins.BasicTextFormatter.SUPPORTED_COMMANDS_;
+};
+
+
+/**
+ * Array of execCommand strings which should be silent.
+ * @type {!Array<goog.editor.plugins.BasicTextFormatter.COMMAND>}
+ * @private
+ */
+goog.editor.plugins.BasicTextFormatter.SILENT_COMMANDS_ = [
+  goog.editor.plugins.BasicTextFormatter.COMMAND.CREATE_LINK
+];
+
+
+/**
+ * Whether the string corresponds to a command that should be silent.
+ * @override
+ */
+goog.editor.plugins.BasicTextFormatter.prototype.isSilentCommand = function(
+    command) {
+  return goog.array.contains(
+      goog.editor.plugins.BasicTextFormatter.SILENT_COMMANDS_, command);
 };
 
 
@@ -178,6 +200,10 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
           this.execCommandHelper_(command, opt_arg);
         }
       }
+      break;
+
+    case goog.editor.plugins.BasicTextFormatter.COMMAND.CREATE_LINK:
+      result = this.createLink_(arguments[1], arguments[2], arguments[3]);
       break;
 
     case goog.editor.plugins.BasicTextFormatter.COMMAND.LINK:
@@ -1361,8 +1387,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.fixIELists_ = function() {
   var range = this.getRange_();
   var container = range && range.getContainer();
   while (container &&
-         container.tagName != goog.dom.TagName.UL &&
-         container.tagName != goog.dom.TagName.OL) {
+         /** @type {!Element} */ (container).tagName != goog.dom.TagName.UL &&
+         /** @type {!Element} */ (container).tagName != goog.dom.TagName.OL) {
     container = container.parentNode;
   }
   if (container) {
@@ -1372,9 +1398,11 @@ goog.editor.plugins.BasicTextFormatter.prototype.fixIELists_ = function() {
   }
   if (!container) return;
   var lists = goog.array.toArray(
-      container.getElementsByTagName(goog.dom.TagName.UL));
+      /** @type {!Element} */ (container).
+          getElementsByTagName(goog.dom.TagName.UL));
   goog.array.extend(lists, goog.array.toArray(
-      container.getElementsByTagName(goog.dom.TagName.OL)));
+      /** @type {!Element} */ (container).
+          getElementsByTagName(goog.dom.TagName.OL)));
   // Fix the lists
   goog.array.forEach(lists, function(node) {
     var type = node.type;
@@ -1469,7 +1497,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandGeckoFixes_ =
     var range = this.getRange_();
     var startNode = range.getStartNode();
     if (range.isCollapsed() && startNode &&
-        startNode.tagName == goog.dom.TagName.BODY) {
+        /** @type {!Element} */ (startNode).tagName == goog.dom.TagName.BODY) {
       var startOffset = range.getStartOffset();
       var childNode = startNode.childNodes[startOffset];
       if (childNode && childNode.tagName == goog.dom.TagName.BR) {

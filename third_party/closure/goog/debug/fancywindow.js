@@ -86,7 +86,7 @@ goog.debug.FancyWindow.LOCAL_STORE_PREFIX = 'fancywindow.sel.';
 goog.debug.FancyWindow.prototype.writeBufferToLog = function() {
   this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
-    var logel = this.dh_.getElement('log');
+    var logel = /** @type {!HTMLElement} */ (this.dh_.getElement('log'));
 
     // Work out if scrolling is needed before we add the content
     var scroll =
@@ -218,7 +218,7 @@ goog.debug.FancyWindow.prototype.closeOptions_ = function() {
  */
 goog.debug.FancyWindow.prototype.resizeStuff_ = function() {
   var dh = this.dh_;
-  var logel = dh.getElement('log');
+  var logel = /** @type {!HTMLElement} */ (dh.getElement('log'));
   var headel = dh.getElement('head');
   logel.style.top = headel.offsetHeight + 'px';
   logel.style.height = (dh.getDocument().body.offsetHeight -

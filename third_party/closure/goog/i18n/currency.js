@@ -284,7 +284,7 @@ goog.i18n.currency.CurrencyInfo = {
   'COP': [0, '$', 'COL$'],
   'CRC': [0, '\u20a1', 'CR\u20a1'],
   'CZK': [50, 'K\u010d', 'K\u010d'],
-  'DKK': [18, 'kr', 'kr'],
+  'DKK': [50, 'kr.', 'kr.'],
   'DOP': [2, '$', 'RD$'],
   'EGP': [2, '£', 'LE'],
   'ETB': [2, 'Birr', 'Birr'],

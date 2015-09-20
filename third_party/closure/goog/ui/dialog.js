@@ -267,7 +267,7 @@ goog.ui.Dialog.prototype.getTitle = function() {
 
 /**
  * Allows arbitrary HTML to be set in the content element.
- * TODO(user): Deprecate in favor of setSafeHtmlContent, once developer docs on
+ * TODO(xtof): Deprecate in favor of setSafeHtmlContent, once developer docs on
  * using goog.html.SafeHtml are in place.
  * @param {string} html Content HTML.
  */

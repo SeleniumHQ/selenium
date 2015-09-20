@@ -80,7 +80,7 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
   var img;
   var el = item.firstChild;
   while (el) {
-    if ('IMG' == el.tagName) {
+    if ('IMG' == /** @type {!Element} */ (el).tagName) {
       img = /** @type {!Element} */ (el);
       break;
     }

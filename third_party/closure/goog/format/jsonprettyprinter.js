@@ -402,8 +402,8 @@ goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postName = '</span>';
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preValue =
     '<span class="' +
-    goog.getCssName('goog-jsonprettyprinter-propertyvalue') +
-    '-%s">';
+    goog.getCssName('goog-jsonprettyprinter-propertyvalue-%s') +
+    '">';
 
 
 /**

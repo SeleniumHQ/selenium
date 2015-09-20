@@ -287,7 +287,7 @@ goog.ui.KeyboardShortcutHandler.EventType = {
 
 /**
  * Cache for name to key code lookup.
- * @type {Object.<number>}
+ * @type {Object<number>}
  * @private
  */
 goog.ui.KeyboardShortcutHandler.nameToKeyCodeCache_;
