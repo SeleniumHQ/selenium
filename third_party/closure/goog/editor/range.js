@@ -80,8 +80,8 @@ goog.editor.range.narrow = function(range, el) {
  * Given a range, expand the range to include outer tags if the full contents of
  * those tags are entirely selected.  This essentially changes the dom position,
  * but not the visible position of the range.
- * Ex. <li>foo</li> if "foo" is selected, instead of returning start and end
- * nodes as the foo text node, return the li.
+ * Ex. <code><li>foo</li></code> if "foo" is selected, instead of returning
+ * start and end nodes as the foo text node, return the li.
  * @param {goog.dom.AbstractRange} range The range.
  * @param {Node=} opt_stopNode Optional node to stop expanding past.
  * @return {!goog.dom.AbstractRange} The expanded range.

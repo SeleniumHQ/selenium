@@ -36,9 +36,8 @@ goog.require('goog.fx.TransitionBase');
  * Constructor for AnimationQueue object.
  *
  * @constructor
- * @extends {goog.fx.TransitionBase}
  * @struct
- * @suppress {checkStructDictInheritance}
+ * @extends {goog.fx.TransitionBase}
  */
 goog.fx.AnimationQueue = function() {
   goog.fx.AnimationQueue.base(this, 'constructor');
@@ -112,8 +111,8 @@ goog.fx.AnimationQueue.prototype.disposeInternal = function() {
 /**
  * Constructor for AnimationParallelQueue object.
  * @constructor
- * @extends {goog.fx.AnimationQueue}
  * @struct
+ * @extends {goog.fx.AnimationQueue}
  */
 goog.fx.AnimationParallelQueue = function() {
   goog.fx.AnimationParallelQueue.base(this, 'constructor');
@@ -210,8 +209,8 @@ goog.fx.AnimationParallelQueue.prototype.onAnimationFinish = function(e) {
 /**
  * Constructor for AnimationSerialQueue object.
  * @constructor
- * @extends {goog.fx.AnimationQueue}
  * @struct
+ * @extends {goog.fx.AnimationQueue}
  */
 goog.fx.AnimationSerialQueue = function() {
   goog.fx.AnimationSerialQueue.base(this, 'constructor');

@@ -151,9 +151,9 @@ goog.i18n.DateTimeFormat.TOKENS_ = [
   //quote string
   /^\'(?:[^\']|\'\')*\'/,
   // pattern chars
-  /^(?:G+|y+|M+|k+|S+|E+|a+|h+|K+|H+|c+|L+|Q+|d+|m+|s+|v+|w+|z+|Z+)/,
+  /^(?:G+|y+|M+|k+|S+|E+|a+|h+|K+|H+|c+|L+|Q+|d+|m+|s+|v+|V+|w+|z+|Z+)/,
   // and all the other chars
-  /^[^\'GyMkSEahKHcLQdmsvwzZ]+/  // and all the other chars
+  /^[^\'GyMkSEahKHcLQdmsvVwzZ]+/  // and all the other chars
 ];
 
 
@@ -175,6 +175,10 @@ goog.i18n.DateTimeFormat.PartTypes_ = {
  * @private
  */
 goog.i18n.DateTimeFormat.prototype.applyPattern_ = function(pattern) {
+  if (goog.i18n.DateTimeFormat.removeRlmInPatterns_) {
+    // Remove RLM unicode control character from pattern.
+    pattern = pattern.replace(/\u200f/g, '');
+  }
   // lex the pattern, once for all uses
   while (pattern) {
     for (var i = 0; i < goog.i18n.DateTimeFormat.TOKENS_.length; ++i) {
@@ -308,6 +312,58 @@ goog.i18n.DateTimeFormat.prototype.localizeNumbers_ = function(input) {
 
 
 /**
+ * If the usage of Ascii digits should be enforced regardless of locale.
+ * @type {boolean}
+ * @private
+ */
+goog.i18n.DateTimeFormat.enforceAsciiDigits_ = false;
+
+
+/**
+ * If RLM unicode characters should be removed from date/time patterns (useful
+ * when enforcing ASCII digits for Arabic). See {@code #setEnforceAsciiDigits}.
+ * @type {boolean}
+ * @private
+ */
+goog.i18n.DateTimeFormat.removeRlmInPatterns_ = false;
+
+
+/**
+ * Sets if the usage of Ascii digits in formatting should be enforced in
+ * formatted date/time even for locales where native digits are indicated.
+ * Also sets whether to remove RLM unicode control characters when using
+ * standard enumerated patterns (they exist e.g. in standard d/M/y for Arabic).
+ * Production code should call this once before any {@code DateTimeFormat}
+ * object is instantiated.
+ * Caveats:
+ *    * Enforcing ASCII digits affects all future formatting by new or existing
+ * {@code DateTimeFormat} objects.
+ *    * Removal of RLM characters only applies to {@code DateTimeFormat} objects
+ * instantiated after this call.
+ * @param {boolean} enforceAsciiDigits Whether Ascii digits should be enforced.
+ */
+goog.i18n.DateTimeFormat.setEnforceAsciiDigits = function(
+    enforceAsciiDigits) {
+  goog.i18n.DateTimeFormat.enforceAsciiDigits_ = enforceAsciiDigits;
+
+  // Also setting removal of RLM chracters when forcing ASCII digits since it's
+  // the right thing to do for Arabic standard patterns. One could add an
+  // optional argument here or to the {@code DateTimeFormat} constructor to
+  // enable an alternative behavior.
+  goog.i18n.DateTimeFormat.removeRlmInPatterns_ = enforceAsciiDigits;
+};
+
+
+/**
+ * @return {boolean} Whether enforcing ASCII digits for all locales. See
+ *     {@code #setEnforceAsciiDigits} for more details.
+ */
+goog.i18n.DateTimeFormat.isEnforceAsciiDigits = function() {
+  return goog.i18n.DateTimeFormat.enforceAsciiDigits_;
+};
+
+
+/**
  * Localizes a string potentially containing numbers, replacing ASCII digits
  * with native digits if specified so by the locale. Leaves other characters.
  * @param {number|string} input the string to be localized, using ASCII digits.
@@ -319,7 +375,8 @@ goog.i18n.DateTimeFormat.localizeNumbers =
     function(input, opt_dateTimeSymbols) {
   input = String(input);
   var dateTimeSymbols = opt_dateTimeSymbols || goog.i18n.DateTimeSymbols;
-  if (dateTimeSymbols.ZERODIGIT === undefined) {
+  if (dateTimeSymbols.ZERODIGIT === undefined ||
+      goog.i18n.DateTimeFormat.enforceAsciiDigits_) {
     return input;
   }
 
@@ -730,6 +787,24 @@ goog.i18n.DateTimeFormat.prototype.formatTimeZoneId_ =
 
 
 /**
+ * Generate localized, location dependent time zone id
+ * @param {number} count Number of time pattern char repeats, it controls
+ *     how a field should be formatted.
+ * @param {!goog.date.DateLike} date Whose value being evaluated.
+ * @param {goog.i18n.TimeZone=} opt_timeZone This holds current time zone info.
+ * @return {string} GMT timeZone string.
+ * @private
+ */
+goog.i18n.DateTimeFormat.prototype.formatTimeZoneLocationId_ =
+    function(count, date, opt_timeZone) {
+  opt_timeZone = opt_timeZone ||
+      goog.i18n.TimeZone.createTimeZone(date.getTimezoneOffset());
+  return count <= 2 ? opt_timeZone.getTimeZoneId() :
+             opt_timeZone.getGenericLocation(date);
+};
+
+
+/**
  * Formatting one date field.
  * @param {string} patternStr The pattern string for the field being formatted.
  * @param {!goog.date.DateLike} date represents the real date to be formatted.
@@ -762,6 +837,7 @@ goog.i18n.DateTimeFormat.prototype.formatField_ =
     case 'm': return this.formatMinutes_(count, dateForTime);
     case 's': return this.formatSeconds_(count, dateForTime);
     case 'v': return this.formatTimeZoneId_(date, opt_timeZone);
+    case 'V': return this.formatTimeZoneLocationId_(count, date, opt_timeZone);
     case 'w': return this.formatWeekOfYear_(count, dateForTime);
     case 'z': return this.formatTimeZone_(count, date, opt_timeZone);
     case 'Z': return this.formatTimeZoneRFC_(count, date, opt_timeZone);

@@ -17,7 +17,7 @@
  * @fileoverview A class representing a set of test functions that use
  * asynchronous functions that cannot be meaningfully mocked.
  *
- * To create a Google-compatable JsUnit test using this test case, put the
+ * To create a Google-compatible JsUnit test using this test case, put the
  * following snippet in your test:
  *
  *   var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
@@ -116,7 +116,7 @@ goog.require('goog.testing.asserts');
 
 
 /**
- * A test case that is capable of running tests the contain asynchronous logic.
+ * A test case that is capable of running tests that contain asynchronous logic.
  * @param {string=} opt_name A descriptive name for the test case.
  * @extends {goog.testing.TestCase}
  * @constructor
@@ -248,7 +248,7 @@ goog.testing.AsyncTestCase.prototype.curStepName_ = '';
  * @type {Function|undefined}
  * @private
  */
-goog.testing.AsyncTestCase.prototype.nextStepFunc;
+goog.testing.AsyncTestCase.prototype.nextStepFunc_;
 
 
 /**

@@ -546,7 +546,7 @@ goog.ui.Component.prototype.getRequiredElementByClass = function(className) {
  * this method is called.
  * @return {!goog.events.EventHandler<T>} Event handler for this component.
  * @protected
- * @this T
+ * @this {T}
  * @template T
  */
 goog.ui.Component.prototype.getHandler = function() {
@@ -1103,7 +1103,7 @@ goog.ui.Component.prototype.isRightToLeft = function() {
     this.rightToLeft_ = goog.style.isRightToLeft(this.inDocument_ ?
         this.element_ : this.dom_.getDocument().body);
   }
-  return /** @type {boolean} */(this.rightToLeft_);
+  return this.rightToLeft_;
 };
 
 

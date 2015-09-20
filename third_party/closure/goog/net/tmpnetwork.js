@@ -35,6 +35,15 @@ goog.net.tmpnetwork.GOOGLECOM_TIMEOUT = 10000;
 
 
 /**
+ * @define {string} url to use to test for internet connectivity.
+ * Use protocol-relative URLs to avoid insecure content warnings in IE.
+ */
+goog.define(
+    'goog.net.tmpnetwork.TEST_URL',
+    '//www.google.com/images/cleardot.gif');
+
+
+/**
  * Pings the network to check if an error is a server error or user's network
  * error.
  *
@@ -50,7 +59,7 @@ goog.net.tmpnetwork.testGoogleCom = function(callback, opt_imageUri) {
   // by browser cache.
   var uri = opt_imageUri;
   if (!uri) {
-    uri = new goog.Uri('//www.google.com/images/cleardot.gif');
+    uri = new goog.Uri(goog.net.tmpnetwork.TEST_URL);
     uri.makeUnique();
   }
   goog.net.tmpnetwork.testLoadImage(uri.toString(),

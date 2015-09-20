@@ -26,7 +26,7 @@ goog.require('goog.testing.TestCase');
  */
 goog.testing.testSuite = function(obj) {
   var testCase = goog.labs.testing.Environment.getTestCaseIfActive() ||
-      new goog.testing.TestCase();
+      new goog.testing.TestCase(document.title);
   testCase.setTestObj(obj);
   goog.testing.TestCase.initializeTestRunner(testCase);
 };

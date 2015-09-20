@@ -137,6 +137,7 @@ goog.provide('goog.net.IframeIo.IncrementalDataEvent');
 
 goog.require('goog.Timer');
 goog.require('goog.Uri');
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.dom');
@@ -356,9 +357,14 @@ goog.net.IframeIo.getForm_ = function() {
 goog.net.IframeIo.addFormInputs_ = function(form, data) {
   var helper = goog.dom.getDomHelper(form);
   goog.structs.forEach(data, function(value, key) {
-    var inp = helper.createDom(goog.dom.TagName.INPUT,
-        {'type': goog.dom.InputType.HIDDEN, 'name': key, 'value': value});
-    form.appendChild(inp);
+    if (!goog.isArray(value)) {
+      value = [value];
+    }
+    goog.array.forEach(value, function(value) {
+      var inp = helper.createDom(goog.dom.TagName.INPUT,
+          {'type': goog.dom.InputType.HIDDEN, 'name': key, 'value': value});
+      form.appendChild(inp);
+    });
   });
 };
 

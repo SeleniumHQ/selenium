@@ -50,7 +50,7 @@ goog.i18n.currencyCodeMap = {
   'CRC': '\u20a1',
   'CUP': '$',
   'CZK': 'K\u010d',
-  'DKK': 'kr',
+  'DKK': 'kr.',
   'DOP': '$',
   'EGP': '\u00a3',
   'EUR': '\u20ac',

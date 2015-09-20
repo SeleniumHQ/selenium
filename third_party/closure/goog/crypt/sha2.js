@@ -245,7 +245,7 @@ goog.crypt.Sha2.prototype.update = function(message, opt_length) {
         inChunk = 0;
       }
     }
-  } else if (goog.isArray(message)) {
+  } else if (goog.isArrayLike(message)) {
     while (n < opt_length) {
       var b = message[n++];
       if (!('number' == typeof b && 0 <= b && 255 >= b && b == (b | 0))) {

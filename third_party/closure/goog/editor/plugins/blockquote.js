@@ -121,7 +121,7 @@ goog.editor.plugins.Blockquote.prototype.isSilentCommand = goog.functions.TRUE;
  */
 goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
     function(node) {
-  if (node.tagName != goog.dom.TagName.BLOCKQUOTE) {
+  if (/** @type {!Element} */ (node).tagName != goog.dom.TagName.BLOCKQUOTE) {
     return false;
   }
 
@@ -142,7 +142,7 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
  */
 goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
     function(node) {
-  return node.tagName == goog.dom.TagName.BLOCKQUOTE &&
+  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
       goog.dom.classlist.contains(/** @type {!Element} */ (node),
           this.className_);
 };
@@ -156,7 +156,7 @@ goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
  */
 goog.editor.plugins.Blockquote.prototype.isUnsetupBlockquote =
     function(node) {
-  return node.tagName == goog.dom.TagName.BLOCKQUOTE &&
+  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
       !this.isSetupBlockquote(node);
 };
 
@@ -383,7 +383,8 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ =
   // dummy span that we create (splitNode) occurs before the BR and we split
   // on that.
   if (splitNode.nextSibling &&
-      splitNode.nextSibling.tagName == goog.dom.TagName.BR) {
+      /** @type {!Element} */ (splitNode.nextSibling).tagName ==
+      goog.dom.TagName.BR) {
     splitNode = splitNode.nextSibling;
   }
   var secondHalf = goog.editor.node.splitDomTreeAt(splitNode, clone, quoteNode);

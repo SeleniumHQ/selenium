@@ -57,6 +57,10 @@ goog.soy.data.SanitizedContentKind = {
   /** A properly encoded portion of a URI. */
   URI: goog.DEBUG ? {sanitizedContentUri: true} : {},
 
+  /** A resource URI not under attacker control. */
+  TRUSTED_RESOURCE_URI:
+      goog.DEBUG ? {sanitizedContentTrustedResourceUri: true} : {},
+
   /**
    * Repeated attribute names and values. For example,
    * {@code dir="ltr" foo="bar" onclick="trustedFunction()" checked}.

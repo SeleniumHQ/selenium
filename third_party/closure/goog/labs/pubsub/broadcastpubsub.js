@@ -62,7 +62,6 @@ goog.require('goog.userAgent');
  *
  *
  * @constructor @struct @extends {goog.Disposable}
- * @suppress {checkStructDictInheritance}
  */
 goog.labs.pubsub.BroadcastPubSub = function() {
   goog.labs.pubsub.BroadcastPubSub.base(this, 'constructor');

@@ -50,6 +50,7 @@ goog.require('goog.fx.Animation');
  *    after a single loop of the images in the sprite.
  *
  * @constructor
+ * @struct
  * @extends {goog.fx.Animation}
  * @final
  */

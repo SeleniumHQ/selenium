@@ -214,7 +214,7 @@ goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
 
   if (typeof object == 'object') {
     if (goog.isArray(object)) {
-      this.serializeArray(/** @type {!Array<?>} */ (object), sb);
+      this.serializeArray(object, sb);
       return;
     } else if (object instanceof String ||
                object instanceof Number ||
@@ -229,17 +229,16 @@ goog.json.Serializer.prototype.serializeInternal = function(object, sb) {
 
   switch (typeof object) {
     case 'string':
-      this.serializeString_(/** @type {string} */ (object), sb);
+      this.serializeString_(object, sb);
       break;
     case 'number':
-      this.serializeNumber_(/** @type {number} */ (object), sb);
+      this.serializeNumber_(object, sb);
       break;
     case 'boolean':
       sb.push(object);
       break;
     case 'function':
-      // Skip functions.
-      // TODO(user) Should we return something here?
+      sb.push('null');
       break;
     default:
       throw Error('Unknown type: ' + typeof object);
@@ -347,7 +346,6 @@ goog.json.Serializer.prototype.serializeObject_ = function(obj, sb) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       var value = obj[key];
       // Skip functions.
-      // TODO(ptucker) Should we return something for function properties?
       if (typeof value != 'function') {
         sb.push(sep);
         this.serializeString_(key, sb);

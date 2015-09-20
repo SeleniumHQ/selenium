@@ -28,8 +28,8 @@ goog.require('goog.structs.PriorityQueue');
 
 
 /**
- * A generic pool class. If max is greater than min, an error is thrown.
- * @param {number=} opt_minCount Min. number of objects (Default: 1).
+ * A generic pool class. If min is greater than max, an error is thrown.
+ * @param {number=} opt_minCount Min. number of objects (Default: 0).
  * @param {number=} opt_maxCount Max. number of objects (Default: 10).
  * @constructor
  * @extends {goog.structs.Pool<VALUE>}

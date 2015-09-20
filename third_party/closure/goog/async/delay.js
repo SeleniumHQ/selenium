@@ -44,7 +44,6 @@ goog.require('goog.Timer');
  * @template THIS
  * @constructor
  * @struct
- * @suppress {checkStructDictInheritance}
  * @extends {goog.Disposable}
  * @final
  */
@@ -126,6 +125,19 @@ goog.async.Delay.prototype.start = function(opt_interval) {
   this.id_ = goog.Timer.callOnce(
       this.callback_,
       goog.isDef(opt_interval) ? opt_interval : this.interval_);
+};
+
+
+/**
+ * Starts the delay timer if it's not already active.
+ * @param {number=} opt_interval If specified and the timer is not already
+ *     active, overrides the object's default interval with this one (in
+ *     milliseconds).
+ */
+goog.async.Delay.prototype.startIfNotActive = function(opt_interval) {
+  if (!this.isActive()) {
+    this.start(opt_interval);
+  }
 };
 
 

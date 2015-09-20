@@ -178,7 +178,9 @@ goog.ui.DimensionPicker.prototype.disposeInternal = function() {
  */
 goog.ui.DimensionPicker.prototype.handleMouseMove = function(e) {
   var highlightedSizeX = this.getRenderer().getGridOffsetX(this,
-      this.isRightToLeft() ? e.target.offsetWidth - e.offsetX : e.offsetX);
+      this.isRightToLeft() ?
+          /** @type {!HTMLElement} */ (e.target).offsetWidth - e.offsetX :
+          e.offsetX);
   var highlightedSizeY = this.getRenderer().getGridOffsetY(this, e.offsetY);
 
   this.setValue(highlightedSizeX, highlightedSizeY);

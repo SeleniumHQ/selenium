@@ -79,8 +79,7 @@ goog.testing.MockClock = function(opt_autoInstall) {
    * turn comes up.  The keys are the timeout keys that are cancelled, each
    * mapping to true.
    *
-   * @type {Object}
-   * @private
+   * @private {Object<number, boolean>}
    */
   this.deletedKeys_ = {};
 
@@ -123,15 +122,6 @@ goog.testing.MockClock.prototype.timeoutsMade_ = 0;
  * @private
  */
 goog.testing.MockClock.prototype.replacer_ = null;
-
-
-/**
- * Map of deleted keys.  These keys represents keys that were deleted in a
- * clearInterval, timeoutid -> object.
- * @type {Object}
- * @private
- */
-goog.testing.MockClock.prototype.deletedKeys_ = null;
 
 
 /**

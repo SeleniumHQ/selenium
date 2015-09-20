@@ -349,7 +349,7 @@ goog.dom.AbstractRange.prototype.getText = goog.abstractMethod;
  * The HTML fragment may not be valid HTML, for instance if the user selects
  * from a to b inclusively in the following html:
  *
- * &gt;div&lt;a&gt;/div&lt;b
+ * &lt;div&gt;a&lt;/div&gt;b
  *
  * This method will return
  *

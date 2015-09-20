@@ -155,12 +155,10 @@ goog.Promise = function(resolver, opt_context) {
     this.currentStep_ = 0;
   }
 
-  if (resolver == goog.Promise.RESOLVE_FAST_PATH_) {
-    // If the special sentinel resolver value is passed (from
-    // goog.Promise.resolve) we short cut to immediately resolve the promise
-    // using the value passed as opt_context. Don't try this at home.
-    this.resolve_(goog.Promise.State_.FULFILLED, opt_context);
-  } else {
+  // As an optimization, we can skip this if resolver is goog.nullFunction.
+  // This value is passed internally when creating a promise which will be
+  // resolved through a more optimized path.
+  if (resolver != goog.nullFunction) {
     try {
       var self = this;
       resolver.call(
@@ -317,22 +315,25 @@ goog.Promise.returnEntry_ = function(entry) {
 };
 
 
-/**
- * If this passed as the first argument to the {@link goog.Promise} constructor
- * the the opt_context is (against its primary use) used to immediately resolve
- * the promise. This is used from  {@link goog.Promise.resolve} as an
- * optimization to avoid allocating 3 closures that are never really needed.
- * @private @const {!Function}
- */
-goog.Promise.RESOLVE_FAST_PATH_ = function() {};
+// NOTE: this is the same template expression as is used for
+// goog.IThenable.prototype.then
 
 
 /**
- * @param {(TYPE|goog.Thenable<TYPE>|Thenable)=} opt_value
- * @return {!goog.Promise<TYPE>} A new Promise that is immediately resolved
+ * @param {VALUE=} opt_value
+ * @return {RESULT} A new Promise that is immediately resolved
  *     with the given value. If the input value is already a goog.Promise, it
  *     will be returned immediately without creating a new instance.
- * @template TYPE
+ * @template VALUE
+ * @template RESULT := type('goog.Promise',
+ *     cond(isUnknown(VALUE), unknown(),
+ *       mapunion(VALUE, (V) =>
+ *         cond(isTemplatized(V) && sub(rawTypeOf(V), 'IThenable'),
+ *           templateTypeOf(V, 0),
+ *           cond(sub(V, 'Thenable'),
+ *              unknown(),
+ *              V)))))
+ * =:
  */
 goog.Promise.resolve = function(opt_value) {
   if (opt_value instanceof goog.Promise) {
@@ -341,9 +342,11 @@ goog.Promise.resolve = function(opt_value) {
     return opt_value;
   }
 
-  // Passes the value as the context, which is a special fast pass when
-  // goog.Promise.RESOLVE_FAST_PATH_ is passed as the first argument.
-  return new goog.Promise(goog.Promise.RESOLVE_FAST_PATH_, opt_value);
+  // Passing goog.nullFunction will cause the constructor to take an optimized
+  // path that skips calling the resolver function.
+  var promise = new goog.Promise(goog.nullFunction);
+  promise.resolve_(goog.Promise.State_.FULFILLED, opt_value);
+  return promise;
 };
 
 
@@ -360,7 +363,29 @@ goog.Promise.reject = function(opt_reason) {
 
 
 /**
- * @param {!Array<!(goog.Thenable<TYPE>|Thenable)>} promises
+ * This is identical to
+ * {@code goog.Promise.resolve(value).then(onFulfilled, onRejected)}, but it
+ * avoids creating an unnecessary wrapper Promise when {@code value} is already
+ * thenable.
+ *
+ * @param {?(goog.Thenable<TYPE>|Thenable|TYPE)} value
+ * @param {function(TYPE): ?} onFulfilled
+ * @param {function(*): *} onRejected
+ * @template TYPE
+ * @private
+ */
+goog.Promise.resolveThen_ = function(value, onFulfilled, onRejected) {
+  var isThenable = goog.Promise.maybeThen_(
+      value, onFulfilled, onRejected, null);
+  if (!isThenable) {
+    goog.async.run(goog.partial(onFulfilled, value));
+  }
+};
+
+
+/**
+ * @param {!Array<?(goog.Promise<TYPE>|goog.Thenable<TYPE>|Thenable|*)>}
+ *     promises
  * @return {!goog.Promise<TYPE>} A Promise that receives the result of the
  *     first Promise (or Promise-like) input to settle immediately after it
  *     settles.
@@ -371,15 +396,17 @@ goog.Promise.race = function(promises) {
     if (!promises.length) {
       resolve(undefined);
     }
-    for (var i = 0, promise; promise = promises[i]; i++) {
-      goog.Promise.maybeThenVoid_(promise, resolve, reject);
+    for (var i = 0, promise; i < promises.length; i++) {
+      promise = promises[i];
+      goog.Promise.resolveThen_(promise, resolve, reject);
     }
   });
 };
 
 
 /**
- * @param {!Array<!(goog.Thenable<TYPE>|Thenable)>} promises
+ * @param {!Array<?(goog.Promise<TYPE>|goog.Thenable<TYPE>|Thenable|*)>}
+ *     promises
  * @return {!goog.Promise<!Array<TYPE>>} A Promise that receives a list of
  *     every fulfilled value once every input Promise (or Promise-like) is
  *     successfully fulfilled, or is rejected with the first rejection reason
@@ -408,8 +435,9 @@ goog.Promise.all = function(promises) {
       reject(reason);
     };
 
-    for (var i = 0, promise; promise = promises[i]; i++) {
-      goog.Promise.maybeThenVoid_(
+    for (var i = 0, promise; i < promises.length; i++) {
+      promise = promises[i];
+      goog.Promise.resolveThen_(
           promise, goog.partial(onFulfill, i), onReject);
     }
   });
@@ -417,7 +445,8 @@ goog.Promise.all = function(promises) {
 
 
 /**
- * @param {!Array<!(goog.Thenable<TYPE>|Thenable)>} promises
+ * @param {!Array<?(goog.Promise<TYPE>|goog.Thenable<TYPE>|Thenable|*)>}
+ *     promises
  * @return {!goog.Promise<!Array<{
  *     fulfilled: boolean,
  *     value: (TYPE|undefined),
@@ -450,8 +479,9 @@ goog.Promise.allSettled = function(promises) {
       }
     };
 
-    for (var i = 0, promise; promise = promises[i]; i++) {
-      goog.Promise.maybeThenVoid_(promise,
+    for (var i = 0, promise; i < promises.length; i++) {
+      promise = promises[i];
+      goog.Promise.resolveThen_(promise,
           goog.partial(onSettled, i, true /* fulfilled */),
           goog.partial(onSettled, i, false /* fulfilled */));
     }
@@ -460,7 +490,8 @@ goog.Promise.allSettled = function(promises) {
 
 
 /**
- * @param {!Array<!(goog.Thenable<TYPE>|Thenable)>} promises
+ * @param {!Array<?(goog.Promise<TYPE>|goog.Thenable<TYPE>|Thenable|*)>}
+ *     promises
  * @return {!goog.Promise<TYPE>} A Promise that receives the value of the first
  *     input to be fulfilled, or is rejected with a list of every rejection
  *     reason if all inputs are rejected.
@@ -488,8 +519,9 @@ goog.Promise.firstFulfilled = function(promises) {
       }
     };
 
-    for (var i = 0, promise; promise = promises[i]; i++) {
-      goog.Promise.maybeThenVoid_(
+    for (var i = 0, promise; i < promises.length; i++) {
+      promise = promises[i];
+      goog.Promise.resolveThen_(
           promise, onFulfill, goog.partial(onReject, i));
     }
   });
@@ -596,26 +628,6 @@ goog.Promise.prototype.thenVoid = function(
       opt_onFulfilled || goog.nullFunction,
       opt_onRejected || null,
       opt_context));
-};
-
-
-/**
- * Calls "thenVoid" if possible to avoid allocating memory. Otherwise calls
- * "then".
- * @param {(goog.Thenable<TYPE>|Thenable)} promise
- * @param {function(this:THIS, TYPE): ?} onFulfilled
- * @param {function(this:THIS, *): *} onRejected
- * @param {THIS=} opt_context
- * @template THIS,TYPE
- * @private
- */
-goog.Promise.maybeThenVoid_ = function(
-    promise, onFulfilled, onRejected, opt_context) {
-  if (promise instanceof goog.Promise) {
-    promise.thenVoid(onFulfilled, onRejected, opt_context);
-  } else {
-    promise.then(onFulfilled, onRejected, opt_context);
-  }
 };
 
 
@@ -901,29 +913,18 @@ goog.Promise.prototype.resolve_ = function(state, x) {
   if (this == x) {
     state = goog.Promise.State_.REJECTED;
     x = new TypeError('Promise cannot resolve to itself');
+  }
 
-  } else if (goog.Thenable.isImplementedBy(x)) {
-    x = /** @type {!goog.Thenable} */ (x);
-    this.state_ = goog.Promise.State_.BLOCKED;
-    goog.Promise.maybeThenVoid_(
-        x, this.unblockAndFulfill_, this.unblockAndReject_, this);
+  this.state_ = goog.Promise.State_.BLOCKED;
+  var isThenable = goog.Promise.maybeThen_(
+      x, this.unblockAndFulfill_, this.unblockAndReject_, this);
+  if (isThenable) {
     return;
-  } else if (goog.isObject(x)) {
-    try {
-      var then = x['then'];
-      if (goog.isFunction(then)) {
-        this.tryThen_(x, then);
-        return;
-      }
-    } catch (e) {
-      state = goog.Promise.State_.REJECTED;
-      x = e;
-    }
   }
 
   this.result_ = x;
   this.state_ = state;
-  // Since we can no longer be cancelled, remove link to parent, so that the
+  // Since we can no longer be canceled, remove link to parent, so that the
   // child promise does not keep the parent promise alive.
   this.parent_ = null;
   this.scheduleCallbacks_();
@@ -932,6 +933,43 @@ goog.Promise.prototype.resolve_ = function(state, x) {
       !(x instanceof goog.Promise.CancellationError)) {
     goog.Promise.addUnhandledRejection_(this, x);
   }
+};
+
+
+/**
+ * Invokes the "then" method of an input value if that value is a Thenable. This
+ * is a no-op if the value is not thenable.
+ *
+ * @param {*} value A potentially thenable value.
+ * @param {!Function} onFulfilled
+ * @param {!Function} onRejected
+ * @param {*} context
+ * @return {boolean} Whether the input value was thenable.
+ * @private
+ */
+goog.Promise.maybeThen_ = function(value, onFulfilled, onRejected, context) {
+  if (value instanceof goog.Promise) {
+    value.thenVoid(onFulfilled, onRejected, context);
+    return true;
+  } else if (goog.Thenable.isImplementedBy(value)) {
+    value = /** @type {!goog.Thenable} */ (value);
+    value.then(onFulfilled, onRejected, context);
+    return true;
+  } else if (goog.isObject(value)) {
+    try {
+      var then = value['then'];
+      if (goog.isFunction(then)) {
+        goog.Promise.tryThen_(
+            value, then, onFulfilled, onRejected, context);
+        return true;
+      }
+    } catch (e) {
+      onRejected.call(context, e);
+      return true;
+    }
+  }
+
+  return false;
 };
 
 
@@ -947,24 +985,26 @@ goog.Promise.prototype.resolve_ = function(state, x) {
  * @param {Thenable} thenable An object with a {@code then} method that may be
  *     compatible with the Promise/A+ specification.
  * @param {!Function} then The {@code then} method of the Thenable object.
+ * @param {!Function} onFulfilled
+ * @param {!Function} onRejected
+ * @param {*} context
  * @private
  */
-goog.Promise.prototype.tryThen_ = function(thenable, then) {
-  this.state_ = goog.Promise.State_.BLOCKED;
-  var promise = this;
-  var called = false;
+goog.Promise.tryThen_ = function(
+    thenable, then, onFulfilled, onRejected, context) {
 
+  var called = false;
   var resolve = function(value) {
     if (!called) {
       called = true;
-      promise.unblockAndFulfill_(value);
+      onFulfilled.call(context, value);
     }
   };
 
   var reject = function(reason) {
     if (!called) {
       called = true;
-      promise.unblockAndReject_(reason);
+      onRejected.call(context, reason);
     }
   };
 

@@ -177,7 +177,7 @@ goog.pubsub.PubSub.prototype.unsubscribe = function(topic, fn, opt_context) {
     });
     // Zero is not a valid key.
     if (key) {
-      return this.unsubscribeByKey(/** @type {number} */ (key));
+      return this.unsubscribeByKey(key);
     }
   }
 
@@ -243,22 +243,26 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
       args[i - 1] = arguments[i];
     }
 
-    // For each key in the list of subscription keys for the topic, apply the
-    // function to the arguments in the appropriate context.  The length of the
-    // array mush be fixed during the iteration, since subscribers may add new
-    // subscribers during publishing.
-    for (var i = 0, len = keys.length; i < len; i++) {
-      var key = keys[i];
-      this.subscriptions_[key + 1].apply(this.subscriptions_[key + 2], args);
-    }
+    try {
+      // For each key in the list of subscription keys for the topic, apply the
+      // function to the arguments in the appropriate context.  The length of
+      // the array must be fixed during the iteration, since subscribers may add
+      // new subscribers during publishing.
+      for (var i = 0, len = keys.length; i < len; i++) {
+        var key = keys[i];
+        this.subscriptions_[key + 1].apply(this.subscriptions_[key + 2], args);
+      }
+    } finally {
+      // Always unlock subscriptions, even if a subscribed method throws an
+      // uncaught exception. This makes it possible for users to catch
+      // exceptions themselves and unsubscribe remaining subscriptions.
+      this.publishDepth_--;
 
-    // Unlock subscriptions.
-    this.publishDepth_--;
-
-    if (this.pendingKeys_.length > 0 && this.publishDepth_ == 0) {
-      var pendingKey;
-      while ((pendingKey = this.pendingKeys_.pop())) {
-        this.unsubscribeByKey(pendingKey);
+      if (this.pendingKeys_.length > 0 && this.publishDepth_ == 0) {
+        var pendingKey;
+        while ((pendingKey = this.pendingKeys_.pop())) {
+          this.unsubscribeByKey(pendingKey);
+        }
       }
     }
 

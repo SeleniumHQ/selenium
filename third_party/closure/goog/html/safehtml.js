@@ -16,7 +16,7 @@
 /**
  * @fileoverview The SafeHtml type and its builders.
  *
- * TODO(user): Link to document stating type contract.
+ * TODO(xtof): Link to document stating type contract.
  */
 
 goog.provide('goog.html.SafeHtml');
@@ -351,7 +351,8 @@ goog.html.SafeHtml.AttributeValue_;
  * - For attributes which contain style (style), a goog.html.SafeStyle or a
  *   goog.html.SafeStyle.PropertyMap is required.
  * - For attributes which are interpreted as URLs (e.g. src, href) a
- *   goog.html.SafeUrl or goog.string.Const is required.
+ *   goog.html.SafeUrl, goog.string.Const or string is required. If a string
+ *   is passed, it will be sanitized with SafeUrl.sanitize().
  * - For tags which can load code, more specific goog.html.SafeHtml.create*()
  *   functions must be used. Tags which can load code and are not supported by
  *   this function are embed, iframe, link, object, script, style, and template.
@@ -478,12 +479,12 @@ goog.html.SafeHtml.getAttrNameAndValue_ = function(tagName, name, value) {
       value = goog.html.TrustedResourceUrl.unwrap(value);
     } else if (value instanceof goog.html.SafeUrl) {
       value = goog.html.SafeUrl.unwrap(value);
+    } else if (goog.isString(value)) {
+      value = goog.html.SafeUrl.sanitize(value).getTypedStringValue();
     } else {
-      // TODO(user): Allow strings and sanitize them automatically,
-      // so that it's consistent with accepting a map directly for "style".
       throw Error('Attribute "' + name + '" on tag "' + tagName +
-          '" requires goog.html.SafeUrl or goog.string.Const value, "' +
-          value + '" given.');
+          '" requires goog.html.SafeUrl, goog.string.Const, or string,' +
+          ' value "' + value + '" given.');
     }
   }
 
@@ -595,7 +596,7 @@ goog.html.SafeHtml.concatWithDir = function(dir, var_args) {
 /**
  * Type marker for the SafeHtml type, used to implement additional run-time
  * type checking.
- * @const
+ * @const {!Object}
  * @private
  */
 goog.html.SafeHtml.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};

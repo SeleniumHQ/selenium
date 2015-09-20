@@ -687,7 +687,8 @@ goog.testing.MultiTestRunner.prototype.log = function(msg) {
 
   // Autoscroll if we're near the bottom.
   var top = this.logEl_.scrollTop;
-  var height = this.logEl_.scrollHeight - this.logEl_.offsetHeight;
+  var height = /** @type {!HTMLElement} */ (this.logEl_).scrollHeight -
+      /** @type {!HTMLElement} */ (this.logEl_).offsetHeight;
   if (top == 0 || top > height - 50) {
     this.logEl_.scrollTop = height;
   }

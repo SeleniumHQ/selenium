@@ -41,6 +41,7 @@ goog.require('goog.fx.anim.Animated');  // Unreferenced: interface
  * @param {number} duration Length of animation in milliseconds.
  * @param {Function=} opt_acc Acceleration function, returns 0-1 for inputs 0-1.
  * @constructor
+ * @struct
  * @implements {goog.fx.anim.Animated}
  * @implements {goog.fx.Transition}
  * @extends {goog.fx.TransitionBase}
@@ -452,6 +453,7 @@ goog.fx.Animation.prototype.dispatchAnimationEvent = function(type) {
  * @param {string} type Event type.
  * @param {goog.fx.Animation} anim An animation object.
  * @constructor
+ * @struct
  * @extends {goog.events.Event}
  */
 goog.fx.AnimationEvent = function(type, anim) {

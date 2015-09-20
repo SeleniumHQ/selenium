@@ -285,9 +285,7 @@ goog.dom.TextRange.prototype.getStartOffset = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getStartPosition = function() {
-  return this.isReversed() ?
-      this.getBrowserRangeWrapper_().getEndPosition() :
-      this.getBrowserRangeWrapper_().getStartPosition();
+  return this.getBrowserRangeWrapper_().getStartPosition();
 };
 
 
@@ -307,9 +305,7 @@ goog.dom.TextRange.prototype.getEndOffset = function() {
 
 /** @override */
 goog.dom.TextRange.prototype.getEndPosition = function() {
-  return this.isReversed() ?
-      this.getBrowserRangeWrapper_().getStartPosition() :
-      this.getBrowserRangeWrapper_().getEndPosition();
+  return this.getBrowserRangeWrapper_().getEndPosition();
 };
 
 
@@ -349,7 +345,7 @@ goog.dom.TextRange.prototype.containsRange = function(otherRange,
   } else if (otherRangeType == goog.dom.RangeType.CONTROL) {
     var elements = otherRange.getElements();
     var fn = opt_allowPartial ? goog.array.some : goog.array.every;
-    return fn(elements, function(el) {
+    return fn(elements, /** @this {!goog.dom.TextRange} */ function(el) {
       return this.containsNode(el, opt_allowPartial);
     }, this);
   }
@@ -438,7 +434,7 @@ goog.dom.TextRange.prototype.getPastableHtml = function() {
     html = '<table>' + html + '</table>';
   } else if (html.match(/^\s*<li\b/i)) {
     // Match html starting with an LI.
-    var container = this.getContainer();
+    var container = /** @type {!Element} */ (this.getContainer());
     var tagType = goog.dom.TagName.UL;
     while (container) {
       if (container.tagName == goog.dom.TagName.OL) {

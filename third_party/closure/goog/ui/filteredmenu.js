@@ -564,7 +564,8 @@ goog.ui.FilteredMenu.prototype.handleKeyEventInternal = function(e) {
 goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   goog.ui.FilteredMenu.superClass_.setHighlightedIndex.call(this, index);
   var contentEl = this.getContentElement();
-  var el = this.getHighlighted() ? this.getHighlighted().getElement() : null;
+  var el = /** @type {!HTMLElement} */ (
+      this.getHighlighted() ? this.getHighlighted().getElement() : null);
   if (this.filterInput_) {
     goog.a11y.aria.setActiveDescendant(this.filterInput_, el);
   }

@@ -147,8 +147,8 @@ goog.dom.annotate.annotateTermsInNode_ =
     }
   } else if (node.hasChildNodes() &&
              !goog.array.contains(goog.dom.annotate.NODES_TO_SKIP_,
-                 node.tagName)) {
-    var classes = node.className.split(/\s+/);
+                 /** @type {!Element} */ (node).tagName)) {
+    var classes = /** @type {!Element} */ (node).className.split(/\s+/);
     var skip = goog.array.some(classes, function(className) {
       return goog.array.contains(classesToSkip, className);
     });
@@ -312,6 +312,7 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
 
       // Quit if there are no more hits.
       if (posOfNextHit < 0) break;
+      goog.asserts.assertNumber(termIndexOfNextHit);
 
       // Remove the next hit from our hit list.
       termHits[termIndexOfNextHit].shift();

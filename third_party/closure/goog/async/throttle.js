@@ -38,7 +38,6 @@ goog.require('goog.Timer');
  * @param {T=} opt_handler Object in whose scope to call the listener.
  * @constructor
  * @struct
- * @suppress {checkStructDictInheritance}
  * @extends {goog.Disposable}
  * @final
  * @template T
