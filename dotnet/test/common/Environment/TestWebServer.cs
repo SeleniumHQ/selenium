@@ -82,14 +82,22 @@ namespace OpenQA.Selenium.Environment
 
             if (webserverProcess != null)
             {
-                webserverProcess.WaitForExit(10000);
-                if (!webserverProcess.HasExited)
+                try
                 {
-                    webserverProcess.Kill();
+                    webserverProcess.WaitForExit(10000);
+                    if (!webserverProcess.HasExited)
+                    {
+                        webserverProcess.Kill();
+                    }
                 }
-
-                webserverProcess.Dispose();
-                webserverProcess = null;
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    webserverProcess.Dispose();
+                    webserverProcess = null;
+                }
             }
         }
     }
