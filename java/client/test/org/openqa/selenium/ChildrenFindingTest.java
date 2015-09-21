@@ -150,6 +150,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
     WebElement child = element.findElement(By.linkText("hello world"));
+    List<WebElement> invalidChildren = element.findElements(By.linkText("HellO WorLD"));
+    assertEquals(0, invalidChildren.size());
     assertThat(child.getAttribute("name"), is("link1"));
   }
 
