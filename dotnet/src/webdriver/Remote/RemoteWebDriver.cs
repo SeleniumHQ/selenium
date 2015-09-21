@@ -24,6 +24,7 @@ using System.Globalization;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -200,8 +201,20 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
-                return commandResponse.Value.ToString();
+                string pageSource = string.Empty;
+                if (this.IsSpecificationCompliant)
+                {
+                    string script = "var source = document.documentElement.outerHTML; \n"
+                                    + "if (!source) { source = new XMLSerializer().serializeToString(document); }\n"
+                                    + "return source;";
+                    pageSource = this.ExecuteScript(script).ToString();
+                }
+                else
+                {
+                    Response commandResponse = this.Execute(DriverCommand.GetPageSource, null);
+                    pageSource = commandResponse.Value.ToString();
+                }
+                return pageSource;
             }
         }
 
@@ -289,6 +302,11 @@ namespace OpenQA.Selenium.Remote
             }
         }
         #endregion
+
+        internal bool IsSpecificationCompliant
+        {
+            get { return this.CommandExecutor.CommandInfoRepository.SpecificationLevel > 0; }
+        }
 
         #region Protected properties
         /// <summary>
@@ -452,6 +470,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementById(string id)
         {
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "#" + this.EscapeCssSelector(id));
+            }
+
             return this.FindElement("id", id);
         }
 
@@ -468,6 +491,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "#" + this.EscapeCssSelector(id));
+            }
+
             return this.FindElements("id", id);
         }
 
@@ -493,6 +521,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", "." + className);
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "." + this.EscapeCssSelector(className));
+            }
+
             return this.FindElement("class name", className);
         }
 
@@ -515,6 +548,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", "." + className);
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "." + this.EscapeCssSelector(className));
+            }
+
             return this.FindElements("class name", className);
         }
 
@@ -610,6 +648,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", "*[name=\"" + name + "\"]");
+            }
+
             return this.FindElement("name", name);
         }
 
@@ -632,6 +675,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", "*[name=\"" + name + "\"]");
+            }
+
             return this.FindElements("name", name);
         }
 
@@ -657,6 +705,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElement("css selector", tagName);
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElement("css selector", tagName);
+            }
+
             return this.FindElement("tag name", tagName);
         }
 
@@ -679,6 +732,11 @@ namespace OpenQA.Selenium.Remote
             // Implementation after spec reaches recommendation should be as
             // follows:
             // return this.FindElements("css selector", tagName);
+            if (this.IsSpecificationCompliant)
+            {
+                return this.FindElements("css selector", tagName);
+            }
+
             return this.FindElements("tag name", tagName);
         }
         #endregion
@@ -946,12 +1004,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
         protected IWebElement FindElement(string mechanism, string value)
         {
-            // TODO: Remove "using" once all remote-end implementations comply
-            // with the spec.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            parameters.Add("locator", mechanism);
             Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
             return this.GetElementFromResponse(commandResponse);
         }
@@ -964,12 +1019,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
         protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
         {
-            // TODO: Remove "using" once all remote-end implementations comply
-            // with the spec.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("using", mechanism);
             parameters.Add("value", value);
-            parameters.Add("locator", mechanism);
             Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
             return this.GetElementsFromResponse(commandResponse);
         }
@@ -1020,12 +1072,12 @@ namespace OpenQA.Selenium.Remote
             RemoteWebElement argAsElement = arg as RemoteWebElement;
             IEnumerable argAsEnumerable = arg as IEnumerable;
             IDictionary argAsDictionary = arg as IDictionary;
-            
+
             if (argAsElement == null && argAsWrapsElement != null)
             {
                 argAsElement = argAsWrapsElement.WrappedElement as RemoteWebElement;
             }
-            
+
             object converted = null;
 
             if (arg is string || arg is float || arg is double || arg is int || arg is long || arg is bool || arg == null)
@@ -1247,6 +1299,17 @@ namespace OpenQA.Selenium.Remote
             }
 
             return returnValue;
+        }
+
+        internal string EscapeCssSelector(string selector)
+        {
+            string escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            if (selector.Length > 0 && char.IsDigit(selector[0]))
+            {
+                escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1))).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
+            }
+
+            return escaped;
         }
         #endregion
     }

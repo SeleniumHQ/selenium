@@ -24,6 +24,11 @@ namespace OpenQA.Selenium.Remote
     public interface ICommandExecutor
     {
         /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        CommandInfoRepository CommandInfoRepository { get; }
+
+        /// <summary>
         /// Executes a command
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>

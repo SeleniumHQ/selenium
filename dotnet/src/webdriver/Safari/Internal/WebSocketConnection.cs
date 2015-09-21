@@ -221,6 +221,11 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="e">A <see cref="StandardHttpRequestReceivedEventArgs"/> that contains the event data.</param>
         protected void OnStandardHttpRequestReceived(StandardHttpRequestReceivedEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException("e", "Event arguments cannot be null");
+            }
+
             if (this.StandardHttpRequestReceived != null)
             {
                 // The event handler is to be fired, so set the Handled

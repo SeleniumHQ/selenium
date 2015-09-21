@@ -58,6 +58,11 @@ namespace OpenQA.Selenium.Remote
             this.internalExecutor = new HttpCommandExecutor(driverService.ServiceUrl, commandTimeout, enableKeepAlive);
         }
 
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.internalExecutor.CommandInfoRepository; }
+        }
+
         /// <summary>
         /// Executes a command
         /// </summary>
@@ -65,6 +70,11 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
+            if (commandToExecute == null)
+            {
+                throw new ArgumentNullException("commandToExecute", "Command to execute cannot be null");
+            }
+
             Response toReturn = null;
             if (commandToExecute.Name == DriverCommand.NewSession)
             {

@@ -157,6 +157,16 @@ namespace OpenQA.Selenium
             get { return string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort); }
         }
 
+        protected virtual TimeSpan InitialConnectionTimeout
+        {
+            get { return TimeSpan.FromSeconds(20); }
+        }
+
+        protected virtual bool IgnoreMissingStatusEndPoint
+        {
+            get { return false; }
+        }
+
         /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
         /// </summary>
@@ -180,7 +190,7 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.Start();
             Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
             bool processStarted = false;
-            DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
+            DateTime timeout = DateTime.Now.Add(this.InitialConnectionTimeout);
             while (!processStarted && DateTime.Now < timeout)
             {
                 try
@@ -193,6 +203,7 @@ namespace OpenQA.Selenium
 
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
                     request.KeepAlive = false;
+                    request.Timeout = 5000;
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
 
                     // Checking the response from the 'status' end point. Note that we are simply checking
@@ -202,12 +213,13 @@ namespace OpenQA.Selenium
                     processStarted = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
                     response.Close();
                 }
-                catch (WebException)
+                catch (WebException ex)
                 {
+                    Console.WriteLine(ex.Message);
                 }
             }
 
-            if (!processStarted)
+            if (!this.IgnoreMissingStatusEndPoint && !processStarted)
             {
                 string msg = "Cannot start the driver service on " + this.ServiceUrl;
                 throw new WebDriverException(msg);
