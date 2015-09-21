@@ -156,7 +156,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = {MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
   public void testFindElementsByLinkTest() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -292,7 +291,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({REMOTE})
-  @NotYetImplemented(value = {MARIONETTE}, reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1204496")
   @Test
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
